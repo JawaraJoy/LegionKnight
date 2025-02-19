@@ -84,7 +84,7 @@ public class Player : MonoBehaviour {
         if (JumpStylePlayer == false){
             if (IsGrounded()) {
                 //Anim.SetTrigger("Idle");
-                if (rigidbody2d.velocity.x == 0) {
+                if (rigidbody2d.linearVelocity.x == 0) {
                     //playerBase.PlayIdleAnim();
                     //Anim.SetTrigger("Idle");
                     Anim.SetBool("Jump3", false);
@@ -167,7 +167,7 @@ public class Player : MonoBehaviour {
 
         if (JumpStylePlayer == true){
             if (IsGrounded()) {
-                if (rigidbody2d.velocity.x == 0) {
+                if (rigidbody2d.linearVelocity.x == 0) {
                     Anim.SetBool("Jump2", false);
                 }
             } else {
@@ -227,7 +227,7 @@ public class Player : MonoBehaviour {
     public void JumpButton(){
         if (IsGrounded()) {
             buttonJump.GetComponent<Button>().enabled = false;
-            rigidbody2d.velocity = Vector2.up * jumpVelocity;
+            rigidbody2d.linearVelocity = Vector2.up * jumpVelocity;
     
             sfx.Play();
         }else{
