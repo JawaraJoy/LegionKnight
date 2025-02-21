@@ -863,7 +863,7 @@ public class GameManager : MonoBehaviour
     IEnumerator StartGame()
     {
         yield return new WaitForSeconds(0.5f);
-        PlayerAnim.GetComponent<Rigidbody2D>().gravityScale = 2;
+        PlayerAnim.GetComponent<Rigidbody2D>().gravityScale = 1;
         PlayerAnim.GetComponent<Animator>().enabled = true;
         //PlayerAnim.GetComponent<Player>().PlayOnAnim();
         CameraObject.GetComponent<CameraFollow>().enabled = true;

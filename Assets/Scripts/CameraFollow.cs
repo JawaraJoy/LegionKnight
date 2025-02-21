@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class CameraFollow : MonoBehaviour
 {
+    public string m_TargetTag = "Player";
     public Transform target;
     public Vector3 offset;
     [Range(1,10)]
@@ -18,7 +19,7 @@ public class CameraFollow : MonoBehaviour
 
     void Update (){
         
-        target = GameObject.FindGameObjectWithTag("Player").transform;
+        target = GameObject.FindGameObjectWithTag(m_TargetTag).transform;
     }
 
     public void Follow()

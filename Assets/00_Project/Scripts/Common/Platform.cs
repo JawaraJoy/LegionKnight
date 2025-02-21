@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -12,38 +13,114 @@ namespace LegionKnight
     }
     public partial class Platform : MonoBehaviour
     {
+        [SerializeField]
         private bool m_CanMove;
+        private float m_Speed;
+        private Transform m_Destination;
+
         [SerializeField]
-        private float m_MinSpeed;
+        private UnityEvent<GameObject> m_OnPlayerAttached = new();
         [SerializeField]
-        private float m_MaxSpeed;
-        private float m_SpeedMultiplier;
+        private UnityEvent m_OnPlatformStop = new();
+        [SerializeField]
+        private UnityEvent m_OnPlatformStart = new();
+
+        private bool m_ReachTriggered;
+
 
         private void Update()
         {
-            Move();
+            MoveToDestination();
         }
 
-        private void Move()
+        private void MoveToDestination()
         {
-            if (!m_CanMove) return;
-            transform.Translate(Vector3.right * GetFinalSpeed() * Time.deltaTime, Space.Self);
+            if (!m_CanMove || IsReached()) return;
+            //transform.Translate(m_Speed * Time.deltaTime * Vector3.right, Space.Self);
+            transform.position = Vector2.MoveTowards(transform.position, m_Destination.position, m_Speed * Time.deltaTime);
+            ReachDestination();
+        }
+        private Vector2 GetTargetDestination()
+        {
+            Vector2 target = new Vector2(m_Destination.position.x, 0f);
+            return target;
+        }
+        private void ReachDestination()
+        {
+            if (IsReached() && !m_ReachTriggered)
+            {
+                SetCanMove(false);
+                m_ReachTriggered = true;
+            }
+        }
+        private bool IsReached()
+        {
+            return Distance() <= 0;
+        }
+        private float Distance()
+        {
+            return Vector2.Distance(transform.position, m_Destination.position);
+        }
+        public void SetCanMove(bool set)
+        {
+            SetCanMoveInternal(set);
+        }
+        private void SetCanMoveInternal(bool set)
+        {
+            m_CanMove = set;
+            if (m_CanMove)
+            {
+                OnPlatformStartMoveInvoke();
+            }
+            else
+            {
+                OnPlatformStopMoveInvoke();
+            }
+        }
+        public void AttachPlayer(GameObject player)
+        {
+            OnPlayerAttachedInvoke(player);
+        }
+        private void OnPlayerAttachedInvoke(GameObject player)
+        {
+            m_OnPlayerAttached?.Invoke(player);
+            SetCanMoveInternal(false);
         }
 
-        private float GetFinalSpeed()
+        private void OnPlatformStartMoveInvoke()
         {
-            float speed = Random.Range(m_MinSpeed, m_MaxSpeed);
-            return speed * m_SpeedMultiplier;
+            m_OnPlatformStart?.Invoke();
+            Debug.Log("Start Platform");
         }
-
-        public void StartMove(float direction)
+        private void OnPlatformStopMoveInvoke()
         {
-            m_SpeedMultiplier = direction;
-            m_CanMove = true;
+            m_OnPlatformStop?.Invoke();
+            Debug.Log("Stop Platform");
         }
         public void StopMove()
         {
             m_CanMove = false;
+        }
+
+        public void SetDestination(Transform set)
+        {
+            m_Destination = set;
+        }
+
+        public void SetStartPosition(Transform set)
+        {
+            transform.position = set.position;
+        }
+
+        public void SetSpeed(float set)
+        {
+            m_Speed = set;
+        }
+
+        public void AddOnPlatformStop(UnityAction action)
+        {
+            //m_OnPlatformStop.RemoveAllListeners();
+            m_OnPlatformStop?.AddListener(action);
         }
     }
 }

@@ -23,4 +23,8 @@ public class ButtonJump : MonoBehaviour
     public void JumpPlayer(){
         playerScript.GetComponent<Player>().JumpButton();
     }
+    public void JumpUnpress()
+    {
+        playerScript.GetComponent<Player>().JumpUnPress();
+    }
 }

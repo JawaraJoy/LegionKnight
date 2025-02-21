@@ -104338,7 +104338,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b409577b4727a7946b488a6cd902fb3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CanJump: 1
   m_JumpForce: 10
+  m_JumpPressMaxDuration: 1
+  m_JumpMultiplier: 1
+  m_FallMultiplier: 1
   m_GroundCheck: {fileID: 0}
   m_GroundCheckRadius: 0.2
   m_GroundLayer:
@@ -104350,6 +104354,7 @@ MonoBehaviour:
   m_OnStartJump:
     m_PersistentCalls:
       m_Calls: []
+  m_Rb: {fileID: 0}
 --- !u!1 &1544355489163609224
 GameObject:
   m_ObjectHideFlags: 0
@@ -105958,7 +105963,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
 --- !u!114 &2568862249498373187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122013,8 +122018,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5592732395451005712}
   m_HandleRect: {fileID: 4827717042035612073}
   m_Direction: 2
-  m_Value: 0.49997854
-  m_Size: 0.998401
+  m_Value: 0.49991417
+  m_Size: 0.9984009
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

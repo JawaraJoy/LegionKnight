@@ -9,6 +9,13 @@ namespace LegionKnight
         private bool m_CanJump;
         [SerializeField]
         private float m_JumpForce = 10f;           // Force applied for the jump
+        [SerializeField, Range(0.001f, 1f)]
+        private float m_JumpPressMaxDuration = 1f;
+        [SerializeField]
+        private float m_JumpMultiplier = 1f;
+        [SerializeField]
+        private float m_FallMultiplier = 1f;
+
         [SerializeField]
         private Transform m_GroundCheck;          // Empty GameObject to check if the player is on the ground
         [SerializeField]
@@ -26,6 +33,15 @@ namespace LegionKnight
 
         private float m_LinearVelocityY;
 
+        private Vector2 m_GravityMod;
+
+        private bool m_IsJumping;
+        private float m_JumpPressDuration;
+        private void Start()
+        {
+            m_GravityMod = new Vector2(0f, -Physics.gravity.y);
+        }
+
         private void Update()
         {
             CheckGrounded();
@@ -38,7 +54,7 @@ namespace LegionKnight
             OnLinearVelocityChangedInvoke(m_LinearVelocityY);
         }
 
-        public void Jump()
+        public void JumpPress()
         {
             Debug.Log("Jump");
             if (!m_IsGrounded || !m_CanJump) return;
@@ -46,14 +62,46 @@ namespace LegionKnight
             //m_Rb.AddForceY(m_JumpForce, ForceMode2D.Force);
             OnStartJumpInvoke();
         }
+        public void JumpUnPress()
+        {
+            m_IsJumping = false;
+
+            if (m_Rb.linearVelocityY > 0)
+            {
+                m_Rb.linearVelocity = new Vector2(m_Rb.linearVelocityX, m_Rb.linearVelocityY * 0.6f);
+            }
+        }
 
         private void OnLinearVelocityChangedInvoke(float val)
         {
             m_OnLinearVelocityYChanged?.Invoke(val);
+
+            if (m_Rb.linearVelocityY > 0f && m_IsJumping)
+            {
+                m_JumpPressDuration += Time.deltaTime;
+                if (m_JumpPressDuration > m_JumpPressMaxDuration)
+                {
+                    m_IsJumping = false;
+                }
+
+                float t = m_JumpPressDuration / m_JumpPressMaxDuration;
+                float currentJumpM = m_JumpMultiplier;
+                if (t > 0.5f)
+                {
+                    currentJumpM = m_JumpMultiplier * (1 - t);
+                }
+                m_Rb.linearVelocity += m_GravityMod * currentJumpM * Time.deltaTime;
+            }
+            if (m_Rb.linearVelocityY < 0f)
+            {
+                m_Rb.linearVelocity -= m_GravityMod * m_FallMultiplier * Time.deltaTime;
+            }
         }
         private void OnStartJumpInvoke()
         {
             m_OnStartJump?.Invoke();
+            m_IsJumping = true;
+            m_JumpPressDuration = 0f;
         }
 
         void OnDrawGizmosSelected()

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -5,34 +6,40 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
-    [System.Serializable]
-    public class StartingPlatformMove
-    {
-        [SerializeField]
-        private Transform m_StartPost;
-        [SerializeField]
-        private float m_SpeedDirection;
-        public Transform StartPost => m_StartPost;
-        public float SpeedDirection => m_SpeedDirection;
-    }
+    
     public partial class StackingPlatforms : MonoBehaviour
     {
         [SerializeField]
-        private AssetReferenceGameObject m_PlatformAsset;
+        private LevelDefinition m_LevelDefinition;
         [SerializeField]
-        private StartingPlatformMove m_LeftPost;
+        private Transform m_LeftPost;
         [SerializeField]
-        private StartingPlatformMove m_RightPost;
+        private Transform m_RightPost;
+        [SerializeField]
+        private Transform m_PlatformDestination;
         [SerializeField]
         private Transform m_PlatformStack;
+        [SerializeField]
+        private Transform m_PlatformMoving;
         private List<Platform> m_SpawnedPlatform = new();
 
+        private IEnumerator Start()
+        {
+            yield return new WaitForSeconds(2f);
+            SpawnPlatformInternal();
+        }
+        private AssetReferenceGameObject PlatformAssetInternal => m_LevelDefinition.PlatformAsset;
         public void SpawnPlatform()
         {
-            Addressables.InstantiateAsync(m_PlatformAsset, m_PlatformStack, false).Completed += OnPlatformSpawned;
+            SpawnPlatformInternal();
         }
 
-        private StartingPlatformMove LeftOrRight()
+        private void SpawnPlatformInternal()
+        {
+            Addressables.InstantiateAsync(PlatformAssetInternal, m_PlatformDestination, true).Completed += OnPlatformSpawned;
+        }
+
+        private Transform LeftOrRight()
         {
             int random = Random.Range(-100, 100);
             if (random <= 0)
@@ -53,16 +60,24 @@ namespace LegionKnight
 
         private void SetStartPosition(Platform spawn)
         {
-            StartingPlatformMove post = LeftOrRight();
-            spawn.transform.position = post.StartPost.position;
-            spawn.StartMove(post.SpeedDirection);
-
+            spawn.SetStartPosition(LeftOrRight());
+            spawn.AddOnPlatformStop(Up);
+            spawn.AddOnPlatformStop(SpawnPlatformInternal);
+            spawn.SetSpeed(m_LevelDefinition.GetSpeed());
+            spawn.SetDestination(m_PlatformDestination);
+            spawn.transform.SetParent(m_PlatformStack);
+            spawn.SetCanMove(true);
             AddSpawnedPlatform(spawn);
         }
 
         private void AddSpawnedPlatform(Platform add)
         {
             m_SpawnedPlatform.Add(add);
+        }
+
+        private void Up()
+        {
+            m_PlatformDestination.localPosition += Vector3.up;
         }
     }
 }

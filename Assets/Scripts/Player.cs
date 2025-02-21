@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour 
@@ -36,6 +37,11 @@ public class Player : MonoBehaviour
     //public float ShieldOffTime;
 
     //public GameObject ShieldObj;
+
+    [SerializeField]
+    private UnityEvent m_OnJumpPress = new();
+    [SerializeField]
+    private UnityEvent m_OnJumpUnpress = new();
 
     void Start() 
     {
@@ -211,15 +217,24 @@ public class Player : MonoBehaviour
         Shield = false;
     }*/
 
-    public void JumpButton(){
-        if (IsGrounded()) {
+    public void JumpButton()
+    {
+        if (IsGrounded()) 
+        {
             buttonJump.GetComponent<Button>().enabled = false;
-            rigidbody2d.linearVelocity = Vector2.up * jumpVelocity;
-    
+            //rigidbody2d.linearVelocity = Vector2.up * jumpVelocity;
+            
             sfx.Play();
-        }else{
+        }
+        else
+        {
             
         }
+        m_OnJumpPress?.Invoke();
+    }
+    public void JumpUnPress()
+    {
+        m_OnJumpUnpress?.Invoke();
     }
 
     private bool IsGrounded() {
