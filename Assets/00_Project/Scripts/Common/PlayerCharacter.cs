@@ -2,18 +2,19 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class PlayerCharacter : MonoBehaviour
+    public partial class PlayerCharacter : Character
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
         
-        }
+    }
 
-        // Update is called once per frame
-        void Update()
+    public partial class Player
+    {
+        [SerializeField]
+        private PlayerCharacter m_Character;
+
+        public void SetCharacterDefinition(CharacterDefinition definition)
         {
-        
+            m_Character.SetCharacterDefinition(definition);
         }
     }
 }

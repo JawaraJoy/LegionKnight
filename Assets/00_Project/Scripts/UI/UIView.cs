@@ -5,8 +5,8 @@ namespace LegionKnight
     public partial class UIView : View
     {
         [SerializeField]
-        private string m_UniqueId;
-        public string UniqueId => m_UniqueId;
+        protected string m_UniqueId;
+        public virtual string UniqueId => m_UniqueId;
         public void SetUniqueId(string set)
         {
             SetUniqueIdInternal(set);

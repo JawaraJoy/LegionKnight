@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class GameManager : Singleton<GameManager>
+    public class DamagePlatform : Contact2D
     {
         
     }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -14,18 +15,26 @@ namespace LegionKnight
     public partial class Platform : MonoBehaviour
     {
         [SerializeField]
+        private List<Collider2D> m_ColliderActives = new();
+        [SerializeField]
         private bool m_CanMove;
         private float m_Speed;
         private Transform m_Destination;
 
+        [SerializeField]
+        private DamagePlatform m_DamageablePlatform;
         [SerializeField]
         private UnityEvent<GameObject> m_OnPlayerAttached = new();
         [SerializeField]
         private UnityEvent m_OnPlatformStop = new();
         [SerializeField]
         private UnityEvent m_OnPlatformStart = new();
+        [SerializeField]
+        private UnityEvent m_OnPlatformReachDestination = new();
 
         private bool m_ReachTriggered;
+        private LevelDefinition m_LevelDefinition;
+
 
 
         private void Update()
@@ -45,11 +54,19 @@ namespace LegionKnight
             Vector2 target = new Vector2(m_Destination.position.x, 0f);
             return target;
         }
+        public Currency GetNormalTouchDown()
+        {
+            return m_LevelDefinition.GetNormalTouchDown();
+        }
+        public Currency GetPerfectTouchdown()
+        {
+            return m_LevelDefinition.GetPerfectTouchdown();
+        }
         private void ReachDestination()
         {
             if (IsReached() && !m_ReachTriggered)
             {
-                SetCanMove(false);
+                OnPlatformReachDestination();
                 m_ReachTriggered = true;
             }
         }
@@ -91,11 +108,23 @@ namespace LegionKnight
         {
             m_OnPlatformStart?.Invoke();
             Debug.Log("Start Platform");
+            
         }
         private void OnPlatformStopMoveInvoke()
         {
             m_OnPlatformStop?.Invoke();
+            //m_OnPlatformStop.RemoveAllListeners();
             Debug.Log("Stop Platform");
+            //SetActiveCollider(false);
+            m_DamageablePlatform.SetCanContact(false);
+        }
+        private void OnPlatformReachDestination()
+        {
+            m_OnPlatformReachDestination?.Invoke();
+            //SetActiveCollider(false);
+            //m_OnPlatformStop.RemoveAllListeners();
+            //m_OnPlatformReachDestination.RemoveAllListeners();
+            m_DamageablePlatform.SetCanContact(false);
         }
         public void StopMove()
         {
@@ -116,11 +145,32 @@ namespace LegionKnight
         {
             m_Speed = set;
         }
-
+        public void SetLevelDefnition(LevelDefinition set)
+        {
+            m_LevelDefinition = set;
+        }
         public void AddOnPlatformStop(UnityAction action)
         {
             //m_OnPlatformStop.RemoveAllListeners();
             m_OnPlatformStop?.AddListener(action);
+        }
+        public void AddOnPlatformReachDestination(UnityAction action)
+        {
+            //m_OnPlatformStop.RemoveAllListeners();
+            m_OnPlatformReachDestination?.AddListener(action);
+        }
+
+        public void ClearActionOnPlatformStop()
+        {
+            m_OnPlatformStop?.RemoveAllListeners();
+        }
+
+        private void SetActiveCollider(bool set)
+        {
+            foreach(Collider2D collider in m_ColliderActives)
+            {
+                collider.enabled = set;
+            }
         }
     }
 }

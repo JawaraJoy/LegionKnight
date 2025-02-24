@@ -2,7 +2,8 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class GameManager : Singleton<GameManager>
+
+    public partial class GameSetting : MonoBehaviour
     {
         
     }

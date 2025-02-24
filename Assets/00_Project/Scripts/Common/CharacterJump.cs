@@ -47,6 +47,11 @@ namespace LegionKnight
             CheckGrounded();
         }
 
+        public void SetCanJump(bool set)
+        {
+            m_CanJump = set;
+        }
+
         void CheckGrounded()
         {
             m_IsGrounded = Physics2D.OverlapCircle(m_GroundCheck.position, m_GroundCheckRadius, m_GroundLayer);
