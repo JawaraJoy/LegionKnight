@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+    public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T m_Instance;
         private static readonly object m_Lock = new object();
@@ -14,7 +14,7 @@ namespace LegionKnight
             {
                 if (m_ApplicationIsQuitting)
                 {
-                    Debug.LogWarning($"[Singleton] Instance '{typeof(T)}' already destroyed. Returning null.");
+                    Debug.LogWarning($"[Singleton] Instance of '{typeof(T)}' already destroyed. Returning null.");
                     return null;
                 }
 
@@ -28,7 +28,7 @@ namespace LegionKnight
                         {
                             GameObject singletonObject = new GameObject($"{typeof(T)} (Singleton)");
                             m_Instance = singletonObject.AddComponent<T>();
-                            DontDestroyOnLoad(singletonObject);
+                            singletonObject.AddComponent<DontDestroy>(); // Add persistence here
                         }
                     }
 
@@ -37,9 +37,24 @@ namespace LegionKnight
             }
         }
 
+        protected virtual void Awake()
+        {
+            if (m_Instance == null)
+            {
+                m_Instance = this as T;
+            }
+            else if (m_Instance != this)
+            {
+                Destroy(gameObject); // Prevent duplicates
+            }
+        }
+
         protected virtual void OnDestroy()
         {
-            m_ApplicationIsQuitting = true;
+            if (m_Instance == this)
+            {
+                m_ApplicationIsQuitting = true;
+            }
         }
     }
 }

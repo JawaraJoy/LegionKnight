@@ -9,6 +9,13 @@ namespace LegionKnight
         [SerializeField]
         private List<Currency> m_Currencies = new();
 
+        private void Start()
+        {
+            foreach(Currency currency in m_Currencies)
+            {
+                currency.Init();
+            }
+        }
         private Currency GetCurrency(CurrencyDefinition definition)
         {
             Currency match = m_Currencies.Find(x => x.CurrencyDefinition == definition);

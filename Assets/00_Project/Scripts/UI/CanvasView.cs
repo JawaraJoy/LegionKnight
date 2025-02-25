@@ -15,17 +15,17 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<bool> m_OnIsBusyUpdate = new();
 
-        private T GetPanel<T>() where T : PanelView
+        protected T GetPanelInternal<T>() where T : PanelView
         {
             T match = (T)m_Panels.Find(x => x.GetType() == typeof(T)) ?? null;
             return match;
         }
-        private T GetPanel<T>(string uniqueId) where T : PanelView
+        protected T GetPanelInternal<T>(string uniqueId) where T : PanelView
         {
             T match = (T)m_Panels.Find(x => x.UniqueId == uniqueId) ?? null;
             return match;
         }
-        private PanelView GetPanel(string uniqueId)
+        protected PanelView GetPanelInternal(string uniqueId)
         {
             PanelView match = m_Panels.Find(x => x.UniqueId == uniqueId);
             if (match == null)
@@ -34,17 +34,21 @@ namespace LegionKnight
             }
             return match;
         }
+        public T GetPanel<T>() where T : PanelView
+        {
+            return GetPanelInternal<T>();
+        }
         private bool HasPanel(string uniqueId)
         {
-            return m_Panels.Contains(GetPanel(uniqueId));
+            return m_Panels.Contains(GetPanelInternal(uniqueId));
         }
         private bool HasPanel<T>() where T : PanelView
         {
-            return m_Panels.Contains(GetPanel<T>());
+            return m_Panels.Contains(GetPanelInternal<T>());
         }
         private bool HasPanel<T>(string uniqueId) where T : PanelView
         {
-            return m_Panels.Contains(GetPanel<T>(uniqueId));
+            return m_Panels.Contains(GetPanelInternal<T>(uniqueId));
         }
         public virtual void ShowPanel(string uniqueId)
         {
@@ -58,7 +62,7 @@ namespace LegionKnight
         {
             if (HasPanel(uniqueId))
             {
-                GetPanel(uniqueId).Show();
+                GetPanelInternal(uniqueId).Show();
                 HandleIsBusy();
             }
         }
@@ -66,7 +70,7 @@ namespace LegionKnight
         {
             if (HasPanel(uniqueId))
             {
-                GetPanel(uniqueId).Hide();
+                GetPanelInternal(uniqueId).Hide();
                 HandleIsBusy();
             }
         }

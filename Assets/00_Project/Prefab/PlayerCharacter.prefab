@@ -67,7 +67,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.89, y: -0.89}
+  m_Offset: {x: 0.7, y: -0.89}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -227,6 +227,7 @@ GameObject:
   - component: {fileID: 6513007408860036446}
   - component: {fileID: 3782978526680881856}
   - component: {fileID: 6867498596800542263}
+  - component: {fileID: 7707387169133880886}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -333,7 +334,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Character: {fileID: 6867498596800542263}
-  m_CurrencyControl: {fileID: 0}
+  m_CharacterJump: {fileID: 1091291144089817512}
+  m_CurrencyControl: {fileID: 2942122649447902150}
 --- !u!114 &6867498596800542263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,6 +353,21 @@ MonoBehaviour:
   m_OnSetCharacterDefinition:
     m_PersistentCalls:
       m_Calls: []
+  m_Jump: {fileID: 1091291144089817512}
+  m_Collider: {fileID: 6513007408860036446}
+  m_TouchDown: {fileID: 7758370064416613710}
+--- !u!114 &7707387169133880886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084039138725747265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12f9050e60f322d45a18fd887c594f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2207269959471590298
 GameObject:
   m_ObjectHideFlags: 0
@@ -397,39 +414,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ForceEffects:
   - ForceName: ToLeft
-    ForceDirection: {x: -20, y: 10}
+    ForceDirection: {x: 0, y: 10}
   - ForceName: ToRight
-    ForceDirection: {x: 20, y: 10}
+    ForceDirection: {x: 0, y: 10}
   m_Rb: {fileID: 3377274384242518752}
   m_UsePause: 1
   m_PauseDelay: 1
   m_OnDeath:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1150603665545633236}
-        m_TargetAssemblyTypeName: LegionKnight.CharacterJump, Assembly-CSharp
-        m_MethodName: SetCanJump
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6513007408860036446}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &3487999845426130524
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,7 +490,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.89, y: -0.89}
+  m_Offset: {x: -0.7, y: -0.89}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -639,7 +632,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1705209213341049559}
-  - component: {fileID: 1150603665545633236}
+  - component: {fileID: 1091291144089817512}
   m_Layer: 0
   m_Name: Jump
   m_TagString: Untagged
@@ -662,7 +655,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 85250483425571224}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1150603665545633236
+--- !u!114 &1091291144089817512
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -671,12 +664,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6335871343680121323}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b409577b4727a7946b488a6cd902fb3f, type: 3}
+  m_Script: {fileID: 11500000, guid: d8474bbde2783b14f846332ad8fc4e3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_CanJump: 1
-  m_JumpForce: 15
-  m_JumpPressMaxDuration: 0.01
+  m_JumpForce: 12
+  m_JumpPressMaxDuration: 0.001
   m_JumpMultiplier: 0
   m_FallMultiplier: 0
   m_GroundCheck: {fileID: 3707954418017981889}
@@ -701,6 +694,7 @@ GameObject:
   m_Component:
   - component: {fileID: 124883684928806753}
   - component: {fileID: 2942122649447902150}
+  - component: {fileID: 5021998139950130448}
   m_Layer: 7
   m_Name: CurrenciesControl
   m_TagString: Untagged
@@ -738,10 +732,76 @@ MonoBehaviour:
   m_Currencies:
   - m_CurrencyDefinition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
     m_Amount: 100
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 5021998139950130448}
+          m_TargetAssemblyTypeName: LegionKnight.HomeCurrencyViewAgent, Assembly-CSharp
+          m_MethodName: SetCurrencyView
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - m_CurrencyDefinition: {fileID: 11400000, guid: 2aedec681836937458126066f7ad9559, type: 2}
     m_Amount: 0
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 5021998139950130448}
+          m_TargetAssemblyTypeName: LegionKnight.HomeCurrencyViewAgent, Assembly-CSharp
+          m_MethodName: SetCurrencyView
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - m_CurrencyDefinition: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
     m_Amount: 0
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 5021998139950130448}
+          m_TargetAssemblyTypeName: LegionKnight.HomeCurrencyViewAgent, Assembly-CSharp
+          m_MethodName: SetCurrencyView
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &5021998139950130448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7764102645273973304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e74be5b9c83b9684dae6f59b7059efa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8485333252870670921
 GameObject:
   m_ObjectHideFlags: 0

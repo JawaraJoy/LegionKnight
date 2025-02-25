@@ -12,8 +12,16 @@ namespace LegionKnight
         private int m_Amount;
         [SerializeField]
         private UnityEvent<int> m_OnCurrencyAmountChanged = new();
+        [SerializeField]
+        private UnityEvent<Currency> m_OnCurrencyChanged = new();
         public CurrencyDefinition CurrencyDefinition => m_CurrencyDefinition;
         public int Amount => m_Amount;
+
+        public void Init()
+        {
+            OnCurrencyAmountChangedInvoke(m_Amount);
+        }
+        
         public void SetAmount(int set)
         {
             m_Amount = set;
@@ -37,6 +45,7 @@ namespace LegionKnight
         private void OnCurrencyAmountChangedInvoke(int amount)
         {
             m_OnCurrencyAmountChanged?.Invoke(amount);
+            m_OnCurrencyChanged?.Invoke(this);
         }
     }
 }

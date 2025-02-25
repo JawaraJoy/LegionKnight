@@ -15,14 +15,12 @@ namespace LegionKnight
     public partial class Platform : MonoBehaviour
     {
         [SerializeField]
-        private List<Collider2D> m_ColliderActives = new();
+        private List<Collider2D> m_ColliderBehaviourActives = new();
         [SerializeField]
         private bool m_CanMove;
         private float m_Speed;
         private Transform m_Destination;
 
-        [SerializeField]
-        private DamagePlatform m_DamageablePlatform;
         [SerializeField]
         private UnityEvent<GameObject> m_OnPlayerAttached = new();
         [SerializeField]
@@ -113,18 +111,11 @@ namespace LegionKnight
         private void OnPlatformStopMoveInvoke()
         {
             m_OnPlatformStop?.Invoke();
-            //m_OnPlatformStop.RemoveAllListeners();
             Debug.Log("Stop Platform");
-            //SetActiveCollider(false);
-            m_DamageablePlatform.SetCanContact(false);
         }
         private void OnPlatformReachDestination()
         {
             m_OnPlatformReachDestination?.Invoke();
-            //SetActiveCollider(false);
-            //m_OnPlatformStop.RemoveAllListeners();
-            //m_OnPlatformReachDestination.RemoveAllListeners();
-            m_DamageablePlatform.SetCanContact(false);
         }
         public void StopMove()
         {
@@ -165,9 +156,9 @@ namespace LegionKnight
             m_OnPlatformStop?.RemoveAllListeners();
         }
 
-        private void SetActiveCollider(bool set)
+        public void SetActiveBehaviourCollider(bool set)
         {
-            foreach(Collider2D collider in m_ColliderActives)
+            foreach(Collider2D collider in m_ColliderBehaviourActives)
             {
                 collider.enabled = set;
             }

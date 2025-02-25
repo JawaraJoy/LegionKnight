@@ -12,6 +12,10 @@ namespace LegionKnight
         [SerializeField]
         private MainCanvasView m_MainCanvas;
 
+        protected T GetPanelInternal<T>() where T : PanelView
+        {
+            return m_MainCanvas.GetPanel<T>();
+        }
         public void ShowMainCanvas()
         {
             m_MainCanvas.Show();

@@ -8,6 +8,14 @@ namespace LegionKnight
     }
     public partial class HomePanel : PanelView
     {
+        [SerializeField]
+        private string m_GameplaySceneName;
         public override string UniqueId => PanelId.HomePanelId;
+
+        public void LoadGameplayScene()
+        {
+            GameManager.Instance.LoadScene(m_GameplaySceneName);
+        }
+
     }
 }

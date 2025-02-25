@@ -11,11 +11,14 @@ namespace LegionKnight
             if (other.GetSelf().TryGetComponent(out PlatformContact platform))
             {
                 //Player.Instance.AddCurrencyAmount(platform.GetNormalTouchDown().CurrencyDefinition, platform.GetNormalTouchDown().Amount);
-                LevelManager.Instance.SpawnPlatform();
-                LevelManager.Instance.Up();
-                LevelManager.Instance.AddAmount(platform.GetNormalTouchDown().Amount);
+                GameManager.Instance.SpawnPlatform();
+                GameManager.Instance.Up();
+
+                GameManager.Instance.ApplyNormalReward(); // sementara normal, nanti bisa ditentukan apapkah perfect touch down atau normal
+
                 platform.SetCanMove(false);
                 platform.gameObject.SetActive(false);
+                platform.SetActiveBehaviourCollider(false);
             }
         }
     }

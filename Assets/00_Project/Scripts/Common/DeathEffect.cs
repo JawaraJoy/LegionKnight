@@ -62,16 +62,20 @@ namespace LegionKnight
         private CharacterJump m_Jump;
         [SerializeField]
         private Collider2D m_Collider;
+        [SerializeField]
+        private TouchDown m_TouchDown;
         public void Death()
         {
             m_Jump.SetCanJump(false);
             m_Collider.enabled = false;
+            m_TouchDown.SetCanContact(false);
             
         }
         public void Reborn()
         {
             m_Jump.SetCanJump(true);
             m_Collider.enabled = true;
+            m_TouchDown.SetCanContact(true);
         }
         public void SetPosition(Vector2 post)
         {

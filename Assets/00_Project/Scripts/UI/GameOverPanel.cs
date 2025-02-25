@@ -8,11 +8,14 @@ namespace LegionKnight
     }
     public partial class GameOverPanel : PanelView
     {
+        [SerializeField]
+        private string m_GameplaySceneName = "ReworkGameplay";
         public override string UniqueId => PanelId.GameOverPanelId;
 
         public void PlayAgain()
         {
-            LevelManager.Instance.Play();
+            //GameManager.Instance.LoadScene(m_GameplaySceneName);
+            GameManager.Instance.Play();
         }
         protected override void OnShowInvoke()
         {
@@ -23,7 +26,7 @@ namespace LegionKnight
         {
             base.OnHideInvoke();
             Time.timeScale = 1;
-            Currency coin = LevelManager.Instance.CurrentCoinReward;
+            Currency coin = GameManager.Instance.CurrentCoinReward;
             Player.Instance.AddCurrencyAmount(coin.CurrencyDefinition, coin.Amount);
         }
     }

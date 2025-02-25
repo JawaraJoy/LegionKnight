@@ -22,5 +22,9 @@ namespace LegionKnight
         {
             m_Platform.ClearActionOnPlatformStop();
         }
+        public void SetActiveBehaviourCollider(bool set)
+        {
+            m_Platform.SetActiveBehaviourCollider(set);
+        }
     }
 }
