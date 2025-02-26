@@ -12,6 +12,10 @@ namespace LegionKnight
         private LevelManager m_LevelManager;
 
         public Currency CurrentCoinReward => m_LevelManager.CurrentCoinReward;
+        public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
+        {
+            m_LevelManager.SetCurrentTouchDownPost(playerTouchDown);
+        }
         public void Play()
         {
             m_LevelManager.Play();

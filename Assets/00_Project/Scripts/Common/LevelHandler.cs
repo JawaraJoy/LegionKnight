@@ -26,7 +26,9 @@ namespace LegionKnight
         private Transform m_PlatformStack;
         [SerializeField]
         private Transform m_PlatformMoving;
+
         private List<Platform> m_SpawnedPlatform = new();
+        private Vector2 m_CurrentTouchDownPost;
 
         [SerializeField]
         private Currency m_CurrentCoinReward;
@@ -37,6 +39,10 @@ namespace LegionKnight
 
         public Transform PlayerStartPostion => m_PlayerStartPosition;
         private AssetReferenceGameObject PlatformAssetInternal => m_LevelDefinition.PlatformAsset;
+        public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
+        {
+            m_CurrentTouchDownPost = playerTouchDown;
+        }
         public void ApplyNormalReward()
         {
             AddAmountInternal(m_LevelDefinition.GetNormalTouchDown().Amount);
@@ -128,7 +134,8 @@ namespace LegionKnight
         private void SpawnPlatformInternal()
         {
             if (m_LevelOver) return;
-            Addressables.InstantiateAsync(PlatformAssetInternal, m_PlatformDestination, true).Completed += OnPlatformSpawned;
+            Vector2 farAway = new Vector2(1000f, 0f);
+            Addressables.InstantiateAsync(PlatformAssetInternal, farAway, Quaternion.identity).Completed += OnPlatformSpawned;
         }
 
         private Transform LeftOrRight()
@@ -168,7 +175,8 @@ namespace LegionKnight
 
         public void Up()
         {
-            m_PlatformDestination.localPosition += Vector3.up + new Vector3(0f, 0.5f, 0f);
+            //m_PlatformDestination.localPosition += Vector3.up + new Vector3(0f, 0.5f, 0f);
+            m_PlatformDestination.localPosition = m_CurrentTouchDownPost;
         }
         private void DestinationReset()
         {

@@ -19,6 +19,8 @@ namespace LegionKnight
                 platform.SetCanMove(false);
                 platform.gameObject.SetActive(false);
                 platform.SetActiveBehaviourCollider(false);
+
+                GameManager.Instance.SetCurrentTouchDownPost(transform.position);
             }
         }
     }
