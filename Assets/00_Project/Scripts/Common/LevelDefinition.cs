@@ -16,7 +16,7 @@ namespace LegionKnight
         [SerializeField]
         private Currency m_PerfectTouchDown;
         [SerializeField]
-        private AssetReferenceGameObject m_PlatformAsset;
+        private List<AssetReferenceGameObject> m_PlatformAssets = new();
 
         public float GetSpeed()
         {
@@ -31,6 +31,11 @@ namespace LegionKnight
         {
             return m_PerfectTouchDown;
         }
-        public AssetReferenceGameObject PlatformAsset => m_PlatformAsset;
+        private AssetReferenceGameObject GetPlatformAssetsRandom()
+        {
+            int random = Random.Range(0, m_PlatformAssets.Count);
+            return m_PlatformAssets[random];
+        }
+        public AssetReferenceGameObject PlatformAsset => GetPlatformAssetsRandom();
     }
 }

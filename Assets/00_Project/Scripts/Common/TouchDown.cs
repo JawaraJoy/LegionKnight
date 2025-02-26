@@ -11,8 +11,9 @@ namespace LegionKnight
             if (other.GetSelf().TryGetComponent(out PlatformContact platform))
             {
                 //Player.Instance.AddCurrencyAmount(platform.GetNormalTouchDown().CurrencyDefinition, platform.GetNormalTouchDown().Amount);
+                GameManager.Instance.SetCurrentTouchDownPost(transform.position);
                 GameManager.Instance.SpawnPlatform();
-                GameManager.Instance.Up();
+                //GameManager.Instance.Up();
 
                 GameManager.Instance.ApplyNormalReward(); // sementara normal, nanti bisa ditentukan apapkah perfect touch down atau normal
 
@@ -20,7 +21,7 @@ namespace LegionKnight
                 platform.gameObject.SetActive(false);
                 platform.SetActiveBehaviourCollider(false);
 
-                GameManager.Instance.SetCurrentTouchDownPost(transform.position);
+                
             }
         }
     }
