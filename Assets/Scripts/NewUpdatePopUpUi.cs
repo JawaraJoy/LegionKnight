@@ -59,7 +59,7 @@ public class NewUpdatePopUpUi : MonoBehaviour
         request.disposeDownloadHandlerOnDispose = true;
         request.timeout = 60;
         Debug.Log("[Request] Try to request");
-        yield return request.Send();
+        yield return request.SendWebRequest();
 
         if (request.isDone)
         {

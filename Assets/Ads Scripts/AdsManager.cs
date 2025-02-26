@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
+using com.unity3d.mediation;
+using com.adjust.sdk;
 
 public class AdsManager : MonoBehaviour
 {
@@ -103,7 +105,10 @@ public class AdsManager : MonoBehaviour
     void BannerOnAdLoadedEvent(IronSourceAdInfo adInfo) { }
     void BannerOnAdLoadFailedEvent(IronSourceError ironSourceError) { }
     void BannerOnAdClickedEvent(IronSourceAdInfo adInfo) { }
-    void BannerOnAdScreenPresentedEvent(IronSourceAdInfo adInfo) { }
+    void BannerOnAdScreenPresentedEvent(IronSourceAdInfo adInfo) 
+    {
+        AdjustUtility.TrackRevenue(AdjustConfig.AdjustAdRevenueSourceIronSource, (double)adInfo.revenue, "USD");
+    }
     void BannerOnAdScreenDismissedEvent(IronSourceAdInfo adInfo) { }
     void BannerOnAdLeftApplicationEvent(IronSourceAdInfo adInfo) { }
     #endregion
@@ -134,7 +139,10 @@ public class AdsManager : MonoBehaviour
     void InterstitialOnAdClickedEvent(IronSourceAdInfo adInfo) { }
     void InterstitialOnAdShowFailedEvent(IronSourceError ironSourceError, IronSourceAdInfo adInfo) { }
     void InterstitialOnAdClosedEvent(IronSourceAdInfo adInfo) { }
-    void InterstitialOnAdShowSucceededEvent(IronSourceAdInfo adInfo) { }
+    void InterstitialOnAdShowSucceededEvent(IronSourceAdInfo adInfo) 
+    {
+        AdjustUtility.TrackRevenue(AdjustConfig.AdjustAdRevenueSourceIronSource, (double)adInfo.revenue, "USD");
+    }
     #endregion
 
     #region rewarded
@@ -166,8 +174,10 @@ public class AdsManager : MonoBehaviour
     {
         //adsStatusText.text = "Ads not ready";
     }
-    void RewardedVideoOnAdOpenedEvent(IronSourceAdInfo adInfo) { 
-        
+    void RewardedVideoOnAdOpenedEvent(IronSourceAdInfo adInfo) 
+    {
+        AdjustUtility.TrackRevenue(AdjustConfig.AdjustAdRevenueSourceIronSource, (double)adInfo.revenue, "USD");
+
     }
     void RewardedVideoOnAdClosedEvent(IronSourceAdInfo adInfo) { 
         //LoadingAdsPanel.SetActive(false);

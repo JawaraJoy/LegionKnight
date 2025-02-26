@@ -28,10 +28,10 @@ dependencyResolutionManagement {
             url (unityProjectPath + "/Assets/GeneratedLocalRepo/Extensions/GooglePlayGames/Editor/m2repository") // Assets/Extensions/GooglePlayGames/Editor/GooglePlayGamesPluginDependencies.xml:11
         }
         maven {
-            url "https://android-sdk.is.com/" // Assets/LevelPlay/Editor/IronSourceSDKDependencies.xml:9, Assets/LevelPlay/Editor/ISAdMobAdapterDependencies.xml:16, Assets/LevelPlay/Editor/ISFacebookAdapterDependencies.xml:16, Assets/LevelPlay/Editor/ISUnityAdsAdapterDependencies.xml:8
+            url "https://maven.google.com/" // Assets/LevelPlay/Editor/IronSourceSDKDependencies.xml:12, Assets/LevelPlay/Editor/ISAdMobAdapterDependencies.xml:8, Assets/LevelPlay/Editor/ISFacebookAdapterDependencies.xml:8, Assets/LevelPlay/Editor/ISUnityAdsAdapterDependencies.xml:15, Packages/com.unity.ads/Editor/Source/Dependencies.xml:7
         }
         maven {
-            url "https://maven.google.com/" // Assets/LevelPlay/Editor/IronSourceSDKDependencies.xml:17, Assets/LevelPlay/Editor/IronSourceSDKDependencies.xml:25, Assets/LevelPlay/Editor/ISAdMobAdapterDependencies.xml:8, Assets/LevelPlay/Editor/ISFacebookAdapterDependencies.xml:8, Assets/LevelPlay/Editor/ISUnityAdsAdapterDependencies.xml:15, Packages/com.unity.ads/Editor/Source/Dependencies.xml:7
+            url "https://android-sdk.is.com/" // Assets/LevelPlay/Editor/ISAdMobAdapterDependencies.xml:16, Assets/LevelPlay/Editor/ISFacebookAdapterDependencies.xml:16, Assets/LevelPlay/Editor/ISUnityAdsAdapterDependencies.xml:8
         }
         mavenLocal()
 // Android Resolver Repos End
