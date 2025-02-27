@@ -6,6 +6,15 @@ using UnityEngine.InputSystem.Utilities;
 
 namespace LegionKnight
 {
+    public static partial class DeathCoroutine
+    {
+        private static bool m_IsEnable = true;
+        public static bool IsEnable => m_IsEnable;
+        public static void SetIsEnable(bool set)
+        {
+            m_IsEnable = set;
+        }
+    }
     [System.Serializable]
     public partial struct ForceEffect
     {
@@ -20,7 +29,6 @@ namespace LegionKnight
         
         [SerializeField]
         private Rigidbody2D m_Rb;
-
         [SerializeField]
         private bool m_UsePause;
         [SerializeField]
@@ -51,9 +59,13 @@ namespace LegionKnight
         }
         private IEnumerator ApplyPausing()
         {
+            DeathCoroutine.SetIsEnable(true);
             yield return new WaitForSeconds(m_PauseDelay);
-            GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
-            m_Rb.AddForce(Vector2.zero, ForceMode2D.Impulse);
+            if (DeathCoroutine.IsEnable)
+            {
+                GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+                m_Rb.AddForce(Vector2.zero, ForceMode2D.Impulse);
+            }
         }
     }
     public partial class Character

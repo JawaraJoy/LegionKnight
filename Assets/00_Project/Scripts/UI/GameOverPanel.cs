@@ -20,14 +20,15 @@ namespace LegionKnight
         protected override void OnShowInvoke()
         {
             base.OnShowInvoke();
-            Time.timeScale = 0f;
+            GameTimeScale.SetTimeScale(0);
         }
         protected override void OnHideInvoke()
         {
             base.OnHideInvoke();
-            Time.timeScale = 1;
+            GameTimeScale.SetTimeScale(1);
             Currency coin = GameManager.Instance.CurrentCoinReward;
             Player.Instance.AddCurrencyAmount(coin.CurrencyDefinition, coin.Amount);
+            GameManager.Instance.SetRewardAmount(0);
         }
     }
 }

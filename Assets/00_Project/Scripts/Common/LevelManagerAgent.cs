@@ -8,9 +8,5 @@ namespace LegionKnight
         {
             GameManager.Instance.Play();
         }
-        public void HideLevel()
-        {
-            GameManager.Instance.HideLevel();
-        }
     }
 }

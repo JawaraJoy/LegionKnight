@@ -16,6 +16,14 @@ namespace LegionKnight
         {
             return m_MainCanvas.GetPanel<T>();
         }
+        protected PanelView GetPanelInternal(string uniqueId)
+        {
+            return m_MainCanvas.GetPanel(uniqueId);
+        }
+        public bool IsShowPanel(string uniqueId)
+        {
+            return GetPanelInternal(uniqueId).IsShow;
+        }
         public void ShowMainCanvas()
         {
             m_MainCanvas.Show();

@@ -13,7 +13,7 @@ namespace LegionKnight
 
     public partial class GameManager
     {
-        public void SetCurrencyReward(Currency currency)
+        public void SetCurrencyRewardView(Currency currency)
         {
             GetPanelInternal<GameplayPanel>().SetCurrencyReward(currency);
         }

@@ -22,6 +22,10 @@ namespace LegionKnight
         {
             m_LevelManager.SetCurrentTouchDownPost(playerTouchDown);
         }
+        public void SetRewardAmount(int set)
+        {
+            m_LevelManager.SetRewardAmount(set);
+        }
         public void SetLevelOver(bool set)
         {
             m_LevelManager.SetLevelOver(set);
@@ -42,10 +46,6 @@ namespace LegionKnight
         {
             m_LevelManager.SpawnPlatform();
         }
-        public void Up()
-        {
-            m_LevelManager.Up();
-        }
         public void ApplyNormalReward()
         {
             m_LevelManager.ApplyNormalReward();
@@ -53,10 +53,6 @@ namespace LegionKnight
         public void ApplyPerfectReward()
         {
             m_LevelManager.ApplyPerfectReward();
-        }
-        public void HideLevel()
-        {
-            m_LevelManager.Hide();
         }
     }
 }

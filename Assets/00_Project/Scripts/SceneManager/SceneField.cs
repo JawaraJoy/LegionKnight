@@ -22,6 +22,7 @@ namespace LegionKnight
         public string SceneName => m_SceneName;
         public void LoadScene()
         {
+            GameTimeScale.SetTimeScale(1f);
             GameManager.Instance.ShowPanel(PanelId.LoadingPanelId);
             //m_SceneName.LoadSceneAsync(m_Mode).Completed += OnSceneLoadedInvoke;
             SceneManager.LoadSceneAsync(m_SceneName, m_Mode).completed += OnSceneLoadedInvoke;

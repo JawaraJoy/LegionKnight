@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -8,7 +9,8 @@ namespace LegionKnight
     {
         [SerializeField]
         private List<SceneField> m_Scenes = new();
-
+        [SerializeField]
+        private UnityEvent m_OnStartLoadScene = new();
         private SceneField GetSceneField(string sceneName)
         {
             SceneField match = m_Scenes.Find(x => x.SceneName == sceneName);
@@ -17,6 +19,7 @@ namespace LegionKnight
         public void LoadScene(string sceneName)
         {
             LoadSceneInternal(sceneName);
+            OnStartLoadScene();
         }
         protected void LoadSceneInternal(string sceneName)
         {
@@ -25,6 +28,10 @@ namespace LegionKnight
         public void UnLoadScene(string sceneName)
         {
             GetSceneField(sceneName).UnloadScene();
+        }
+        private void OnStartLoadScene()
+        {
+            m_OnStartLoadScene?.Invoke();
         }
     }
 }

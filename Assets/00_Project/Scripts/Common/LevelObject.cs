@@ -19,13 +19,13 @@ namespace LegionKnight
         private Transform m_PlatformDestination;
         [SerializeField]
         private Transform m_PlatformStack;
-        [SerializeField]
-        private Transform m_PlatformMoving;
         private List<Platform> m_SpawnedPlatform = new();
-        private AssetReferenceGameObject PlatformAssetInternal => m_LevelDefinition.PlatformAsset;
+        public Transform PlayerStartPostion => m_PlayerStartPosition;
+        private AssetReferenceGameObject PlatformAssetInternal => GetLevelDefinition().PlatformAsset;
         private void Start()
         {
             GameManager.Instance.SetLevelObject(this);
+            PlayInternal();
         }
         private LevelDefinition GetLevelDefinition()
         {
@@ -34,6 +34,10 @@ namespace LegionKnight
                 m_LevelDefinition = GameManager.Instance.LevelDefinition;
             }
             return m_LevelDefinition;
+        }
+        public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
+        {
+            m_PlatformDestination.position = playerTouchDown;
         }
         public void SpawnPlatform()
         {
@@ -113,11 +117,6 @@ namespace LegionKnight
             m_SpawnedPlatform.Add(add);
         }
 
-        public void Up()
-        {
-            m_PlatformDestination.localPosition += Vector3.up + new Vector3(0f, 0.5f, 0f);
-            //m_PlatformDestination.localPosition = m_CurrentTouchDownPost;
-        }
         private void DestinationReset()
         {
             m_PlatformDestination.localPosition = Vector3.zero;

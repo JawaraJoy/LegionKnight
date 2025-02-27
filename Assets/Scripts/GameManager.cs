@@ -866,7 +866,7 @@ public class GameManager : MonoBehaviour
         PlayerAnim.GetComponent<Rigidbody2D>().gravityScale = 1;
         PlayerAnim.GetComponent<Animator>().enabled = true;
         //PlayerAnim.GetComponent<Player>().PlayOnAnim();
-        CameraObject.GetComponent<CameraFollow>().enabled = true;
+        CameraObject.GetComponent<ObjectFollow>().enabled = true;
         //Ground.SetActive(true);
 
         yield return new WaitForSeconds(1f);

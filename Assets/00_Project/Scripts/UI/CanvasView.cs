@@ -34,6 +34,10 @@ namespace LegionKnight
             }
             return match;
         }
+        public PanelView GetPanel(string uniqueId)
+        {
+            return GetPanelInternal(uniqueId);
+        }
         public T GetPanel<T>() where T : PanelView
         {
             return GetPanelInternal<T>();
