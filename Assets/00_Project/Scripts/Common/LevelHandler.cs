@@ -29,6 +29,8 @@ namespace LegionKnight
 
         private List<Platform> m_SpawnedPlatform = new();
 
+        private LevelObject m_LevelObject;
+
         [SerializeField]
         private Currency m_CurrentCoinReward;
         public Currency CurrentCoinReward => m_CurrentCoinReward;
@@ -37,7 +39,13 @@ namespace LegionKnight
         private UnityEvent<Currency> m_OnCoinRewardChanged = new();
 
         public Transform PlayerStartPostion => m_PlayerStartPosition;
+        public bool LevelOver => m_LevelOver;
+        public LevelDefinition LevelDefinition => m_LevelDefinition;
         private AssetReferenceGameObject PlatformAssetInternal => m_LevelDefinition.PlatformAsset;
+        public void SetLevelObject(LevelObject set)
+        {
+            m_LevelObject = set;
+        }
         public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
         {
             m_PlatformDestination.position = playerTouchDown;

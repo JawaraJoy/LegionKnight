@@ -11,10 +11,20 @@ namespace LegionKnight
         [SerializeField]
         private LevelManager m_LevelManager;
 
+        public bool LevelOver => m_LevelManager.LevelOver;
+        public LevelDefinition LevelDefinition => m_LevelManager.LevelDefinition;
         public Currency CurrentCoinReward => m_LevelManager.CurrentCoinReward;
+        public void SetLevelObject(LevelObject set)
+        {
+            m_LevelManager.SetLevelObject(set);
+        }
         public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
         {
             m_LevelManager.SetCurrentTouchDownPost(playerTouchDown);
+        }
+        public void SetLevelOver(bool set)
+        {
+            m_LevelManager.SetLevelOver(set);
         }
         public void Play()
         {
