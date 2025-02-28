@@ -12,18 +12,21 @@ namespace LegionKnight
 
         protected override void HideInternal()
         {
-            
             base.HideInternal();
             //Player.Instance.SetPause(false);
             GameTimeScale.SetTimeScale(1f);
-            DeathCoroutine.SetIsEnable(false);
+            
         }
         protected override void ShowInternal()
         {
             base.ShowInternal();
             //Player.Instance.SetPause(true);
             GameTimeScale.SetTimeScale(0f);
-            
+        }
+
+        public void DeathCoroutineEnable(bool set)
+        {
+            DeathCoroutine.SetIsEnable(true);
         }
     }
 }

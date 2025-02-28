@@ -8,6 +8,22 @@ namespace LegionKnight
     {
         [SerializeField]
         private List<AudioParameter> m_AudioParameters = new();
+
+        protected virtual void Start()
+        {
+            foreach(AudioParameter parameter in m_AudioParameters)
+            {
+                parameter.Init();
+            }
+        }
+        public bool GetIsMuted(string parameterName)
+        {
+            return GetParameter(parameterName).IsMuted;
+        }
+        public float GetVolume(string parameterName)
+        {
+            return GetParameter(parameterName).Volume;
+        }
         private AudioParameter GetParameter(string parameterName)
         {
             AudioParameter match = m_AudioParameters.Find(x => x.ParameterName == parameterName);

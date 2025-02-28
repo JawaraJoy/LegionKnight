@@ -11,9 +11,16 @@ namespace LegionKnight
         private string m_ParameterName;
         [SerializeField]
         private AudioMixerGroup m_MixerGroup;
-        private float m_Volume;
-        private bool m_IsMuted;
+        private float m_Volume = 0.5f;
+        private bool m_IsMuted = false;
         public string ParameterName => m_ParameterName;
+        public bool IsMuted => m_IsMuted;
+        public float Volume => m_Volume;
+
+        public void Init()
+        {
+            SetVolumeInternal(m_Volume);
+        }
         public void SetVolume(float volume)
         {
             SetVolumeInternal(volume);

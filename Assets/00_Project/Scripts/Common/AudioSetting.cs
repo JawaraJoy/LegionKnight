@@ -12,9 +12,11 @@ namespace LegionKnight
     {
         [SerializeField]
         private AudioSetting m_AudioSetting;
-        public void SetVolume(string volumeName, float volume)
+        public bool GetIsMuted(string parameterName) => m_AudioSetting.GetIsMuted(parameterName);
+        public float GetVolume(string parameterName) => m_AudioSetting.GetVolume(parameterName);
+        public void SetVolume(string parameterName, float volume)
         {
-            m_AudioSetting.SetVolume(volumeName, volume);
+            m_AudioSetting.SetVolume(parameterName, volume);
         }
         public void SetIsMute(string parameterName, bool set)
         {
