@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour 
+{
 
     public GameObject playerObj;
     public LayerMask platformsLayerMask;
@@ -35,6 +37,11 @@ public class Player : MonoBehaviour {
     //public float ShieldOffTime;
 
     //public GameObject ShieldObj;
+
+    [SerializeField]
+    private UnityEvent m_OnJumpPress = new();
+    [SerializeField]
+    private UnityEvent m_OnJumpUnpress = new();
 
     void Start() 
     {
@@ -81,32 +88,18 @@ public class Player : MonoBehaviour {
         
         JumpStylePlayer = GameManagerScript.GetComponent<GameManager>().JumpStyle;
         // Set Animations
-        if (JumpStylePlayer == false){
-            if (IsGrounded()) {
-                //Anim.SetTrigger("Idle");
-                if (rigidbody2d.linearVelocity.x == 0) {
-                    //playerBase.PlayIdleAnim();
-                    //Anim.SetTrigger("Idle");
+        if (JumpStylePlayer == false)
+        {
+            if (IsGrounded()) 
+            {
+                if (rigidbody2d.linearVelocity.x == 0) 
+                {
                     Anim.SetBool("Jump3", false);
                     Anim.SetBool("Jump", false);
-
                     
-                    
-                    /*if (SkillsObj.GetComponent<Skills>().Rocket == false){
-                        Anim.SetBool("Jump", false);
-                    }
-                    if (SkillsObj.GetComponent<Skills>().Rocket == true){
-                        Anim.SetTrigger("Idle");
-                    }*/
-                    /*if (GameManagerScript.GetComponent<GameManager>().JumpStyle = false){
-                        Anim.SetBool("Jump", false);
-                    }
-                    if (GameManagerScript.GetComponent<GameManager>().JumpStyle = true){
-                        Anim.SetBool("Jump2", false);
-                    }*/
-                    //buttonJump.SetActive(true);
-                    
-                } else {
+                } 
+                else 
+                {
                     //playerBase.PlayMoveAnim(new Vector2(rigidbody2d.velocity.x, 0f));
                     if (Random.Range(0, 100) < 50)
                     {
@@ -117,7 +110,9 @@ public class Player : MonoBehaviour {
                         Anim.SetBool("Jump", true);
                     }
                 }
-            } else {
+            } 
+            else 
+            {
                 Debug.Log("Jump");
                 //playerBase.PlayJumpAnim(rigidbody2d.velocity);
                 Anim.SetBool("Jump", true);
@@ -148,11 +143,13 @@ public class Player : MonoBehaviour {
                 
             }*/
 
-            if(GameManagerScript.GetComponent<GameManager>().inGameplay == true){
+            if(GameManagerScript.GetComponent<GameManager>().inGameplay == true)
+            {
                 gameObject.transform.localScale = new Vector3(1,1,1);
                 //Debug.Log("Scale 1");
             }
-            if(GameManagerScript.GetComponent<GameManager>().inGameplay == false){
+            if(GameManagerScript.GetComponent<GameManager>().inGameplay == false)
+            {
                 gameObject.transform.localScale = new Vector3(2,2,2);
                 //Debug.Log("Scale 2");
             }
@@ -165,43 +162,39 @@ public class Player : MonoBehaviour {
             
         }
 
-        if (JumpStylePlayer == true){
-            if (IsGrounded()) {
-                if (rigidbody2d.linearVelocity.x == 0) {
+        if (JumpStylePlayer == true)
+        {
+            if (IsGrounded()) 
+            {
+                if (rigidbody2d.linearVelocity.x == 0) 
+                {
                     Anim.SetBool("Jump2", false);
                 }
-            } else {
+            }
+            else 
+            {
                 Anim.SetBool("Jump2", true);
             }
         }
-
-        /*if(Shield == true){
-            TriggerKanan.SetActive(false);
-            TriggerKiri.SetActive(false);
-            StartCoroutine(ShieldOff());
-            //ShieldObj.SetActive(true);
-        }
-        if(Shield == false){
-            TriggerKanan.SetActive(true);
-            TriggerKiri.SetActive(true);
-            //ShieldObj.SetActive(false);
-        }*/
     }
 
-    public void TriggerPlayerOn(){
+    public void TriggerPlayerOn()
+    {
         TriggerKanan.SetActive(true);
         TriggerKiri.SetActive(true);
     }
 
-    public void TriggerPlayerOff(){
+    public void TriggerPlayerOff()
+    {
         TriggerKanan.SetActive(false);
         TriggerKiri.SetActive(false);
     }
 
     //Rocket Aktif
-    public void ColliderPlayerOff(){
+    public void ColliderPlayerOff()
+    {
         playerObj.GetComponent<Collider2D>().enabled = false;
-        playerObj.GetComponent<Rigidbody2D>().isKinematic = true;
+        playerObj.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
         playerObj.GetComponent<Rigidbody2D>().simulated = false;
         Anim.SetTrigger("Idle");
         //transform.position += transform.up * Time.deltaTime * SkillsObj.GetComponent<Skills>().rocketSpeed;
@@ -212,7 +205,7 @@ public class Player : MonoBehaviour {
     //Rocket Tidak Aktif
     public void ColliderPlayerOn(){
         playerObj.GetComponent<Collider2D>().enabled = true;
-        playerObj.GetComponent<Rigidbody2D>().isKinematic = false;
+        playerObj.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         playerObj.GetComponent<Rigidbody2D>().simulated = true;
         //transform.position += transform.up * Time.deltaTime * SkillsObj.GetComponent<Skills>().rocketSpeed;
         //playerObj.GetComponent<Rigidbody2D>().simulated = false;
@@ -224,15 +217,24 @@ public class Player : MonoBehaviour {
         Shield = false;
     }*/
 
-    public void JumpButton(){
-        if (IsGrounded()) {
+    public void JumpButton()
+    {
+        if (IsGrounded()) 
+        {
             buttonJump.GetComponent<Button>().enabled = false;
-            rigidbody2d.linearVelocity = Vector2.up * jumpVelocity;
-    
+            //rigidbody2d.linearVelocity = Vector2.up * jumpVelocity;
+            
             sfx.Play();
-        }else{
+        }
+        else
+        {
             
         }
+        m_OnJumpPress?.Invoke();
+    }
+    public void JumpUnPress()
+    {
+        m_OnJumpUnpress?.Invoke();
     }
 
     private bool IsGrounded() {
