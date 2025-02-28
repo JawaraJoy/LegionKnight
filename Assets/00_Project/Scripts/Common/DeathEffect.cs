@@ -76,22 +76,37 @@ namespace LegionKnight
         private Collider2D m_Collider;
         [SerializeField]
         private TouchDown m_TouchDown;
+
+        [SerializeField]
+        private UnityEvent m_OnReborn = new();
+        [SerializeField]
+        private UnityEvent m_OnDeath = new();
         public void Death()
         {
             m_Jump.SetCanJump(false);
             m_Collider.enabled = false;
             m_TouchDown.SetCanContact(false);
-            
+            OnDeathInvoke();
         }
         public void Reborn()
         {
             m_Jump.SetCanJump(true);
             m_Collider.enabled = true;
             m_TouchDown.SetCanContact(true);
+            OnRebornInvoke();
         }
         public void SetPosition(Vector2 post)
         {
             transform.position = post;
+        }
+
+        private void OnRebornInvoke()
+        {
+            m_OnReborn?.Invoke();
+        }
+        private void OnDeathInvoke()
+        {
+            m_OnDeath?.Invoke();
         }
     }
 

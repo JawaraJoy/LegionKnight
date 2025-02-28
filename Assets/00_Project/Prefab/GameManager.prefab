@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Close
+  m_text: Home
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: afb47ac7029ec124c8bd8477e1f6b2c8, type: 2}
   m_sharedMaterial: {fileID: 7596086543635071105, guid: afb47ac7029ec124c8bd8477e1f6b2c8, type: 2}
@@ -572,7 +572,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_UniqueId: 
-  m_CurrencyDefinition: {fileID: 0}
+  m_CurrencyDefinition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
   m_Icon: {fileID: 2397977825723398523}
   m_AmountText: {fileID: 7132796834811540691}
 --- !u!1 &622049925250430479
@@ -1495,7 +1495,19 @@ MonoBehaviour:
   m_Content: {fileID: 3299828626881597548}
   m_OnShow:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4640080436261930548}
+        m_TargetAssemblyTypeName: LegionKnight.View, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
@@ -2410,18 +2422,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5940592179954404857}
-        m_TargetAssemblyTypeName: LegionKnight.SceneHandler, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: ReworkHome
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 3551735564783937738}
         m_TargetAssemblyTypeName: LegionKnight.View, Assembly-CSharp
         m_MethodName: Hide
@@ -2432,6 +2432,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5940592179954404857}
+        m_TargetAssemblyTypeName: LegionKnight.SceneHandler, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ReworkHome
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &2095875610018727876
@@ -3339,7 +3351,7 @@ MonoBehaviour:
   - {fileID: 4161302609221488065}
   - {fileID: 7246467274781349092}
   - {fileID: 9031597215914428180}
-  - {fileID: 0}
+  - {fileID: 3551735564783937738}
   m_OnIsBusyUpdate:
     m_PersistentCalls:
       m_Calls: []
@@ -11075,7 +11087,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_UniqueId: 
-  m_IsBusyPanel: 1
+  m_IsBusyPanel: 0
   m_Bindings: []
   m_GameplaySceneName: ReworkGameplay
 --- !u!1 &8559167769109846934
@@ -11945,6 +11957,9 @@ MonoBehaviour:
     m_OnSceneUnLoaded:
       m_PersistentCalls:
         m_Calls: []
+  m_OnStartLoadScene:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4245534010814173010
 MonoBehaviour:
   m_ObjectHideFlags: 0

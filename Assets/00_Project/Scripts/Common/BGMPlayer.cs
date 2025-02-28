@@ -12,21 +12,17 @@ namespace LegionKnight
         [SerializeField]
         private BGMPlayer m_BGMPlayer;
 
-        private void Play(bool loop)
-        {
-            m_BGMPlayer.Play(loop);
-        }
-        private void Play(AudioClip clip, bool loop)
-        {
-            m_BGMPlayer.Play(clip, loop);
-        }
         public void PlayBGM()
         {
-            Play(true);
+            m_BGMPlayer.Play(true);
         }
         public void PlayBGM(AudioClip clip)
         {
-            Play(clip, true);
+            m_BGMPlayer.Play(clip, true);
+        }
+        public void StopBGM()
+        {
+            m_BGMPlayer.Stop();
         }
     }
 }

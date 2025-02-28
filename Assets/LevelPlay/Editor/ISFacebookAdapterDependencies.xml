@@ -1,23 +1,18 @@
 <dependencies>
-    <unityversion>4.3.64.2</unityversion>
-    <androidPackages>
-        <androidPackage spec="com.facebook.android:audience-network-sdk:6.17.0">
-            <repositories>
-                <repository>https://maven.google.com/</repository>
-            </repositories>
-        </androidPackage>
-    </androidPackages>
-    
-    <androidPackages>
-        <androidPackage spec="com.ironsource.adapters:facebookadapter:4.3.46">
-            <repositories>
-                <repository>https://android-sdk.is.com/</repository>
-            </repositories>
-        </androidPackage>
-    </androidPackages>
-
+  <unityversion>4.3.70.0</unityversion>
+  <androidPackages>
+    <androidPackage spec="com.facebook.android:audience-network-sdk:6.19.0">
+      <repositories>
+        <repository>https://maven.google.com/</repository>
+      </repositories>
+    </androidPackage>
+  </androidPackages>
+  <androidPackages>
+    <androidPackage spec="com.unity3d.ads-mediation:facebook-adapter:4.3.49">
+    </androidPackage>
+  </androidPackages>
   <iosPods>
-    <iosPod name="IronSourceFacebookAdapter" version="4.3.45.2">
+    <iosPod name="IronSourceFacebookAdapter" version="4.3.48.0">
       <sources>
         <source>https://github.com/CocoaPods/Specs</source>
       </sources>

@@ -28,6 +28,9 @@ namespace LegionKnight
         {
             m_AudioSetting.PlayBGM(clip);
         }
-        
+        public void StopBGM()
+        {
+            m_AudioSetting.StopBGM();
+        }
     }
 }

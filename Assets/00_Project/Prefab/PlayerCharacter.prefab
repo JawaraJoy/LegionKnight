@@ -113,6 +113,86 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &795416552268929576
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1697316055642186838}
+  - component: {fileID: 8956068173985954038}
+  m_Layer: 7
+  m_Name: Pause
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1697316055642186838
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795416552268929576}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8956068173985954038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795416552268929576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f8927a90f69abb42bb2090c12d282c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Behaviours:
+  - {fileID: 1091291144089817512}
+  - {fileID: 751198122168616761}
+  - {fileID: 7267132487816147097}
+  - {fileID: 7267132487816147097}
+  - {fileID: 7758370064416613710}
+  m_OnPaused:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3377274384242518752}
+        m_TargetAssemblyTypeName: UnityEngine.Rigidbody2D, UnityEngine
+        m_MethodName: set_simulated
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnUnPaused:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3377274384242518752}
+        m_TargetAssemblyTypeName: UnityEngine.Rigidbody2D, UnityEngine
+        m_MethodName: set_simulated
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!1 &1396604036348509970
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,6 +335,7 @@ Transform:
   - {fileID: 2810421813841185918}
   - {fileID: 5502929025697429753}
   - {fileID: 124883684928806753}
+  - {fileID: 1697316055642186838}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3377274384242518752
@@ -272,7 +353,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -336,6 +417,7 @@ MonoBehaviour:
   m_Character: {fileID: 6867498596800542263}
   m_CharacterJump: {fileID: 1091291144089817512}
   m_CurrencyControl: {fileID: 2942122649447902150}
+  m_PlayerPause: {fileID: 8956068173985954038}
 --- !u!114 &6867498596800542263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668,10 +750,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CanJump: 1
-  m_JumpForce: 12
+  m_JumpForce: 18
   m_JumpPressMaxDuration: 0.001
   m_JumpMultiplier: 0
   m_FallMultiplier: 0
+  m_MaxJumpDistance: 5
   m_GroundCheck: {fileID: 3707954418017981889}
   m_GroundCheckRadius: 0.2
   m_GroundLayer:
