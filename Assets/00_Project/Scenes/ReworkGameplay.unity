@@ -452,9 +452,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TargetTag: Player
-  target: {fileID: 0}
+  m_Target: {fileID: 0}
   offset: {x: 0, y: 0, z: -25}
   smoothFactor: 1
+  m_OnTargetSet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &961739756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2038,9 +2041,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TargetTag: Player
-  target: {fileID: 0}
+  m_Target: {fileID: 0}
   offset: {x: 0, y: 0, z: 0}
   smoothFactor: 1
+  m_OnTargetSet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!212 &7087913485778214423
 SpriteRenderer:
   m_ObjectHideFlags: 0
