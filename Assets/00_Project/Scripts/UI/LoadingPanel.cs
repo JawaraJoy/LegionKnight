@@ -9,5 +9,15 @@ namespace LegionKnight
     public partial class LoadingPanel : PanelView
     {
         public override string UniqueId => PanelId.LoadingPanelId;
+        protected override void OnShowInvoke()
+        {
+            base.OnShowInvoke();
+            MasterPanelUtility.SetIsShow(true);
+        }
+        protected override void OnHideInvoke()
+        {
+            base.OnHideInvoke();
+            MasterPanelUtility.SetIsShow(false);
+        }
     }
 }

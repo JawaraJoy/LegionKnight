@@ -34,7 +34,6 @@ namespace LegionKnight
             {
                 Debug.Log($"Scene '{m_SceneName}' loaded successfully!");
                 m_Handle = handle; // Store the handle for unloading
-                m_OnSceneLoaded?.Invoke();
                 GameManager.Instance.StartCoroutine(HidingLoadScene());
             }
             else
@@ -72,6 +71,7 @@ namespace LegionKnight
         {
             yield return new WaitForSeconds(m_HideLoadingPanelDelay);
             GameManager.Instance.HidePanel(PanelId.LoadingPanelId);
+            m_OnSceneLoaded?.Invoke();
         }
     }
 }

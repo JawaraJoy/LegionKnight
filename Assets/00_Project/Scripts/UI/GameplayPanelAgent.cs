@@ -1,0 +1,20 @@
+using UnityEngine;
+
+namespace LegionKnight
+{
+    public class GameplayPanelAgent : MonoBehaviour
+    {
+        public void SetCurrencyRewardView(Currency currency)
+        {
+            GameManager.Instance.SetCurrencyRewardView(currency);
+        }
+        public void Show()
+        {
+            GameManager.Instance.ShowPanel(PanelId.GameplayPanelId);
+        }
+        public void Hide()
+        {
+            GameManager.Instance.HidePanel(PanelId.GameplayPanelId);
+        }
+    }
+}

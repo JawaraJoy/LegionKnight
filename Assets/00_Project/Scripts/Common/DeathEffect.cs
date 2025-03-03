@@ -103,6 +103,7 @@ namespace LegionKnight
         private void OnRebornInvoke()
         {
             m_OnReborn?.Invoke();
+            
         }
         private void OnDeathInvoke()
         {

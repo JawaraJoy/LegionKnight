@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         public void SetCurrencyView(Currency currency)
         {
-            GameManager.Instance.SetHomeCurrencyViewAmount(currency);
+            GameManager.Instance.SetHomeCurrencyView(currency);
         }
     }
 }

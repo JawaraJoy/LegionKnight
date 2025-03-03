@@ -31,6 +31,7 @@ namespace LegionKnight
 
         protected virtual void ShowInternal()
         {
+            if (MasterPanelUtility.IsShow) return;
             m_Content.SetActive(true);
             OnShowInvoke();
         }

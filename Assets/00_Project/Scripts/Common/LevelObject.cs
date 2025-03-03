@@ -25,7 +25,7 @@ namespace LegionKnight
         private void Start()
         {
             GameManager.Instance.SetLevelObject(this);
-            PlayInternal();
+            //GameManager.Instance.ShowPanel(PanelId.StartGamePanel);
         }
         private LevelDefinition GetLevelDefinition()
         {

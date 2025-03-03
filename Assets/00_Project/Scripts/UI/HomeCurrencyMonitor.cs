@@ -22,7 +22,7 @@ namespace LegionKnight
 
     public partial class GameManager
     {
-        public void SetHomeCurrencyViewAmount(Currency currency)
+        public void SetHomeCurrencyView(Currency currency)
         {
             GetPanelInternal<HomePanel>().SetCurrencyViewAmount(currency);
         }

@@ -15,10 +15,10 @@ namespace LegionKnight
 
         [SerializeField]
         private Currency m_CurrentCoinReward;
-        public Currency CurrentCoinReward => m_CurrentCoinReward;
-
         [SerializeField]
-        private UnityEvent<Currency> m_OnCoinRewardChanged = new();
+        private Currency m_CurrentCoinHighScore;
+        public Currency CurrentCoinReward => m_CurrentCoinReward;
+        public Currency CurrentCoinHighScore => m_CurrentCoinHighScore;
 
         public Transform PlayerStartPostion => m_LevelObject.PlayerStartPostion;
         public bool LevelOver => m_LevelOver;
@@ -54,7 +54,7 @@ namespace LegionKnight
         private void SetRewardAmountInternal(int set)
         {
             m_CurrentCoinReward.SetAmount(set);
-            OnCoinRewardChangedInvoke(m_CurrentCoinReward);
+            DetermineHighScore();
         }
         public void AddAmount(int add)
         {
@@ -67,18 +67,23 @@ namespace LegionKnight
         private void AddAmountInternal(int add)
         {
             m_CurrentCoinReward.AddAmount(add);
-            OnCoinRewardChangedInvoke(m_CurrentCoinReward);
-
+            DetermineHighScore();
         }
         private void RemoveAmountInternal(int remove)
         {
             m_CurrentCoinReward.RemoveAmount(remove);
-            OnCoinRewardChangedInvoke(m_CurrentCoinReward);
         }
-        private void OnCoinRewardChangedInvoke(Currency currency)
+
+        private void DetermineHighScore()
         {
-            m_OnCoinRewardChanged?.Invoke(currency);
-            GameManager.Instance.SetCurrencyRewardView(m_CurrentCoinReward);
+            int currentScore = m_CurrentCoinReward.Amount;
+            int currentHighScore = m_CurrentCoinHighScore.Amount;
+
+            if (currentScore > currentHighScore)
+            {
+                m_CurrentCoinHighScore.SetAmount(currentScore);
+            }
+            
         }
         public void Play()
         {
