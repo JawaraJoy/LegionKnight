@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class ObjectFollow : MonoBehaviour
 {
-    public string m_TargetTag = "Player";
-    public Transform target;
+    [SerializeField]
+    private string m_TargetTag = "Player";
+    [SerializeField]
+    private Transform m_Target;
     public Vector3 offset;
     [Range(1,10)]
     public float smoothFactor;
 
+    [SerializeField]
+    private UnityEvent<Transform> m_OnTargetSet = new();
+
     private void Start()
     {
-        target = GameObject.FindGameObjectWithTag(m_TargetTag).transform;
+        m_Target = GameObject.FindGameObjectWithTag(m_TargetTag).transform;
+        m_OnTargetSet?.Invoke(m_Target);
     }
 
     private void LateUpdate()
@@ -24,8 +31,8 @@ public class ObjectFollow : MonoBehaviour
 
     public void Follow()
     {
-        if (target == null) return;
-        Vector3 targetPosition = target.position + offset;
+        if (m_Target == null) return;
+        Vector3 targetPosition = m_Target.position + offset;
         Vector3 smoothPosition = Vector3.Lerp(transform.position, targetPosition, smoothFactor*Time.fixedDeltaTime);
         transform.position = smoothPosition;
     }
