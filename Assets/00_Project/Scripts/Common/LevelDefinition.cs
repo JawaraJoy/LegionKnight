@@ -12,9 +12,11 @@ namespace LegionKnight
         [SerializeField]
         private float m_MaxSpeed;
         [SerializeField]
-        private Currency m_NormalTouchDown;
+        private CurrencyDefinition m_TouchDownRewardCurrency;
         [SerializeField]
-        private Currency m_PerfectTouchDown;
+        private int m_NormalTouchDownPoint;
+        [SerializeField]
+        private int m_PerfectTouchDownPoint;
         [SerializeField]
         private List<AssetReferenceGameObject> m_PlatformAssets = new();
 
@@ -25,11 +27,11 @@ namespace LegionKnight
         }
         public Currency GetNormalTouchDown()
         {
-            return m_NormalTouchDown;
+            return new Currency(m_TouchDownRewardCurrency, m_NormalTouchDownPoint);
         }
         public Currency GetPerfectTouchdown()
         {
-            return m_PerfectTouchDown;
+            return new Currency(m_TouchDownRewardCurrency, m_PerfectTouchDownPoint);
         }
         private AssetReferenceGameObject GetPlatformAssetsRandom()
         {

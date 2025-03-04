@@ -26,6 +26,7 @@ namespace LegionKnight
         {
             GameManager.Instance.SetLevelObject(this);
             //GameManager.Instance.ShowPanel(PanelId.StartGamePanel);
+            //Player.Instance.SetCamera();
         }
         private LevelDefinition GetLevelDefinition()
         {

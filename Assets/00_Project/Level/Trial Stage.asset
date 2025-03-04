@@ -12,33 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b53d183750a422e478bc49accdc56f61, type: 3}
   m_Name: Trial Stage
   m_EditorClassIdentifier: 
-  m_MinSpeed: 8
-  m_MaxSpeed: 10
-  m_NormalTouchDown:
-    m_CurrencyDefinition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
-    m_Amount: 1
-    m_OnCurrencyAmountChanged:
-      m_PersistentCalls:
-        m_Calls: []
-    m_OnCurrencyChanged:
-      m_PersistentCalls:
-        m_Calls: []
-  m_PerfectTouchDown:
-    m_CurrencyDefinition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
-    m_Amount: 3
-    m_OnCurrencyAmountChanged:
-      m_PersistentCalls:
-        m_Calls: []
-    m_OnCurrencyChanged:
-      m_PersistentCalls:
-        m_Calls: []
+  m_MinSpeed: 10
+  m_MaxSpeed: 12
+  m_TouchDownRewardCurrency: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
+  m_NormalTouchDownPoint: 1
+  m_PerfectTouchDownPoint: 2
   m_PlatformAssets:
   - m_AssetGUID: d3d01f8a36322404e8123178caa028be
     m_SubObjectName: 
     m_SubObjectGUID: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  - m_AssetGUID: 5bd07a6d51b299743b0ff56040374488
+  - m_AssetGUID: cf56ead3d6de09942a527bff2924dc90
     m_SubObjectName: 
     m_SubObjectGUID: 
     m_SubObjectType: 
