@@ -33,6 +33,13 @@ namespace LegionKnight
         private Rigidbody2D m_Rb;
         private bool m_IsGrounded;
 
+        [SerializeField]
+        private UnityEvent<float> m_OnJumpForceChange = new();
+        [SerializeField]
+        private UnityEvent<float> m_OnFallMultiplierChange = new();
+        [SerializeField]
+        private UnityEvent<float> m_OnMaxJumpDistanceChange = new();
+
         private float m_LinearVelocityY;
 
         private Vector2 m_GravityMod;
@@ -50,6 +57,22 @@ namespace LegionKnight
             CheckGrounded();
         }
 
+        public void SetJumpForce(float set)
+        {
+            m_JumpForce = set;
+            m_OnJumpForceChange?.Invoke(m_JumpForce);
+        }
+
+        public void SetFallSpeed(float set)
+        {
+            m_FallMultiplier = set;
+            m_OnFallMultiplierChange?.Invoke(m_FallMultiplier);
+        }
+        public void SetMaxJumpDistance(float set)
+        {
+            m_MaxJumpDistance = set;
+            m_OnMaxJumpDistanceChange?.Invoke(m_MaxJumpDistance);
+        }
         public void SetCanJump(bool set)
         {
             m_CanJump = set;

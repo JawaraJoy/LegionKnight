@@ -20,5 +20,35 @@ namespace LegionKnight
         {
             m_CharacterJump.JumpUnPress();
         }
+        public void SetJumpForce(float set)
+        {
+            m_CharacterJump.SetJumpForce(set);
+        }
+
+        public void SetFallSpeed(float set)
+        {
+            m_CharacterJump.SetFallSpeed(set);
+        }
+        public void SetMaxJumpDistance(float set)
+        {
+            m_CharacterJump.SetMaxJumpDistance(set);
+        }
+        
+    }
+    public partial class PlayerAgent
+    {
+        public void SetJumpForce(float set)
+        {
+            Player.Instance.SetJumpForce(set);
+        }
+
+        public void SetFallSpeed(float set)
+        {
+            Player.Instance.SetFallSpeed(set);
+        }
+        public void SetMaxJumpDistance(float set)
+        {
+            Player.Instance.SetMaxJumpDistance(set);
+        }
     }
 }
