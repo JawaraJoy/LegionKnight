@@ -22,6 +22,7 @@ namespace LegionKnight
         private List<Platform> m_SpawnedPlatform = new();
         public Transform PlayerStartPostion => m_PlayerStartPosition;
         private AssetReferenceGameObject PlatformAssetInternal => GetLevelDefinition().PlatformAsset;
+
         private void Start()
         {
             GameManager.Instance.SetLevelObject(this);

@@ -13,9 +13,9 @@ namespace LegionKnight
         private int m_StayPerfectCombo;
 
         [SerializeField]
-        private UnityEvent m_OnNormalTouchDown = new();
+        private UnityEvent<int> m_OnNormalTouchDown = new();
         [SerializeField]
-        private UnityEvent m_OnPerfectTouchDown = new();
+        private UnityEvent<int> m_OnPerfectTouchDown = new();
         [SerializeField]
         private UnityEvent<int> m_OnStayPerfectCombo = new();
         [SerializeField]
@@ -70,13 +70,13 @@ namespace LegionKnight
         }
         private void OnNormalTouchDownInvoke()
         {
-            m_OnNormalTouchDown?.Invoke();
+            m_OnNormalTouchDown?.Invoke(GameManager.Instance.GetNormalTouchDownPoint());
             GameManager.Instance.ApplyNormalReward();
             SetStayPerfectCombo(0);
         }
         private void OnPerfectTouchDownInvoke()
         {
-            m_OnPerfectTouchDown?.Invoke();
+            m_OnPerfectTouchDown?.Invoke(GameManager.Instance.GetPerfectTouchDownPoint());
             GameManager.Instance.ApplyPerfectReward();
             AddStayPerfectCombo(1);
         }

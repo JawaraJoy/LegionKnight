@@ -31,6 +31,14 @@ namespace LegionKnight
         {
             m_LevelObject.SetCurrentTouchDownPost(playerTouchDown);
         }
+        public int GetNormalTouchDownPoint()
+        {
+            return m_LevelDefinition.GetNormalTouchDownPoint();
+        }
+        public int GetPerfectTouchDownPoint()
+        {
+            return m_LevelDefinition.GetPerfectTouchDownPoint();
+        }
         public void ApplyNormalReward()
         {
             AddAmountInternal(m_LevelDefinition.GetNormalTouchDown().Amount);

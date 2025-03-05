@@ -33,6 +33,14 @@ namespace LegionKnight
         {
             return new Currency(m_TouchDownRewardCurrency, m_PerfectTouchDownPoint);
         }
+        public int GetNormalTouchDownPoint()
+        {
+            return m_NormalTouchDownPoint;
+        }
+        public int GetPerfectTouchDownPoint()
+        {
+            return m_PerfectTouchDownPoint;
+        }
         private AssetReferenceGameObject GetPlatformAssetsRandom()
         {
             int random = Random.Range(0, m_PlatformAssets.Count);

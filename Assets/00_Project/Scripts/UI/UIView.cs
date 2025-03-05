@@ -6,6 +6,7 @@ namespace LegionKnight
     {
         [SerializeField]
         protected string m_UniqueId;
+        protected RectTransform RectContent => m_Content.GetComponent<RectTransform>();
         public virtual string UniqueId => m_UniqueId;
         public void SetUniqueId(string set)
         {

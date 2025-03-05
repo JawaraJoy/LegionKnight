@@ -54,5 +54,13 @@ namespace LegionKnight
         {
             m_LevelManager.ApplyPerfectReward();
         }
+        public int GetNormalTouchDownPoint()
+        {
+            return m_LevelManager.GetNormalTouchDownPoint();
+        }
+        public int GetPerfectTouchDownPoint()
+        {
+            return m_LevelManager.GetPerfectTouchDownPoint();
+        }
     }
 }

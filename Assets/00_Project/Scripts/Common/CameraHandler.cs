@@ -11,10 +11,6 @@ namespace LegionKnight
         [Range(1, 10)]
         public float m_SmoothFactor;
 
-        private void Start()
-        {
-            m_Camera = Camera.main.transform;
-        }
         public void SetCamera()
         {
             m_Camera = Camera.main.transform;

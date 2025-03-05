@@ -12,7 +12,7 @@ namespace LegionKnight
     {
 
         [SerializeField]
-        private GameObject m_Content;
+        protected GameObject m_Content;
         [SerializeField]
         private UnityEvent m_OnShow = new();
         [SerializeField]
