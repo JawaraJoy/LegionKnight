@@ -1,16 +1,37 @@
 using Rush;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace LegionKnight
 {
+    [System.Serializable]
+    public partial class PerfectTouchDownEvent
+    {
+        [SerializeField]
+        private string m_Message;
+        [SerializeField]
+        private int m_PerfectComboReach;
+        [SerializeField]
+        private UnityEvent<string> m_OnReachTrigger = new(); 
+
+        public void OnReachInvoke(int combo)
+        {
+            if (combo == m_PerfectComboReach)
+            {
+                m_OnReachTrigger?.Invoke(m_Message);
+            }
+        }
+    }
     public partial class TouchDown : Contact2D
     {
         [SerializeField]
         private float m_MinDistanceToPerfect = 0.1f;
-
         private bool m_StayPerfect;
         private int m_StayPerfectCombo;
+
+        [SerializeField]
+        private List<PerfectTouchDownEvent> m_PerfectTouchDownEvents = new();
 
         [SerializeField]
         private UnityEvent<int> m_OnNormalTouchDown = new();
@@ -20,6 +41,14 @@ namespace LegionKnight
         private UnityEvent<int> m_OnStayPerfectCombo = new();
         [SerializeField]
         private UnityEvent<bool> m_OnStayPerfect = new();
+
+        private void OnReachPerfectComboInvoke(int combo)
+        {
+            foreach(PerfectTouchDownEvent perfectTouch in m_PerfectTouchDownEvents)
+            {
+                perfectTouch.OnReachInvoke(combo);
+            }
+        }
         protected override void OnContactedBehaviourInvoke(IContactable other)
         {
             base.OnContactedBehaviourInvoke(other);
@@ -70,20 +99,25 @@ namespace LegionKnight
         }
         private void OnNormalTouchDownInvoke()
         {
-            m_OnNormalTouchDown?.Invoke(GameManager.Instance.GetNormalTouchDownPoint());
-            GameManager.Instance.ApplyNormalReward();
             SetStayPerfectCombo(0);
+            int reward = GameManager.Instance.GetNormalTouchDownPoint();
+            GameManager.Instance.AddCurrencyRewardAmount(reward);
+            
+            m_OnNormalTouchDown?.Invoke(reward);
         }
         private void OnPerfectTouchDownInvoke()
         {
-            m_OnPerfectTouchDown?.Invoke(GameManager.Instance.GetPerfectTouchDownPoint());
-            GameManager.Instance.ApplyPerfectReward();
             AddStayPerfectCombo(1);
+            int reward = m_StayPerfectCombo * GameManager.Instance.GetPerfectTouchDownPoint();
+            GameManager.Instance.AddCurrencyRewardAmount(reward);
+            
+            m_OnPerfectTouchDown?.Invoke(reward);
         }
 
         private void OnStayPerfectComboInvoke(int amount)
         {
             m_OnStayPerfectCombo?.Invoke(amount);
+            OnReachPerfectComboInvoke(amount);
         }
         private void OnStayPerfectInvoke(bool set)
         {

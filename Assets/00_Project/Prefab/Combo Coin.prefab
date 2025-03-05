@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 44075040304479945}
   - component: {fileID: 2125756010491850922}
   m_Layer: 12
-  m_Name: Coin
+  m_Name: Combo Coin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ MonoBehaviour:
     strike: 0
     alpha: 1
     customColor: 0
-    color: {r: 1, g: 1, b: 0, a: 1}
+    color: {r: 1, g: 1, b: 1, a: 1}
     mark: 0
     markColor: {r: 0, g: 0, b: 0, a: 0.5}
     horizontal: 0
@@ -457,7 +457,7 @@ MonoBehaviour:
   enablePooling: 0
   poolSize: 50
   disableOnSceneLoad: 1
-  editorLastFont: Pixel-Glow3D
+  editorLastFont: Lato-BlackItalic SDF3D
   position: {x: 0, y: 0, z: 0}
 --- !u!210 &2125756010491850922
 SortingGroup:
@@ -469,7 +469,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: -501565547
   m_SortingLayer: 13
-  m_SortingOrder: 1000
+  m_SortingOrder: 5
   m_SortAtRoot: 0
 --- !u!1 &1767291493885424674
 GameObject:
@@ -527,7 +527,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7813419849211700074, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
+  - {fileID: 5618644325099872008, guid: 0f830b4b35476a64095c922deaa35b72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -617,7 +617,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7813419849211700074, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
+  - {fileID: 5618644325099872008, guid: 0f830b4b35476a64095c922deaa35b72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -661,17 +661,17 @@ MonoBehaviour:
       m_Calls: []
   m_text: <size=+10>1</size>
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
-  m_sharedMaterial: {fileID: 7813419849211700074, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0f830b4b35476a64095c922deaa35b72, type: 2}
+  m_sharedMaterial: {fileID: 5618644325099872008, guid: 0f830b4b35476a64095c922deaa35b72, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282137855
-  m_fontColor: {r: 1, g: 0.23529412, b: 0.23529412, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
+    rgba: 4282439167
+  m_fontColor: {r: 1, g: 0.8366324, b: 0.25, a: 1}
+  m_enableVertexGradient: 1
+  m_colorMode: 0
   m_fontColorGradient:
     topLeft: {r: 1, g: 1, b: 1, a: 1}
     topRight: {r: 1, g: 1, b: 1, a: 1}
@@ -686,8 +686,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 5
-  m_fontSizeBase: 5
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -789,7 +789,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7813419849211700074, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
+  - {fileID: 5618644325099872008, guid: 0f830b4b35476a64095c922deaa35b72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -39,14 +39,6 @@ namespace LegionKnight
         {
             return m_LevelDefinition.GetPerfectTouchDownPoint();
         }
-        public void ApplyNormalReward()
-        {
-            AddAmountInternal(m_LevelDefinition.GetNormalTouchDown().Amount);
-        }
-        public void ApplyPerfectReward()
-        {
-            AddAmountInternal(m_LevelDefinition.GetPerfectTouchdown().Amount);
-        }
         public void SetRewardAmount(int set)
         {
             SetRewardAmountInternal(set);
@@ -64,15 +56,15 @@ namespace LegionKnight
             m_CurrentCoinReward.SetAmount(set);
             DetermineHighScore();
         }
-        public void AddAmount(int add)
+        public void AddCurrencyRewardAmount(int add)
         {
-            AddAmountInternal(add);
+            AddCurrencyRewardAmountInternal(add);
         }
         public void RemoveAmount(int remove)
         {
             RemoveAmountInternal(remove);
         }
-        private void AddAmountInternal(int add)
+        private void AddCurrencyRewardAmountInternal(int add)
         {
             m_CurrentCoinReward.AddAmount(add);
             DetermineHighScore();

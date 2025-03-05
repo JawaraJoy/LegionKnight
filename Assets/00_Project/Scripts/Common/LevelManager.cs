@@ -34,9 +34,9 @@ namespace LegionKnight
         {
             m_LevelManager.Play();
         }
-        public void AddAmount(int add)
+        public void AddCurrencyRewardAmount(int add)
         {
-            m_LevelManager.AddAmount(add);
+            m_LevelManager.AddCurrencyRewardAmount(add);
         }
         public void RemoveAmount(int remove)
         {
@@ -45,14 +45,6 @@ namespace LegionKnight
         public void SpawnPlatform()
         {
             m_LevelManager.SpawnPlatform();
-        }
-        public void ApplyNormalReward()
-        {
-            m_LevelManager.ApplyNormalReward();
-        }
-        public void ApplyPerfectReward()
-        {
-            m_LevelManager.ApplyPerfectReward();
         }
         public int GetNormalTouchDownPoint()
         {
