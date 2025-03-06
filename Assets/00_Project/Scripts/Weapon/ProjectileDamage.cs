@@ -41,5 +41,10 @@ namespace LegionKnight
             // Move forward
             m_Rb.linearVelocity = transform.forward * m_Speed;
         }
+
+        public void AddForce(Vector2 force)
+        {
+            m_Rb.AddForce(force, ForceMode2D.Impulse);
+        }
     }
 }

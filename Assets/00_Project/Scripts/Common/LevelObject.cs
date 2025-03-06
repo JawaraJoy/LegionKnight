@@ -84,7 +84,7 @@ namespace LegionKnight
         }
         private void SpawnBosInternal()
         {
-            Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost.position, Quaternion.identity).Completed += OnBosSpawned;
+            Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost, false).Completed += OnBosSpawned;
         }
         private void OnPlatformSpawned(AsyncOperationHandle<GameObject> handle)
         {

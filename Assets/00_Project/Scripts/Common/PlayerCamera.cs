@@ -9,7 +9,7 @@ namespace LegionKnight
     }
     public partial class Player
     {
-        [SerializeField]
+        /*[SerializeField]
         private PlayerCamera m_PlayerCamera;
         public void SetCamera()
         {
@@ -22,11 +22,11 @@ namespace LegionKnight
         public void SetOffsite(Vector3 set)
         {
             m_PlayerCamera.SetOffsite(set);
-        }
+        }*/
     }
     public partial class PlayerAgent
     {
-        public void SetCamera()
+        /*public void SetCamera()
         {
             Player.Instance.SetCamera();
         }
@@ -37,6 +37,6 @@ namespace LegionKnight
         public void SetOffsite(Vector3 set)
         {
             Player.Instance.SetOffsite(set);
-        }
+        }*/
     }
 }

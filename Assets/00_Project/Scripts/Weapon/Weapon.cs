@@ -1,51 +1,45 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
-    public enum SpawnMode
-    {
-        RandomSingle = 0,
-        Burst = 1,
-        Spray = 2,
-    }
     [System.Serializable]
-    public partial class ProjectileSpawn
+    public partial class WeaponForm
     {
         [SerializeField]
-        private AssetReferenceGameObject m_ProjectileAsset;
-        private AsyncOperationHandle<GameObject> m_Handle;
-
-        [SerializeField]
-        private Transform m_SpawnPost;
-
-        private ProjectileDamage m_SpawnedProjectileDamage;
-
-        public void LoadProjectile()
+        private List<ProjectileSpawn> m_ProjectileSpawners = new();
+        public void SpawnProjectile()
         {
-            m_Handle = m_ProjectileAsset.InstantiateAsync();
-            m_Handle.Completed += SpawnProjectile;
-        }
-
-        private void SpawnProjectile(AsyncOperationHandle<GameObject> handle)
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
+            foreach (ProjectileSpawn ps in m_ProjectileSpawners)
             {
-                GameObject result = handle.Result;
-                if (result.TryGetComponent(out ProjectileDamage damage))
-                {
-                    m_SpawnedProjectileDamage = damage;
-                    m_SpawnedProjectileDamage.SetTarget()
-                }
+                ps.LoadProjectile();
             }
         }
     }
     public partial class Weapon : MonoBehaviour
     {
-        
-
-        
+        private int m_WeaponIndex;
+        private bool m_WeaponActive;
+        [SerializeField]
+        private List<WeaponForm> m_WeaponForms = new();
+        public void SetWeaponActive(bool set)
+        {
+            m_WeaponActive = set;
+        }
+        public void Shot()
+        {
+            if (!m_WeaponActive) return;
+            ClampWeaponIndex();
+            m_WeaponForms[m_WeaponIndex].SpawnProjectile();
+        }
+        private void ClampWeaponIndex()
+        {
+            m_WeaponIndex = Mathf.Clamp(m_WeaponIndex, 0, m_WeaponForms.Count);
+        }
+        public void SetWeaponIndex(int set)
+        {
+            m_WeaponIndex = set - 1;
+            ClampWeaponIndex();
+        }
     }
 }

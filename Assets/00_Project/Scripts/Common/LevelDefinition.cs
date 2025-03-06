@@ -24,7 +24,7 @@ namespace LegionKnight
         private BosDefinition m_BosDefinition;
         [SerializeField]
         private AssetReferenceGameObject m_BosAsset;
-
+        public BosDefinition BosDefinition => m_BosDefinition;
         public AssetReferenceGameObject BosAsset => m_BosAsset;
 
         public float GetSpeed()

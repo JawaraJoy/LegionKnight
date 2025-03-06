@@ -20,7 +20,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private BosDamageable m_Damageable;
-
+        public BosDamageable Damageable => m_Damageable;
         public void InitDamageable()
         {
             m_Damageable.Init(0, m_BosDefinition.Health);

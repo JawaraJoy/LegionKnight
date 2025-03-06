@@ -28,9 +28,11 @@ namespace LegionKnight
         public LevelDefinition LevelDefinition => m_LevelDefinition;
 
         private BosEnemy m_SpawnedBosEnemy;
+        public BosEnemy SpawnedBosEnemy => m_SpawnedBosEnemy;
         public void SetSpawnedBosEnemy(BosEnemy set)
         {
             m_SpawnedBosEnemy = set;
+            m_SpawnedBosEnemy.SetBosDefinition(m_LevelDefinition.BosDefinition);
             m_SpawnedBosEnemy.InitDamageable();
         }
 

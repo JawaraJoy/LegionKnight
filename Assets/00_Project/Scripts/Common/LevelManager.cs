@@ -35,6 +35,7 @@ namespace LegionKnight
         {
             m_LevelManager.SetBosTriggered(set);
         }
+        public BosEnemy SpawnedBosenemy => m_LevelManager.SpawnedBosEnemy;
         public void SetSpawnedBosEnemy(BosEnemy set)
         {
             m_LevelManager.SetSpawnedBosEnemy(set);

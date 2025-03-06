@@ -16,5 +16,7 @@ namespace LegionKnight
         {
             m_Character.SetCharacterDefinition(definition);
         }
+
+        public int Attack => m_Character.CharacterDefinition.Attack;
     }
 }

@@ -10,10 +10,13 @@ namespace LegionKnight
 
         [Header("Stat")]
         [SerializeField]
-        private int Health;
+        private int m_Health;
         [SerializeField]
-        private int Attack;
+        private int m_Attack;
 
         public Sprite Icon => m_Icon;
+
+        public int Attack => m_Attack;
+        public int Health => m_Health;
     }
 }

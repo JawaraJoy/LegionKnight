@@ -10,7 +10,7 @@ namespace LegionKnight
 
         private int m_TouchDownCount;
         [SerializeField]
-        private UnityEvent<int> m_OnTouchDownCountChange = new();
+        private UnityEvent m_OnTriggered = new();
         public void AddTouchDownCount(int add)
         {
             m_TouchDownCount += add;
@@ -24,12 +24,11 @@ namespace LegionKnight
 
         private void OnTouchDownCountInvoke()
         {
-            m_OnTouchDownCountChange?.Invoke(m_TouchDownCount);
-
             if (m_TouchDownCount >= m_TouchDownThreshold)
             {
                 if (GameManager.Instance.BosTriggered) return;
                 GameManager.Instance.StartBos();
+                m_OnTriggered?.Invoke();
             }
         }
     }
