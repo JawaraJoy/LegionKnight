@@ -30,6 +30,19 @@ namespace LegionKnight
         {
             m_LevelManager.SetLevelOver(set);
         }
+        public bool BosTriggered => m_LevelManager.BosTriggered;
+        public void SetBosTriggered(bool set)
+        {
+            m_LevelManager.SetBosTriggered(set);
+        }
+        public void SetSpawnedBosEnemy(BosEnemy set)
+        {
+            m_LevelManager.SetSpawnedBosEnemy(set);
+        }
+        public void StartBos()
+        {
+            m_LevelManager.StartBos();
+        }
         public void Play()
         {
             m_LevelManager.Play();

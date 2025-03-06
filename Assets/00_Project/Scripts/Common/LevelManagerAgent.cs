@@ -8,5 +8,9 @@ namespace LegionKnight
         {
             GameManager.Instance.Play();
         }
+        public void StartBos()
+        {
+            GameManager.Instance.StartBos();
+        }
     }
 }

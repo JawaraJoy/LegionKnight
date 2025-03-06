@@ -6,6 +6,7 @@ namespace LegionKnight
     
     public partial class LevelHandler : MonoBehaviour
     {
+        
         [SerializeField]
         private bool m_LevelOver;
         [SerializeField]
@@ -17,12 +18,28 @@ namespace LegionKnight
         private Currency m_CurrentCoinReward;
         [SerializeField]
         private Currency m_CurrentCoinHighScore;
+        [SerializeField]
+        private UnityEvent m_OnPlay = new();
         public Currency CurrentCoinReward => m_CurrentCoinReward;
         public Currency CurrentCoinHighScore => m_CurrentCoinHighScore;
 
         public Transform PlayerStartPostion => m_LevelObject.PlayerStartPostion;
         public bool LevelOver => m_LevelOver;
         public LevelDefinition LevelDefinition => m_LevelDefinition;
+
+        private BosEnemy m_SpawnedBosEnemy;
+        public void SetSpawnedBosEnemy(BosEnemy set)
+        {
+            m_SpawnedBosEnemy = set;
+            m_SpawnedBosEnemy.InitDamageable();
+        }
+
+        private bool m_BosTriggered = false;
+        public bool BosTriggered => m_BosTriggered;
+        public void SetBosTriggered(bool set)
+        {
+            m_BosTriggered = set;
+        }
         public void SetLevelObject(LevelObject set)
         {
             m_LevelObject = set;
@@ -85,6 +102,16 @@ namespace LegionKnight
             }
             
         }
+
+        private void OnPlayInvoke()
+        {
+            m_OnPlay?.Invoke();
+            m_LevelObject.RemoveBos();
+        }
+        public void StartBos()
+        {
+            m_LevelObject.StartBos();
+        }
         public void Play()
         {
             PlayInternal();
@@ -95,6 +122,7 @@ namespace LegionKnight
             SetLevelOverInternal(false);
 
             m_LevelObject.Play();
+            OnPlayInvoke();
         }
         public void SpawnPlatform()
         {

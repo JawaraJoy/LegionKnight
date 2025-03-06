@@ -20,6 +20,13 @@ namespace LegionKnight
         [SerializeField]
         private List<AssetReferenceGameObject> m_PlatformAssets = new();
 
+        [SerializeField]
+        private BosDefinition m_BosDefinition;
+        [SerializeField]
+        private AssetReferenceGameObject m_BosAsset;
+
+        public AssetReferenceGameObject BosAsset => m_BosAsset;
+
         public float GetSpeed()
         {
             float random = Random.Range(m_MinSpeed, m_MaxSpeed);
@@ -45,6 +52,14 @@ namespace LegionKnight
         {
             int random = Random.Range(0, m_PlatformAssets.Count);
             return m_PlatformAssets[random];
+        }
+        public List<AssetReferenceGameObject> GetPlatformAssets()
+        {
+            return m_PlatformAssets;
+        }
+        public List<AssetReferenceGameObject> GetBosPlatformAssets()
+        {
+            return m_BosDefinition.BosPlatformsAsset;
         }
         public AssetReferenceGameObject PlatformAsset => GetPlatformAssetsRandom();
     }

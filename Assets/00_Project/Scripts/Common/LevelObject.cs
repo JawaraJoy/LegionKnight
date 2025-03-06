@@ -19,15 +19,46 @@ namespace LegionKnight
         private Transform m_PlatformDestination;
         [SerializeField]
         private Transform m_PlatformStack;
+
+        [SerializeField]
+        private Transform m_BosSpawnPost;
+
         private List<Platform> m_SpawnedPlatform = new();
+
+        private List<AssetReferenceGameObject> m_StandbyPlatformAssets = new();
         public Transform PlayerStartPostion => m_PlayerStartPosition;
         private AssetReferenceGameObject PlatformAssetInternal => GetLevelDefinition().PlatformAsset;
+        private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
 
         private void Start()
         {
             GameManager.Instance.SetLevelObject(this);
+            AddStandbyPlatformInternal(GetLevelDefinition().GetPlatformAssets());
             //GameManager.Instance.ShowPanel(PanelId.StartGamePanel);
             //Player.Instance.SetCamera();
+
+        }
+        private AssetReferenceGameObject GetStandbyPlatformAssetsRandom()
+        {
+            int random = Random.Range(0, m_StandbyPlatformAssets.Count);
+            return m_StandbyPlatformAssets[random];
+        }
+        private void AddStandbyPlatformInternal(List<AssetReferenceGameObject> standby)
+        {
+            foreach(AssetReferenceGameObject p in standby)
+            {
+                m_StandbyPlatformAssets.Add(p);
+            }
+        }
+        private void RemoveStandbyPlatformInternal(List<AssetReferenceGameObject> standby)
+        {
+            foreach (AssetReferenceGameObject p in standby)
+            {
+                if (m_StandbyPlatformAssets.Contains(p))
+                {
+                    m_StandbyPlatformAssets.Remove(p);
+                }
+            }
         }
         private LevelDefinition GetLevelDefinition()
         {
@@ -49,7 +80,11 @@ namespace LegionKnight
         {
             if (GameManager.Instance.LevelOver) return;
             Vector2 farAway = new Vector2(1000f, 0f);
-            Addressables.InstantiateAsync(PlatformAssetInternal, farAway, Quaternion.identity).Completed += OnPlatformSpawned;
+            Addressables.InstantiateAsync(GetStandbyPlatformAssetsRandom(), farAway, Quaternion.identity).Completed += OnPlatformSpawned;
+        }
+        private void SpawnBosInternal()
+        {
+            Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost.position, Quaternion.identity).Completed += OnBosSpawned;
         }
         private void OnPlatformSpawned(AsyncOperationHandle<GameObject> handle)
         {
@@ -59,6 +94,27 @@ namespace LegionKnight
             {
                 SetStartPosition(platform);
             }
+        }
+        private void OnBosSpawned(AsyncOperationHandle<GameObject> handle)
+        {
+            if (handle.Status != AsyncOperationStatus.Succeeded) return;
+            GameObject result = handle.Result;
+            if (result.TryGetComponent(out BosEnemy bos))
+            {
+                GameManager.Instance.SetSpawnedBosEnemy(bos);
+            }
+        }
+        public void StartBos()
+        {
+            AddStandbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
+            GameManager.Instance.SetBosTriggered(true);
+            SpawnBosInternal();
+        }
+
+        public void RemoveBos()
+        {
+            RemoveStandbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
+            GameManager.Instance.SetBosTriggered(false);
         }
         public void Play()
         {
@@ -79,6 +135,7 @@ namespace LegionKnight
             Player.Instance.SetPosition(m_PlayerStartPosition.position);
             yield return new WaitForSeconds(2f);
             SpawnPlatformInternal();
+            
         }
         private void ClearPlatform()
         {
