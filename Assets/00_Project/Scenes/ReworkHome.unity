@@ -702,6 +702,9 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -891,6 +894,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bos Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 9096491602748821199, guid: c9e392a46c040ad41b7fe2235bd60b46, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -919,6 +926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ad9835b0b7d6b46b4c4102e7dcdf58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Damageable: {fileID: 0}
   m_BosDefinition: {fileID: 11400000, guid: 7090a21725d9502408643e33f9f95bda, type: 2}
   m_OnSetBosDefinition:
     m_PersistentCalls:
@@ -1089,6 +1097,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_OnDeContacted:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDeath:
     m_PersistentCalls:
       m_Calls: []
   m_RotateSpeed: 5
