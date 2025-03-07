@@ -18,27 +18,43 @@ namespace LegionKnight
     }
     public partial class Weapon : MonoBehaviour
     {
+        [SerializeField]
+        private int m_MaxWeaponIndex;
         private int m_WeaponIndex;
         private bool m_WeaponActive;
         [SerializeField]
         private List<WeaponForm> m_WeaponForms = new();
+
+        private void Start()
+        {
+            m_MaxWeaponIndex = m_WeaponForms.Count;
+        }
         public void SetWeaponActive(bool set)
         {
             m_WeaponActive = set;
         }
-        public void Shot()
+        public void Shot(int set)
         {
             if (!m_WeaponActive) return;
-            ClampWeaponIndex();
+            SetWeaponIndexInternal(set);
             m_WeaponForms[m_WeaponIndex].SpawnProjectile();
         }
         private void ClampWeaponIndex()
         {
-            m_WeaponIndex = Mathf.Clamp(m_WeaponIndex, 0, m_WeaponForms.Count);
+            m_WeaponIndex = Mathf.Clamp(m_WeaponIndex, 0, m_WeaponForms.Count - 1);
+        }
+        public void SetWeaponIndexInternal(int set)
+        {
+            m_WeaponIndex = set;
+            ClampWeaponIndex();
         }
         public void SetWeaponIndex(int set)
         {
-            m_WeaponIndex = set - 1;
+            SetWeaponIndexInternal(set);
+        }
+        public void AddWeaponIndex(int add)
+        {
+            m_WeaponIndex += add;
             ClampWeaponIndex();
         }
     }

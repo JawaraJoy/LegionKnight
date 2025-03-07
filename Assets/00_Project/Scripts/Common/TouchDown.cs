@@ -42,6 +42,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<bool> m_OnStayPerfect = new();
 
+        private PlatformContact m_PlatformContact;
+
         private void OnReachPerfectComboInvoke(int combo)
         {
             foreach(PerfectTouchDownEvent perfectTouch in m_PerfectTouchDownEvents)
@@ -54,6 +56,7 @@ namespace LegionKnight
             base.OnContactedBehaviourInvoke(other);
             if (other.GetSelf().TryGetComponent(out PlatformContact platform))
             {
+                m_PlatformContact = platform;
                 //Player.Instance.AddCurrencyAmount(platform.GetNormalTouchDown().CurrencyDefinition, platform.GetNormalTouchDown().Amount);
                 GameManager.Instance.SetCurrentTouchDownPost(transform.position);
                 GameManager.Instance.SpawnPlatform();
@@ -104,6 +107,7 @@ namespace LegionKnight
             GameManager.Instance.AddCurrencyRewardAmount(reward);
             
             m_OnNormalTouchDown?.Invoke(reward);
+            m_PlatformContact.OnNormalTouchDownInvoke(reward);
         }
         private void OnPerfectTouchDownInvoke()
         {
@@ -112,16 +116,19 @@ namespace LegionKnight
             GameManager.Instance.AddCurrencyRewardAmount(reward);
             
             m_OnPerfectTouchDown?.Invoke(reward);
+            m_PlatformContact?.OnPerfectTouchDownInvoke(reward);
         }
 
         private void OnStayPerfectComboInvoke(int amount)
         {
             m_OnStayPerfectCombo?.Invoke(amount);
             OnReachPerfectComboInvoke(amount);
+            m_PlatformContact?.OnStayPerfectComboInvoke(amount);
         }
         private void OnStayPerfectInvoke(bool set)
         {
             m_OnStayPerfect?.Invoke(set);
+            m_PlatformContact?.OnStayPerfectInvoke(set);
         }
     }
 }

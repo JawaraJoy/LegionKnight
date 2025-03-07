@@ -5,16 +5,12 @@ namespace LegionKnight
 {
     public partial class BosDamageable : Damageable
     {
-        protected override void OnContactedBehaviourInvoke(IContactable other)
+        /*protected override void OnContactedBehaviourInvoke(IContactable other)
         {
             base.OnContactedBehaviourInvoke(other);
 
-            if (other is ProjectileDamage projectile)
-            {
-                TakeDamageInternal(projectile.Damage);
-                Destroy(projectile.gameObject);
-            }
-        }
+            
+        }*/
     }
     public partial class BosEnemy
     {

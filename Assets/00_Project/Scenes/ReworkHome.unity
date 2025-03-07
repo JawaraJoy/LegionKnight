@@ -671,6 +671,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 751198122168616761, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_Health
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2084039138725747265, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_Name
       value: Player
@@ -679,9 +683,29 @@ PrefabInstance:
       propertyPath: m_PlayerWeapon
       value: 
       objectReference: {fileID: 1405176354}
+    - target: {fileID: 5213383320660505863, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5213383320660505863, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5213383320660505863, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5213383320660505863, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_Health
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnNormalTouchDown.m_PersistentCalls.m_Calls.Array.size
@@ -729,7 +753,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnNormalTouchDown.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: SetWeaponIndex
+      value: Shot
       objectReference: {fileID: 0}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnStayPerfectCombo.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
@@ -737,7 +761,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnStayPerfectCombo.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
-      value: SetWeaponIndex
+      value: Shot
       objectReference: {fileID: 0}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -749,7 +773,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnNormalTouchDown.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnStayPerfectCombo.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
@@ -1010,6 +1034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4ca2dc873bf5024aa334c5d1ac65873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_MaxWeaponIndex: 0
   m_WeaponForms:
   - m_ProjectileSpawners:
     - m_DamageOveride: 1
@@ -1025,17 +1050,26 @@ MonoBehaviour:
     - m_DamageOveride: 2
       m_StartingForce: {x: -10, y: 0}
       m_ProjectileAsset:
-        m_AssetGUID: 1639946409a84b144ba6f8db0eda02fd
+        m_AssetGUID: 9896d318713eed644bb369b85e9807cc
+        m_SubObjectName: 
+        m_SubObjectGUID: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      m_SpawnPost: {fileID: 489842720}
+  - m_ProjectileSpawners:
+    - m_DamageOveride: 2
+      m_StartingForce: {x: -10, y: 0}
+      m_ProjectileAsset:
+        m_AssetGUID: 9896d318713eed644bb369b85e9807cc
         m_SubObjectName: 
         m_SubObjectGUID: 
         m_SubObjectType: 
         m_EditorAssetChanged: 0
       m_SpawnPost: {fileID: 1943300588}
-  - m_ProjectileSpawners:
-    - m_DamageOveride: 3
+    - m_DamageOveride: 2
       m_StartingForce: {x: 10, y: 0}
       m_ProjectileAsset:
-        m_AssetGUID: 1639946409a84b144ba6f8db0eda02fd
+        m_AssetGUID: 9896d318713eed644bb369b85e9807cc
         m_SubObjectName: 
         m_SubObjectGUID: 
         m_SubObjectType: 
@@ -1045,26 +1079,7 @@ MonoBehaviour:
     - m_DamageOveride: 2
       m_StartingForce: {x: -10, y: 0}
       m_ProjectileAsset:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectGUID: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      m_SpawnPost: {fileID: 4639559850770391901, guid: 1639946409a84b144ba6f8db0eda02fd, type: 3}
-    - m_DamageOveride: 2
-      m_StartingForce: {x: 10, y: 0}
-      m_ProjectileAsset:
-        m_AssetGUID: 1639946409a84b144ba6f8db0eda02fd
-        m_SubObjectName: 
-        m_SubObjectGUID: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      m_SpawnPost: {fileID: 1936325485}
-  - m_ProjectileSpawners:
-    - m_DamageOveride: 2
-      m_StartingForce: {x: -10, y: 0}
-      m_ProjectileAsset:
-        m_AssetGUID: 1639946409a84b144ba6f8db0eda02fd
+        m_AssetGUID: 9896d318713eed644bb369b85e9807cc
         m_SubObjectName: 
         m_SubObjectGUID: 
         m_SubObjectType: 
@@ -1073,7 +1088,7 @@ MonoBehaviour:
     - m_DamageOveride: 2
       m_StartingForce: {x: 10, y: 0}
       m_ProjectileAsset:
-        m_AssetGUID: 1639946409a84b144ba6f8db0eda02fd
+        m_AssetGUID: 9896d318713eed644bb369b85e9807cc
         m_SubObjectName: 
         m_SubObjectGUID: 
         m_SubObjectType: 
@@ -1082,7 +1097,7 @@ MonoBehaviour:
     - m_DamageOveride: 0
       m_StartingForce: {x: 0, y: 0}
       m_ProjectileAsset:
-        m_AssetGUID: 1639946409a84b144ba6f8db0eda02fd
+        m_AssetGUID: 113d88f22217db54c941e62e14b5bd66
         m_SubObjectName: 
         m_SubObjectGUID: 
         m_SubObjectType: 
@@ -1144,7 +1159,7 @@ Transform:
   m_GameObject: {fileID: 1936325484}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.67, y: 3.07, z: 0}
+  m_LocalPosition: {x: 6, y: 3.07, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1175,7 +1190,7 @@ Transform:
   m_GameObject: {fileID: 1943300587}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.89, y: 3.46, z: 0}
+  m_LocalPosition: {x: -6, y: 3.46, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

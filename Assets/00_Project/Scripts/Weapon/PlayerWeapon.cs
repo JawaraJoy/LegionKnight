@@ -11,9 +11,9 @@ namespace LegionKnight
         [SerializeField]
         private PlayerWeapon m_PlayerWeapon;
 
-        public void Shot()
+        public void Shot(int set)
         {
-            m_PlayerWeapon.Shot();
+            m_PlayerWeapon.Shot(set);
         }
         public void SetWeaponIndex(int set)
         {
@@ -26,9 +26,9 @@ namespace LegionKnight
     }
     public partial class PlayerAgent
     {
-        public void Shot()
+        public void Shot(int set)
         {
-            Player.Instance.Shot();
+            Player.Instance.Shot(set);
         }
         public void SetWeaponIndex(int set)
         {

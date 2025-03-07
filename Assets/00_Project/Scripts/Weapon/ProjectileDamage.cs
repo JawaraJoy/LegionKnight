@@ -1,10 +1,13 @@
 using Rush;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace LegionKnight
 {
     public partial class ProjectileDamage : Damageable
     {
+        [SerializeField]
+        private string m_TargetTag = "Bos Enemy";
         private Transform m_Target;  // Target to follow
         [SerializeField]
         private float m_RotateSpeed = 5f; // Rotation speed
@@ -20,7 +23,8 @@ namespace LegionKnight
         public void SetTarget(Transform target)
         {
             m_Target = target;
-            m_Speed = Random.Range(m_MinTravelSpeed, m_MaxTravelSpeed);
+            
+            FindTarget();
         }
         private void FixedUpdate()
         {
@@ -45,6 +49,28 @@ namespace LegionKnight
         public void AddForce(Vector2 force)
         {
             m_Rb.AddForce(force, ForceMode2D.Impulse);
+        }
+        public void FindTarget()
+        {
+            m_Speed = Random.Range(m_MinTravelSpeed, m_MaxTravelSpeed);
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag(m_TargetTag);
+            float shortestDistance = Mathf.Infinity;
+            GameObject nearestEnemy = null;
+
+            foreach (GameObject enemy in enemies)
+            {
+                float distance = Vector2.Distance(transform.position, enemy.transform.position);
+                if (distance < shortestDistance)
+                {
+                    shortestDistance = distance;
+                    nearestEnemy = enemy;
+                }
+            }
+
+            if (nearestEnemy != null)
+            {
+                m_Target = nearestEnemy.transform;
+            }
         }
     }
 }

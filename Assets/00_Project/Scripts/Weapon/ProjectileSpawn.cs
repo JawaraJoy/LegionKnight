@@ -44,9 +44,8 @@ namespace LegionKnight
                     {
                         m_SpawnedProjectileDamage.Init(Player.Instance.Attack, 1);
                     }
-
-                    m_SpawnedProjectileDamage.SetTarget(GameManager.Instance.SpawnedBosenemy.Damageable.transform);
                     m_SpawnedProjectileDamage.AddForce(m_StartingForce);
+                    m_SpawnedProjectileDamage.FindTarget();
                 }
             }
         }

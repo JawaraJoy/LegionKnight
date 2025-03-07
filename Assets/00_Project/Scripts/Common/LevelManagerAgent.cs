@@ -12,5 +12,9 @@ namespace LegionKnight
         {
             GameManager.Instance.StartBos();
         }
+        public void SetLevelOver(bool set)
+        {
+            GameManager.Instance.SetLevelOver(set);
+        }
     }
 }

@@ -7,6 +7,7 @@ namespace LegionKnight
     public partial class Damageable : Contact2D
     {
         private int m_Damage;
+        [SerializeField]
         private int m_Health;
         private int m_CurrentHealth;
         [SerializeField]
@@ -19,6 +20,12 @@ namespace LegionKnight
             {
                 //Player.Instance.AddCurrencyAmount(platform.GetNormalTouchDown().CurrencyDefinition, platform.GetNormalTouchDown().Amount);
                 platform.SetCanContact(false);
+
+            }
+            if (other is Damageable projectile)
+            {
+                TakeDamageInternal(projectile.Damage);
+                //Destroy(projectile.gameObject);
             }
         }
         public int Damage => m_Damage;

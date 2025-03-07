@@ -36,6 +36,15 @@ namespace LegionKnight
             m_SpawnedBosEnemy.InitDamageable();
         }
 
+        public void SetWeaponActive(bool set)
+        {
+            m_SpawnedBosEnemy.SetWeaponActive(set);
+        }
+        public void Shot(int set)
+        {
+            m_SpawnedBosEnemy.Shot(set);
+        }
+
         private bool m_BosTriggered = false;
         public bool BosTriggered => m_BosTriggered;
         public void SetBosTriggered(bool set)
