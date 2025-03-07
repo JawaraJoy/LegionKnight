@@ -623,6 +623,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 384990891}
   m_SourcePrefab: {fileID: 100100000, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+--- !u!114 &645138597 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+  m_PrefabInstance: {fileID: 678303918}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4abd7d246d44b34890104905189143a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &678303918
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -672,8 +683,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 751198122168616761, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_Damage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 751198122168616761, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_Health
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 751198122168616761, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_ContactLayer.m_Bits
+      value: 147456
       objectReference: {fileID: 0}
     - target: {fileID: 2084039138725747265, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_Name
@@ -700,8 +719,48 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_Damage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_Health
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_ContactLayer.m_Bits
+      value: 147456
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 645138597}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: SetCanContact
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: LegionKnight.Contact2D, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
+      value: ToLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267132487816147097, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.size

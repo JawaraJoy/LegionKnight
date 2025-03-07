@@ -4963,6 +4963,7 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_Damage: 0
   m_Health: 0
   m_OnDeath:
     m_PersistentCalls:
@@ -5048,7 +5049,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delay: 0
-  m_OnDestroy:
+  m_OnStartDestroy:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDestroyDone:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &7606832796909153628

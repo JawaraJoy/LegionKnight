@@ -6,22 +6,21 @@ namespace LegionKnight
 {
     public partial class Damageable : Contact2D
     {
+        [SerializeField]
         private int m_Damage;
         [SerializeField]
         private int m_Health;
         private int m_CurrentHealth;
         [SerializeField]
         private UnityEvent m_OnDeath = new();
+        private void Start()
+        {
+            m_CurrentHealth = m_Health;
+        }
         protected override void OnContactedBehaviourInvoke(IContactable other)
         {
             base.OnContactedBehaviourInvoke(other);
 
-            if (other.GetSelf().TryGetComponent(out DamagePlatform platform))
-            {
-                //Player.Instance.AddCurrencyAmount(platform.GetNormalTouchDown().CurrencyDefinition, platform.GetNormalTouchDown().Amount);
-                platform.SetCanContact(false);
-
-            }
             if (other is Damageable projectile)
             {
                 TakeDamageInternal(projectile.Damage);

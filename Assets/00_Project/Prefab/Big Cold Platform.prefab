@@ -115,6 +115,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Platform: {fileID: 4116744230541724905}
+  m_OnNormalTouchDown:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnPerfectTouchDown:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStayPerfectCombo:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStayPerfect:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6998491140428135921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,6 +719,22 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_Health: 0
+  m_OnDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2184681135207586286}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8780936892916555226
 GameObject:
   m_ObjectHideFlags: 0
