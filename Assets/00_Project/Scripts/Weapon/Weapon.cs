@@ -18,18 +18,12 @@ namespace LegionKnight
     }
     public partial class Weapon : MonoBehaviour
     {
-        [SerializeField]
-        private int m_MaxWeaponIndex;
         private int m_WeaponIndex;
         private bool m_WeaponActive;
         [SerializeField]
         private List<WeaponForm> m_WeaponForms = new();
 
-        private void Start()
-        {
-            m_MaxWeaponIndex = m_WeaponForms.Count;
-        }
-        public void SetWeaponActive(bool set)
+        public void SetWeaponActive(bool set)   
         {
             m_WeaponActive = set;
         }

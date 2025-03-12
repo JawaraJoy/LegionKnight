@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace LegionKnight
 {
@@ -29,6 +31,10 @@ namespace LegionKnight
         public void SetLevelOver(bool set)
         {
             m_LevelManager.SetLevelOver(set);
+        }
+        public void AddStandbyPlatform(List<AssetReferenceGameObject> standby)
+        {
+            m_LevelManager.AddStandbyPlatform(standby);
         }
         public bool BosTriggered => m_LevelManager.BosTriggered;
         public void SetBosTriggered(bool set)

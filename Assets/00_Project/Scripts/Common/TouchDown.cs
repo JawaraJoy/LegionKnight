@@ -1,6 +1,7 @@
 using Rush;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 
 namespace LegionKnight
@@ -31,6 +32,9 @@ namespace LegionKnight
         private int m_StayPerfectCombo;
 
         [SerializeField]
+        private List<AssetReferenceGameObject> m_CharacterPlatform = new();
+
+        [SerializeField]
         private List<PerfectTouchDownEvent> m_PerfectTouchDownEvents = new();
 
         [SerializeField]
@@ -44,6 +48,10 @@ namespace LegionKnight
 
         private PlatformContact m_PlatformContact;
 
+        public void AddCharacterPlatform()
+        {
+            GameManager.Instance.AddStandbyPlatform(m_CharacterPlatform);
+        }
         private void OnReachPerfectComboInvoke(int combo)
         {
             foreach(PerfectTouchDownEvent perfectTouch in m_PerfectTouchDownEvents)
@@ -117,6 +125,7 @@ namespace LegionKnight
             
             m_OnPerfectTouchDown?.Invoke(reward);
             m_PlatformContact?.OnPerfectTouchDownInvoke(reward);
+
         }
 
         private void OnStayPerfectComboInvoke(int amount)
@@ -129,6 +138,17 @@ namespace LegionKnight
         {
             m_OnStayPerfect?.Invoke(set);
             m_PlatformContact?.OnStayPerfectInvoke(set);
+        }
+    }
+
+    public partial class Player
+    {
+        [SerializeField]
+        private TouchDown m_PlayerTouchDown;
+
+        public void AddCharacterPlatform()
+        {
+            m_PlayerTouchDown.AddCharacterPlatform();
         }
     }
 }

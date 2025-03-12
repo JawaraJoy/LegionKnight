@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace LegionKnight
 {
@@ -8,5 +10,8 @@ namespace LegionKnight
         [SerializeField]
         private Sprite m_Icon;
         public Sprite Icon => m_Icon;
+
+        
     }
+    
 }

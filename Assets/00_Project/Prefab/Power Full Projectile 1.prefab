@@ -4894,6 +4894,56 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &4085171363735066595
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2592312556357413719}
+  - component: {fileID: 8272480300572754086}
+  m_Layer: 16
+  m_Name: Spawn Impact
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2592312556357413719
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4085171363735066595}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4639559850770391901}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8272480300572754086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4085171363735066595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be8d6cbdce575234d8c81480fadd9c32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Particle:
+    m_AssetGUID: 69ff0a4594438cd4c8eb533d7bd30934
+    m_SubObjectName: 
+    m_SubObjectGUID: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &5158296318327822941
 GameObject:
   m_ObjectHideFlags: 0
@@ -14867,6 +14917,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7896295631289254031}
+  - {fileID: 2592312556357413719}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &141609671516533268
@@ -14884,7 +14935,7 @@ MonoBehaviour:
   m_CanContact: 1
   m_ContactLayer:
     serializedVersion: 2
-    m_Bits: 32768
+    m_Bits: 163840
   m_OnContacted:
     m_PersistentCalls:
       m_Calls:
@@ -14903,15 +14954,15 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
-  m_Damage: 0
+  m_Damage: 3
   m_Health: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls: []
   m_TargetTag: Bos Enemy
   m_RotateSpeed: 5
-  m_MinTravelSpeed: 25
-  m_MaxTravelSpeed: 35
+  m_MinTravelSpeed: 20
+  m_MaxTravelSpeed: 50
   m_Rb: {fileID: 3423615503660544271}
 --- !u!50 &3423615503660544271
 Rigidbody2D:
@@ -14988,10 +15039,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7aebe8b9cf6bc4d87e7d74ece053e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ActiveSelfDestructOnStart: 1
+  m_SelfDestructDelay: 3
   m_Delay: 0
   m_OnStartDestroy:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8272480300572754086}
+        m_TargetAssemblyTypeName: LegionKnight.ParticleSpawner, Assembly-CSharp
+        m_MethodName: SpawnParticle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnDestroyDone:
     m_PersistentCalls:
       m_Calls: []

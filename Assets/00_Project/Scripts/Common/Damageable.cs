@@ -13,7 +13,7 @@ namespace LegionKnight
         private int m_CurrentHealth;
         [SerializeField]
         private UnityEvent m_OnDeath = new();
-        private void Start()
+        private void OnEnable()
         {
             m_CurrentHealth = m_Health;
         }

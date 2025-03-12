@@ -19,7 +19,7 @@ namespace LegionKnight
         [SerializeField]
         private bool m_CanMove;
         private float m_Speed;
-        private Transform m_Destination;
+        private Vector2 m_Destination;
 
         [SerializeField]
         private UnityEvent<GameObject> m_OnPlayerAttached = new();
@@ -44,12 +44,12 @@ namespace LegionKnight
         {
             if (!m_CanMove || IsReached()) return;
             //transform.Translate(m_Speed * Time.deltaTime * Vector3.right, Space.Self);
-            transform.position = Vector2.MoveTowards(transform.position, m_Destination.position, m_Speed * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, m_Destination, m_Speed * Time.deltaTime);
             ReachDestination();
         }
         private Vector2 GetTargetDestination()
         {
-            Vector2 target = new Vector2(m_Destination.position.x, 0f);
+            Vector2 target = new Vector2(m_Destination.x, 0f);
             return target;
         }
         public Currency GetNormalTouchDown()
@@ -74,7 +74,7 @@ namespace LegionKnight
         }
         private float Distance()
         {
-            return Vector2.Distance(transform.position, m_Destination.position);
+            return Vector2.Distance(transform.position, m_Destination);
         }
         public void SetCanMove(bool set)
         {
@@ -122,7 +122,7 @@ namespace LegionKnight
             m_CanMove = false;
         }
 
-        public void SetDestination(Transform set)
+        public void SetDestination(Vector2 set)
         {
             m_Destination = set;
         }

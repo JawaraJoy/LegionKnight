@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
@@ -20,10 +21,18 @@ namespace LegionKnight
 
         private ProjectileDamage m_SpawnedProjectileDamage;
 
+        [SerializeField]
+        private UnityEvent<ProjectileDamage> m_OnWeaponSpawned = new();
+
         public void LoadProjectile()
         {
             m_Handle = m_ProjectileAsset.InstantiateAsync(m_SpawnPost.position, Quaternion.identity);
             m_Handle.Completed += SpawnProjectile;
+        }
+
+        private void OnWeaponSpawnedInvoke()
+        {
+            m_OnWeaponSpawned?.Invoke(m_SpawnedProjectileDamage);
         }
 
         private void SpawnProjectile(AsyncOperationHandle<GameObject> handle)
@@ -46,6 +55,7 @@ namespace LegionKnight
                     }
                     m_SpawnedProjectileDamage.AddForce(m_StartingForce);
                     m_SpawnedProjectileDamage.FindTarget();
+                    OnWeaponSpawnedInvoke();
                 }
             }
         }

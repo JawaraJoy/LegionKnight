@@ -17,7 +17,6 @@ namespace LegionKnight
         private UnityEvent<int> m_OnStayPerfectCombo = new();
         [SerializeField]
         private UnityEvent<bool> m_OnStayPerfect = new();
-
         public void OnNormalTouchDownInvoke(int reward)
         {
             m_OnNormalTouchDown?.Invoke(reward);

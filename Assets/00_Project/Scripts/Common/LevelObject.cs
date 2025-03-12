@@ -30,6 +30,9 @@ namespace LegionKnight
         private AssetReferenceGameObject PlatformAssetInternal => GetLevelDefinition().PlatformAsset;
         private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
 
+        private const float m_OffsideDestination = -0.2f;
+
+        private float m_FinalOffsideDestination;
         private void Start()
         {
             GameManager.Instance.SetLevelObject(this);
@@ -42,6 +45,10 @@ namespace LegionKnight
         {
             int random = Random.Range(0, m_StandbyPlatformAssets.Count);
             return m_StandbyPlatformAssets[random];
+        }
+        public void AddStandbyPlatform(List<AssetReferenceGameObject> standby)
+        {
+            AddStandbyPlatformInternal(standby);
         }
         private void AddStandbyPlatformInternal(List<AssetReferenceGameObject> standby)
         {
@@ -84,7 +91,7 @@ namespace LegionKnight
         }
         private void SpawnBosInternal()
         {
-            Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost, false).Completed += OnBosSpawned;
+            Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost, true, false).Completed += OnBosSpawned;
         }
         private void OnPlatformSpawned(AsyncOperationHandle<GameObject> handle)
         {
@@ -102,13 +109,16 @@ namespace LegionKnight
             if (result.TryGetComponent(out BosEnemy bos))
             {
                 GameManager.Instance.SetSpawnedBosEnemy(bos);
+                m_BosSpawnPost.DetachChildren();
             }
         }
         public void StartBos()
         {
             AddStandbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
+            Player.Instance.AddCharacterPlatform();
             GameManager.Instance.SetBosTriggered(true);
             SpawnBosInternal();
+
         }
 
         public void RemoveBos()
@@ -155,16 +165,22 @@ namespace LegionKnight
             int random = Random.Range(-100, 100);
             if (random <= 0)
             {
+                m_FinalOffsideDestination = m_OffsideDestination * -1f;
                 return m_LeftPost;
             }
+            m_FinalOffsideDestination = m_OffsideDestination * 1f;
             return m_RightPost;
         }
-
+        private Vector2 GetFinalDestination()
+        {
+            Vector2 target = new Vector2(m_PlatformDestination.position.x + m_FinalOffsideDestination, m_PlatformDestination.position.y);
+            return target;
+        }
         private void SetStartPosition(Platform spawn)
         {
             spawn.SetStartPosition(LeftOrRight());
             spawn.SetSpeed(GetLevelDefinition().GetSpeed());
-            spawn.SetDestination(m_PlatformDestination);
+            spawn.SetDestination(GetFinalDestination());
             spawn.transform.SetParent(m_PlatformStack);
             spawn.SetLevelDefnition(GetLevelDefinition());
             spawn.SetCanMove(true);

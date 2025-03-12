@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 
 namespace LegionKnight
@@ -35,14 +37,30 @@ namespace LegionKnight
             m_SpawnedBosEnemy.SetBosDefinition(m_LevelDefinition.BosDefinition);
             m_SpawnedBosEnemy.InitDamageable();
         }
+        public void AddStandbyPlatform(List<AssetReferenceGameObject> standby)
+        {
+            m_LevelObject.AddStandbyPlatform(standby);
+        }
 
         public void SetWeaponActive(bool set)
         {
             m_SpawnedBosEnemy.SetWeaponActive(set);
         }
-        public void Shot(int set)
+        public void BosShot(int set)
         {
             m_SpawnedBosEnemy.Shot(set);
+        }
+        public void AddBossAttack(BosAttack add)
+        {
+            m_SpawnedBosEnemy.AddBossAttack(add);
+        }
+        public void RemoveBossAttack(BosAttack add)
+        {
+            m_SpawnedBosEnemy.RemoveBossAttack(add);
+        }
+        public void ActiveSkills()
+        {
+            m_SpawnedBosEnemy.ActiveSkills();
         }
 
         private bool m_BosTriggered = false;
@@ -111,7 +129,6 @@ namespace LegionKnight
             {
                 m_CurrentCoinHighScore.SetAmount(currentScore);
             }
-            
         }
 
         private void OnPlayInvoke()

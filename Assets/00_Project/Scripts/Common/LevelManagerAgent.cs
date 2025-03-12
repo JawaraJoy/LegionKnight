@@ -16,5 +16,9 @@ namespace LegionKnight
         {
             GameManager.Instance.SetLevelOver(set);
         }
+        public void SpawnPlatform()
+        {
+            GameManager.Instance.SpawnPlatform();
+        }
     }
 }

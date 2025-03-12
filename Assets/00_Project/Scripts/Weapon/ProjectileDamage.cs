@@ -33,7 +33,10 @@ namespace LegionKnight
 
         public void FollowTarget()
         {
-            if (m_Target == null) return;
+            if (m_Target == null)
+            {
+                FindTargetInternal();
+            }
 
             // Calculate direction to the target
             Vector3 direction = (m_Target.position - transform.position).normalized;
@@ -51,6 +54,10 @@ namespace LegionKnight
             m_Rb.AddForce(force, ForceMode2D.Impulse);
         }
         public void FindTarget()
+        {
+            FindTargetInternal();   
+        }
+        private void FindTargetInternal()
         {
             m_Speed = Random.Range(m_MinTravelSpeed, m_MaxTravelSpeed);
             GameObject[] enemies = GameObject.FindGameObjectsWithTag(m_TargetTag);
