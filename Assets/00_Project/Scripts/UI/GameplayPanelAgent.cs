@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class GameplayPanelAgent : MonoBehaviour
+    public partial class GameplayPanelAgent : MonoBehaviour
     {
         public void SetCurrencyRewardView(Currency currency)
         {
