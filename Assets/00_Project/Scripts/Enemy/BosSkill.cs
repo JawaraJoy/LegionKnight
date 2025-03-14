@@ -1,17 +1,18 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
 {
     public partial class BosSkill : PassiveSkill // The Boss Component
     {
-        
+
     }
 
     public partial class BosEnemy // The Core Object
     {
         [SerializeField]
         private BosSkill m_BosSkill;
-
+        public Transform SkillSpawnPost => m_BosSkill.transform;
         public void AddOneMana(int indexSkill)
         {
             m_BosSkill.AddOneMana(indexSkill);
@@ -23,6 +24,18 @@ namespace LegionKnight
         public void AddManaToAll(int add)
         {
             m_BosSkill.AddManaToAll(add);
+        }
+        public void ActiveProjectileAbility(string abilityName)
+        {
+            m_BosSkill.ActiveProjectileAbility(abilityName);
+        }
+        public void AddProjectileAbilities(ProjectileAbility ability)
+        {
+            m_BosSkill.AddProjectileAbilities(ability);
+        }
+        public void RemoveProjectileAbilities(ProjectileAbility ability)
+        {
+            m_BosSkill.RemoveProjectileAbilities(ability);
         }
     }
     public partial class LevelHandler // the Boss Spawn Handler
@@ -39,6 +52,18 @@ namespace LegionKnight
         {
             m_SpawnedBosEnemy.AddManaToAll(add);
         }
+        public void ActiveBosProjectileAbility(string abilityName)
+        {
+            m_SpawnedBosEnemy.ActiveProjectileAbility(abilityName);
+        }
+        public void AddBosProjectileAbilities(ProjectileAbility ability)
+        {
+            m_SpawnedBosEnemy.AddProjectileAbilities(ability);
+        }
+        public void RemoveBosProjectileAbilities(ProjectileAbility ability)
+        {
+            m_SpawnedBosEnemy.RemoveProjectileAbilities(ability);
+        }
     }
     public partial class GameManager // The Game Manager who handle Level
     {
@@ -54,6 +79,18 @@ namespace LegionKnight
         {
             m_LevelManager.AddManaToAllBosSkill(add);
         }
+        public void ActiveBosProjectileAbility(string abilityName)
+        {
+            m_LevelManager.ActiveBosProjectileAbility(abilityName);
+        }
+        public void AddBosProjectileAbilities(ProjectileAbility ability)
+        {
+            m_LevelManager.AddBosProjectileAbilities(ability);
+        }
+        public void RemoveBosProjectileAbilities(ProjectileAbility ability)
+        {
+            m_LevelManager.RemoveBosProjectileAbilities(ability);
+        }
     }
     public partial class LevelManagerAgent // The Component Accessor to GameManager
     {
@@ -68,6 +105,10 @@ namespace LegionKnight
         public void AddManaToAllBosSkill(int add)
         {
             GameManager.Instance.AddManaToAllBosSkill(add);
+        }
+        public void ActiveBosProjectileAbility(string abilityName)
+        {
+            GameManager.Instance.ActiveBosProjectileAbility(abilityName);
         }
     }
 }

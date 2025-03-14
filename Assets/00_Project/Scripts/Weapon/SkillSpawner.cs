@@ -7,7 +7,16 @@ namespace LegionKnight
     {
         [SerializeField]
         private List<ProjectileSpawn> m_Skills = new();
+
+        private void Start()
+        {
+            SpawnProjectileInternal();
+        }
         public void SpawnProjectile()
+        {
+            //SpawnProjectileInternal();
+        }
+        private void SpawnProjectileInternal()
         {
             foreach (ProjectileSpawn skill in m_Skills)
             {

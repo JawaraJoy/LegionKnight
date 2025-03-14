@@ -35,8 +35,8 @@ namespace LegionKnight
         [SerializeField]
         private int m_ManaThreshold;
         [SerializeField]
-        private AssetReferenceGameObject m_SkillPrefab;
-        public AssetReferenceGameObject SkillPrefab => m_SkillPrefab;
+        private AssetReferenceGameObject m_SkillAsset;
+        public AssetReferenceGameObject SkillAsset => m_SkillAsset;
         public string SkillName => m_SkillName;
         public Sprite Icon => m_Icon;
         public int Manathreshold => m_ManaThreshold;

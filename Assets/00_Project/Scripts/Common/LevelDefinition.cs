@@ -18,7 +18,7 @@ namespace LegionKnight
         [SerializeField]
         private int m_PerfectTouchDownPoint;
         [SerializeField]
-        private List<AssetReferenceGameObject> m_PlatformAssets = new();
+        private List<StanbyPlatform> m_PlatformAssets = new();
 
         [SerializeField]
         private BosDefinition m_BosDefinition;
@@ -48,19 +48,13 @@ namespace LegionKnight
         {
             return m_PerfectTouchDownPoint;
         }
-        private AssetReferenceGameObject GetPlatformAssetsRandom()
-        {
-            int random = Random.Range(0, m_PlatformAssets.Count);
-            return m_PlatformAssets[random];
-        }
-        public List<AssetReferenceGameObject> GetPlatformAssets()
+        public List<StanbyPlatform> GetPlatformAssets()
         {
             return m_PlatformAssets;
         }
-        public List<AssetReferenceGameObject> GetBosPlatformAssets()
+        public List<StanbyPlatform> GetBosPlatformAssets()
         {
             return m_BosDefinition.BosPlatformsAsset;
         }
-        public AssetReferenceGameObject PlatformAsset => GetPlatformAssetsRandom();
     }
 }

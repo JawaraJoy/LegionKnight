@@ -13,11 +13,11 @@ namespace LegionKnight
         [SerializeField]
         private int m_Health;
         [SerializeField]
-        private List<AssetReferenceGameObject> m_BosPlatforms = new();
+        private List<StanbyPlatform> m_BosPlatforms = new();
 
         public Sprite Icon => m_Icon;
         public int Health => m_Health;
-        public List<AssetReferenceGameObject> BosPlatformsAsset => m_BosPlatforms;
+        public List<StanbyPlatform> BosPlatformsAsset => m_BosPlatforms;
     }
     public partial class BosEnemy
     {
@@ -25,7 +25,7 @@ namespace LegionKnight
         private BosDefinition m_BosDefinition;
         private Sprite IconInternal => m_BosDefinition.Icon;
         private int HealthInternal => m_BosDefinition.Health;
-        private List<AssetReferenceGameObject> BosPlatformsInternal => m_BosDefinition.BosPlatformsAsset;
+        private List<StanbyPlatform> BosPlatformsInternal => m_BosDefinition.BosPlatformsAsset;
 
         [SerializeField]
         private UnityEvent<BosDefinition> m_OnSetBosDefinition = new();

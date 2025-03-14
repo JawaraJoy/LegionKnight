@@ -47,7 +47,7 @@ namespace LegionKnight
         private void Move()
         {
             if (m_VelocityWitoutTarget == Vector2.zero) return;
-            m_Rb.linearVelocity = GetSpeed() * Time.deltaTime * m_VelocityWitoutTarget;
+            m_Rb.linearVelocity = GetSpeed() * m_VelocityWitoutTarget;
         }
         private void FollowTarget()
         {

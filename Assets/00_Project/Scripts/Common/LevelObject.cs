@@ -41,10 +41,8 @@ namespace LegionKnight
 
         private List<Platform> m_SpawnedPlatform = new();
 
-        private List<AssetReferenceGameObject> m_StandbyPlatformAssets = new();
-        private List<StanbyPlatform> m_RealStanbyPlatformAssets;
+        private List<StanbyPlatform> m_RealStanbyPlatformAssets = new();
         public Transform PlayerStartPostion => m_PlayerStartPosition;
-        private AssetReferenceGameObject PlatformAssetInternal => GetLevelDefinition().PlatformAsset;
         private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
 
         private const float m_OffsideDestination = -0.2f;
@@ -53,15 +51,16 @@ namespace LegionKnight
         private void Start()
         {
             GameManager.Instance.SetLevelObject(this);
-            AddStandbyPlatformInternal(GetLevelDefinition().GetPlatformAssets());
-            //GameManager.Instance.ShowPanel(PanelId.StartGamePanel);
-            //Player.Instance.SetCamera();
+            AddRealStanbyPlatformInternal(GetLevelDefinition().GetPlatformAssets());
 
         }
-        private AssetReferenceGameObject GetStandbyPlatformAssetsRandom()
+        public void AddRealStanbyPlatform(List<StanbyPlatform> standby)
         {
-            int random = Random.Range(0, m_StandbyPlatformAssets.Count);
-            return m_StandbyPlatformAssets[random];
+            AddRealStanbyPlatformInternal(standby);
+        }
+        public void RemoveRealStanbyPlatform(List<StanbyPlatform> standby)
+        {
+            RemoveRealStanbyPlatformInternal(standby);
         }
         private void AddRealStanbyPlatformInternal(List<StanbyPlatform> standby)
         {
@@ -70,31 +69,18 @@ namespace LegionKnight
                 m_RealStanbyPlatformAssets.Add(p);
             }
         }
-        public void AddStandbyPlatform(List<AssetReferenceGameObject> standby)
+        private void RemoveRealStanbyPlatformInternal(List<StanbyPlatform> standby)
         {
-            AddStandbyPlatformInternal(standby);
-        }
-        public void RemoveStandbyPlatform(List<AssetReferenceGameObject> standby)
-        {
-            RemoveStandbyPlatformInternal(standby);
-        }
-        private void AddStandbyPlatformInternal(List<AssetReferenceGameObject> standby)
-        {
-            foreach(AssetReferenceGameObject p in standby)
+            if (m_RealStanbyPlatformAssets.Count <= 0) return;
+            foreach (StanbyPlatform p in standby)
             {
-                m_StandbyPlatformAssets.Add(p);
-            }
-        }
-        private void RemoveStandbyPlatformInternal(List<AssetReferenceGameObject> standby)
-        {
-            foreach (AssetReferenceGameObject p in standby)
-            {
-                if (m_StandbyPlatformAssets.Contains(p))
+                if (m_RealStanbyPlatformAssets.Contains(p))
                 {
-                    m_StandbyPlatformAssets.Remove(p);
+                    m_RealStanbyPlatformAssets.Remove(p);
                 }
             }
         }
+
         private LevelDefinition GetLevelDefinition()
         {
             if (m_LevelDefinition == null)
@@ -137,7 +123,7 @@ namespace LegionKnight
         {
             if (GameManager.Instance.LevelOver) return;
             Vector2 farAway = new Vector2(1000f, 0f);
-            Addressables.InstantiateAsync(GetStandbyPlatformAssetsRandom(), farAway, Quaternion.identity).Completed += OnPlatformSpawned;
+            Addressables.InstantiateAsync(GetRandomPlatformByChance(), farAway, Quaternion.identity).Completed += OnPlatformSpawned;
         }
         private void SpawnBosInternal()
         {
@@ -165,7 +151,7 @@ namespace LegionKnight
         }
         public void StartBos()
         {
-            AddStandbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
+            AddRealStanbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
             Player.Instance.AddCharacterPlatform();
             GameManager.Instance.SetBosTriggered(true);
             SpawnBosInternal();
@@ -174,7 +160,7 @@ namespace LegionKnight
 
         public void RemoveBos()
         {
-            RemoveStandbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
+            RemoveRealStanbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
             GameManager.Instance.SetBosTriggered(false);
         }
         public void Play()
