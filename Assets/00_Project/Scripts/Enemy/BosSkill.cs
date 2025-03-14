@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class BosSkill : PassiveSkill
+    public partial class BosSkill : PassiveSkill // The Boss Component
     {
         
     }
 
-    public partial class BosEnemy
+    public partial class BosEnemy // The Core Object
     {
         [SerializeField]
         private BosSkill m_BosSkill;
@@ -20,8 +20,12 @@ namespace LegionKnight
         {
             m_BosSkill.ResetMana(indexSkill);
         }
+        public void AddManaToAll(int add)
+        {
+            m_BosSkill.AddManaToAll(add);
+        }
     }
-    public partial class LevelHandler
+    public partial class LevelHandler // the Boss Spawn Handler
     {
         public void AddOneMana(int indexSkill)
         {
@@ -31,8 +35,12 @@ namespace LegionKnight
         {
             m_SpawnedBosEnemy.ResetMana(indexSkill);
         }
+        public void AddManaToAllBosSkill(int add)
+        {
+            m_SpawnedBosEnemy.AddManaToAll(add);
+        }
     }
-    public partial class GameManager
+    public partial class GameManager // The Game Manager who handle Level
     {
         public void AddBosOneMana(int indexSkill)
         {
@@ -42,8 +50,12 @@ namespace LegionKnight
         {
             m_LevelManager.ResetMana(indexSkill);
         }
+        public void AddManaToAllBosSkill(int add)
+        {
+            m_LevelManager.AddManaToAllBosSkill(add);
+        }
     }
-    public partial class LevelManagerAgent
+    public partial class LevelManagerAgent // The Component Accessor to GameManager
     {
         public void AddBosOneMana(int indexSkill)
         {
@@ -52,6 +64,10 @@ namespace LegionKnight
         public void ResetBosMana(int indexSkill)
         {
             GameManager.Instance.ResetBosMana(indexSkill);
+        }
+        public void AddManaToAllBosSkill(int add)
+        {
+            GameManager.Instance.AddManaToAllBosSkill(add);
         }
     }
 }

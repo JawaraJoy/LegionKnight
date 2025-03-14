@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 namespace LegionKnight
 {
@@ -22,6 +21,7 @@ namespace LegionKnight
             }
             for (int i = 0; i < m_Counter; i++)
             {
+                if (m_Counter > m_Actives.Count) return;
                 m_Actives[i].gameObject.SetActive(true);
             }
         }

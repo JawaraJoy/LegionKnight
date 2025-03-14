@@ -6,6 +6,22 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
+    [System.Serializable]
+    public partial class StanbyPlatform
+    {
+        [SerializeField, Range(1, 100)]
+        private int m_ChanceRateTospawn;
+        [SerializeField]
+        private AssetReferenceGameObject m_Platform;
+        public int ChanceRateToSpawn => m_ChanceRateTospawn;
+        public AssetReferenceGameObject Platform => m_Platform;
+
+        public StanbyPlatform(int chanceRate, AssetReferenceGameObject platform)
+        {
+            m_ChanceRateTospawn = chanceRate;
+            m_Platform = platform;
+        }
+    }
     public partial class LevelObject : ModelView
     {
         private LevelDefinition m_LevelDefinition;
@@ -26,6 +42,7 @@ namespace LegionKnight
         private List<Platform> m_SpawnedPlatform = new();
 
         private List<AssetReferenceGameObject> m_StandbyPlatformAssets = new();
+        private List<StanbyPlatform> m_RealStanbyPlatformAssets;
         public Transform PlayerStartPostion => m_PlayerStartPosition;
         private AssetReferenceGameObject PlatformAssetInternal => GetLevelDefinition().PlatformAsset;
         private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
@@ -46,9 +63,20 @@ namespace LegionKnight
             int random = Random.Range(0, m_StandbyPlatformAssets.Count);
             return m_StandbyPlatformAssets[random];
         }
+        private void AddRealStanbyPlatformInternal(List<StanbyPlatform> standby)
+        {
+            foreach (StanbyPlatform p in standby)
+            {
+                m_RealStanbyPlatformAssets.Add(p);
+            }
+        }
         public void AddStandbyPlatform(List<AssetReferenceGameObject> standby)
         {
             AddStandbyPlatformInternal(standby);
+        }
+        public void RemoveStandbyPlatform(List<AssetReferenceGameObject> standby)
+        {
+            RemoveStandbyPlatformInternal(standby);
         }
         private void AddStandbyPlatformInternal(List<AssetReferenceGameObject> standby)
         {
@@ -83,6 +111,28 @@ namespace LegionKnight
         {
             SpawnPlatformInternal();
         }
+        private AssetReferenceGameObject GetRandomPlatformByChance()
+        {
+            int totalChance = 0;
+            AssetReferenceGameObject selected = null;
+            foreach (StanbyPlatform platform in m_RealStanbyPlatformAssets)
+            {
+                totalChance += platform.ChanceRateToSpawn;
+            }
+            int random = Random.Range(0, totalChance);
+
+            float cumulativeChance = 0;
+            foreach (StanbyPlatform platform in m_RealStanbyPlatformAssets)
+            {
+                cumulativeChance += platform.ChanceRateToSpawn;
+                if (random <= cumulativeChance)
+                {
+                    selected = platform.Platform;
+                    break;
+                }
+            }
+            return selected;
+        }
         private void SpawnPlatformInternal()
         {
             if (GameManager.Instance.LevelOver) return;
@@ -91,7 +141,7 @@ namespace LegionKnight
         }
         private void SpawnBosInternal()
         {
-            Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost, true, false).Completed += OnBosSpawned;
+            Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost).Completed += OnBosSpawned;
         }
         private void OnPlatformSpawned(AsyncOperationHandle<GameObject> handle)
         {
@@ -109,6 +159,7 @@ namespace LegionKnight
             if (result.TryGetComponent(out BosEnemy bos))
             {
                 GameManager.Instance.SetSpawnedBosEnemy(bos);
+                bos.SetLocalPosition(new Vector2(0f, 100f));
                 m_BosSpawnPost.DetachChildren();
             }
         }

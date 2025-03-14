@@ -74,5 +74,25 @@ namespace LegionKnight
         {
             return m_LevelManager.GetPerfectTouchDownPoint();
         }
+        public void ResetBoss()
+        {
+            m_LevelManager.ResetBoss();
+        }
+        public void SetBosSpawnCount(int set)
+        {
+            m_LevelManager.SetBosSpawnCount(set);
+            
+        }
+
+        
+    }
+
+    public partial class LevelManagerAgent
+    {
+        public void SetBosSpawnCount(int set)
+        {
+            GameManager.Instance.SetBosSpawnCount(set);
+
+        }
     }
 }

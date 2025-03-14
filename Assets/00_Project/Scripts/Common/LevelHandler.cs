@@ -30,16 +30,48 @@ namespace LegionKnight
         public LevelDefinition LevelDefinition => m_LevelDefinition;
 
         private BosEnemy m_SpawnedBosEnemy;
+        private int m_BosSpawnCount;
+        [SerializeField]
+        private int m_BosHealthBonus;
         public BosEnemy SpawnedBosEnemy => m_SpawnedBosEnemy;
+        [SerializeField]
+        private UnityEvent m_OnResetBoss = new();
+        public void SetBosSpawnCount(int set)
+        {
+            m_BosSpawnCount = set;
+        }
+        private void AddBosSpawnCountInternal(int add)
+        {
+            m_BosSpawnCount += add;
+        }
+        public void ResetBoss()
+        {
+            RemoveStandbyPlatformInternal(m_LevelDefinition.GetBosPlatformAssets());
+            m_OnResetBoss?.Invoke();
+
+            List<BosDamageable> dmg = new(FindObjectsByType<BosDamageable>(FindObjectsInactive.Include, FindObjectsSortMode.None));
+            foreach (BosDamageable d in dmg)
+            {
+               // Destroy(d.gameObject);
+            }
+        }
         public void SetSpawnedBosEnemy(BosEnemy set)
         {
             m_SpawnedBosEnemy = set;
             m_SpawnedBosEnemy.SetBosDefinition(m_LevelDefinition.BosDefinition);
-            m_SpawnedBosEnemy.InitDamageable();
+            m_SpawnedBosEnemy.InitDamageable(m_BosHealthBonus * m_BosSpawnCount);
         }
         public void AddStandbyPlatform(List<AssetReferenceGameObject> standby)
         {
             m_LevelObject.AddStandbyPlatform(standby);
+        }
+        public void RemoveStandbyPlatform(List<AssetReferenceGameObject> standby)
+        {
+            RemoveStandbyPlatformInternal(standby);
+        }
+        private void RemoveStandbyPlatformInternal(List<AssetReferenceGameObject> standby)
+        {
+            m_LevelObject.RemoveStandbyPlatform(standby);
         }
 
         public void SetWeaponActive(bool set)
@@ -139,6 +171,7 @@ namespace LegionKnight
         public void StartBos()
         {
             m_LevelObject.StartBos();
+            AddBosSpawnCountInternal(1);
         }
         public void Play()
         {

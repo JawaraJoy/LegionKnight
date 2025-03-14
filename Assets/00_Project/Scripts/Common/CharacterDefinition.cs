@@ -26,27 +26,6 @@ namespace LegionKnight
         public List<SkillDefinition> Passives => m_Passives;
     }
     [System.Serializable]
-    public partial class SkillPlacement
-    {
-        [SerializeField]
-        private AssetReferenceGameObject m_SkillPrefab;
-        [SerializeField]
-        private Vector3 m_SpawnWorldPost;
-        private AsyncOperationHandle<GameObject> m_Handle;
-        public void SpawnSkill()
-        {
-            m_Handle = m_SkillPrefab.InstantiateAsync(m_SpawnWorldPost, Quaternion.identity);
-            m_Handle.Completed += OnSpawnSkill;
-        }
-        private void OnSpawnSkill(AsyncOperationHandle<GameObject> handle)
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-
-            }
-        }
-    }
-    [System.Serializable]
     public partial class SkillDefinition
     {
         [SerializeField]
@@ -56,21 +35,10 @@ namespace LegionKnight
         [SerializeField]
         private int m_ManaThreshold;
         [SerializeField]
-        private bool m_HasSkillView;
-        [SerializeField]
-        private List<SkillPlacement> m_SkillPosts;
-
+        private AssetReferenceGameObject m_SkillPrefab;
+        public AssetReferenceGameObject SkillPrefab => m_SkillPrefab;
         public string SkillName => m_SkillName;
         public Sprite Icon => m_Icon;
         public int Manathreshold => m_ManaThreshold;
-        public bool HasSkillView => m_HasSkillView;
-
-        public void SpawnSkills()
-        {
-            foreach(SkillPlacement placement in m_SkillPosts)
-            {
-                placement.SpawnSkill();
-            }
-        }
     }
 }

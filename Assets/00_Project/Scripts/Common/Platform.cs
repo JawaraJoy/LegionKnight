@@ -5,15 +5,9 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    [System.Serializable]
-    public class AssetReferencePlatform : AssetReferenceT<Platform>
-    {
-        public AssetReferencePlatform(string guid) : base(guid)
-        {
-        }
-    }
     public partial class Platform : MonoBehaviour
     {
+        
         [SerializeField]
         private List<Collider2D> m_ColliderBehaviourActives = new();
         [SerializeField]
@@ -33,7 +27,7 @@ namespace LegionKnight
         private bool m_ReachTriggered;
         private LevelDefinition m_LevelDefinition;
 
-
+        
 
         private void Update()
         {
@@ -46,11 +40,6 @@ namespace LegionKnight
             //transform.Translate(m_Speed * Time.deltaTime * Vector3.right, Space.Self);
             transform.position = Vector2.MoveTowards(transform.position, m_Destination, m_Speed * Time.deltaTime);
             ReachDestination();
-        }
-        private Vector2 GetTargetDestination()
-        {
-            Vector2 target = new Vector2(m_Destination.x, 0f);
-            return target;
         }
         public Currency GetNormalTouchDown()
         {

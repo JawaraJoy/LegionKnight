@@ -1,6 +1,5 @@
 using Rush;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 namespace LegionKnight
 {
@@ -20,24 +19,51 @@ namespace LegionKnight
         [SerializeField]
         private Rigidbody2D m_Rb;
 
+        [SerializeField]
+        private bool m_WithoutTarget = false;
+        [SerializeField]
+        private Vector2 m_VelocityWitoutTarget;
+
+        private int m_FindTargetCount;
+        private const int m_FindTargetCounMax = 3;
+
         public void SetTarget(Transform target)
         {
             m_Target = target;
             
             FindTarget();
         }
-        private void FixedUpdate()
+        private void Update()
         {
-            FollowTarget();
+            if (m_WithoutTarget)
+            {
+                Move();
+            }
+            else
+            {
+                FollowTarget();
+            }    
         }
-
-        public void FollowTarget()
+        private void Move()
+        {
+            if (m_VelocityWitoutTarget == Vector2.zero) return;
+            m_Rb.linearVelocity = GetSpeed() * Time.deltaTime * m_VelocityWitoutTarget;
+        }
+        private void FollowTarget()
         {
             if (m_Target == null)
             {
-                FindTargetInternal();
+                m_FindTargetCount++;
+                if (m_FindTargetCount < m_FindTargetCounMax)
+                {
+                    FindTargetInternal();
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
             }
-
+            if (m_Target == null) return;
             // Calculate direction to the target
             Vector3 direction = (m_Target.position - transform.position).normalized;
             Quaternion lookRotation = Quaternion.LookRotation(direction);
@@ -46,12 +72,17 @@ namespace LegionKnight
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, m_RotateSpeed * Time.deltaTime);
 
             // Move forward
-            m_Rb.linearVelocity = transform.forward * m_Speed;
+            m_Rb.linearVelocity = transform.forward * GetSpeed();
         }
 
         public void AddForce(Vector2 force)
         {
             m_Rb.AddForce(force, ForceMode2D.Impulse);
+        }
+        private float GetSpeed()
+        {
+            m_Speed = Random.Range(m_MinTravelSpeed, m_MaxTravelSpeed);
+            return m_Speed;
         }
         public void FindTarget()
         {
@@ -59,7 +90,6 @@ namespace LegionKnight
         }
         private void FindTargetInternal()
         {
-            m_Speed = Random.Range(m_MinTravelSpeed, m_MaxTravelSpeed);
             GameObject[] enemies = GameObject.FindGameObjectsWithTag(m_TargetTag);
             float shortestDistance = Mathf.Infinity;
             GameObject nearestEnemy = null;

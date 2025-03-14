@@ -13,6 +13,8 @@ namespace LegionKnight
         private int m_CurrentHealth;
         [SerializeField]
         private UnityEvent m_OnDeath = new();
+        [SerializeField]
+        private UnityEvent<float> m_OnHealthRateChanged = new();
         private void OnEnable()
         {
             m_CurrentHealth = m_Health;
@@ -30,9 +32,18 @@ namespace LegionKnight
         public int Damage => m_Damage;
         public int Health => m_Health;
         public int CurrentHealth => m_CurrentHealth;
+        private float GetHealthRateInternal()
+        {
+            return (float)m_CurrentHealth / (float)m_Health;
+        }
         private void ClampHealth()
         {
             m_CurrentHealth = Mathf.Clamp(m_CurrentHealth, 0, m_Health);
+            OnHealthRateChanged(GetHealthRateInternal());
+        }
+        private void OnHealthRateChanged(float rate)
+        {
+            m_OnHealthRateChanged?.Invoke(rate);
         }
         public void Init(int damage, int health)
         {
