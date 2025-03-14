@@ -85,6 +85,7 @@ namespace LegionKnight
         {
             if (m_Mana >= m_ManaThreshold)
             {
+                if (!m_SkillHandle.CanActive) return;
                 OnActiveInvoke();
                 int rest = m_Mana - m_ManaThreshold;
                 m_Mana = Mathf.Clamp(rest, 0, int.MaxValue);
@@ -117,6 +118,8 @@ namespace LegionKnight
     public partial class PassiveSkill : MonoBehaviour
     {
         [SerializeField]
+        private bool m_CanActive = true;
+        [SerializeField]
         private int m_SkillIndex;
         [SerializeField]
         private List<SkillActivation> m_SkillActivations = new();
@@ -126,14 +129,20 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<string, float> m_OnManacharge = new();
 
+        [SerializeField]
         private List<ProjectileAbility> m_ProjectileAbilities = new();
 
+        public bool CanActive => m_CanActive;
         private void Start()
         {
             foreach(SkillActivation skill in m_SkillActivations)
             {
                 skill.Init(this);
             }
+        }
+        public void SetCanActive(bool set)
+        {
+            m_CanActive = set;
         }
         private ProjectileAbility GetAbilityByName(string abilityName)
         {
@@ -151,8 +160,13 @@ namespace LegionKnight
 
         public void ActiveProjectileAbility(string abilityName)
         {
-            if (GetAbilityByName(abilityName) == null) return;
-            GetAbilityByName(abilityName).TriggerAbility();
+            foreach(ProjectileAbility projectile in m_ProjectileAbilities)
+            {
+                if (projectile.AbilityName == abilityName)
+                {
+                    projectile.TriggerAbility();
+                }
+            }
         }
 
         private SkillActivation GetSkillActivation(string skillName)
@@ -182,6 +196,7 @@ namespace LegionKnight
         }
         public void ForceActivated(int indexSkill)
         {
+            if (!m_CanActive) return;
             SetSkillIndexInternal(indexSkill);
             m_SkillActivations[m_SkillIndex].ForceActivated();
         }
@@ -192,6 +207,7 @@ namespace LegionKnight
         }
         public void ForceActivated(string skillName)
         {
+            if (!m_CanActive) return;
             GetSkillActivation(skillName).ForceActivated();
         }
 

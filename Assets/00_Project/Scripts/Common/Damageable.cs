@@ -51,7 +51,10 @@ namespace LegionKnight
             m_Health = health;
             m_CurrentHealth = m_Health;
         }
-
+        public void TakeDamage(int damage)
+        {
+            TakeDamageInternal(damage);
+        }
         protected void TakeDamageInternal(int damage)
         {
             m_CurrentHealth -= damage;
@@ -68,9 +71,12 @@ namespace LegionKnight
         {
             if (m_CurrentHealth < 1)
             {
-                m_OnDeath?.Invoke();
+                OnDeathInvoke();
             }
         }
-
+        protected virtual void OnDeathInvoke()
+        {
+            m_OnDeath?.Invoke();
+        }
     }
 }

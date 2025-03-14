@@ -40,12 +40,20 @@ namespace LegionKnight
         {
             m_Weaponer.RemoveProjectileAbilities(ability);
         }
+        public void SetWeaponCanActive(bool set)
+        {
+            m_PassiveSkill.SetCanActive(set);
+        }
     }
     public partial class PlayerAgent
     {
         public void ActiveWeaponProjectileAbility(string abilityName)
         {
             Player.Instance.ActiveWeaponProjectileAbility(abilityName);
+        }
+        public void SetWeaponCanActive(bool set)
+        {
+            Player.Instance.SetWeaponCanActive(set);
         }
     }
 }

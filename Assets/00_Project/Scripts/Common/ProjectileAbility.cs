@@ -14,6 +14,15 @@ namespace LegionKnight
         public string AbilityName => m_AbilityName;
         private void Start()
         {
+            AddAbilitiesInternal();
+        }
+        private void OnDestroy()
+        {
+            RemoveAbilitiesInternal();
+        }
+
+        private void AddAbilitiesInternal()
+        {
             switch (m_AbilityOwner)
             {
                 case SkillOwner.Player:
@@ -22,6 +31,19 @@ namespace LegionKnight
                     break;
                 case SkillOwner.Boss:
                     GameManager.Instance.AddBosProjectileAbilities(this);
+                    break;
+            }
+        }
+        private void RemoveAbilitiesInternal()
+        {
+            switch (m_AbilityOwner)
+            {
+                case SkillOwner.Player:
+                    Player.Instance.RemoveWeaponProjectileAbilities(this);
+                    Player.Instance.RemoveSkillProjectileAbilities(this);
+                    break;
+                case SkillOwner.Boss:
+                    GameManager.Instance.RemoveBosProjectileAbilities(this);
                     break;
             }
         }

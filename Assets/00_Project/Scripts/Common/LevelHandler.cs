@@ -74,27 +74,6 @@ namespace LegionKnight
             m_LevelObject.RemoveRealStanbyPlatform(standby);
         }
 
-        public void SetWeaponActive(bool set)
-        {
-            m_SpawnedBosEnemy.SetWeaponActive(set);
-        }
-        public void BosShot(int set)
-        {
-            m_SpawnedBosEnemy.Shot(set);
-        }
-        public void AddBossAttack(BosAttack add)
-        {
-            m_SpawnedBosEnemy.AddBossAttack(add);
-        }
-        public void RemoveBossAttack(BosAttack add)
-        {
-            m_SpawnedBosEnemy.RemoveBossAttack(add);
-        }
-        public void ActiveSkills()
-        {
-            m_SpawnedBosEnemy.ActiveSkills();
-        }
-
         private bool m_BosTriggered = false;
         public bool BosTriggered => m_BosTriggered;
         public void SetBosTriggered(bool set)

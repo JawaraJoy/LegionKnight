@@ -1,16 +1,16 @@
 using Rush;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
     public partial class BosDamageable : Damageable
     {
-        /*protected override void OnContactedBehaviourInvoke(IContactable other)
+        protected override void OnDeathInvoke()
         {
-            base.OnContactedBehaviourInvoke(other);
-
-            
-        }*/
+            base.OnDeathInvoke();
+            GameManager.Instance.BosDeathTriggered();
+        }
     }
     public partial class BosEnemy
     {
@@ -20,6 +20,27 @@ namespace LegionKnight
         public void InitDamageable(int healthBonus)
         {
             m_Damageable.Init(0, m_BosDefinition.Health + healthBonus);
+        }
+    }
+    public partial class LevelHandler
+    {
+        [SerializeField]
+        private UnityEvent m_OnBosDeath = new();
+
+        public void BosDeathTriggered()
+        {
+            OnBosDeathInvoke();
+        }
+        private void OnBosDeathInvoke()
+        {
+            m_OnBosDeath?.Invoke();
+        }
+    }
+    public partial class GameManager
+    {
+        public void BosDeathTriggered()
+        {
+            m_LevelManager.BosDeathTriggered();
         }
     }
 }

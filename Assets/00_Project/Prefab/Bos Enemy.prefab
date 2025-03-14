@@ -75,37 +75,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &1399768842841576823
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3337077265507135571}
-  m_Layer: 0
-  m_Name: Form 2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3337077265507135571
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1399768842841576823}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -4, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1771341080360889671}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1511037597195118546
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,37 +424,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &2250834141112227359
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8306013719426343529}
-  m_Layer: 0
-  m_Name: Form 1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8306013719426343529
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2250834141112227359}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -4, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1771341080360889671}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2338243009283297824
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,6 +555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a03e872847374264bb574c2ac7bcc9fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CanActive: 1
   m_SkillIndex: 0
   m_SkillActivations:
   - m_SkillName: Electric Barier
@@ -11221,80 +11160,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &7639046249330065694
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1771341080360889671}
-  - component: {fileID: 5907034391778604629}
-  m_Layer: 0
-  m_Name: Bos Weapon
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1771341080360889671
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7639046249330065694}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8306013719426343529}
-  - {fileID: 3337077265507135571}
-  m_Father: {fileID: 6721555490230484823}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5907034391778604629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7639046249330065694}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4380f0031be0b5443a64589798a58ccb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_WeaponForms:
-  - m_ProjectileSpawners:
-    - m_DamageOveride: 0
-      m_StartingForce: {x: 0, y: 0}
-      m_ProjectileAsset:
-        m_AssetGUID: 937a4d5014da39b48a4f0231e1a6a926
-        m_SubObjectName: 
-        m_SubObjectGUID: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      m_SpawnPost: {fileID: 8306013719426343529}
-      m_OnWeaponSpawned:
-        m_PersistentCalls:
-          m_Calls: []
-  - m_ProjectileSpawners:
-    - m_DamageOveride: 0
-      m_StartingForce: {x: 0, y: 0}
-      m_ProjectileAsset:
-        m_AssetGUID: ad8cf68871262b84898cd69b81bb5732
-        m_SubObjectName: 
-        m_SubObjectGUID: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      m_SpawnPost: {fileID: 8306013719426343529}
-      m_OnWeaponSpawned:
-        m_PersistentCalls:
-          m_Calls: []
-  m_BosAttacks: []
 --- !u!1 &7718044415305465908
 GameObject:
   m_ObjectHideFlags: 0
@@ -16268,7 +16133,6 @@ Transform:
   - {fileID: 6581030489989390694}
   - {fileID: 5554095293036852163}
   - {fileID: 2060144078254009600}
-  - {fileID: 1771341080360889671}
   - {fileID: 3511848407714668274}
   - {fileID: 7524308360005312065}
   - {fileID: 6708196066501924264}
@@ -16290,21 +16154,8 @@ MonoBehaviour:
   m_BosDefinition: {fileID: 11400000, guid: 7090a21725d9502408643e33f9f95bda, type: 2}
   m_OnSetBosDefinition:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5907034391778604629}
-        m_TargetAssemblyTypeName: LegionKnight.Weapon, Assembly-CSharp
-        m_MethodName: SetWeaponActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
   m_BosSkill: {fileID: 776969825580286560}
-  m_BosWeapon: {fileID: 5907034391778604629}
 --- !u!114 &9048604627607117514
 MonoBehaviour:
   m_ObjectHideFlags: 0
