@@ -305,6 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e850a1e2005f3345a11ecb09c1f56a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CanActive: 1
   m_SkillIndex: 0
   m_SkillActivations: []
   m_OnActive:
@@ -337,6 +338,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_ProjectileAbilities: []
 --- !u!114 &4987369106493199891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,6 +364,7 @@ GameObject:
   - component: {fileID: 1349614074802543027}
   - component: {fileID: 1112108184134015428}
   - component: {fileID: 8886077217522264868}
+  - component: {fileID: 7754390084881475302}
   m_Layer: 12
   m_Name: Touch Down
   m_TagString: Untagged
@@ -442,18 +445,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LegionKnight.Weapon, Assembly-CSharp
-        m_MethodName: Shot
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 0
       - m_Target: {fileID: 8886077217522264868}
         m_TargetAssemblyTypeName: LegionKnight.GameplayPanelAgent, Assembly-CSharp
         m_MethodName: SetWeaponCounterView
@@ -466,18 +457,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LegionKnight.PassiveSkill, Assembly-CSharp
-        m_MethodName: AddManaToAll
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 0
       - m_Target: {fileID: 6368892546450467708}
         m_TargetAssemblyTypeName: LegionKnight.PassiveSkill, Assembly-CSharp
         m_MethodName: ForceActivated
@@ -494,6 +473,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: LegionKnight.PassiveSkill, Assembly-CSharp
         m_MethodName: AddManaToAll
         m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7754390084881475302}
+        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
+        m_MethodName: OnNormalTouchDown
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -521,6 +512,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: LegionKnight.TextMeshSpawner, Assembly-CSharp
         m_MethodName: SpawnText
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7754390084881475302}
+        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
+        m_MethodName: OnPerectTouchDownInvoke
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -568,18 +571,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LegionKnight.Weapon, Assembly-CSharp
-        m_MethodName: Shot
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 0
       - m_Target: {fileID: 8886077217522264868}
         m_TargetAssemblyTypeName: LegionKnight.GameplayPanelAgent, Assembly-CSharp
         m_MethodName: SetWeaponCounterView
@@ -592,18 +583,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LegionKnight.PassiveSkill, Assembly-CSharp
-        m_MethodName: AddManaToAll
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 12
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 0
       - m_Target: {fileID: 6368892546450467708}
         m_TargetAssemblyTypeName: LegionKnight.PassiveSkill, Assembly-CSharp
         m_MethodName: ForceActivated
@@ -784,6 +763,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea07df3edc383314aa88ce28aa5cf3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7754390084881475302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1396604036348509970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1630796249046252441
@@ -11313,6 +11304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c396ee0df09f1459e1fa018a320f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CanActive: 1
   m_SkillIndex: 0
   m_SkillActivations: []
   m_OnActive:
@@ -11321,6 +11313,7 @@ MonoBehaviour:
   m_OnManacharge:
     m_PersistentCalls:
       m_Calls: []
+  m_ProjectileAbilities: []
 --- !u!1 &5531239023346532792
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,6 @@ namespace LegionKnight
         private LevelDefinition m_LevelDefinition;
 
         private LevelObject m_LevelObject;
-
         [SerializeField]
         private Currency m_CurrentCoinReward;
         [SerializeField]
@@ -36,6 +35,20 @@ namespace LegionKnight
         public BosEnemy SpawnedBosEnemy => m_SpawnedBosEnemy;
         [SerializeField]
         private UnityEvent m_OnResetBoss = new();
+
+        [SerializeField]
+        private UnityEvent m_OnPerfectTouchDown = new();
+        [SerializeField]
+        private UnityEvent m_OnNormalTouchDown = new();
+
+        public void OnPerectTouchDownInvoke()
+        {
+            m_OnPerfectTouchDown?.Invoke();
+        }
+        public void OnNormalTouchDown()
+        {
+            m_OnNormalTouchDown?.Invoke();
+        }
         public void SetBosSpawnCount(int set)
         {
             m_BosSpawnCount = set;

@@ -15,6 +15,15 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnActive;
         public string SkillName => m_SkillName;
+
+        private SkillDefinition m_SkillDefinition;
+
+        public void Init(SkillDefinition skillDefinition)
+        {
+            m_SkillDefinition = skillDefinition;
+            m_SkillName = m_SkillDefinition.SkillName;
+            m_Icon.sprite = m_SkillDefinition.Icon;
+        }
         public void SetFill(float fill)
         {
             m_Fill.fillAmount = fill;

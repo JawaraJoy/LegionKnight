@@ -84,7 +84,14 @@ namespace LegionKnight
             
         }
 
-        
+        public void OnPerectTouchDownInvoke()
+        {
+            m_LevelManager.OnPerectTouchDownInvoke();
+        }
+        public void OnNormalTouchDown()
+        {
+            m_LevelManager.OnNormalTouchDown();
+        }
     }
 
     public partial class LevelManagerAgent
@@ -92,7 +99,14 @@ namespace LegionKnight
         public void SetBosSpawnCount(int set)
         {
             GameManager.Instance.SetBosSpawnCount(set);
-
+        }
+        public void OnPerectTouchDownInvoke()
+        {
+            GameManager.Instance.OnPerectTouchDownInvoke();
+        }
+        public void OnNormalTouchDown()
+        {
+            GameManager.Instance.OnNormalTouchDown();
         }
     }
 }

@@ -521,6 +521,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7524308360005312065}
   - component: {fileID: 776969825580286560}
+  - component: {fileID: 7710258567996226833}
   m_Layer: 0
   m_Name: Bos Skill
   m_TagString: Untagged
@@ -558,7 +559,7 @@ MonoBehaviour:
   m_CanActive: 1
   m_SkillIndex: 0
   m_SkillActivations:
-  - m_SkillName: Electric Barier
+  - m_SkillName: Electric Barrier
     m_SkillOwner: 1
     m_ManaThreshold: 10
     m_SkillAsset:
@@ -590,10 +591,47 @@ MonoBehaviour:
         m_Calls: []
   m_OnActive:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7710258567996226833}
+        m_TargetAssemblyTypeName: LegionKnight.GameplayPanelAgent, Assembly-CSharp
+        m_MethodName: ActiveBosSkill
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnManacharge:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7710258567996226833}
+        m_TargetAssemblyTypeName: LegionKnight.GameplayPanelAgent, Assembly-CSharp
+        m_MethodName: SetBosSkillViewFill
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_ProjectileAbilities: []
+--- !u!114 &7710258567996226833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2507759537945367784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea07df3edc383314aa88ce28aa5cf3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2636332533635652138
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,17 +1,68 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
     public partial class SkillContainer : UIView
     {
         [SerializeField]
+        private AssetReferenceGameObject m_SkillViewAsset;
+
+        [SerializeField]
         private List<SkillView> m_SkillViews = new();
+
+        private CharacterDefinition m_CharacterDefnition;
 
         private SkillView GetSkillView(string skillName)
         {
             SkillView match = m_SkillViews.Find(x => x.SkillName == skillName);
             return match;
+        }
+        private void AddSkillViewInternal(SkillView skill)
+        {
+            if (m_SkillViews.Contains(GetSkillView(skill.SkillName))) return;
+            m_SkillViews.Add(skill);
+        }
+        private void RemoveSkillViewInternal(SkillView skill)
+        {
+            if (!m_SkillViews.Contains(GetSkillView(skill.SkillName))) return;
+            m_SkillViews.Remove(skill);
+            Destroy(skill.gameObject);
+        }
+        private void ClearViews()
+        {
+            foreach(SkillView skill in m_SkillViews)
+            {
+                Destroy(skill.gameObject);
+            }
+            m_SkillViews.Clear();
+        }
+        public void Init(CharacterDefinition definition)
+        {
+            ClearViews();
+            m_CharacterDefnition = definition;
+            List<SkillDefinition> skills = m_CharacterDefnition.Passives;
+            foreach(SkillDefinition skill in skills)
+            {
+                SpawnSkillView(skill);
+            }
+        }
+        private IEnumerator SpawningSkillView(SkillDefinition skill)
+        {
+            AsyncOperationHandle<GameObject> handle = m_SkillViewAsset.InstantiateAsync(m_Content.transform, false);
+            yield return handle;
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                GameObject result = handle.Result;
+                if(result.TryGetComponent(out SkillView view))
+                {
+                    view.Init(skill);
+                    AddSkillViewInternal(view);
+                }
+            }
         }
         public void SetFill(string skillName, float fill)
         {
@@ -21,41 +72,10 @@ namespace LegionKnight
         {
             GetSkillView(skillName).Active();
         }
-    }
-    public partial class GameplayPanel
-    {
-        public void SetFill(string skillName, float fill)
+        private void SpawnSkillView(SkillDefinition skill)
         {
-            GetBinding<SkillContainer>().SetFill(skillName, fill);
-        }
-        public void Active(string skillName)
-        {
-            GetBinding<SkillContainer>().Active(skillName);
+            StartCoroutine(SpawningSkillView(skill));
         }
     }
-
-    public partial class GameManager
-    {
-        public void SetSkillViewFill(string skillName, float fill)
-        {
-            GameplayPanel panel = GetPanel<GameplayPanel>();
-            panel.SetFill(skillName, fill);
-        }
-        public void Active(string skillName)
-        {
-            GameplayPanel panel = GetPanel<GameplayPanel>();
-            panel.Active(skillName);
-        }
-    }
-    public partial class GameplayPanelAgent
-    {
-        public void SetSkillViewFill(string skillName, float fill)
-        {
-            GameManager.Instance.SetSkillViewFill(skillName, fill);
-        }
-        public void Active(string skillName)
-        {
-            GameManager.Instance.Active(skillName);
-        }
-    }
+    
 }
