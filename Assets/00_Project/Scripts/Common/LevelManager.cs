@@ -20,6 +20,10 @@ namespace LegionKnight
         {
             m_LevelManager.SetLevelObject(set);
         }
+        public void ResetPlayerPost()
+        {
+            m_LevelManager.ResetPlayerPost();
+        }
         public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
         {
             m_LevelManager.SetCurrentTouchDownPost(playerTouchDown);
@@ -107,6 +111,10 @@ namespace LegionKnight
         public void OnNormalTouchDown()
         {
             GameManager.Instance.OnNormalTouchDown();
+        }
+        public void ResetPlayerPost()
+        {
+            GameManager.Instance.ResetPlayerPost();
         }
     }
 }

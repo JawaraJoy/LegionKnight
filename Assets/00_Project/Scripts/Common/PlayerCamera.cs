@@ -1,42 +1,22 @@
-using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public partial class PlayerCamera : CameraHandler
+    public partial class PlayerCamera : Singleton<PlayerCamera>
     {
+        private bool m_StayFollow;
+        [SerializeField]
+        private UnityEvent<bool> m_OnSetStayFollow = new();
         
-    }
-    public partial class Player
-    {
-        /*[SerializeField]
-        private PlayerCamera m_PlayerCamera;
-        public void SetCamera()
+        public void SetStayFollow(bool set)
         {
-            m_PlayerCamera.SetCamera();
+            m_StayFollow = set;
+            OnSetStayFollowInvoke();
         }
-        public void RemoveCamera()
+        private void OnSetStayFollowInvoke()
         {
-            m_PlayerCamera.RemoveCamera();
+            m_OnSetStayFollow?.Invoke(m_StayFollow);
         }
-        public void SetOffsite(Vector3 set)
-        {
-            m_PlayerCamera.SetOffsite(set);
-        }*/
-    }
-    public partial class PlayerAgent
-    {
-        /*public void SetCamera()
-        {
-            Player.Instance.SetCamera();
-        }
-        public void RemoveCamera()
-        {
-            Player.Instance.RemoveCamera();
-        }
-        public void SetOffsite(Vector3 set)
-        {
-            Player.Instance.SetOffsite(set);
-        }*/
     }
 }

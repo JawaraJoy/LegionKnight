@@ -33,7 +33,11 @@ namespace LegionKnight
         {
             m_CharacterJump.SetMaxJumpDistance(set);
         }
-        
+        public void SetUseHoldJump(bool set)
+        {
+            m_CharacterJump.SetUseHoldJump(set);
+        }
+
     }
     public partial class PlayerAgent
     {
@@ -49,6 +53,10 @@ namespace LegionKnight
         public void SetMaxJumpDistance(float set)
         {
             Player.Instance.SetMaxJumpDistance(set);
+        }
+        public void SetUseHoldJump(bool set)
+        {
+            Player.Instance.SetUseHoldJump(set);
         }
     }
 }

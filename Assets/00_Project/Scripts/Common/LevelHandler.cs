@@ -68,6 +68,10 @@ namespace LegionKnight
                // Destroy(d.gameObject);
             }
         }
+        public void ResetPlayerPost()
+        {
+            m_LevelObject.ResetPlayerPost();
+        }
         public void SetSpawnedBosEnemy(BosEnemy set)
         {
             m_SpawnedBosEnemy = set;

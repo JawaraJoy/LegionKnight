@@ -52,7 +52,6 @@ namespace LegionKnight
         {
             GameManager.Instance.SetLevelObject(this);
             AddRealStanbyPlatformInternal(GetLevelDefinition().GetPlatformAssets());
-
         }
         public void AddRealStanbyPlatform(List<StanbyPlatform> standby)
         {
@@ -177,12 +176,15 @@ namespace LegionKnight
             ShowInternal();
             ClearPlatform();
             DestinationReset();
-            yield return new WaitForSeconds(0.5f);
             Player.Instance.Reborn();
-            Player.Instance.SetPosition(m_PlayerStartPosition.position);
+            //yield return new WaitForSeconds(0.5f);
             yield return new WaitForSeconds(2f);
             SpawnPlatformInternal();
             
+        }
+        public void ResetPlayerPost()
+        {
+            Player.Instance.SetPosition(m_PlayerStartPosition.position);
         }
         private void ClearPlatform()
         {

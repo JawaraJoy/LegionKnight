@@ -40,6 +40,16 @@ namespace LegionKnight
             }
             m_SkillViews.Clear();
         }
+        public void Init()
+        {
+            ClearViews();
+            m_CharacterDefnition = Player.Instance.CharacterDefinition;
+            List<SkillDefinition> skills = m_CharacterDefnition.Passives;
+            foreach (SkillDefinition skill in skills)
+            {
+                SpawnSkillView(skill);
+            }
+        }
         public void Init(CharacterDefinition definition)
         {
             ClearViews();

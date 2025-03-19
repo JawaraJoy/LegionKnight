@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.SocialPlatforms;
 
 namespace LegionKnight
 {
@@ -12,6 +13,8 @@ namespace LegionKnight
         private int m_DamageOveride;
         [SerializeField]
         private Vector2 m_StartingForce;
+        [SerializeField]
+        private bool m_Local = false;
         [SerializeField]
         private AssetReferenceGameObject m_ProjectileAsset;
         private AsyncOperationHandle<GameObject> m_Handle;
@@ -26,7 +29,14 @@ namespace LegionKnight
 
         public void LoadProjectile()
         {
-            m_Handle = m_ProjectileAsset.InstantiateAsync(m_SpawnPost.position, Quaternion.identity);
+            if (m_Local)
+            {
+                m_Handle = m_ProjectileAsset.InstantiateAsync(m_SpawnPost, false);
+            }
+            else
+            {
+                m_Handle = m_ProjectileAsset.InstantiateAsync(m_SpawnPost.position, Quaternion.identity);
+            }
             m_Handle.Completed += SpawnProjectile;
         }
 

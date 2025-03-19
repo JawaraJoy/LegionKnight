@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -13,6 +14,8 @@ namespace LegionKnight
         [SerializeField]
         private Image m_Icon;
         [SerializeField]
+        private TextMeshProUGUI m_SkilNameText;
+        [SerializeField]
         private UnityEvent m_OnActive;
         public string SkillName => m_SkillName;
 
@@ -23,6 +26,7 @@ namespace LegionKnight
             m_SkillDefinition = skillDefinition;
             m_SkillName = m_SkillDefinition.SkillName;
             m_Icon.sprite = m_SkillDefinition.Icon;
+            m_SkilNameText.text = m_SkillName;
         }
         public void SetFill(float fill)
         {

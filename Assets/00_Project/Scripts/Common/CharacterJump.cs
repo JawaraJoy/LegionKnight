@@ -8,6 +8,8 @@ namespace LegionKnight
         [SerializeField]
         private bool m_CanJump;
         [SerializeField]
+        private bool m_UseHoldJump = false;
+        [SerializeField]
         private float m_JumpForce = 10f;           // Force applied for the jump
         [SerializeField, Range(0.001f, 1f)]
         private float m_JumpPressMaxDuration = 1f;
@@ -77,6 +79,10 @@ namespace LegionKnight
         {
             m_CanJump = set;
         }
+        public void SetUseHoldJump(bool set)
+        {
+            m_UseHoldJump = set;
+        }
 
         void CheckGrounded()
         {
@@ -109,7 +115,7 @@ namespace LegionKnight
         {
             m_IsJumping = false;
 
-            if (m_Rb.linearVelocityY > 0)
+            if (m_UseHoldJump && m_Rb.linearVelocityY > 0)
             {
                 m_Rb.linearVelocity = new Vector2(m_Rb.linearVelocityX, m_Rb.linearVelocityY * 0.6f);
             }
@@ -119,7 +125,7 @@ namespace LegionKnight
         {
             m_OnLinearVelocityYChanged?.Invoke(val);
 
-            if (m_Rb.linearVelocityY > 0f && m_IsJumping)
+            if (m_UseHoldJump && m_Rb.linearVelocityY > 0f && m_IsJumping)
             {
                 m_JumpPressDuration += Time.deltaTime;
                 if (m_JumpPressDuration > m_JumpPressMaxDuration)

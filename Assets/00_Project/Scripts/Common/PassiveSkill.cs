@@ -189,6 +189,7 @@ namespace LegionKnight
         }
         public void Init(List<SkillDefinition> definitions)
         {
+            m_SkillActivations.Clear();
             foreach(SkillDefinition skill in definitions)
             {
                 AddSkillInternal(skill);

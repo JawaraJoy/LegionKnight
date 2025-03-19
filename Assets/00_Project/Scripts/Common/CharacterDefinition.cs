@@ -10,18 +10,24 @@ namespace LegionKnight
     {
         [SerializeField]
         private Sprite m_Icon;
+        [SerializeField]
+        private Sprite m_SmallIcon;
         [Header("Stat")]
         [SerializeField]
         private int m_Health;
         [SerializeField]
         private int m_Attack;
         public Sprite Icon => m_Icon;
+        public Sprite SmallIcon => m_SmallIcon;
         public int Attack => m_Attack;
         public int Health => m_Health;
+        [SerializeField]
+        private Platform m_UniquePlatform;
         [SerializeField]
         private List<SkillDefinition> m_Weapons = new();
         [SerializeField]
         private List<SkillDefinition> m_Passives = new();
+        public Platform UniquePlatform => m_UniquePlatform;
         public List<SkillDefinition> Weapons => m_Weapons;
         public List<SkillDefinition> Passives => m_Passives;
     }

@@ -8,6 +8,8 @@ using UnityEngine.Events;
 public class ObjectFollow : MonoBehaviour
 {
     [SerializeField]
+    private bool m_StayFollow = true;
+    [SerializeField]
     private string m_TargetTag = "Player";
     [SerializeField]
     private Transform m_Target;
@@ -32,8 +34,13 @@ public class ObjectFollow : MonoBehaviour
     public void Follow()
     {
         if (m_Target == null) return;
+        if (!m_StayFollow) return;
         Vector3 targetPosition = m_Target.position + offset;
         Vector3 smoothPosition = Vector3.Lerp(transform.position, targetPosition, smoothFactor*Time.fixedDeltaTime);
         transform.position = smoothPosition;
+    }
+    public void SetStayFollow(bool set)
+    {
+        m_StayFollow = set;
     }
 }

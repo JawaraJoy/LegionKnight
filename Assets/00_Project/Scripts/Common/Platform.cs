@@ -27,8 +27,6 @@ namespace LegionKnight
         private bool m_ReachTriggered;
         private LevelDefinition m_LevelDefinition;
 
-        
-
         private void Update()
         {
             MoveToDestination();
