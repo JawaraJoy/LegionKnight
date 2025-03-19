@@ -176,8 +176,9 @@ namespace LegionKnight
             ShowInternal();
             ClearPlatform();
             DestinationReset();
+            yield return new WaitForSeconds(0.5f);
             Player.Instance.Reborn();
-            //yield return new WaitForSeconds(0.5f);
+            //Player.Instance.SetPosition(m_PlayerStartPosition.position);
             yield return new WaitForSeconds(2f);
             SpawnPlatformInternal();
             

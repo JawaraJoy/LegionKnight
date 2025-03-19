@@ -43,4 +43,9 @@ public class ObjectFollow : MonoBehaviour
     {
         m_StayFollow = set;
     }
+
+    public void SetOffsite(Vector3 set)
+    {
+        offset = set;
+    }
 }

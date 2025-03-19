@@ -69,6 +69,8 @@ namespace LegionKnight
 
         private IEnumerator HidingLoadScene()
         {
+            yield return new WaitForEndOfFrame();
+            
             yield return new WaitForSeconds(m_HideLoadingPanelDelay);
             GameManager.Instance.HidePanel(PanelId.LoadingPanelId);
             m_OnSceneLoaded?.Invoke();
