@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
@@ -10,5 +12,49 @@ namespace LegionKnight
         private AssetReferenceGameObject m_CharacterSelectViewAsset;
 
         private List<CharacterSelectView> m_SpawnedCharacterSelectView = new();
+
+        [SerializeField]
+        private Transform m_SpawnContainer;
+
+        protected override void OnShowInvoke()
+        {
+            base.OnShowInvoke();
+            m_SpawnedCharacterSelectView = new List<CharacterSelectView>(m_SpawnContainer.GetComponentsInChildren<CharacterSelectView>(true));
+            List<CharacterUnit> characterDecks = Player.Instance.CharacterUnits;
+            foreach (CharacterUnit unit in characterDecks)
+            {
+                if (GetSelectView(unit.Definition) == null)
+                {
+                    SpawnCharacterSelectView(unit);
+                }
+            }
+        }
+
+        private CharacterSelectView GetSelectView(CharacterDefinition defi)
+        {
+            CharacterSelectView view = m_SpawnedCharacterSelectView.Find(x => x.Definition == defi);
+            if (view == null)
+            {
+                return null;
+            }
+            return view;
+        }
+        private void SpawnCharacterSelectView(CharacterUnit unit)
+        {
+            StartCoroutine(SpawningCharacterSelectView(unit));
+        }
+        private IEnumerator SpawningCharacterSelectView(CharacterUnit unit)
+        {
+            AsyncOperationHandle<GameObject> handle = m_CharacterSelectViewAsset.InstantiateAsync(m_SpawnContainer, false);
+            yield return handle;
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                GameObject result = handle.Result;
+                if (result.TryGetComponent(out CharacterSelectView view))
+                {
+                    view.Init(unit);
+                }
+            }
+        }
     }
 }

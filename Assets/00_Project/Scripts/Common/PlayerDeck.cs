@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
@@ -27,6 +28,11 @@ namespace LegionKnight
         {
             m_PlayerDeck.UsedCharacter();
         }
+        public CharacterUnit GetCharacterUnit(CharacterDefinition definition)
+        {
+            return m_PlayerDeck.GetCharacterUnit(definition);
+        }
+        public List<CharacterUnit> CharacterUnits => m_PlayerDeck.CharacterUnits;
     }
     public partial class PlayerAgent
     {
