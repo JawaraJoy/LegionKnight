@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -22,26 +23,28 @@ namespace LegionKnight
                 Destroy(image.gameObject);
             }
             m_SkillIcons.Clear();
+            m_Skills.Clear();
             m_Skills = new List<SkillDefinition>(defi.Passives);
-            SpawnImage();
+            SpawSkillIcons(m_Skills);
         }
-        private void SpawnImage()
+        private void SpawSkillIcons(List<SkillDefinition> definitions)
         {
-            foreach(SkillDefinition skill in m_Skills)
+            foreach (SkillDefinition defi in definitions)
             {
-                AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync(m_ImageAsset, m_Content.transform, false);
-                OnSpawnIcon(handle, skill);
+                StartCoroutine(SpawningIcon(defi));
             }
         }
-        private void OnSpawnIcon(AsyncOperationHandle<GameObject> handle, SkillDefinition skill)
+        private IEnumerator SpawningIcon(SkillDefinition defi)
         {
+            AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync(m_ImageAsset, m_Content.transform, false);
+            yield return handle;
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 GameObject result = handle.Result;
-                if (result.TryGetComponent(out Image image))
+                if (result.TryGetComponent(out Image icon))
                 {
-                    image.sprite = skill.Icon;
-                    m_SkillIcons.Add(image);
+                    icon.sprite = defi.Icon;
+                    m_SkillIcons.Add(icon);
                 }
             }
         }

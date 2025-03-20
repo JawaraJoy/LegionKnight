@@ -15,14 +15,18 @@ namespace LegionKnight
         public void SetCounter(int set)
         {
             m_Counter = set;
+            if (m_Counter > m_Actives.Count)
+            {
+                //m_Actives[i].gameObject.SetActive(true);
+                return;
+            }
             foreach (Image image in m_Actives)
             {
                 image.gameObject.SetActive(false);
             }
             for (int i = 0; i < m_Counter; i++)
             {
-                if (m_Counter > m_Actives.Count) return;
-                m_Actives[i].gameObject.SetActive(true);
+                m_Actives[i].gameObject.SetActive(true);  
             }
         }
     }
