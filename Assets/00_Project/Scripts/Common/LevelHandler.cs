@@ -18,11 +18,14 @@ namespace LegionKnight
         [SerializeField]
         private Currency m_CurrentCoinReward;
         [SerializeField]
-        private Currency m_CurrentCoinHighScore;
+        private Currency m_CurrentScore;
+        [SerializeField]
+        private Currency m_CurrentHighScore;
         [SerializeField]
         private UnityEvent m_OnPlay = new();
         public Currency CurrentCoinReward => m_CurrentCoinReward;
-        public Currency CurrentCoinHighScore => m_CurrentCoinHighScore;
+        public Currency CurrentScore => m_CurrentScore;
+        public Currency CurrentHighScore => m_CurrentHighScore;
 
         public Transform PlayerStartPostion => m_LevelObject.PlayerStartPostion;
         public bool LevelOver => m_LevelOver;
@@ -121,6 +124,14 @@ namespace LegionKnight
         {
             SetLevelOverInternal(set);
         }
+        public void SetScoreAmount(int set)
+        {
+            SetScoreAmountInternal(set);
+        }
+        public void AddScoreAmount(int set)
+        {
+            AddScoreAmountInternal(set);
+        }
         private void SetLevelOverInternal(bool set)
         {
             m_LevelOver = set;
@@ -128,6 +139,16 @@ namespace LegionKnight
         private void SetRewardAmountInternal(int set)
         {
             m_CurrentCoinReward.SetAmount(set);
+            //DetermineHighScore();
+        }
+        private void SetScoreAmountInternal(int set)
+        {
+            m_CurrentScore.SetAmount(set);
+            DetermineHighScore();
+        }
+        private void AddScoreAmountInternal(int add)
+        {
+            m_CurrentScore.AddAmount(add);
             DetermineHighScore();
         }
         public void AddCurrencyRewardAmount(int add)
@@ -143,6 +164,7 @@ namespace LegionKnight
             m_CurrentCoinReward.AddAmount(add);
             DetermineHighScore();
         }
+        
         private void RemoveAmountInternal(int remove)
         {
             m_CurrentCoinReward.RemoveAmount(remove);
@@ -150,12 +172,12 @@ namespace LegionKnight
 
         private void DetermineHighScore()
         {
-            int currentScore = m_CurrentCoinReward.Amount;
-            int currentHighScore = m_CurrentCoinHighScore.Amount;
+            int currentScore = m_CurrentScore.Amount;
+            int currentHighScore = m_CurrentHighScore.Amount;
 
             if (currentScore > currentHighScore)
             {
-                m_CurrentCoinHighScore.SetAmount(currentScore);
+                m_CurrentHighScore.SetAmount(currentScore);
             }
         }
 
@@ -176,6 +198,7 @@ namespace LegionKnight
         private void PlayInternal()
         {
             SetRewardAmountInternal(0);
+            SetScoreAmountInternal(0);
             SetLevelOverInternal(false);
 
             m_LevelObject.Play();

@@ -57,8 +57,7 @@ namespace LegionKnight
         {
             if (HasContact(other))
             {
-
-                Debug.Log($"Remove Contactable");
+                
                 if (!CanContactInternal(other, out IContactable contactable)) return;
                 OnDeContactBehaviourInvoke(contactable);
             }
@@ -82,14 +81,15 @@ namespace LegionKnight
         }
         protected virtual void OnContactedBehaviourInvoke(IContactable other)
         {
-            m_ContactableList.Add(other.GetSelf());
             m_OnContacted?.Invoke(other.GetSelf());
-
+            m_ContactableList.Add(other.GetSelf());
+            Debug.Log($"Add Contactable {other.GetSelf().name}");
         }
         protected virtual void OnDeContactBehaviourInvoke(IContactable other)
         {
-            m_ContactableList.Remove(other.GetSelf());
             m_OnDeContacted?.Invoke(other.GetSelf());
+            m_ContactableList.Remove(other.GetSelf());
+            Debug.Log($"Remove Contactable {other.GetSelf().name}");
         }
         public void SetCanContact(bool can)
         {

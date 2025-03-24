@@ -4,10 +4,6 @@ namespace LegionKnight
 {
     public partial class GameplayPanelAgent : MonoBehaviour
     {
-        public void SetCurrencyRewardView(Currency currency)
-        {
-            GameManager.Instance.SetCurrencyRewardView(currency);
-        }
         public void Show()
         {
             GameManager.Instance.ShowPanel(PanelId.GameplayPanelId);

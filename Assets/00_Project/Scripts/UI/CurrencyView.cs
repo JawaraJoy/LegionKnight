@@ -29,15 +29,5 @@ namespace LegionKnight
             m_AmountText.text = amount.ToString();
         }
     }
-    public partial class GameplayPanel
-    {
-        private CurrencyView GetCurrencyView()
-        {
-            return GetBinding<CurrencyView>();
-        }
-        public void SetCurrencyReward(Currency currency)
-        {
-            GetCurrencyView().SetView(currency);
-        }
-    }
+    
 }

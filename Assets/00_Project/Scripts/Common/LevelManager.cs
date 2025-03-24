@@ -16,6 +16,7 @@ namespace LegionKnight
         public bool LevelOver => m_LevelManager.LevelOver;
         public LevelDefinition LevelDefinition => m_LevelManager.LevelDefinition;
         public Currency CurrentCoinReward => m_LevelManager.CurrentCoinReward;
+        public Currency HighScore => m_LevelManager.CurrentHighScore;
         public void SetLevelObject(LevelObject set)
         {
             m_LevelManager.SetLevelObject(set);
@@ -96,10 +97,22 @@ namespace LegionKnight
         {
             m_LevelManager.OnNormalTouchDown();
         }
+        public void SetScoreAmount(int set)
+        {
+            m_LevelManager.SetScoreAmount(set);
+        }
+        public void AddScoreAmount(int set)
+        {
+            m_LevelManager.AddScoreAmount(set);
+        }
     }
 
     public partial class LevelManagerAgent
     {
+        public void AddCurrencyRewardAmount(int add)
+        {
+            GameManager.Instance.AddCurrencyRewardAmount(add);
+        }
         public void SetBosSpawnCount(int set)
         {
             GameManager.Instance.SetBosSpawnCount(set);
@@ -115,6 +128,14 @@ namespace LegionKnight
         public void ResetPlayerPost()
         {
             GameManager.Instance.ResetPlayerPost();
+        }
+        public void SetScoreAmount(int set)
+        {
+            GameManager.Instance.SetScoreAmount(set);
+        }
+        public void AddScoreAmount(int set)
+        {
+            GameManager.Instance.AddScoreAmount(set);
         }
     }
 }

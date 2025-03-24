@@ -112,7 +112,7 @@ namespace LegionKnight
         {
             SetStayPerfectCombo(0);
             int reward = GameManager.Instance.GetNormalTouchDownPoint();
-            GameManager.Instance.AddCurrencyRewardAmount(reward);
+            //GameManager.Instance.AddCurrencyRewardAmount(reward);
             
             m_OnNormalTouchDown?.Invoke(reward);
             m_PlatformContact.OnNormalTouchDownInvoke(reward);
@@ -121,7 +121,7 @@ namespace LegionKnight
         {
             AddStayPerfectCombo(1);
             int reward = m_StayPerfectCombo * GameManager.Instance.GetPerfectTouchDownPoint();
-            GameManager.Instance.AddCurrencyRewardAmount(reward);
+            //GameManager.Instance.AddCurrencyRewardAmount(reward);
             
             m_OnPerfectTouchDown?.Invoke(reward);
             m_PlatformContact?.OnPerfectTouchDownInvoke(reward);
