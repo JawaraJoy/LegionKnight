@@ -197,6 +197,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_CounterSlide: {fileID: 1737505981}
+  m_CounterText: {fileID: 1339617299}
   m_MainDrawRewardView: {fileID: 1591947031}
 --- !u!1 &20043804
 GameObject:
@@ -1938,7 +1939,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &387747272
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2303,6 +2304,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481822698}
   m_CullTransparentMesh: 1
+--- !u!114 &485016626 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6162330123650543774, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+  m_PrefabInstance: {fileID: 505776117}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e7e3378b1d2d34469ca13a597e82df6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &485016629 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8021155425122553139, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+  m_PrefabInstance: {fileID: 505776117}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea07df3edc383314aa88ce28aa5cf3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &498665360
 GameObject:
   m_ObjectHideFlags: 0
@@ -2675,17 +2698,57 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 485016626}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 485016629}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: SetPassiveCanActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: ActiveBosSkillViews
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: LegionKnight.PlayerAgent, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
+      value: LegionKnight.GameplayPanelAgent, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392633392219367608, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnPlay.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2412671971641608257, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
       propertyPath: m_FlexibleHeight
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2502088803870922420, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2502088803870922420, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2502088803870922420, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3430,7 +3493,7 @@ MonoBehaviour:
       m_PriceRate: 1
     m_MultipleDrawDiscount:
       m_Used: 1
-      m_PriceRate: 1
+      m_PriceRate: 0.7
     m_OnDrawResultSuccess:
       m_PersistentCalls:
         m_Calls:
@@ -3567,22 +3630,85 @@ MonoBehaviour:
       m_PriceRate: 0
     m_OnDrawResultSuccess:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 505776125}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     m_OnDrawResultFail:
       m_PersistentCalls:
         m_Calls: []
+  m_OnStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 505776125}
+        m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+        m_MethodName: SetBannerVisual
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 505776125}
+        m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+        m_MethodName: SetCounterSlideValue
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 505776125}
+        m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+        m_MethodName: SetMainDrawRewardIcon
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 505776125}
+        m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+        m_MethodName: SetPromoText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 505776125}
+        m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+        m_MethodName: SetSingleDrawButtonView
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 505776125}
+        m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+        m_MethodName: SetMultieDrawButtonView
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &505776120 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9151102892516974239, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
@@ -5505,7 +5631,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 697821635}
   m_OnClick:
     m_PersistentCalls:
@@ -5947,6 +6073,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 780854316}
+  - component: {fileID: 780854317}
   m_Layer: 5
   m_Name: Buttons
   m_TagString: Untagged
@@ -5974,6 +6101,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 400}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &780854317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780854315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0db9f5f8e01aa2f498112f66bdd615fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Content: {fileID: 1839744809}
+  m_OnShow:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHide:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &810055617 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5911975378579896491, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
@@ -7476,7 +7622,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1181074790
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8044,7 +8190,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1299500109
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11408,7 +11554,19 @@ MonoBehaviour:
   m_Content: {fileID: 1234976021}
   m_OnShow:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 780854317}
+        m_TargetAssemblyTypeName: LegionKnight.View, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
@@ -11420,6 +11578,21 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   m_SpawnPost: {fileID: 579277029}
   m_SpawnedItemViews: []
+  m_OnShowRewardDone:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 780854317}
+        m_TargetAssemblyTypeName: LegionKnight.View, Assembly-CSharp
+        m_MethodName: Show
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_GachaCost:
     m_Definition: {fileID: 0}
     m_Amount: 0

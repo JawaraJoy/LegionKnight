@@ -19,11 +19,11 @@ namespace LegionKnight
         {
             m_CurrentHealth = m_Health;
         }
-        protected override void OnContactedBehaviourInvoke(IContactable other)
+        protected override void OnContactedBehaviourInvoke(GameObject other)
         {
             base.OnContactedBehaviourInvoke(other);
 
-            if (other is Damageable projectile)
+            if (other.TryGetComponent(out Damageable projectile))
             {
                 TakeDamageInternal(projectile.Damage);
                 //Destroy(projectile.gameObject);

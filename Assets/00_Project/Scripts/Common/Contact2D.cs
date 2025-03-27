@@ -17,6 +17,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<GameObject> m_OnDeContacted = new();
 
+        [SerializeField]
         private List<GameObject> m_ContactableList = new();
         protected void SetCanContactInternal(bool set)
         {
@@ -37,7 +38,7 @@ namespace LegionKnight
         }
         private void OnTriggerExit2D(Collider2D collision)
         {
-            ContactBehaviour(collision.gameObject);
+            DeContactBehaviour(collision.gameObject);
         }
         private void OnTriggerExit(Collider other)
         {
@@ -48,8 +49,9 @@ namespace LegionKnight
         {
             if (!HasContact(other))
             {
-                if (!CanContactInternal(other, out IContactable contactable)) return;
-                OnContactedBehaviourInvoke(contactable);
+                if (!CanContactInternal(other)) return;
+                Debug.Log($"add Contactable");
+                OnContactedBehaviourInvoke(other);
             }
         }
 
@@ -57,19 +59,20 @@ namespace LegionKnight
         {
             if (HasContact(other))
             {
-                
-                if (!CanContactInternal(other, out IContactable contactable)) return;
-                OnDeContactBehaviourInvoke(contactable);
+                Debug.Log($"Remove Contactable");
+                if (!CanContactInternal(other)) return;
+                OnDeContactBehaviourInvoke(other);
             }
+            
         }
         public bool GetCanContact()
         {
             return m_CanContact;
         }
-        protected virtual bool CanContactInternal<T>(GameObject other, out T contactable) where T : IContactable
+        protected virtual bool CanContactInternal(GameObject other)
         {
             bool layerMatch = ((1 << other.layer) & m_ContactLayer) != 0;
-            bool isContactable = other.TryGetComponent(out contactable);
+            bool isContactable = other.TryGetComponent(out IContactable contactable);
             bool can = layerMatch && m_CanContact && contactable.GetCanContact() && isContactable;
             Debug.Log($"Can Contact {can}");
 
@@ -79,17 +82,17 @@ namespace LegionKnight
         {
             return m_ContactableList.Count > 0;
         }
-        protected virtual void OnContactedBehaviourInvoke(IContactable other)
+        protected virtual void OnContactedBehaviourInvoke(GameObject other)
         {
-            m_OnContacted?.Invoke(other.GetSelf());
-            m_ContactableList.Add(other.GetSelf());
-            Debug.Log($"Add Contactable {other.GetSelf().name}");
+            
+            m_ContactableList.Add(other);
+            m_OnContacted?.Invoke(other);
+
         }
-        protected virtual void OnDeContactBehaviourInvoke(IContactable other)
+        protected virtual void OnDeContactBehaviourInvoke(GameObject other)
         {
-            m_OnDeContacted?.Invoke(other.GetSelf());
-            m_ContactableList.Remove(other.GetSelf());
-            Debug.Log($"Remove Contactable {other.GetSelf().name}");
+            m_ContactableList.Remove(other);
+            m_OnDeContacted?.Invoke(other);
         }
         public void SetCanContact(bool can)
         {
@@ -104,6 +107,26 @@ namespace LegionKnight
         protected GameObject GetSelfInternal()
         {
             return gameObject;
+        }
+        private void OnDestroy()
+        {
+            RemoveSelf();
+        }
+
+        public void RemoveSelf()
+        {
+            foreach (var item in m_ContactableList)
+            {
+                if (item.TryGetComponent(out IContactable contactable))
+                {
+                    contactable.GetContactableList().Remove(gameObject);
+                }
+            }
+        }
+
+        public List<GameObject> GetContactableList()
+        {
+            return m_ContactableList;
         }
     }
 }

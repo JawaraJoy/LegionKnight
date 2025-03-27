@@ -42,7 +42,7 @@ namespace LegionKnight
         }
         public void SetWeaponCanActive(bool set)
         {
-            m_PassiveSkill.SetCanActive(set);
+            m_Weaponer.SetCanActive(set);
         }
     }
     public partial class PlayerAgent

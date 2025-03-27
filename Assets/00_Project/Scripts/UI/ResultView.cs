@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
@@ -15,6 +16,9 @@ namespace LegionKnight
 
         [SerializeField]
         private List<ItemView> m_SpawnedItemViews = new();
+
+        [SerializeField]
+        private UnityEvent m_OnShowRewardDone = new();
         public virtual void ShowResults(List<object> results)
         {
             foreach(ItemView item in m_SpawnedItemViews)
@@ -30,8 +34,10 @@ namespace LegionKnight
             for (int i = 0; i < results.Count; i++)
             {
                 yield return StartCoroutine(SpawningItemView(results[i]));
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
             }
+            yield return new WaitForSeconds(0.1f);
+            OnShowRewardDoneInvoke();
         }
         protected virtual IEnumerator SpawningItemView(object defi)
         {
@@ -47,6 +53,11 @@ namespace LegionKnight
                     m_SpawnedItemViews.Add(view);
                 }
             }
+        }
+
+        private void OnShowRewardDoneInvoke()
+        {
+            m_OnShowRewardDone?.Invoke();
         }
     }
 }

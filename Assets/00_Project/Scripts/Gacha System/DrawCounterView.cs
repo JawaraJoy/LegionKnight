@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,10 +8,15 @@ namespace LegionKnight
     {
         [SerializeField]
         private Slider m_CounterSlide;
-
+        [SerializeField]
+        private TextMeshProUGUI m_CounterText;
         public void SetCounterSlideValue(float rate)
         {
             m_CounterSlide.value = rate;
+        }
+        public void SetCounterText(int counter)
+        {
+            m_CounterText.text = counter.ToString();
         }
     }
     public partial class BannerPanel
@@ -19,12 +25,17 @@ namespace LegionKnight
         {
             GetBinding<DrawCounterView>().SetCounterSlideValue(rate);
         }
+        public void SetCounterText(int counter)
+        {
+            GetBinding<DrawCounterView>().SetCounterText(counter);
+        }
     }
     public partial class GachaManagerAgent
     {
         public void SetCounterSlideValue(GachaBanner banner)
         {
             GetBannerPanel().SetCounterSlideValue(banner.GetDrawCountRate());
+            GetBannerPanel().SetCounterText(banner.TotalDraws);
         }
     }
 }

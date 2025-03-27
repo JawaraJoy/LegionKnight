@@ -59,10 +59,10 @@ namespace LegionKnight
                 perfectTouch.OnReachInvoke(combo);
             }
         }
-        protected override void OnContactedBehaviourInvoke(IContactable other)
+        protected override void OnContactedBehaviourInvoke(GameObject other)
         {
             base.OnContactedBehaviourInvoke(other);
-            if (other.GetSelf().TryGetComponent(out PlatformContact platform))
+            if (other.TryGetComponent(out PlatformContact platform))
             {
                 m_PlatformContact = platform;
                 //Player.Instance.AddCurrencyAmount(platform.GetNormalTouchDown().CurrencyDefinition, platform.GetNormalTouchDown().Amount);
