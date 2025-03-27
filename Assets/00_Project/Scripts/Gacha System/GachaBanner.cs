@@ -106,10 +106,12 @@ namespace LegionKnight
             {
                 m_TotalDraws++;
                 results.Add(CalculateDrawResult());
+                
             }
             foreach(GachaReward re in results)
             {
                 allRewards += re.Definition.name;
+                re.ApplyRewardToPlayer();
             }
 
             if (!m_SkipTimeline)
@@ -125,7 +127,6 @@ namespace LegionKnight
 
         private GachaReward CalculateDrawResult()
         {
-
             if (m_TotalDraws >= GuaranteedDrawInternal)
             {
                 m_TotalDraws = 0; // Reset counter after main reward

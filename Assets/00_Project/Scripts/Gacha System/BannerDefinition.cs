@@ -54,7 +54,19 @@ namespace LegionKnight
             m_Amount = amount;
             m_DropRate = dropRate;
         }
-
+        public void ApplyRewardToPlayer()
+        {
+            if (m_Definition is CurrencyDefinition currency)
+            {
+                Player.Instance.AddCurrencyAmount(currency, m_Amount);
+                Debug.Log($"Add Currency {currency.name}, {m_Amount}");
+            }
+            if (m_Definition is CharacterDefinition character)
+            {
+                Player.Instance.SetOwned(character, true);
+                Debug.Log($"Character owned {character.name}");
+            }
+        }
     }
     [System.Serializable]
     public partial class GachaCurrencyCost

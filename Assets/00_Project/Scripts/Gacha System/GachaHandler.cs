@@ -17,6 +17,17 @@ namespace LegionKnight
 
         [SerializeField]
         private GachaBanner m_SelectedBanner;
+        [SerializeField]
+        private UnityEvent<GachaBanner> m_OnStart = new();
+        private void Start()
+        {
+            m_SelectedBanner = m_Banners[0];
+            OnStartInvoke();
+        }
+        private void OnStartInvoke()
+        {
+            m_OnStart?.Invoke(m_SelectedBanner);
+        }
         private GachaBanner GetGachaBannerInternal(BannerDefinition definition)
         {
             GachaBanner match = m_Banners.Find(x => x.Definition == definition);

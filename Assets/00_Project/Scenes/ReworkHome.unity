@@ -2923,6 +2923,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5458479012915004836, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetUsedCharacter
+      objectReference: {fileID: 0}
     - target: {fileID: 5774836069602021686, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
       propertyPath: m_Color.b
       value: 0.254717
@@ -3429,7 +3433,19 @@ MonoBehaviour:
       m_PriceRate: 1
     m_OnDrawResultSuccess:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 505776125}
+          m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+          m_MethodName: ShowResults
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_OnDrawResultFail:
       m_PersistentCalls:
         m_Calls: []
@@ -3551,7 +3567,19 @@ MonoBehaviour:
       m_PriceRate: 0
     m_OnDrawResultSuccess:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 505776125}
+          m_TargetAssemblyTypeName: 
+          m_MethodName: 
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_OnDrawResultFail:
       m_PersistentCalls:
         m_Calls: []
@@ -3588,6 +3616,26 @@ MonoBehaviour:
   - {fileID: 1852155796}
   - {fileID: 108197738}
   - {fileID: 2141557314}
+  m_SelectedBanner:
+    m_TotalDraws: 0
+    m_UseAltermatifCurrencyToDraw: 0
+    m_Definition: {fileID: 0}
+    m_SkipTimeline: 0
+    m_SingleDrawDiscount:
+      m_Used: 0
+      m_PriceRate: 0
+    m_MultipleDrawDiscount:
+      m_Used: 0
+      m_PriceRate: 0
+    m_OnDrawResultSuccess:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnDrawResultFail:
+      m_PersistentCalls:
+        m_Calls: []
+  m_OnSetSelectedBanner:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &505776122 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5329554191879765003, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
