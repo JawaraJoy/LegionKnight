@@ -19,6 +19,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnSelectedCharacter = new();
         public List<CharacterUnit> CharacterUnits => m_CharacterUnits;
+        public CharacterDefinition UsedCharacter => m_UsedCharacter;
         private CharacterUnit GetCharacterUnitInternal(CharacterDefinition definition)
         {
             CharacterUnit match = m_CharacterUnits.Find(x => x.Definition == definition);
@@ -40,7 +41,7 @@ namespace LegionKnight
         {
             GetCharacterUnitInternal(defi).SetOwned(set);
         }
-        public void UsedCharacter()
+        public void SetUsedCharacter()
         {
             m_UsedCharacter = m_SelectedCharacter;
             OnCharacterUsedInvoke();

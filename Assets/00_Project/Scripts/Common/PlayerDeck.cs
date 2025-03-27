@@ -24,15 +24,16 @@ namespace LegionKnight
         {
             m_PlayerDeck.SetSelectedCharacter(defi);
         }
-        public void UsedCharacter()
+        public void SetUsedCharacter()
         {
-            m_PlayerDeck.UsedCharacter();
+            m_PlayerDeck.SetUsedCharacter();
         }
         public CharacterUnit GetCharacterUnit(CharacterDefinition definition)
         {
             return m_PlayerDeck.GetCharacterUnit(definition);
         }
         public List<CharacterUnit> CharacterUnits => m_PlayerDeck.CharacterUnits;
+        public CharacterDefinition UsedCharacter => m_PlayerDeck.UsedCharacter;
     }
     public partial class PlayerAgent
     {
@@ -49,9 +50,9 @@ namespace LegionKnight
         {
             Player.Instance.SetSelectedCharacter(defi);
         }
-        public void UsedCharacter()
+        public void SetUsedCharacter()
         {
-            Player.Instance.UsedCharacter();
+            Player.Instance.SetUsedCharacter();
         }
     }
 }

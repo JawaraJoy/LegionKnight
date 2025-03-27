@@ -13,6 +13,16 @@ namespace LegionKnight
         private Image m_HeroBigIcon;
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnCharacterSelected = new();
+        private void Start()
+        {
+            InitInternal();
+        }
+        private void InitInternal()
+        {
+            m_HeroBigIcon.sprite = Player.Instance.UsedCharacter.Icon;
+            m_HeroNameText.text = Player.Instance.UsedCharacter.name;
+            OnCharacterSelectedInvoke(Player.Instance.UsedCharacter);
+        }
         public void SetCharacterSelected(CharacterDefinition defi)
         {
             m_HeroBigIcon.sprite = defi.Icon;

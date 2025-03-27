@@ -21,7 +21,7 @@ namespace LegionKnight
             return match;
         }
 
-        public void SetCurrencyViewAmount(Currency currency)
+        public void SetCurrencyView(Currency currency)
         {
             GetCurrencyView(currency.CurrencyDefinition).SetAmount(currency.Amount);
         }

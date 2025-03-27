@@ -16,7 +16,7 @@ namespace LegionKnight
 
         public void SetCurrencyViewAmount(Currency currency)
         {
-            GetCurrencyMonitor().SetCurrencyViewAmount(currency);
+            GetCurrencyMonitor().SetCurrencyView(currency);
         }
     }
 
