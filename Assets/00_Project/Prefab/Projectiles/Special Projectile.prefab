@@ -223,9 +223,9 @@ ParticleSystem:
         m_RotationOrder: 4
     startColor:
       serializedVersion: 2
-      minMaxState: 2
+      minMaxState: 0
       minColor: {r: 0.25943398, g: 0.3486156, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.19215685, b: 0.9935188, a: 1}
+      maxColor: {r: 1, g: 0.5307527, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -14755,9 +14755,13 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 2
   m_Health: 0
   m_OnDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_TargetTag: Bos Enemy

@@ -5014,9 +5014,13 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 1
   m_Health: 0
   m_OnDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_TargetTag: Bos Enemy
@@ -5024,7 +5028,7 @@ MonoBehaviour:
   m_MinTravelSpeed: 20
   m_MaxTravelSpeed: 50
   m_Rb: {fileID: 3423615503660544271}
-  m_WithoutTarget: 0
+  m_WithoutTarget: 1
   m_VelocityWitoutTarget: {x: 0, y: 1}
 --- !u!50 &3423615503660544271
 Rigidbody2D:

@@ -44,6 +44,7 @@ namespace LegionKnight
             m_SelectedBanner.PerformingSingleDraw();
             OnPerformDrawInvoke(m_SelectedBanner);
             OnPerformDrawCost(m_SelectedBanner.GetFinalCurrencyCost(1));
+            OnStartInvoke();
         }
 
         public void PerformingMultiDraw()
@@ -51,6 +52,7 @@ namespace LegionKnight
             m_SelectedBanner.PerformingMultiDraw();
             OnPerformDrawInvoke(m_SelectedBanner);
             OnPerformDrawCost(m_SelectedBanner.GetFinalCurrencyCost(m_SelectedBanner.MultiDraw));
+            OnStartInvoke();
         }
 
         private void OnPerformDrawInvoke(GachaBanner banner)

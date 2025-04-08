@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7511598522910228380}
   - component: {fileID: 2465180592938094879}
   - component: {fileID: 6861625195590003693}
-  - component: {fileID: 7838269373402985339}
+  - component: {fileID: 5979340497444359192}
   m_Layer: 0
   m_Name: Bos Attack 2
   m_TagString: Untagged
@@ -98,7 +98,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7838269373402985339
+--- !u!114 &5979340497444359192
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,7 +107,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4342333657518190669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4abd7d246d44b34890104905189143a, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a7b614b0d0ef304aa12189acfc7de23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_CanContact: 1
@@ -120,6 +120,7 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 0
   m_Health: 3
   m_OnDeath:
@@ -5056,12 +5057,13 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 1
   m_Health: 2
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7838269373402985339}
+      - m_Target: {fileID: 5979340497444359192}
         m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
         m_MethodName: TakeDamage
         m_Mode: 3
@@ -5073,10 +5075,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5941078214657915780}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Stop
-        m_Mode: 1
+      - m_Target: {fileID: 5403822299663120251}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -10053,12 +10055,13 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 1
   m_Health: 2
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7838269373402985339}
+      - m_Target: {fileID: 5979340497444359192}
         m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
         m_MethodName: TakeDamage
         m_Mode: 3
@@ -10070,10 +10073,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5779893273267579602}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Stop
-        m_Mode: 1
+      - m_Target: {fileID: 5990676915063834088}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

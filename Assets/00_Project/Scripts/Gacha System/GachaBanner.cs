@@ -74,6 +74,11 @@ namespace LegionKnight
             int cost = GetSelectedGachaCurrencyCost().Amount * drawCount;
             bool used = m_SingleDrawDiscount.Used;
             float discount = m_SingleDrawDiscount.PriceRate;
+            if (drawCount > 1)
+            {
+                used = m_MultipleDrawDiscount.Used;
+                discount = m_MultipleDrawDiscount.PriceRate;
+            }
             int finalCost = used ? Mathf.RoundToInt(cost * discount) : cost;
             return finalCost;
         }
