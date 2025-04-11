@@ -31,7 +31,7 @@ namespace LegionKnight
             bool hasBonus = definition.BonusAmount > 0;
             m_BonusText.gameObject.SetActive(hasBonus);
             m_BonusText.text = $"Bonus +{definition.BonusAmount}";
-            m_ItemAmountText.text = $"{m_Definition.Currency.name} +{definition.Amount}";
+            m_ItemAmountText.text = $"{m_Definition.ItemName}";
             m_SpendCrestText.text = $"{definition.BuyButtonText} To Get +{definition.SpendRewardAmount}";
             m_BuyButtonText.text = definition.BuyButtonText;
 
