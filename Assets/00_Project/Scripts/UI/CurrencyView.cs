@@ -7,22 +7,25 @@ namespace LegionKnight
     public partial class CurrencyView : UIView
     {
         [SerializeField]
-        private CurrencyDefinition m_CurrencyDefinition;
+        protected CurrencyDefinition m_CurrencyDefinition;
         [SerializeField]
         private Image m_Icon;
         [SerializeField]
-        private TextMeshProUGUI m_AmountText;
+        protected TextMeshProUGUI m_AmountText;
         public CurrencyDefinition CurrencyDefinition => m_CurrencyDefinition;
         public void Init()
         {
             m_Icon.sprite = m_CurrencyDefinition.Icon;
         }
-        public void SetView(Currency currency)
+        protected virtual void SetViewInternal(Currency currency)
         {
             m_CurrencyDefinition = currency.CurrencyDefinition;
-
             m_Icon.sprite = currency.CurrencyDefinition.Icon;
             m_AmountText.text = currency.Amount.ToString();
+        }
+        public virtual void SetView(Currency currency)
+        {
+            SetViewInternal(currency);
         }
         public void SetAmount(int amount)
         {

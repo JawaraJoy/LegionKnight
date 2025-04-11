@@ -29,6 +29,18 @@ namespace LegionKnight
             HideInternal();
         }
 
+        public virtual void SetActive(bool set)
+        {
+            if (set)
+            {
+                ShowInternal();
+            }
+            else
+            {
+                HideInternal();
+            }
+        }
+
         protected virtual void ShowInternal()
         {
             if (MasterPanelUtility.IsShow) return;
