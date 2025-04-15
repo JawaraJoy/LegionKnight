@@ -21,7 +21,11 @@ namespace LegionKnight
         private UnityEvent m_OnShowRewardDone = new();
         public virtual void ShowResults(List<object> results)
         {
-            foreach(ItemView item in m_SpawnedItemViews)
+            ShowResultsInternal(results);
+        }
+        protected virtual void ShowResultsInternal(List<object> results)
+        {
+            foreach (ItemView item in m_SpawnedItemViews)
             {
                 Destroy(item.gameObject);
             }

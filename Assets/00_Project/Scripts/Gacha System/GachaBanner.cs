@@ -27,13 +27,13 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<List<GachaReward>> m_OnDrawResultSuccess = new();
         [SerializeField]
-        private UnityEvent m_OnDrawResultFail = new();
+        private UnityEvent<CurrencyDefinition> m_OnDrawResultFail = new();
         public string PromoText => m_Definition.PromoText;
         private int MultiDrawInternal => m_Definition.MultiDraw;
         public int MultiDraw => MultiDrawInternal;
         private int GuaranteedDrawInternal => m_Definition.GuaranteedDraw;
         private List<GachaReward> MainRewardInternal => m_Definition.MainRewards;
-        public int PlayerCurrencyInternal => Player.Instance.GetCurrencyAmount(GetPlayerCurrency());
+        public int PlayerCurrencyAmountInternal => Player.Instance.GetCurrencyAmount(GetPlayerCurrency());
         private List<GachaReward> GachaRewardsInternal => m_Definition.GachaRewards;
         public BannerDefinition Definition => m_Definition;
         public int TotalDraws => m_TotalDraws;
@@ -47,17 +47,22 @@ namespace LegionKnight
         }
         private CurrencyDefinition GetPlayerCurrency()
         {
-            CurrencyDefinition gachaCurrency = GetSelectedGachaCurrencyCost().Definition;
+            CurrencyDefinition gachaCurrency = GetSelectedGachaCurrencyCostInternal().Definition;
             return gachaCurrency;
         }
-        private GachaCurrencyCost GetSelectedGachaCurrencyCost()
+        private GachaCurrencyCost GetSelectedGachaCurrencyCostInternal()
         {
             GachaCurrencyCost cost = m_UseAltermatifCurrencyToDraw ? m_Definition.MainCurrencyToDraw : m_Definition.AlternatifCurrencyToDraw;
             return cost;
         }
+        public GachaCurrencyCost GetSelectedGachaCurrencyCost()
+        {
+            GachaCurrencyCost cost = GetSelectedGachaCurrencyCostInternal();
+            return cost;
+        }
         public GachaCurrencyCost GetFinalCurrencyCost(int amount)
         {
-            CurrencyDefinition defi = GetSelectedGachaCurrencyCost().Definition;
+            CurrencyDefinition defi = GetSelectedGachaCurrencyCostInternal().Definition;
             int finalCost = GetFinalCostInternal(amount);
             return new GachaCurrencyCost(defi, finalCost);
         }
@@ -71,7 +76,7 @@ namespace LegionKnight
         }
         private int GetFinalCostInternal(int drawCount)
         {
-            int cost = GetSelectedGachaCurrencyCost().Amount * drawCount;
+            int cost = GetSelectedGachaCurrencyCostInternal().Amount * drawCount;
             bool used = m_SingleDrawDiscount.Used;
             float discount = m_SingleDrawDiscount.PriceRate;
             if (drawCount > 1)
@@ -98,9 +103,9 @@ namespace LegionKnight
 
         private IEnumerator PerformDrawCoroutine(int drawCount, int cost)
         {
-            if (PlayerCurrencyInternal < cost)
+            if (PlayerCurrencyAmountInternal < cost)
             {
-                m_OnDrawResultFail?.Invoke();
+                m_OnDrawResultFail?.Invoke(GetPlayerCurrency());
                 yield break;
             }
 
@@ -110,15 +115,17 @@ namespace LegionKnight
             for (int i = 0; i < drawCount; i++)
             {
                 m_TotalDraws++;
-                results.Add(CalculateDrawResult());
+                GachaReward result = CalculateDrawResult();
+                results.Add(result);
                 
             }
-            foreach(GachaReward re in results)
+            m_OnDrawResultSuccess?.Invoke(results);
+            foreach (GachaReward re in results)
             {
                 allRewards += re.Definition.name;
                 re.ApplyRewardToPlayer();
             }
-
+            
             if (!m_SkipTimeline)
             {
                 //timeline.Play();
@@ -126,7 +133,7 @@ namespace LegionKnight
                 yield return new WaitForSeconds(1f);
             }
 
-            m_OnDrawResultSuccess?.Invoke(results);
+            
             Debug.Log($"Gacha Reward {allRewards}");
         }
 
@@ -136,6 +143,7 @@ namespace LegionKnight
             {
                 m_TotalDraws = 0; // Reset counter after main reward
                 int random = Random.Range(0, MainRewardInternal.Count);
+
                 return MainRewardInternal[random];
             }
 
@@ -148,6 +156,7 @@ namespace LegionKnight
                 if (roll < cumulative)
                 {
                     GachaReward result = reward;
+                    
                     return result;
                 }    
             }

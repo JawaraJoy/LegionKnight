@@ -35,7 +35,10 @@ namespace LegionKnight
         {
             m_ShopManager.OnItemBoughtInvoke(defi);
         }
-
+        public void OnItemBuyInvoke(ShopItemDefinition defi)
+        {
+            m_ShopManager.OnItemBuyInvoke(defi);
+        }
         private ShopItemControl GetShopItemControlInternal(ShopItemDefinition item)
         {
             ShopContainer container = GetShopContainerInternal(item.ContainerName);

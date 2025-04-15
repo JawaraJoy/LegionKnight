@@ -18,6 +18,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<ShopItemDefinition> m_OnCantBuyItem = new();
         [SerializeField]
+        private UnityEvent<ShopItemDefinition> m_OnItemBuy = new();
+        [SerializeField]
         private UnityEvent<ShopItemDefinition> m_OnItemBought = new();
 
         public void SelectShop(string containerName)
@@ -45,6 +47,10 @@ namespace LegionKnight
         public void OnItemBoughtInvoke(ShopItemDefinition defi)
         {
             m_OnItemBought?.Invoke(defi);
+        }
+        public void OnItemBuyInvoke(ShopItemDefinition defi)
+        {
+            m_OnItemBuy?.Invoke(defi);
         }
         private ShopContainer GetShopContainerInternal(string name)
         {

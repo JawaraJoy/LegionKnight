@@ -19,10 +19,26 @@ namespace LegionKnight
         private GachaBanner m_SelectedBanner;
         [SerializeField]
         private UnityEvent<GachaBanner> m_OnStart = new();
+        [SerializeField]
+        private UnityEvent<Currency> m_OnConvertToStarCountChanged = new();
+
+        [SerializeField]
+        private Currency m_StarConvertCount;
         private void Start()
         {
             m_SelectedBanner = m_Banners[0];
             OnStartInvoke();
+        }
+        public void AddStarConvertCount(int amount)
+        {
+            m_StarConvertCount.AddAmount(amount);
+            OnConvertToStarCountChangedInvoke(m_StarConvertCount);
+            Player.Instance.AddCurrencyAmount(m_StarConvertCount.CurrencyDefinition, amount);
+        }
+        private void OnConvertToStarCountChangedInvoke(Currency currency)
+        {
+            m_StarConvertCount = currency;
+            m_OnConvertToStarCountChanged?.Invoke(currency);
         }
         private void OnStartInvoke()
         {
@@ -41,6 +57,7 @@ namespace LegionKnight
         }
         public void PerformingSingleDraw()
         {
+            m_StarConvertCount.SetAmount(0);
             m_SelectedBanner.PerformingSingleDraw();
             OnPerformDrawInvoke(m_SelectedBanner);
             OnPerformDrawCost(m_SelectedBanner.GetFinalCurrencyCost(1));
@@ -49,6 +66,7 @@ namespace LegionKnight
 
         public void PerformingMultiDraw()
         {
+            m_StarConvertCount.SetAmount(0);
             m_SelectedBanner.PerformingMultiDraw();
             OnPerformDrawInvoke(m_SelectedBanner);
             OnPerformDrawCost(m_SelectedBanner.GetFinalCurrencyCost(m_SelectedBanner.MultiDraw));

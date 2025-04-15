@@ -44,8 +44,8 @@ namespace LegionKnight
         private void OnBoughtInvoke()
         {
             m_OnBought?.Invoke(m_Definition);
-            GameManager.Instance.SetBonusAvaible(m_Definition, false);
-            InitInternal();
+            SetBonusAvaibleInternal(false);
+            //InitInternal();
         }
         public void Init()
         {
@@ -74,9 +74,14 @@ namespace LegionKnight
         }
         public void SetBonusAvaible(bool isAvaible)
         {
+            SetBonusAvaibleInternal(isAvaible);
+        }
+
+        public void SetBonusAvaibleInternal(bool isAvaible)
+        {
             m_IsBonusAvaible = isAvaible;
             m_BonusSignContent.SetActive(isAvaible);
-            GetShopItemControl().SetBonusAvaible(isAvaible);
+            //GetShopItemControl().SetBonusAvaible(isAvaible);
         }
 
         public void SetAvaible(bool isAvaible)

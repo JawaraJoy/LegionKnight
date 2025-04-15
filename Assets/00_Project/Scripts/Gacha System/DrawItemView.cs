@@ -28,6 +28,12 @@ namespace LegionKnight
             if (defi is CharacterDefinition character)
             {
                 m_Icon.sprite = character.SmallIcon;
+                /*bool owned = Player.Instance.GetCharacterUnit(character).Owned;
+                if (owned)
+                {
+                    m_Icon.sprite = character.ShardIcon;
+                    m_Amount.text = character.ShardAmount.ToString();
+                }*/
             }
         }
     }

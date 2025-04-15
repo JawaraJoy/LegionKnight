@@ -3,17 +3,16 @@ using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public partial class NotEnoughtToBuyItemView : UIView
+    public partial class NotEnoughDrawCostView : UIView
     {
-        private ShopItemDefinition m_Definition;
+        private CurrencyDefinition m_Definition;
         [SerializeField]
         private Image m_Icon;
-        public void SetShow(ShopItemDefinition definition)
+        public void SetShow(CurrencyDefinition definition)
         {
             m_Definition = definition;
             ShowInternal();
-            m_Icon.sprite = m_Definition.Currency.Icon;
+            m_Icon.sprite = m_Definition.Icon;
         }
     }
-
 }

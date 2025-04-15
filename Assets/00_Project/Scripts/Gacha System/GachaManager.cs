@@ -25,5 +25,9 @@ namespace LegionKnight
         {
             m_GachanBanner.PerformingMultiDraw();
         }
+        public void AddStarConvertCount(int amount)
+        {
+            m_GachanBanner.AddStarConvertCount(amount);
+        }
     }
 }

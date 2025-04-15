@@ -29,6 +29,7 @@ namespace LegionKnight
         {
             return GetCharacterUnitInternal(definition);
         }
+
         public void Init()
         {
             OnInitialized();
@@ -36,6 +37,10 @@ namespace LegionKnight
         private void OnInitialized()
         {
             m_OnInitialized?.Invoke(m_UsedCharacter);
+            foreach(CharacterUnit unit in m_CharacterUnits)
+            {
+                unit.Init();
+            }
         }
         public void SetOwned(CharacterDefinition defi, bool set)
         {

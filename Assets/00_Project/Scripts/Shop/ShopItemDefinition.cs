@@ -6,6 +6,7 @@ namespace LegionKnight
     [CreateAssetMenu(fileName = "New Shop Item", menuName = "Legion Knight/Shop Item")]
     public partial class ShopItemDefinition : ScriptableObject
     {
+
         [SerializeField]
         private string m_ItemName;
         [SerializeField]
@@ -80,6 +81,8 @@ namespace LegionKnight
         }
         public void Buy()
         {
+            //GameManager.Instance.OnItemBuyInvoke(this);
+            
             Player.Instance.AddCurrencyAmount(m_CurrencyDefinition, -m_Price);
             Player.Instance.AddCurrencyAmount(m_SpendRewardDefinition, m_SpendRewardAmount);
             AddItemToPlayer(m_ItemToBuy);
@@ -90,6 +93,7 @@ namespace LegionKnight
             }
             m_OnBought?.Invoke();
             GameManager.Instance.OnItemBoughtInvoke(this);
+            //GameManager.Instance.SetBonusAvaible(this, false);
         }
 
         private void AddItemToPlayer(Object item)

@@ -28,10 +28,10 @@ namespace LegionKnight
             m_Definition = definition;
             m_ItemNameText.text = definition.ItemName;
             m_MainIcon.sprite = definition.Icon;
-            bool hasBonus = definition.BonusAmount > 0;
+            bool hasBonus = definition.BonusAmount > 0 && GameManager.Instance.GetShopItemControl(definition).IsBonusAvaible;
             m_BonusText.gameObject.SetActive(hasBonus);
             m_BonusText.text = $"Bonus +{definition.BonusAmount}";
-            m_ItemAmountText.text = $"{m_Definition.ItemName}";
+            m_ItemAmountText.text = $"x{m_Definition.Amount}";
             m_SpendCrestText.text = $"{definition.BuyButtonText} To Get +{definition.SpendRewardAmount}";
             m_BuyButtonText.text = definition.BuyButtonText;
 
