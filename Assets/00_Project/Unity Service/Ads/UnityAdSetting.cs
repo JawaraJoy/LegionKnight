@@ -30,6 +30,9 @@ namespace LegionKnight
         {
             return GetAdPlatformSetting(divice).BannerID;
         }
-
+        public string GetRewardedID(MobileDevice divice)
+        {
+            return GetAdPlatformSetting(divice).RewardedID;
+        }
     }
 }

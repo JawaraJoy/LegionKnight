@@ -15,10 +15,21 @@ namespace LegionKnight
         public CurrencyDefinition CurrencyDefinition => m_CurrencyDefinition;
         public void Init()
         {
+            if (m_CurrencyDefinition == null)
+            {
+                Debug.LogError("Currency is null");
+                return;
+            }
             m_Icon.sprite = m_CurrencyDefinition.Icon;
+            SetAmountInternal(Player.Instance.GetCurrencyAmount(m_CurrencyDefinition));
         }
         protected virtual void SetViewInternal(Currency currency)
         {
+            if (currency.CurrencyDefinition == null)
+            {
+                Debug.LogError("Currency is null");
+                return;
+            }
             m_CurrencyDefinition = currency.CurrencyDefinition;
             m_Icon.sprite = currency.CurrencyDefinition.Icon;
             m_AmountText.text = currency.Amount.ToString();
@@ -29,6 +40,15 @@ namespace LegionKnight
         }
         public void SetAmount(int amount)
         {
+            SetAmountInternal(amount);
+        }
+        private void SetAmountInternal(int amount)
+        {
+            if (m_CurrencyDefinition == null)
+            {
+                Debug.LogError("Currency is null");
+                return;
+            }
             m_AmountText.text = amount.ToString();
         }
     }

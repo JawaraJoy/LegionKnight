@@ -33,10 +33,6 @@ namespace LegionKnight
         }
         public void SetOwned(bool set)
         {
-            if (m_Owned)
-            {
-                GameManager.Instance.AddStarConvertCount(3);
-            }
             m_Owned = set;
         }
         public void Init()

@@ -28,5 +28,6 @@ namespace LegionKnight
         public string AdGameID => m_AdGameID;
         public string InterstitialID => m_InterstitialID;
         public string BannerID => m_BanerID;
+        public string RewardedID => m_RewardedID;
     }
 }

@@ -65,6 +65,7 @@ namespace LegionKnight
             m_CurrencyView.SetView(new Currency(m_Definition.Currency, m_Definition.Price));
             m_BonusText.text = m_Definition.BonusDescription;
             m_SelectButton.interactable = m_IsAvaible;
+            m_ItemAmountText.gameObject.SetActive(m_Definition.Amount < 2);
             m_ItemAmountText.text = $"+{m_Definition.Amount}";
         }
         public void TryToBuy()

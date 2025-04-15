@@ -14,6 +14,8 @@ namespace LegionKnight
         [SerializeField]
         private string m_TabName;
         [SerializeField]
+        private bool m_WatchAdOveride;
+        [SerializeField]
         private Sprite m_Icon;
         [SerializeField]
         private Object m_ItemToBuy;
@@ -79,28 +81,42 @@ namespace LegionKnight
             }
             GameManager.Instance.OnItemSelectedInvoke(this);
         }
+
         public void Buy()
         {
             //GameManager.Instance.OnItemBuyInvoke(this);
-            
-            Player.Instance.AddCurrencyAmount(m_CurrencyDefinition, -m_Price);
-            Player.Instance.AddCurrencyAmount(m_SpendRewardDefinition, m_SpendRewardAmount);
-            AddItemToPlayer(m_ItemToBuy);
-            
-            if (GameManager.Instance.GetShopItemControl(this).IsBonusAvaible)
-            {
-                AddBonusItemToPlayer(m_ItemBonus);
-            }
-            m_OnBought?.Invoke();
-            GameManager.Instance.OnItemBoughtInvoke(this);
             //GameManager.Instance.SetBonusAvaible(this, false);
+            
+            if (m_WatchAdOveride)
+            {
+                Watch();
+            }
+            else
+            {
+                Player.Instance.AddCurrencyAmount(m_CurrencyDefinition, -m_Price);
+                Player.Instance.AddCurrencyAmount(m_SpendRewardDefinition, m_SpendRewardAmount);
+                AddItemToPlayer(m_ItemToBuy);
+            }
+        }
+        private void Watch()
+        {
+            UnityService.Instance.ShowRewardedAd(() => AddItemToPlayer(m_ItemToBuy));
         }
 
         private void AddItemToPlayer(Object item)
         {
+
+            GameManager.Instance.OnItemBuyInvoke(this);
             if (item is CharacterDefinition itemDefinition)
             {
-                Player.Instance.SetOwned(itemDefinition, true);
+                if (Player.Instance.GetCharacterUnit(itemDefinition).Owned)
+                {
+                    GameManager.Instance.AddStarConvertCount(3);
+                }
+                else
+                {
+                    Player.Instance.SetOwned(itemDefinition, true);
+                }   
             }
             else if (item is CurrencyDefinition currencyDefinition)
             {
@@ -110,6 +126,13 @@ namespace LegionKnight
             {
                 Debug.LogError($"Unsupported item type: {item.GetType()}");
             }
+
+            if (GameManager.Instance.GetShopItemControl(this).IsBonusAvaible || m_ItemBonus != null)
+            {
+                AddBonusItemToPlayer(m_ItemBonus);
+            }
+            m_OnBought?.Invoke();
+            GameManager.Instance.OnItemBoughtInvoke(this);
         }
         private void AddBonusItemToPlayer(Object item)
         {

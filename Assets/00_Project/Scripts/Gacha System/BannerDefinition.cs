@@ -63,7 +63,14 @@ namespace LegionKnight
             }
             if (m_Definition is CharacterDefinition character)
             {
-                Player.Instance.SetOwned(character, true);
+                if (Player.Instance.GetCharacterUnit(character).Owned)
+                {
+                    GameManager.Instance.AddStarConvertCount(3);
+                }
+                else
+                {
+                    Player.Instance.SetOwned(character, true);
+                }
                 Debug.Log($"Character owned {character.name}");
             }
         }

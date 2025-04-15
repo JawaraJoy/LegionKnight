@@ -8,7 +8,7 @@ namespace LegionKnight
     public partial class MinuteTimerDefinition : TimerDefinition
     {
         [SerializeField]
-        private int m_ResetMinute = 1;
+        private int m_ResetMinute;
         public override void CheckTimer(UnityAction onTrigger)
         {
             DateTime now = DateTime.Now;
