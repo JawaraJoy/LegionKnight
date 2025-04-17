@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
@@ -10,21 +11,33 @@ namespace LegionKnight
     {
         [SerializeField]
         private PlayerPlatformDeck m_PlayerPlatformDeck;
-        public PlatformOwned GetPlatformOwned(StanbyPlatform platform)
+        public PlatformUnit GetPlatformOwned(StandbyPlatformDefinition platform)
         {
             return m_PlayerPlatformDeck.GetPlatformOwned(platform);
         }
-        public StanbyPlatform GetUsedStanbyPlatform()
+        public bool IsPlatformOwned(StandbyPlatformDefinition platform)
+        {
+            return m_PlayerPlatformDeck.IsPlatformOwned(platform);
+        }
+        public StandbyPlatformDefinition GetUsedStanbyPlatform()
         {
             return m_PlayerPlatformDeck.GetUsedStanbyPlatform();
         }
-        public void SetIsOwned(StanbyPlatform platform, bool isOwned)
+        public void SetIsPlatformOwned(StandbyPlatformDefinition platform, bool isOwned)
         {
             m_PlayerPlatformDeck.SetIsOwned(platform, isOwned);
         }
-        public void SetUsedStandbyPlatform(StanbyPlatform platform)
+        public void SelectStandbyPlatform(StandbyPlatformDefinition platform)
         {
-            m_PlayerPlatformDeck.SetUsedStandbyPlatform(platform);
+            m_PlayerPlatformDeck.SelectStandbyPlatform(platform);
+        }
+        public void SetUsedStanbyPlatform()
+        {
+            m_PlayerPlatformDeck.SetUsedStandbyPlatform();
+        }
+        public void AddPlayerStandbyPlatform()
+        {
+           m_PlayerPlatformDeck.AddPlayerStandbyPlatform();
         }
     }
 }

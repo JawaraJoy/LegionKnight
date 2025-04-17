@@ -6,30 +6,6 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
-    [System.Serializable]
-    public partial class StanbyPlatform
-    {
-        [SerializeField]
-        private string m_Name;
-        [SerializeField, TextArea]
-        private string m_Description;
-        [SerializeField]
-        private Sprite m_Icon;
-        [SerializeField, Range(1, 100)]
-        private int m_ChanceRateTospawn;
-        [SerializeField]
-        private AssetReferenceGameObject m_Platform;
-        public int ChanceRateToSpawn => m_ChanceRateTospawn;
-        public AssetReferenceGameObject Platform => m_Platform;
-        public string Name => $"{m_Name} Platform";
-        public Sprite Icon => m_Icon;
-
-        public StanbyPlatform(int chanceRate, AssetReferenceGameObject platform)
-        {
-            m_ChanceRateTospawn = chanceRate;
-            m_Platform = platform;
-        }
-    }
     public partial class LevelObject : ModelView
     {
         private LevelDefinition m_LevelDefinition;
@@ -49,7 +25,7 @@ namespace LegionKnight
 
         private List<Platform> m_SpawnedPlatform = new();
 
-        private List<StanbyPlatform> m_RealStanbyPlatformAssets = new();
+        private List<StandbyPlatformDefinition> m_RealStanbyPlatformAssets = new();
         public Transform PlayerStartPostion => m_PlayerStartPosition;
         private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
 
@@ -60,26 +36,27 @@ namespace LegionKnight
         {
             GameManager.Instance.SetLevelObject(this);
             AddRealStanbyPlatformInternal(GetLevelDefinition().GetPlatformAssets());
+            Player.Instance.AddPlayerStandbyPlatform();
         }
-        public void AddRealStanbyPlatform(List<StanbyPlatform> standby)
+        public void AddRealStanbyPlatform(List<StandbyPlatformDefinition> standby)
         {
             AddRealStanbyPlatformInternal(standby);
         }
-        public void RemoveRealStanbyPlatform(List<StanbyPlatform> standby)
+        public void RemoveRealStanbyPlatform(List<StandbyPlatformDefinition> standby)
         {
             RemoveRealStanbyPlatformInternal(standby);
         }
-        private void AddRealStanbyPlatformInternal(List<StanbyPlatform> standby)
+        private void AddRealStanbyPlatformInternal(List<StandbyPlatformDefinition> standby)
         {
-            foreach (StanbyPlatform p in standby)
+            foreach (StandbyPlatformDefinition p in standby)
             {
                 m_RealStanbyPlatformAssets.Add(p);
             }
         }
-        private void RemoveRealStanbyPlatformInternal(List<StanbyPlatform> standby)
+        private void RemoveRealStanbyPlatformInternal(List<StandbyPlatformDefinition> standby)
         {
             if (m_RealStanbyPlatformAssets.Count <= 0) return;
-            foreach (StanbyPlatform p in standby)
+            foreach (StandbyPlatformDefinition p in standby)
             {
                 if (m_RealStanbyPlatformAssets.Contains(p))
                 {
@@ -108,14 +85,14 @@ namespace LegionKnight
         {
             int totalChance = 0;
             AssetReferenceGameObject selected = null;
-            foreach (StanbyPlatform platform in m_RealStanbyPlatformAssets)
+            foreach (StandbyPlatformDefinition platform in m_RealStanbyPlatformAssets)
             {
                 totalChance += platform.ChanceRateToSpawn;
             }
             int random = Random.Range(0, totalChance);
 
             float cumulativeChance = 0;
-            foreach (StanbyPlatform platform in m_RealStanbyPlatformAssets)
+            foreach (StandbyPlatformDefinition platform in m_RealStanbyPlatformAssets)
             {
                 cumulativeChance += platform.ChanceRateToSpawn;
                 if (random <= cumulativeChance)
@@ -159,7 +136,7 @@ namespace LegionKnight
         public void StartBos()
         {
             AddRealStanbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
-            Player.Instance.AddCharacterPlatform();
+            
             GameManager.Instance.SetBosTriggered(true);
             SpawnBosInternal();
 

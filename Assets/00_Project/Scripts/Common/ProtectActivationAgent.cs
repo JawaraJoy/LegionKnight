@@ -16,18 +16,23 @@ namespace LegionKnight
         {
             if (m_ActiveOnStart)
             {
-                Active();
+                ActiveInternal();
             }
         }
         public void LoadProtectAsset()
         {
             Player.Instance.LoadProtectAsset();
+            ActiveInternal();
         }
-        public void Active()
+        private void ActiveInternal()
         {
             Player.Instance.AddBarrier(m_Barrier);
             Player.Instance.AddShield(m_Shield);
             Player.Instance.SetProtectActivationAgent(this);
+        }
+        public void Active()
+        {
+            ActiveInternal();
         }
         public void Active(int shield, int barrier)
         {

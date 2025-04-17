@@ -10,9 +10,11 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_PlatformNameText;
         [SerializeField]
+        private TextMeshProUGUI m_PlatformDescriptionText;
+        [SerializeField]
         private Image m_PlatformBigIcon;
         [SerializeField]
-        private UnityEvent<StanbyPlatform> m_OnPlatformSelected = new();
+        private UnityEvent<StandbyPlatformDefinition> m_OnPlatformSelected = new();
         private void Start()
         {
             InitInternal();
@@ -20,16 +22,18 @@ namespace LegionKnight
         private void InitInternal()
         {
             m_PlatformBigIcon.sprite = Player.Instance.GetUsedStanbyPlatform().Icon;
-            m_PlatformNameText.text = Player.Instance.GetUsedStanbyPlatform().Name;
+            m_PlatformNameText.text = Player.Instance.GetUsedStanbyPlatform().Label;
+            m_PlatformDescriptionText.text = Player.Instance.GetUsedStanbyPlatform().Description;
             OnPlatformSelectedInvoke(Player.Instance.GetUsedStanbyPlatform());
         }
-        public void SetPlatformSelected(StanbyPlatform platform)
+        public void SetPlatformSelected(StandbyPlatformDefinition platform)
         {
             m_PlatformBigIcon.sprite = platform.Icon;
-            m_PlatformNameText.text = platform.Name;
+            m_PlatformNameText.text = platform.Label;
+            m_PlatformDescriptionText.text = platform.Description;
             OnPlatformSelectedInvoke(platform);
         }
-        private void OnPlatformSelectedInvoke(StanbyPlatform platform)
+        private void OnPlatformSelectedInvoke(StandbyPlatformDefinition platform)
         {
             m_OnPlatformSelected?.Invoke(platform);
         }
@@ -41,14 +45,14 @@ namespace LegionKnight
             return GetBinding<PlatformView>();
         }
 
-        public void SetPlatformSelected(StanbyPlatform platform)
+        public void SetPlatformSelected(StandbyPlatformDefinition platform)
         {
             GetPlatformView().SetPlatformSelected(platform);
         }
     }
     public partial class GameManager
     {
-        public void SetPlatformSelected(StanbyPlatform platform)
+        public void SetPlatformSelected(StandbyPlatformDefinition platform)
         {
             GetPanel<CharacterPanel>().SetPlatformSelected(platform);
         }

@@ -37,7 +37,7 @@ namespace LegionKnight
         {
             m_LevelManager.SetLevelOver(set);
         }
-        public void AddStandbyPlatform(List<StanbyPlatform> standby)
+        public void AddStandbyPlatform(List<StandbyPlatformDefinition> standby)
         {
             m_LevelManager.AddStandbyPlatform(standby);
         }

@@ -7,7 +7,7 @@ namespace LegionKnight
     public partial class PlatformSelectView : UIView
     {
         [SerializeField]
-        private StanbyPlatform m_PlatformPrefab;
+        private StandbyPlatformDefinition m_PlatformPrefab;
         [SerializeField]
         private Image m_UnitIcon;
         [SerializeField]
@@ -15,15 +15,15 @@ namespace LegionKnight
         [SerializeField]
         private Button m_SelectButton;
         [SerializeField]
-        private UnityEvent<StanbyPlatform> m_OnPlatformSelected = new();
-        public StanbyPlatform PlatformPrefab => m_PlatformPrefab;
+        private UnityEvent<StandbyPlatformDefinition> m_OnPlatformSelected = new();
+        public StandbyPlatformDefinition PlatformPrefab => m_PlatformPrefab;
         private void OnEnable()
         {
             InitInternal();
         }
         private void SelectPlatformInternal()
         {
-            Player.Instance.SetUsedStandbyPlatform(m_PlatformPrefab);
+            Player.Instance.SelectStandbyPlatform(m_PlatformPrefab);
             OnCharacterSelectedInvoke();
         }
         public void SelectPlatform()
@@ -32,14 +32,16 @@ namespace LegionKnight
         }
         private void InitInternal()
         {
-            PlatformOwned platform = Player.Instance.GetPlatformOwned(m_PlatformPrefab);
+            PlatformUnit platform = Player.Instance.GetPlatformOwned(m_PlatformPrefab);
             InitInternal(platform);
         }
-        private void InitInternal(PlatformOwned unit)
+        private void InitInternal(PlatformUnit unit)
         {
             m_PlatformPrefab = unit.StanbyPlatform;
             m_LockIcon.SetActive(!unit.IsOwned);
             m_SelectButton.interactable = unit.IsOwned;
+            m_UnitIcon.sprite = m_PlatformPrefab.Icon;
+
             m_SelectButton.onClick.RemoveAllListeners();
             m_SelectButton.onClick.AddListener(SelectPlatformInternal);
         }

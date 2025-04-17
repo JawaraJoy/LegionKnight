@@ -81,15 +81,15 @@ namespace LegionKnight
             m_SpawnedBosEnemy.SetBosDefinition(m_LevelDefinition.BosDefinition);
             m_SpawnedBosEnemy.InitDamageable(m_BosHealthBonus * m_BosSpawnCount);
         }
-        public void AddStandbyPlatform(List<StanbyPlatform> standby)
+        public void AddStandbyPlatform(List<StandbyPlatformDefinition> standby)
         {
             m_LevelObject.AddRealStanbyPlatform(standby);
         }
-        public void RemoveStandbyPlatform(List<StanbyPlatform> standby)
+        public void RemoveStandbyPlatform(List<StandbyPlatformDefinition> standby)
         {
             RemoveStandbyPlatformInternal(standby);
         }
-        private void RemoveStandbyPlatformInternal(List<StanbyPlatform> standby)
+        private void RemoveStandbyPlatformInternal(List<StandbyPlatformDefinition> standby)
         {
             m_LevelObject.RemoveRealStanbyPlatform(standby);
         }

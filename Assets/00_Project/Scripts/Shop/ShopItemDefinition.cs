@@ -118,9 +118,20 @@ namespace LegionKnight
                     Player.Instance.SetOwned(itemDefinition, true);
                 }   
             }
-            else if (item is CurrencyDefinition currencyDefinition)
+            if (item is CurrencyDefinition currencyDefinition)
             {
                 Player.Instance.AddCurrencyAmount(currencyDefinition, m_Amount);
+            }
+            if (item is StandbyPlatformDefinition standby)
+            {
+                if (Player.Instance.IsPlatformOwned(standby))
+                {
+                    Player.Instance.AddCurrencyAmount(m_CurrencyDefinition, m_Price);
+                }
+                else
+                {
+                    Player.Instance.SetIsPlatformOwned(standby, true);
+                }
             }
             else
             {
@@ -140,9 +151,13 @@ namespace LegionKnight
             {
                 Player.Instance.SetOwned(itemDefinition, true);
             }
-            else if (item is CurrencyDefinition currencyDefinition)
+            if (item is CurrencyDefinition currencyDefinition)
             {
                 Player.Instance.AddCurrencyAmount(currencyDefinition, m_BonusAmount);
+            }
+            if (item is StandbyPlatformDefinition standby)
+            {
+                Player.Instance.SetIsPlatformOwned(standby, true);
             }
             else
             {

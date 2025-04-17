@@ -32,9 +32,9 @@ namespace LegionKnight
 
         public void Init()
         {
-            OnInitialized();
+            OnInitializedInvoke();
         }
-        private void OnInitialized()
+        private void OnInitializedInvoke()
         {
             m_OnInitialized?.Invoke(m_UsedCharacter);
             foreach(CharacterUnit unit in m_CharacterUnits)

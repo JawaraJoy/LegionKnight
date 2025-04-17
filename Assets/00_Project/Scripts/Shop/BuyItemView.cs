@@ -22,6 +22,7 @@ namespace LegionKnight
                 GameManager.Instance.SetBonusAvaible(shopItem, false);
                 CurrencyApplier(d);
                 CharacterApplier(d);
+                PlatformApplier(d);
             }
         }
 
@@ -37,6 +38,13 @@ namespace LegionKnight
             if (defi is CharacterDefinition character)
             {
                 m_Icon.sprite = character.SmallIcon;
+            }
+        }
+        private void PlatformApplier(Object defi)
+        {
+            if (defi is StandbyPlatformDefinition platform)
+            {
+                m_Icon.sprite = platform.Icon;
             }
         }
     }

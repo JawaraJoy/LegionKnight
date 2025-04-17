@@ -4,17 +4,21 @@ namespace LegionKnight
 {
     public partial class PlayerPlatformDeckAgent : MonoBehaviour
     {
-        public StanbyPlatform GetUsedStanbyPlatform()
+        public StandbyPlatformDefinition GetUsedStanbyPlatform()
         {
             return Player.Instance.GetUsedStanbyPlatform();
         }
-        public void SetIsOwned(StanbyPlatform platform, bool isOwned)
+        public void SetIsOwned(StandbyPlatformDefinition platform, bool isOwned)
         {
-            Player.Instance.SetIsOwned(platform, isOwned);
+            Player.Instance.SetIsPlatformOwned(platform, isOwned);
         }
-        public void SetUsedStandbyPlatform(StanbyPlatform platform)
+        public void SetUsedStandbyPlatform()
         {
-            Player.Instance.SetUsedStandbyPlatform(platform);
+            Player.Instance.SetUsedStanbyPlatform();
+        }
+        public void SelectStandbyPlatform(StandbyPlatformDefinition platform)
+        {
+            Player.Instance.SelectStandbyPlatform(platform);
         }
     }
 }

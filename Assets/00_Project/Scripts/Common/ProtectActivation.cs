@@ -70,9 +70,9 @@ namespace LegionKnight
         }
         public void AddBarrier(int add)
         {
-            foreach (var shield in m_Damageable)
+            foreach (var barrier in m_Damageable)
             {
-                shield.AddBarrier(add);
+                barrier.AddBarrier(add);
             }
         }
     }

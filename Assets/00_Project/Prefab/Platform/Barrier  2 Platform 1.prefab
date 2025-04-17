@@ -305,46 +305,10 @@ MonoBehaviour:
   m_Platform: {fileID: 7136329262289444777}
   m_OnNormalTouchDown:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1855337867908838225}
-        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
-        m_MethodName: AddManaToAllBosSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 32
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1855337867908838225}
-        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
-        m_MethodName: ActiveBosProjectileAbility
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 32
-          m_FloatArgument: 0
-          m_StringArgument: Double Saw
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnPerfectTouchDown:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1855337867908838225}
-        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
-        m_MethodName: AddManaToAllBosSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 304273507243859042}
         m_TargetAssemblyTypeName: LegionKnight.ProtectActivationAgent, Assembly-CSharp
         m_MethodName: LoadProtectAsset
@@ -746,7 +710,7 @@ GameObject:
   - component: {fileID: 4855327200866473999}
   - component: {fileID: 6592935887805129589}
   m_Layer: 8
-  m_Name: Shield Platform
+  m_Name: Barrier  2 Platform 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -982,7 +946,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7342107493707403331
 Transform:
   m_ObjectHideFlags: 0
@@ -1130,7 +1094,7 @@ SpriteRenderer:
   m_SortingLayerID: 1048968225
   m_SortingLayer: 5
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: de5713c1bba929f40bc2dab50caa43e9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b0b3444fc5a8ea44a8b5c8957513fa6e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

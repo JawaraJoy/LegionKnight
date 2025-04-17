@@ -32,7 +32,7 @@ namespace LegionKnight
         private int m_StayPerfectCombo;
 
         [SerializeField]
-        private List<StanbyPlatform> m_CharacterPlatform = new();
+        private List<StandbyPlatformDefinition> m_CharacterPlatform = new();
 
         [SerializeField]
         private List<PerfectTouchDownEvent> m_PerfectTouchDownEvents = new();
