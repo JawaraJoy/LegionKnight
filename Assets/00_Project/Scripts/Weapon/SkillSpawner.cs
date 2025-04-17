@@ -7,14 +7,18 @@ namespace LegionKnight
     {
         [SerializeField]
         private List<ProjectileSpawn> m_Skills = new();
-
+        [SerializeField]
+        private bool m_SpawnOnStart = true;
         private void Start()
         {
-            SpawnProjectileInternal();
+            if (m_SpawnOnStart)
+            {
+                SpawnProjectileInternal();
+            }
         }
         public void SpawnProjectile()
         {
-            //SpawnProjectileInternal();
+            SpawnProjectileInternal();
         }
         private void SpawnProjectileInternal()
         {

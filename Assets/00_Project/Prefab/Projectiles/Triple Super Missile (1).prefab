@@ -80,8 +80,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Skills:
-  - m_DamageOveride: 2
+  - m_DamageOveride: 1
     m_StartingForce: {x: 0, y: 0}
+    m_Local: 0
     m_ProjectileAsset:
       m_AssetGUID: 9896d318713eed644bb369b85e9807cc
       m_SubObjectName: 
@@ -92,8 +93,9 @@ MonoBehaviour:
     m_OnWeaponSpawned:
       m_PersistentCalls:
         m_Calls: []
-  - m_DamageOveride: 2
+  - m_DamageOveride: 1
     m_StartingForce: {x: 0, y: 0}
+    m_Local: 0
     m_ProjectileAsset:
       m_AssetGUID: 9896d318713eed644bb369b85e9807cc
       m_SubObjectName: 
@@ -104,8 +106,9 @@ MonoBehaviour:
     m_OnWeaponSpawned:
       m_PersistentCalls:
         m_Calls: []
-  - m_DamageOveride: 2
+  - m_DamageOveride: 1
     m_StartingForce: {x: 0, y: 0}
+    m_Local: 0
     m_ProjectileAsset:
       m_AssetGUID: 9896d318713eed644bb369b85e9807cc
       m_SubObjectName: 
@@ -116,6 +119,7 @@ MonoBehaviour:
     m_OnWeaponSpawned:
       m_PersistentCalls:
         m_Calls: []
+  m_SpawnOnStart: 1
 --- !u!114 &-8750950296287463835
 MonoBehaviour:
   m_ObjectHideFlags: 0

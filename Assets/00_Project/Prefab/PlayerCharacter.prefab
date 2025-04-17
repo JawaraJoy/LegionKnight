@@ -113,8 +113,11 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 1
   m_Health: 1
+  m_Shield: 0
+  m_Barrier: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -133,6 +136,78 @@ MonoBehaviour:
   m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_OnShieldChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 751198122168616761}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: SetBarrier
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 751198122168616761}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: SetShield
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnBarrierChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 751198122168616761}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: SetBarrier
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 751198122168616761}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: SetShield
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnProtectGone:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4755424564415841424}
+        m_TargetAssemblyTypeName: LegionKnight.ProtectActivation, Assembly-CSharp
+        m_MethodName: OnProtectGoneInvoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &795416552268929576
 GameObject:
   m_ObjectHideFlags: 0
@@ -180,7 +255,6 @@ MonoBehaviour:
   m_Behaviours:
   - {fileID: 1091291144089817512}
   - {fileID: 751198122168616761}
-  - {fileID: 7267132487816147097}
   - {fileID: 7267132487816147097}
   - {fileID: 7758370064416613710}
   m_OnPaused:
@@ -427,6 +501,7 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_MinDistanceToPerfect: 0.3
   m_CharacterPlatform: []
   m_PerfectTouchDownEvents: []
@@ -493,6 +568,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7754390084881475302}
+        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
+        m_MethodName: AddScoreAmount
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnPerfectTouchDown:
     m_PersistentCalls:
       m_Calls:
@@ -528,6 +615,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7754390084881475302}
+        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
+        m_MethodName: AddCurrencyRewardAmount
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -599,6 +698,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: LegionKnight.PassiveSkill, Assembly-CSharp
         m_MethodName: AddManaToAll
         m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 12
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7754390084881475302}
+        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
+        m_MethodName: AddScoreAmount
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -777,93 +888,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1630796249046252441
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7613274265505413765}
-  - component: {fileID: 1526630164313748228}
-  m_Layer: 0
-  m_Name: Square
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7613274265505413765
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1630796249046252441}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2809669583275431939}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1526630164313748228
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1630796249046252441}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -501565547
-  m_SortingLayer: 12
-  m_SortingOrder: 7
-  m_Sprite: {fileID: 21300000, guid: 7fca3be4e2ec6d34390ab8a80d7bb995, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!1 &1918946518817030770
 GameObject:
   m_ObjectHideFlags: 0
@@ -916,6 +940,7 @@ GameObject:
   - component: {fileID: 8191610395532003166}
   - component: {fileID: 6805749128141819672}
   - component: {fileID: 7012284224952001063}
+  - component: {fileID: 3804939165712080917}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -947,6 +972,7 @@ Transform:
   - {fileID: 7130043896373832698}
   - {fileID: 6920949147387027586}
   - {fileID: 8182313692109980319}
+  - {fileID: 6620163574274411677}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3377274384242518752
@@ -975,7 +1001,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 5
+  m_Constraints: 4
 --- !u!70 &6513007408860036446
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1029,13 +1055,28 @@ MonoBehaviour:
   m_OnStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3782978526680881856}
-        m_TargetAssemblyTypeName: LegionKnight.Player, Assembly-CSharp
-        m_MethodName: InitWeaponer
-        m_Mode: 2
+      - m_Target: {fileID: 7689285937031040271}
+        m_TargetAssemblyTypeName: LegionKnight.CharacterDeck, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: c6ceb5811bacf1947a81b0686e4fbb54, type: 2}
-          m_ObjectArgumentAssemblyTypeName: LegionKnight.CharacterDefinition, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnSetCharacterDefinition:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6867498596800542263}
+        m_TargetAssemblyTypeName: LegionKnight.Character, Assembly-CSharp
+        m_MethodName: SetCharacterDefinition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1044,23 +1085,34 @@ MonoBehaviour:
       - m_Target: {fileID: 3782978526680881856}
         m_TargetAssemblyTypeName: LegionKnight.Player, Assembly-CSharp
         m_MethodName: InitPassive
-        m_Mode: 2
+        m_Mode: 0
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: c6ceb5811bacf1947a81b0686e4fbb54, type: 2}
-          m_ObjectArgumentAssemblyTypeName: LegionKnight.CharacterDefinition, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_OnSetCharacterDefinition:
-    m_PersistentCalls:
-      m_Calls: []
+      - m_Target: {fileID: 3782978526680881856}
+        m_TargetAssemblyTypeName: LegionKnight.Player, Assembly-CSharp
+        m_MethodName: InitWeaponer
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_Character: {fileID: 6867498596800542263}
   m_CharacterJump: {fileID: 1091291144089817512}
   m_CurrencyControl: {fileID: 2942122649447902150}
+  m_PlayerDeck: {fileID: 7689285937031040271}
   m_PassiveSkill: {fileID: 1158308863625070404}
   m_PlayerPause: {fileID: 8956068173985954038}
+  m_ProtectActivation: {fileID: 4755424564415841424}
   m_PlayerTouchDown: {fileID: 7758370064416613710}
   m_Weaponer: {fileID: 6368892546450467708}
 --- !u!114 &6867498596800542263
@@ -1094,6 +1146,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 3804939165712080917}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerCameraAgent, Assembly-CSharp
+        m_MethodName: SetStayFollow
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -1132,11 +1196,23 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
       - m_Target: {fileID: 7012284224952001063}
         m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
         m_MethodName: ResetBoss
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3804939165712080917}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerCameraAgent, Assembly-CSharp
+        m_MethodName: SetStayFollow
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1290,6 +1366,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3804939165712080917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084039138725747265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec61964e12503f145bca8f6a4312deb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2207269959471590298
 GameObject:
   m_ObjectHideFlags: 0
@@ -1336,9 +1424,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ForceEffects:
   - ForceName: ToLeft
-    ForceDirection: {x: 0, y: 10}
+    ForceDirection: {x: -12, y: 10}
   - ForceName: ToRight
-    ForceDirection: {x: 0, y: 10}
+    ForceDirection: {x: 12, y: 10}
   m_Rb: {fileID: 3377274384242518752}
   m_UsePause: 1
   m_PauseDelay: 1
@@ -11240,8 +11328,11 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 1
   m_Health: 1
+  m_Shield: 0
+  m_Barrier: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -11260,6 +11351,78 @@ MonoBehaviour:
   m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_OnShieldChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7267132487816147097}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: SetShield
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7267132487816147097}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: SetBarrier
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnBarrierChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7267132487816147097}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: SetBarrier
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7267132487816147097}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: SetShield
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnProtectGone:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4755424564415841424}
+        m_TargetAssemblyTypeName: LegionKnight.ProtectActivation, Assembly-CSharp
+        m_MethodName: OnProtectGoneInvoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4453160972429118357
 GameObject:
   m_ObjectHideFlags: 0
@@ -11314,6 +11477,119 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ProjectileAbilities: []
+--- !u!1 &4510488576393087506
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6620163574274411677}
+  - component: {fileID: 7689285937031040271}
+  m_Layer: 0
+  m_Name: Player Deck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6620163574274411677
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4510488576393087506}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7689285937031040271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4510488576393087506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1029e3e10509d4c826a10578922ab9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UsedCharacter: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
+  m_SelectedCharacter: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
+  m_CharacterUnits:
+  - m_Definition: {fileID: 11400000, guid: c6ceb5811bacf1947a81b0686e4fbb54, type: 2}
+    m_Owned: 0
+    m_CurrentStars: 0
+    m_StarShardControl:
+      m_CurrenShardAmount: 0
+    m_OnCharacterStarUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_Definition: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
+    m_Owned: 1
+    m_CurrentStars: 0
+    m_StarShardControl:
+      m_CurrenShardAmount: 0
+    m_OnCharacterStarUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_Definition: {fileID: 11400000, guid: 9e93ed4a4163c4a478e65ae2db943e77, type: 2}
+    m_Owned: 1
+    m_CurrentStars: 0
+    m_StarShardControl:
+      m_CurrenShardAmount: 0
+    m_OnCharacterStarUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+  m_OnInitialized:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3782978526680881856}
+        m_TargetAssemblyTypeName: LegionKnight.Player, Assembly-CSharp
+        m_MethodName: SetCharacterDefinition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnCharacterUsed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3782978526680881856}
+        m_TargetAssemblyTypeName: LegionKnight.Player, Assembly-CSharp
+        m_MethodName: SetCharacterDefinition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnSelectedCharacter:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5531239023346532792
 GameObject:
   m_ObjectHideFlags: 0
@@ -16383,6 +16659,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CanJump: 1
+  m_UseHoldJump: 1
   m_JumpForce: 25
   m_JumpPressMaxDuration: 0.001
   m_JumpMultiplier: 0
@@ -16624,6 +16901,7 @@ GameObject:
   - component: {fileID: 124883684928806753}
   - component: {fileID: 2942122649447902150}
   - component: {fileID: 5021998139950130448}
+  - component: {fileID: 4541286761116554180}
   m_Layer: 7
   m_Name: CurrenciesControl
   m_TagString: Untagged
@@ -16659,8 +16937,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Currencies:
+  - m_CurrencyDefinition: {fileID: 11400000, guid: 4f3f1db60f3090e41ae29fd97631e6dc, type: 2}
+    m_Amount: 0
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_CurrencyDefinition: {fileID: 11400000, guid: ce6bc007f49bf3842afece3854a271d8, type: 2}
+    m_Amount: 0
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
-    m_Amount: 100
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -16679,6 +16979,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 4541286761116554180}
+          m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+          m_MethodName: SetCurrencyView
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 0
     m_OnCurrencyAmountGet:
       m_PersistentCalls:
         m_Calls: []
@@ -16702,19 +17014,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    m_OnCurrencyAmountGet:
-      m_PersistentCalls:
-        m_Calls: []
-  - m_CurrencyDefinition: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
-    m_Amount: 0
-    m_OnCurrencyAmountChanged:
-      m_PersistentCalls:
-        m_Calls: []
-    m_OnCurrencyChanged:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5021998139950130448}
-          m_TargetAssemblyTypeName: LegionKnight.HomeCurrencyViewAgent, Assembly-CSharp
+        - m_Target: {fileID: 4541286761116554180}
+          m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
           m_MethodName: SetCurrencyView
           m_Mode: 0
           m_Arguments:
@@ -16728,6 +17029,51 @@ MonoBehaviour:
     m_OnCurrencyAmountGet:
       m_PersistentCalls:
         m_Calls: []
+  - m_CurrencyDefinition: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
+    m_Amount: 50
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4541286761116554180}
+          m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+          m_MethodName: SetCurrencyView
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 0
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_CurrencyDefinition: {fileID: 11400000, guid: 585fc1b883f3e4440b09f3108b6fffc6, type: 2}
+    m_Amount: 50
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_CurrencyDefinition: {fileID: 11400000, guid: a473dec5484f79f4082d4843ea588472, type: 2}
+    m_Amount: 0
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!114 &5021998139950130448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16738,6 +17084,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e74be5b9c83b9684dae6f59b7059efa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4541286761116554180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7764102645273973304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f58cf3ff4870a45a82396b22a539cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8371110360359320408
@@ -16937,9 +17295,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7130043896373832698}
-  - component: {fileID: 9077042977488047620}
+  - component: {fileID: 4755424564415841424}
   m_Layer: 7
-  m_Name: Shield ACtivation
+  m_Name: Protect ACtivation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16957,11 +17315,10 @@ Transform:
   m_LocalPosition: {x: 0, y: -0.119999886, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2809669583275431939}
+  m_Children: []
   m_Father: {fileID: 85250483425571224}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9077042977488047620
+--- !u!114 &4755424564415841424
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -16970,299 +17327,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 9035786787272854334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0b9d8839811ba94e9e0bb99677d5103, type: 3}
+  m_Script: {fileID: 11500000, guid: 7fac41daabeda894c9e146caa5cc8b17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Shield: {fileID: 8578976365925332346}
---- !u!1001 &1903664013508527507
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 7130043896373832698}
-    m_Modifications:
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ShapeModule.type
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: SizeModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ShapeModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.size3D
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ShapeModule.arc.mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ShapeModule.radius.value
-      value: 3.55
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: EmissionModule.m_BurstCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ShapeModule.radiusThickness
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startSize.scalar
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startSizeY.scalar
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startSize.minScalar
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: EmissionModule.m_Bursts.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: EmissionModule.rateOverTime.scalar
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startSpeed.minScalar
-      value: -5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startSize.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startSizeY.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startSizeZ.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startSpeed.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startLifetime.minScalar
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.ctime1
-      value: 65535
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key0.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key0.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key1.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key1.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key2.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: InitialModule.startLifetime.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].value
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].inSlope
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].inWeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].outSlope
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].inWeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].outWeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1378332293444692641, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].outWeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2422135861218411788, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3976707380149044207, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 75b0637026ec53946a826eb34b74157e, type: 2}
-    - target: {fileID: 4007684188090611012, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_Size.x
-      value: 2.06
-      objectReference: {fileID: 0}
-    - target: {fileID: 4007684188090611012, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4718683448837995430, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_Delay
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6701965037541402369, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6701965037541402369, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_Health
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_ContactLayer.m_Bits
-      value: 147456
-      objectReference: {fileID: 0}
-    - target: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_OnDeath.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_OnDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_OnDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 9077042977488047620}
-    - target: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_OnDeath.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_OnDeath.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DeActiveShield
-      objectReference: {fileID: 0}
-    - target: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_OnDeath.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LegionKnight.ShieldActivation, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_OnDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 8768620030000337591, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_Name
-      value: Shield
-      objectReference: {fileID: 0}
-    - target: {fileID: 8768620030000337591, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7613274265505413765}
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
---- !u!4 &2809669583275431939 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4365922956443180432, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-  m_PrefabInstance: {fileID: 1903664013508527507}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8578976365925332346 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7882858286736584937, guid: 06ff58d9b450ce04d9b78df17e760de7, type: 3}
-  m_PrefabInstance: {fileID: 1903664013508527507}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6d89866f3665eb4687bae540ffe806e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_NormalProtectAsset:
+    m_AssetGUID: 746923e792d967e49a4237a1dda3968d
+    m_SubObjectName: 
+    m_SubObjectGUID: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  m_Damageable:
+  - {fileID: 7267132487816147097}
+  - {fileID: 751198122168616761}
+  m_OnProtectGone:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ProtectActivationAgent: {fileID: 0}

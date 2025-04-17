@@ -74,7 +74,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -501565547
-  m_SortingLayer: 13
+  m_SortingLayer: 12
   m_SortingOrder: 6
   m_Sprite: {fileID: -970488182351979515, guid: fe42c8b526e77e54ab91d0590272d9e8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -147,8 +147,11 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 1
-  m_Health: 2
+  m_Health: 4
+  m_Shield: 0
+  m_Barrier: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -176,6 +179,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnShieldChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnBarrierChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnProtectGone:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!61 &7588114715414075937
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -657,7 +675,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -501565547
-  m_SortingLayer: 13
+  m_SortingLayer: 12
   m_SortingOrder: 6
   m_Sprite: {fileID: -970488182351979515, guid: fe42c8b526e77e54ab91d0590272d9e8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5527,7 +5545,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -501565547
-  m_SortingLayer: 13
+  m_SortingLayer: 12
   m_SortingOrder: 5
   m_RenderMode: 0
   m_MeshDistribution: 0

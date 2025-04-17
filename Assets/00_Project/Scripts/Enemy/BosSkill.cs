@@ -42,26 +42,32 @@ namespace LegionKnight
     {
         public void AddOneMana(int indexSkill)
         {
+            if (m_SpawnedBosEnemy == null) return;
             m_SpawnedBosEnemy.AddOneMana(indexSkill);
         }
         public void ResetMana(int indexSkill)
         {
+            if (m_SpawnedBosEnemy == null) return;
             m_SpawnedBosEnemy.ResetMana(indexSkill);
         }
         public void AddManaToAllBosSkill(int add)
         {
+            if (m_SpawnedBosEnemy == null) return;
             m_SpawnedBosEnemy.AddManaToAll(add);
         }
         public void ActiveBosProjectileAbility(string abilityName)
         {
+            if (m_SpawnedBosEnemy == null) return;
             m_SpawnedBosEnemy.ActiveProjectileAbility(abilityName);
         }
         public void AddBosProjectileAbilities(ProjectileAbility ability)
         {
+            if (m_SpawnedBosEnemy == null) return;
             m_SpawnedBosEnemy.AddProjectileAbilities(ability);
         }
         public void RemoveBosProjectileAbilities(ProjectileAbility ability)
         {
+            if (m_SpawnedBosEnemy == null) return;
             m_SpawnedBosEnemy.RemoveProjectileAbilities(ability);
         }
     }

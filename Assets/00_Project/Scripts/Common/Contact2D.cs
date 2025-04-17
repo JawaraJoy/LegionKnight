@@ -110,7 +110,7 @@ namespace LegionKnight
         }
         private void OnDestroy()
         {
-            RemoveSelf();
+            //RemoveSelf();
         }
 
         public void RemoveSelf()
@@ -119,6 +119,7 @@ namespace LegionKnight
             {
                 if (item.TryGetComponent(out IContactable contactable))
                 {
+                    if (item == null) return;
                     contactable.GetContactableList().Remove(gameObject);
                 }
             }

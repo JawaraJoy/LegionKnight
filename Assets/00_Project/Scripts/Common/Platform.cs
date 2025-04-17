@@ -116,6 +116,7 @@ namespace LegionKnight
 
         public void SetStartPosition(Transform set)
         {
+            if (set == null) return;
             transform.position = set.position;
         }
 
