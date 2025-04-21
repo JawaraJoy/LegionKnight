@@ -41,20 +41,24 @@ namespace LegionKnight
             {
                 // Compare error code to PlayerAccountsErrorCodes
                 // Notify the player with the proper error message
+                OnSignInFailedInvoke($"Failed to sign in: {ex.Message}");
                 Debug.LogException(ex);
             }
             catch (RequestFailedException ex)
             {
                 // Compare error code to CommonErrorCodes
                 // Notify the player with the proper error message
+                OnSignInFailedInvoke($"Failed to sign in: {ex.Message}");
                 Debug.LogException(ex);
             }
         }
         private async Task SingInWithUnity()
         {
+            OnStartSingInInvoke();
             try
             {
                 await AuthenticationService.Instance.SignInWithUnityAsync(PlayerAccountService.Instance.AccessToken);
+                OnSignInSuccessInvoke($"Signed in with Unity {PlayerAccountService.Instance.IdToken} is Successed");
                 Debug.Log("SignIn is successful.");
             }
             catch (AuthenticationException ex)
@@ -62,12 +66,14 @@ namespace LegionKnight
                 // Compare error code to AuthenticationErrorCodes
                 // Notify the player with the proper error message
                 Debug.LogException(ex);
+                OnSignInFailedInvoke($"Failed to sign in: {ex.Message}");
             }
             catch (RequestFailedException ex)
             {
                 // Compare error code to CommonErrorCodes
                 // Notify the player with the proper error message
                 Debug.LogException(ex);
+                OnSignInFailedInvoke($"Failed to sign in: {ex.Message}");
             }
         }
         private async Task LinkWithUnityAsync(string accessToken)
