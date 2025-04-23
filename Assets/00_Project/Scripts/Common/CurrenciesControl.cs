@@ -7,9 +7,9 @@ namespace LegionKnight
     public partial class CurrenciesControl : MonoBehaviour
     {
         [SerializeField]
-        private List<Currency> m_Currencies = new();
+        protected List<Currency> m_Currencies = new();
 
-        private void Start()
+        protected virtual void Start()
         {
             foreach(Currency currency in m_Currencies)
             {

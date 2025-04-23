@@ -22,6 +22,10 @@ namespace LegionKnight
         {
             int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(m_CurrencyUsed.CurrencyDefinition);
             m_CurrencyUsed.SetAmount(playerCurrencyAmount);
+            foreach (var tab in m_ShopContainerTabs)
+            {
+                tab.Init();
+            }
         }
         public Currency GetCurrencyUsed()
         {

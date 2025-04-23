@@ -11,6 +11,10 @@ namespace LegionKnight
     {
         [SerializeField]
         private ShopManager m_ShopManager;
+        public void InitShop()
+        {
+            m_ShopManager.Init();
+        }
         private ShopContainer GetShopContainerInternal(string name)
         {
             return m_ShopManager.GetShopContainer(name);
@@ -78,6 +82,10 @@ namespace LegionKnight
 
     public partial class ShopManagerAgent
     {
+        public void InitShop()
+        {
+            GameManager.Instance.InitShop();
+        }
         private void SetItemAvailableInternal(ShopItemDefinition item, bool available)
         {
             GameManager.Instance.SetItemAvaible(item, available);

@@ -9,7 +9,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private int m_ResetHour = 1; // Reset every hour
-        public override void CheckTimer(UnityAction onTrigger)
+        public override void CheckTimer(UnityAction onTrigger, UnityAction onNotYet)
         {
             DateTime now = DateTime.Now;
             DateTime resetTime = GetResetTime(m_TimerId);
@@ -23,11 +23,13 @@ namespace LegionKnight
             }
             else
             {
+                onNotYet?.Invoke();
+
                 Debug.Log("It's not time for the Hour reset yet.");
             }
         }
 
-        public override void StartTimer()
+        protected override void StartTimer()
         {
             AddTimerHandlerInternal(new TimerHandler(m_TimerId, DateTime.Now.AddHours(m_ResetHour)));
         }

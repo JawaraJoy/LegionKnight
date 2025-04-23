@@ -8,10 +8,11 @@ namespace LegionKnight
     public class CurrencyDefinition : ScriptableObject
     {
         [SerializeField]
+        private string m_Id;
+        [SerializeField]
         private Sprite m_Icon;
+        public string Id => m_Id;
         public Sprite Icon => m_Icon;
-
-        
     }
     
 }

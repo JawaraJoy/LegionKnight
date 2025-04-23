@@ -9,12 +9,12 @@ namespace LegionKnight
     {
         [SerializeField]
         private int m_ResetClockHour = 15;
-        public override void StartTimer()
+        protected override void StartTimer()
         {
             DateTime resetTime = new (DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1, m_ResetClockHour, 0, 0);
             AddTimerHandlerInternal(new (m_TimerId, resetTime));
         }
-        public override void CheckTimer(UnityAction onTrigger)
+        public override void CheckTimer(UnityAction onTrigger, UnityAction onNotYet)
         {
             DateTime now = DateTime.Now;
             DateTime resetTime = GetResetTime(m_TimerId);
@@ -28,6 +28,7 @@ namespace LegionKnight
             }
             else
             {
+                onNotYet?.Invoke();
                 Debug.Log("It's not time for the daily reset yet.");
             }
         }

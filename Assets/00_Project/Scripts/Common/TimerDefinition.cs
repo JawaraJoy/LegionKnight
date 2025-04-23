@@ -16,12 +16,25 @@ namespace LegionKnight
         public string TimerId => m_TimerId;
         public string Description => m_Description;
         public Sprite Icon => m_Icon;
-        public abstract void StartTimer();
-        public abstract void CheckTimer(UnityAction onTrigger);
+        protected abstract void StartTimer();
+        public abstract void CheckTimer(UnityAction onTrigger, UnityAction onNoYet);
 
         // Changed TimerHandler to a non-static type to fix CS0718
         private static readonly List<TimerHandler> m_TimerHandlers = new();
-
+        public void Init()
+        {
+            if (UnityService.Instance.HasData(m_TimerId))
+            {
+                // Load the timer data from UnityService
+                var resetTime = UnityService.Instance.GetData<DateTime>(m_TimerId);
+                var handler = new TimerHandler(m_TimerId, resetTime);
+                m_TimerHandlers.Add(handler);
+            }
+            else
+            {
+                StartTimer();
+            }
+        }
         private static TimerHandler GetTimerHandler(string timerId)
         {
             foreach (var handler in m_TimerHandlers)
@@ -129,15 +142,20 @@ namespace LegionKnight
         public void SetResetTime(DateTime resetTime)
         {
             m_ResetTime = resetTime;
+            string dateTimeString = m_ResetTime.ToString("yyyy-MM-dd HH:mm:ss");
+            UnityService.Instance.SaveData(m_TimerId, dateTimeString);
         }
         public DateTime GetResetTime()
         {
+            m_ResetTime = UnityService.Instance.GetData<DateTime>(m_TimerId);
             return m_ResetTime;
+            //return m_ResetTime;
         }
         public TimerHandler(string timerId, DateTime time)
         {
             m_TimerId = timerId;
             m_ResetTime = time;
+            UnityService.Instance.SaveData(m_TimerId, time);
         }
         /// <summary>
         /// Gets the remaining time between now and the reset time.
@@ -152,6 +170,7 @@ namespace LegionKnight
             DateTime now = DateTime.Now;
 
             // If the reset time is in the past, calculate for the next day
+            m_ResetTime = UnityService.Instance.GetData<DateTime>(m_TimerId);
             return m_ResetTime - now;
         }
         public string GetRemainingTimeAsStringMinute()

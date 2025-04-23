@@ -6,7 +6,8 @@ namespace LegionKnight
     [CreateAssetMenu(fileName = "New Shop Item", menuName = "Legion Knight/Shop Item")]
     public partial class ShopItemDefinition : ScriptableObject
     {
-
+        [SerializeField]
+        private string m_Id;
         [SerializeField]
         private string m_ItemName;
         [SerializeField]
@@ -40,6 +41,7 @@ namespace LegionKnight
         [SerializeField]
         private int m_SpendRewardAmount;
 
+        public string Id => m_Id;
         public string ItemName => m_ItemName;
         public string ContainerName => m_ContainerName;
         public string TabName => m_TabName;

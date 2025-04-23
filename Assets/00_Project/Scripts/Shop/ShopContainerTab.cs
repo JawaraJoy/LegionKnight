@@ -13,6 +13,13 @@ namespace LegionKnight
 
         public string TabName => m_TabName;
 
+        public void Init()
+        {
+            foreach (var itemControl in m_ShopItemControls)
+            {
+                itemControl.InitInternal();
+            }
+        }
         public ShopItemControl GetShopItemControl(ShopItemDefinition defi)
         {
             ShopItemControl match = m_ShopItemControls.Find(item => item.ShopItem == defi);

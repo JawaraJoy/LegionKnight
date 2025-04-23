@@ -18,6 +18,7 @@ namespace LegionKnight
         private UnityEvent<int> m_OnCurrencyAmountGet = new();
         public CurrencyDefinition CurrencyDefinition => m_CurrencyDefinition;
         public int Amount => m_Amount;
+        public string Id => m_CurrencyDefinition.Id;
 
         public void Init()
         {
@@ -28,6 +29,7 @@ namespace LegionKnight
         {
             m_Amount = set;
             OnCurrencyAmountChangedInvoke(m_Amount);
+            
         }
         public void AddAmount(int add)
         {
@@ -49,6 +51,7 @@ namespace LegionKnight
         {
             m_OnCurrencyAmountChanged?.Invoke(amount);
             m_OnCurrencyChanged?.Invoke(this);
+            
         }
 
         private void OncurrencyAmountGetInvoke(int amount)

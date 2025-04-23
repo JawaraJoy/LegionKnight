@@ -22,6 +22,13 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<ShopItemDefinition> m_OnItemBought = new();
 
+        public void Init()
+        {
+            foreach (var container in m_ShopContainers)
+            {
+                container.Init();
+            }
+        }
         public void SelectShop(string containerName)
         {
             ShopContainer container = GetShopContainerInternal(containerName);

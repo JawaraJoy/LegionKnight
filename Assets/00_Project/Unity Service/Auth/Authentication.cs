@@ -58,7 +58,7 @@ namespace LegionKnight
             try
             {
                 await AuthenticationService.Instance.SignInWithUnityAsync(PlayerAccountService.Instance.AccessToken);
-                OnSignInSuccessInvoke($"Signed in with Unity {PlayerAccountService.Instance.IdToken} is Successed");
+                OnSignInSuccessInvoke($"Signed in with Unity {PlayerAccountService.Instance.AccessToken} is Successed");
                 Debug.Log("SignIn is successful.");
             }
             catch (AuthenticationException ex)

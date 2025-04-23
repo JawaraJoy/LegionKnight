@@ -13,9 +13,13 @@ namespace LegionKnight
         private UnityEvent m_OnStart = new();
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnSetCharacterDefinition = new();
-        private void Start()
+        public void Init()
         {
             OnStartInvoke();
+        }
+        private void Start()
+        {
+            //OnStartInvoke();
         }
         public void SetCharacterDefinition(CharacterDefinition definition)
         {

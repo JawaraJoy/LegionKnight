@@ -25,18 +25,28 @@ namespace LegionKnight
         private TextMeshProUGUI m_TimerText;
         [SerializeField]
         private UnityEvent m_OnTimeTrigger;
-
+        [SerializeField]
+        private UnityEvent m_OnNoYetTrigger;
         private void OnTimeTriggerInvoke()
         {
             m_OnTimeTrigger?.Invoke();
             HideInternal();
         }
+        private void OnNoYetTriggerInvoke()
+        {
+            m_OnNoYetTrigger?.Invoke();
+            ShowInternal();
+        }
+        public void Init()
+        {
+            InitInternal();
+        }
         private void InitInternal()
         {
             if (m_TimerDefinition != null)
             {
-                m_TimerDefinition.StartTimer();
-                m_TimerDefinition.CheckTimer(OnTimeTriggerInvoke);
+                m_TimerDefinition.Init();
+                m_TimerDefinition.CheckTimer(OnTimeTriggerInvoke, OnNoYetTriggerInvoke);
             }
             else
             {
@@ -60,15 +70,6 @@ namespace LegionKnight
                     Debug.LogError("Invalid timer type.");
                     break;
             }
-        }
-        private void OnEnable()
-        {
-            InitInternal();
-        }
-        protected override void OnShowInvoke()
-        {
-            base.OnShowInvoke();
-            InitInternal();
         }
     }
 }

@@ -22,9 +22,26 @@ namespace LegionKnight
         public int ShopingPointReward => m_ShopItem.SpendRewardAmount;
         public Object ItemToBuy => m_ShopItem.ItemToBuy;
         public Object ItemBonus => m_ShopItem.ItemBonus;
+
+        private string IdInternal => m_ShopItem.Id;
+
+        public void InitInternal()
+        {
+            UnityService.Instance.LoadData(IdInternal + "a");
+            UnityService.Instance.LoadData(IdInternal + "b");
+            if (UnityService.Instance.HasData(IdInternal + "a"))
+            {
+                m_IsAvailable = UnityService.Instance.GetData<bool>(IdInternal + "a");
+            }
+            if (UnityService.Instance.HasData(IdInternal + "b"))
+            {
+                m_IsBonusAvaible = UnityService.Instance.GetData<bool>(IdInternal + "b");
+            }
+        }
         public void SetAvailable(bool available)
         {
             m_IsAvailable = available;
+            UnityService.Instance.SaveData(IdInternal + "a", m_IsAvailable);
         }
         public void SetShopItem(ShopItemDefinition shopItem)
         {
@@ -33,6 +50,7 @@ namespace LegionKnight
         public void SetBonusAvaible(bool available)
         {
             m_IsBonusAvaible = available;
+            UnityService.Instance.SaveData(IdInternal + "b", m_IsBonusAvaible);
         }
     }
 }
