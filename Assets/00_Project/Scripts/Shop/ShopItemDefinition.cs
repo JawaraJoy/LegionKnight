@@ -126,21 +126,14 @@ namespace LegionKnight
             }
             if (item is StandbyPlatformDefinition standby)
             {
-                if (Player.Instance.IsPlatformOwned(standby))
-                {
-                    Player.Instance.AddCurrencyAmount(m_CurrencyDefinition, m_Price);
-                }
-                else
-                {
-                    Player.Instance.SetIsPlatformOwned(standby, true);
-                }
+                Player.Instance.AddPlatformAmount(standby, m_Amount);
             }
             else
             {
                 Debug.LogError($"Unsupported item type: {item.GetType()}");
             }
 
-            if (GameManager.Instance.GetShopItemControl(this).IsBonusAvaible || m_ItemBonus != null)
+            if (GameManager.Instance.GetShopItemControl(this).IsBonusAvaible && m_ItemBonus != null)
             {
                 AddBonusItemToPlayer(m_ItemBonus);
             }
@@ -159,7 +152,7 @@ namespace LegionKnight
             }
             if (item is StandbyPlatformDefinition standby)
             {
-                Player.Instance.SetIsPlatformOwned(standby, true);
+                Player.Instance.AddPlatformAmount(standby, m_Amount);
             }
             else
             {

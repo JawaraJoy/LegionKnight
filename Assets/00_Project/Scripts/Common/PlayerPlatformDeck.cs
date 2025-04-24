@@ -23,9 +23,9 @@ namespace LegionKnight
         {
             return m_PlayerPlatformDeck.GetUsedStanbyPlatform();
         }
-        public void SetIsPlatformOwned(StandbyPlatformDefinition platform, bool isOwned)
+        public void AddPlatformAmount(StandbyPlatformDefinition platform, int add)
         {
-            m_PlayerPlatformDeck.SetIsOwned(platform, isOwned);
+            m_PlayerPlatformDeck.AddPlatformAmount(platform, add);
         }
         public void SelectStandbyPlatform(StandbyPlatformDefinition platform)
         {

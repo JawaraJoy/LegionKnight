@@ -7,6 +7,8 @@ namespace LegionKnight
     public partial class BannerDefinition : ScriptableObject
     {
         [SerializeField]
+        private string m_Id;
+        [SerializeField]
         private Sprite m_VisualBanner;
         [SerializeField]
         private Sprite m_SmallVisualBanner;
@@ -34,6 +36,7 @@ namespace LegionKnight
         public List<GachaReward> GachaRewards => m_GachaRewards;
         public Sprite VisualBanner => m_VisualBanner;
         public Sprite SmallVisualBanner => m_SmallVisualBanner;
+        public string Id => m_Id;
     }
     [System.Serializable]
     public partial class GachaReward

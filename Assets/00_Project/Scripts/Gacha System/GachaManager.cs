@@ -11,6 +11,11 @@ namespace LegionKnight
     {
         [SerializeField]
         private GachaManager m_GachanBanner;
+
+        public void InitGacha()
+        {
+            m_GachanBanner.Init();
+        }
         public void SelectBanner(BannerDefinition definition)
         {
             m_GachanBanner.SelectBanner(definition);

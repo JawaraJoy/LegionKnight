@@ -4,6 +4,10 @@ namespace LegionKnight
 {
     public partial class GachaManagerAgent : MonoBehaviour
     {
+        public void Init()
+        {
+            GameManager.Instance.InitGacha();
+        }
         private BannerPanel GetBannerPanel()
         {
             return GameManager.Instance.GetPanel<BannerPanel>();

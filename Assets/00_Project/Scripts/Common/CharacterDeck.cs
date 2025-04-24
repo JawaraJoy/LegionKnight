@@ -28,6 +28,11 @@ namespace LegionKnight
             CharacterUnit match = m_CharacterUnits.Find(x => x.Definition == definition);
             return match;
         }
+        private CharacterUnit GetCharacterUnitInternal(string id)
+        {
+            CharacterUnit match = m_CharacterUnits.Find(x => x.Definition.Id == id);
+            return match;
+        }
         public CharacterUnit GetCharacterUnit(CharacterDefinition definition)
         {
             return GetCharacterUnitInternal(definition);
@@ -35,6 +40,15 @@ namespace LegionKnight
 
         public void Init()
         {
+            if (UnityService.Instance.HasData("usedcharacter"))
+            {
+                m_UsedCharacter = GetCharacterUnitInternal(UnityService.Instance.GetData<string>("usedcharacter")).Definition;
+            }
+            else
+            {
+                m_UsedCharacter = m_DefaultCharacter;
+                UnityService.Instance.SaveData("usedcharacter", m_UsedCharacter.Id);
+            }
             OnInitializedInvoke();
         }
         private void OnInitializedInvoke()
@@ -52,6 +66,7 @@ namespace LegionKnight
         public void SetUsedCharacter()
         {
             m_UsedCharacter = m_SelectedCharacter;
+            UnityService.Instance.SaveData("usedcharacter", m_UsedCharacter.Id);
             OnCharacterUsedInvoke();
         }
         public void SetSelectedCharacter(CharacterDefinition defi)

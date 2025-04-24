@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -12,6 +13,8 @@ namespace LegionKnight
         private Image m_UnitIcon;
         [SerializeField]
         private GameObject m_LockIcon;
+        [SerializeField]
+        private TextMeshProUGUI m_AmountText;
         [SerializeField]
         private Button m_SelectButton;
         [SerializeField]
@@ -37,10 +40,12 @@ namespace LegionKnight
         }
         private void InitInternal(PlatformUnit unit)
         {
+            unit.Init();
             m_PlatformPrefab = unit.StanbyPlatform;
             m_LockIcon.SetActive(!unit.IsOwned);
             m_SelectButton.interactable = unit.IsOwned;
             m_UnitIcon.sprite = m_PlatformPrefab.Icon;
+            m_AmountText.text = unit.Amount.ToString();
 
             m_SelectButton.onClick.RemoveAllListeners();
             m_SelectButton.onClick.AddListener(SelectPlatformInternal);

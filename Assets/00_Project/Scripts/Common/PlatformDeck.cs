@@ -13,22 +13,33 @@ namespace LegionKnight
         private int m_Amount;
         [SerializeField]
         private StandbyPlatformDefinition m_StanbyPlatform;
-        public bool IsOwned => m_IsOwned;
+        public bool IsOwned => m_IsOwned = m_Amount > 0;
+        public int Amount => m_Amount;
         public StandbyPlatformDefinition StanbyPlatform => m_StanbyPlatform;
         public PlatformUnit(StandbyPlatformDefinition stanbyPlatform)
         {
             m_StanbyPlatform = stanbyPlatform;
             m_IsOwned = false;
         }
-        public void AddAmount(bool isOwned)
+        public void AddAmount(int add)
         {
-
-            m_IsOwned = isOwned;
-            m_IsOwned = m_Amount < 1;
+            m_Amount += add;
+            UnityService.Instance.SaveData(m_StanbyPlatform.Id + "amount", m_Amount);
+            m_IsOwned = m_Amount > 0;
         }
         public void Init()
         {
-            
+            if (UnityService.Instance.HasData(m_StanbyPlatform.Id + "amount"))
+            {
+                m_Amount = UnityService.Instance.GetData<int>(m_StanbyPlatform.Id + "amount");
+                
+            }
+            else
+            {
+                m_Amount = 0;
+                UnityService.Instance.SaveData(m_StanbyPlatform.Id + "amount", m_Amount);
+            }
+            m_IsOwned = m_Amount > 0;
         }
     }
     public partial class PlatformDeck : MonoBehaviour
@@ -71,10 +82,14 @@ namespace LegionKnight
         {
             return m_UsedStanbyPlatform;
         }
-        public void SetIsOwned(StandbyPlatformDefinition platform, bool isOwned)
+        public void AddPlatformAmount(StandbyPlatformDefinition platform, int add)
+        {
+            AddPlatformAmountInternal(platform, add);
+        }
+        public void AddPlatformAmountInternal(StandbyPlatformDefinition platform, int add)
         {
             var platformOwned = GetPlatformOwnedInternal(platform);
-            platformOwned?.AddAmount(isOwned);
+            platformOwned?.AddAmount(add);
         }
         public void SetUsedStandbyPlatform()
         {
@@ -88,7 +103,11 @@ namespace LegionKnight
         }
         public void AddPlayerStandbyPlatform()
         {
-            GameManager.Instance.AddStandbyPlatform(new List<StandbyPlatformDefinition> { m_UsedStanbyPlatform });
+            if (GetPlatformOwnedInternal(m_UsedStanbyPlatform).IsOwned)
+            {
+                GameManager.Instance.AddStandbyPlatform(new List<StandbyPlatformDefinition> { m_UsedStanbyPlatform });
+                AddPlatformAmountInternal(m_UsedStanbyPlatform, -1);
+            }
         }
         public void Init()
         {

@@ -24,9 +24,18 @@ namespace LegionKnight
 
         [SerializeField]
         private Currency m_StarConvertCount;
+
+        public void Init()
+        {
+            SelectBanner(m_Banners[0].Definition);
+            foreach (var banner in m_Banners)
+            {
+                banner.Init();
+            }
+            OnStartInvoke();
+        }
         private void Start()
         {
-            m_SelectedBanner = m_Banners[0];
             OnStartInvoke();
         }
         public void AddStarConvertCount(int amount)
@@ -50,6 +59,10 @@ namespace LegionKnight
             return match;
         }
         public void SelectBanner(BannerDefinition definition)
+        {
+            SelectBannerInternal(definition);
+        }
+        public void SelectBannerInternal(BannerDefinition definition)
         {
             m_SelectedBanner = GetGachaBannerInternal(definition);
             OnBannerSelected(m_SelectedBanner);

@@ -62,12 +62,15 @@ namespace LegionKnight
 
             m_ItemNameText.text = m_Definition.ItemName;
             m_MainImage.sprite = m_Definition.Icon;
-            m_BonusSignContent.SetActive(m_IsBonusAvaible);
+            if (m_BonusSignContent != null)
+            {
+                m_BonusSignContent.SetActive(m_IsBonusAvaible);
+            }
             m_NotAvaibleContent.SetActive(!m_IsAvaible);
             m_CurrencyView.SetView(new Currency(m_Definition.Currency, m_Definition.Price));
             m_BonusText.text = m_Definition.BonusDescription;
             m_SelectButton.interactable = m_IsAvaible;
-            m_ItemAmountText.gameObject.SetActive(m_Definition.Amount < 2);
+            m_ItemAmountText.gameObject.SetActive(m_Definition.Amount > 1);
             m_ItemAmountText.text = $"+{m_Definition.Amount}";
         }
         public void TryToBuy()
@@ -83,7 +86,10 @@ namespace LegionKnight
         public void SetBonusAvaibleInternal(bool isAvaible)
         {
             m_IsBonusAvaible = isAvaible;
-            m_BonusSignContent.SetActive(isAvaible);
+            if (m_BonusSignContent != null)
+            {
+                m_BonusSignContent.SetActive(m_IsBonusAvaible);
+            }
             //GetShopItemControl().SetBonusAvaible(isAvaible);
         }
 

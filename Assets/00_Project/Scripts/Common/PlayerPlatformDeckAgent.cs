@@ -8,9 +8,9 @@ namespace LegionKnight
         {
             return Player.Instance.GetUsedStanbyPlatform();
         }
-        public void SetIsOwned(StandbyPlatformDefinition platform, bool isOwned)
+        public void SetIsOwned(StandbyPlatformDefinition platform, int add)
         {
-            Player.Instance.SetIsPlatformOwned(platform, isOwned);
+            Player.Instance.AddPlatformAmount(platform, add);
         }
         public void SetUsedStandbyPlatform()
         {

@@ -7,6 +7,8 @@ namespace LegionKnight
     public partial class StandbyPlatformDefinition : ScriptableObject
     {
         [SerializeField]
+        private string m_Id;
+        [SerializeField]
         private string m_Label;
         [SerializeField, TextArea]
         private string m_Description;
@@ -21,5 +23,6 @@ namespace LegionKnight
         public string Label => $"{m_Label} Platform";
         public string Description => m_Description;
         public Sprite Icon => m_Icon;
+        public string Id => m_Id;
     }
 }

@@ -41,9 +41,20 @@ namespace LegionKnight
         public Sprite VisualBanner => m_Definition.VisualBanner;
         public Sprite SmallVisualBanner => m_Definition.SmallVisualBanner;
 
+        public void Init()
+        {
+            if (UnityService.Instance.HasData(m_Definition.Id + "totaldraws"))
+            {
+                m_TotalDraws = UnityService.Instance.GetData<int>(m_Definition.Id + "totaldraws");
+            }
+            else
+            {
+                m_TotalDraws = 0;
+            }
+        }
         public float GetDrawCountRate()
         {
-            return (float) m_TotalDraws / (float)GuaranteedDrawInternal;
+            return (float)m_TotalDraws / (float)GuaranteedDrawInternal;
         }
         private CurrencyDefinition GetPlayerCurrency()
         {
@@ -133,7 +144,7 @@ namespace LegionKnight
                 yield return new WaitForSeconds(1f);
             }
 
-            
+            UnityService.Instance.SaveData(m_Definition.Id + "totaldraws", m_TotalDraws);
             Debug.Log($"Gacha Reward {allRewards}");
         }
 
