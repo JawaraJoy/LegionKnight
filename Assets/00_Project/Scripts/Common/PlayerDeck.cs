@@ -11,6 +11,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private PlayerDeck m_PlayerDeck;
+        public CharacterDefinition DefaultCharacter => m_PlayerDeck.DefaultCharacter;
         public void InitPlayerDeck()
         {
             m_PlayerDeck.Init();

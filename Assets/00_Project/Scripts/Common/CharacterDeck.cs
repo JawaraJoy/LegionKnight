@@ -7,6 +7,8 @@ namespace LegionKnight
     public partial class CharacterDeck : MonoBehaviour
     {
         [SerializeField]
+        private CharacterDefinition m_DefaultCharacter;
+        [SerializeField]
         private CharacterDefinition m_UsedCharacter;
         [SerializeField]
         private CharacterDefinition m_SelectedCharacter;
@@ -18,6 +20,7 @@ namespace LegionKnight
         private UnityEvent<CharacterDefinition> m_OnCharacterUsed = new();
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnSelectedCharacter = new();
+        public CharacterDefinition DefaultCharacter => m_DefaultCharacter;
         public List<CharacterUnit> CharacterUnits => m_CharacterUnits;
         public CharacterDefinition UsedCharacter => m_UsedCharacter;
         private CharacterUnit GetCharacterUnitInternal(CharacterDefinition definition)

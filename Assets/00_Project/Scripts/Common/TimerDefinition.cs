@@ -17,186 +17,31 @@ namespace LegionKnight
         public string Description => m_Description;
         public Sprite Icon => m_Icon;
         protected abstract void StartTimer();
-        public abstract void CheckTimer(UnityAction onTrigger, UnityAction onNoYet);
-
-        // Changed TimerHandler to a non-static type to fix CS0718
-        private static readonly List<TimerHandler> m_TimerHandlers = new();
-        public void Init()
+        public virtual void CheckTimer(UnityAction onTrigger, UnityAction onNotYet)
         {
-            if (UnityService.Instance.HasData(m_TimerId))
+            // Check if the current time is past the reset time
+            if (IsTimeToResetInternal())
             {
-                // Load the timer data from UnityService
-                var resetTime = UnityService.Instance.GetData<DateTime>(m_TimerId);
-                var handler = new TimerHandler(m_TimerId, resetTime);
-                m_TimerHandlers.Add(handler);
-            }
-            else
-            {
+                onTrigger?.Invoke();
                 StartTimer();
-            }
-        }
-        private static TimerHandler GetTimerHandler(string timerId)
-        {
-            foreach (var handler in m_TimerHandlers)
-            {
-                if (handler.TimerId == timerId)
-                {
-                    return handler;
-                }
-            }
-            return null;
-        }
-        public static TimeSpan GetRemainingTime(string timerId)
-        {
-            var handler = GetTimerHandler(timerId);
-            if (handler != null)
-            {
-                return handler.GetRemainingTime();
-            }
-            Debug.LogError($"TimerHandler with ID {timerId} not found");
-            return TimeSpan.Zero; // Return TimeSpan.Zero instead of DateTime.MinValue
-        }
-        public static string GetRemainingTimeAsStringMinute(string timerId)
-        {
-            var handler = GetTimerHandler(timerId);
-            if (handler != null)
-            {
-                return handler.GetRemainingTimeAsStringMinute();
-            }
-            Debug.LogError($"TimerHandler with ID {timerId} not found");
-            return "00m:00s"; // Return a default string instead of DateTime.MinValue
-        }
-        public static string GetRemainingTimeAsStringHour(string timerId)
-        {
-            var handler = GetTimerHandler(timerId);
-            if (handler != null)
-            {
-                return handler.GetRemainingTimeAsStringHour();
-            }
-            Debug.LogError($"TimerHandler with ID {timerId} not found");
-            return "00h:00m"; // Return a default string instead of DateTime.MinValue
-        }
-        public static string GetRemainingTimeAsStringDay(string timerId)
-        {
-            var handler = GetTimerHandler(timerId);
-            if (handler != null)
-            {
-                return handler.GetRemainingTimeAsStringDay();
-            }
-            Debug.LogError($"TimerHandler with ID {timerId} not found");
-            return "00d:00h"; // Return a default string instead of DateTime.MinValue
-        }
-        protected static void AddTimerHandlerInternal(TimerHandler handler)
-        {
-            if (handler == null)
-            {
-                Debug.LogError("TimerHandler is null");
-                return;
-            }
-            if (GetTimerHandler(handler.TimerId) != null)
-            {
-                Debug.LogWarning($"TimerHandler with ID {handler.TimerId} already exists");
-                return;
-            }
-            m_TimerHandlers.Add(handler);
-        }
-        public static void RemoveTimerHandler(string timerId)
-        {
-            var handler = GetTimerHandler(timerId);
-            if (handler != null)
-            {
-                m_TimerHandlers.Remove(handler);
+                Debug.Log($"{m_TimerId} reset triggered!");
             }
             else
             {
-                Debug.LogError($"TimerHandler with ID {timerId} not found");
+                onNotYet?.Invoke();
+                Debug.Log($"It's not time for the {m_TimerId} reset yet.");
             }
         }
-
-        protected static DateTime GetResetTime(string timerId)
+        public bool IsTimeToReset()
         {
-            return GetTimerHandler(timerId)?.GetResetTime() ?? DateTime.MinValue;
+            return IsTimeToResetInternal();
         }
-        protected virtual void SetResetTimeInternal(string timerId, DateTime resetTime)
-        {
-            GetTimerHandler(timerId)?.SetResetTime(resetTime);
-        }
-        public void SetResetTime(string timerId, DateTime resetTime)
-        {
-            if (string.IsNullOrEmpty(timerId))
-            {
-                Debug.LogError("Timer ID is null or empty");
-                return;
-            }
-            SetResetTimeInternal(timerId, resetTime);
-        }
-    }
-
-    // Introduced a non-static wrapper class to represent instances of TimerHandle
-
-    public partial class TimerHandler
-    {
-        private readonly string m_TimerId = "DailyTimer";
-        private DateTime m_ResetTime;
-        public string TimerId => m_TimerId;
-        public void SetResetTime(DateTime resetTime)
-        {
-            m_ResetTime = resetTime;
-            string dateTimeString = m_ResetTime.ToString("yyyy-MM-dd HH:mm:ss");
-            UnityService.Instance.SaveData(m_TimerId, dateTimeString);
-        }
-        public DateTime GetResetTime()
-        {
-            m_ResetTime = UnityService.Instance.GetData<DateTime>(m_TimerId);
-            return m_ResetTime;
-            //return m_ResetTime;
-        }
-        public TimerHandler(string timerId, DateTime time)
-        {
-            m_TimerId = timerId;
-            m_ResetTime = time;
-            UnityService.Instance.SaveData(m_TimerId, time);
-        }
-        /// <summary>
-        /// Gets the remaining time between now and the reset time.
-        /// </summary>
-        /// <returns>A TimeSpan representing the remaining time.</returns>
-        public TimeSpan GetRemainingTime()
-        {
-            return GetRemainingTimeInternal();
-        }
-        private TimeSpan GetRemainingTimeInternal()
+        protected virtual bool IsTimeToResetInternal()
         {
             DateTime now = DateTime.Now;
-
-            // If the reset time is in the past, calculate for the next day
-            m_ResetTime = UnityService.Instance.GetData<DateTime>(m_TimerId);
-            return m_ResetTime - now;
-        }
-        public string GetRemainingTimeAsStringMinute()
-        {
-            TimeSpan remainingTime = GetRemainingTimeInternal();
-            // Format the TimeSpan as mm:ss
-            return string.Format("{0:D2}m:{1:D2}s",
-                remainingTime.Minutes,
-                remainingTime.Seconds);
-        }
-        public string GetRemainingTimeAsStringHour()
-        {
-            TimeSpan remainingTime = GetRemainingTimeInternal();
-
-            // Format the TimeSpan as HH:mm:ss
-            return string.Format("{0:D2}h:{1:D2}m",
-                remainingTime.Hours,
-                remainingTime.Minutes);
-        }
-        public string GetRemainingTimeAsStringDay()
-        {
-            TimeSpan remainingTime = GetRemainingTimeInternal();
-
-            return string.Format("{0:D2}d:{1:D2}h",
-                remainingTime.Days,
-                remainingTime.Hours);
+            DateTime resetTime = Player.Instance.GetResetTime(m_TimerId);
+            // Check if the current time is past the reset time
+            return now >= resetTime;
         }
     }
 }

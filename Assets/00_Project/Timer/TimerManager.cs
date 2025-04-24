@@ -16,9 +16,13 @@ namespace LegionKnight
         {
             m_TimerManager.Init();
         }
-        public void SetResetTime(string id, DateTime resetTime)
+        public DateTime GetResetTime(string id)
         {
-            m_TimerManager.SetResetTime(id, resetTime);
+            return m_TimerManager.GetResetTime(id);
+        }
+        public void SetResetTime(TimerDefinition defi, DateTime resetTime)
+        {
+            m_TimerManager.SetResetTime(defi, resetTime);
         }
         public string GetRemainingTimeAsString(string id, TimerType timerType)
         {

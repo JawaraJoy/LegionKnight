@@ -55,6 +55,8 @@ namespace LegionKnight
         {
             if (m_Definition == null) return;
 
+            GetShopItemControl().CheckAvailableInternal();
+
             m_IsAvaible = GetShopItemControl().IsAvailable;
             m_IsBonusAvaible = GetShopItemControl().IsBonusAvaible;
 

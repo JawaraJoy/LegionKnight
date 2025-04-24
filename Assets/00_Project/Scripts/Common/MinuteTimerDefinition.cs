@@ -9,29 +9,11 @@ namespace LegionKnight
     {
         [SerializeField]
         private int m_ResetMinute;
-        public override void CheckTimer(UnityAction onTrigger, UnityAction onNotYet)
-        {
-            DateTime now = DateTime.Now;
-            DateTime resetTime = GetResetTime(m_TimerId);
-
-            // Check if the current time is past the reset time
-            if (now >= resetTime)
-            {
-                onTrigger?.Invoke();
-                SetResetTimeInternal(m_TimerId, DateTime.Now.AddMinutes(m_ResetMinute));
-                Debug.Log("Minute reset triggered!");
-            }
-            else
-            {
-                onNotYet?.Invoke();
-                Debug.Log("It's not time for the Minute reset yet.");
-            }
-        }
 
         protected override void StartTimer()
         {
             DateTime resetTime = DateTime.Now.AddMinutes(m_ResetMinute);
-            AddTimerHandlerInternal(new(m_TimerId, resetTime));
+            Player.Instance.SetResetTime(this, resetTime);
         }
     }
 }

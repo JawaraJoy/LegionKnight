@@ -53,7 +53,10 @@ namespace LegionKnight
             }
             return container.GetShopItemControl(item);
         }
-
+        public void CheckShopAvailableInternal(ShopItemDefinition defi)
+        {
+            GetShopItemControlInternal(defi).CheckAvailableInternal();
+        }
         public ShopItemControl GetShopItemControl(ShopItemDefinition item)
         {
             return GetShopItemControlInternal(item);
@@ -109,6 +112,10 @@ namespace LegionKnight
         public void SelectShop(string containerName)
         {
             GameManager.Instance.SelectShop(containerName);
+        }
+        public void CheckAvailableInternal(ShopItemDefinition defi)
+        {
+            GameManager.Instance.CheckShopAvailableInternal(defi);
         }
     }
 

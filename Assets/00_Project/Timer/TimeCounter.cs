@@ -7,38 +7,51 @@ namespace LegionKnight
     public partial class TimeCounter
     {
         [SerializeField]
-        private string m_Id;
+        private TimerDefinition m_Definition;
         [SerializeField]
         private string m_ResetDateString;
         [SerializeField]
         private string m_TimeRemainingString;
 
-        public string Id => m_Id;
+        private DateTime m_ResetDateTime;
+
+        public string Id => m_Definition.TimerId;
         public string ResetDateString => GetRemainingTimeInternal().ToString("yyyy-MM-dd HH:mm:ss");
 
-        public TimeCounter(string id, string reset)
+        public TimeCounter(TimerDefinition defi, DateTime reset)
         {
-            m_Id = id;
-            m_ResetDateString = reset;
+            m_Definition = defi;
+            m_ResetDateTime = reset;
+            m_ResetDateString = reset.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+        protected bool IsTimeToResetInternal()
+        {
+            DateTime now = GetDateTimeNowInternal();
+            // Check if the current time is past the reset time
+            return now >= m_ResetDateTime;
         }
         public void Init()
         {
-            if (UnityService.Instance.HasData(m_Id))
+            if (UnityService.Instance.HasData(m_Definition.TimerId))
             {
                 // Load the timer data from UnityService
-                m_ResetDateString = UnityService.Instance.GetData<string>(m_Id);
+                m_ResetDateTime = UnityService.Instance.GetData<DateTime>(m_Definition.TimerId);
+                m_ResetDateString = m_ResetDateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                Debug.Log($"Timer {m_Definition} initialized with reset time: {m_ResetDateString}");
             }
             else
             {
                 m_ResetDateString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                UnityService.Instance.SaveData(m_Id, m_ResetDateString);
+                UnityService.Instance.SaveData(m_Definition.TimerId, DateTime.Now);
+                Debug.Log($"Timer {m_Definition} initialized with default reset time: {m_ResetDateString}");
             }
         }
 
         public void SetResetTime(DateTime resetTime)
         {
             m_ResetDateString = resetTime.ToString("yyyy-MM-dd HH:mm:ss");
-            UnityService.Instance.SaveData(m_Id, m_ResetDateString);
+            // Save the reset time to UnityService
+            UnityService.Instance.SaveData(m_Definition.TimerId, m_ResetDateTime);
         }
         public string GetRemainingTimeAsString(TimerType timerType)
         {
@@ -54,18 +67,18 @@ namespace LegionKnight
                     throw new ArgumentOutOfRangeException();
             }
         }
-
+        public DateTime GetResetTime()
+        {
+            return GetResetTimeInternal();
+        }
         private DateTime GetDateTimeNowInternal()
         {
             return DateTime.Now;
         }
         private DateTime GetResetTimeInternal()
         {
-            if (string.IsNullOrEmpty(m_ResetDateString))
-            {
-                m_ResetDateString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            }
-            return DateTime.Parse(m_ResetDateString);
+            m_ResetDateTime = UnityService.Instance.GetData<DateTime>(m_Definition.TimerId);
+            return m_ResetDateTime;
         }
         private TimeSpan GetRemainingTimeInternal()
         {

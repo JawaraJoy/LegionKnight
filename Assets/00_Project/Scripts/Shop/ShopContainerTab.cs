@@ -20,7 +20,7 @@ namespace LegionKnight
                 itemControl.InitInternal();
             }
         }
-        public ShopItemControl GetShopItemControl(ShopItemDefinition defi)
+        private ShopItemControl GetShopItemControlInternal(ShopItemDefinition defi)
         {
             ShopItemControl match = m_ShopItemControls.Find(item => item.ShopItem == defi);
             if (match == null)
@@ -30,6 +30,13 @@ namespace LegionKnight
             }
             return match;
         }
-
+        public ShopItemControl GetShopItemControl(ShopItemDefinition defi)
+        {
+            return GetShopItemControlInternal(defi);
+        }
+        public void CheckAvailableInternal(ShopItemDefinition defi)
+        {
+            GetShopItemControlInternal(defi).CheckAvailableInternal();
+        }
     }
 }

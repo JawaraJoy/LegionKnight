@@ -31,11 +31,13 @@ namespace LegionKnight
         {
             m_OnTimeTrigger?.Invoke();
             HideInternal();
+            Debug.Log("Time trigger invoked!");
         }
         private void OnNoYetTriggerInvoke()
         {
             m_OnNoYetTrigger?.Invoke();
             ShowInternal();
+            Debug.Log("No yet trigger invoked!");
         }
         public void Init()
         {
@@ -45,7 +47,6 @@ namespace LegionKnight
         {
             if (m_TimerDefinition != null)
             {
-                m_TimerDefinition.Init();
                 m_TimerDefinition.CheckTimer(OnTimeTriggerInvoke, OnNoYetTriggerInvoke);
             }
             else
@@ -55,21 +56,7 @@ namespace LegionKnight
             }
             m_Description.text = m_TimerDefinition.Description;
             m_Icon.sprite = m_TimerDefinition.Icon;
-            switch (m_TimerType)
-            {
-                case TimerType.Minute:
-                    m_TimerText.text = TimerDefinition.GetRemainingTimeAsStringMinute(m_TimerDefinition.TimerId);
-                    break;
-                case TimerType.Hourly:
-                    m_TimerText.text = TimerDefinition.GetRemainingTimeAsStringHour(m_TimerDefinition.TimerId);
-                    break;
-                case TimerType.Daily:
-                    m_TimerText.text = TimerDefinition.GetRemainingTimeAsStringDay(m_TimerDefinition.TimerId);
-                    break;
-                default:
-                    Debug.LogError("Invalid timer type.");
-                    break;
-            }
+            m_TimerText.text = Player.Instance.GetRemainingTimeAsString(m_TimerDefinition.TimerId, TimerType.Minute);
         }
     }
 }

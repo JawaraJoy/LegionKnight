@@ -28,23 +28,37 @@ namespace LegionKnight
                 timeCounter.Init();
             }
         }
-        public void SetResetTime(string id, DateTime resetTime)
+        private bool HasTimeCounter(TimerDefinition defi)
         {
-            TimeCounter timeCounter = new (id, resetTime.ToString("yyyy-MM-dd HH:mm:ss"));
-            if (m_TimeCounters.Contains(timeCounter))
+            foreach (var timeCounter in m_TimeCounters)
             {
-                m_TimeCounters.Add(timeCounter);
-                return;
+                if (timeCounter.Id == defi.TimerId)
+                {
+                    return true;
+                }
             }
-            if (timeCounter != null)
+            return false;
+        }
+        public void SetResetTime(TimerDefinition defi, DateTime resetTime)
+        {
+            if (!HasTimeCounter(defi))
             {
-                m_TimeCounters.Add(timeCounter);
-                timeCounter.Init();
+                m_TimeCounters.Add(new TimeCounter(defi, resetTime));
             }
             else
             {
-                Debug.LogError("TimeCounter is null.");
+                GetTimeCounter(defi.TimerId)?.SetResetTime(resetTime);
             }
+        }
+        public DateTime GetResetTime(string id)
+        {
+            TimeCounter timeCounter = GetTimeCounter(id);
+            if (timeCounter != null)
+            {
+                return timeCounter.GetResetTime();
+            }
+            Debug.LogError($"TimeCounter with ID {id} not found");
+            return DateTime.Now;
         }
         public string GetRemainingTimeAsString(string id, TimerType timerType)
         {

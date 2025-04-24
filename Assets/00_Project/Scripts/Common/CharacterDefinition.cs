@@ -9,6 +9,8 @@ namespace LegionKnight
     public partial class CharacterDefinition : ScriptableObject
     {
         [SerializeField]
+        private string m_Id;
+        [SerializeField]
         private Sprite m_Icon;
         [SerializeField]
         private Sprite m_SmallIcon;
@@ -19,6 +21,7 @@ namespace LegionKnight
         private int m_Attack;
         [SerializeField]
         private int m_StartingStar;
+        public string Id => m_Id;
         public Sprite Icon => m_Icon;
         public Sprite SmallIcon => m_SmallIcon;
         public int StartingStar => m_StartingStar;

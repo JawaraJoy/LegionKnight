@@ -33,11 +33,22 @@ namespace LegionKnight
         }
         public void SetOwned(bool set)
         {
+            
+            SetOwnedInternal(set);
+        }
+        private void SetOwnedInternal(bool set)
+        {
             m_Owned = set;
+            UnityService.Instance.SaveData(m_Definition.Id + "Owned", m_Owned);
         }
         public void Init()
         {
+            m_Owned = UnityService.Instance.GetData<bool>(m_Definition.Id + "Owned");
             m_CurrentStars = m_Definition.StartingStar;
+            if (m_Definition == Player.Instance.DefaultCharacter)
+            {
+                SetOwnedInternal(true);
+            }
         }
         public string CharacterName => m_Definition.name;
         public Sprite Icon => m_Definition.Icon;

@@ -27,6 +27,10 @@ namespace LegionKnight
                 tab.Init();
             }
         }
+        public void CheckAvailableInternal(ShopItemDefinition defi)
+        {
+            GetShopItemControlInternal(defi).CheckAvailableInternal();
+        }
         public Currency GetCurrencyUsed()
         {
             return m_CurrencyUsed;
@@ -44,6 +48,10 @@ namespace LegionKnight
             return null;
         }
         public ShopItemControl GetShopItemControl(ShopItemDefinition defi)
+        {
+            return GetShopItemControlInternal(defi);
+        }
+        public ShopItemControl GetShopItemControlInternal(ShopItemDefinition defi)
         {
             var tab = GetShopContainerTabInternal(defi.TabName);
             if (tab == null)

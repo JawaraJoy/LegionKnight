@@ -10,6 +10,8 @@ namespace LegionKnight
         [SerializeField]
         private bool m_IsOwned;
         [SerializeField]
+        private int m_Amount;
+        [SerializeField]
         private StandbyPlatformDefinition m_StanbyPlatform;
         public bool IsOwned => m_IsOwned;
         public StandbyPlatformDefinition StanbyPlatform => m_StanbyPlatform;
@@ -18,9 +20,11 @@ namespace LegionKnight
             m_StanbyPlatform = stanbyPlatform;
             m_IsOwned = false;
         }
-        public void SetOwned(bool isOwned)
+        public void AddAmount(bool isOwned)
         {
+
             m_IsOwned = isOwned;
+            m_IsOwned = m_Amount < 1;
         }
         public void Init()
         {
@@ -70,7 +74,7 @@ namespace LegionKnight
         public void SetIsOwned(StandbyPlatformDefinition platform, bool isOwned)
         {
             var platformOwned = GetPlatformOwnedInternal(platform);
-            platformOwned?.SetOwned(isOwned);
+            platformOwned?.AddAmount(isOwned);
         }
         public void SetUsedStandbyPlatform()
         {

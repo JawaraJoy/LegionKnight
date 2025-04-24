@@ -10,7 +10,10 @@ namespace LegionKnight
         [SerializeField]
         private bool m_IsBonusAvaible;
         [SerializeField]
+        private TimerDefinition m_TimerDefinition;
+        [SerializeField]
         private ShopItemDefinition m_ShopItem;
+
         public ShopItemDefinition ShopItem => m_ShopItem;
         public bool IsAvailable => m_IsAvailable;
         public bool IsBonusAvaible => m_IsBonusAvaible;
@@ -27,15 +30,48 @@ namespace LegionKnight
 
         public void InitInternal()
         {
-            UnityService.Instance.LoadData(IdInternal + "a");
-            UnityService.Instance.LoadData(IdInternal + "b");
+            //UnityService.Instance.LoadData(IdInternal + "a");
+            //UnityService.Instance.LoadData(IdInternal + "b");
             if (UnityService.Instance.HasData(IdInternal + "a"))
             {
-                m_IsAvailable = UnityService.Instance.GetData<bool>(IdInternal + "a");
+                m_IsAvailable = IsAvaibleInternal();
+            }
+            else
+            {
+                m_IsAvailable = true;
+                UnityService.Instance.SaveData(IdInternal + "a", m_IsAvailable);
             }
             if (UnityService.Instance.HasData(IdInternal + "b"))
             {
                 m_IsBonusAvaible = UnityService.Instance.GetData<bool>(IdInternal + "b");
+            }
+            else
+            {
+                m_IsBonusAvaible = true;
+                UnityService.Instance.SaveData(IdInternal + "b", m_IsBonusAvaible);
+            }
+        }
+        public void CheckAvailableInternal()
+        {
+            if (m_TimerDefinition == null)
+            {
+                m_IsAvailable = UnityService.Instance.GetData<bool>(IdInternal + "a");
+            }
+            else
+            {
+                m_IsAvailable = m_TimerDefinition.IsTimeToReset();
+            }
+            UnityService.Instance.SaveData(IdInternal + "a", m_IsAvailable);
+        }
+        private bool IsAvaibleInternal()
+        {
+            if (m_TimerDefinition == null)
+            {
+                return UnityService.Instance.GetData<bool>(IdInternal + "a");
+            }
+            else
+            {
+                return m_TimerDefinition.IsTimeToReset();
             }
         }
         public void SetAvailable(bool available)
