@@ -27,6 +27,11 @@ namespace LegionKnight
         private UnityEvent m_OnTimeTrigger;
         [SerializeField]
         private UnityEvent m_OnNoYetTrigger;
+        protected override void ShowInternal()
+        {
+            base.ShowInternal();
+            AdjustTimerView();
+        }
         private void OnTimeTriggerInvoke()
         {
             m_OnTimeTrigger?.Invoke();
@@ -38,6 +43,11 @@ namespace LegionKnight
             m_OnNoYetTrigger?.Invoke();
             ShowInternal();
             Debug.Log("No yet trigger invoked!");
+        }
+        public void StartTimer()
+        {
+            m_TimerDefinition.StartTimer(OnTimeTriggerInvoke);
+            InitInternal();
         }
         public void Init()
         {
@@ -54,6 +64,11 @@ namespace LegionKnight
                 Debug.LogError("TimerDefinition is not assigned in TimerView.");
 
             }
+            AdjustTimerView();
+        }
+
+        public void AdjustTimerView()
+        {
             m_Description.text = m_TimerDefinition.Description;
             m_Icon.sprite = m_TimerDefinition.Icon;
             m_TimerText.text = Player.Instance.GetRemainingTimeAsString(m_TimerDefinition.TimerId, TimerType.Minute);

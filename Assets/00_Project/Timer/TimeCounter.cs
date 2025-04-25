@@ -28,7 +28,7 @@ namespace LegionKnight
         {
             DateTime now = GetDateTimeNowInternal();
             // Check if the current time is past the reset time
-            return now >= m_ResetDateTime;
+            return now >= GetResetTimeInternal();
         }
         public void Init()
         {
@@ -51,6 +51,7 @@ namespace LegionKnight
         {
             m_ResetDateString = resetTime.ToString("yyyy-MM-dd HH:mm:ss");
             // Save the reset time to UnityService
+            m_ResetDateTime = resetTime;
             UnityService.Instance.SaveData(m_Definition.TimerId, m_ResetDateTime);
         }
         public string GetRemainingTimeAsString(TimerType timerType)

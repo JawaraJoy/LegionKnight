@@ -30,6 +30,10 @@ namespace LegionKnight
         [SerializeField]
         private Button m_SelectButton;
         [SerializeField]
+        private UnityEvent m_OnAvaible = new();
+        [SerializeField]
+        private UnityEvent m_OnNotAvaible = new();
+        [SerializeField]
         private UnityEvent<ShopItemDefinition> m_OnBought = new();
         private ShopItemControl GetShopItemControl()
         {
@@ -41,10 +45,19 @@ namespace LegionKnight
             }
             return shopContainer;
         }
+        private void OnAvaiableInvoke()
+        {
+            m_OnAvaible?.Invoke();
+        }
+        private void OnNotAvaibleInvoke()
+        {
+            m_OnNotAvaible?.Invoke();
+        }
         private void OnBoughtInvoke()
         {
             m_OnBought?.Invoke(m_Definition);
             SetBonusAvaibleInternal(false);
+            InitInternal();
             //InitInternal();
         }
         public void Init()
@@ -57,8 +70,8 @@ namespace LegionKnight
 
             GetShopItemControl().CheckAvailableInternal();
 
-            m_IsAvaible = GetShopItemControl().IsAvailable;
-            m_IsBonusAvaible = GetShopItemControl().IsBonusAvaible;
+            SetAvaibleInternal(GetShopItemControl().IsAvailable);
+            SetBonusAvaibleInternal(GetShopItemControl().IsBonusAvaible);
 
             m_ItemNameText.text = m_Definition.ItemName;
             m_MainImage.sprite = m_Definition.Icon;
@@ -83,7 +96,7 @@ namespace LegionKnight
             SetBonusAvaibleInternal(isAvaible);
         }
 
-        public void SetBonusAvaibleInternal(bool isAvaible)
+        private void SetBonusAvaibleInternal(bool isAvaible)
         {
             m_IsBonusAvaible = isAvaible;
             if (m_BonusSignContent != null)
@@ -95,9 +108,21 @@ namespace LegionKnight
 
         public void SetAvaible(bool isAvaible)
         {
+            SetAvaibleInternal(isAvaible);
+        }
+        private void SetAvaibleInternal(bool isAvaible)
+        {
             m_IsAvaible = isAvaible;
             m_NotAvaibleContent.SetActive(isAvaible);
             GetShopItemControl().SetAvailable(isAvaible);
+            if (m_IsAvaible)
+            {
+                OnAvaiableInvoke();
+            }
+            else
+            {
+                OnNotAvaibleInvoke();
+            }
         }
         private void OnEnable()
         {

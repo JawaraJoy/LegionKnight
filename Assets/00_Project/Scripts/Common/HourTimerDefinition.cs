@@ -10,9 +10,10 @@ namespace LegionKnight
         [SerializeField]
         private int m_ResetHour = 1; // Reset every hour
 
-        protected override void StartTimer()
+        public override void StartTimer(UnityAction callback = null)
         {
             Player.Instance.SetResetTime(this, DateTime.Now.AddHours(m_ResetHour));
+            callback?.Invoke();
         }
     }
 }

@@ -9,10 +9,11 @@ namespace LegionKnight
     {
         [SerializeField]
         private int m_ResetClockHour = 15;
-        protected override void StartTimer()
+        public override void StartTimer(UnityAction callback = null)
         {
             DateTime resetTime = new (DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1, m_ResetClockHour, 0, 0);
             Player.Instance.SetResetTime(this, resetTime);
+            callback?.Invoke();
         }
     }
 }

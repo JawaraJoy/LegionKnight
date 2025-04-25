@@ -9,11 +9,11 @@ namespace LegionKnight
     {
         [SerializeField]
         private int m_ResetMinute;
-
-        protected override void StartTimer()
+        public override void StartTimer(UnityAction callback = null)
         {
             DateTime resetTime = DateTime.Now.AddMinutes(m_ResetMinute);
             Player.Instance.SetResetTime(this, resetTime);
+            callback?.Invoke();
         }
     }
 }

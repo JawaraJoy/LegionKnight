@@ -16,14 +16,14 @@ namespace LegionKnight
         public string TimerId => m_TimerId;
         public string Description => m_Description;
         public Sprite Icon => m_Icon;
-        protected abstract void StartTimer();
+        public abstract void StartTimer(UnityAction callback = null);
         public virtual void CheckTimer(UnityAction onTrigger, UnityAction onNotYet)
         {
             // Check if the current time is past the reset time
             if (IsTimeToResetInternal())
             {
                 onTrigger?.Invoke();
-                StartTimer();
+                //StartTimer();
                 Debug.Log($"{m_TimerId} reset triggered!");
             }
             else
