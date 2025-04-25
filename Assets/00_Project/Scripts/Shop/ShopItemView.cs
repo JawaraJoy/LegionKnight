@@ -57,6 +57,7 @@ namespace LegionKnight
         {
             m_OnBought?.Invoke(m_Definition);
             SetBonusAvaibleInternal(false);
+            GameManager.Instance.SetBonusAvaible(m_Definition, false);
             InitInternal();
             //InitInternal();
         }

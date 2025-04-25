@@ -27,6 +27,7 @@ namespace LegionKnight
 
         public void Init()
         {
+            SelectBanner(m_Banners[0].Definition);
             foreach (var banner in m_Banners)
             {
                 banner.Init();
@@ -35,6 +36,7 @@ namespace LegionKnight
         }
         private void Start()
         {
+            SelectBanner(m_Banners[0].Definition);
             //OnStartInvoke();
         }
         public void AddStarConvertCount(int amount)
@@ -50,7 +52,7 @@ namespace LegionKnight
         }
         private void OnStartInvoke()
         {
-            SelectBanner(m_Banners[0].Definition);
+            if (m_SelectedBanner == null) return;
             m_OnStart?.Invoke(m_SelectedBanner);
         }
         private GachaBanner GetGachaBannerInternal(BannerDefinition definition)

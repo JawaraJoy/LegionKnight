@@ -96,7 +96,6 @@ namespace LegionKnight
             else
             {
                 Player.Instance.AddCurrencyAmount(m_CurrencyDefinition, -m_Price);
-                Player.Instance.AddCurrencyAmount(m_SpendRewardDefinition, m_SpendRewardAmount);
                 AddItemToPlayer(m_ItemToBuy);
             }
         }
@@ -138,6 +137,7 @@ namespace LegionKnight
                 AddBonusItemToPlayer(m_ItemBonus);
             }
             m_OnBought?.Invoke();
+            Player.Instance.AddCurrencyAmount(m_SpendRewardDefinition, m_SpendRewardAmount);
             GameManager.Instance.OnItemBoughtInvoke(this);
         }
         private void AddBonusItemToPlayer(Object item)

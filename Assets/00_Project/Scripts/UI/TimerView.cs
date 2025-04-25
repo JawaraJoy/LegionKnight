@@ -71,7 +71,7 @@ namespace LegionKnight
         {
             m_Description.text = m_TimerDefinition.Description;
             m_Icon.sprite = m_TimerDefinition.Icon;
-            m_TimerText.text = Player.Instance.GetRemainingTimeAsString(m_TimerDefinition.TimerId, TimerType.Minute);
+            m_TimerText.text = Player.Instance.GetRemainingTimeAsString(m_TimerDefinition.TimerId, m_TimerType);
         }
     }
 }
