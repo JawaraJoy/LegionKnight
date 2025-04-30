@@ -888,6 +888,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1508396658077763884
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4011368208527641551}
+  - component: {fileID: 1094032072568628607}
+  m_Layer: 7
+  m_Name: Timer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4011368208527641551
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508396658077763884}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1094032072568628607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508396658077763884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0ba1ae72e8fede43bd264c2cf36e8d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TimeCounters:
+  - m_Definition: {fileID: 11400000, guid: 9baaa51ae3f041947bdc577aab2f7081, type: 2}
+    m_ResetDateString: 
+    m_TimeRemainingString: 
+  - m_Definition: {fileID: 11400000, guid: b83d6b05f87bf894d95dcf147bab874b, type: 2}
+    m_ResetDateString: 
+    m_TimeRemainingString: 
+  - m_Definition: {fileID: 11400000, guid: 13bb7f6560dfbfd44bc5c96fe3eaf0c6, type: 2}
+    m_ResetDateString: 
+    m_TimeRemainingString: 
+  - m_Definition: {fileID: 11400000, guid: 884f48bc7ea85504f9452d84df4af05f, type: 2}
+    m_ResetDateString: 
+    m_TimeRemainingString: 
+  - m_Definition: {fileID: 11400000, guid: 1776685db598acb42a0115df36f2b87a, type: 2}
+    m_ResetDateString: 
+    m_TimeRemainingString: 
 --- !u!1 &1918946518817030770
 GameObject:
   m_ObjectHideFlags: 0
@@ -941,6 +1001,8 @@ GameObject:
   - component: {fileID: 6805749128141819672}
   - component: {fileID: 7012284224952001063}
   - component: {fileID: 3804939165712080917}
+  - component: {fileID: 1532349481360173813}
+  - component: {fileID: 5395353101837719528}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -973,6 +1035,8 @@ Transform:
   - {fileID: 6920949147387027586}
   - {fileID: 8182313692109980319}
   - {fileID: 6620163574274411677}
+  - {fileID: 7805047950945483319}
+  - {fileID: 4011368208527641551}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3377274384242518752
@@ -1067,6 +1131,42 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2942122649447902150}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerCurrencyControl, Assembly-CSharp
+        m_MethodName: InitPlayerCurrency
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1094032072568628607}
+        m_TargetAssemblyTypeName: LegionKnight.Timer, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1532349481360173813}
+        m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSetCharacterDefinition:
     m_PersistentCalls:
       m_Calls:
@@ -1106,15 +1206,29 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 5395353101837719528}
+        m_TargetAssemblyTypeName: LegionKnight.InAppPurchaseAgent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_Character: {fileID: 6867498596800542263}
   m_CharacterJump: {fileID: 1091291144089817512}
   m_CurrencyControl: {fileID: 2942122649447902150}
   m_PlayerDeck: {fileID: 7689285937031040271}
   m_PassiveSkill: {fileID: 1158308863625070404}
   m_PlayerPause: {fileID: 8956068173985954038}
+  m_PlayerPlatformDeck: {fileID: 4843533203964001805}
   m_ProtectActivation: {fileID: 4755424564415841424}
   m_PlayerTouchDown: {fileID: 7758370064416613710}
   m_Weaponer: {fileID: 6368892546450467708}
+  m_TimerManager: {fileID: 1094032072568628607}
 --- !u!114 &6867498596800542263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1376,6 +1490,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec61964e12503f145bca8f6a4312deb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1532349481360173813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084039138725747265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f58cf3ff4870a45a82396b22a539cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5395353101837719528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084039138725747265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca2844eaef6926429f12768e0a5ebda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2207269959471590298
@@ -11521,6 +11659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b1029e3e10509d4c826a10578922ab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DefaultCharacter: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
   m_UsedCharacter: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
   m_SelectedCharacter: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
   m_CharacterUnits:
@@ -11547,7 +11686,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_Definition: {fileID: 11400000, guid: 9e93ed4a4163c4a478e65ae2db943e77, type: 2}
-    m_Owned: 1
+    m_Owned: 0
     m_CurrentStars: 0
     m_StarShardControl:
       m_CurrenShardAmount: 0
@@ -17286,6 +17425,68 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &8818743312448133226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7805047950945483319}
+  - component: {fileID: 4843533203964001805}
+  m_Layer: 7
+  m_Name: Player Platform Preperation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7805047950945483319
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8818743312448133226}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4843533203964001805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8818743312448133226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2448f444eb08dc143921c924ba0be43c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UsedStanbyPlatform: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
+  m_SelectedStandbyPlatform: {fileID: 0}
+  m_Deck:
+  - m_IsOwned: 1
+    m_Amount: 0
+    m_StanbyPlatform: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
+  - m_IsOwned: 0
+    m_Amount: 0
+    m_StanbyPlatform: {fileID: 11400000, guid: 6e52cc758bd383e4b98711f6b051bdd5, type: 2}
+  m_OnInitialized:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnPlatformUsed:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnSelectedPlatform:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &9035786787272854334
 GameObject:
   m_ObjectHideFlags: 0
@@ -17331,7 +17532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NormalProtectAsset:
-    m_AssetGUID: 746923e792d967e49a4237a1dda3968d
+    m_AssetGUID: a73f82c384124d54d904cdd07d3ce660
     m_SubObjectName: 
     m_SubObjectGUID: 
     m_SubObjectType: 
