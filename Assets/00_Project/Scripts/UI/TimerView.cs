@@ -24,9 +24,9 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_TimerText;
         [SerializeField]
-        private UnityEvent m_OnTimeTrigger;
+        private UnityEvent m_OnTimeTrigger = new();
         [SerializeField]
-        private UnityEvent m_OnNoYetTrigger;
+        private UnityEvent m_OnNoYetTrigger = new();
         protected override void ShowInternal()
         {
             base.ShowInternal();

@@ -6,6 +6,10 @@ namespace LegionKnight
 {
     public partial class InAppPurchaseAgent : MonoBehaviour
     {
+        public void Init()
+        {
+            UnityService.Instance.InitIAPManager();
+        }
         public void OnPurchaseCompleted(Product product)
         {
             UnityService.Instance.OnPurchaseCompleted(product);
@@ -17,12 +21,12 @@ namespace LegionKnight
         }
         public void SetIsAvailable(string id, bool isAvailable)
         {
-            UnityService.Instance.SetIsAvailable(id, isAvailable);
+            UnityService.Instance.SetIsAvailablePurchase(id, isAvailable);
 
         }
         public void SetIsBonusAvailable(string id, bool isBonusAvailable)
         {
-            UnityService.Instance.SetIsBonusAvailable(id, isBonusAvailable);
+            UnityService.Instance.SetIsBonusAvailablePurchase(id, isBonusAvailable);
         }
     }
 }

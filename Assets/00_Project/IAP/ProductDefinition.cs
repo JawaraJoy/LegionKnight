@@ -9,7 +9,7 @@ namespace LegionKnight
         [SerializeField]
         private string m_Id;
         [SerializeField]
-        private string m_Name;
+        private string m_Label;
         [SerializeField]
         private string m_Description;
         [SerializeField]
@@ -20,7 +20,7 @@ namespace LegionKnight
         private ProductItem m_BonusProduct;
 
         public string Id => m_Id;
-        public string Name => m_Name;
+        public string Label => m_Label;
         public string Description => m_Description;
         public ProductItem MainProduct => m_MainProduct;
         public ProductItem[] AdditionalProducts => m_AdditionalProducts;
@@ -31,6 +31,30 @@ namespace LegionKnight
             return GetAllProductsInternal(hasBonus);
         }
 
+        public string GetMainLabel()
+        {
+            return m_MainProduct.GetLabel();
+        }
+        public string GetBonusLabel()
+        {
+            return m_BonusProduct.GetLabel();
+        }
+        public Sprite GetMainIcon()
+        {
+            return m_MainProduct.GetIcon();
+        }
+        public Sprite GetBonusIcon()
+        {
+            return m_BonusProduct.GetIcon();
+        }
+        public List<ProductItem> GetAdditionalProduct()
+        {
+            return GetAdditionalProductInternal();
+        }
+        private List<ProductItem> GetAdditionalProductInternal()
+        {
+            return new List<ProductItem>(m_AdditionalProducts);
+        }
         private List<ProductItem> GetAllProductsInternal(bool hasBonus)
         {
             List<ProductItem> allProducts = new()
@@ -79,6 +103,47 @@ namespace LegionKnight
             {
                 Player.Instance.AddPlatformAmount(plat, m_Amount);
             }
+        }
+
+        public string GetLabel()
+        {
+            return GetLabelInternal();
+        }
+        public Sprite GetIcon()
+        {
+            return GetIconInternal();
+        }
+        private string GetLabelInternal()
+        {
+            if (m_Object is CurrencyDefinition currency)
+            {
+                return currency.Id;
+            }
+            else if (m_Object is CharacterDefinition character)
+            {
+                return character.Label;
+            }
+            else if (m_Object is StandbyPlatformDefinition plat)
+            {
+                return plat.Label;
+            }
+            return "";
+        }
+        private Sprite GetIconInternal()
+        {
+            if (m_Object is CurrencyDefinition currency)
+            {
+                return currency.Icon;
+            }
+            else if (m_Object is CharacterDefinition character)
+            {
+                return character.Icon;
+            }
+            else if (m_Object is StandbyPlatformDefinition plat)
+            {
+                return plat.Icon;
+            }
+            return null;
         }
     }
 }

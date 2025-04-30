@@ -2,18 +2,39 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class PurchaseItemView : MonoBehaviour
+    public enum ProductType
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
-        
-        }
+        Main,
+        Additional,
+        Bonus
+    }
+    public partial class PurchaseItemView : ItemView
+    {
 
-        // Update is called once per frame
-        void Update()
+        [SerializeField]
+        private ProductType m_ProductType = ProductType.Main;
+        protected override void InitInternal(object defi)
         {
-        
+            base.InitInternal(defi);
+            if (defi is ProductItem item)
+            {
+                m_Icon.sprite = item.GetIcon();
+                string amountText = item.Amount.ToString();
+                switch (m_ProductType)
+                {
+                    case ProductType.Main:
+                        m_Amount.text = "x" + amountText;
+                        break;
+                    case ProductType.Additional:
+                        m_Amount.text = "x" + amountText;
+                        break;
+                    case ProductType.Bonus:
+                        m_Amount.text = "+" + amountText + " At First Purchase";
+                        break;
+
+                }
+                
+            }
         }
     }
 }

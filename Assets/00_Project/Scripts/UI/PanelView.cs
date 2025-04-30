@@ -14,7 +14,7 @@ namespace LegionKnight
         public bool IsBusyPanel => m_IsBusyPanel;
 
         [SerializeField]
-        private List<UIView> m_Bindings = new();
+        protected List<UIView> m_Bindings = new();
 
         protected T GetBinding<T>() where T : UIView
         {

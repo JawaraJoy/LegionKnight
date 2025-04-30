@@ -11,6 +11,8 @@ namespace LegionKnight
         [SerializeField]
         private string m_Id;
         [SerializeField]
+        private string m_Label;
+        [SerializeField]
         private Sprite m_Icon;
         [SerializeField]
         private Sprite m_SmallIcon;
@@ -26,6 +28,7 @@ namespace LegionKnight
         public Sprite SmallIcon => m_SmallIcon;
         public int StartingStar => m_StartingStar;
         public int ShardAmount => StarShardControl.GetShardAmount(StartingStar);
+        public string Label => m_Label;
         public int Attack => m_Attack;
         public int Health => m_Health;
         [SerializeField]
