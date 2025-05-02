@@ -173,11 +173,12 @@ namespace LegionKnight
         private void DetermineHighScore()
         {
             int currentScore = m_CurrentScore.Amount;
-            int currentHighScore = m_CurrentHighScore.Amount;
+            int currentHighScore = Player.Instance.GetCurrencyAmount(m_CurrentHighScore.CurrencyDefinition);
 
             if (currentScore > currentHighScore)
             {
                 m_CurrentHighScore.SetAmount(currentScore);
+                Player.Instance.SetCurrencyAmount(m_CurrentHighScore.CurrencyDefinition, currentScore);
             }
         }
 

@@ -6,6 +6,10 @@ namespace LegionKnight
     public partial class Player : Singleton<Player>
     {
         [SerializeField]
+        private NameSupplyDefinition m_NameSupplyDefinition;
+        [SerializeField]
+        private string m_PlayerName;
+        [SerializeField]
         private CharacterDefinition m_CharacterDefinition;
 
         public CharacterDefinition CharacterDefinition => m_CharacterDefinition;
@@ -15,11 +19,8 @@ namespace LegionKnight
         private UnityEvent<CharacterDefinition> m_OnSetCharacterDefinition = new();
         public void Init()
         {
+            
             OnStartInvoke();
-        }
-        private void Start()
-        {
-            //OnStartInvoke();
         }
         public void SetCharacterDefinition(CharacterDefinition definition)
         {
@@ -29,6 +30,10 @@ namespace LegionKnight
         private void OnStartInvoke()
         {
             m_OnStart?.Invoke();
+
+            m_PlayerName = UnityService.Instance.PlayerName;
+
+            GameManager.Instance.SetPlayerNameView(m_PlayerName);
         }
         private void OnSetCharacterDefinitionInvoke(CharacterDefinition definition)
         {

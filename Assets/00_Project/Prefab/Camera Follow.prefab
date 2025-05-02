@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5763594928011635358}
   - component: {fileID: 5086969881192414987}
   - component: {fileID: 251473643808479129}
+  - component: {fileID: 5690865285836926290}
   m_Layer: 0
   m_Name: Camera Follow
   m_TagString: Untagged
@@ -26,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2339587085614047008}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 10.66, z: -35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -53,7 +54,19 @@ MonoBehaviour:
   smoothFactor: 10
   m_OnTargetSet:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 251473643808479129}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerCamera, Assembly-CSharp
+        m_MethodName: SetOffSite
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Home
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &251473643808479129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,6 +79,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d54e00606841ab9409d9669c13457720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CameraPostSets:
+  - m_PostName: Home
+    m_Post: {x: 0, y: 8, z: -28}
+  - m_PostName: Gameplay
+    m_Post: {x: 0, y: 6, z: -35}
   m_OnSetStayFollow:
     m_PersistentCalls:
       m_Calls:
@@ -81,6 +99,33 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnSetOffsite:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5086969881192414987}
+        m_TargetAssemblyTypeName: ObjectFollow, Assembly-CSharp
+        m_MethodName: SetOffsite
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5690865285836926290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2339587085614047008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12f9050e60f322d45a18fd887c594f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6622702925402013865
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,8 +168,8 @@ Camera:
   m_GameObject: {fileID: 6622702925402013865}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

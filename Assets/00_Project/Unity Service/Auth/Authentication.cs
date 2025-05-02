@@ -23,6 +23,9 @@ namespace LegionKnight
             PlayerAccountService.Instance.SignedIn += StartSinginWithUnity;
         }
 
+        public string PlayerId => AuthenticationService.Instance.PlayerId;
+        public string Playername => AuthenticationService.Instance.PlayerName;
+
         public async void StartSinginWithUnity()
         {
             if (PlayerAccountService.Instance.IsSignedIn)

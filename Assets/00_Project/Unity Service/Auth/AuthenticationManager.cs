@@ -14,7 +14,8 @@ namespace LegionKnight
     {
         [SerializeField]
         private AuthenticationManager m_AuthenticationManager;
-
+        public string PlayerId => m_AuthenticationManager.PlayerId;
+        public string PlayerName => m_AuthenticationManager.Playername;
         public void StartSinginWithUnity()
         {
             m_AuthenticationManager.StartSinginWithUnity();
