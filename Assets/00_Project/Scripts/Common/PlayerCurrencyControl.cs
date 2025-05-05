@@ -45,7 +45,6 @@ namespace LegionKnight
         {
             m_CurrencyControl.SetCurrencyAmount(definition, amount);
             UnityService.Instance.SaveData(definition.Id, amount);
-            UnityService.Instance.SubmiteScoreEntry(amount);
         }
         public void AddCurrencyAmount(CurrencyDefinition definition, int amount)
         {

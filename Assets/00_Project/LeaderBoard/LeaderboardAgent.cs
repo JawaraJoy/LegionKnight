@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Unity.Services.Leaderboards.Models;
 using UnityEngine;
 
 namespace LegionKnight
@@ -11,6 +8,10 @@ namespace LegionKnight
         public void SubmiteScoreEntry(int score)
         {
             UnityService.Instance.SubmiteScoreEntry(score);
+        }
+        public void Init()
+        {
+            UnityService.Instance.Init();
         }
     }
 }

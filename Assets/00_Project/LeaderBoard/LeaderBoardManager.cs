@@ -35,5 +35,9 @@ namespace LegionKnight
         {
             await m_LeaderBoardManager.SubmitScore(score);
         }
+        public void Init()
+        {
+            m_LeaderBoardManager.Init();
+        }
     }
 }

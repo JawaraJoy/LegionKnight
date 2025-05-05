@@ -35,6 +35,7 @@ Transform:
   - {fileID: 2751101648577053012}
   - {fileID: 8092963523997277274}
   - {fileID: 4211897323866806253}
+  - {fileID: 6634712135323267090}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4904047336095579251
@@ -50,6 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IAPManager: {fileID: 1335922600970166545}
+  m_LeaderBoardManager: {fileID: 587357696819557897}
   m_UnityAdsManager: {fileID: 700165663585074583}
   m_AuthenticationManager: {fileID: 5537331884271729272}
   m_CloudSaveManager: {fileID: 3814314757155133575}
@@ -219,13 +221,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SellProducts:
-  - m_Definition: {fileID: 11400000, guid: 7958cbcd9b27e2d4f902d3eace6cca1d, type: 2}
-    m_IsAvailable: 1
-    m_IsBonusAvailable: 1
   - m_Definition: {fileID: 11400000, guid: 0a59a9605e84c7e448ae006840c54b02, type: 2}
     m_IsAvailable: 1
     m_IsBonusAvailable: 1
   - m_Definition: {fileID: 11400000, guid: 8f5597aae60543b4f90634cd346077b1, type: 2}
+    m_IsAvailable: 1
+    m_IsBonusAvailable: 1
+  - m_Definition: {fileID: 11400000, guid: 7958cbcd9b27e2d4f902d3eace6cca1d, type: 2}
+    m_IsAvailable: 1
+    m_IsBonusAvailable: 1
+  - m_Definition: {fileID: 11400000, guid: ac34cc0b2d97dc346b8839ad683dfd55, type: 2}
+    m_IsAvailable: 1
+    m_IsBonusAvailable: 1
+  - m_Definition: {fileID: 11400000, guid: 68ccd7ac204f9a94688feaa6f002bab1, type: 2}
     m_IsAvailable: 1
     m_IsBonusAvailable: 1
   m_OnPurchaseComplete:
@@ -417,6 +425,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Settings: {fileID: 11400000, guid: 95136c7e42038d24fad383ecdacb5619, type: 2}
+--- !u!1 &7435551881046139338
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6634712135323267090}
+  - component: {fileID: 587357696819557897}
+  m_Layer: 0
+  m_Name: LeaderBoard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6634712135323267090
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7435551881046139338}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6224279411924951285}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &587357696819557897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7435551881046139338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd1b423e4a4c86647837e0cf07f1b8cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MaxRankToDisplay: 20
+  m_LeaderboardId: topplayer
 --- !u!1 &7762664161843753485
 GameObject:
   m_ObjectHideFlags: 0

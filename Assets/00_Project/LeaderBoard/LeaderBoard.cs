@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
 using Unity.Services.Authentication;
 using UnityEngine;
 using Unity.Services.Leaderboards;
 using Unity.Services.Leaderboards.Models;
+using System;
 using Unity.Services.Core;
 
 namespace LegionKnight
@@ -18,31 +18,50 @@ namespace LegionKnight
 
         public int MaxRankToDisplay => m_MaxRankToDisplay;
 
-        [SerializeField]
-        private CurrencyDefinition m_CurrentScore;
+        public async void Init()
+        {
+            try
+            {
+                if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
+                {
+                    await UnityServices.InitializeAsync();
+                    Debug.Log("Unity Services initialized successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to initialize Unity Services: {ex.Message}");
+            }
+        }
         
-
         public async Task SubmitScore(int score)
+        {
+            await SubmitScoreInternal(score);
+        }
+        private async Task SubmitScoreInternal(int score)
         {
             try
             {
                 // Authenticate the player if not already authenticated
                 if (!AuthenticationService.Instance.IsSignedIn)
                 {
-                    return; // Handle authentication failure
+                    try
+                    {
+                        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                        Debug.Log("Player signed in anonymously.");
+                    }
+                    catch (Exception authEx)
+                    {
+                        Debug.LogError($"Failed to authenticate player: {authEx.Message}");
+                        return; // Exit if authentication fails
+                    }
                 }
 
-                // Submit the player's score to the leaderboard
-                int currentScore = Player.Instance.GetCurrencyAmount(m_CurrentScore);
-                if (currentScore > score)
-                {
-                    Debug.Log($"Current score {currentScore} is higher than submitted score {score}. Not submitting.");
-                    return; // Do not submit if the current score is higher
-                }
                 var playerScoreEntry = await LeaderboardsService.Instance.GetPlayerScoreAsync(m_LeaderboardId);
-                if (playerScoreEntry != null)
+                if (playerScoreEntry != null && playerScoreEntry.Score >= score)
                 {
-                    Debug.Log($"Current player score: {playerScoreEntry.Score}");
+                    Debug.Log($"Current score {playerScoreEntry.Score} is higher or equal to submitted score {score}. Not submitting.");
+                    return; // Do not submit if the current score is higher or equal
                 }
                 await LeaderboardsService.Instance.AddPlayerScoreAsync(m_LeaderboardId, score);
 
@@ -62,6 +81,7 @@ namespace LegionKnight
                 if (!AuthenticationService.Instance.IsSignedIn)
                 {
                     Debug.LogError("Player is not authenticated.");
+                    // Attempt to sign in anonymously
                     return null; // Handle authentication failure
                 }
 
@@ -69,7 +89,7 @@ namespace LegionKnight
                 if (playerScoreEntry == null)
                 {
                     Debug.Log("Player has not submitted a score. Submitting a default score of 0.");
-                    await SubmitScore(0); // Submit a default score of 0
+                    await SubmitScoreInternal(0); // Submit a default score of 0
                 }
 
                 // Retrieve the top scores from the leaderboard
@@ -83,7 +103,15 @@ namespace LegionKnight
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"Failed to retrieve leaderboard: {ex.Message}");
+                if (ex.Message.Contains("Leaderboard entry could not be found"))
+                {
+                    Debug.LogWarning("Player has not submitted a score. Submitting a default score of 0.");
+                    await SubmitScoreInternal(0); // Submit a default score of 0
+                }
+                else
+                {
+                    Debug.LogError($"Failed to retrieve leaderboard: {ex.Message}");
+                }
                 return new List<LeaderboardEntry>();
             }
         }

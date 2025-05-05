@@ -24,7 +24,7 @@ namespace LegionKnight
             else
             {
                 m_RankText.text = $"#{rank}";
-                m_NameText.text = entry.PlayerName;
+                m_NameText.text = entry.PlayerId;
                 m_ScoreText.text = entry.Score.ToString();
             }
 

@@ -17,6 +17,7 @@ namespace LegionKnight
         public LevelDefinition LevelDefinition => m_LevelManager.LevelDefinition;
         public Currency CurrentCoinReward => m_LevelManager.CurrentCoinReward;
         public Currency HighScore => m_LevelManager.CurrentHighScore;
+
         public void SetLevelObject(LevelObject set)
         {
             m_LevelManager.SetLevelObject(set);

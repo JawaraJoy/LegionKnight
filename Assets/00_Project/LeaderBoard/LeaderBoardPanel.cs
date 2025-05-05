@@ -84,13 +84,13 @@ namespace LegionKnight
 
                     // Set the player's rank, name, and score
                     m_MyScoreView.SetRankScore(playerEntry, playerRank);
-                    m_MyScoreView.gameObject.SetActive(true);
+                    m_MyScoreView.Show();
                 }
                 else
                 {
                     Debug.LogWarning("Player's score not found in the leaderboard.");
                     m_MyScoreView.Clear();
-                    m_MyScoreView.gameObject.SetActive(false);
+                    m_MyScoreView.Hide();
                 }
             }
             catch (System.Exception ex)
