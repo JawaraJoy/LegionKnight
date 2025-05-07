@@ -16,11 +16,13 @@ namespace LegionKnight
 
     public partial class HomePanel
     {
-        [SerializeField]
-        private NameView m_NameView;
-        public void SetName(string name)
+        private NameView GetNameView()
         {
-            GetBinding<NameView>().SetName(name);
+            return GetBinding<NameView>();
+        }
+        public void SetPlayerNameView(string val)
+        {
+            GetNameView().SetName(val);
         }
     }
 
@@ -28,7 +30,7 @@ namespace LegionKnight
     {
         public void SetPlayerNameView(string val)
         {
-            GetPanelInternal<HomePanel>().SetName(val);
+            GetPanelInternal<HomePanel>().SetPlayerNameView(val);
         }
     }
 }

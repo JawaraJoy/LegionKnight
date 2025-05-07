@@ -190,6 +190,7 @@ GameObject:
   - component: {fileID: 7245402078627829296}
   - component: {fileID: 2709716365481959639}
   - component: {fileID: 2567653953752912148}
+  - component: {fileID: 8428523851214305592}
   m_Layer: 15
   m_Name: Damageable
   m_TagString: Bos Enemy
@@ -249,6 +250,8 @@ MonoBehaviour:
   m_ContactableList: []
   m_Damage: 0
   m_Health: 10
+  m_Shield: 0
+  m_Barrier: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -300,6 +303,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 47f302fe994bab64d8e394491c97b912, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls:
@@ -315,6 +330,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnShieldChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnBarrierChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnProtectGone:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!58 &7245402078627829296
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -390,6 +417,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &8428523851214305592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515918505318151819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39f5bd806ffd7b84781d4daf7a261b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1539955495137320482
 GameObject:
   m_ObjectHideFlags: 0

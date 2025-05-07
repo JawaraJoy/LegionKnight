@@ -13,8 +13,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private int m_MaxRankToDisplay = 20; // Limit to top 20 ranks
-        [SerializeField]
-        private string m_LeaderboardId = "top_player"; // Replace with your actual leaderboard ID
+        private string m_LeaderboardId = "Legon_Knight_Top_Player"; // Replace with your actual leaderboard ID
 
         public int MaxRankToDisplay => m_MaxRankToDisplay;
 
@@ -62,6 +61,11 @@ namespace LegionKnight
                 {
                     Debug.Log($"Current score {playerScoreEntry.Score} is higher or equal to submitted score {score}. Not submitting.");
                     return; // Do not submit if the current score is higher or equal
+                }
+                if (playerScoreEntry == null)
+                {
+                    Debug.Log("Player has not submitted a score. Submitting a default score of 0.");
+                    await LeaderboardsService.Instance.AddPlayerScoreAsync(m_LeaderboardId, 0); // Submit a default score of 0
                 }
                 await LeaderboardsService.Instance.AddPlayerScoreAsync(m_LeaderboardId, score);
 

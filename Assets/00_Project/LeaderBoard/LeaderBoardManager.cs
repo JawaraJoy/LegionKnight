@@ -23,7 +23,6 @@ namespace LegionKnight
         public async Task SubmitScore(int score)
         {
             await m_LeaderBoardManager.SubmitScore(score);
-
         }
 
         public async Task<List<LeaderboardEntry>> GetTopRanks()

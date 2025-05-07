@@ -31,8 +31,16 @@ namespace LegionKnight
         {
             m_OnStart?.Invoke();
 
-            m_PlayerName = UnityService.Instance.PlayerName;
-
+            if (UnityService.Instance.HasData("PlayerName"))
+            {
+                m_PlayerName = UnityService.Instance.GetData<string>("PlayerName");
+            }
+            else
+            {
+                m_PlayerName = m_NameSupplyDefinition.GetRandomName();
+                UnityService.Instance.SaveData("PlayerName", m_PlayerName);
+            }
+            Debug.Log($"Player name: {m_PlayerName}");
             GameManager.Instance.SetPlayerNameView(m_PlayerName);
         }
         private void OnSetCharacterDefinitionInvoke(CharacterDefinition definition)
