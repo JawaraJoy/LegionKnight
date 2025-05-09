@@ -10,12 +10,19 @@ namespace LegionKnight
 {
     public partial class CloudSave : MonoBehaviour
     {
+        [SerializeField]
+        private bool m_UseCloudSave = true;
         private readonly Dictionary<string, object> m_PlayerData = new();
         [SerializeField]
         private UnityEvent m_OnDataLoaded = new();
 
         public async void SaveData(string key, object value, UnityAction callback = null)
         {
+            if (!m_UseCloudSave)
+            {
+                Debug.LogWarning("Cloud Save is disabled. Data will not be saved.");
+                return;
+            }
             try
             {
                 // Update local cache
@@ -43,6 +50,11 @@ namespace LegionKnight
 
         public async void LoadData(string key, UnityAction callback = null)
         {
+            if (!m_UseCloudSave)
+            {
+                Debug.LogWarning("Cloud Save is disabled. Data will not be loaded.");
+                return;
+            }
             try
             {
                 var keys = new HashSet<string> { key };
@@ -77,22 +89,31 @@ namespace LegionKnight
 
         public async void LoadAllData()
         {
+            if (!m_UseCloudSave)
+            {
+                Debug.LogWarning("Cloud Save is disabled. Data will not be loaded.");
+                return;
+            }
             try
             {
                 var playerData = await CloudSaveService.Instance.Data.Player.LoadAllAsync();
 
-                foreach (var kvp in playerData)
+                var keys = new List<string>(playerData.Keys);
+                for (int i = 0; i < keys.Count; i++)
                 {
-                    Debug.Log($"Loaded key: {kvp.Key}, value: {kvp.Value}");
+                    var key = keys[i];
+                    var value = playerData[key];
+
+                    Debug.Log($"Loaded key: {key}, value: {value}");
 
                     // Update local cache
-                    if (m_PlayerData.ContainsKey(kvp.Key))
+                    if (m_PlayerData.ContainsKey(key))
                     {
-                        m_PlayerData[kvp.Key] = kvp.Value;
+                        m_PlayerData[key] = value;
                     }
                     else
                     {
-                        m_PlayerData.Add(kvp.Key, kvp.Value);
+                        m_PlayerData.Add(key, value);
                     }
                 }
 
@@ -106,6 +127,11 @@ namespace LegionKnight
 
         public T GetData<T>(string key)
         {
+            if (!m_UseCloudSave)
+            {
+                Debug.LogWarning("Cloud Save is disabled. Data will not be loaded.");
+                return default;
+            }
             if (m_PlayerData.TryGetValue(key, out var value))
             {
                 if (value is Item item)
@@ -133,6 +159,11 @@ namespace LegionKnight
 
         public bool HasData(string key)
         {
+            if (!m_UseCloudSave)
+            {
+                Debug.LogWarning("Cloud Save is disabled. Data will not be loaded.");
+                return false;
+            }
             return m_PlayerData.ContainsKey(key);
         }
 

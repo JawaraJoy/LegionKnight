@@ -428,6 +428,7 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
+  m_GroundLevelView: {fileID: 6440508173767778597}
   m_PlayerStartPosition: {fileID: 4586703351160950609}
   m_LeftPost: {fileID: 4326521160863089540}
   m_RightPost: {fileID: 2335246950031567023}
@@ -2006,6 +2007,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3790692747483808270}
+  - component: {fileID: 6440508173767778597}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -2013,6 +2015,31 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &6440508173767778597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6440508173767778596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a88a2de4491a2f4cbebe06c43c34ae8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Content: {fileID: 6440508173767778596}
+  m_OnShow:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHide:
+    m_PersistentCalls:
+      m_Calls: []
+  m_BaseGround: {fileID: 1012947021513465723}
+  m_LeftCliff: {fileID: 807346828579932813}
+  m_RightCliff: {fileID: 8902234312657190039}
+  m_Tree: {fileID: 5739016568176687443}
+  m_Mountain: {fileID: 6793811983201308536}
+  m_Background: {fileID: 4279260698517624569}
 --- !u!1 &6791297314651795882
 GameObject:
   m_ObjectHideFlags: 0

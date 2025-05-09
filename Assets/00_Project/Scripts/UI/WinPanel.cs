@@ -1,0 +1,69 @@
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace LegionKnight
+{
+    public static partial class PanelId
+    {
+        public const string WinPanel = "WinPanel";
+    }
+    public partial class WinPanel : PanelView
+    {
+        [SerializeField]
+        private string m_HomeSceneName = "ReworkHome";
+        [SerializeField]
+        private LevelDefinition m_CurrenLevel;
+        [SerializeField]
+        private Image m_NextLevelImage;
+        [SerializeField]
+        private TextMeshProUGUI m_CompleteText;
+
+
+        public void SetLevelDefinition(LevelDefinition defi)
+        {
+            m_CurrenLevel = defi;
+            m_NextLevelImage.sprite = m_CurrenLevel.NextLevel.LevelImage;
+
+            if (m_CurrenLevel == m_CurrenLevel.NextLevel)
+            {
+                m_CompleteText.text = "Every Level Is Cleared";
+            }
+            else
+            {
+                m_CompleteText.text = "New Level is Unlocked";
+            }
+        }
+
+        public void StartNextLevel()
+        {
+            if (m_CurrenLevel != null)
+            {
+                m_CurrenLevel.NextLevel.StartLevel();
+            }
+            else
+            {
+                Debug.LogError("No level definition set.");
+            }
+            HideInternal();
+        }
+
+        public void PlayAgain()
+        {
+            if (m_CurrenLevel != null)
+            {
+                m_CurrenLevel.StartLevel();
+            }
+            else
+            {
+                Debug.LogError("No level definition set.");
+            }
+            HideInternal();
+        }
+        public void BackHome()
+        {
+            GameManager.Instance.LoadScene(m_HomeSceneName);
+            HideInternal();
+        }
+    }
+}

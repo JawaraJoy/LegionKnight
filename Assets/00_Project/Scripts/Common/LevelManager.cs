@@ -17,7 +17,12 @@ namespace LegionKnight
         public LevelDefinition LevelDefinition => m_LevelManager.LevelDefinition;
         public Currency CurrentCoinReward => m_LevelManager.CurrentCoinReward;
         public Currency HighScore => m_LevelManager.CurrentHighScore;
+        public bool IsInfiniteLevel => m_LevelManager.IsInfiniteLevel;
 
+        public void InitLevelHandler()
+        {
+            m_LevelManager.Init();
+        }
         public void SetLevelObject(LevelObject set)
         {
             m_LevelManager.SetLevelObject(set);
@@ -25,6 +30,14 @@ namespace LegionKnight
         public void ResetPlayerPost()
         {
             m_LevelManager.ResetPlayerPost();
+        }
+        public bool IsLevelUnlocked(LevelDefinition set)
+        {
+            return m_LevelManager.IsLevelUnlocked(set);
+        }
+        public bool IsLevelCompleted(LevelDefinition set)
+        {
+            return m_LevelManager.IsLevelCompleted(set);
         }
         public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
         {
@@ -89,7 +102,6 @@ namespace LegionKnight
             m_LevelManager.SetBosSpawnCount(set);
             
         }
-
         public void OnPerectTouchDownInvoke()
         {
             m_LevelManager.OnPerectTouchDownInvoke();
@@ -107,7 +119,6 @@ namespace LegionKnight
             m_LevelManager.AddScoreAmount(set);
         }
     }
-
     public partial class LevelManagerAgent
     {
         public void AddCurrencyRewardAmount(int add)
@@ -137,6 +148,10 @@ namespace LegionKnight
         public void AddScoreAmount(int set)
         {
             GameManager.Instance.AddScoreAmount(set);
+        }
+        public void InitLevelHandler()
+        {
+            GameManager.Instance.InitLevelHandler();
         }
     }
 }

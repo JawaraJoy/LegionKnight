@@ -34,6 +34,8 @@ namespace LegionKnight
         {
             m_BosDefinition = definition;
             OnSetBosDefinitionInvoke(definition);
+
+            m_BosForm.sprite = m_BosDefinition.Icon;
         }
 
         private void OnSetBosDefinitionInvoke(BosDefinition definition)
