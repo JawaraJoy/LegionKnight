@@ -53,7 +53,7 @@ namespace LegionKnight
         public string CharacterName => m_Definition.name;
         public Sprite Icon => m_Definition.Icon;
         public Sprite SmallIcon => m_Definition.SmallIcon;
-        public Platform UniquePlatform => m_Definition.UniquePlatform;
+        public StandbyPlatformDefinition UniquePlatform => m_Definition.UniquePlatform;
         public List<SkillDefinition> Passives => m_Definition.Passives;
         public List<SkillDefinition> Weapons => m_Definition.Weapons;
         public CharacterDefinition Definition => m_Definition;

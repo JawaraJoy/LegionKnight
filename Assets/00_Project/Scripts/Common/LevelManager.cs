@@ -16,6 +16,7 @@ namespace LegionKnight
         public bool LevelOver => m_LevelManager.LevelOver;
         public LevelDefinition LevelDefinition => m_LevelManager.LevelDefinition;
         public Currency CurrentCoinReward => m_LevelManager.CurrentCoinReward;
+        public Currency CurrentScore => m_LevelManager.CurrentScore;
         public Currency HighScore => m_LevelManager.CurrentHighScore;
         public bool IsInfiniteLevel => m_LevelManager.IsInfiniteLevel;
 

@@ -33,6 +33,19 @@ namespace LegionKnight
         {
             return m_PlayerDeck.GetCharacterUnit(definition);
         }
+        
+        public void AddUniqueHeroPlatform()
+        {
+            GameManager.Instance.AddStandbyPlatform(new List<StandbyPlatformDefinition> { GetHeroStandbyPlatformInternal() });
+        }
+        private StandbyPlatformDefinition GetHeroStandbyPlatformInternal()
+        {
+            return m_PlayerDeck.GetHeroStandbyPlatform();
+        }
+        public StandbyPlatformDefinition GetHeroStandbyPlatform()
+        {
+            return m_PlayerDeck.GetHeroStandbyPlatform();
+        }
         public List<CharacterUnit> CharacterUnits => m_PlayerDeck.CharacterUnits;
         public CharacterDefinition UsedCharacter => m_PlayerDeck.UsedCharacter;
     }

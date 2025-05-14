@@ -6,10 +6,6 @@ namespace LegionKnight
     {
         [SerializeField]
         private SpriteRenderer m_BosForm;
-        private void Start()
-        {
-            
-        }
         public void Init(BosDefinition definition)
         {
             m_BosDefinition = definition;

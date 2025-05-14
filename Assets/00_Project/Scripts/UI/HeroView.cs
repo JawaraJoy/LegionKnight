@@ -12,6 +12,10 @@ namespace LegionKnight
         [SerializeField]
         private Image m_HeroBigIcon;
         [SerializeField]
+        private Image m_HeroSkillIcon;
+        [SerializeField]
+        private Image m_HeroUniquePlatformIcon;
+        [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnCharacterSelected = new();
         private void Start()
         {
@@ -21,6 +25,9 @@ namespace LegionKnight
         {
             m_HeroBigIcon.sprite = Player.Instance.UsedCharacter.Icon;
             m_HeroNameText.text = Player.Instance.UsedCharacter.name;
+
+            m_HeroSkillIcon.sprite = Player.Instance.UsedCharacter.Passives[0].Icon;
+            m_HeroUniquePlatformIcon.sprite = Player.Instance.GetHeroStandbyPlatform().Icon;
             OnCharacterSelectedInvoke(Player.Instance.UsedCharacter);
         }
         public void SetCharacterSelected(CharacterDefinition defi)

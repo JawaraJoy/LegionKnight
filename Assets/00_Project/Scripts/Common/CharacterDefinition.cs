@@ -32,12 +32,12 @@ namespace LegionKnight
         public int Attack => m_Attack;
         public int Health => m_Health;
         [SerializeField]
-        private Platform m_UniquePlatform;
+        private StandbyPlatformDefinition m_UniquePlatform;
         [SerializeField]
         private List<SkillDefinition> m_Weapons = new();
         [SerializeField]
         private List<SkillDefinition> m_Passives = new();
-        public Platform UniquePlatform => m_UniquePlatform;
+        public StandbyPlatformDefinition UniquePlatform => m_UniquePlatform;
         public List<SkillDefinition> Weapons => m_Weapons;
         public List<SkillDefinition> Passives => m_Passives;
     }

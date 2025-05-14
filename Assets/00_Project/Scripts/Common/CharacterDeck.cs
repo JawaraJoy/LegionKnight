@@ -23,6 +23,10 @@ namespace LegionKnight
         public CharacterDefinition DefaultCharacter => m_DefaultCharacter;
         public List<CharacterUnit> CharacterUnits => m_CharacterUnits;
         public CharacterDefinition UsedCharacter => m_UsedCharacter;
+        public StandbyPlatformDefinition GetHeroStandbyPlatform()
+        {
+            return GetCharacterUnitInternal(m_UsedCharacter).UniquePlatform;
+        }
         private CharacterUnit GetCharacterUnitInternal(CharacterDefinition definition)
         {
             CharacterUnit match = m_CharacterUnits.Find(x => x.Definition == definition);

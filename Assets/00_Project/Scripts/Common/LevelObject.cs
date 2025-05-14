@@ -37,6 +37,7 @@ namespace LegionKnight
             GameManager.Instance.SetLevelObject(this);
             AddRealStanbyPlatformInternal(GetLevelDefinition().GetPlatformAssets());
             Player.Instance.AddPlayerStandbyPlatform();
+            Player.Instance.AddUniqueHeroPlatform();
         }
         public void AddRealStanbyPlatform(List<StandbyPlatformDefinition> standby)
         {

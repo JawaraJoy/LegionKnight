@@ -27,8 +27,10 @@ namespace LegionKnight
             base.OnHideInvoke();
             GameTimeScale.SetTimeScale(1);
             Currency coin = GameManager.Instance.CurrentCoinReward;
+            Currency score = GameManager.Instance.CurrentScore;
             Player.Instance.AddCurrencyAmount(coin.CurrencyDefinition, coin.Amount);
             GameManager.Instance.SetRewardAmount(0);
+            Player.Instance.AddPlayerExperience(score.Amount);
         }
     }
 }
