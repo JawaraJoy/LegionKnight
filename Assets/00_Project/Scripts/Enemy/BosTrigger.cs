@@ -45,8 +45,9 @@ namespace LegionKnight
 
         private void OnTouchDownCountInvoke()
         {
-            
-            if (!m_Active) return;
+            bool hasBoss = GameManager.Instance.LevelDefinition.HasBoss();
+            //GameManager.Instance.SetActiveBosIndicatorView(hasBoss);
+            if (!m_Active || !hasBoss) return;
             if (m_TouchDownCount >= m_TouchDownThreshold)
             {
                 //if (GameManager.Instance.BosTriggered) return;
@@ -55,6 +56,7 @@ namespace LegionKnight
                 SetTriggerActive(false);
                 SetTouchDownCountInternal(0);
             }
+            
             m_OnTouchDownCountRateChange?.Invoke(GetTouchDownRate());
         }
     }

@@ -31,13 +31,41 @@ namespace LegionKnight
 
         private const float m_OffsideDestination = -0.2f;
 
+        private float m_SpeedPlatformRate = 1f;
+        public float SpeedPlatformRate => m_SpeedPlatformRate;
+        public void SetSpeedPlatformRate(float rate)
+        {
+            m_SpeedPlatformRate = rate;
+        }
+
         private float m_FinalOffsideDestination;
         private void Start()
         {
+            
             GameManager.Instance.SetLevelObject(this);
             AddRealStanbyPlatformInternal(GetLevelDefinition().GetPlatformAssets());
             Player.Instance.AddPlayerStandbyPlatform();
             Player.Instance.AddUniqueHeroPlatform();
+            GameManager.Instance.ResetBoss();
+        }
+
+        public void RemovePlatform(Platform platform)
+        {
+            if (m_SpawnedPlatform.Count <= 0) return;
+            if (m_SpawnedPlatform.Contains(platform))
+            {
+                m_SpawnedPlatform.Remove(platform);
+            }
+        }
+
+        private Platform GetLastSpawnedPlatform()
+        {
+            if (m_SpawnedPlatform.Count <= 0) return null;
+            return m_SpawnedPlatform[m_SpawnedPlatform.Count - 1];
+        }
+        public void SetLastSpawnedPlatformActive(bool set)
+        {
+            GetLastSpawnedPlatform().SetActiveBehaviourCollider(set);
         }
         public void AddRealStanbyPlatform(List<StandbyPlatformDefinition> standby)
         {
@@ -110,19 +138,25 @@ namespace LegionKnight
             Vector2 farAway = new Vector2(1000f, 0f);
             Addressables.InstantiateAsync(GetRandomPlatformByChance(), farAway, Quaternion.identity).Completed += OnPlatformSpawned;
         }
-        private void SpawnBosInternal()
-        {
-            Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost).Completed += OnBosSpawned;
-        }
         private void OnPlatformSpawned(AsyncOperationHandle<GameObject> handle)
         {
             if (handle.Status != AsyncOperationStatus.Succeeded) return;
             GameObject result = handle.Result;
             if (result.TryGetComponent(out Platform platform))
             {
+                //m_PlatformDestination.position = platform.GetContactPosition();
                 SetStartPosition(platform);
             }
         }
+        private void SpawnBosInternal()
+        {
+            if (m_LevelDefinition.HasBoss())
+            {
+                Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost).Completed += OnBosSpawned;
+            }
+            
+        }
+        
         private void OnBosSpawned(AsyncOperationHandle<GameObject> handle)
         {
             if (handle.Status != AsyncOperationStatus.Succeeded) return;
@@ -136,6 +170,7 @@ namespace LegionKnight
         }
         public void StartBos()
         {
+            if (!m_LevelDefinition.HasBoss()) return;
             AddRealStanbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
             
             GameManager.Instance.SetBosTriggered(true);
@@ -145,6 +180,7 @@ namespace LegionKnight
 
         public void RemoveBos()
         {
+            if (!m_LevelDefinition.HasBoss()) return;
             RemoveRealStanbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
             GameManager.Instance.SetBosTriggered(false);
         }
@@ -167,11 +203,21 @@ namespace LegionKnight
             //Player.Instance.SetPosition(m_PlayerStartPosition.position);
             yield return new WaitForSeconds(2f);
             SpawnPlatformInternal();
-            
+            Player.Instance.SetCanUseResurrectionAds(true);
         }
         public void ResetPlayerPost()
         {
             Player.Instance.SetPosition(m_PlayerStartPosition.position);
+        }
+
+        public void PauseLevel()
+        {
+            GameManager.Instance.SetLevelOver(true);
+        }
+
+        private void ResumeLevel()
+        {
+            GameManager.Instance.SetLevelOver(false);
         }
         private void ClearPlatform()
         {
@@ -201,6 +247,14 @@ namespace LegionKnight
         {
             Vector2 target = new Vector2(m_PlatformDestination.position.x + m_FinalOffsideDestination, m_PlatformDestination.position.y);
             return target;
+        }
+        public bool HasBoss()
+        {
+            return HasBossInternal();
+        }
+        private bool HasBossInternal()
+        {
+            return GetLevelDefinition().HasBoss();
         }
         private void SetStartPosition(Platform spawn)
         {

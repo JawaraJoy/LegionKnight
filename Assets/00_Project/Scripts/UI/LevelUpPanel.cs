@@ -32,6 +32,7 @@ namespace LegionKnight
 
         public void ShowLevelUpPanel()
         {
+            Debug.Log("Show Level Up Panel");
             LevelUpPanel levelUpPanel = GetLevelUpPanel();
             if (levelUpPanel != null)
             {

@@ -346,7 +346,7 @@ GameObject:
   - component: {fileID: 1158308863625070404}
   - component: {fileID: 4987369106493199891}
   m_Layer: 7
-  m_Name: Skill 2
+  m_Name: Skill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -718,6 +718,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1112108184134015428}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: d6945231be24c7240a281458fc849e1f, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 12
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnStayPerfect:
     m_PersistentCalls:
       m_Calls: []
@@ -1003,6 +1015,7 @@ GameObject:
   - component: {fileID: 3804939165712080917}
   - component: {fileID: 1532349481360173813}
   - component: {fileID: 5395353101837719528}
+  - component: {fileID: 7282600096559205833}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -1037,6 +1050,7 @@ Transform:
   - {fileID: 6620163574274411677}
   - {fileID: 7805047950945483319}
   - {fileID: 4011368208527641551}
+  - {fileID: 2974568030503211361}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3377274384242518752
@@ -1115,6 +1129,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee6174f339dde6a4fad97219c8c76d69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_NameSupplyDefinition: {fileID: 11400000, guid: a588d78743d384141ba6a09dfa84836b, type: 2}
+  m_PlayerName: 
   m_CharacterDefinition: {fileID: 11400000, guid: c6ceb5811bacf1947a81b0686e4fbb54, type: 2}
   m_OnStart:
     m_PersistentCalls:
@@ -1157,6 +1173,30 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1532349481360173813}
         m_TargetAssemblyTypeName: LegionKnight.GachaManagerAgent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7282600096559205833}
+        m_TargetAssemblyTypeName: LegionKnight.LeaderboardAgent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6282812892676271033}
+        m_TargetAssemblyTypeName: LegionKnight.Progression, Assembly-CSharp
         m_MethodName: Init
         m_Mode: 1
         m_Arguments:
@@ -1225,6 +1265,7 @@ MonoBehaviour:
   m_PassiveSkill: {fileID: 1158308863625070404}
   m_PlayerPause: {fileID: 8956068173985954038}
   m_PlayerPlatformDeck: {fileID: 4843533203964001805}
+  m_PlayerProgression: {fileID: 6282812892676271033}
   m_ProtectActivation: {fileID: 4755424564415841424}
   m_PlayerTouchDown: {fileID: 7758370064416613710}
   m_Weaponer: {fileID: 6368892546450467708}
@@ -1271,7 +1312,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
-        m_CallState: 0
+        m_CallState: 2
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -1322,7 +1363,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
       - m_Target: {fileID: 3804939165712080917}
         m_TargetAssemblyTypeName: LegionKnight.PlayerCameraAgent, Assembly-CSharp
         m_MethodName: SetStayFollow
@@ -1514,6 +1555,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eca2844eaef6926429f12768e0a5ebda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7282600096559205833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084039138725747265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 996b1c1d6b5613d4b8ca7ad36937bbab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2207269959471590298
@@ -11420,7 +11473,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.7, y: 0}
+  m_Offset: {x: -0.7, y: -0.64}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -11430,7 +11483,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.24, y: 4.76}
+  m_Size: {x: 0.24, y: 3.51}
   m_EdgeRadius: 0
 --- !u!114 &751198122168616761
 MonoBehaviour:
@@ -11572,7 +11625,7 @@ GameObject:
   - component: {fileID: 8182313692109980319}
   - component: {fileID: 6368892546450467708}
   m_Layer: 7
-  m_Name: Weapon 2
+  m_Name: Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16751,6 +16804,60 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &6009165418651273980
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2974568030503211361}
+  - component: {fileID: 6282812892676271033}
+  m_Layer: 7
+  m_Name: PlayerProgression
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2974568030503211361
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6009165418651273980}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6282812892676271033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6009165418651273980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0ec4cb3558267b4fb14d31dc378e25d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ExponentialGrowth: 1.17
+  m_FirstLevelExp: 100
+  m_MaxLevel: 100
+  m_ExpTable: 6400000074000000870000009d000000b7000000d6000000fa00000024010000550100008e010000d1010000200200007c020000e802000066030000f9030000a50400006f0500005b0600006f070000b20800002c0a0000e60b0000eb0d0000481000000c13000048160000111a00007f1e0000ae230000be290000d630000023390000d9420000364e0000815b00000f6b0000427d00008d92000076ab00009bc80000b5ea00009b12010049410100e7770100ceb70100920202000c5a020065c00200243803003ec4030029680400f227050056080600df0e07000a4208006ca90900e74d0b00dd390d0075790f00e71a1200d52e1500b6c818004fff1c0045ed2100c3b1270042712e006e56360033933f00fb614a001e07570091d26500e121770084628b008b14a300cbcdbe00933ddf00003105010c9831017e8b6501d853a2017471e90104a63c02acff9d0204e60f0344299503201431048080e704f0efbc0510a8b606f8d3da0730ab3009509fc00a6091940c7010b80e80a23811401a2614e0fa921720ed941b80484520
+  m_OnCurrentExpChange:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnLevelUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6335871343680121323
 GameObject:
   m_ObjectHideFlags: 0
@@ -17041,6 +17148,7 @@ GameObject:
   - component: {fileID: 2942122649447902150}
   - component: {fileID: 5021998139950130448}
   - component: {fileID: 4541286761116554180}
+  - component: {fileID: 23319377594501493}
   m_Layer: 7
   m_Name: CurrenciesControl
   m_TagString: Untagged
@@ -17080,10 +17188,34 @@ MonoBehaviour:
     m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 23319377594501493}
+          m_TargetAssemblyTypeName: LegionKnight.LeaderboardAgent, Assembly-CSharp
+          m_MethodName: SubmiteScoreEntry
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 0
     m_OnCurrencyChanged:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 5021998139950130448}
+          m_TargetAssemblyTypeName: LegionKnight.HomePanelAgent, Assembly-CSharp
+          m_MethodName: SetHighScoreView
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_OnCurrencyAmountGet:
       m_PersistentCalls:
         m_Calls: []
@@ -17235,6 +17367,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21f58cf3ff4870a45a82396b22a539cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &23319377594501493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7764102645273973304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 996b1c1d6b5613d4b8ca7ad36937bbab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8371110360359320408
@@ -17472,7 +17616,7 @@ MonoBehaviour:
   m_UsedStanbyPlatform: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
   m_SelectedStandbyPlatform: {fileID: 0}
   m_Deck:
-  - m_IsOwned: 1
+  - m_IsOwned: 0
     m_Amount: 0
     m_StanbyPlatform: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
   - m_IsOwned: 0

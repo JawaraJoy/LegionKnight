@@ -45,10 +45,16 @@ namespace LegionKnight
         public LevelDefinition NextLevel => m_NextLevel;
         public bool IsInfiniteLevel => m_IsInfiniteLevel;
 
+        public bool HasBoss()
+        {
+            return m_BosDefinition != null;
+        }
+
         public void StartLevel()
         {
             GameManager.Instance.SetLevelDefinition(this);
             GameManager.Instance.LoadScene(m_LevelScene);
+            Player.Instance.SetCanUseResurrectionAds(true);
         }
 
         public float GetSpeed()

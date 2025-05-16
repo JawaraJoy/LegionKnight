@@ -115,6 +115,7 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Platform: {fileID: 4116744230541724905}
   m_OnNormalTouchDown:
     m_PersistentCalls:
@@ -387,6 +388,7 @@ GameObject:
   - component: {fileID: 4116744230541724905}
   - component: {fileID: 9076681910499597590}
   - component: {fileID: 592435651048432965}
+  - component: {fileID: 3819547924344939242}
   m_Layer: 8
   m_Name: Invoker Platform 1
   m_TagString: Untagged
@@ -428,6 +430,8 @@ MonoBehaviour:
   - {fileID: 3054818868739466425}
   - {fileID: 7824698166071602506}
   m_CanMove: 0
+  m_ContactCollider: {fileID: 7824698166071602506}
+  m_PlatformContact: {fileID: 2280245624262641516}
   m_OnPlayerAttached:
     m_PersistentCalls:
       m_Calls: []
@@ -498,15 +502,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7aebe8b9cf6bc4d87e7d74ece053e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ActiveSelfDestructOnStart: 0
-  m_SelfDestructDelay: 0
+  m_ActiveSelfDestructOnStart: 1
+  m_SelfDestructDelay: 60
   m_Delay: 0
   m_OnStartDestroy:
     m_PersistentCalls:
       m_Calls: []
   m_OnDestroyDone:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3819547924344939242}
+        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
+        m_MethodName: RemovePlatform
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 4116744230541724905}
+          m_ObjectArgumentAssemblyTypeName: LegionKnight.Platform, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3819547924344939242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4341432052450420387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5418375460081534331
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,8 +783,11 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 1
   m_Health: 1
+  m_Shield: 0
+  m_Barrier: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -796,6 +827,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnShieldChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnBarrierChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnProtectGone:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &9083736941859860351
 MonoBehaviour:
   m_ObjectHideFlags: 0

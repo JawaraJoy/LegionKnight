@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b53d183750a422e478bc49accdc56f61, type: 3}
+  m_Name: Boss Rush
+  m_EditorClassIdentifier: 
+  m_Id: bossrush
+  m_LevelScene: ReworkGameplay
+  m_NextLevel: {fileID: 11400000}
+  m_IsInfiniteLevel: 1
+  m_LevelImage: {fileID: 21300000, guid: f3e77626e76784da08f8d3b78bc5b9f1, type: 3}
+  m_MinSpeed: 8.5
+  m_MaxSpeed: 11
+  m_TouchDownRewardCurrency: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
+  m_NormalTouchDownPoint: 1
+  m_PerfectTouchDownPoint: 2
+  m_PlatformAssets:
+  - {fileID: 11400000, guid: 1126379064c59564692775f04adf28a3, type: 2}
+  - {fileID: 11400000, guid: 0a0de98677d86b74e8da0573fa351ded, type: 2}
+  m_BosDefinition: {fileID: 11400000, guid: 7090a21725d9502408643e33f9f95bda, type: 2}
+  m_BosAsset:
+    m_AssetGUID: c9e392a46c040ad41b7fe2235bd60b46
+    m_SubObjectName: 
+    m_SubObjectGUID: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  m_LevelOrnament:
+    m_BaseGround: {fileID: 21300000, guid: fe0f684971b264945b065976bc679b02, type: 3}
+    m_LeftCliff: {fileID: 21300000, guid: 07826d63bdb2b8f4899dbc1ce3f98395, type: 3}
+    m_RightCliff: {fileID: 21300000, guid: 0fb5db9e5a4784747b3ac3b68bec608e, type: 3}
+    m_Tree: {fileID: 21300000, guid: 4a2951dd38f1f3a488703e758b8b29e0, type: 3}
+    m_Mountain: {fileID: 21300000, guid: 6436df62f50181740b81664345756c35, type: 3}
+    m_Background: {fileID: 21300000, guid: a2e16cd08c40d6349b951c49f0166b04, type: 3}

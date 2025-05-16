@@ -14,6 +14,10 @@ namespace LegionKnight
         private bool m_CanMove;
         private float m_Speed;
         private Vector2 m_Destination;
+        [SerializeField]
+        private Collider2D m_ContactCollider;
+        [SerializeField]
+        private PlatformContact m_PlatformContact;
 
         [SerializeField]
         private UnityEvent<GameObject> m_OnPlayerAttached = new();
@@ -27,16 +31,22 @@ namespace LegionKnight
         private bool m_ReachTriggered;
         private LevelDefinition m_LevelDefinition;
 
+
         private void Update()
         {
             MoveToDestination();
         }
-
+        private Vector2 GetContactPosition()
+        {
+            if (m_ContactCollider == null) return Vector2.zero;
+            return m_ContactCollider.transform.position;
+        }
         private void MoveToDestination()
         {
-            if (!m_CanMove || IsReached()) return;
+            if (!m_CanMove || IsReachedInternal()) return;
+            float speedrate = GameManager.Instance.SpeedPlatformRate;
             //transform.Translate(m_Speed * Time.deltaTime * Vector3.right, Space.Self);
-            transform.position = Vector2.MoveTowards(transform.position, m_Destination, m_Speed * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, m_Destination, m_Speed * speedrate * Time.deltaTime);
             ReachDestination();
         }
         public Currency GetNormalTouchDown()
@@ -49,15 +59,25 @@ namespace LegionKnight
         }
         private void ReachDestination()
         {
-            if (IsReached() && !m_ReachTriggered)
+            if (IsReachedInternal() && !m_ReachTriggered)
             {
                 OnPlatformReachDestination();
                 m_ReachTriggered = true;
+                if (!m_PlatformContact.Touched)
+                {
+                    GameManager.Instance.SetCurrentTouchDownPost(GetContactPosition());
+                    GameManager.Instance.SpawnPlatform();
+
+                }
             }
         }
-        private bool IsReached()
+        private bool IsReachedInternal()
         {
             return Distance() <= 0;
+        }
+        public bool IsReached()
+        {
+            return IsReachedInternal();
         }
         private float Distance()
         {

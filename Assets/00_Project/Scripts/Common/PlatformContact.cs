@@ -17,13 +17,26 @@ namespace LegionKnight
         private UnityEvent<int> m_OnStayPerfectCombo = new();
         [SerializeField]
         private UnityEvent<bool> m_OnStayPerfect = new();
+        private bool m_Touched = false;
+
+        private void Start()
+        {
+            m_Touched = false;
+        }
+        public bool Touched => m_Touched;
+        public void SetTouched(bool set)
+        {
+            m_Touched = set;
+        }
         public void OnNormalTouchDownInvoke(int reward)
         {
             m_OnNormalTouchDown?.Invoke(reward);
+            m_Touched = true;
         }
         public void OnPerfectTouchDownInvoke(int reward)
         {
             m_OnPerfectTouchDown?.Invoke(reward);
+            m_Touched = true;
         }
 
         public void OnStayPerfectComboInvoke(int amount)
@@ -54,6 +67,10 @@ namespace LegionKnight
         public void SetActiveBehaviourCollider(bool set)
         {
             m_Platform.SetActiveBehaviourCollider(set);
+        }
+        public bool IsReached()
+        {
+            return m_Platform.IsReached();
         }
     }
 }

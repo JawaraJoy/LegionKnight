@@ -26,6 +26,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<int> m_OnLevelUp = new ();
 
+        private bool m_LevelUpTriggered = false;
+
         private void InitInternal()
         {
             if (UnityService.Instance.HasData(m_CurrentLevelKey))
@@ -54,7 +56,18 @@ namespace LegionKnight
         private void OnLevelUpInvoke()
         {
             m_OnLevelUp?.Invoke(m_Level);
-            GameManager.Instance.ShowLevelUpPanel();
+            m_LevelUpTriggered = true;
+
+            //GameManager.Instance.ShowLevelUpPanel();
+        }
+
+        public void ShowLevelUpPanel()
+        {
+            if (m_LevelUpTriggered)
+            {
+                GameManager.Instance.ShowLevelUpPanel();
+                m_LevelUpTriggered = false;
+            }
         }
         private void OnCurrentExpRateChangedInvoke()
         {
@@ -91,6 +104,7 @@ namespace LegionKnight
             }
             UnityService.Instance.SaveData(m_CurrentExperienceKey, m_CurrentExp);
             OnCurrentExpRateChangedInvoke();
+            Debug.Log($"Current Exp: {m_CurrentExp}, Level: {m_Level}");
         }
         private void LevelUp()
         {

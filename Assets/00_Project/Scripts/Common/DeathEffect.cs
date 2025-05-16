@@ -87,6 +87,8 @@ namespace LegionKnight
             m_Collider.enabled = false;
             m_TouchDown.SetCanContact(false);
             OnDeathInvoke();
+
+            GameManager.Instance.SetLevelOver(true);
         }
         public void Reborn()
         {

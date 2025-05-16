@@ -19,6 +19,7 @@ namespace LegionKnight
         public Currency CurrentScore => m_LevelManager.CurrentScore;
         public Currency HighScore => m_LevelManager.CurrentHighScore;
         public bool IsInfiniteLevel => m_LevelManager.IsInfiniteLevel;
+        public float SpeedPlatformRate => m_LevelManager.SpeedPlatformRate;
 
         public void InitLevelHandler()
         {
@@ -43,6 +44,14 @@ namespace LegionKnight
         public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
         {
             m_LevelManager.SetCurrentTouchDownPost(playerTouchDown);
+        }
+        public void SetSpeedPlatformRate(float rate)
+        {
+            m_LevelManager.SetSpeedPlatformRate(rate);
+        }
+        public void RemovePlatform(Platform platform)
+        {
+            m_LevelManager.RemovePlatform(platform);
         }
         public void SetRewardAmount(int set)
         {
@@ -82,6 +91,10 @@ namespace LegionKnight
         {
             m_LevelManager.RemoveAmount(remove);
         }
+        public void RessurectionPlayer()
+        {
+            m_LevelManager.RessurectionPlayer();
+        }
         public void SpawnPlatform()
         {
             m_LevelManager.SpawnPlatform();
@@ -93,6 +106,14 @@ namespace LegionKnight
         public int GetPerfectTouchDownPoint()
         {
             return m_LevelManager.GetPerfectTouchDownPoint();
+        }
+        public Vector2 GetLastPlayerPostion()
+        {
+            return m_LevelManager.GetLastPlayerPosition();
+        }
+        public void StoreLevelScore()
+        {
+            m_LevelManager.StoreLevelScore();
         }
         public void ResetBoss()
         {
@@ -115,13 +136,22 @@ namespace LegionKnight
         {
             m_LevelManager.SetScoreAmount(set);
         }
+
         public void AddScoreAmount(int set)
         {
             m_LevelManager.AddScoreAmount(set);
         }
+        public bool HasBoss()
+        {
+            return m_LevelManager.HasBoss();
+        }
     }
     public partial class LevelManagerAgent
     {
+        public void StoreLevelScore()
+        {
+            GameManager.Instance.StoreLevelScore();
+        }
         public void AddCurrencyRewardAmount(int add)
         {
             GameManager.Instance.AddCurrencyRewardAmount(add);
@@ -145,6 +175,10 @@ namespace LegionKnight
         public void SetScoreAmount(int set)
         {
             GameManager.Instance.SetScoreAmount(set);
+        }
+        public bool HasBoss()
+        {
+            return GameManager.Instance.HasBoss();
         }
         public void AddScoreAmount(int set)
         {

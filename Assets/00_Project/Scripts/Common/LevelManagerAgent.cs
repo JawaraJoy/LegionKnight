@@ -12,6 +12,10 @@ namespace LegionKnight
         {
             GameManager.Instance.StartBos();
         }
+        public void RemovePlatform(Platform platform)
+        {
+            GameManager.Instance.RemovePlatform(platform);
+        }
         public void SetLevelOver(bool set)
         {
             GameManager.Instance.SetLevelOver(set);

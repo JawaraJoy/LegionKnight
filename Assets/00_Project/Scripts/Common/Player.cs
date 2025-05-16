@@ -17,6 +17,13 @@ namespace LegionKnight
         private UnityEvent m_OnStart = new();
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnSetCharacterDefinition = new();
+
+        private bool m_CanUseResurrectionAds = true;
+        public bool CanUseResurrectionAds => m_CanUseResurrectionAds;
+        public void SetCanUseResurrectionAds(bool set)
+        {
+            m_CanUseResurrectionAds = set;
+        }
         public void Init()
         {
             

@@ -19,6 +19,19 @@ namespace LegionKnight
         {
             GetBinding<BosSpawnIndicatorView>().SetSlider(set);
         }
+
+        public void SetActiveBosIndicatorView(bool set)
+        {
+            BosSpawnIndicatorView view = GetBinding<BosSpawnIndicatorView>();
+            if (set)
+            {
+                view.Show();
+            }
+            else
+            {
+                view.Hide();
+            }
+        }
     }
     public partial class GameManager
     {
@@ -26,12 +39,20 @@ namespace LegionKnight
         {
             GetPanelInternal<GameplayPanel>().SetSlider(set);
         }
+        public void SetActiveBosIndicatorView(bool set)
+        {
+            GetPanelInternal<GameplayPanel>().SetActiveBosIndicatorView(set);
+        }
     }
     public partial class GameplayPanelAgent
     {
         public void SetBosIndicator(float set)
         {
             GameManager.Instance.SetBosIndicator(set);
+        }
+        public void SetActiveBosIndicatorView(bool set)
+        {
+            GameManager.Instance.SetActiveBosIndicatorView(set);
         }
     }
 }

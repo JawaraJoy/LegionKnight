@@ -202,6 +202,7 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Platform: {fileID: 4116744230541724905}
   m_OnNormalTouchDown:
     m_PersistentCalls:
@@ -554,6 +555,8 @@ MonoBehaviour:
   - {fileID: 3054818868739466425}
   - {fileID: 7824698166071602506}
   m_CanMove: 0
+  m_ContactCollider: {fileID: 7824698166071602506}
+  m_PlatformContact: {fileID: 2280245624262641516}
   m_OnPlayerAttached:
     m_PersistentCalls:
       m_Calls: []
@@ -637,14 +640,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ActiveSelfDestructOnStart: 1
-  m_SelfDestructDelay: 30
+  m_SelfDestructDelay: 60
   m_Delay: 0
   m_OnStartDestroy:
     m_PersistentCalls:
       m_Calls: []
   m_OnDestroyDone:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -2142924684028843910}
+        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
+        m_MethodName: RemovePlatform
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 4116744230541724905}
+          m_ObjectArgumentAssemblyTypeName: LegionKnight.Platform, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5418375460081534331
 GameObject:
   m_ObjectHideFlags: 0
@@ -893,8 +908,11 @@ MonoBehaviour:
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
+  m_ContactableList: []
   m_Damage: 1
   m_Health: 1
+  m_Shield: 0
+  m_Barrier: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -935,6 +953,18 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnShieldChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnBarrierChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnProtectGone:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &7223711434749312389
