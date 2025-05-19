@@ -80,6 +80,7 @@ GameObject:
   - component: {fileID: 1069859614771893739}
   - component: {fileID: 8645185124023396168}
   - component: {fileID: 1604432225273571068}
+  - component: {fileID: 7706837356944348511}
   m_Layer: 0
   m_Name: Cloud Save
   m_TagString: Untagged
@@ -166,6 +167,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 7706837356944348511}
+        m_TargetAssemblyTypeName: LegionKnight.TutorialAgent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1069859614771893739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,6 +213,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7706837356944348511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2484120564562140198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015f14f564f636f47a7930acbf15488c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2831577676660342122
