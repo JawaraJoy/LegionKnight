@@ -81,8 +81,6 @@ namespace LegionKnight
         private UnityEvent m_OnPlay = new();
         public Currency CurrentCoinReward => m_CurrentCoinReward;
         public Currency CurrentScore => m_CurrentScore;
-        public Currency CurrentHighScore => m_CurrentHighScore;
-
         public Transform PlayerStartPostion => m_LevelObject.PlayerStartPostion;
         public bool LevelOver => m_LevelOver;
         public LevelDefinition LevelDefinition => m_SelectedLevelDefinition;
@@ -256,8 +254,7 @@ namespace LegionKnight
         }
         public void StoreLevelScore()
         {
-            Player.Instance.SetCurrencyAmount(m_CurrentScore.CurrencyDefinition, m_CurrentScore.Amount);
-            DetermineHighScore();
+            Player.Instance.AddCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
             Player.Instance.AddPlayerExperience(m_CurrentScore.Amount);
             ResetScore();
         }
@@ -373,12 +370,11 @@ namespace LegionKnight
         private void DetermineHighScore()
         {
             int currentScore = m_CurrentScore.Amount;
-            int currentHighScore = Player.Instance.GetCurrencyAmount(m_CurrentHighScore.CurrencyDefinition);
+            int currentHighScore = Player.Instance.GetCurrencyAmount(m_CurrentScore.CurrencyDefinition);
 
             if (currentScore > currentHighScore)
             {
-                m_CurrentHighScore.SetAmount(currentScore);
-                Player.Instance.SetCurrencyAmount(m_CurrentHighScore.CurrencyDefinition, currentScore);
+                Player.Instance.SetCurrencyAmount(m_CurrentScore.CurrencyDefinition, currentScore);
             }
         }
 
