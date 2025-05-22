@@ -314,7 +314,7 @@ MonoBehaviour:
           ButtonText: 
         Owner: {fileID: 6998491140428135921}
         DebugActive: 0
-        TargetShaker: {fileID: 4537294580240437879}
+        TargetShaker: {fileID: 3177357221859865882}
         Duration: 0.5
         ResetShakerValuesAfterShake: 1
         ResetTargetValuesAfterShake: 1
@@ -491,7 +491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7aebe8b9cf6bc4d87e7d74ece053e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ActiveSelfDestructOnStart: 1
+  m_ActiveSelfDestructOnStart: 0
   m_SelfDestructDelay: 60
   m_Delay: 0
   m_OnStartDestroy:
@@ -914,7 +914,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5908992103421582513}
-  - component: {fileID: 4537294580240437879}
+  - component: {fileID: 3177357221859865882}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -938,7 +938,7 @@ Transform:
   - {fileID: 5512188146372437076}
   m_Father: {fileID: 845137327695532880}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4537294580240437879
+--- !u!114 &3177357221859865882
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -953,7 +953,7 @@ MonoBehaviour:
   ChannelMode: 0
   Channel: 0
   MMChannelDefinition: {fileID: 0}
-  ShakeDuration: 0.5
+  ShakeDuration: 0.3
   PlayOnAwake: 0
   PermanentShake: 0
   Interruptible: 1

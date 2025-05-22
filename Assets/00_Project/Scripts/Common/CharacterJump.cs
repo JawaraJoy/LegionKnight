@@ -81,10 +81,6 @@ namespace LegionKnight
             Fly();
 
         }
-        private void FixedUpdate()
-        {
-            
-        }
 
         public void SetJumpForce(float set)
         {
@@ -234,11 +230,11 @@ namespace LegionKnight
                 {
                     currentJumpM = -m_JumpMultiplier * (1 - t);
                 }
-                m_Rb.linearVelocity += m_GravityMod * currentJumpM * Time.deltaTime;
+                m_Rb.linearVelocity += currentJumpM * Time.deltaTime * m_GravityMod;
             }
             if (m_Rb.linearVelocityY < 0f)
             {
-                m_Rb.linearVelocity -= m_GravityMod * m_FallMultiplier * Time.deltaTime;
+                m_Rb.linearVelocity -= m_FallMultiplier * Time.deltaTime * m_GravityMod;
             }
         }
         private void OnStartJumpInvoke()

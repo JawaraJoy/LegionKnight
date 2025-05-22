@@ -29,7 +29,7 @@ namespace LegionKnight
             HideInternal();
         }
 
-        public virtual void SetActive(bool set)
+        public virtual void SetContentActive(bool set)
         {
             if (set)
             {

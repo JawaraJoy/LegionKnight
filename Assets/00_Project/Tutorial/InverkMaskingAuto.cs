@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,11 +27,18 @@ namespace LegionKnight
         public string DialogueTitle => m_Target != null ? m_Target.DialogueTitle : string.Empty;
         public string[] DialogueDescriptions => m_Target != null ? m_Target.DialogueDescriptions : new string[0];
         public bool IsTutorialCompleted => m_Target != null ? m_Target.IsTutorialCompleted : false;
+        public bool CanTutor => m_Target != null ? m_Target.CanTutor : false;
 
         private void Awake()
         {
             SetupMaterial();
             UpdateMask();
+            UpdateColor();
+        }
+        private void OnEnable()
+        {
+            UpdateMask();
+            SetupMaterial();
             UpdateColor();
         }
 
@@ -65,6 +73,15 @@ namespace LegionKnight
         public void SetMaskingTarget(MaskingTarget maskingTarget)
         {
             m_Target = maskingTarget;
+            //StartCoroutine(Delay(0.1f)); // Delay to ensure the target is fully initialized
+        }
+
+        private IEnumerator Delay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            UpdateMask();
+            SetupMaterial();
+            UpdateColor();
         }
 
         private void Update()
@@ -72,6 +89,8 @@ namespace LegionKnight
             // In case the target moves or resizes at runtime
             if (m_Target != null)
                 UpdateMask();
+                UpdateColor();
+                SetupMaterial();
         }
 
         public void SetColor(Color color)

@@ -23,6 +23,7 @@ namespace LegionKnight
 
         private int m_DescriptionIndex = 0;
         public int DescriptionIndex => m_DescriptionIndex;
+        public bool CanTutor => m_CurrentMaskingTarget != null ? m_CurrentMaskingTarget.CanTutor : false;
         public string GetDialogueDescription(int index)
         {
             if (m_CurrentMaskingTarget != null)
@@ -45,9 +46,9 @@ namespace LegionKnight
                 }
             }
         }
-        public void SetCanTutor(string id, bool canTutor)
+        public void SetUnlockTutor(string id, bool unlock)
         {
-            GetMaskingTargetInternal(id)?.SetCanTutor(canTutor);
+            GetMaskingTargetInternal(id)?.SetUnlockTutor(unlock);
         }
         private MaskingTarget GetMaskingTargetInternal(string id)
         {
@@ -61,24 +62,27 @@ namespace LegionKnight
             Debug.LogError($"Masking target with ID {id} not found.");
             return null;
         }
-        public void StartTutorial(string id)
+        public void StartTutorial(DialogueDefinition defi)
         {
-            m_CurrentMaskingTarget = GetMaskingTargetInternal(id);
+            m_CurrentMaskingTarget = GetMaskingTargetInternal(defi.Id);
             if (m_CurrentMaskingTarget == null)
             {
-                Debug.LogError($"Masking target with ID {id} not found.");
+                Debug.LogError($"Masking target with ID {defi} not found.");
                 return;
             }
-            if (m_CurrentMaskingTarget.IsTutorialCompleted)
+            if (!m_CurrentMaskingTarget.CanTutor)
             {
-                Debug.Log("Tutorial already completed.");
+                Debug.Log("Tutorial Cant be played");
+                OnTutorialEndInvoke(m_CurrentMaskingTarget);
                 return;
             }
             if (m_CurrentMaskingTarget != null)
             {
                 OnTutorialStart(m_CurrentMaskingTarget);
             }
+            //GameManager.Instance.PlayTutorialPanel(m_CurrentMaskingTarget);
         }
+
         public void NextDialogue()
         {
             if (m_CurrentMaskingTarget == null)

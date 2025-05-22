@@ -35,7 +35,7 @@ namespace LegionKnight
         {
             foreach (MaskingTarget target in m_TutorialTarget)
             {
-                if (!target.IsTutorialCompleted)
+                if (!target.CanTutor)
                 {
                     target.StartDialogue();
                     return;

@@ -13,7 +13,7 @@ namespace LegionKnight
         private UnityEvent<MaskingTarget> m_OnTutorialEnd = new();
 
         [SerializeField]
-        private bool m_CanTutorial = false;
+        private bool m_Unlocked = false;
         [SerializeField]
         private bool m_TutorialCompleted = false;
         public DialogueDefinition DialogueDefinition => m_DialogueDefinition;
@@ -21,9 +21,12 @@ namespace LegionKnight
         public string DialogueTitle => m_DialogueDefinition != null ? m_DialogueDefinition.Title : string.Empty;
         public string[] DialogueDescriptions => m_DialogueDefinition != null ? m_DialogueDefinition.Descriptions : new string[0];
 
-        private string CanTutorialKey => $"{m_DialogueDefinition.Id}canTutorial";
+        private string UnlockTutorialKey => $"{m_DialogueDefinition.Id}unlock";
         private string TutorialCompletedKey => $"{m_DialogueDefinition.Id}complete";
         public bool IsTutorialCompleted => m_TutorialCompleted;
+
+        private bool CanTutorInternal => m_Unlocked && !m_TutorialCompleted;
+        public bool CanTutor => CanTutorInternal;
         public void Init()
         {
             InitInternal();
@@ -38,16 +41,16 @@ namespace LegionKnight
             {
                 m_TutorialCompleted = false;
             }
-            if (UnityService.Instance.HasData(CanTutorialKey))
+            if (UnityService.Instance.HasData(UnlockTutorialKey))
             {
-                m_CanTutorial = UnityService.Instance.GetData<bool>(CanTutorialKey);
+                m_Unlocked = UnityService.Instance.GetData<bool>(UnlockTutorialKey);
             }
             Debug.Log($"Tutorial {m_DialogueDefinition.Id} is Completed = {m_TutorialCompleted}");
         }
-        public void SetCanTutor(bool canTutor)
+        public void SetUnlockTutor(bool unlock)
         {
-            m_CanTutorial = canTutor;
-            UnityService.Instance.SaveData(CanTutorialKey, m_CanTutorial);
+            m_Unlocked = unlock;
+            UnityService.Instance.SaveData(UnlockTutorialKey, m_Unlocked);
         }
         public string GetDialogueDescription(int index)
         {
@@ -60,7 +63,11 @@ namespace LegionKnight
         public int DialogueDescriptionCount => m_DialogueDefinition != null ? m_DialogueDefinition.DescriptionCount : 0;
         public void StartDialogue()
         {
-            if (m_TutorialCompleted)
+            StartDialogueInternal();
+        }
+        private void StartDialogueInternal()
+        {
+            if (CanTutorInternal)
             {
                 Debug.Log("Tutorial already completed.");
                 return;
@@ -77,11 +84,6 @@ namespace LegionKnight
         }
         public void EndDialogue()
         {
-            if (m_TutorialCompleted)
-            {
-                Debug.Log("Tutorial already completed.");
-                return;
-            }
             m_TutorialCompleted = true;
             UnityService.Instance.SaveData(TutorialCompletedKey, m_TutorialCompleted);
             OnTutorialEndInvoke();

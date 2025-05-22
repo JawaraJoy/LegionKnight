@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5763594928011635358}
-  - component: {fileID: 5086969881192414987}
   - component: {fileID: 251473643808479129}
   - component: {fileID: 5690865285836926290}
   m_Layer: 0
@@ -32,41 +31,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2162027597826686982}
   - {fileID: 3593257405178574383}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5086969881192414987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2339587085614047008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1c7f3b0f52c5d843a613ea9c9136e0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_StayFollow: 1
-  m_TargetTag: Player
-  m_Target: {fileID: 0}
-  offset: {x: 0, y: 6, z: -35}
-  smoothFactor: 10
-  m_OnTargetSet:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 251473643808479129}
-        m_TargetAssemblyTypeName: LegionKnight.PlayerCamera, Assembly-CSharp
-        m_MethodName: SetOffSite
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Home
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &251473643808479129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d54e00606841ab9409d9669c13457720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CinemachineCamera: {fileID: 2143795639033570863}
   m_CameraPostSets:
   - m_PostName: Home
     m_Post: {x: 0, y: 8, z: -28}
@@ -87,7 +56,7 @@ MonoBehaviour:
   m_OnSetStayFollow:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5086969881192414987}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ObjectFollow, Assembly-CSharp
         m_MethodName: SetStayFollow
         m_Mode: 0
@@ -102,7 +71,7 @@ MonoBehaviour:
   m_OnSetOffsite:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5086969881192414987}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ObjectFollow, Assembly-CSharp
         m_MethodName: SetOffsite
         m_Mode: 0
@@ -126,6 +95,101 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12f9050e60f322d45a18fd887c594f97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &6097697487100517676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2162027597826686982}
+  - component: {fileID: 2143795639033570863}
+  - component: {fileID: 7580144514055284054}
+  m_Layer: 0
+  m_Name: CinemachineCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2162027597826686982
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6097697487100517676}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 8, z: -28}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5763594928011635358}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2143795639033570863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6097697487100517676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Priority:
+    Enabled: 0
+    m_Value: 0
+  OutputChannel: 1
+  StandbyUpdate: 2
+  m_StreamingVersion: 20241001
+  m_LegacyPriority: 0
+  Target:
+    TrackingTarget: {fileID: 0}
+    LookAtTarget: {fileID: 0}
+    CustomLookAtTarget: 0
+  Lens:
+    FieldOfView: 60
+    OrthographicSize: 5
+    NearClipPlane: 0.3
+    FarClipPlane: 1000
+    Dutch: 0
+    ModeOverride: 0
+    PhysicalProperties:
+      GateFit: 2
+      SensorSize: {x: 21.946, y: 16.002}
+      LensShift: {x: 0, y: 0}
+      FocusDistance: 10
+      Iso: 200
+      ShutterSpeed: 0.005
+      Aperture: 16
+      BladeCount: 5
+      Curvature: {x: 2, y: 11}
+      BarrelClipping: 0.25
+      Anamorphism: 0
+  BlendHint: 0
+--- !u!114 &7580144514055284054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6097697487100517676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TrackerSettings:
+    BindingMode: 5
+    PositionDamping: {x: 0, y: 0.2, z: 0}
+    AngularDampingMode: 0
+    RotationDamping: {x: 1, y: 1, z: 1}
+    QuaternionDamping: 1
+  FollowOffset: {x: 0, y: 8, z: -28}
 --- !u!1 &6622702925402013865
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,6 +201,7 @@ GameObject:
   - component: {fileID: 3593257405178574383}
   - component: {fileID: 7623407246481301336}
   - component: {fileID: 6317995709126870987}
+  - component: {fileID: 3273500819655661050}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -153,7 +218,7 @@ Transform:
   m_GameObject: {fileID: 6622702925402013865}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 8, z: -28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -218,3 +283,35 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6622702925402013865}
   m_Enabled: 1
+--- !u!114 &3273500819655661050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6622702925402013865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowDebugText: 0
+  ShowCameraFrustum: 1
+  IgnoreTimeScale: 0
+  WorldUpOverride: {fileID: 0}
+  ChannelMask: -1
+  UpdateMethod: 2
+  BlendUpdateMethod: 1
+  LensModeOverride:
+    Enabled: 0
+    DefaultMode: 2
+  DefaultBlend:
+    Style: 1
+    Time: 2
+    CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  CustomBlends: {fileID: 0}

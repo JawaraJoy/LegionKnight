@@ -10,7 +10,7 @@ namespace LegionKnight
 
         private void Start()
         {
-            Application.targetFrameRate = m_FrameTarget;
+            //Application.targetFrameRate = m_FrameTarget;
         }
     }
 }

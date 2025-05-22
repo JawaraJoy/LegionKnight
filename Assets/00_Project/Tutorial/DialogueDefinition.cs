@@ -11,10 +11,13 @@ namespace LegionKnight
         private string m_Title;
         [SerializeField, TextArea]
         private string[] m_Descriptions;
+        [SerializeField]
+        private bool m_CanSkip = false;
 
         public string Id => m_Id;
         public string Title => m_Title;
         public string[] Descriptions => m_Descriptions;
+        public bool CanSkip => m_CanSkip;
         public string GetDescription(int index)
         {
             if (index < 0 || index >= m_Descriptions.Length)
@@ -28,7 +31,7 @@ namespace LegionKnight
 
         public void StartTutorial()
         {
-            GameManager.Instance.StartTutorial(m_Id);
+            GameManager.Instance.StartTutorial(this);
         }
     }
 }

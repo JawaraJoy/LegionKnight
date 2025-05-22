@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace LegionKnight
 {
@@ -16,24 +17,22 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_DescriptionText;
         [SerializeField]
+        private Button m_SkipButton;
         public override string UniqueId => PanelId.Tutorial;
 
         public void PlayTutor(MaskingTarget target)
         {
+            ShowInternal();
             m_InvertMaskingAuto.SetMaskingTarget(target);
             
             int descriptionIndex = GameManager.Instance.TutorDescriptionIndex;
             SetDialogue(target.DialogueTitle, target.DialogueDescriptions[descriptionIndex]);
-            ShowInternal();
-            
+            m_SkipButton.gameObject.SetActive(target.DialogueDefinition.CanSkip);
         }
 
-        // call on tutormanager
-        public void EndDialogue()
+        public void EndTutor()
         {
-            
             HideInternal();
-            GameManager.Instance.EndTutorDialogue();
         }
 
         private void SetDialogue(string title, string description)
@@ -66,7 +65,7 @@ namespace LegionKnight
             var tutorialPanel = GetTutorialPanelInternal();
             if (tutorialPanel != null)
             {
-                tutorialPanel.EndDialogue();
+                tutorialPanel.EndTutor();
             }
             else
             {

@@ -8,9 +8,9 @@ namespace LegionKnight
         {
             GameManager.Instance.InitTutorial();
         }
-        public void StartTutorial(string id)
+        public void StartTutorial(DialogueDefinition defi)
         {
-            GameManager.Instance.StartTutorial(id);
+            GameManager.Instance.StartTutorial(defi);
         }
 
         public void NextTutorialDialogue()
@@ -31,9 +31,9 @@ namespace LegionKnight
         {
             GameManager.Instance.EndTutorialPanel();
         }
-        public void SetCanTutor(string id, bool canTutor)
+        public void SetUnlockTutor(string id, bool unlock)
         {
-            GameManager.Instance.SetCanTutor(id, canTutor);
+            GameManager.Instance.SetUnlockTutor(id, unlock);
         }
     }
 }

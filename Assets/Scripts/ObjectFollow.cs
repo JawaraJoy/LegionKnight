@@ -36,7 +36,7 @@ public class ObjectFollow : MonoBehaviour
         if (m_Target == null) return;
         if (!m_StayFollow) return;
         Vector3 targetPosition = m_Target.position + offset;
-        Vector3 smoothPosition = Vector3.Lerp(transform.position, targetPosition, smoothFactor*Time.fixedDeltaTime);
+        Vector3 smoothPosition = Vector3.Lerp(transform.position, targetPosition, smoothFactor * Time.deltaTime);
         transform.position = smoothPosition;
     }
     public void SetStayFollow(bool set)

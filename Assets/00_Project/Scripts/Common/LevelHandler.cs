@@ -78,8 +78,6 @@ namespace LegionKnight
         [SerializeField]
         private Currency m_CurrentScore;
         [SerializeField]
-        private Currency m_CurrentHighScore;
-        [SerializeField]
         private UnityEvent m_OnPlay = new();
         public Currency CurrentCoinReward => m_CurrentCoinReward;
         public Currency CurrentScore => m_CurrentScore;
@@ -203,8 +201,9 @@ namespace LegionKnight
             
             void action()
             {
-                m_LevelObject.SetLastSpawnedPlatformActive(true);
+                //m_LevelObject.SetLastSpawnedPlatformActive(true);
                 SetLevelOverInternal(false);
+                SpawnPlatformInternal();
                 Player.Instance.SetPause(false);
             }
             DelayActionInternal(1f, action);
@@ -258,7 +257,7 @@ namespace LegionKnight
         public void StoreLevelScore()
         {
             Player.Instance.SetCurrencyAmount(m_CurrentScore.CurrencyDefinition, m_CurrentScore.Amount);
-            Player.Instance.SetCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
+            DetermineHighScore();
             Player.Instance.AddPlayerExperience(m_CurrentScore.Amount);
             ResetScore();
         }

@@ -13,9 +13,9 @@ namespace LegionKnight
         [SerializeField]
         private TutorialManager m_TutorialManager;
         public MaskingTarget MaskingTarget => m_TutorialManager.CurrentMaskingTarget;
-        public void StartTutorial(string id)
+        public void StartTutorial(DialogueDefinition defi)
         {
-            m_TutorialManager.StartTutorial(id);
+            m_TutorialManager.StartTutorial(defi);
         }
         public int TutorDescriptionIndex => m_TutorialManager.DescriptionIndex;
 
@@ -32,9 +32,9 @@ namespace LegionKnight
         {
             m_TutorialManager.Init();
         }
-        public void SetCanTutor(string id, bool canTutor)
+        public void SetUnlockTutor(string id, bool unlock)
         {
-            m_TutorialManager.SetCanTutor(id, canTutor);
+            m_TutorialManager.SetUnlockTutor(id, unlock);
         }
     }
 }
