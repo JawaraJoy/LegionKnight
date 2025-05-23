@@ -31,7 +31,6 @@ namespace LegionKnight
         private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
 
         private const float m_OffsideDestination = -0.2f;
-        private BosEnemy m_BossPrefab;
 
         private float m_SpeedPlatformRate = 1f;
         public float SpeedPlatformRate => m_SpeedPlatformRate;
@@ -48,8 +47,8 @@ namespace LegionKnight
             AddRealStanbyPlatformInternal(GetLevelDefinition().GetPlatformAssets());
             Player.Instance.AddPlayerStandbyPlatform();
             Player.Instance.AddUniqueHeroPlatform();
-            LoadBosInternal();
             GameManager.Instance.ResetBoss();
+            LoadBosInternal();
         }
 
         public void RemovePlatform(Platform platform)
@@ -153,58 +152,53 @@ namespace LegionKnight
         }
         private void SpawnBosInternal()
         {
-            if (m_LevelDefinition.HasBoss())
+            if (GetLevelDefinition().HasBoss())
             {
-                Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost).Completed += OnBosSpawned;
-                BosEnemy bos = Instantiate(m_BossPrefab);
+                BosEnemy bos = Instantiate(GameManager.Instance.GetBosPrefab());
                 GameManager.Instance.SetSpawnedBosEnemy(bos);
                 bos.SetLocalPosition(new Vector2(0f, 100f));
                 m_BosSpawnPost.DetachChildren();
             }
-            
         }
         private void LoadBosInternal()
         {
-            if (m_LevelDefinition.HasBoss())
+            if (GameManager.Instance.GetBosPrefab() != null) return;
+            if (GetLevelDefinition().HasBoss())
             {
                 AsyncOperationHandle<GameObject> handle = BosAssetInternal.LoadAssetAsync<GameObject>();
                 StartCoroutine(LoadingBosInternal(handle));
+                Debug.Log("Load Bos 1");
             }
         }
         private IEnumerator LoadingBosInternal(AsyncOperationHandle<GameObject> handle)
         {
+            yield return handle;
             if (handle.Status != AsyncOperationStatus.Succeeded) yield break;
             GameObject result = handle.Result;
             if (result.TryGetComponent(out BosEnemy bos))
             {
-                m_BossPrefab = bos;
+                GameManager.Instance.SetBosPrefab(bos);
+                Debug.Log("Load Bos 2");
             }
+            else
+            {
+                Debug.LogError("Failed to Load Bos prefab.");
+            }
+            
         }
 
-        private void OnBosSpawned(AsyncOperationHandle<GameObject> handle)
-        {
-            if (handle.Status != AsyncOperationStatus.Succeeded) return;
-            GameObject result = handle.Result;
-            if (result.TryGetComponent(out BosEnemy bos))
-            {
-                GameManager.Instance.SetSpawnedBosEnemy(bos);
-                bos.SetLocalPosition(new Vector2(0f, 100f));
-                m_BosSpawnPost.DetachChildren();
-            }
-        }
         public void StartBos()
         {
-            if (!m_LevelDefinition.HasBoss()) return;
+            if (!GetLevelDefinition().HasBoss()) return;
             AddRealStanbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
             
             GameManager.Instance.SetBosTriggered(true);
             SpawnBosInternal();
-
         }
 
         public void RemoveBos()
         {
-            if (!m_LevelDefinition.HasBoss()) return;
+            if (!GetLevelDefinition().HasBoss()) return;
             RemoveRealStanbyPlatformInternal(GetLevelDefinition().GetBosPlatformAssets());
             GameManager.Instance.SetBosTriggered(false);
         }
@@ -228,6 +222,7 @@ namespace LegionKnight
             yield return new WaitForSeconds(2f);
             SpawnPlatformInternal();
             Player.Instance.SetCanUseResurrectionAds(true);
+            
         }
         public void ResetPlayerPost()
         {

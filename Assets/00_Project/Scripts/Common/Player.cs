@@ -50,6 +50,14 @@ namespace LegionKnight
             Debug.Log($"Player name: {m_PlayerName}");
             GameManager.Instance.SetPlayerNameView(m_PlayerName);
         }
+        public void AddOnStart(UnityAction action)
+        {
+            m_OnStart.AddListener(action);
+        }
+        public void RemoveOnStart(UnityAction action)
+        {
+            m_OnStart.RemoveListener(action);
+        }
         private void OnSetCharacterDefinitionInvoke(CharacterDefinition definition)
         {
             m_OnSetCharacterDefinition?.Invoke(definition);

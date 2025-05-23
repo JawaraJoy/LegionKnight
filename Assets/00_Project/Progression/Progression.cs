@@ -78,6 +78,14 @@ namespace LegionKnight
             m_OnLevelUp?.Invoke(m_Level);
             m_LevelUpTriggered = true;
         }
+        public void AddOnLevelUp(UnityAction<int> action)
+        {
+            m_OnLevelUp.AddListener(action);
+        }
+        public void RemoveOnLevelUp(UnityAction<int> action)
+        {
+            m_OnLevelUp.RemoveListener(action);
+        }
 
         public void ShowLevelUpPanel()
         {

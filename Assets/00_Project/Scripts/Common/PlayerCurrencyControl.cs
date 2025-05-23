@@ -63,5 +63,9 @@ namespace LegionKnight
         {
             Player.Instance.InitPlayerCurrency();
         }
+        public void AddPlayerCurrency(CurrencyInstanRewardDefinition reward)
+        {
+            Player.Instance.AddCurrencyAmount(reward.CurrencyDefinition, reward.Amount);
+        }
     }
 }

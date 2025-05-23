@@ -19,6 +19,9 @@ namespace LegionKnight
         public bool Completed => m_Completed;
         public LevelDefinition LevelDefinition => m_LevelDefinition;
 
+        [SerializeField]
+        private UnityEvent OnLevelDone;
+
         private string UnlockedKey => m_LevelDefinition.Id + "unl";
         private string CompletedKey => m_LevelDefinition.Id + "com";
         public void Init()
@@ -55,6 +58,11 @@ namespace LegionKnight
             UnityService.Instance.SaveData(CompletedKey, set);
         }
 
+        public void OnLevelDoneInvoke()
+        {
+            OnLevelDone?.Invoke();
+        }
+
         public void StartLevel()
         {
             if (m_Unlocked)
@@ -88,6 +96,8 @@ namespace LegionKnight
         public float SpeedPlatformRate => m_LevelObject.SpeedPlatformRate;
 
         private BosEnemy m_SpawnedBosEnemy;
+        [SerializeField]
+        private BosEnemy m_BosEnemyPrefab;
         private int m_BosSpawnCount;
         [SerializeField]
         private int m_BosHealthBonus;
@@ -116,6 +126,15 @@ namespace LegionKnight
                 levelSelect.Init();
             }
         }
+        public BosEnemy GetBosPrefab()
+        {
+            return m_BosEnemyPrefab;
+        }
+        public void SetBosPrefab(BosEnemy set)
+        {
+            m_BosEnemyPrefab = set;
+        }
+
 
         public Vector2 GetLastPlayerPosition()
         {
@@ -256,6 +275,7 @@ namespace LegionKnight
         {
             Player.Instance.AddCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
             Player.Instance.AddPlayerExperience(m_CurrentScore.Amount);
+            GetLevelSelect(m_SelectedLevelDefinition)?.OnLevelDoneInvoke();
             ResetScore();
         }
         private void ResetScore()
@@ -272,6 +292,10 @@ namespace LegionKnight
             m_SpawnedBosEnemy = set;
             m_SpawnedBosEnemy.SetBosDefinition(m_SelectedLevelDefinition.BosDefinition);
             m_SpawnedBosEnemy.InitDamageable(m_BosHealthBonus * m_BosSpawnCount);
+        }
+        public BosEnemy GetSpawnedBosEnemy()
+        {
+            return m_SpawnedBosEnemy;
         }
         public void AddStandbyPlatform(List<StandbyPlatformDefinition> standby)
         {

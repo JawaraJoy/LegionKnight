@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -23,6 +24,14 @@ namespace LegionKnight
         public float GetPlayerLevelProgressionRate()
         {
             return m_PlayerProgression.GetLevelProgressionRate();
+        }
+        public void AddOnLevelUp(UnityAction<int> action)
+        {
+            m_PlayerProgression.AddOnLevelUp(action);
+        }
+        public void RemoveOnLevelUp(UnityAction<int> action)
+        {
+            m_PlayerProgression.RemoveOnLevelUp(action);
         }
         public int GetPlayerLevel()
         {
