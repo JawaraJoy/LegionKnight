@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Bson;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,6 +31,7 @@ namespace LegionKnight
         private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
 
         private const float m_OffsideDestination = -0.2f;
+        private BosEnemy m_BossPrefab;
 
         private float m_SpeedPlatformRate = 1f;
         public float SpeedPlatformRate => m_SpeedPlatformRate;
@@ -46,6 +48,7 @@ namespace LegionKnight
             AddRealStanbyPlatformInternal(GetLevelDefinition().GetPlatformAssets());
             Player.Instance.AddPlayerStandbyPlatform();
             Player.Instance.AddUniqueHeroPlatform();
+            LoadBosInternal();
             GameManager.Instance.ResetBoss();
         }
 
@@ -153,10 +156,31 @@ namespace LegionKnight
             if (m_LevelDefinition.HasBoss())
             {
                 Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost).Completed += OnBosSpawned;
+                BosEnemy bos = Instantiate(m_BossPrefab);
+                GameManager.Instance.SetSpawnedBosEnemy(bos);
+                bos.SetLocalPosition(new Vector2(0f, 100f));
+                m_BosSpawnPost.DetachChildren();
             }
             
         }
-        
+        private void LoadBosInternal()
+        {
+            if (m_LevelDefinition.HasBoss())
+            {
+                AsyncOperationHandle<GameObject> handle = BosAssetInternal.LoadAssetAsync<GameObject>();
+                StartCoroutine(LoadingBosInternal(handle));
+            }
+        }
+        private IEnumerator LoadingBosInternal(AsyncOperationHandle<GameObject> handle)
+        {
+            if (handle.Status != AsyncOperationStatus.Succeeded) yield break;
+            GameObject result = handle.Result;
+            if (result.TryGetComponent(out BosEnemy bos))
+            {
+                m_BossPrefab = bos;
+            }
+        }
+
         private void OnBosSpawned(AsyncOperationHandle<GameObject> handle)
         {
             if (handle.Status != AsyncOperationStatus.Succeeded) return;
