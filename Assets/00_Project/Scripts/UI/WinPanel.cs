@@ -40,6 +40,7 @@ namespace LegionKnight
             if (m_CurrenLevel != null)
             {
                 m_CurrenLevel.NextLevel.StartLevel();
+                GameManager.Instance.StoreLevelScore();
             }
             else
             {
@@ -53,6 +54,7 @@ namespace LegionKnight
             if (m_CurrenLevel != null)
             {
                 m_CurrenLevel.StartLevel();
+                GameManager.Instance.StoreLevelScore();
             }
             else
             {
@@ -64,6 +66,7 @@ namespace LegionKnight
         {
             GameManager.Instance.LoadScene(m_HomeSceneName);
             HideInternal();
+            GameManager.Instance.StoreLevelScore();
         }
     }
 }

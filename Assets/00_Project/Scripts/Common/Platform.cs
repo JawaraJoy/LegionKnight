@@ -67,7 +67,6 @@ namespace LegionKnight
                 {
                     GameManager.Instance.SetCurrentTouchDownPost(GetContactPosition());
                     GameManager.Instance.SpawnPlatform();
-
                 }
             }
         }

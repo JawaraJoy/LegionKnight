@@ -43,6 +43,8 @@ namespace LegionKnight
         private UnityEvent<float> m_OnLinearVelocityYChanged = new();
         [SerializeField]
         private UnityEvent m_OnStartJump = new();
+        [SerializeField]
+        private UnityEvent m_OnFlyGetScore = new();
 
         [SerializeField]
         private Rigidbody2D m_Rb;
@@ -121,7 +123,14 @@ namespace LegionKnight
                     m_Rb.linearVelocity = new Vector2(m_Rb.linearVelocityX, m_FlyForce);
                     //m_Rb.AddRelativeForceY(m_FlyForce * Time.deltaTime, ForceMode2D.Force);
                 }
+                // add score each 0.5 seconds while flying
+                if (m_CurrentFlyTime % 0.5f < Time.deltaTime)
+                {
+                    GameManager.Instance.AddScoreAmount(2);
+                    m_OnFlyGetScore?.Invoke();
+                }
             }
+
         }
 
         private void StopFly()

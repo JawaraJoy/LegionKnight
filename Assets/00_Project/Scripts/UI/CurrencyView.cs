@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace LegionKnight
@@ -13,6 +14,9 @@ namespace LegionKnight
         [SerializeField]
         protected TextMeshProUGUI m_AmountText;
         public CurrencyDefinition CurrencyDefinition => m_CurrencyDefinition;
+
+        [SerializeField]
+        private UnityEvent m_OnSetViewInvoke = new UnityEvent();
         public void Init()
         {
             if (m_CurrencyDefinition == null)
@@ -33,6 +37,7 @@ namespace LegionKnight
             m_CurrencyDefinition = currency.CurrencyDefinition;
             m_Icon.sprite = currency.CurrencyDefinition.Icon;
             m_AmountText.text = currency.Amount.ToString();
+            m_OnSetViewInvoke?.Invoke();
         }
         public virtual void SetView(Currency currency)
         {

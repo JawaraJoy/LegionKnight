@@ -1,29 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    [System.Serializable]
-    public partial class ExpTable
-    {
-        [SerializeField]
-        private int m_ExpTarget;
-        [SerializeField]
-        UnityEvent m_OnLevelEnter = new();
-
-        public ExpTable(int expTarget)
-        {
-            m_ExpTarget = expTarget;
-        }
-
-        public int ExpTarget => m_ExpTarget;
-
-        public void OnLevelEnterInvoke()
-        {
-            m_OnLevelEnter?.Invoke();
-        }
-    }
     public partial class Progression : MonoBehaviour
     {
         [SerializeField]
@@ -39,10 +20,12 @@ namespace LegionKnight
         private const string m_CurrentLevelKey = "Lv";
 
         [SerializeField]
-        private List<ExpTable> m_ExpTable = new ();
+        private List<int> m_ExpTable = new ();
 
         [SerializeField]
         private UnityEvent<int> m_OnCurrentExpChange = new ();
+        [SerializeField]
+        private UnityEvent<float> m_OnCurrentExpRateChange = new();
         [SerializeField]
         private UnityEvent<int> m_OnLevelUp = new ();
 
@@ -78,6 +61,28 @@ namespace LegionKnight
             m_OnLevelUp?.Invoke(m_Level);
             m_LevelUpTriggered = true;
         }
+        public void AddOnCurrentExpChange(UnityAction<int> action)
+        {
+            m_OnCurrentExpChange.AddListener(action);
+        }
+        public void RemoveOnCurrentExpChange(UnityAction<int> action)
+        {
+            m_OnCurrentExpChange.RemoveListener(action);
+        }
+        public void AddOnCurrentExpRateChange(UnityAction<float> action)
+        {
+            m_OnCurrentExpRateChange.AddListener(action);
+        }
+        public void RemoveOnCurrentExpRateChange(UnityAction<float> action)
+        {
+            m_OnCurrentExpRateChange.RemoveListener(action);
+        }
+
+        private void OnCurrentExoRateChangeInvoke(float val)
+        {
+            m_OnCurrentExpRateChange?.Invoke(val);
+            GameManager.Instance.InitLevelView();
+        }
         public void AddOnLevelUp(UnityAction<int> action)
         {
             m_OnLevelUp.AddListener(action);
@@ -95,7 +100,7 @@ namespace LegionKnight
                 m_LevelUpTriggered = false;
             }
         }
-        private void OnCurrentExpRateChangedInvoke()
+        private void OnCurrentExpChangeInvoke()
         {
             m_OnCurrentExpChange?.Invoke(m_CurrentExp);
             GameManager.Instance.InitLevelView();
@@ -112,7 +117,7 @@ namespace LegionKnight
         {
             if (m_Level > 0 && m_Level <= m_ExpTable.Count)
             {
-                return (float)m_CurrentExp / m_ExpTable[m_Level - 1].ExpTarget;
+                return (float)m_CurrentExp / m_ExpTable[m_Level - 1];
             }
             return 0f;
         }
@@ -130,7 +135,7 @@ namespace LegionKnight
                 LevelUp();
             }
             UnityService.Instance.SaveData(m_CurrentExperienceKey, m_CurrentExp);
-            OnCurrentExpRateChangedInvoke();
+            OnCurrentExpChangeInvoke();
             Debug.Log($"Current Exp: {m_CurrentExp}, Level: {m_Level}");
         }
 
@@ -142,8 +147,6 @@ namespace LegionKnight
                 m_Level++;
                 UnityService.Instance.SaveData(m_CurrentLevelKey, m_Level);
                 OnLevelUpInvoke();
-                if (m_Level - 1 < m_ExpTable.Count)
-                    m_ExpTable[m_Level - 1].OnLevelEnterInvoke();
             }
             else
             {
@@ -154,8 +157,8 @@ namespace LegionKnight
         public int GetCurrentMaxExperience()
         {
             if (m_Level - 1 < m_ExpTable.Count)
-                return m_ExpTable[m_Level - 1].ExpTarget;
-            return m_ExpTable.Count > 0 ? m_ExpTable[^1].ExpTarget : m_FirstLevelExp;
+                return m_ExpTable[m_Level - 1];
+            return m_ExpTable.Count > 0 ? m_ExpTable[^1] : m_FirstLevelExp;
         }
         public int GetCurrentLevel()
         {
@@ -172,9 +175,53 @@ namespace LegionKnight
             int exp = m_FirstLevelExp;
             for (int i = 0; i < m_MaxLevel; i++)
             {
-                m_ExpTable.Add(new ExpTable(exp));
+                m_ExpTable.Add(exp);
                 exp = Mathf.FloorToInt(exp * m_ExponentialGrowth);
             }
+        }
+        private Coroutine m_ExpGrowCoroutine;
+
+        /// <summary>
+        /// Slowly adds experience over time, animating the growth and handling level-ups.
+        /// </summary>
+        /// <param name="exp">Total experience to add</param>
+        /// <param name="growSpeed">How much exp to add per second (default: 50)</param>
+        public void AddExperienceSlowly(int exp, float growSpeed = 50f)
+        {
+            if (m_ExpGrowCoroutine != null)
+                StopCoroutine(m_ExpGrowCoroutine);
+            m_ExpGrowCoroutine = StartCoroutine(AddExperienceSlowlyCoroutine(exp, growSpeed));
+        }
+
+        private IEnumerator AddExperienceSlowlyCoroutine(int exp, float growSpeed)
+        {
+            int expToAdd = exp;
+            while (expToAdd > 0)
+            {
+                int maxExp = GetCurrentMaxExperience();
+                int expNeeded = maxExp - m_CurrentExp;
+
+                // Calculate how much to add this frame
+                int addThisFrame = Mathf.Min(expToAdd, Mathf.CeilToInt(growSpeed * Time.deltaTime));
+                // Don't add more than needed for this level
+                addThisFrame = Mathf.Min(addThisFrame, expNeeded);
+
+                m_CurrentExp += addThisFrame;
+                expToAdd -= addThisFrame;
+
+                UnityService.Instance.SaveData(m_CurrentExperienceKey, m_CurrentExp);
+                OnCurrentExpChangeInvoke();
+                OnCurrentExoRateChangeInvoke(GetLevelProgressionRateInternal());
+
+                // Handle level up
+                if (m_CurrentExp >= maxExp && m_Level < m_MaxLevel)
+                {
+                    LevelUp();
+                }
+
+                yield return null;
+            }
+            m_ExpGrowCoroutine = null;
         }
     }
 }

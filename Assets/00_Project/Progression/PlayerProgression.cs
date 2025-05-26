@@ -17,9 +17,21 @@ namespace LegionKnight
         {
             m_PlayerProgression.Init();
         }
+        public void AddOnCurrentExpRateChange(UnityAction<float> action)
+        {
+            m_PlayerProgression.AddOnCurrentExpRateChange(action);
+        }
+        public void RemoveOnCurrentExpRateChange(UnityAction<float> action)
+        {
+            m_PlayerProgression.RemoveOnCurrentExpRateChange(action);
+        }
         public void AddPlayerExperience(int exp)
         {
             m_PlayerProgression.AddExperience(exp);
+        }
+        public void AddExperienceSlowly(int exp, float growSpeed = 50f)
+        {
+            m_PlayerProgression.AddExperienceSlowly(exp, growSpeed);
         }
         public float GetPlayerLevelProgressionRate()
         {
