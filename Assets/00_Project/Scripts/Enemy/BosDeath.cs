@@ -6,14 +6,7 @@ namespace LegionKnight
     {
         public void EraseBosDamageables()
         {
-            // Get all the GameObjects with the BosDamageable component
-            BosDamageable[] damageables = FindObjectsByType<BosDamageable>(FindObjectsSortMode.None);
-            // Loop through each GameObject and destroy it
-            foreach (BosDamageable damageable in damageables)
-            {
-                Destroy(damageable.gameObject);
-            }
-
+            EraseBosProjectileInternal();
             if (!GameManager.Instance.IsInfiniteLevel)
             {
                 GameManager.Instance.SetLevelOver(true);
@@ -23,6 +16,20 @@ namespace LegionKnight
                 GameManager.Instance.SetLevelUnlocked(GameManager.Instance.LevelDefinition.NextLevel, true);
                 GameManager.Instance.SetLevelCompleted(GameManager.Instance.LevelDefinition, true);
             }
+        }
+        public void EraseBossProjectile()
+        {
+            EraseBosProjectileInternal();
+        }
+        private void EraseBosProjectileInternal()
+        {
+            BosDamageable[] damageables = FindObjectsByType<BosDamageable>(FindObjectsSortMode.None);
+            // Loop through each GameObject and destroy it
+            foreach (BosDamageable damageable in damageables)
+            {
+                Destroy(damageable.gameObject);
+            }
+
         }
     }
 }

@@ -30,7 +30,7 @@ namespace LegionKnight
         public Transform PlayerStartPostion => m_PlayerStartPosition;
         private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
 
-        private const float m_OffsideDestination = -0.06f;
+        private const float m_OffsideDestination = -0.1f;
 
         private float m_SpeedPlatformRate = 1f;
         public float SpeedPlatformRate => m_SpeedPlatformRate;
@@ -156,7 +156,8 @@ namespace LegionKnight
             {
                 BosEnemy bos = Instantiate(GameManager.Instance.GetBosPrefab());
                 GameManager.Instance.SetSpawnedBosEnemy(bos);
-                bos.SetLocalPosition(new Vector2(0f, 100f));
+                float offset = Player.Instance.transform.position.y + 100f;
+                bos.SetLocalPosition(new Vector2(0f,  offset));
                 m_BosSpawnPost.DetachChildren();
             }
         }

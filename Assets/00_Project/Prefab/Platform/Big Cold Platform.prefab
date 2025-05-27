@@ -332,7 +332,7 @@ MonoBehaviour:
         ResetTargetValuesAfterShake: 1
         ShakeSpeed: 20
         ShakeRange: 0.5
-        ShakeMainDirection: {x: 2, y: 2.9, z: 0}
+        ShakeMainDirection: {x: 1, y: 1, z: 0}
         RandomizeDirection: 0
         ShakeAltDirection: {x: 0, y: 1, z: 0}
         RandomizeDirectionOnPlay: 0
@@ -923,8 +923,8 @@ MonoBehaviour:
   ShakeAltDirection: {x: 0, y: 1, z: 0}
   RandomizeDirectionOnPlay: 0
   AddDirectionalNoise: 1
-  DirectionalNoiseStrengthMin: {x: 0.25, y: 0.25, z: 0.25}
-  DirectionalNoiseStrengthMax: {x: 0.25, y: 0.25, z: 0.25}
+  DirectionalNoiseStrengthMin: {x: 0.1, y: 0.1, z: 0.25}
+  DirectionalNoiseStrengthMax: {x: 0.1, y: 0.1, z: 0.25}
   RandomnessSeed: {x: -0.20652096, y: 0.32684204, z: -0.29131347}
   RandomizeSeedOnShake: 1
   UseAttenuation: 1

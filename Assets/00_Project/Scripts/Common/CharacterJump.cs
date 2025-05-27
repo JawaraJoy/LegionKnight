@@ -14,6 +14,8 @@ namespace LegionKnight
         private bool m_CanFly = false;
         [SerializeField]
         private float m_FlyForce = 10f; // Adjust as needed
+        [SerializeField]
+        private float m_DelayBeforeFly = 0.5f; // Delay before the character can start flying after jumping
 
         private bool m_IsFlying = false;
         [SerializeField]
@@ -96,6 +98,8 @@ namespace LegionKnight
 
         private IEnumerator StartFlying()
         {
+            OnStartFlyInvoke();
+            yield return new WaitForSeconds(m_DelayBeforeFly); // Wait for the delay before flying
             m_SaveFallSpeed = m_FallMultiplier;
             m_FallMultiplier = 0f; // Disable fall speed while flying
             m_CanJump = false; // Disable jumping while flying
@@ -106,7 +110,6 @@ namespace LegionKnight
             m_Rb.bodyType = RigidbodyType2D.Kinematic; // Set to kinematic to prevent physics interactions
             yield return new WaitForSeconds(0.5f); // Wait for the fly duration
             GameManager.Instance.SetSpeedPlatformRate(m_PlatformSpeedUpOnFly);
-            OnStartFlyInvoke();
         }
 
         private void Fly()
