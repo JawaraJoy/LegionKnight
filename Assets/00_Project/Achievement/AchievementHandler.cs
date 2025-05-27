@@ -19,8 +19,9 @@ namespace LegionKnight
 
         public string Id => m_Definition.Id;
         public string Label => m_Definition.Label;
+        public AchieveType Type => m_Definition.Type;
         public string UnclockedMessage => m_Definition.UnclockedMessage;
-        public int UnlockScore => m_Definition.AchieveScore;
+        public int AchieveScore => m_Definition.AchieveScore;
 
         private string CurrentScoreKey => $"Ach{m_Definition.Id}Sco";
         private string IsAchievedKey => $"Ach{m_Definition.Id}IsAch";
@@ -44,28 +45,29 @@ namespace LegionKnight
                 m_IsAchieved = false;
             }
         }
-        public void SetScore(int score)
+        public void SetScore(int score, UnityAction callback = null)
         {
             m_CurrentScore = score;
             UnityService.Instance.SaveData(CurrentScoreKey, m_CurrentScore);
             if (m_CurrentScore >= m_Definition.AchieveScore)
             {
-                OnAchievedInvoke();
+                OnAchievedInvoke(callback);
             }
         }
-        public void AddScore(int score)
+        public void AddScore(int score, UnityAction callback = null)
         {
             m_CurrentScore += score;
             UnityService.Instance.SaveData(CurrentScoreKey, m_CurrentScore);
             if (m_CurrentScore >= m_Definition.AchieveScore)
             {
-                OnAchievedInvoke();
+                OnAchievedInvoke(callback);
             }
         }
-        private void OnAchievedInvoke()
+        private void OnAchievedInvoke(UnityAction callback = null)
         {
             if (m_IsAchieved) return;
             m_OnUnlocked?.Invoke(this);
+            callback?.Invoke();
             m_IsAchieved = true;
             UnityService.Instance.SaveData(IsAchievedKey, m_IsAchieved);
         }
@@ -75,7 +77,8 @@ namespace LegionKnight
         [SerializeField]
         private Achievement[] m_Achievements;
 
-        private readonly List<Achievement> m_AchievementHolds = new();
+        [SerializeField]
+        private List<Achievement> m_AchievementHolds = new();
 
         //[SerializeField]
         //private UnityEvent<Achievement> m_OnAchievementUnlocked;
@@ -194,11 +197,7 @@ namespace LegionKnight
             var achievement = GetAchievement(id);
             if (achievement != null)
             {
-                achievement.AddScore(score);
-                if (achievement.IsAchieved)
-                {
-                    AddAchievementHold(achievement);
-                }
+                achievement.AddScore(score, ()=> AddAchievementHold(achievement));
             }
         }
         public void SetScore(string id, int score)
@@ -206,11 +205,7 @@ namespace LegionKnight
             var achievement = GetAchievement(id);
             if (achievement != null)
             {
-                achievement.SetScore(score);
-                if (achievement.IsAchieved)
-                {
-                    AddAchievementHold(achievement);
-                }
+                achievement.SetScore(score, () => AddAchievementHold(achievement));
             }
         }
     }

@@ -2,7 +2,13 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-
+    public enum AchieveType
+    {
+        Score,
+        Time,
+        Distance,
+        Message,
+    }
     [CreateAssetMenu(fileName = "New AchieveDefinition", menuName = "Legion Knight/Achievement", order = 1)]
     public class AchieveDefinition : ScriptableObject
     {
@@ -11,6 +17,8 @@ namespace LegionKnight
         [SerializeField]
         private string m_Label;
         [SerializeField]
+        private AchieveType m_Type = AchieveType.Message;
+        [SerializeField]
         private string m_UnclockedMessage;
 
         [SerializeField]
@@ -18,6 +26,7 @@ namespace LegionKnight
 
         public string Id => m_Id;
         public string Label => m_Label;
+        public AchieveType Type => m_Type;
         public string UnclockedMessage => m_UnclockedMessage;
         public int AchieveScore => m_AchieveScore;
 

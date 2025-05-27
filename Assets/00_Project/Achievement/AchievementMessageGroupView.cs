@@ -24,6 +24,11 @@ namespace LegionKnight
             {
                 if (i < achievements.Count)
                 {
+                    if (achievements[i].Definition.Type != AchieveType.Message)
+                    {
+                        m_MessageViews[i].Hide();
+                        continue;
+                    }
                     m_MessageViews[i].ShowMessage(achievements[i]);
                 }
             }
