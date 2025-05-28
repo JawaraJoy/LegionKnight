@@ -33,6 +33,10 @@ namespace LegionKnight
             
             FindTarget();
         }
+        public void SetWithoutTarget(bool withoutTarget)
+        {
+            m_WithoutTarget = withoutTarget;
+        }
         private void Update()
         {
             if (m_WithoutTarget)

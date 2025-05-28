@@ -101,7 +101,7 @@ namespace LegionKnight
         }
         private void Watch()
         {
-            UnityService.Instance.LoadRewardedAd();
+            //UnityService.Instance.LoadRewardedAd();
             UnityService.Instance.ShowRewardedAd(() => AddItemToPlayer(m_ItemToBuy));
         }
 

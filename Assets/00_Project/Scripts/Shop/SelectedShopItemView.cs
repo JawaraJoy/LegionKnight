@@ -25,6 +25,7 @@ namespace LegionKnight
         private UnityEvent<ShopItemDefinition> m_OnBought = new();
         public void SetShow(ShopItemDefinition definition)
         {
+            UnityService.Instance.LoadRewardedAd();
             m_Definition = definition;
             m_ItemNameText.text = definition.ItemName;
             m_MainIcon.sprite = definition.Icon;
