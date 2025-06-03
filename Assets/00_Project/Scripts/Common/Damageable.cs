@@ -9,12 +9,12 @@ namespace LegionKnight
         [SerializeField]
         private int m_Damage;
         [SerializeField]
-        private int m_Health;
+        protected int m_Health;
         [SerializeField]
         private int m_Shield;
         [SerializeField]
         private int m_Barrier;
-        private int m_CurrentHealth;
+        protected int m_CurrentHealth;
         [SerializeField]
         private UnityEvent m_OnDeath = new();
         [SerializeField]
@@ -27,7 +27,6 @@ namespace LegionKnight
         private UnityEvent<int> m_OnBarrierChanged = new();
         [SerializeField]
         private UnityEvent<int> m_OnHealthChanged = new();
-        [SerializeField]
         private UnityEvent m_OnProtectGone = new();
         private void OnEnable()
         {
@@ -41,7 +40,7 @@ namespace LegionKnight
             {
                 if (!IsProtectGoneInternal())
                 {
-                    Destroy(other);
+                    //Destroy(other);
                 }
                 TakeDamageInternal(projectile.Damage);
                 //Destroy(projectile.gameObject);
@@ -100,34 +99,39 @@ namespace LegionKnight
         {
             TakeDamageInternal(damage);
         }
-        protected void TakeDamageInternal(int damage)
+        protected virtual void TakeDamageInternal(int damage)
         {
             if (m_Barrier > 0 || m_Shield > 0)
             {
                 if (m_Barrier > 0)
                 {
-                    m_Barrier--;
-                    OnBarrierChangedInvoke(m_Barrier);
+                    //m_Barrier--;
+                    AddBarrierInternal(-1);
+                    //OnBarrierChangedInvoke(m_Barrier);
                     if (m_Barrier < 0)
                     {
-                        m_Barrier = 0;
+                        //m_Barrier = 0;
+                        SetBarrierInternal(0);
                     }
                 }
                 if (m_Shield > 0)
                 {
-                    m_Shield -= damage;
-                    OnShieldChangedInvoke(m_Shield);
+                    //m_Shield -= damage;
+                    AddShieldInteral(-damage);
+                    //OnShieldChangedInvoke(m_Shield);
                     if (m_Shield < 0)
                     {
-                        m_Shield = 0;
+                        //m_Shield = 0;
+                        SetShieldInternal(0);
                     }
                 }
             }
             else
             {
-                m_CurrentHealth -= damage;
-                OnHealthChangedInvoke(m_CurrentHealth);
-                ClampHealth();
+                //m_CurrentHealth -= damage;
+                AddHealthInternal(-damage);
+                //OnHealthChangedInvoke(m_CurrentHealth);
+                //ClampHealth();
             }
             if (IsProtectGoneInternal())
             {
@@ -138,33 +142,58 @@ namespace LegionKnight
         }
         public void AddHealth(int health)
         {
+            AddHealthInternal(health);
+        }
+        public void AddShield(int shield)
+        {
+            AddShieldInteral(shield);
+        }
+        public void AddBarrier(int barrier)
+        {
+            AddBarrierInternal(barrier);
+        }
+        public void SetShield(int shield)
+        {
+            SetShieldInternal(shield);
+        }
+        public void SetBarrier(int barrier)
+        {
+            SetBarrierInternal(barrier);
+        }
+        protected virtual void AddHealthInternal(int health)
+        {
             m_Health += health;
             m_CurrentHealth += health;
             ClampHealth();
         }
-        public void AddShield(int shield)
+        protected virtual void AddShieldInteral(int shield)
         {
             m_Shield += shield;
+            OnShieldChangedInvoke(m_Shield);
         }
-        public void AddBarrier(int barrier)
+        protected virtual void AddBarrierInternal(int barrier)
         {
             m_Barrier += barrier;
+            OnBarrierChangedInvoke(m_Barrier);
         }
-        public void SetShield(int shield)
+        protected virtual void SetShieldInternal(int shield)
         {
             m_Shield = shield;
+            OnShieldChangedInvoke(m_Shield);
         }
-        public void SetBarrier(int barrier)
+        protected virtual void SetBarrierInternal(int barrier)
         {
             m_Barrier = barrier;
+            OnBarrierChangedInvoke(m_Barrier);
         }
         protected void HealInternal(int heal)
         {
             m_CurrentHealth += heal;
             ClampHealth();
+            OnHealthChangedInvoke(m_CurrentHealth);
         }
 
-        private void DeathHandler()
+        protected virtual void DeathHandler()
         {
             if (m_CurrentHealth < 1)
             {
