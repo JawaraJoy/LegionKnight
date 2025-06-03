@@ -21,7 +21,7 @@ namespace LegionKnight
             if (other.TryGetComponent(out Contact2D contact))
             {
                 
-                if (m_CurrentHealth <= 0)
+                if (!IsAlive())
                 {
                     Vector2 contactPoint = contact.transform.position;
                     if (IsContactFromRight(contactPoint))

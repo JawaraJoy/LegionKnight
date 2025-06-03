@@ -27,6 +27,7 @@ namespace LegionKnight
         private UnityEvent<int> m_OnBarrierChanged = new();
         [SerializeField]
         private UnityEvent<int> m_OnHealthChanged = new();
+        [SerializeField]
         private UnityEvent m_OnProtectGone = new();
         private void OnEnable()
         {
@@ -38,17 +39,21 @@ namespace LegionKnight
 
             if (other.TryGetComponent(out Damageable projectile))
             {
-                if (!IsProtectGoneInternal())
-                {
-                    //Destroy(other);
-                }
                 TakeDamageInternal(projectile.Damage);
                 //Destroy(projectile.gameObject);
             }
         }
         private bool IsProtectGoneInternal()
         {
-            return m_Shield < 1 && m_Barrier < 1;
+            return IsShieldGoneInternal() && IsBarrierGoneInternal();
+        }
+        private bool IsShieldGoneInternal()
+        {
+            return m_Shield < 1;
+        }
+        private bool IsBarrierGoneInternal()
+        {
+            return m_Barrier < 1;
         }
         public int Damage => m_Damage;
         public int Health => m_Health;
@@ -82,7 +87,7 @@ namespace LegionKnight
         private void OnProtectGoneInvoke()
         {
             m_OnProtectGone?.Invoke();
-            Debug.Log($"Protect Gone"); 
+            Debug.Log($"Protect Gone");
         }
         private void OnDamageTakenInvoke(int damage)
         {
@@ -101,37 +106,27 @@ namespace LegionKnight
         }
         protected virtual void TakeDamageInternal(int damage)
         {
-            if (m_Barrier > 0 || m_Shield > 0)
+            if (!IsProtectGoneInternal())
             {
                 if (m_Barrier > 0)
                 {
                     //m_Barrier--;
                     AddBarrierInternal(-1);
                     //OnBarrierChangedInvoke(m_Barrier);
-                    if (m_Barrier < 0)
-                    {
-                        //m_Barrier = 0;
-                        SetBarrierInternal(0);
-                    }
+                    
                 }
                 if (m_Shield > 0)
                 {
                     //m_Shield -= damage;
                     AddShieldInteral(-damage);
                     //OnShieldChangedInvoke(m_Shield);
-                    if (m_Shield < 0)
-                    {
-                        //m_Shield = 0;
-                        SetShieldInternal(0);
-                    }
                 }
             }
             else
             {
-                //m_CurrentHealth -= damage;
-                AddHealthInternal(-damage);
-                //OnHealthChangedInvoke(m_CurrentHealth);
-                //ClampHealth();
+                m_CurrentHealth -= damage;
+                OnHealthChangedInvoke(m_CurrentHealth);
+                ClampHealth();
             }
             if (IsProtectGoneInternal())
             {
@@ -140,62 +135,71 @@ namespace LegionKnight
             DeathHandler();
             OnDamageTakenInvoke(damage);
         }
-        public void AddHealth(int health)
+        public void AddHealth(int val)
         {
-            AddHealthInternal(health);
+            AddHealthInternal(val);
         }
-        public void AddShield(int shield)
+        public void AddShield(int val)
         {
-            AddShieldInteral(shield);
+            AddShieldInteral(val);
         }
-        public void AddBarrier(int barrier)
+        public void AddBarrier(int val)
         {
-            AddBarrierInternal(barrier);
+            AddBarrierInternal(val);
         }
-        public void SetShield(int shield)
+        public void SetShield(int val)
         {
-            SetShieldInternal(shield);
+            SetShieldInternal(val);
         }
-        public void SetBarrier(int barrier)
+        public void SetBarrier(int val)
         {
-            SetBarrierInternal(barrier);
+            SetBarrierInternal(val);
         }
-        protected virtual void AddHealthInternal(int health)
+        protected virtual void AddHealthInternal(int val)
         {
-            m_Health += health;
-            m_CurrentHealth += health;
+            m_Health += val;
+            m_CurrentHealth += val;
             ClampHealth();
         }
-        protected virtual void AddShieldInteral(int shield)
+        protected virtual void AddShieldInteral(int val)
         {
-            m_Shield += shield;
+            m_Shield += val;
+            if (m_Shield < 0)
+            {
+                //m_Shield = 0;
+                SetShieldInternal(0);
+            }
             OnShieldChangedInvoke(m_Shield);
         }
-        protected virtual void AddBarrierInternal(int barrier)
+        protected virtual void AddBarrierInternal(int val)
         {
-            m_Barrier += barrier;
+            m_Barrier += val;
+            if (m_Barrier < 0)
+            {
+                SetBarrierInternal(0);
+            }
             OnBarrierChangedInvoke(m_Barrier);
         }
-        protected virtual void SetShieldInternal(int shield)
+        protected virtual void SetShieldInternal(int val)
         {
-            m_Shield = shield;
+            m_Shield = val;
             OnShieldChangedInvoke(m_Shield);
         }
-        protected virtual void SetBarrierInternal(int barrier)
+        protected virtual void SetBarrierInternal(int val)
         {
-            m_Barrier = barrier;
+            m_Barrier = val;
             OnBarrierChangedInvoke(m_Barrier);
         }
-        protected void HealInternal(int heal)
+        protected void HealInternal(int val)
         {
-            m_CurrentHealth += heal;
+            m_CurrentHealth += val;
             ClampHealth();
             OnHealthChangedInvoke(m_CurrentHealth);
         }
 
         protected virtual void DeathHandler()
         {
-            if (m_CurrentHealth < 1)
+            if (!IsAlive())
             {
                 OnDeathInvoke();
             }
@@ -203,6 +207,10 @@ namespace LegionKnight
         protected virtual void OnDeathInvoke()
         {
             m_OnDeath?.Invoke();
+        }
+        protected bool IsAlive()
+        {
+            return m_CurrentHealth > 0;
         }
     }
 }

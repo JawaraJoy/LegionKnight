@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace LegionKnight
@@ -9,12 +10,18 @@ namespace LegionKnight
     {
         [Header("Hole Target")]
         [SerializeField] private MaskingTarget m_Target;
+        [SerializeField]
+        private RectTransform m_Cursor;
 
         [Header("Hole Appearance")]
         [SerializeField] private float m_HoleCornerRadius = 0.05f; // normalized (0-1)
         [SerializeField] private Color m_ImageColor = Color.white;
         [SerializeField] private Vector2 m_TargetOffset = Vector2.zero;      // Offset for hole position (pixels)
         [SerializeField] private Vector2 m_TargetSizeOffset = Vector2.zero;  // Offset for hole size (pixels)
+        [SerializeField]
+        private UnityEvent<Vector2> m_OnHolePositionChanged = new ();
+
+        private Vector2 m_HolePosition;
 
         private Material m_RuntimeMaterial;
         private Image m_Image;
@@ -140,6 +147,23 @@ namespace LegionKnight
 
             m_RuntimeMaterial.SetVector("_HoleRect", new Vector4(centerX, centerY, sizeX, sizeY));
             m_RuntimeMaterial.SetFloat("_HoleRadius", m_HoleCornerRadius);
+
+            m_HolePosition = new Vector2(centerX, centerY); // Store the hole position for raycast validation
+            m_OnHolePositionChanged.Invoke(m_HolePosition);
+            SetCursorPosition(m_HolePosition); // Update cursor position
+        }
+
+        private void SetCursorPosition(Vector2 position)
+        {
+            if (m_Cursor != null)
+            {
+                // Convert normalized position to local position in the mask rect
+                Vector2 localPosition = new Vector2(
+                    (position.x * m_RectTransform.rect.width) - (m_RectTransform.rect.width * 0.5f),
+                    (position.y * m_RectTransform.rect.height) - (m_RectTransform.rect.height * 0.5f)
+                );
+                m_Cursor.localPosition = localPosition;
+            }
         }
 
         private void UpdateColor()
