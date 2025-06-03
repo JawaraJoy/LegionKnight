@@ -268,6 +268,10 @@ namespace LegionKnight
             Vector2 target = new Vector2(m_PlatformDestination.position.x + m_FinalOffsideDestination, m_PlatformDestination.position.y);
             return target;
         }
+        public Transform GetPlatformDestination()
+        {
+            return m_PlatformDestination;
+        }
         public bool HasBoss()
         {
             return HasBossInternal();
@@ -295,6 +299,10 @@ namespace LegionKnight
         private void DestinationReset()
         {
             m_PlatformDestination.localPosition = Vector3.zero;
+        }
+        public float GetOffsideDestination()
+        {
+            return m_FinalOffsideDestination;
         }
     }
 }

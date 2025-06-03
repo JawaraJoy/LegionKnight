@@ -66,23 +66,18 @@ namespace LegionKnight
             {
                 m_PlatformContact = platform;
                 //Player.Instance.AddCurrencyAmount(platform.GetNormalTouchDown().CurrencyDefinition, platform.GetNormalTouchDown().Amount);
-                
+
                 if (!platform.IsReached())
                 {
                     GameManager.Instance.SetCurrentTouchDownPost(transform.position);
                     GameManager.Instance.SpawnPlatform();
                 }
-                //GameManager.Instance.Up();
-
-                 // sementara normal, nanti bisa ditentukan apapkah perfect touch down atau normal
 
                 platform.SetCanMove(false);
                 //platform.gameObject.SetActive(false);
                 platform.SetActiveBehaviourCollider(false);
 
                 TouchDownPoint(platform.transform.position);
-
-                
             }
         }
 

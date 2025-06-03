@@ -12,5 +12,10 @@ namespace LegionKnight
 
         public CurrencyDefinition CurrencyDefinition => m_CurrencyDefinition;
         public int Amount => m_Amount;
+
+        public void AddToPlayerCurrency()
+        {
+            Player.Instance.AddCurrencyAmount(m_CurrencyDefinition, m_Amount);
+        }
     }
 }

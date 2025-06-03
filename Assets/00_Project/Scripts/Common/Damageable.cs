@@ -18,6 +18,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnDeath = new();
         [SerializeField]
+        private UnityEvent<int> m_OnDamageTaken = new();
+        [SerializeField]
         private UnityEvent<float> m_OnHealthRateChanged = new();
         [SerializeField]
         private UnityEvent<int> m_OnShieldChanged = new();
@@ -83,6 +85,11 @@ namespace LegionKnight
             m_OnProtectGone?.Invoke();
             Debug.Log($"Protect Gone"); 
         }
+        private void OnDamageTakenInvoke(int damage)
+        {
+            m_OnDamageTaken?.Invoke(damage);
+            Debug.Log($"Damage Taken: {damage}");
+        }
         public void Init(int damage, int health)
         {
             m_Damage = damage;
@@ -127,6 +134,7 @@ namespace LegionKnight
                 OnProtectGoneInvoke();
             }
             DeathHandler();
+            OnDamageTakenInvoke(damage);
         }
         public void AddHealth(int health)
         {

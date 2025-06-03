@@ -75,6 +75,53 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &1484015822244123637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6338782271771985765}
+  - component: {fileID: 3457059533485356849}
+  m_Layer: 0
+  m_Name: Damage Taken
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6338782271771985765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1484015822244123637}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 6.15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6721555490230484823}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3457059533485356849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1484015822244123637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2efa2cb8d3583f04e856753543bdcb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TextMeshPrefab: {fileID: 4627514803098843711, guid: 710050dfddd91c3428c4be15c0ad7f65, type: 3}
+  m_BeforeText: 
+  m_AfterText: 
 --- !u!1 &1511037597195118546
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,6 +362,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnDamageTaken:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3457059533485356849}
+        m_TargetAssemblyTypeName: LegionKnight.TextMeshSpawner, Assembly-CSharp
+        m_MethodName: SpawnText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls:
@@ -413,10 +475,10 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 2
+  m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 0
+  m_CollisionDetection: 0
+  m_Constraints: 7
 --- !u!114 &8428523851214305592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -580,7 +642,7 @@ SpriteRenderer:
   m_SortingLayerID: -501565547
   m_SortingLayer: 12
   m_SortingOrder: 5
-  m_Sprite: {fileID: 5524590292671962877, guid: f7043b7291f49844b9671b3d3dedcbb5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2724f33d02f94e74a9e0956a41bcc6d5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -16544,6 +16606,7 @@ Transform:
   - {fileID: 3511848407714668274}
   - {fileID: 7524308360005312065}
   - {fileID: 6708196066501924264}
+  - {fileID: 6338782271771985765}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8344595125259145260

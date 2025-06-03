@@ -7,6 +7,12 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
+    [System.Serializable]
+    public class DamageTable
+    {
+        public string Name;
+        public Damageable Damageable;
+    }
     public partial class ProtectActivation : MonoBehaviour
     {
         [SerializeField]
@@ -20,6 +26,14 @@ namespace LegionKnight
         private ProtectActivationAgent m_ProtectActivationAgent;
 
         private AsyncOperationHandle<GameObject> m_Handle;
+
+        /*private int m_Shield;
+        private int m_Barrier;
+
+        [SerializeField]
+        private UnityEvent<int> m_OnShieldChanged = new();
+        [SerializeField]
+        private UnityEvent<int> m_OnBarrierChanged = new();*/
 
         public void SetProtectActivationAgent(ProtectActivationAgent protectActivationAgent)
         {

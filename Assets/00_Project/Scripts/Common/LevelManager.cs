@@ -156,6 +156,14 @@ namespace LegionKnight
         {
             return m_LevelManager.HasBoss();
         }
+        public float GetOffsideDestination()
+        {
+            return m_LevelManager.GetOffsideDestination();
+        }
+        public Transform GetPlatformDestination()
+        {
+            return m_LevelManager.GetPlatformDestination();
+        }
     }
     public partial class LevelManagerAgent
     {
@@ -199,5 +207,6 @@ namespace LegionKnight
         {
             GameManager.Instance.InitLevelHandler();
         }
+        
     }
 }

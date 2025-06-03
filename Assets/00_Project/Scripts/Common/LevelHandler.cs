@@ -436,5 +436,13 @@ namespace LegionKnight
         {
             m_LevelObject.SpawnPlatform();
         }
+        public float GetOffsideDestination()
+        {
+            return m_LevelObject.GetOffsideDestination();
+        }
+        public Transform GetPlatformDestination()
+        {
+            return m_LevelObject.GetPlatformDestination();
+        }
     }
 }

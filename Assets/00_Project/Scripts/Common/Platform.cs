@@ -13,11 +13,11 @@ namespace LegionKnight
         [SerializeField]
         private bool m_CanMove;
         private float m_Speed;
-        private Vector2 m_Destination;
+        protected Vector2 m_Destination;
         [SerializeField]
         private Collider2D m_ContactCollider;
         [SerializeField]
-        private PlatformContact m_PlatformContact;
+        protected PlatformContact m_PlatformContact;
 
         [SerializeField]
         private UnityEvent<GameObject> m_OnPlayerAttached = new();
@@ -28,7 +28,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnPlatformReachDestination = new();
 
-        private bool m_ReachTriggered;
+        protected bool m_ReachTriggered;
         private LevelDefinition m_LevelDefinition;
 
 
@@ -36,12 +36,12 @@ namespace LegionKnight
         {
             MoveToDestination();
         }
-        private Vector2 GetContactPosition()
+        protected virtual Vector2 GetContactPosition()
         {
             if (m_ContactCollider == null) return Vector2.zero;
             return m_ContactCollider.transform.position;
         }
-        private void MoveToDestination()
+        protected virtual void MoveToDestination()
         {
             if (!m_CanMove || IsReachedInternal()) return;
             float speedrate = GameManager.Instance.SpeedPlatformRate;
@@ -57,7 +57,7 @@ namespace LegionKnight
         {
             return m_LevelDefinition.GetPerfectTouchdown();
         }
-        private void ReachDestination()
+        protected virtual void ReachDestination()
         {
             if (IsReachedInternal() && !m_ReachTriggered)
             {
@@ -68,9 +68,10 @@ namespace LegionKnight
                     GameManager.Instance.SetCurrentTouchDownPost(GetContactPosition());
                     GameManager.Instance.SpawnPlatform();
                 }
+
             }
         }
-        private bool IsReachedInternal()
+        protected virtual bool IsReachedInternal()
         {
             return Distance() <= 0;
         }
@@ -119,7 +120,7 @@ namespace LegionKnight
             m_OnPlatformStop?.Invoke();
             Debug.Log("Stop Platform");
         }
-        private void OnPlatformReachDestination()
+        protected void OnPlatformReachDestination()
         {
             m_OnPlatformReachDestination?.Invoke();
         }
@@ -128,12 +129,12 @@ namespace LegionKnight
             m_CanMove = false;
         }
 
-        public void SetDestination(Vector2 set)
+        public virtual void SetDestination(Vector2 set)
         {
             m_Destination = set;
         }
 
-        public void SetStartPosition(Transform set)
+        public virtual void SetStartPosition(Transform set)
         {
             if (set == null) return;
             transform.position = set.position;
