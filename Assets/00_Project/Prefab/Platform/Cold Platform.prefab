@@ -121,7 +121,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnPerfectTouchDown:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: LegionKnight.TextMeshSpawner, Assembly-CSharp
+        m_MethodName: SpawnText
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 10
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnStayPerfectCombo:
     m_PersistentCalls:
       m_Calls: []
@@ -828,6 +840,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnDamageTaken:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls: []

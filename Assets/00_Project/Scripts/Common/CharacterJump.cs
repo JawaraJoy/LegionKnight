@@ -201,7 +201,9 @@ namespace LegionKnight
             float jumpDistance = Vector2.Distance(m_StartingJumpPost, m_Rb.position);
             if (jumpDistance > m_MaxJumpDistance)
             {
-                m_Rb.linearVelocity = Vector2.zero;
+                // Instead of setting velocity to zero, gently stop upward movement
+                if (m_Rb.linearVelocityY > 0)
+                    m_Rb.linearVelocity = new Vector2(m_Rb.linearVelocityX, 0);
                 m_StartingJumpPost = m_Rb.position;
             }
         }
