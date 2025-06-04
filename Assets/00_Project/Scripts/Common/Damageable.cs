@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using Rush;
 using UnityEngine;
 using UnityEngine.Events;
@@ -146,6 +147,17 @@ namespace LegionKnight
         public void AddBarrier(int val)
         {
             AddBarrierInternal(val);
+        }
+        public void SetHealthInternal(int val)
+        {
+            m_Health = val;
+            m_CurrentHealth = Mathf.Clamp(m_CurrentHealth, 0, m_Health);
+            OnHealthChangedInvoke(m_CurrentHealth);
+            OnHealthRateChangedInvoke(GetHealthRateInternal());
+        }
+        public void SetHealth(int set)
+        {
+            SetHealthInternal(set);
         }
         public void SetShield(int val)
         {

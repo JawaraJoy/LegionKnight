@@ -15,16 +15,17 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnLevelReachedFalse = new();
 
-        private void Awake()
+        private void OnEnable()
         {
             Player.Instance.AddOnStart(Init);
-            Player.Instance.AddOnLevelUp(OnLevelUp); // Fix: Use a method with the correct signature
+            Player.Instance.AddOnLevelUp(OnLevelUp);
         }
-
-        private void OnDestroy()
+        private void OnDisable()
         {
             Player.Instance.RemoveOnStart(Init);
+            Player.Instance.RemoveOnLevelUp(OnLevelUp); // Fix: Use a method with the correct signature
         }
+
 
         private bool IsLevelReached()
         {
