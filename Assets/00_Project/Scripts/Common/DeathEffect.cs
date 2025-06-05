@@ -37,6 +37,7 @@ namespace LegionKnight
         private UnityEvent m_OnDeath = new();
         private void OnDeathInvoke()
         {
+            m_Rb.constraints &= ~RigidbodyConstraints2D.FreezePositionX; // Unfreeze X position to allow movement
             m_OnDeath?.Invoke();
             Player.Instance.Death();
         }

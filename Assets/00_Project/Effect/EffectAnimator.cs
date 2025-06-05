@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class EffectAnimator : MonoBehaviour
+    public class    EffectAnimator : MonoBehaviour
     {
         [SerializeField]
         private EffectDefinition m_Definition;
