@@ -35,6 +35,16 @@ namespace LegionKnight
         {
             FreezeConstrain(RigidbodyConstraints2D.FreezePosition);
         }
-
+        public void FreezeRotation(bool set)
+        {
+            if (m_Rb != null)
+            {
+                m_Rb.freezeRotation = set;
+            }
+            else
+            {
+                Debug.LogWarning("Rigidbody2D component not found on " + gameObject.name);
+            }
+        }
     }
 }

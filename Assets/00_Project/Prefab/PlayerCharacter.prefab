@@ -238,53 +238,6 @@ MonoBehaviour:
   m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &874889024033230158
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6569277745418389849}
-  - component: {fileID: 7157461347256926709}
-  m_Layer: 12
-  m_Name: Coin Normal
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6569277745418389849
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 874889024033230158}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.79, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3707954418017981889}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7157461347256926709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 874889024033230158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2efa2cb8d3583f04e856753543bdcb44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TextMeshPrefab: {fileID: 44075040304479945, guid: 54c2e3b70d9d5c94390996c3bf561116, type: 3}
-  m_BeforeText: +
-  m_AfterText: Coin
 --- !u!1 &1217617204862492270
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,7 +364,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7643640269785828396}
-  - {fileID: 6569277745418389849}
   - {fileID: 4426705830924723726}
   - {fileID: 4397935093574495683}
   - {fileID: 3643455654615491772}
@@ -495,18 +447,6 @@ MonoBehaviour:
   m_OnNormalTouchDown:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7157461347256926709}
-        m_TargetAssemblyTypeName: LegionKnight.TextMeshSpawner, Assembly-CSharp
-        m_MethodName: SpawnText
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 8886077217522264868}
         m_TargetAssemblyTypeName: LegionKnight.GameplayPanelAgent, Assembly-CSharp
         m_MethodName: SetWeaponCounterView
@@ -1108,6 +1048,7 @@ GameObject:
   - component: {fileID: 1532349481360173813}
   - component: {fileID: 5395353101837719528}
   - component: {fileID: 7282600096559205833}
+  - component: {fileID: 2428453725035944463}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -1172,7 +1113,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 5
 --- !u!70 &6513007408860036446
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1440,6 +1381,30 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2428453725035944463}
+        m_TargetAssemblyTypeName: LegionKnight.RigidBodyModifier, Assembly-CSharp
+        m_MethodName: FreezePositionX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2428453725035944463}
+        m_TargetAssemblyTypeName: LegionKnight.RigidBodyModifier, Assembly-CSharp
+        m_MethodName: FreezeRotation
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
@@ -1712,6 +1677,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 996b1c1d6b5613d4b8ca7ad36937bbab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2428453725035944463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084039138725747265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e51d3181d907fa40893fe5789b1bc86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Rb: {fileID: 3377274384242518752}
 --- !u!1 &2207269959471590298
 GameObject:
   m_ObjectHideFlags: 0
@@ -23473,7 +23451,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TextMeshPrefab: {fileID: 44075040304479945, guid: 2de38ba1237142c4084e302400a86386, type: 3}
   m_BeforeText: +
-  m_AfterText: Coin
+  m_AfterText: <sprite=0>
 --- !u!1 &7764102645273973304
 GameObject:
   m_ObjectHideFlags: 0

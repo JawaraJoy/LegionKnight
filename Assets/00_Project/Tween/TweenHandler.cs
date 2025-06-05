@@ -165,36 +165,22 @@ namespace Rush
         [SerializeField] 
         private UnityEvent m_OnCompleteTweening = new UnityEvent();
 
-        [SerializeField, ReadOnly]
         private bool m_IsReverse = false;
         //private bool _isComplete = false;
-        [SerializeField, ReadOnly]
         private CanvasGroup m_CanvasGroup;
-        [SerializeField, ReadOnly]
         private Image m_Image;
-        [SerializeField, ReadOnly]
         private List<Material> m_Materials;
-        [SerializeField, ReadOnly]
         private RectTransform m_Rect;
 
-        [SerializeField, ReadOnly]
         private LTDescr m_AlphaTween;
-        [SerializeField, ReadOnly]
         private LTDescr m_ScaleTween;
-        [SerializeField, ReadOnly]
         private LTDescr m_RectPositionTween;
-        [SerializeField, ReadOnly]
         private LTDescr m_PositionTween;
-        [SerializeField, ReadOnly]
         private LTDescr m_RotationAroundXTween;
-        [SerializeField, ReadOnly]
         private LTDescr m_RotationAroundYTween;
-        [SerializeField, ReadOnly]
         private LTDescr m_RotationAroundZTween;
-        [SerializeField, ReadOnly]
         private LTDescr m_ColorTween;
 
-        [SerializeField, ReadOnly]
         private int m_LeanTweenId = -1;
 
         public string GetId() => m_Id;

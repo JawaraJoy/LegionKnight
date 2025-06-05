@@ -12,6 +12,8 @@ namespace LegionKnight
         private List<Collider2D> m_ColliderBehaviourActives = new();
         [SerializeField]
         private bool m_CanMove;
+        [SerializeField]
+        private float m_AddSpeed = 0f;
         private float m_Speed;
         protected Vector2 m_Destination;
         [SerializeField]
@@ -46,7 +48,7 @@ namespace LegionKnight
             if (!m_CanMove || IsReachedInternal()) return;
             float speedrate = GameManager.Instance.SpeedPlatformRate;
             //transform.Translate(m_Speed * Time.deltaTime * Vector3.right, Space.Self);
-            transform.position = Vector2.MoveTowards(transform.position, m_Destination, m_Speed * speedrate * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, m_Destination, (m_Speed + m_AddSpeed) * speedrate * Time.deltaTime);
             ReachDestination();
         }
         public Currency GetNormalTouchDown()
@@ -79,7 +81,7 @@ namespace LegionKnight
         {
             return IsReachedInternal();
         }
-        private float Distance()
+        protected float Distance()
         {
             return Vector2.Distance(transform.position, m_Destination);
         }

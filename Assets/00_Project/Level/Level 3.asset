@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b53d183750a422e478bc49accdc56f61, type: 3}
+  m_Name: Level 3
+  m_EditorClassIdentifier: 
+  m_Id: lv3
+  m_LevelScene: ReworkGameplay
+  m_NextLevel: {fileID: 11400000, guid: cea0b7a63175d484582b6e09e27f570e, type: 2}
+  m_IsInfiniteLevel: 0
+  m_LevelImage: {fileID: 21300000, guid: 14faffb787792124bbd3eefdccc6bb28, type: 3}
+  m_MinSpeed: 10
+  m_MaxSpeed: 12
+  m_TouchDownRewardCurrency: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
+  m_NormalTouchDownPoint: 1
+  m_PerfectTouchDownPoint: 2
+  m_PlatformAssets:
+  - {fileID: 11400000, guid: 0a0de98677d86b74e8da0573fa351ded, type: 2}
+  - {fileID: 11400000, guid: d8395f8041dce1b4f9d871f4f54be6c0, type: 2}
+  - {fileID: 11400000, guid: 5dfc092ba61b08343a2677060a687713, type: 2}
+  m_BosDefinition: {fileID: 11400000, guid: 7f6383f198bd3e149a03264ffe82810c, type: 2}
+  m_BosAsset:
+    m_AssetGUID: c9e392a46c040ad41b7fe2235bd60b46
+    m_SubObjectName: 
+    m_SubObjectGUID: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  m_LevelOrnament:
+    m_BaseGround: {fileID: 21300000, guid: bb1351fe3ced13e46a56aaaeb8558a52, type: 3}
+    m_LeftCliff: {fileID: 21300000, guid: 3c5a9a4e235a1cc4490979e025660216, type: 3}
+    m_RightCliff: {fileID: 21300000, guid: 3c5a9a4e235a1cc4490979e025660216, type: 3}
+    m_Tree: {fileID: 21300000, guid: 73f90eac58b1bf34b8736ef464b2dfc8, type: 3}
+    m_Mountain: {fileID: 21300000, guid: 05ac9b88a02dc5743af0ba5af24929b2, type: 3}
+    m_Background: {fileID: 21300000, guid: 626fdeac0b65a1e4eac3587714e15849, type: 3}

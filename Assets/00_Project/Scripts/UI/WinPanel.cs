@@ -27,6 +27,10 @@ namespace LegionKnight
 
             if (m_CurrenLevel == m_CurrenLevel.NextLevel)
             {
+                if (GameManager.Instance.IsLevelUnlocked(m_CurrenLevel.NextLevel))
+                {
+                    m_CompleteText.text = "The Next Level already Uncloked";
+                }
                 m_CompleteText.text = "Every Level Is Cleared";
             }
             else

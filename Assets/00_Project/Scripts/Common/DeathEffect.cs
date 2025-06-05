@@ -38,6 +38,7 @@ namespace LegionKnight
         private void OnDeathInvoke()
         {
             m_Rb.constraints &= ~RigidbodyConstraints2D.FreezePositionX; // Unfreeze X position to allow movement
+            m_Rb.freezeRotation = true; // Prevent rotation during death effect
             m_OnDeath?.Invoke();
             Player.Instance.Death();
         }
