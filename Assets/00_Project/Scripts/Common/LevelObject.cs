@@ -32,6 +32,9 @@ namespace LegionKnight
 
         private const float m_OffsideDestination = -0.1f;
 
+        [SerializeField]
+        private BosEnemy m_BosEnemy;
+
         private float m_SpeedPlatformRate = 1f;
         public float SpeedPlatformRate => m_SpeedPlatformRate;
         public void SetSpeedPlatformRate(float rate)
