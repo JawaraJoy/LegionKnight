@@ -2,18 +2,32 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class BossDamageOvertime : MonoBehaviour
+    public class BossDamageOvertime : DamageOvertime
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
         
-        }
+    }
 
-        // Update is called once per frame
-        void Update()
+    public partial class BosEnemy
+    {
+        [SerializeField]
+        private BossDamageOvertime m_BossDamageOvertime;
+        public void ApplyBossDamageOverTime(int damagePerSecond, float duration)
         {
-        
+            if (m_BossDamageOvertime != null)
+            {
+                m_BossDamageOvertime.ApplyDamageOverTime(damagePerSecond, duration);
+            }
+            else
+            {
+                Debug.LogWarning("BossDamageOvertime component is not assigned.");
+            }
+        }
+        public void StopBossDamageOverTime()
+        {
+            if (m_BossDamageOvertime != null)
+            {
+                m_BossDamageOvertime.StopDamageOverTime();
+            }
         }
     }
 }

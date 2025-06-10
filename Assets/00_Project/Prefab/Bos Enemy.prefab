@@ -238,6 +238,7 @@ GameObject:
   - component: {fileID: 2709716365481959639}
   - component: {fileID: 2567653953752912148}
   - component: {fileID: 8428523851214305592}
+  - component: {fileID: 6803625758039470562}
   m_Layer: 15
   m_Name: Damageable
   m_TagString: Bos Enemy
@@ -503,6 +504,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39f5bd806ffd7b84781d4daf7a261b60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6803625758039470562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515918505318151819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba18f79332d1a384d911af6fcbfcffd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Damageable: {fileID: 2814693181338697549}
+  m_Duration: 5
 --- !u!1 &1539955495137320482
 GameObject:
   m_ObjectHideFlags: 0

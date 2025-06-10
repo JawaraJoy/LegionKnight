@@ -110,9 +110,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b1d299fcc044547a667705143de450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_RandomSpawn: 0
   m_Skills:
-  - m_DamageOveride: 6
+  - m_DamageOveride: 0
     m_StartingForce: {x: 0, y: 12}
+    m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
       m_AssetGUID: e7f1cf8420beb81408131c5143508b6b
@@ -124,8 +126,9 @@ MonoBehaviour:
     m_OnWeaponSpawned:
       m_PersistentCalls:
         m_Calls: []
-  - m_DamageOveride: 1
+  - m_DamageOveride: 0
     m_StartingForce: {x: 0, y: 0}
+    m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
       m_AssetGUID: 536ba28a618127942bf310615a4e282b
@@ -137,8 +140,9 @@ MonoBehaviour:
     m_OnWeaponSpawned:
       m_PersistentCalls:
         m_Calls: []
-  - m_DamageOveride: 1
+  - m_DamageOveride: 0
     m_StartingForce: {x: 0, y: 0}
+    m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
       m_AssetGUID: 536ba28a618127942bf310615a4e282b
@@ -151,6 +155,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   m_SpawnOnStart: 1
+  m_IsSpawnInterval: 0
+  m_SpawnInterval: 2
+  m_MaxSpawnCount: 2
+  m_OnSpawnIntervalStop:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7883275299031726588
 MonoBehaviour:
   m_ObjectHideFlags: 0

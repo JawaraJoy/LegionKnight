@@ -8,9 +8,7 @@ namespace LegionKnight
         private Damageable m_Damageable;
 
         private float m_Timer;
-        [SerializeField]
         private float m_Duration = 5f; // Duration of the damage over time effect
-        [SerializeField]
         private int m_DamagePerSecond = 1; // Amount of damage to apply per second
 
         private bool m_IsActive = true; // Flag to check if the effect is active
@@ -33,7 +31,8 @@ namespace LegionKnight
             }
             else
             {
-                m_IsActive = false; // Deactivate the effect after the duration
+                // Deactivate the effect after the duration
+                StopDamageOverTimeInternal();
                 Debug.Log("Damage over time effect has ended.");
             }
         }

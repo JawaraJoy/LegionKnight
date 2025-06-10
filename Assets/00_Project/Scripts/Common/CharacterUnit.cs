@@ -43,7 +43,11 @@ namespace LegionKnight
         }
         public void Init()
         {
-            m_Owned = UnityService.Instance.GetData<bool>(m_Definition.Id + "Owned");
+            if (UnityService.Instance.HasData(m_Definition.Id + "Owned"))
+            {
+                m_Owned = UnityService.Instance.GetData<bool>(m_Definition.Id + "Owned");
+            }
+            //m_Owned = UnityService.Instance.GetData<bool>(m_Definition.Id + "Owned");
             m_CurrentStars = m_Definition.StartingStar;
             if (m_Definition == Player.Instance.DefaultCharacter)
             {

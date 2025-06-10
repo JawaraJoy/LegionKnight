@@ -987,9 +987,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b1d299fcc044547a667705143de450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_RandomSpawn: 0
   m_Skills:
-  - m_DamageOveride: 1
+  - m_DamageOveride: 10
     m_StartingForce: {x: 0, y: 0}
+    m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 1
     m_ProjectileAsset:
       m_AssetGUID: 6ea1500ed7c72d4478be395e50907efd
@@ -1001,8 +1003,9 @@ MonoBehaviour:
     m_OnWeaponSpawned:
       m_PersistentCalls:
         m_Calls: []
-  - m_DamageOveride: 1
+  - m_DamageOveride: 10
     m_StartingForce: {x: 0, y: 0}
+    m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 1
     m_ProjectileAsset:
       m_AssetGUID: 2dd42605aa5c3e74f8af25c5f00295d5
@@ -1015,6 +1018,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   m_SpawnOnStart: 1
+  m_IsSpawnInterval: 0
+  m_SpawnInterval: 2
+  m_MaxSpawnCount: 2
+  m_OnSpawnIntervalStop:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &5825897381200476064
 MonoBehaviour:
   m_ObjectHideFlags: 0

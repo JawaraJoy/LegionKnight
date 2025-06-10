@@ -113,8 +113,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ContactableList: []
-  m_Damage: 2
-  m_Health: 1
+  m_Damage: 20
+  m_Health: 10
   m_Shield: 0
   m_Barrier: 0
   m_OnDeath:
@@ -144,6 +144,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnDamageTaken:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5179,6 +5182,7 @@ MonoBehaviour:
   m_Skills:
   - m_DamageOveride: 2
     m_StartingForce: {x: 0, y: 0}
+    m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
       m_AssetGUID: 

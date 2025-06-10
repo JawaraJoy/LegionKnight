@@ -8,7 +8,7 @@ namespace LegionKnight
     public partial class Damageable : Contact2D
     {
         [SerializeField]
-        private int m_Damage;
+        protected int m_Damage;
         [SerializeField]
         protected int m_Health;
         [SerializeField]

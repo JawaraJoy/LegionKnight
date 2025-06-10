@@ -14,6 +14,8 @@ namespace LegionKnight
         [SerializeField]
         private Vector2 m_StartingForce;
         [SerializeField]
+        private Vector3 m_StartingRotation;
+        [SerializeField]
         private bool m_Local = false;
         [SerializeField]
         private AssetReferenceGameObject m_ProjectileAsset;
@@ -63,6 +65,7 @@ namespace LegionKnight
                     {
                         m_SpawnedProjectileDamage.Init(Player.Instance.Attack, 1);
                     }
+                    m_SpawnedProjectileDamage.transform.rotation = Quaternion.Euler(m_StartingRotation);
                     m_SpawnedProjectileDamage.AddForce(m_StartingForce);
                     m_SpawnedProjectileDamage.FindTarget();
                     OnWeaponSpawnedInvoke();

@@ -19,26 +19,38 @@ namespace LegionKnight
         private UnityEvent<CharacterDefinition> m_OnInit = new();
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnCharacterSelected = new();
+
+        [SerializeField]
+        private GameObject m_UniquePlatformContent;
         private void Start()
         {
             InitInternal();
         }
         private void InitInternal()
         {
-            m_HeroBigIcon.sprite = Player.Instance.UsedCharacter.Icon;
-            m_HeroNameText.text = Player.Instance.UsedCharacter.name;
+            CharacterDefinition usedCharacter = Player.Instance.UsedCharacter;
 
-            m_HeroSkillIcon.sprite = Player.Instance.UsedCharacter.Passives[0].Icon;
-            m_HeroUniquePlatformIcon.sprite = Player.Instance.GetHeroStandbyPlatform().Icon;
-            OnInitInvoke(Player.Instance.UsedCharacter);
+            SetCharacterSelectedInternal(usedCharacter);
+            OnInitInvoke(usedCharacter);
+        }
+        public void SetCharacterSelectedInternal(CharacterDefinition defi)
+        {
+            m_HeroBigIcon.sprite = defi.Icon;
+            m_HeroNameText.text = defi.name;
+            m_HeroSkillIcon.sprite = defi.Passives[0].Icon;
+
+            m_UniquePlatformContent.SetActive(defi.UniquePlatform != null);
+
+            if (m_UniquePlatformContent != null)
+            {
+                m_HeroUniquePlatformIcon.sprite = defi.UniquePlatform.Icon;
+            }
+            
+            OnCharacterSelectedInvoke(defi);
         }
         public void SetCharacterSelected(CharacterDefinition defi)
         {
-            m_HeroBigIcon.sprite = defi.Icon;
-            m_HeroNameText.text = defi.name; 
-            m_HeroSkillIcon.sprite = defi.Passives[0].Icon;
-            m_HeroUniquePlatformIcon.sprite = defi.UniquePlatform.Icon;
-            OnCharacterSelectedInvoke(defi);
+            SetCharacterSelectedInternal(defi);
         }
         private void OnCharacterSelectedInvoke(CharacterDefinition defi)
         {

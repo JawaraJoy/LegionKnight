@@ -5,6 +5,14 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
+    public enum Rarity
+    {
+        Common,
+        Uncommon,
+        Rare,
+        Epic,
+        Legendary
+    }
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Character")]
     public partial class CharacterDefinition : ScriptableObject
     {
