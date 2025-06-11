@@ -11,7 +11,7 @@ namespace LegionKnight
         private float m_Duration = 5f; // Duration of the damage over time effect
         private int m_DamagePerSecond = 1; // Amount of damage to apply per second
 
-        private bool m_IsActive = true; // Flag to check if the effect is active
+        private bool m_IsActive = false; // Flag to check if the effect is active
         private void Update()
         {
             HandleEffect();

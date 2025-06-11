@@ -19,6 +19,8 @@ namespace LegionKnight
         {
             Player.Instance.AddOnStart(Init);
             Player.Instance.AddOnLevelUp(OnLevelUp);
+
+            InitInternal(); // Initialize on enable to check the current level
         }
         private void OnDisable()
         {
@@ -33,6 +35,11 @@ namespace LegionKnight
         }
 
         public void Init()
+        {
+            InitInternal();
+        }
+
+        private void InitInternal()
         {
             m_OnLevelReached?.Invoke(IsLevelReached());
 

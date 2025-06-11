@@ -32,9 +32,6 @@ namespace LegionKnight
 
         private const float m_OffsideDestination = -0.1f;
 
-        [SerializeField]
-        private BosEnemy m_BosEnemy;
-
         private float m_SpeedPlatformRate = 1f;
         public float SpeedPlatformRate => m_SpeedPlatformRate;
         public void SetSpeedPlatformRate(float rate)
@@ -119,17 +116,27 @@ namespace LegionKnight
         {
             int totalChance = 0;
             AssetReferenceGameObject selected = null;
+
+            // Skip nulls and platforms with null Platform property
             foreach (StandbyPlatformDefinition platform in m_RealStanbyPlatformAssets)
             {
+                if (platform == null || platform.Platform == null)
+                    continue;
                 totalChance += platform.ChanceRateToSpawn;
             }
+
+            if (totalChance == 0)
+                return null; // No valid platforms
+
             int random = Random.Range(0, totalChance);
 
             float cumulativeChance = 0;
             foreach (StandbyPlatformDefinition platform in m_RealStanbyPlatformAssets)
             {
+                if (platform == null || platform.Platform == null)
+                    continue;
                 cumulativeChance += platform.ChanceRateToSpawn;
-                if (random <= cumulativeChance)
+                if (random < cumulativeChance)
                 {
                     selected = platform.Platform;
                     break;
@@ -157,10 +164,21 @@ namespace LegionKnight
         {
             if (GetLevelDefinition().HasBoss())
             {
-                BosEnemy bos = Instantiate(GameManager.Instance.GetBosPrefab());
-                GameManager.Instance.SetSpawnedBosEnemy(bos);
+                //BosEnemy bos = Instantiate(GameManager.Instance.GetBosPrefab());
+                var loading = InstantiateAsync(GameManager.Instance.GetBosPrefab(), m_BosSpawnPost);
+                StartCoroutine(SpawningBosInternal(loading));
+                
+            }
+        }
+        private IEnumerator SpawningBosInternal(AsyncInstantiateOperation<BosEnemy> handle)
+        {
+            yield return handle;
+            if (handle.isDone)
+            {
+                BosEnemy result = handle.Result[0];
+                GameManager.Instance.SetSpawnedBosEnemy(result);
                 float offset = Player.Instance.transform.position.y + 100f;
-                bos.SetLocalPosition(new Vector2(0f,  offset));
+                result.SetLocalPosition(new Vector2(0f, offset));
                 m_BosSpawnPost.DetachChildren();
             }
         }
