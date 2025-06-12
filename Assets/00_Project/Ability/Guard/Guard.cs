@@ -11,10 +11,9 @@ namespace LegionKnight
     public class Guard : MonoBehaviour
     {
         [SerializeField]
-        private bool m_CanActive = false;
-        [SerializeField]
         private LayerMask m_ContactLayerMask;
         private bool m_IsActive = false;
+        [SerializeField]
         private float m_Duration = 5f;
 
         [SerializeField]
@@ -32,12 +31,13 @@ namespace LegionKnight
             OnContact(collision.gameObject);
         }
 
+        private void Start()
+        {
+            ActiveGuard();
+        }
+
         private void OnContact(GameObject contactObject)
         {
-            if (!m_CanActive)
-            {
-                return; // Ignore contact if guard is already active
-            }
             if ((m_ContactLayerMask & (1 << contactObject.layer)) == 0)
             {
                 return; // Ignore objects not in the contact layer mask
@@ -57,17 +57,10 @@ namespace LegionKnight
             return contactObject.transform.position;
         }
 
-        public void SetCanActive(bool set)
-        {
-            m_CanActive = set;
-        }
 
-        public void ActiveGuard(Sprite sprite, float duration)
+        private void ActiveGuard()
         {
-            if (!m_CanActive) return;
             m_IsActive = true;
-            m_SpriteModel.sprite = sprite;
-            m_Duration = duration;
             StartCoroutine(GuardCoroutine());
         }
         private IEnumerator GuardCoroutine()
@@ -79,7 +72,6 @@ namespace LegionKnight
         {
             m_OnDeactiveGuard?.Invoke();
             m_IsActive = false;
-            m_CanActive = false;
         }
         public void DeactiveGuard()
         {

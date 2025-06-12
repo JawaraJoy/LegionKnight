@@ -140,6 +140,10 @@ namespace LegionKnight
         {
             AddHealthInternal(val);
         }
+        public void AddCurrentHealth(int val)
+        {
+            AddCurrentHealthInternal(val);
+        }
         public void AddShield(int val)
         {
             AddShieldInteral(val);
@@ -172,6 +176,12 @@ namespace LegionKnight
             m_Health += val;
             m_CurrentHealth += val;
             ClampHealth();
+        }
+        protected virtual void AddCurrentHealthInternal(int val)
+        {
+            m_CurrentHealth += val;
+            ClampHealth();
+            OnHealthChangedInvoke(m_CurrentHealth);
         }
         protected virtual void AddShieldInteral(int val)
         {
