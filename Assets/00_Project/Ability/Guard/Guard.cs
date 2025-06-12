@@ -8,7 +8,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
-    public class Guard : View
+    public class Guard : MonoBehaviour
     {
         [SerializeField]
         private bool m_CanActive = false;
@@ -68,7 +68,6 @@ namespace LegionKnight
             m_IsActive = true;
             m_SpriteModel.sprite = sprite;
             m_Duration = duration;
-            Show();
             StartCoroutine(GuardCoroutine());
         }
         private IEnumerator GuardCoroutine()

@@ -10,6 +10,7 @@ namespace LegionKnight
             // Implement player-specific guard activation logic here
             Player.Instance.ActiveGuard(m_GuardSprite, m_GuardDuration);
             // Example: Apply guard effect, play animation, etc.
+            base.GuardActive();
         }
     }
 }
