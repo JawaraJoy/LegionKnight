@@ -59,11 +59,12 @@ namespace LegionKnight
 
                     if (m_DamageOveride > 0)
                     {
-                        m_SpawnedProjectileDamage.Init(m_DamageOveride, 1);
+                        m_SpawnedProjectileDamage.Init(m_DamageOveride, projectile.Health);
                     }
                     else
                     {
-                        m_SpawnedProjectileDamage.Init(Player.Instance.Attack, 1);
+                        int atk = Player.Instance.Attack + projectile.Damage;
+                        m_SpawnedProjectileDamage.Init(atk, projectile.Health);
                     }
                     m_SpawnedProjectileDamage.transform.rotation = Quaternion.Euler(m_StartingRotation);
                     m_SpawnedProjectileDamage.AddForce(m_StartingForce);

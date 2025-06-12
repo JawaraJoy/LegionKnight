@@ -150,6 +150,7 @@ namespace LegionKnight
 
             m_HolePosition = new Vector2(centerX, centerY); // Store the hole position for raycast validation
             m_OnHolePositionChanged.Invoke(m_HolePosition);
+
             SetCursorPosition(m_HolePosition); // Update cursor position
         }
 
