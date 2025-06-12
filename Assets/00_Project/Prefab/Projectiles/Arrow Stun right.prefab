@@ -101,9 +101,9 @@ GameObject:
   - component: {fileID: 2147929422918446053}
   - component: {fileID: 3839611178124201311}
   - component: {fileID: 1279521256923194067}
-  - component: {fileID: 4745178324162582213}
+  - component: {fileID: 7990354646623084362}
   m_Layer: 16
-  m_Name: Arrow Poison right
+  m_Name: Arrow Stun right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -174,7 +174,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ContactableList: []
-  m_Damage: 10
+  m_Damage: 30
   m_Health: 0
   m_Shield: 0
   m_Barrier: 0
@@ -201,11 +201,11 @@ MonoBehaviour:
       m_Calls: []
   m_TargetTag: Bos Enemy
   m_RotateSpeed: 5
-  m_MinTravelSpeed: 20
+  m_MinTravelSpeed: 50
   m_MaxTravelSpeed: 50
   m_Rb: {fileID: 6974741219246434435}
   m_WithoutTarget: 1
-  m_VelocityWitoutTarget: {x: 0.2, y: 1}
+  m_VelocityWitoutTarget: {x: 0.25, y: 1}
 --- !u!50 &6974741219246434435
 Rigidbody2D:
   serializedVersion: 5
@@ -399,7 +399,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4745178324162582213
+--- !u!114 &7990354646623084362
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -408,46 +408,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1397423693318464373}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce11cc204faba924f91665c4ab07cff5, type: 3}
+  m_Script: {fileID: 11500000, guid: 261a39fa5e38f6a49b1b6dfea3587667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CanContact: 1
-  m_ContactLayer:
-    serializedVersion: 2
-    m_Bits: 32768
-  m_OnContacted:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnDeContacted:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ContactableList: []
-  m_Damage: 2
-  m_Health: 0
-  m_Shield: 0
-  m_Barrier: 0
-  m_OnDeath:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnDamageTaken:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnHealthRateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnShieldChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnBarrierChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnHealthChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnProtectGone:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Duration: 5
+  m_StunDuration: 5
 --- !u!1 &1965929954154238019
 GameObject:
   m_ObjectHideFlags: 0

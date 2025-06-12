@@ -8,10 +8,14 @@ namespace LegionKnight
         private Damageable m_Damageable;
 
         private float m_Timer;
-        private float m_Duration = 5f; // Duration of the damage over time effect
-        private int m_DamagePerSecond = 1; // Amount of damage to apply per second
+        private float m_Elapsed; // Track total elapsed time
+        private float m_Duration = 5f;
+        private int m_DamagePerSecond = 1;
 
-        private bool m_IsActive = false; // Flag to check if the effect is active
+        private bool m_IsActive = false;
+        [SerializeField]
+        private ParticleSystem m_Effect;
+
         private void Update()
         {
             HandleEffect();
@@ -20,39 +24,59 @@ namespace LegionKnight
         private void HandleEffect()
         {
             if (!IsEffectActive()) return;
-            if (m_Timer < m_Duration)
+            m_Elapsed += Time.deltaTime;
+            m_Timer += Time.deltaTime;
+
+            if (m_Timer >= 1f)
             {
-                m_Timer += Time.deltaTime;
-                if (m_Timer >= 1f) // Apply damage every second
-                {
-                    m_Damageable.TakeDamage(m_DamagePerSecond);
-                    m_Timer = 0f; // Reset timer after applying damage
-                }
+                m_Damageable.TakeDamage(m_DamagePerSecond);
+                m_Timer = 0f;
             }
-            else
+
+            if (m_Elapsed >= m_Duration)
             {
-                // Deactivate the effect after the duration
                 StopDamageOverTimeInternal();
                 Debug.Log("Damage over time effect has ended.");
             }
         }
+
         private bool IsEffectActive()
         {
             return m_IsActive && m_Damageable != null && m_Damageable.Health > 0;
         }
+
         public void ApplyDamageOverTime(int damagePerSecond, float duration)
         {
             m_DamagePerSecond = damagePerSecond;
             m_Duration = duration;
-            m_Timer = 0f; // Reset timer
-            m_IsActive = true; // Activate the effect
+            m_Timer = 0f;
+            m_Elapsed = 0f; // Reset elapsed time
+            m_IsActive = true;
+            if (m_Effect != null)
+            {
+                m_Effect.Play();
+            }
+            else
+            {
+                Debug.LogWarning("No particle effect assigned for damage over time.");
+            }
             Debug.Log($"Applying damage over time: {m_DamagePerSecond} damage per second for {m_Duration} seconds.");
         }
+
         private void StopDamageOverTimeInternal()
         {
-            m_IsActive = false; // Deactivate the effect
+            m_IsActive = false;
             Debug.Log("Stopping damage over time effect.");
+            if (m_Effect != null)
+            {
+                m_Effect.Stop();
+            }
+            else
+            {
+                Debug.LogWarning("No particle effect assigned to stop.");
+            }
         }
+
         public void StopDamageOverTime()
         {
             StopDamageOverTimeInternal();
