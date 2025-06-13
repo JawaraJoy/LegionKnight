@@ -41,7 +41,7 @@ namespace LegionKnight
 
             m_UniquePlatformContent.SetActive(defi.UniquePlatform != null);
 
-            if (m_UniquePlatformContent != null)
+            if (defi.UniquePlatform != null)
             {
                 m_HeroUniquePlatformIcon.sprite = defi.UniquePlatform.Icon;
             }

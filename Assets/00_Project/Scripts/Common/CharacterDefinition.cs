@@ -54,6 +54,8 @@ namespace LegionKnight
     {
         [SerializeField]
         private string m_SkillName;
+        [SerializeField, TextArea]
+        private string m_Description;
         [SerializeField]
         private Sprite m_Icon;
         [SerializeField]
@@ -64,5 +66,6 @@ namespace LegionKnight
         public string SkillName => m_SkillName;
         public Sprite Icon => m_Icon;
         public int Manathreshold => m_ManaThreshold;
+        public string Description => m_Description;
     }
 }
