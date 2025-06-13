@@ -106,5 +106,12 @@ namespace LegionKnight
             }
             return Random.Range(0, m_Skills.Count);
         }
+
+        public void SpawnRandomInterval(int count)
+        {
+            m_IsSpawnInterval = true;
+            m_MaxSpawnCount = count;
+            StartSpawningInternal();
+        }
     }
 }

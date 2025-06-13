@@ -25,7 +25,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnDeactiveGuard;
         [SerializeField]
-        private UnityEvent m_OnContact;
+        private UnityEvent<int> m_OnContact;
         private void OnTriggerEnter2D(Collider2D collision)
         {
             OnContact(collision.gameObject);
@@ -46,7 +46,7 @@ namespace LegionKnight
             {
                 // Handle damageable object contact
                 damageable.TakeDamage(100); // Example: apply 1 damage
-                m_OnContact?.Invoke();
+                m_OnContact?.Invoke(damageable.Damage);
                 SpawningImpact(contactObject);
             }
         }
