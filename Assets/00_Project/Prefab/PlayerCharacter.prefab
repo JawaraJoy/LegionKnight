@@ -1310,6 +1310,7 @@ MonoBehaviour:
   m_Character: {fileID: 6867498596800542263}
   m_CharacterJump: {fileID: 1091291144089817512}
   m_CurrencyControl: {fileID: 2942122649447902150}
+  m_PlayerDamageable: {fileID: 3177382371050496212}
   m_PlayerDeck: {fileID: 7689285937031040271}
   m_PassiveSkill: {fileID: 1158308863625070404}
   m_PlayerPause: {fileID: 8956068173985954038}
@@ -1380,7 +1381,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 5
+          m_IntArgument: 50
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
@@ -1757,18 +1758,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1091291144089817512}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 0
 --- !u!1 &2598558995643241899
 GameObject:
   m_ObjectHideFlags: 0
@@ -12282,6 +12271,50 @@ MonoBehaviour:
     m_OnCharacterShardUpdate:
       m_PersistentCalls:
         m_Calls: []
+  - m_Definition: {fileID: 11400000, guid: eaa139b553d9bda4bb604be4a8b2b4c1, type: 2}
+    m_Owned: 0
+    m_CurrentStars: 0
+    m_StarShardControl:
+      m_CurrenShardAmount: 0
+    m_OnCharacterStarUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_Definition: {fileID: 11400000, guid: 5423f2f9cee332543902f0610357254e, type: 2}
+    m_Owned: 0
+    m_CurrentStars: 0
+    m_StarShardControl:
+      m_CurrenShardAmount: 0
+    m_OnCharacterStarUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_Definition: {fileID: 11400000, guid: 37c60ec1cb33aa741b448330b2228b3c, type: 2}
+    m_Owned: 0
+    m_CurrentStars: 0
+    m_StarShardControl:
+      m_CurrenShardAmount: 0
+    m_OnCharacterStarUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_Definition: {fileID: 11400000, guid: 6ab4765dddb7254408e9bc24e3185dde, type: 2}
+    m_Owned: 0
+    m_CurrentStars: 0
+    m_StarShardControl:
+      m_CurrenShardAmount: 0
+    m_OnCharacterStarUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
   m_OnInitialized:
     m_PersistentCalls:
       m_Calls:
@@ -12363,6 +12396,7 @@ GameObject:
   - component: {fileID: 6983114196135514266}
   - component: {fileID: 946632543982360485}
   - component: {fileID: 3219939064775467339}
+  - component: {fileID: 3177382371050496212}
   m_Layer: 11
   m_Name: Damageable
   m_TagString: Untagged
@@ -12400,7 +12434,7 @@ MonoBehaviour:
   m_CanContact: 1
   m_ContactLayer:
     serializedVersion: 2
-    m_Bits: 147456
+    m_Bits: 409600
   m_OnContacted:
     m_PersistentCalls:
       m_Calls: []
@@ -12408,8 +12442,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ContactableList: []
-  m_Damage: 1
-  m_Health: 5
+  m_Damage: 10
+  m_Health: 50
   m_Shield: 0
   m_Barrier: 0
   m_OnDeath:
@@ -12560,6 +12594,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea07df3edc383314aa88ce28aa5cf3df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3177382371050496212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4753443975672528772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a87273571b1afb4eadaa550db4b62c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Damageable: {fileID: 6983114196135514266}
 --- !u!1 &4937011956032672833
 GameObject:
   m_ObjectHideFlags: 0
@@ -23582,7 +23629,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 2aedec681836937458126066f7ad9559, type: 2}
-    m_Amount: 5000
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -23617,7 +23664,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
-    m_Amount: 50
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -23640,7 +23687,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 585fc1b883f3e4440b09f3108b6fffc6, type: 2}
-    m_Amount: 50
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -23814,7 +23861,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3204241326236343331
 Transform:
   m_ObjectHideFlags: 0
@@ -23911,8 +23958,8 @@ Transform:
   m_GameObject: {fileID: 8754720412608221665}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.4, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_LocalPosition: {x: 0, y: -1.43, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7241083454487294252}
