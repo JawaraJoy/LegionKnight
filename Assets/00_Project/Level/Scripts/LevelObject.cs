@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Bson;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -165,21 +164,20 @@ namespace LegionKnight
             if (GetLevelDefinition().HasBoss())
             {
                 //BosEnemy bos = Instantiate(GameManager.Instance.GetBosPrefab());
-                AssetReferenceGameObject bossAsset = GameManager.Instance.LevelDefinition.BosAsset;
-                var loading = InstantiateAsync(GameManager.Instance.GetBosPrefab(), m_BosSpawnPost);
+                var loading = Addressables.InstantiateAsync(BosAssetInternal, m_BosSpawnPost.position, Quaternion.identity);
                 StartCoroutine(SpawningBosInternal(loading));
-                
             }
         }
-        private IEnumerator SpawningBosInternal(AsyncInstantiateOperation<BosEnemy> handle)
+        private IEnumerator SpawningBosInternal(AsyncOperationHandle<GameObject> handle)
         {
             yield return handle;
-            if (handle.isDone)
+            if (handle.Status != AsyncOperationStatus.Succeeded) yield break;
             {
-                BosEnemy result = handle.Result[0];
-                GameManager.Instance.SetSpawnedBosEnemy(result);
+                GameObject result = handle.Result;
+                if (!result.TryGetComponent(out BosEnemy bos)) yield break;
+                GameManager.Instance.SetSpawnedBosEnemy(bos);
                 float offset = Player.Instance.transform.position.y + 100f;
-                result.SetLocalPosition(new Vector2(0f, offset));
+                bos.SetLocalPosition(new Vector2(0f, offset));
                 m_BosSpawnPost.DetachChildren();
             }
         }
