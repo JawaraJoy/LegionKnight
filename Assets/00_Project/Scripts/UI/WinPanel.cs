@@ -19,6 +19,16 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_CompleteText;
 
+        protected override void ShowInternal()
+        {
+            base.ShowInternal();
+            Player.Instance.SetPause(true);
+        }
+        public override void Hide()
+        {
+            base.Hide();
+            Player.Instance.SetPause(false);
+        }
 
         public void SetLevelDefinition(LevelDefinition defi)
         {

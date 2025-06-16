@@ -13,6 +13,7 @@ namespace LegionKnight
                 m_Amount.text = reward.Amount.ToString();
                 CurrencyApplier(d);
                 CharacterApplier(d);
+                PlatformApplier(d);
             }
         }
 
@@ -34,6 +35,13 @@ namespace LegionKnight
                     m_Icon.sprite = character.ShardIcon;
                     m_Amount.text = character.ShardAmount.ToString();
                 }*/
+            }
+        }
+        private void PlatformApplier(ScriptableObject defi)
+        {
+            if (defi is StandbyPlatformDefinition platform)
+            {
+                m_Icon.sprite = platform.Icon;
             }
         }
     }

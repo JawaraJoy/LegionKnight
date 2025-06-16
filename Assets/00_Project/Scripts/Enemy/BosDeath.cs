@@ -15,6 +15,7 @@ namespace LegionKnight
                 winPanel.SetLevelDefinition(GameManager.Instance.LevelDefinition);
                 GameManager.Instance.SetLevelUnlocked(GameManager.Instance.LevelDefinition.NextLevel, true);
                 GameManager.Instance.SetLevelCompleted(GameManager.Instance.LevelDefinition, true);
+                
             }
         }
         public void EraseBossProjectile()

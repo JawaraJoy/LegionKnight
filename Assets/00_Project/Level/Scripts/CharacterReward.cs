@@ -3,15 +3,25 @@ using UnityEngine;
 
 namespace LegionKnight
 {
+    public enum RewardState
+    {
+        First,
+        Repeat
+    }
     [CreateAssetMenu(fileName = "CharacterReward", menuName = "Legion Knight/CharacterReward", order = 1)]
     public class CharacterReward : ScriptableObject
     {
         [SerializeField]
-        private List<RewardObject> rewards = new List<RewardObject>();
+        private RewardState m_RewardState;
+        [SerializeField]
+        private RewardObject[] m_Rewards;
+
+        public RewardState RewardState => m_RewardState;
+        public RewardObject[] Rewards => m_Rewards;
 
         public void ClaimReward()
         {
-            foreach (var reward in rewards)
+            foreach (var reward in m_Rewards)
             {
                 reward.ClaimReward();
             }

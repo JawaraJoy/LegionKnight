@@ -16,6 +16,8 @@ namespace LegionKnight
         private GameObject m_LockImage;
         [SerializeField]
         private GameObject m_CompleteImage;
+        [SerializeField]
+        private LevelRewardView m_LevelRewardView;
         private void OnEnable()
         {
             Init();
@@ -29,6 +31,16 @@ namespace LegionKnight
             m_LockImage.SetActive(!isUnlocked);
             m_CompleteImage.SetActive(isCompleted);
             m_StartButton.interactable = isUnlocked;
+
+            if (m_LevelRewardView == null) return;
+            if (isCompleted)
+            {
+                m_LevelRewardView.Init(m_LevelDefnition.RepeatReward);
+            }
+            else
+            {
+                m_LevelRewardView.Init(m_LevelDefnition.FirstReward);
+            }
         }
         public void StartLevel()
         {

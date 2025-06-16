@@ -55,6 +55,16 @@ namespace LegionKnight
         }
         public void SetCompleted(bool set)
         {
+            if (!m_Completed)
+            {
+                if (m_LevelDefinition.FirstReward == null) return;
+                m_LevelDefinition.FirstReward.ClaimReward();
+            }
+            else
+            {
+                if (m_LevelDefinition.RepeatReward == null) return;
+                m_LevelDefinition.RepeatReward.ClaimReward();
+            }
             m_Completed = set;
             UnityService.Instance.SaveData(CompletedKey, set);
         }
@@ -62,6 +72,7 @@ namespace LegionKnight
         public void OnLevelDoneInvoke()
         {
             OnLevelDone?.Invoke();
+            
         }
 
         public void StartLevel()
@@ -124,22 +135,6 @@ namespace LegionKnight
             {
                 levelSelect.Init();
             }
-            //SpawnBosInternal();
-        }
-        private void SpawnBosInternal()
-        {
-            if (m_SelectedLevelDefinition.HasBoss())
-            {
-                Addressables.InstantiateAsync(m_SelectedLevelDefinition.BosAsset).Completed += OnSpawnBosInternal;
-                //StartCoroutine(SpawningBosInternal(loading));
-            }
-        }
-
-        private void OnSpawnBosInternal(AsyncOperationHandle<GameObject> handle)
-        {
-            if (handle.Status != AsyncOperationStatus.Succeeded) return;
-            GameObject result = handle.Result;
-            Destroy(result, 5f); // Destroy the GameObject after a short delay to allow initialization
         }
 
 

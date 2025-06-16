@@ -45,6 +45,14 @@ namespace LegionKnight
         public LevelDefinition NextLevel => m_NextLevel;
         public bool IsInfiniteLevel => m_IsInfiniteLevel;
 
+        [SerializeField]
+        private CharacterReward m_FirstReward;
+        [SerializeField]
+        private CharacterReward m_RepeatReward;
+
+        public CharacterReward FirstReward => m_FirstReward;
+        public CharacterReward RepeatReward => m_RepeatReward;
+
         public bool HasBoss()
         {
             return m_BosDefinition != null;
