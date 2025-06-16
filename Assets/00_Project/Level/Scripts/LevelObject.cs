@@ -165,6 +165,7 @@ namespace LegionKnight
             if (GetLevelDefinition().HasBoss())
             {
                 //BosEnemy bos = Instantiate(GameManager.Instance.GetBosPrefab());
+                AssetReferenceGameObject bossAsset = GameManager.Instance.LevelDefinition.BosAsset;
                 var loading = InstantiateAsync(GameManager.Instance.GetBosPrefab(), m_BosSpawnPost);
                 StartCoroutine(SpawningBosInternal(loading));
                 
