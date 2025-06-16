@@ -15,6 +15,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<float> m_OnTouchDownCountRateChange = new();
 
+        [SerializeField]
+        private AudioClip m_BosBGM;
 
         private float GetTouchDownRate()
         {
@@ -55,6 +57,7 @@ namespace LegionKnight
                 m_OnTriggered?.Invoke();
                 SetTriggerActive(false);
                 SetTouchDownCountInternal(0);
+                GameSetting.Instance.PlayBGM(m_BosBGM);
             }
             
             m_OnTouchDownCountRateChange?.Invoke(GetTouchDownRate());

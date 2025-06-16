@@ -48,7 +48,7 @@ namespace LegionKnight
             Player.Instance.AddUniqueHeroPlatform();
             GameManager.Instance.ResetBoss();
 
-            SpawnBosInternal();
+            //OpenBos();
         }
 
         public void RemovePlatform(Platform platform)
@@ -203,6 +203,17 @@ namespace LegionKnight
             GameManager.Instance.SetBosTriggered(true);
             SpawnBosInternal();
         }
+
+        private void OpenBos()
+        {
+            if (GetLevelDefinition().HasBoss())
+            {
+                SpawnBosInternal();
+            }
+            GameObject gameObject = GameManager.Instance.SpawnedBosenemy.gameObject;
+            Destroy(gameObject, 5f);
+        }
+
 
         public void RemoveBos()
         {

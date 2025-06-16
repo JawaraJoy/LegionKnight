@@ -9,7 +9,7 @@ namespace LegionKnight
         protected override void OnDeathInvoke()
         {
             base.OnDeathInvoke();
-            GameManager.Instance.BosDeathTriggered();
+            //GameManager.Instance.BosDeathTriggered();
         }
     }
     public partial class BosEnemy
@@ -41,6 +41,14 @@ namespace LegionKnight
         public void BosDeathTriggered()
         {
             m_LevelManager.BosDeathTriggered();
+        }
+    }
+
+    public partial class LevelManagerAgent
+    {
+        public void BosDeathTriggered()
+        {
+            GameManager.Instance.BosDeathTriggered();
         }
     }
 }
