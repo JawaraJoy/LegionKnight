@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
@@ -96,8 +97,6 @@ namespace LegionKnight
         public float SpeedPlatformRate => m_LevelObject.SpeedPlatformRate;
 
         private BosEnemy m_SpawnedBosEnemy;
-        [SerializeField]
-        private BosEnemy m_BosEnemyPrefab;
         private int m_BosSpawnCount;
         [SerializeField]
         private int m_BosHealthBonus;
@@ -125,14 +124,22 @@ namespace LegionKnight
             {
                 levelSelect.Init();
             }
+            //SpawnBosInternal();
         }
-        public BosEnemy GetBosPrefab()
+        private void SpawnBosInternal()
         {
-            return m_BosEnemyPrefab;
+            if (m_SelectedLevelDefinition.HasBoss())
+            {
+                Addressables.InstantiateAsync(m_SelectedLevelDefinition.BosAsset).Completed += OnSpawnBosInternal;
+                //StartCoroutine(SpawningBosInternal(loading));
+            }
         }
-        public void SetBosPrefab(BosEnemy set)
+
+        private void OnSpawnBosInternal(AsyncOperationHandle<GameObject> handle)
         {
-            m_BosEnemyPrefab = set;
+            if (handle.Status != AsyncOperationStatus.Succeeded) return;
+            GameObject result = handle.Result;
+            Destroy(result, 5f); // Destroy the GameObject after a short delay to allow initialization
         }
 
 

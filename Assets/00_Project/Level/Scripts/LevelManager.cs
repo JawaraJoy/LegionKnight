@@ -78,14 +78,6 @@ namespace LegionKnight
         {
             return m_LevelManager.GetSpawnedBosEnemy();
         }
-        public BosEnemy GetBosPrefab()
-        {
-            return m_LevelManager.GetBosPrefab();
-        }
-        public void SetBosPrefab(BosEnemy set)
-        {
-            m_LevelManager.SetBosPrefab(set);
-        }
         public void StartBos()
         {
             m_LevelManager.StartBos();
