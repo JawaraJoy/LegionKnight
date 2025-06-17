@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace LegionKnight
@@ -19,6 +20,8 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_CompleteText;
 
+        [SerializeField]
+        private UnityEvent<CharacterReward> m_OnSetLevelDefinition = new();
         protected override void ShowInternal()
         {
             base.ShowInternal();
@@ -47,6 +50,10 @@ namespace LegionKnight
             {
                 m_CompleteText.text = "New Level is Unlocked";
             }
+
+            bool isComplete = GameManager.Instance.IsLevelCompleted(m_CurrenLevel);
+            CharacterReward reward = isComplete ? m_CurrenLevel.RepeatReward : m_CurrenLevel.FirstReward;
+            m_OnSetLevelDefinition.Invoke(reward);
         }
 
         public void StartNextLevel()

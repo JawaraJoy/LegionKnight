@@ -11,6 +11,10 @@ namespace LegionKnight
             base.OnDeathInvoke();
             //GameManager.Instance.BosDeathTriggered();
         }
+        public void Heal(int amount)
+        {
+            AddCurrentHealthInternal(amount);
+        }
     }
     public partial class BosEnemy
     {
@@ -20,6 +24,10 @@ namespace LegionKnight
         public void InitDamageable(int healthBonus)
         {
             m_Damageable.Init(0, m_BosDefinition.Health + healthBonus);
+        }
+        public void Heal(int amount)
+        {
+            m_Damageable.Heal(amount);
         }
     }
     public partial class LevelHandler

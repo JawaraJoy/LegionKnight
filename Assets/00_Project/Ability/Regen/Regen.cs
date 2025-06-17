@@ -42,7 +42,7 @@ namespace LegionKnight
 
                 if (intervalTimer >= interval)
                 {
-                    m_OnRegenApply?.Invoke(m_AmountPerTick);
+                    m_OnRegenApply?.Invoke(amount);
                     intervalTimer = 0f;
                 }
 
