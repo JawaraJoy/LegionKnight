@@ -6,8 +6,6 @@ namespace LegionKnight
     public class Heal : MonoBehaviour
     {
         [SerializeField]
-        private SkillOwner m_SkillOwner = SkillOwner.Player; // Owner of the skill, e.g., Player or Enemy
-        [SerializeField]
         private UnityEvent<int> m_OnHealApplied = new(); // Event to notify when healing is applied
         public void ApplyHeal(int amount)
         {
@@ -20,19 +18,7 @@ namespace LegionKnight
         }
         private void ApplyHealInternal(int amount)
         {
-            switch (m_SkillOwner)
-            {
-                case SkillOwner.Player:
-                    Player.Instance.Heal(amount);
-                    break;
-                case SkillOwner.Boss:
-                    BosEnemy bosEnem = GameManager.Instance.SpawnedBosenemy;
-                    bosEnem.Heal(amount);
-                    break;
-                default:
-                    Debug.LogWarning("Unknown skill owner type.");
-                    break;
-            }
+            m_OnHealApplied.Invoke(amount);
         }
     }
 }

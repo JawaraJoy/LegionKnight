@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace LegionKnight
@@ -29,6 +30,11 @@ namespace LegionKnight
             if (defi is CharacterDefinition character)
             {
                 m_Icon.sprite = character.SmallIcon;
+                bool owned = Player.Instance.GetCharacterUnit(character).Owned;
+                if (owned)
+                {
+                    StartCoroutine(CharcterDuplicated(character));
+                }
                 /*bool owned = Player.Instance.GetCharacterUnit(character).Owned;
                 if (owned)
                 {
@@ -36,6 +42,13 @@ namespace LegionKnight
                     m_Amount.text = character.ShardAmount.ToString();
                 }*/
             }
+        }
+
+        private IEnumerator CharcterDuplicated(CharacterDefinition character)
+        {
+            yield return new WaitForSeconds(1f);
+            m_Icon.sprite = character.IconOnDuplicated;
+            m_Amount.text = character.StartingStar.ToString();
         }
         private void PlatformApplier(ScriptableObject defi)
         {

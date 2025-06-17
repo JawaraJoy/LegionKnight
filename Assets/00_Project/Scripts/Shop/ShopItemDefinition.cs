@@ -113,7 +113,7 @@ namespace LegionKnight
             {
                 if (Player.Instance.GetCharacterUnit(itemDefinition).Owned)
                 {
-                    GameManager.Instance.AddStarConvertCount(3);
+                    GameManager.Instance.AddStarConvertCount(itemDefinition.StartingStar);
                 }
                 else
                 {

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f95660b1afb64c34b8b7a9456c25d96a, type: 3}
-  m_Name: Gatot
+  m_Name: Wiro Sableng
   m_EditorClassIdentifier: 
-  m_Id: gatot
+  m_Id: wiro
   m_Label: 
-  m_Icon: {fileID: 21300000, guid: eb3bb233227e59f4986d325a76d90ecb, type: 3}
-  m_SmallIcon: {fileID: 885127493, guid: 091e0f478ce36f049abdfeb839348da8, type: 3}
+  m_Icon: {fileID: 21300000, guid: d263b95a4dc44a84f8d1800ced7dc0b5, type: 3}
+  m_SmallIcon: {fileID: 1453728265, guid: 935a7be316850944b920d566e8ac77de, type: 3}
   m_Health: 50
   m_Attack: 0
-  m_StartingStar: 2
+  m_StartingStar: 1
   m_IconOnDuplicated: {fileID: 21300000, guid: 26057c333c8404d86827b0a2a071fdcc, type: 3}
-  m_UniquePlatform: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
+  m_UniquePlatform: {fileID: 0}
   m_Weapons:
   - m_SkillName: Basic Attack
     m_Description: 
@@ -63,13 +63,15 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 1
   m_Passives:
-  - m_SkillName: Gaia
-    m_Description: Create a Big Explotion come from himself. Damaging every enemy
-      in Big Area.
-    m_Icon: {fileID: 21300000, guid: ccd3c6eb8020e97489da396bf552b3ee, type: 3}
-    m_ManaThreshold: 145
+  - m_SkillName: Sableng Force
+    m_Description: 'Shot 3 Arrow in Arc Direction
+
+      On Hit : Stun the target
+      for 5s'
+    m_Icon: {fileID: 21300000, guid: 9a96bab64a8754061aecc694db792d39, type: 3}
+    m_ManaThreshold: 65
     m_SkillAsset:
-      m_AssetGUID: 8c91b5280116a0e4194da1c20a8169fc
+      m_AssetGUID: 6b315ae5495fcb4438e0fee0c659cf2d
       m_SubObjectName: 
       m_SubObjectGUID: 
       m_SubObjectType: 
