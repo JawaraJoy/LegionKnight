@@ -107,13 +107,13 @@ namespace LegionKnight
 
         private void AddItemToPlayer(Object item)
         {
-
             GameManager.Instance.OnItemBuyInvoke(this);
-            if (item is CharacterDefinition itemDefinition)
+            /*if (item is CharacterDefinition itemDefinition)
             {
                 if (Player.Instance.GetCharacterUnit(itemDefinition).Owned)
                 {
-                    GameManager.Instance.AddStarConvertCount(itemDefinition.StartingStar);
+                    //GameManager.Instance.AddStarConvertCount(itemDefinition.ShardConvert.Amount);
+                    Player.Instance.AddCurrencyAmount(itemDefinition.ShardConvert.CurrencyDefinition, itemDefinition.ShardConvert.Amount);
                 }
                 else
                 {
@@ -131,12 +131,12 @@ namespace LegionKnight
             else
             {
                 Debug.LogError($"Unsupported item type: {item.GetType()}");
-            }
+            }*/
 
-            if (GameManager.Instance.GetShopItemControl(this).IsBonusAvaible && m_ItemBonus != null)
+            /*if (GameManager.Instance.GetShopItemControl(this).IsBonusAvaible && m_ItemBonus != null)
             {
                 AddBonusItemToPlayer(m_ItemBonus);
-            }
+            }*/
             m_OnBought?.Invoke();
             Player.Instance.AddCurrencyAmount(m_SpendRewardDefinition, m_SpendRewardAmount);
             GameManager.Instance.OnItemBoughtInvoke(this);

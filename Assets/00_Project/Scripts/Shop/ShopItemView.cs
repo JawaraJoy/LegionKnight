@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -57,9 +58,16 @@ namespace LegionKnight
         {
             m_OnBought?.Invoke(m_Definition);
             SetBonusAvaibleInternal(false);
-            GameManager.Instance.SetBonusAvaible(m_Definition, false);
+            StartCoroutine(WaitForBonusToApply());
+            
+        }
+
+        private IEnumerator WaitForBonusToApply()
+        {
+            //GameManager.Instance.SetBonusAvaible(m_Definition, false);
+            bool isBonusAvaible = GameManager.Instance.GetShopItemControl(m_Definition).IsBonusAvaible;
+            yield return new WaitUntil(() => !isBonusAvaible);
             InitInternal();
-            //InitInternal();
         }
         public void Init()
         {

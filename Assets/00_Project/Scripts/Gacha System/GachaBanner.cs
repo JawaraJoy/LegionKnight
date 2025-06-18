@@ -134,7 +134,7 @@ namespace LegionKnight
             foreach (GachaReward re in results)
             {
                 allRewards += re.Definition.name;
-                re.ApplyRewardToPlayer();
+                //re.ApplyRewardToPlayer();
             }
             
             if (!m_SkipTimeline)

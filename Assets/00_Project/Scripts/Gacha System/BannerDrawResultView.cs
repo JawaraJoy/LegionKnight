@@ -43,7 +43,7 @@ namespace LegionKnight
         public virtual void ShowResults(List<GachaReward> results)
         {
             List<object> rewards = new();
-            foreach(GachaReward r in results)
+            foreach (GachaReward r in results)
             {
                 rewards.Add(r);
             }

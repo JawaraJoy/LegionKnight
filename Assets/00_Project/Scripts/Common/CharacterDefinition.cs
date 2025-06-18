@@ -29,16 +29,13 @@ namespace LegionKnight
         private int m_Health;
         [SerializeField]
         private int m_Attack;
+
         [SerializeField]
-        private int m_StartingStar;
-        [SerializeField]
-        private Sprite m_IconOnDuplicated;
+        private Currency m_ShardConvert;
         public string Id => m_Id;
         public Sprite Icon => m_Icon;
-        public Sprite IconOnDuplicated => m_IconOnDuplicated;
+        public Currency ShardConvert => m_ShardConvert;
         public Sprite SmallIcon => m_SmallIcon;
-        public int StartingStar => m_StartingStar;
-        public int ShardAmount => StarShardControl.GetShardAmount(StartingStar);
         public string Label => m_Label;
         public int Attack => m_Attack;
         public int Health => m_Health;

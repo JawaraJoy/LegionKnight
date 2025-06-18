@@ -64,5 +64,7 @@ namespace LegionKnight
 
         }
         public int Attack => m_CharacterDefinition.Attack;
+
+        public int Health => m_CharacterDefinition.Health;
     }
 }

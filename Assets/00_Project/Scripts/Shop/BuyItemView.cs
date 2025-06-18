@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace LegionKnight
@@ -11,26 +12,30 @@ namespace LegionKnight
             {
                 Object d = shopItem.ItemBonus;
                 int bonusAmount = shopItem.BonusAmount;
+                int totalAmount;
                 if (bonusAmount > 0 && GameManager.Instance.GetShopItemControl(shopItem).IsBonusAvaible)
                 {
-                    m_Amount.text = $"{shopItem.Amount} +{bonusAmount}";
+                    totalAmount = shopItem.Amount + bonusAmount;
                 }
                 else
                 {
-                    m_Amount.text = $"{shopItem.Amount}";
+                    totalAmount = shopItem.Amount;
+                    
                 }
+                m_Amount.text = $"{totalAmount}";
                 GameManager.Instance.SetBonusAvaible(shopItem, false);
-                CurrencyApplier(d);
+                CurrencyApplier(d, totalAmount);
                 CharacterApplier(d);
-                PlatformApplier(d);
+                PlatformApplier(d, totalAmount);
             }
         }
 
-        private void CurrencyApplier(Object defi)
+        private void CurrencyApplier(Object defi, int amount)
         {
             if (defi is CurrencyDefinition currency)
             {
                 m_Icon.sprite = currency.Icon;
+                Player.Instance.AddCurrencyAmount(currency, amount);
             }
         }
         private void CharacterApplier(Object defi)
@@ -38,13 +43,31 @@ namespace LegionKnight
             if (defi is CharacterDefinition character)
             {
                 m_Icon.sprite = character.SmallIcon;
+                bool owned = Player.Instance.GetCharacterUnit(character).Owned;
+                if (owned)
+                {
+                    StartCoroutine(CharcterDuplicated(character));
+                }
+                else
+                {
+                    Player.Instance.SetOwned(character, true);
+                }
             }
         }
-        private void PlatformApplier(Object defi)
+
+        private IEnumerator CharcterDuplicated(CharacterDefinition character)
+        {
+            yield return new WaitForSeconds(1f);
+            m_Icon.sprite = character.ShardConvert.CurrencyDefinition.Icon;
+            m_Amount.text = character.ShardConvert.Amount.ToString();
+            Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
+        }
+        private void PlatformApplier(Object defi, int amount)
         {
             if (defi is StandbyPlatformDefinition platform)
             {
                 m_Icon.sprite = platform.Icon;
+                Player.Instance.AddPlatformAmount(platform, amount);
             }
         }
     }
