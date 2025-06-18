@@ -63,7 +63,7 @@ namespace LegionKnight
                     }
                     else
                     {
-                        int atk = Player.Instance.Attack + projectile.Damage;
+                        int atk = Player.Instance.GetFinalStat(1).Attack + projectile.Damage;
                         m_SpawnedProjectileDamage.Init(atk, projectile.Health);
                     }
                     m_SpawnedProjectileDamage.transform.rotation = Quaternion.Euler(m_StartingRotation);

@@ -53,6 +53,9 @@ namespace LegionKnight
         public List<SkillDefinition> Passives => m_Definition.Passives;
         public List<SkillDefinition> Weapons => m_Definition.Weapons;
         public CharacterDefinition Definition => m_Definition;
-        public int Health => m_Definition.Health;
+        public Stat FinalStat(int level)
+        {
+            return m_Definition.FinalStat(level);
+        }
     }
 }

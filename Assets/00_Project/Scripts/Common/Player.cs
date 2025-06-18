@@ -63,8 +63,9 @@ namespace LegionKnight
             m_OnSetCharacterDefinition?.Invoke(definition);
 
         }
-        public int Attack => m_CharacterDefinition.Attack;
-
-        public int Health => m_CharacterDefinition.Health;
+        public Stat GetFinalStat(int level)
+        {
+            return m_CharacterDefinition.FinalStat(level);
+        }
     }
 }

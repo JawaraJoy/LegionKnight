@@ -22,7 +22,7 @@ namespace LegionKnight
         private int m_ManaThreshold;
         private int m_Mana;
         [SerializeField]
-        private AssetReferenceGameObject m_SkillAsset;
+        private AssetReferenceGameObject[] m_SkillAsset;
         private AsyncOperationHandle<GameObject> m_Handle;
         [SerializeField]
         private UnityEvent<string> m_OnActive = new();

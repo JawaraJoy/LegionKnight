@@ -16,10 +16,24 @@ MonoBehaviour:
   m_Label: 
   m_Icon: {fileID: 21300000, guid: d263b95a4dc44a84f8d1800ced7dc0b5, type: 3}
   m_SmallIcon: {fileID: 1453728265, guid: 935a7be316850944b920d566e8ac77de, type: 3}
-  m_Health: 50
-  m_Attack: 0
-  m_StartingStar: 1
-  m_IconOnDuplicated: {fileID: 21300000, guid: 26057c333c8404d86827b0a2a071fdcc, type: 3}
+  m_BaseStat:
+    m_Attack: 5
+    m_Health: 50
+  m_StatGainPerLevel:
+    m_Attack: 1
+    m_Health: 1
+  m_ShardConvert:
+    m_CurrencyDefinition: {fileID: 0}
+    m_Amount: 0
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
   m_UniquePlatform: {fileID: 0}
   m_Weapons:
   - m_SkillName: Basic Attack
@@ -64,14 +78,11 @@ MonoBehaviour:
       m_EditorAssetChanged: 1
   m_Passives:
   - m_SkillName: Sableng Force
-    m_Description: 'Shot 3 Arrow in Arc Direction
-
-      On Hit : Stun the target
-      for 5s'
+    m_Description: Shot 2 Axes like boomerang, to deal damage on its path.
     m_Icon: {fileID: 21300000, guid: 9a96bab64a8754061aecc694db792d39, type: 3}
-    m_ManaThreshold: 65
+    m_ManaThreshold: 105
     m_SkillAsset:
-      m_AssetGUID: 6b315ae5495fcb4438e0fee0c659cf2d
+      m_AssetGUID: 
       m_SubObjectName: 
       m_SubObjectGUID: 
       m_SubObjectType: 

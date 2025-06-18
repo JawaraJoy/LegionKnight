@@ -24,21 +24,20 @@ namespace LegionKnight
         private Sprite m_Icon;
         [SerializeField]
         private Sprite m_SmallIcon;
-        [Header("Stat")]
-        [SerializeField]
-        private int m_Health;
-        [SerializeField]
-        private int m_Attack;
 
+        [SerializeField]
+        private Stat m_BaseStat;
+        [SerializeField]
+        private Stat m_StatGainPerLevel;
         [SerializeField]
         private Currency m_ShardConvert;
         public string Id => m_Id;
         public Sprite Icon => m_Icon;
+        public Stat BaseStat => m_BaseStat;
+        public Stat StatGainPerLevel => m_StatGainPerLevel;
         public Currency ShardConvert => m_ShardConvert;
         public Sprite SmallIcon => m_SmallIcon;
         public string Label => m_Label;
-        public int Attack => m_Attack;
-        public int Health => m_Health;
         [SerializeField]
         private StandbyPlatformDefinition m_UniquePlatform;
         [SerializeField]
@@ -48,6 +47,14 @@ namespace LegionKnight
         public StandbyPlatformDefinition UniquePlatform => m_UniquePlatform;
         public List<SkillDefinition> Weapons => m_Weapons;
         public List<SkillDefinition> Passives => m_Passives;
+
+        public Stat FinalStat(int level)
+        {
+            Stat finalStat = new Stat();
+            finalStat.SetStat(m_BaseStat);
+            finalStat.GetStatByLevel(m_StatGainPerLevel, level);
+            return finalStat;
+        }
     }
     [System.Serializable]
     public partial class SkillDefinition
@@ -61,8 +68,8 @@ namespace LegionKnight
         [SerializeField]
         private int m_ManaThreshold;
         [SerializeField]
-        private AssetReferenceGameObject m_SkillAsset;
-        public AssetReferenceGameObject SkillAsset => m_SkillAsset;
+        private AssetReferenceGameObject[] m_SkillAsset;
+        public AssetReferenceGameObject[] SkillAsset => m_SkillAsset;
         public string SkillName => m_SkillName;
         public Sprite Icon => m_Icon;
         public int Manathreshold => m_ManaThreshold;
