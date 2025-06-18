@@ -97,8 +97,13 @@ namespace LegionKnight
 
         private void SpawnSkill()
         {
-            m_Handle = m_SkillAsset.InstantiateAsync(GetSpawnPost(), false);
-            m_Handle.Completed += OnSpawnSkill;
+            //m_Handle = m_SkillAsset.InstantiateAsync(GetSpawnPost(), false);
+            foreach (var asset in m_SkillAsset)
+            {
+                AsyncOperationHandle<GameObject> handle = asset.InstantiateAsync(GetSpawnPost(), false);
+                handle.Completed += OnSpawnSkill;
+            }
+            //m_Handle.Completed += OnSpawnSkill;
         }
 
         private void OnSpawnSkill(AsyncOperationHandle<GameObject> handle)

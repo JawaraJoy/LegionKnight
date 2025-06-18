@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class ProjectileDamage : Damageable
+    public partial class ProjectileDamage : Damageable, IAbility
     {
         [SerializeField]
         private string m_TargetTag = "Bos Enemy";
@@ -26,6 +26,17 @@ namespace LegionKnight
 
         private int m_FindTargetCount;
         private const int m_FindTargetCounMax = 3;
+
+        public void Initialize(AbilityDefinition defi, int level)
+        {
+            // Initialize the ability with the provided definition
+            // This can include setting up specific properties or configurations based on the definition
+            if (defi != null)
+            {
+                m_Damage = defi.GetFinalAttack(level); // Assuming AbilityDefinition has a GetFinalAttack method
+                m_Health = defi.GetFinalHealth(level); // Assuming AbilityDefinition has a GetFinalHealth method
+            }
+        }
 
         public void SetTarget(Transform target)
         {

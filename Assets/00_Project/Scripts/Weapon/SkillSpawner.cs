@@ -7,6 +7,8 @@ namespace LegionKnight
     public partial class SkillSpawner : MonoBehaviour
     {
         [SerializeField]
+        private AbilityDefinition m_AbilityDefinition;
+        [SerializeField]
         private bool m_RandomSpawn = false;
         [SerializeField]
         private List<ProjectileSpawn> m_Skills = new();
@@ -86,7 +88,7 @@ namespace LegionKnight
             {
                 foreach (ProjectileSpawn skill in m_Skills)
                 {
-                    skill.LoadProjectile();
+                    skill.LoadProjectile(m_AbilityDefinition);
                 }
             }
         }
@@ -94,7 +96,7 @@ namespace LegionKnight
         {
             if (m_Skills.Count == 0) return;
             int randomIndex = GetRandomIndex();
-            m_Skills[randomIndex].LoadProjectile();
+            m_Skills[randomIndex].LoadProjectile(m_AbilityDefinition);
         }
 
         private int GetRandomIndex()

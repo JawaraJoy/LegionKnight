@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class DamageOvertime : MonoBehaviour
+    public partial class DamageOvertime : MonoBehaviour
     {
         [SerializeField]
         private Damageable m_Damageable;
@@ -46,6 +46,10 @@ namespace LegionKnight
         }
 
         public void ApplyDamageOverTime(int damagePerSecond, float duration)
+        {
+            ApplyDamageOverTimeInternal(damagePerSecond, duration);
+        }
+        private void ApplyDamageOverTimeInternal(int damagePerSecond, float duration)
         {
             m_DamagePerSecond = damagePerSecond;
             m_Duration = duration;

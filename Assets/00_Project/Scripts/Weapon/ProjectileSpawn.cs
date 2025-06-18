@@ -10,8 +10,6 @@ namespace LegionKnight
     public partial class ProjectileSpawn
     {
         [SerializeField]
-        private int m_DamageOveride;
-        [SerializeField]
         private Vector2 m_StartingForce;
         [SerializeField]
         private Vector3 m_StartingRotation;
@@ -29,8 +27,11 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<ProjectileDamage> m_OnWeaponSpawned = new();
 
-        public void LoadProjectile()
+        private AbilityDefinition m_AbilityDefinition;
+
+        public void LoadProjectile(AbilityDefinition ability)
         {
+            m_AbilityDefinition = ability;
             if (m_Local)
             {
                 m_Handle = m_ProjectileAsset.InstantiateAsync(m_SpawnPost, false);
@@ -49,23 +50,19 @@ namespace LegionKnight
 
         private void SpawnProjectile(AsyncOperationHandle<GameObject> handle)
         {
+            CharacterDefinition characterDefi = Player.Instance.UsedCharacter;
+            CharacterUnit usedChar = Player.Instance.GetCharacterUnit(characterDefi);
+            int level = usedChar.Level;
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 GameObject result = handle.Result;
+                if (result.TryGetComponent(out IAbility ability))
+                {
+                    ability.Initialize(m_AbilityDefinition, level);
+                }
                 if (result.TryGetComponent(out ProjectileDamage projectile))
                 {
-                    
                     m_SpawnedProjectileDamage = projectile;
-
-                    if (m_DamageOveride > 0)
-                    {
-                        m_SpawnedProjectileDamage.Init(m_DamageOveride, projectile.Health);
-                    }
-                    else
-                    {
-                        int atk = Player.Instance.GetFinalStat(1).Attack + projectile.Damage;
-                        m_SpawnedProjectileDamage.Init(atk, projectile.Health);
-                    }
                     m_SpawnedProjectileDamage.transform.rotation = Quaternion.Euler(m_StartingRotation);
                     m_SpawnedProjectileDamage.AddForce(m_StartingForce);
                     m_SpawnedProjectileDamage.FindTarget();

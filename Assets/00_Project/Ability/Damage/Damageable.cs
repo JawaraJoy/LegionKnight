@@ -234,5 +234,7 @@ namespace LegionKnight
         {
             return m_CurrentHealth > 0;
         }
+
+
     }
 }

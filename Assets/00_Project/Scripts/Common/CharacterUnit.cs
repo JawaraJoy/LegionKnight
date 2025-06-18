@@ -12,10 +12,14 @@ namespace LegionKnight
         [SerializeField]
         private bool m_Owned;
         [SerializeField]
+        private int m_Level = 1;
+        [SerializeField]
         private UnityEvent<CharacterUnit> m_OnCharacterStarUp = new();
         [SerializeField]
         private UnityEvent<CharacterUnit> m_OnCharacterShardUpdate = new();
         public bool Owned => m_Owned;
+
+        public int Level => m_Level;
         private void OnCharacterStarUpInvoke()
         {
             m_OnCharacterStarUp?.Invoke(this);
