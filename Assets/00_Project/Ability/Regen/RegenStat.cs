@@ -21,11 +21,11 @@ namespace LegionKnight
 
         public int GetFinalRegenAmount(int level)
         {
-            return m_RegenAmount + m_RegenAmountUpgrade * level;
+            return m_RegenAmount + m_RegenAmountUpgrade * (level - 1);
         }
         public float GetFinalRegenDuration(int level)
         {
-            return m_RegenDuration + m_RegenDurationUpgrade * level;
+            return m_RegenDuration + m_RegenDurationUpgrade * (level - 1);
         }
         public void SetRegenAmount(int regenAmount)
         {

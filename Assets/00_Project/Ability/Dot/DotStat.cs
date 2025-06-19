@@ -22,11 +22,11 @@ namespace LegionKnight
 
         public int GetFinalDamagePerTick(int level)
         {
-            return m_DamagePerTick + m_DamagePerTickUpgrade * level;
+            return m_DamagePerTick + m_DamagePerTickUpgrade * (level - 1);
         }
         public float GetFinalDuration(int level)
         {
-            return m_Duration + m_DurationUpgrade * level;
+            return m_Duration + m_DurationUpgrade * (level - 1);
         }
 
         public void SetDamagePerTick(int damagePerTick)

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace LegionKnight
 {
@@ -17,7 +18,9 @@ namespace LegionKnight
             m_Platformtitle.Hide();
             m_SkillTitle.Show();
             m_SkillTitle.SetAbility(defi);
-            m_Description.SetDescription(defi.Passives[0].Description);
+            CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
+            int level = unit.Level;
+            m_Description.SetDescription(defi.Ability.GetFinalDescription(level));
         }
         public void SetPlatform(CharacterDefinition defi)
         {

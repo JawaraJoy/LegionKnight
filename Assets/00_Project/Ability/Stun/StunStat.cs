@@ -13,7 +13,7 @@ namespace LegionKnight
         public float StunDurationUpgrade => m_StunDurationUpgrade;
         public float GetFinalStunDuration(int level)
         {
-            return m_StunDuration + m_StunDurationUpgrade * level;
+            return m_StunDuration + m_StunDurationUpgrade * (level - 1);
         }
         public void SetStunDuration(float stunDuration)
         {

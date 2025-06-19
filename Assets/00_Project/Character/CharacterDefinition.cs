@@ -44,6 +44,9 @@ namespace LegionKnight
         private List<SkillDefinition> m_Weapons = new();
         [SerializeField]
         private List<SkillDefinition> m_Passives = new();
+        [SerializeField]
+        private AbilityDefinition m_Ability;
+        public AbilityDefinition Ability => m_Ability;
         public StandbyPlatformDefinition UniquePlatform => m_UniquePlatform;
         public List<SkillDefinition> Weapons => m_Weapons;
         public List<SkillDefinition> Passives => m_Passives;

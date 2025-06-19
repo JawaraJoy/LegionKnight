@@ -13,7 +13,7 @@ namespace LegionKnight
         public int HealAmountUpgrade => m_HealAmountUpgrade;
         public int GetFinalHealAmount(int level)
         {
-            return m_HealAmount + m_HealAmountUpgrade * level;
+            return m_HealAmount + m_HealAmountUpgrade * (level - 1);
         }
         public void SetHealAmount(int healAmount)
         {

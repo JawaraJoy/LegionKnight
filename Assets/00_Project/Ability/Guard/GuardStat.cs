@@ -14,7 +14,7 @@ namespace LegionKnight
         public float DurationUpgrade => m_DurationUpgrade;
         public float GetFinalDuration(int level)
         {
-            return m_Duration + m_DurationUpgrade * level;
+            return m_Duration + m_DurationUpgrade * (level - 1);
         }
         public void SetDuration(float duration)
         {

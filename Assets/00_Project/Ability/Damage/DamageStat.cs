@@ -20,11 +20,11 @@ namespace LegionKnight
         public int HealthUpgrade => m_HealthUpgrade;
         public int GetFinalAttack(int level)
         {
-            return m_Attack + m_AttackUpgrade * level;
+            return m_Attack + m_AttackUpgrade * (level - 1);
         }
         public int GetFinalHealth(int level)
         {
-            return m_Health + m_HealthUpgrade * level;
+            return m_Health + m_HealthUpgrade * (level - 1);
         }
         public void SetAttack(int attack)
         {
