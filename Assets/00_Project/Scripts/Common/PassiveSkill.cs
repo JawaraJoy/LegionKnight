@@ -111,11 +111,10 @@ namespace LegionKnight
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 GameObject result = handle.Result;
-                if (result.TryGetComponent(out SkillSpawner spawner))
+                if (result.TryGetComponent(out ISelfAbility ability))
                 {
-                   //spawner.SpawnProjectile();
+                    ability.Initialize();
                 }
-                
             }
         }
     }

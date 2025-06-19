@@ -4,8 +4,12 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public class Regen : MonoBehaviour, IAbility
+    public class Regen : MonoBehaviour, IAbility, ISelfAbility
     {
+        [SerializeField]
+        private bool m_RegenOnStart = false; // If true, regeneration starts immediately on initialization
+        [SerializeField]
+        private AbilityDefinition m_AbilityDefinition; // Reference to the ability definition
         [SerializeField]
         private int m_AmountPerTick = 10; // Amount to regenerate
         [SerializeField]
@@ -19,8 +23,10 @@ namespace LegionKnight
 
         private void Start()
         {
-            // Start the regeneration process when the script starts
-            StartRegen();
+            if (m_RegenOnStart)
+            {
+                StartRegen(); // Start regeneration if the flag is set
+            }
         }
         public void Initialize(AbilityDefinition defi, int level)
         {
@@ -31,6 +37,17 @@ namespace LegionKnight
                 m_AmountPerTick = defi.GetFinalRegenAmount(level); // Assuming AbilityDefinition has a RegenAmountPerTick property
                 m_Duration = defi.GetFinalRegenDuration(level); // Assuming AbilityDefinition has a RegenDuration property
             }
+            StartRegen(); // Start the regeneration process
+        }
+        public void Initialize()
+        {
+            if (m_AbilityDefinition == null) return; // Ensure the ability definition is set
+            CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance
+            CharacterUnit unit = Player.Instance.GetCharacterUnit(characterDefinition);
+            int level = unit.Level;
+            m_AmountPerTick = m_AbilityDefinition.GetFinalRegenAmount(level); // Get regen amount from ability definition
+            m_Duration = m_AbilityDefinition.GetFinalRegenDuration(level); // Get regen duration from ability definition
+            StartRegen(); // Start the regeneration process
         }
         private void StartRegen()
         {

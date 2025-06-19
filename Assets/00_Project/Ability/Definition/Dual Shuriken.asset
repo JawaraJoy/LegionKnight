@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Dual Shuriken
   m_EditorClassIdentifier: 
   m_Descriptions:
-  - m_BaseVal: 10
-    m_UpgradeVal: 1
-    m_Description: Summon 2 Shuriken Orbiting around him, dealing {0:##} damage around
+  - m_UseHeroAttackScale: 1
+    m_BaseVal: 0
+    m_UpgradeVal: 0
+    m_Description: Summon 2 Shuriken Orbiting around him, dealing {0} damage around
       its path.
   m_DamageStat:
-    m_Attack: 10
+    m_IsHeroScale: 1
+    m_Attack: 0
     m_Health: 0
-    m_AttackUpgrade: 1
+    m_AttackUpgrade: 0
     m_HealthUpgrade: 0
   m_DotStat:
     m_DamagePerTick: 0

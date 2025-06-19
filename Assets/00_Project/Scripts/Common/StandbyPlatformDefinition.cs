@@ -18,11 +18,15 @@ namespace LegionKnight
         private int m_ChanceRateTospawn;
         [SerializeField]
         private AssetReferenceGameObject m_Platform;
+
+        [SerializeField]
+        private AbilityDefinition m_AbilityDefinition;
         public int ChanceRateToSpawn => m_ChanceRateTospawn;
         public AssetReferenceGameObject Platform => m_Platform;
         public string Label => $"{m_Label} Platform";
         public string Description => m_Description;
         public Sprite Icon => m_Icon;
         public string Id => m_Id;
+        public AbilityDefinition AbilityDefinition => m_AbilityDefinition;
     }
 }

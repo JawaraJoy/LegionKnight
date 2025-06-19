@@ -53,10 +53,7 @@ namespace LegionKnight
 
         public Stat FinalStat(int level)
         {
-            Stat finalStat = new Stat();
-            finalStat.SetStat(m_BaseStat);
-            finalStat.GetStatByLevel(m_StatGainPerLevel, level);
-            return finalStat;
+            return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level);
         }
     }
     [System.Serializable]

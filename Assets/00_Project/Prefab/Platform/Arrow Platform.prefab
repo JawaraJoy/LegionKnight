@@ -51,14 +51,26 @@ MonoBehaviour:
     m_SkillOwner: 0
     m_ManaThreshold: 0
     m_SkillAsset:
-      m_AssetGUID: 3fc6c1f6ea10c2640b5faeec10bac2c4
+    - m_AssetGUID: 350e356060a969249b7afc41cf8e3940
       m_SubObjectName: 
       m_SubObjectGUID: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     m_OnActive:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 0}
+          m_TargetAssemblyTypeName: 
+          m_MethodName: 
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_OnManacharge:
       m_PersistentCalls:
         m_Calls: []
@@ -137,7 +149,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.13}
+  m_Offset: {x: 0, y: -0.11}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -147,7 +159,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4.86, y: 1.09}
+  m_Size: {x: 4.86, y: 0.44}
   m_EdgeRadius: 0
 --- !u!114 &7817258566950250660
 MonoBehaviour:
@@ -192,6 +204,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 0
+      - m_Target: {fileID: 5138453835739845696}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnDeContacted:
     m_PersistentCalls:
       m_Calls: []
@@ -214,7 +238,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
       - m_Target: {fileID: 7817258566950250660}
         m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
         m_MethodName: set_enabled
@@ -338,7 +362,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
   m_OnDestroyDone:
     m_PersistentCalls:
       m_Calls:
@@ -397,6 +421,7 @@ MonoBehaviour:
   m_OnPlatformReachDestination:
     m_PersistentCalls:
       m_Calls: []
+  m_OffsiteOveride: 10
   m_Image: {fileID: 8574946090205886103}
 --- !u!1 &2155628290855336908
 GameObject:
@@ -733,7 +758,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4.03, y: 0.22}
+  m_Size: {x: 5.83, y: 0.22}
   m_EdgeRadius: 0
 --- !u!114 &5085606739062800009
 MonoBehaviour:
@@ -766,9 +791,9 @@ MonoBehaviour:
           m_StringArgument: Arrow
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 7817258566950250660}
-        m_TargetAssemblyTypeName: LegionKnight.Contact2D, Assembly-CSharp
-        m_MethodName: SetCanContact
+      - m_Target: {fileID: 417718534781463142}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

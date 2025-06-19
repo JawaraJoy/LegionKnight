@@ -199,6 +199,7 @@ MonoBehaviour:
   m_OnProtectGone:
     m_PersistentCalls:
       m_Calls: []
+  m_AbilityDefinition: {fileID: 0}
   m_TargetTag: Bos Enemy
   m_RotateSpeed: 5
   m_MinTravelSpeed: 50
@@ -206,6 +207,21 @@ MonoBehaviour:
   m_Rb: {fileID: 6974741219246434435}
   m_WithoutTarget: 1
   m_VelocityWitoutTarget: {x: 0, y: 1}
+  m_OnAbilityInitialized:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8167531723560349771}
+        m_TargetAssemblyTypeName: LegionKnight.StunAttacker, Assembly-CSharp
+        m_MethodName: Initialize
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!50 &6974741219246434435
 Rigidbody2D:
   serializedVersion: 5

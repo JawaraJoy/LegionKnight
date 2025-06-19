@@ -1,10 +1,13 @@
 using Rush;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public partial class ProjectileDamage : Damageable, IAbility
+    public partial class ProjectileDamage : Damageable, IAbility, ISelfAbility
     {
+        [SerializeField]
+        private AbilityDefinition m_AbilityDefinition; // Reference to the ability definition
         [SerializeField]
         private string m_TargetTag = "Bos Enemy";
         private Transform m_Target;  // Target to follow
@@ -24,6 +27,9 @@ namespace LegionKnight
         [SerializeField]
         private Vector2 m_VelocityWitoutTarget;
 
+        [SerializeField]
+        private UnityEvent<AbilityDefinition, int> m_OnAbilityInitialized = new();
+
         private int m_FindTargetCount;
         private const int m_FindTargetCounMax = 3;
 
@@ -35,7 +41,18 @@ namespace LegionKnight
             {
                 m_Damage = defi.GetFinalAttack(level); // Assuming AbilityDefinition has a GetFinalAttack method
                 m_Health = defi.GetFinalHealth(level); // Assuming AbilityDefinition has a GetFinalHealth method
+                m_OnAbilityInitialized?.Invoke(defi, level); // Invoke the event with the ability definition and level
             }
+        }
+
+        public void Initialize()
+        {
+            if (m_AbilityDefinition == null) return;
+            CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance
+            CharacterUnit unit = Player.Instance.GetCharacterUnit(characterDefinition);
+            int level = unit.Level;
+            m_Damage = m_AbilityDefinition.GetFinalAttack(level); // Assuming AbilityDefinition has a GetFinalAttack method
+            m_Health = m_AbilityDefinition.GetFinalHealth(level);
         }
 
         public void SetTarget(Transform target)

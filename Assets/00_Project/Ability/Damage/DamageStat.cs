@@ -6,6 +6,8 @@ namespace LegionKnight
     public class DamageStat
     {
         [SerializeField]
+        private bool m_IsHeroScale = false; // Indicates if the damage stat is scaled with hero stats
+        [SerializeField]
         private int m_Attack;
         [SerializeField]
         private int m_Health;
@@ -20,7 +22,31 @@ namespace LegionKnight
         public int HealthUpgrade => m_HealthUpgrade;
         public int GetFinalAttack(int level)
         {
+            if (m_IsHeroScale)
+            {
+                return GetFinalAttackHeroScaleInternal(level);
+            }
+            else
+            {
+                return GetFinalAttackInternal(level);
+            }
+        }
+        private int GetFinalAttackInternal(int level)
+        {
             return m_Attack + m_AttackUpgrade * (level - 1);
+        }
+
+        private int GetFinalAttackHeroScaleInternal(int level)
+        {
+            CharacterUnit unit = GetUsedCharacterUnit(); // Get the character unit based on the current player character
+            int heroAttack = unit.FinalStat(level).Attack;
+            return heroAttack + m_Attack + m_AttackUpgrade * (level - 1);
+        }
+
+        private CharacterUnit GetUsedCharacterUnit()
+        {
+            CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance
+            return Player.Instance.GetCharacterUnit(characterDefinition);
         }
         public int GetFinalHealth(int level)
         {

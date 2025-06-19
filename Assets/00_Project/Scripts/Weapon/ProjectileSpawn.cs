@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -59,6 +60,10 @@ namespace LegionKnight
                 if (result.TryGetComponent(out IAbility ability))
                 {
                     ability.Initialize(m_AbilityDefinition, level);
+                }
+                if (result.TryGetComponent(out ISelfAbility selfAbility))
+                {
+                    selfAbility.Initialize();
                 }
                 if (result.TryGetComponent(out ProjectileDamage projectile))
                 {

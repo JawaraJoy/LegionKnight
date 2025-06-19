@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1048968225
   m_SortingLayer: 5
-  m_SortingOrder: 0
+  m_SortingOrder: 7
   m_Sprite: {fileID: 21300000, guid: 8f32f1167e80ac54aac5ae54eb6bc562, type: 3}
   m_Color: {r: 0.495283, g: 0.6648436, b: 1, a: 1}
   m_FlipX: 0
@@ -5381,8 +5381,8 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 7606781587580536370}
         m_TargetAssemblyTypeName: LegionKnight.Heal, Assembly-CSharp
-        m_MethodName: ApplyHeal
-        m_Mode: 3
+        m_MethodName: Initialize
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6253,7 +6253,7 @@ Transform:
   m_GameObject: {fileID: 8915272539855888073}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 4.24, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6272,6 +6272,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 196c3e439669ba848b108d64edc2ffad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_AbilityDefinition: {fileID: 11400000, guid: b7e27121535150943b899a3d63b51167, type: 2}
+  m_ApplyOnStart: 0
+  m_HealAmount: 10
   m_OnHealApplied:
     m_PersistentCalls:
       m_Calls:

@@ -8,8 +8,10 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
-    public class Guard : MonoBehaviour, IAbility
+    public class Guard : MonoBehaviour, ISelfAbility
     {
+        [SerializeField]
+        private AbilityDefinition m_AbilityDefinition;
         [SerializeField]
         private LayerMask m_ContactLayerMask;
         private bool m_IsActive = false;
@@ -31,19 +33,14 @@ namespace LegionKnight
             OnContact(collision.gameObject);
         }
 
-        private void Start()
+        public virtual void Initialize()
         {
+            if (m_AbilityDefinition == null) return;
+            CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance
+            CharacterUnit unit = Player.Instance.GetCharacterUnit(characterDefinition);
+            int level = unit.Level;
+            m_Duration = m_AbilityDefinition.GetFinalGuardDuration(level);
             ActiveGuard();
-        }
-
-        public virtual void Initialize(AbilityDefinition defi, int level)
-        {
-            // Initialize the ability with the provided definition
-            // This can include setting up specific properties or configurations based on the definition
-            if (defi != null)
-            {
-                m_Duration = defi.GetFinalGuardDuration(level); // Assuming AbilityDefinition has a Duration property
-            }
         }
 
         private void OnContact(GameObject contactObject)

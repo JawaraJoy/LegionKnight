@@ -13,11 +13,11 @@ namespace LegionKnight
         public int Attack => m_Attack;
         public int Health => m_Health;
 
-        public Stat GetStatByLevel(Stat eachGain, int level)
+        public static Stat GetStatByLevel(Stat basic, Stat eachGain, int level)
         {
-            m_Attack += Mathf.RoundToInt(eachGain.m_Attack * level);
-            m_Health += Mathf.RoundToInt(eachGain.m_Health * level);
-            return this;
+            int attack = basic.m_Attack + Mathf.RoundToInt(eachGain.m_Attack * (level - 1));
+            int health = basic.m_Health + Mathf.RoundToInt(eachGain.m_Health * (level - 1));
+            return new Stat(attack, health);
         }
         public void SetStat(Stat other)
         {
@@ -31,6 +31,11 @@ namespace LegionKnight
         public void SetHealth(int value)
         {
             m_Health = value;
+        }
+        public Stat(int attack, int health)
+        {
+            m_Attack = attack;
+            m_Health = health;
         }
     }
 }

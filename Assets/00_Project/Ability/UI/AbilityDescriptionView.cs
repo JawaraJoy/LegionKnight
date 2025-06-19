@@ -20,7 +20,7 @@ namespace LegionKnight
             m_SkillTitle.SetAbility(defi);
             CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
             int level = unit.Level;
-            m_Description.SetDescription(defi.Ability.GetFinalDescription(level));
+            m_Description.SetDescription(defi.Ability.GetFinalDescription(unit, level));
         }
         public void SetPlatform(CharacterDefinition defi)
         {
@@ -28,7 +28,18 @@ namespace LegionKnight
             m_SkillTitle.Hide();
             m_Platformtitle.Show();
             m_Platformtitle.SetAbility(defi);
-            m_Description.SetDescription(defi.UniquePlatform.Description);
+            CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
+            int level = unit.Level;
+            AbilityDefinition ability = defi.UniquePlatform.AbilityDefinition;
+
+            if (ability == null)
+            {
+               m_Description.SetDescription(defi.UniquePlatform.Description);
+            }
+            else
+            {
+                m_Description.SetDescription(ability.GetFinalDescription(unit, level));
+            }   
         }
     }
 }

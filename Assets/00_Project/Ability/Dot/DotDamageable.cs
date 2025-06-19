@@ -2,8 +2,10 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class DotDamageable : Damageable
+    public class DotDamageable : Damageable, ISelfAbility
     {
+        [SerializeField]
+        private AbilityDefinition m_AbilityDefinition;
         [SerializeField]
         private float m_Duration = 5f;
 
@@ -15,16 +17,15 @@ namespace LegionKnight
                 projectile.ApplyDamageOverTime(m_Damage, m_Duration);
             }
         }
-        public void Initialize(AbilityDefinition defi, int level)
+        public void Initialize()
         {
-            // Initialize the ability with the provided definition
-            // This can include setting up specific properties or configurations based on the definition
-            if (defi != null)
-            {
-                m_Damage = defi.GetFinalDotDamagePerTick(level);
-                m_Health = defi.GetFinalHealth(level);
-                m_Duration = defi.GetFinalDotDuration(level);
-            }
+            if (m_AbilityDefinition == null) return; // Ensure the ability definition is set before proceeding
+            CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance
+            CharacterUnit unit = Player.Instance.GetCharacterUnit(characterDefinition);
+            int level = unit.Level;
+            m_Damage = m_AbilityDefinition.GetFinalDotDamagePerTick(level);
+            m_Duration = m_AbilityDefinition.GetFinalDotDuration(level);
+            // Additional initialization logic if needed
         }
     }
 }

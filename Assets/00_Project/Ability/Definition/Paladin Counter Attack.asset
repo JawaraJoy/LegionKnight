@@ -12,7 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ed6495d5f041f045962f55592a83365, type: 3}
   m_Name: Paladin Counter Attack
   m_EditorClassIdentifier: 
+  m_Descriptions:
+  - m_UseHeroAttackScale: 0
+    m_BaseVal: 3
+    m_UpgradeVal: 0.05
+    m_Description: 'Create a Protection Dome around herself for {0:0.##}s, to protect
+      the Hero from Enemy Attack. Also, absorb the incoming damage from enemy attacks,
+      then launch multiple projectiles based how many damage absorbed. '
+  - m_UseHeroAttackScale: 0
+    m_BaseVal: 2
+    m_UpgradeVal: 1
+    m_Description: The Projectile deal {0} damage on hit.
   m_DamageStat:
+    m_IsHeroScale: 0
     m_Attack: 2
     m_Health: 0
     m_AttackUpgrade: 1
@@ -23,8 +35,8 @@ MonoBehaviour:
     m_DamagePerTickUpgrade: 0
     m_DurationUpgrade: 0
   m_GuardStat:
-    m_Duration: 0
-    m_DurationUpgrade: 0
+    m_Duration: 10
+    m_DurationUpgrade: 0.05
   m_HealStat:
     m_HealAmount: 0
     m_HealAmountUpgrade: 0
