@@ -8,10 +8,8 @@ namespace LegionKnight
     public enum Rarity
     {
         Common,
-        Uncommon,
         Rare,
         Epic,
-        Legendary
     }
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Character")]
     public partial class CharacterDefinition : ScriptableObject
@@ -24,6 +22,8 @@ namespace LegionKnight
         private Sprite m_Icon;
         [SerializeField]
         private Sprite m_SmallIcon;
+        [SerializeField]
+        private int m_StartingStars = 1;
 
         [SerializeField]
         private Stat m_BaseStat;
@@ -50,6 +50,7 @@ namespace LegionKnight
         public StandbyPlatformDefinition UniquePlatform => m_UniquePlatform;
         public List<SkillDefinition> Weapons => m_Weapons;
         public List<SkillDefinition> Passives => m_Passives;
+        public int StartingStars => m_StartingStars;
 
         public Stat FinalStat(int level)
         {

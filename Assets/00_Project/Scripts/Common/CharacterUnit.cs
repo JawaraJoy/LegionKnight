@@ -12,7 +12,10 @@ namespace LegionKnight
         [SerializeField]
         private bool m_Owned;
         [SerializeField]
+        private int m_Star = 1;
+        [SerializeField]
         private int m_Level = 1;
+        private int m_Exp;
         [SerializeField]
         private UnityEvent<CharacterUnit> m_OnCharacterStarUp = new();
         [SerializeField]
@@ -20,6 +23,58 @@ namespace LegionKnight
         public bool Owned => m_Owned;
 
         public int Level => m_Level;
+        public int Exp => m_Exp;
+        public int Star => m_Star;
+        public int CurrentMaxExp => m_LevelFormulaDefinition.GetCurrentMaxExperience(m_Level);
+        public CurrencyDefinition ShardDefinition => m_LevelFormulaDefinition.ShardDefinition;
+        [SerializeField]
+        private LevelFormulaDefinition m_LevelFormulaDefinition;
+
+        [SerializeField]
+        private UnityEvent<CharacterUnit> m_OnLevelUp = new();
+        [SerializeField]
+        private UnityEvent<CharacterUnit> m_OnExpUpdate = new();
+        public void SetExp(int exp)
+        {
+            m_Exp = exp;
+            UnityService.Instance.SaveData(m_Definition.Id + "Exp", m_Exp);
+        }
+        public void AddExp(int exp)
+        {
+            AddExpInternal(exp);
+        }
+        private void AddExpInternal(int exp)
+        {
+            m_Exp += exp;
+            int maxLevel = m_LevelFormulaDefinition.MaxLevel;
+            int currentMaxExp = m_LevelFormulaDefinition.GetCurrentMaxExperience(m_Level);
+            while (m_Level < maxLevel && m_Exp >= currentMaxExp)
+            {
+                LevelUp();
+            }
+            UnityService.Instance.SaveData(m_Definition.Id + "Exp", m_Exp);
+            m_OnExpUpdate?.Invoke(this);
+            Debug.Log($"Current Exp: {m_Exp}, Level: {m_Level}");
+        }
+        private void LevelUp()
+        {
+            int maxLevel = m_LevelFormulaDefinition.MaxLevel;
+            int currentMaxExp = m_LevelFormulaDefinition.GetCurrentMaxExperience(m_Level);
+            if (m_Level < maxLevel)
+            {
+                m_Exp -= currentMaxExp;
+                m_Level++;
+                //UnityService.Instance.SaveData(m_CurrentLevelKey, m_Level);
+                //OnLevelUpInvoke();
+                m_OnLevelUp?.Invoke(this);
+                UnityService.Instance.SaveData(m_Definition.Id + "Lv", m_Level);
+            }
+            else
+            {
+                m_Exp = currentMaxExp; // Ensure exp does not exceed max level exp
+            }
+        }
+
         private void OnCharacterStarUpInvoke()
         {
             m_OnCharacterStarUp?.Invoke(this);
@@ -43,6 +98,22 @@ namespace LegionKnight
             if (UnityService.Instance.HasData(m_Definition.Id + "Owned"))
             {
                 m_Owned = UnityService.Instance.GetData<bool>(m_Definition.Id + "Owned");
+            }
+            if (UnityService.Instance.HasData(m_Definition.Id + "Exp"))
+            {
+                m_Exp = UnityService.Instance.GetData<int>(m_Definition.Id + "Exp");
+            }
+            else
+            {
+                m_Exp = 0;
+            }
+            if (UnityService.Instance.HasData(m_Definition.Id + "Lv"))
+            {
+                m_Level = UnityService.Instance.GetData<int>(m_Definition.Id + "Lv");
+            }
+            else
+            {
+                m_Level = 1;
             }
             //m_Owned = UnityService.Instance.GetData<bool>(m_Definition.Id + "Owned");
             if (m_Definition == Player.Instance.DefaultCharacter)

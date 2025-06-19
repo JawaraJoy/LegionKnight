@@ -87,5 +87,17 @@ namespace LegionKnight
             m_OnSelectedCharacter?.Invoke(m_SelectedCharacter);
             GameManager.Instance.SetCharacterSelected(m_SelectedCharacter);
         }
+        public void AddExp(CharacterDefinition defi, int exp)
+        {
+            GetCharacterUnitInternal(defi).AddExp(exp);
+        }
+        public int GetLevel(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Level;
+        public int GetExp(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Exp;
+        public int GetStar(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Star;
+        public int GetCurrentMaxExp(CharacterDefinition defi) => GetCharacterUnitInternal(defi).CurrentMaxExp;
+        public CurrencyDefinition GetShardCurrency(CharacterDefinition defi)
+        {
+            return GetCharacterUnitInternal(defi).ShardDefinition;
+        }
     }
 }
