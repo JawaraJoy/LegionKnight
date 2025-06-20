@@ -20,6 +20,10 @@ namespace LegionKnight
         private UnityEvent<CharacterDefinition> m_OnCharacterUsed = new();
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnSelectedCharacter = new();
+        [SerializeField]
+        private UnityEvent<CharacterDefinition> m_OnCharacterLevelUp = new();
+
+        public UnityEvent<CharacterDefinition> OnCharacterLevelUp => m_OnCharacterLevelUp;
         public CharacterDefinition DefaultCharacter => m_DefaultCharacter;
         public List<CharacterUnit> CharacterUnits => m_CharacterUnits;
         public CharacterDefinition UsedCharacter => m_UsedCharacter;
@@ -87,9 +91,17 @@ namespace LegionKnight
             m_OnSelectedCharacter?.Invoke(m_SelectedCharacter);
             GameManager.Instance.SetCharacterSelected(m_SelectedCharacter);
         }
+        private void OnCharacterLevelUpInvoke(CharacterDefinition defi)
+        {
+            m_OnCharacterLevelUp?.Invoke(defi);
+        }
         public void AddExp(CharacterDefinition defi, int exp)
         {
             GetCharacterUnitInternal(defi).AddExp(exp);
+        }
+        public void LevelUp()
+        {
+            GetCharacterUnitInternal(m_UsedCharacter).LevelUp();
         }
         public int GetLevel(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Level;
         public int GetExp(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Exp;

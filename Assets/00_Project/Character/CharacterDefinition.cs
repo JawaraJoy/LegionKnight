@@ -23,7 +23,13 @@ namespace LegionKnight
         [SerializeField]
         private Sprite m_SmallIcon;
         [SerializeField]
+        private Rarity m_Rarity = Rarity.Common;
+        [SerializeField]
+        private Color m_ColorRarity = Color.white;
+        [SerializeField]
         private int m_StartingStars = 1;
+        [SerializeField]
+        private int m_MaxStars = 3; 
 
         [SerializeField]
         private Stat m_BaseStat;
@@ -37,7 +43,10 @@ namespace LegionKnight
         public Stat StatGainPerLevel => m_StatGainPerLevel;
         public Currency ShardConvert => m_ShardConvert;
         public Sprite SmallIcon => m_SmallIcon;
+        public Rarity Rarity => m_Rarity;
         public string Label => m_Label;
+        public int MaxStars => m_MaxStars;
+        public Color ColorRarity => m_ColorRarity;
         [SerializeField]
         private StandbyPlatformDefinition m_UniquePlatform;
         [SerializeField]
@@ -55,6 +64,10 @@ namespace LegionKnight
         public Stat FinalStat(int level)
         {
             return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level);
+        }
+        public Stat NextFinalStat(int level)
+        {
+            return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level + 1);
         }
     }
     [System.Serializable]

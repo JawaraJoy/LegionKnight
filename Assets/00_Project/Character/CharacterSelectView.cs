@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -17,6 +18,14 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnCharacterSelected = new();
         public CharacterDefinition Definition => m_Definition;
+
+        [SerializeField]
+        private Image m_Frame;
+        [SerializeField]
+        private TextMeshProUGUI m_LevelText;
+
+        [SerializeField]
+        private StarGroupView m_StarGroupView;
         private void OnEnable()
         {
             InitInternal();
@@ -34,6 +43,7 @@ namespace LegionKnight
         {
             CharacterUnit character = Player.Instance.GetCharacterUnit(m_Definition);
             InitInternal(character);
+            
         }
         private void InitInternal(CharacterUnit unit)
         {
@@ -43,6 +53,10 @@ namespace LegionKnight
             m_UnitIcon.sprite = unit.SmallIcon;
             m_SelectButton.onClick.RemoveAllListeners();
             m_SelectButton.onClick.AddListener(SelectCharacterInternal);
+
+            m_StarGroupView.Init(m_Definition);
+            m_Frame.color = unit.Definition.ColorRarity;
+            m_LevelText.text = $"Lv {unit.Level}";
         }
         public void Init(CharacterUnit unit)
         {

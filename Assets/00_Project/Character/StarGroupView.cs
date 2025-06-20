@@ -7,8 +7,16 @@ namespace LegionKnight
         [SerializeField]
         private StarView[] m_StarViews;
 
-        public void Init(int openedStar, int maxStar)
+        public void Init(CharacterDefinition definition)
         {
+            CharacterUnit characterUnit = Player.Instance.GetCharacterUnit(definition);
+            int maxStar = characterUnit.MaxStar;
+            int openedStar = characterUnit.Star;
+
+            foreach (StarView starView in m_StarViews)
+            {
+                starView.HideStar();
+            }
             if (m_StarViews == null || m_StarViews.Length == 0)
             {
                 Debug.LogWarning("Star views are not initialized.");

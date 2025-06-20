@@ -22,6 +22,14 @@ namespace LegionKnight
 
         [SerializeField]
         private GameObject m_UniquePlatformContent;
+        private void OnEnable()
+        {
+            Player.Instance.OnHeroLevelUp.AddListener(OnInitInvoke);
+        }
+        private void OnDisable()
+        {
+            Player.Instance.OnHeroLevelUp.RemoveListener(OnInitInvoke);
+        }
         private void Start()
         {
             InitInternal();
@@ -33,10 +41,18 @@ namespace LegionKnight
             SetCharacterSelectedInternal(usedCharacter);
             OnInitInvoke(usedCharacter);
         }
+
+        private string GetHeroNameTextFormat(CharacterDefinition defi)
+        {
+            string hex = ColorUtility.ToHtmlStringRGB(defi.ColorRarity);
+            return $"[<color=#{hex}>{defi.Rarity}</color>] {defi.Label}"; // Format: "{Rarity} {HeroName}"
+        }
         public void SetCharacterSelectedInternal(CharacterDefinition defi)
         {
             m_HeroBigIcon.sprite = defi.Icon;
-            m_HeroNameText.text = defi.name;
+            string heroName = defi.Label;
+            string rarity = defi.Rarity.ToString();
+            m_HeroNameText.text = GetHeroNameTextFormat(defi);
             m_HeroSkillIcon.sprite = defi.Passives[0].Icon;
 
             m_UniquePlatformContent.SetActive(defi.UniquePlatform != null);

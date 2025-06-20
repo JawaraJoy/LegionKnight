@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -16,9 +17,15 @@ namespace LegionKnight
         public int GetHeroExp(CharacterDefinition defi) => m_PlayerDeck.GetExp(defi);
         public int GetHeroStar(CharacterDefinition defi) => m_PlayerDeck.GetStar(defi);
         public int GetHeroCurrentMaxExp(CharacterDefinition defi) => m_PlayerDeck.GetCurrentMaxExp(defi);
+
+        public UnityEvent<CharacterDefinition> OnHeroLevelUp => m_PlayerDeck.OnCharacterLevelUp;
         public CurrencyDefinition GetHeroShardCurrency(CharacterDefinition defi)
         {
             return m_PlayerDeck.GetShardCurrency(defi);
+        }
+        public void AddHeroExp(CharacterDefinition defi, int exp)
+        {
+            m_PlayerDeck.AddExp(defi, exp);
         }
         public void InitPlayerDeck()
         {
