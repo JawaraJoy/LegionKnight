@@ -111,7 +111,21 @@ namespace LegionKnight
                 m_Exp = currentMaxExp; // Ensure exp does not exceed max level exp
             }
         }
-
+        public void AddStar(int add)
+        {
+            AddStarInternal(add);
+        }
+        private void AddStarInternal(int add)
+        {
+            if (add <= 0) return;
+            m_Star += add;
+            if (m_Star > m_Definition.MaxStars)
+            {
+                m_Star = m_Definition.MaxStars;
+            }
+            UnityService.Instance.SaveData(m_Definition.Id + "Star", m_Star);
+            OnCharacterStarUpInvoke();
+        }
         private void OnCharacterStarUpInvoke()
         {
             m_OnCharacterStarUp?.Invoke(this);
@@ -175,21 +189,21 @@ namespace LegionKnight
         public List<SkillDefinition> Weapons => m_Definition.Weapons;
         public AbilityDefinition Ability => m_Definition.Ability;
         public CharacterDefinition Definition => m_Definition;
-        public Stat FinalStat(int star, int level)
+        public Stat FinalStat()
         {
-            return m_Definition.FinalStat(star, level);
+            return m_Definition.FinalStat(m_Star, m_Level);
         }
-        public Stat NextFinalStat(int star, int level)
+        public Stat NextFinalStat()
         {
-            return m_Definition.NextFinalStat(star, level);
+            return m_Definition.NextFinalStat(m_Star, m_Level);
         }
-        public bool CanBreak(int star, int level)
+        public bool CanBreak()
         {
-            return m_Definition.CanBreak(star, level);
+            return m_Definition.CanBreak(m_Star, m_Level);
         }
-        public Currency GetBreakCost(int star)
+        public Currency GetBreakCost()
         {
-            return m_Definition.GetBreakCost(star);
+            return m_Definition.GetBreakCost(m_Star);
         }
     }
 }

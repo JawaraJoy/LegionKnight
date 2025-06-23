@@ -14,6 +14,11 @@ namespace LegionKnight
 
         private BreakThroughStep GetStepInternal(int star)
         {
+            if (star < 0 || star >= m_BreakThroughSteps.Length)
+            {
+                Debug.LogError($"Invalid star level: {star}. Must be between 0 and {m_BreakThroughSteps.Length - 1}.");
+                return null;
+            }
             return m_BreakThroughSteps[star];
         }
 

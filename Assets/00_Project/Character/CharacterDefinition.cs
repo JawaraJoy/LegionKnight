@@ -105,14 +105,21 @@ namespace LegionKnight
                 Debug.LogError($"Invalid level: {level}. Must be greater than 0.");
                 return null;
             }
-            Stat levelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level);
+            Stat levelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level - 1);
+            Stat nextLevelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level);
+            bool canBreak = m_BreakThrough.CanBreak(star, level);
             Stat starStat = m_BreakThrough.GetStatBonus(star);
-            if (starStat == null)
+            Stat nextstarStat = m_BreakThrough.GetStatBonus(star + 1);
+            if (nextstarStat == null)
             {
                 Debug.LogError($"No stat bonus defined for star level: {star}.");
                 return null;
             }
-            Stat finalStat = levelStat + starStat;
+            Stat finalStat = nextLevelStat + starStat;
+            if (canBreak)
+            {
+                finalStat = levelStat + nextstarStat;
+            }
             return finalStat;
         }
     }

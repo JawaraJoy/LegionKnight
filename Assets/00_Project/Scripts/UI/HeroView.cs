@@ -24,11 +24,11 @@ namespace LegionKnight
         private GameObject m_UniquePlatformContent;
         private void OnEnable()
         {
-            Player.Instance.OnHeroLevelUp.AddListener(OnInitInvoke);
+            //Player.Instance.OnHeroLevelUp.AddListener(OnInitInvoke);
         }
         private void OnDisable()
         {
-            Player.Instance.OnHeroLevelUp.RemoveListener(OnInitInvoke);
+            //Player.Instance.OnHeroLevelUp.RemoveListener(OnInitInvoke);
         }
         private void Start()
         {

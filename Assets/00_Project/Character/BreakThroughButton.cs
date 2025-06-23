@@ -1,11 +1,10 @@
 using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public class UpgradeButton : UIView
+    public class BreakThroughButton : MonoBehaviour
     {
         [SerializeField]
         private CurrencyView m_ShardAmountNeed;
@@ -35,37 +34,18 @@ namespace LegionKnight
             CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
             m_CharacterUnit = unit;
 
-            CurrencyDefinition levelUpCurDefi = unit.ShardDefinition;
-            int levelUpCurAmount = unit.CurrentMaxExp;
-
-            Currency levelUpCurrency = new(levelUpCurDefi, levelUpCurAmount);
-            
-
             CurrencyDefinition breakShardDefi = unit.GetBreakCost().CurrencyDefinition;
             int breakShardAmount = unit.GetBreakCost().Amount;
 
             Currency breakShardCurrency = new(breakShardDefi, breakShardAmount);
 
-            
-
             bool isTimeToBreak = unit.CanBreak();
             bool isMaxStar = unit.Star >= unit.MaxStar;
             bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && isTimeToBreak && !isMaxStar;
 
-            bool isMaxLevel = unit.Level >= unit.MaxLevel;
-            bool canLevelUp = Player.Instance.GetCurrencyAmount(levelUpCurDefi) >= levelUpCurAmount && !isMaxLevel;
+            m_CurrencyUsed = breakShardCurrency;
 
-
-            if (canBreak)
-            {
-                m_CurrencyUsed = breakShardCurrency;
-            }
-            else
-            {
-                m_CurrencyUsed = levelUpCurrency;
-            }
-
-            m_UpgradeButton.interactable = canLevelUp || canBreak;
+            m_UpgradeButton.interactable = canBreak;
 
             m_ShardAmountNeed.SetView(m_CurrencyUsed);
         }

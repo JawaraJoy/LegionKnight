@@ -51,7 +51,7 @@ namespace LegionKnight
         {
             if (m_UseHeroAttackScale)
             {
-                return unit.FinalStat(unit.Star, level).Attack;
+                return unit.FinalStat().Attack;
             }
             return 0; // No hero attack scale applied
         }

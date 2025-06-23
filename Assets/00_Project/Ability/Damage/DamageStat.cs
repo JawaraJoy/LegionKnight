@@ -39,7 +39,7 @@ namespace LegionKnight
         private int GetFinalAttackHeroScaleInternal(int level)
         {
             CharacterUnit unit = GetUsedCharacterUnit(); // Get the character unit based on the current player character
-            int heroAttack = unit.FinalStat(unit.Star, level).Attack;
+            int heroAttack = unit.FinalStat().Attack;
             return heroAttack + m_Attack + m_AttackUpgrade * (level - 1);
         }
 
@@ -107,9 +107,9 @@ namespace LegionKnight
         public void InitStat(CharacterDefinition defi)
         {
             CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
-            m_Damage = unit.FinalStat(unit.Star, unit.Level).Attack;
-            m_Defend = unit.FinalStat(unit.Star, unit.Level).Defense;
-            m_Health = unit.FinalStat(unit.Star, unit.Level).Health;
+            m_Damage = unit.FinalStat().Attack;
+            m_Defend = unit.FinalStat().Defense;
+            m_Health = unit.FinalStat().Health;
             m_CurrentHealth = m_Health;
         }
     }
