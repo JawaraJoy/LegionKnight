@@ -22,8 +22,11 @@ namespace LegionKnight
         private UnityEvent<CharacterDefinition> m_OnSelectedCharacter = new();
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnCharacterLevelUp = new();
+        [SerializeField]
+        private UnityEvent<CharacterDefinition> m_OnCharacterStarUp = new();
 
         public UnityEvent<CharacterDefinition> OnCharacterLevelUp => m_OnCharacterLevelUp;
+        public UnityEvent<CharacterDefinition> OnCharacterStarUp => m_OnCharacterStarUp;
         public CharacterDefinition DefaultCharacter => m_DefaultCharacter;
         public List<CharacterUnit> CharacterUnits => m_CharacterUnits;
         public CharacterDefinition UsedCharacter => m_UsedCharacter;

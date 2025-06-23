@@ -39,6 +39,10 @@ namespace LegionKnight
         {
             SelectCharacterInternal();
         }
+        public void Init()
+        {
+            InitInternal();
+        }
         private void InitInternal()
         {
             CharacterUnit character = Player.Instance.GetCharacterUnit(m_Definition);

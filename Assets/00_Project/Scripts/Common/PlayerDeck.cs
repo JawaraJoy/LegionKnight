@@ -19,6 +19,7 @@ namespace LegionKnight
         public int GetHeroCurrentMaxExp(CharacterDefinition defi) => m_PlayerDeck.GetCurrentMaxExp(defi);
 
         public UnityEvent<CharacterDefinition> OnHeroLevelUp => m_PlayerDeck.OnCharacterLevelUp;
+        public UnityEvent<CharacterDefinition> OnHeroStarUp => m_PlayerDeck.OnCharacterStarUp;
         public CurrencyDefinition GetHeroShardCurrency(CharacterDefinition defi)
         {
             return m_PlayerDeck.GetShardCurrency(defi);

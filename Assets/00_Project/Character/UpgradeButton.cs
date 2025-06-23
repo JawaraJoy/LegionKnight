@@ -1,4 +1,5 @@
 using NaughtyAttributes;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -22,6 +23,9 @@ namespace LegionKnight
         [SerializeField]
         private UpgradeView m_UpgradeView;
 
+        [SerializeField]
+        private TextMeshProUGUI m_UpgradeButtonText;
+
         private void OnEnable()
         {
             m_UpgradeButton.onClick.AddListener(ShowUpgradeView);
@@ -39,35 +43,26 @@ namespace LegionKnight
             int levelUpCurAmount = unit.CurrentMaxExp;
 
             Currency levelUpCurrency = new(levelUpCurDefi, levelUpCurAmount);
-            
-
-            CurrencyDefinition breakShardDefi = unit.GetBreakCost().CurrencyDefinition;
-            int breakShardAmount = unit.GetBreakCost().Amount;
-
-            Currency breakShardCurrency = new(breakShardDefi, breakShardAmount);
-
-            
-
-            bool isTimeToBreak = unit.CanBreak();
-            bool isMaxStar = unit.Star >= unit.MaxStar;
-            bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && isTimeToBreak && !isMaxStar;
 
             bool isMaxLevel = unit.Level >= unit.MaxLevel;
             bool canLevelUp = Player.Instance.GetCurrencyAmount(levelUpCurDefi) >= levelUpCurAmount && !isMaxLevel;
 
+            m_CurrencyUsed = levelUpCurrency;
+            
 
-            if (canBreak)
+            m_ShardAmountNeed.SetView(m_CurrencyUsed);
+            if (canLevelUp)
             {
-                m_CurrencyUsed = breakShardCurrency;
+                m_UpgradeButtonText.text = "Upgrade";
+                m_ShardAmountNeed.Show();
+                m_UpgradeButton.interactable = canLevelUp;
             }
             else
             {
-                m_CurrencyUsed = levelUpCurrency;
+                m_UpgradeButtonText.text = "Max Level";
+                m_ShardAmountNeed.Hide();
+                m_UpgradeButton.interactable = false;
             }
-
-            m_UpgradeButton.interactable = canLevelUp || canBreak;
-
-            m_ShardAmountNeed.SetView(m_CurrencyUsed);
         }
 
         private void ShowUpgradeView()

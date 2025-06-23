@@ -125,6 +125,7 @@ namespace LegionKnight
             }
             UnityService.Instance.SaveData(m_Definition.Id + "Star", m_Star);
             OnCharacterStarUpInvoke();
+            Player.Instance.OnHeroStarUp.Invoke(m_Definition);
         }
         private void OnCharacterStarUpInvoke()
         {

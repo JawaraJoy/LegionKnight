@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public class BreakThroughButton : MonoBehaviour
+    public class BreakThroughButton : UIView
     {
         [SerializeField]
         private CurrencyView m_ShardAmountNeed;
@@ -19,7 +19,7 @@ namespace LegionKnight
         public Currency CurrencyUsed => m_CurrencyUsed;
 
         [SerializeField]
-        private UpgradeView m_UpgradeView;
+        private BreakThroughView m_UpgradeView;
 
         private void OnEnable()
         {

@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace LegionKnight
         [SerializeField]
         private AssetReferenceGameObject m_CharacterSelectViewAsset;
 
+        [SerializeField, ReadOnly]
         private List<CharacterSelectView> m_SpawnedCharacterSelectView = new();
 
         [SerializeField]
@@ -53,8 +55,19 @@ namespace LegionKnight
                 if (result.TryGetComponent(out CharacterSelectView view))
                 {
                     view.Init(unit);
+                    m_SpawnedCharacterSelectView.Add(view);
                 }
             }
+        }
+
+        public void Init()
+        {
+            foreach (CharacterSelectView view in m_SpawnedCharacterSelectView)
+            {
+                view.Init();
+            }
+
+
         }
     }
 }
