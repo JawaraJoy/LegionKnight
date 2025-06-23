@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ namespace LegionKnight
         private Button m_UpgradeButton;
 
         private CharacterUnit m_CharacterUnit;
+        [SerializeField, ReadOnly]
         private Currency m_CurrencyUsed;
         public CharacterUnit CharacterUnit => m_CharacterUnit;
         public Currency CurrencyUsed => m_CurrencyUsed;
@@ -32,18 +34,39 @@ namespace LegionKnight
         {
             CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
             m_CharacterUnit = unit;
-            CurrencyDefinition shardDefinition = unit.ShardDefinition;
-            int shardAmount = unit.CurrentMaxExp;
+            CurrencyDefinition levelUpCurDefi = unit.ShardDefinition;
+            int levelUpCurAmount = unit.CurrentMaxExp;
 
-            Currency shardCurrency = new(shardDefinition, shardAmount);
-            m_ShardAmountNeed.SetView(shardCurrency);
+            Currency levelUpCurrency = new(levelUpCurDefi, levelUpCurAmount);
+            
 
-            m_CurrencyUsed = shardCurrency;
+            CurrencyDefinition breakShardDefi = unit.GetBreakCost(unit.Star).CurrencyDefinition;
+            int breakShardAmount = unit.GetBreakCost(unit.Star).Amount;
 
-            bool isUpgradeAvailable = Player.Instance.GetCurrencyAmount(shardDefinition) >= shardAmount;
-            m_UpgradeButton.interactable = isUpgradeAvailable;
+            Currency breakShardCurrency = new(breakShardDefi, breakShardAmount);
 
             
+
+            bool isTimeToBreak = unit.CanBreak(unit.Star, unit.Level);
+            bool isMaxStar = unit.Star >= unit.MaxStar;
+            bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && isTimeToBreak && isMaxStar;
+
+            bool isMaxLevel = unit.Level >= unit.MaxLevel;
+            bool canLevelUp = Player.Instance.GetCurrencyAmount(levelUpCurDefi) >= levelUpCurAmount && !isMaxLevel || canBreak;
+
+
+            if (canBreak)
+            {
+                m_CurrencyUsed = breakShardCurrency;
+            }
+            else
+            {
+                m_CurrencyUsed = levelUpCurrency;
+            }
+
+            m_UpgradeButton.interactable = canLevelUp;
+
+            m_ShardAmountNeed.SetView(m_CurrencyUsed);
         }
 
         private void ShowUpgradeView()

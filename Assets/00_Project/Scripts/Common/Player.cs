@@ -63,9 +63,9 @@ namespace LegionKnight
             m_OnSetCharacterDefinition?.Invoke(definition);
 
         }
-        public Stat GetFinalStat(int level)
+        public Stat GetFinalStat(int star, int level)
         {
-            return m_CharacterDefinition.FinalStat(level);
+            return m_CharacterDefinition.FinalStat(star, level);
         }
     }
 }

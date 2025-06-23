@@ -17,6 +17,9 @@ namespace LegionKnight
         [SerializeField]
         private int m_Level = 1;
         private int m_Exp;
+
+        [SerializeField]
+        private bool m_IsUsed = false;
         [SerializeField]
         private UnityEvent<CharacterUnit> m_OnCharacterStarUp = new();
         [SerializeField]
@@ -24,9 +27,11 @@ namespace LegionKnight
         public bool Owned => m_Owned;
 
         public int Level => m_Level;
+        public int MaxLevel => m_LevelFormulaDefinition.MaxLevel;
         public int Exp => m_Exp;
         public int Star => m_Star;
         public int MaxStar => m_Definition.MaxStars;
+        public bool IsUsed => m_IsUsed;
         public int CurrentMaxExp => m_LevelFormulaDefinition.GetCurrentMaxExperience(m_Level);
         public CurrencyDefinition ShardDefinition => m_LevelFormulaDefinition.ShardDefinition;
         [SerializeField]
@@ -48,6 +53,11 @@ namespace LegionKnight
             UnityService.Instance.SaveData(m_Definition.Id + "Exp", m_Exp);
             m_OnExpUpdate?.Invoke(this);
             Debug.Log($"Current Exp: {m_Exp}, Level: {m_Level}");
+        }
+        public void SetIsUsed(bool isUsed)
+        {
+            m_IsUsed = isUsed;
+            UnityService.Instance.SaveData("used" + m_Definition.Id, m_IsUsed);
         }
         public void AddExp(int exp)
         {
@@ -151,6 +161,11 @@ namespace LegionKnight
             {
                 SetOwnedInternal(true);
             }
+            if (UnityService.Instance.HasData("used" + m_Definition.Id))
+            {
+                bool used = UnityService.Instance.GetData<bool>("used" + m_Definition.Id);
+                m_IsUsed = used;
+            }
         }
         public string CharacterName => m_Definition.name;
         public Sprite Icon => m_Definition.Icon;
@@ -160,13 +175,21 @@ namespace LegionKnight
         public List<SkillDefinition> Weapons => m_Definition.Weapons;
         public AbilityDefinition Ability => m_Definition.Ability;
         public CharacterDefinition Definition => m_Definition;
-        public Stat FinalStat(int level)
+        public Stat FinalStat(int star, int level)
         {
-            return m_Definition.FinalStat(level);
+            return m_Definition.FinalStat(star, level);
         }
-        public Stat NextFinalStat(int level)
+        public Stat NextFinalStat(int star, int level)
         {
-            return m_Definition.NextFinalStat(level);
+            return m_Definition.NextFinalStat(star, level);
+        }
+        public bool CanBreak(int star, int level)
+        {
+            return m_Definition.CanBreak(star, level);
+        }
+        public Currency GetBreakCost(int star)
+        {
+            return m_Definition.GetBreakCost(star);
         }
     }
 }

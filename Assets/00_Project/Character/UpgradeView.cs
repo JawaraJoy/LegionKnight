@@ -37,8 +37,7 @@ namespace LegionKnight
         public void Init(UpgradeButton button)
         {
             m_CharacterUnit = button.CharacterUnit;
-            m_ShardNeedAmount = button.CurrencyUsed.Amount;
-            m_ShardUsedDefi = button.CurrencyUsed.CurrencyDefinition;
+            
 
             InitInternal();
         }
@@ -57,6 +56,13 @@ namespace LegionKnight
 
         private void InitInternal()
         {
+            CurrencyDefinition shardDefinition = m_CharacterUnit.ShardDefinition;
+            int shardAmount = m_CharacterUnit.CurrentMaxExp;
+
+            m_ShardNeedAmount = shardAmount;
+            m_ShardUsedDefi = shardDefinition;
+
+
             m_ShardNameText.text = $"Owned {m_ShardUsedDefi.name}:";
             m_ShardNeed.SetView(new Currency(m_ShardUsedDefi, m_ShardNeedAmount));
 

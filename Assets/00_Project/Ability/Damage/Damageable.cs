@@ -10,6 +10,8 @@ namespace LegionKnight
         [SerializeField]
         protected int m_Damage;
         [SerializeField]
+        protected int m_Defend;
+        [SerializeField]
         protected int m_Health;
         [SerializeField]
         private int m_Shield;
@@ -20,6 +22,8 @@ namespace LegionKnight
         private UnityEvent m_OnDeath = new();
         [SerializeField]
         private UnityEvent<int> m_OnDamageTaken = new();
+        [SerializeField]
+        private UnityEvent<int> m_OnDefendChanged = new();
         [SerializeField]
         private UnityEvent<float> m_OnHealthRateChanged = new();
         [SerializeField]
@@ -60,6 +64,10 @@ namespace LegionKnight
         public int Health => m_Health;
         public int Shield => m_Shield;
         public int CurrentHealth => m_CurrentHealth;
+        public int Barrier => m_Barrier;
+
+        public int Defend => m_Defend;
+
         private float GetHealthRateInternal()
         {
             return (float)m_CurrentHealth / (float)m_Health;
@@ -85,6 +93,11 @@ namespace LegionKnight
         {
             m_OnBarrierChanged?.Invoke(barrier);
         }
+        private void OnDefendChangedInvoke(int defend)
+        {
+            m_OnDefendChanged?.Invoke(defend);
+            Debug.Log($"Defend Changed: {defend}");
+        }
         private void OnProtectGoneInvoke()
         {
             m_OnProtectGone?.Invoke();
@@ -105,8 +118,16 @@ namespace LegionKnight
         {
             TakeDamageInternal(damage);
         }
+
+        private int DamageFormula(int attacker, int defender)
+        {
+            int underAmor = Mathf.Clamp(120 + defender, 60, int.MaxValue);
+            int dmg = Mathf.RoundToInt( attacker * 120 / (underAmor));
+            return dmg;
+        }
         protected virtual void TakeDamageInternal(int damage)
         {
+            int dmg = DamageFormula(damage, m_Defend);
             if (!IsProtectGoneInternal())
             {
                 if (m_Barrier > 0)
@@ -119,13 +140,13 @@ namespace LegionKnight
                 if (m_Shield > 0)
                 {
                     //m_Shield -= damage;
-                    AddShieldInteral(-damage);
+                    AddShieldInteral(-dmg);
                     //OnShieldChangedInvoke(m_Shield);
                 }
             }
             else
             {
-                m_CurrentHealth -= damage;
+                m_CurrentHealth -= dmg;
                 OnHealthChangedInvoke(m_CurrentHealth);
                 ClampHealth();
             }
@@ -134,7 +155,7 @@ namespace LegionKnight
                 OnProtectGoneInvoke();
             }
             DeathHandler();
-            OnDamageTakenInvoke(damage);
+            OnDamageTakenInvoke(dmg);
         }
         public void AddHealth(int val)
         {
@@ -166,6 +187,15 @@ namespace LegionKnight
         public void SetShield(int val)
         {
             SetShieldInternal(val);
+        }
+        public void SetDefend(int val)
+        {
+            SetDefendInternal(val);
+        }
+        public void SetDefendInternal(int val)
+        {
+            m_Defend = val;
+            OnDefendChangedInvoke(m_Defend);
         }
         public void SetBarrier(int val)
         {
@@ -235,6 +265,13 @@ namespace LegionKnight
             return m_CurrentHealth > 0;
         }
 
-
+        public void RestartHealth()
+        {
+            m_CurrentHealth = m_Health;
+            OnHealthChangedInvoke(m_CurrentHealth);
+            OnHealthRateChangedInvoke(GetHealthRateInternal());
+            OnShieldChangedInvoke(m_Shield);
+            OnBarrierChangedInvoke(m_Barrier);
+        }
     }
 }

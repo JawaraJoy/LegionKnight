@@ -17,8 +17,8 @@ namespace LegionKnight
         public void Init(CharacterDefinition definition)
         {
             CharacterUnit characterUnit = Player.Instance.GetCharacterUnit(definition);
-            Stat finalStat = characterUnit.FinalStat(characterUnit.Level);
-            Stat nextFinalStat = characterUnit.NextFinalStat(characterUnit.Level);
+            Stat finalStat = characterUnit.FinalStat(characterUnit.Star, characterUnit.Level);
+            Stat nextFinalStat = characterUnit.NextFinalStat(characterUnit.Star, characterUnit.Level);
 
             m_LevelView.SetCurrentValue(characterUnit.Level);
             m_LevelView.SetNextValue(characterUnit.Level + 1);

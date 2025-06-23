@@ -23,6 +23,10 @@ namespace LegionKnight
             int health = basic.m_Health + Mathf.RoundToInt(eachGain.m_Health * (level - 1));
             return new Stat(attack,defense, health);
         }
+        public static Stat operator +(Stat a, Stat b)
+        {
+            return new Stat(a.m_Attack + b.m_Attack, a.m_Defense + b.m_Defense, a.m_Health + b.m_Health);
+        }
         public void SetStat(Stat other)
         {
             m_Attack = other.m_Attack;

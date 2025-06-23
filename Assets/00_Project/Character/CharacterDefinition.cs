@@ -29,7 +29,7 @@ namespace LegionKnight
         [SerializeField]
         private int m_StartingStars = 1;
         [SerializeField]
-        private int m_MaxStars = 3; 
+        private BreakThroughFormulaDefinition m_BreakThrough;
 
         [SerializeField]
         private Stat m_BaseStat;
@@ -45,7 +45,7 @@ namespace LegionKnight
         public Sprite SmallIcon => m_SmallIcon;
         public Rarity Rarity => m_Rarity;
         public string Label => m_Label;
-        public int MaxStars => m_MaxStars;
+        public int MaxStars => m_BreakThrough.GetMaxStar();
         public Color ColorRarity => m_ColorRarity;
         [SerializeField]
         private StandbyPlatformDefinition m_UniquePlatform;
@@ -61,13 +61,59 @@ namespace LegionKnight
         public List<SkillDefinition> Passives => m_Passives;
         public int StartingStars => m_StartingStars;
 
-        public Stat FinalStat(int level)
+        public Currency GetBreakCost(int star)
         {
-            return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level);
+            int amount = m_BreakThrough.GetShardAmountToBreak(star);
+            return new Currency(m_BreakThrough.ShardDefinition, amount);
         }
-        public Stat NextFinalStat(int level)
+        public bool CanBreak(int star, int level)
         {
-            return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level + 1);
+            return m_BreakThrough.CanBreak(star, level);
+        }
+        public Stat FinalStat(int star, int level)
+        {
+            if (star < 0 || star > m_BreakThrough.GetMaxStar())
+            {
+                Debug.LogError($"Invalid star level: {star}. Must be between 0 and {m_BreakThrough.GetMaxStar()}.");
+                return null;
+            }
+            if (level < 1)
+            {
+                Debug.LogError($"Invalid level: {level}. Must be greater than 0.");
+                return null;
+            }
+            Stat levelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level - 1);
+            Stat starStat = m_BreakThrough.GetStatBonus(star);
+            if (starStat == null)
+            {
+                Debug.LogError($"No stat bonus defined for star level: {star}.");
+                return null;
+            }
+            Stat finalStat = levelStat + starStat;
+            return finalStat;
+        }
+
+        public Stat NextFinalStat(int star, int level)
+        {
+            if (star < 0 || star > m_BreakThrough.GetMaxStar())
+            {
+                Debug.LogError($"Invalid star level: {star}. Must be between 0 and {m_BreakThrough.GetMaxStar()}.");
+                return null;
+            }
+            if (level < 1)
+            {
+                Debug.LogError($"Invalid level: {level}. Must be greater than 0.");
+                return null;
+            }
+            Stat levelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level);
+            Stat starStat = m_BreakThrough.GetStatBonus(star);
+            if (starStat == null)
+            {
+                Debug.LogError($"No stat bonus defined for star level: {star}.");
+                return null;
+            }
+            Stat finalStat = levelStat + starStat;
+            return finalStat;
         }
     }
     [System.Serializable]
