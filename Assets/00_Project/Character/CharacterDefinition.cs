@@ -11,7 +11,7 @@ namespace LegionKnight
         Rare,
         Epic,
     }
-    [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Character")]
+    [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Character/Unit")]
     public partial class CharacterDefinition : ScriptableObject
     {
         [SerializeField]

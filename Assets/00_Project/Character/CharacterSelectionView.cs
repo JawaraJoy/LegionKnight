@@ -60,14 +60,35 @@ namespace LegionKnight
             }
         }
 
+        private CharacterSelectView[] GetCharacterSelectViews(Rarity rarity)
+        {
+            return m_SpawnedCharacterSelectView.FindAll(x => x.Definition.Rarity == rarity).ToArray();
+        }
+
+        public void ShowRarity(int rarityIndex)
+        {
+            Rarity rarity = (Rarity)rarityIndex;
+            ShowRarity(rarity);
+        }
+        private void ShowRarity(Rarity rarity)
+        {
+            foreach (CharacterSelectView characterSelectView in m_SpawnedCharacterSelectView)
+            {
+                characterSelectView.Hide();
+            }
+            CharacterSelectView[] view = GetCharacterSelectViews(rarity);
+            foreach (CharacterSelectView characterSelectView in view)
+            {
+                characterSelectView.Show();
+            }
+        }
+
         public void Init()
         {
             foreach (CharacterSelectView view in m_SpawnedCharacterSelectView)
             {
                 view.Init();
             }
-
-
         }
     }
 }
