@@ -16,16 +16,14 @@ dependencies {
     implementation 'com.unity3d.ads-mediation:adquality-sdk:7.23.1' // Assets/IronSourceAdQuality/Editor/IronSourceAdQualityDependencies.xml:5
     implementation 'com.unity3d.ads-mediation:adquality-unity-sdk-bridge:7.23.1' // Assets/IronSourceAdQuality/Editor/IronSourceAdQualityDependencies.xml:10
     implementation 'com.unity3d.ads-mediation:facebook-adapter:4.3.49' // Assets/LevelPlay/Editor/ISFacebookAdapterDependencies.xml:12
-    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.7.0' // Assets/LevelPlay/Editor/IronSourceSDKDependencies.xml:5
+    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.8.0' // Assets/LevelPlay/Editor/IronSourceSDKDependencies.xml:5
     implementation 'com.unity3d.ads-mediation:unityads-adapter:4.3.50' // Assets/LevelPlay/Editor/ISUnityAdsAdapterDependencies.xml:5
 // Android Resolver Dependencies End
 **DEPS**}
 
 // Android Resolver Exclusions Start
 android {
-    namespace "com.unity3d.player"
-    ndkVersion "**NDKVERSION**"
-  packaging {
+  packagingOptions {
       exclude ('/lib/armeabi/*' + '*')
       exclude ('/lib/mips/*' + '*')
       exclude ('/lib/mips64/*' + '*')

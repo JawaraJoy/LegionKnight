@@ -85,6 +85,7 @@ namespace LegionKnight
                     unit.SetIsUsed(false);
                 }
             }
+            UnityService.Instance.SaveData("usedcharacter", m_UsedCharacter.Id);
             OnCharacterUsedInvoke();
         }
         public void SetSelectedCharacter(CharacterDefinition defi)
