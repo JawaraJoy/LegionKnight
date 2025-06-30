@@ -17,14 +17,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnAdLoadFailed = new();
 
-        [SerializeField]
-        private bool m_IsRewardedAdLoaded = false;
-
-        [SerializeField]
-        private float m_TimeOut = 5f;
-
-        private float m_CurrentTimeOut;
-        private bool m_IsTimeOut = false;
+        private MobileDevice m_UseDevice;
         private void Awake()
         {
             if (m_AdSetting == null)
@@ -32,6 +25,13 @@ namespace LegionKnight
                 Debug.LogError("Ad Setting is not assigned.");
                 return;
             }
+#if UNITY_ANDROID
+            m_UseDevice = MobileDevice.Android;
+#elif UNITY_IOS
+            m_UseDevice = MobileDevice.IOS;
+#elif UNITY_EDITOR
+            m_UseDevice = MobileDevice.Android;
+#endif
             InitializeAdsInternal();
         }
         private void OnAdShowCompletedInvoke()
@@ -58,7 +58,14 @@ namespace LegionKnight
 
         private void InitializeAdsInternal()
         {
-            Advertisement.Initialize(GetAdGameId(), GetTestMode(), this);
+            if (!Advertisement.isInitialized && Advertisement.isSupported)
+            {
+                Advertisement.Initialize(GetAdGameId(), GetTestMode(), this);
+            }
+            else
+            {
+                Debug.LogWarning("Unity Ads is already initialized or not supported on this platform.");
+            }
         }
         public void LoadInterstitialAd()
         {
@@ -89,6 +96,7 @@ namespace LegionKnight
                 return;
             }
             Advertisement.Show(GetRewardedID(), this);
+            Advertisement.Load(GetRewardedID(), this); // Reload after showing
         }
         public void ShowBannerAd(BannerPosition position)
         {
@@ -118,43 +126,14 @@ namespace LegionKnight
                 Debug.LogError("Rewarded Ad is not ready.");
                 return;
             }
-            if (!m_IsRewardedAdLoaded)
-            {
-                StartCoroutine(ShowingRewardedAd(onCompleted));
-                return;
-            }
             OnAdShowCompletedAddListerner(onCompleted);
             Advertisement.Show(GetRewardedID(), this);
+            Advertisement.Load(GetRewardedID(), this); // Reload after showing
         }
-        private IEnumerator ShowingRewardedAd(UnityAction onComplete)
-        {
-            GameManager.Instance.ShowAdWaitMessage("Please wait, Ad Loading...");
-            Advertisement.Load(GetRewardedID(), this);
-            m_IsTimeOut = false;
-            m_CurrentTimeOut = 0f;
-            while (!m_IsRewardedAdLoaded)
-            {
-                m_CurrentTimeOut += Time.deltaTime;
-                if (m_CurrentTimeOut >= m_TimeOut)
-                {
-                    m_IsTimeOut = true;
-                    GameManager.Instance.SetAdWaitMessage("Ad Load Timeout, Please try again later.");
-                    yield return new WaitForSeconds(2.5f);
-                    GameManager.Instance.HidePanel(PanelId.AdsWait);
-                    OnAdLoadFailedInvoke();
-                    Debug.LogError("Rewarded Ad Load Timeout");
-                    yield break;
-                }
-                yield return null;
-            }
-            yield return new WaitUntil(() => m_IsRewardedAdLoaded);
-            OnAdShowCompletedAddListerner(onComplete);
-            Advertisement.Show(GetRewardedID(), this);
-            GameManager.Instance.HidePanel(PanelId.AdsWait);
-        }
+        
         private MobileDevice GetDevice()
         {
-            return Application.platform == RuntimePlatform.Android ? MobileDevice.Android : MobileDevice.IOS;
+            return m_UseDevice;
         }
         private bool GetTestMode()
         {
@@ -191,20 +170,12 @@ namespace LegionKnight
 
         public void OnUnityAdsAdLoaded(string placementId)
         {
-            if (placementId == GetRewardedID())
-            {
-                m_IsRewardedAdLoaded = true;
-            }
             GameManager.Instance.HidePanel(PanelId.AdsWait);
             Debug.Log($"Unity Ads Ad Loaded: {placementId}");
         }
 
         public void OnUnityAdsFailedToLoad(string placementId, UnityAdsLoadError error, string message)
         {
-            if (placementId == GetRewardedID())
-            {
-                m_IsRewardedAdLoaded = false;
-            }
             GameManager.Instance.HidePanel(PanelId.AdsWait);
             Debug.LogError($"Unity Ads Failed to Load: {placementId} - {error} - {message}");
             OnAdLoadFailedInvoke();
@@ -234,12 +205,6 @@ namespace LegionKnight
             //Advertisement.Load(GetInterstitialID(), this);
             //Advertisement.Load(GetBannerID(), this);
             //Advertisement.Load(GetRewardedID(), this);
-
-            if (placementId == GetRewardedID())
-            {
-                m_IsRewardedAdLoaded = false; // Reset after showing
-            }
-
         }
     }
 }

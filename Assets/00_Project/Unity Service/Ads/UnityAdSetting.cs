@@ -8,7 +8,6 @@ namespace LegionKnight
     {
         [SerializeField]
         private List<AdPlatformSetting> m_PlatformSettings = new();
-
         private AdPlatformSetting GetAdPlatformSetting(MobileDevice device)
         {
             AdPlatformSetting match = m_PlatformSettings.Find(x => x.MobileDevice == device);

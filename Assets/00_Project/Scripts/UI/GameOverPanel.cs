@@ -41,7 +41,7 @@ namespace LegionKnight
         {
             base.OnShowInvoke();
             //GameTimeScale.SetTimeScale(0);
-            UnityService.Instance.LoadRewardedAd();
+            //UnityService.Instance.LoadRewardedAd();
 
             bool canUseRessurection = Player.Instance.CanUseResurrectionAds;
             if (canUseRessurection)
