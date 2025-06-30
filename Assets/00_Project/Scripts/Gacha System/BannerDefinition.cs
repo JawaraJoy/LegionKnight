@@ -85,8 +85,6 @@ namespace LegionKnight
         private CurrencyDefinition m_Definition;
         [SerializeField]
         private int m_Amount;
-        [SerializeField]
-        private GachaCurrency m_Currency;
         public CurrencyDefinition Definition => m_Definition;
         public int Amount => m_Amount;
 
@@ -98,33 +96,27 @@ namespace LegionKnight
     }
 
     [System.Serializable]
-    public partial class GachaCurrency
-    {
-        [SerializeField]
-        private CurrencyDefinition m_Definition;
-        [SerializeField]
-        private int m_Amount;
-
-        public CurrencyDefinition Definition => m_Definition;
-        public int Amount => m_Amount;
-        public GachaCurrency(CurrencyDefinition definition, int amount)
-        {
-            m_Definition = definition;
-            m_Amount = amount;
-        }
-    }
-    [System.Serializable]
     public partial class DrawDiscount
     {
         [SerializeField]
         private bool m_Used;
+        [SerializeField]
+        private bool m_FirstDrawUse;
         [SerializeField, Range(0f, 1f)]
-        private float m_PriceRate   ;
+        private float m_PriceRate = 1f;
+        [SerializeField, Range(0f, 1f)]
+        private float m_PriceRateFirstDraw = 1f;
         public bool Used => m_Used;
+        public bool FirstDrawUse => m_FirstDrawUse;
         public float PriceRate => m_PriceRate;
+        public float PriceRateFirstDraw => m_PriceRateFirstDraw;
         public void SetUsed(bool set)
         {
             m_Used = set;
+        }
+        public void SetFirstDrawUsed(bool set)
+        {
+            m_FirstDrawUse = set;
         }
     }
 }

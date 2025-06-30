@@ -34,5 +34,9 @@ namespace LegionKnight
         {
             m_GachanBanner.AddStarConvertCount(amount);
         }
+        public GachaBanner GetSelectedBanner()
+        {
+            return m_GachanBanner.GetSelectedBanner();
+        }
     }
 }

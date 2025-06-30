@@ -100,5 +100,10 @@ namespace LegionKnight
         {
             m_OnPerformDrawCost?.Invoke(cost);
         }
+
+        public GachaBanner GetSelectedBanner()
+        {
+            return m_SelectedBanner;
+        }
     }
 }

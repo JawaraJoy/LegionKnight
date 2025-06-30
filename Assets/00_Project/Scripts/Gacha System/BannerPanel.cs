@@ -15,6 +15,14 @@ namespace LegionKnight
         private GachaBanner m_SelectedBanner;
         [SerializeField]
         private UnityEvent<GachaBanner> m_OnSetSelectedBanner = new();
+        [SerializeField]
+        private UnityEvent<GachaBanner> m_OnInitPanel = new();
+
+        protected override void ShowInternal()
+        {
+            base.ShowInternal();
+            InitPanel();
+        }
         public void SetSeletedBanner(GachaBanner set)
         {
             m_SelectedBanner = set;
@@ -24,12 +32,10 @@ namespace LegionKnight
         {
             m_OnSetSelectedBanner?.Invoke(m_SelectedBanner); 
         }
-    }
-    public partial class GameManager
-    {
-        private BannerPanel GetBannerPanelInternal()
+        private void InitPanel()
         {
-            return GetPanel<BannerPanel>();
+            GachaBanner gachaBanner = GameManager.Instance.GetSelectedBanner();
+            m_OnInitPanel?.Invoke(gachaBanner);
         }
     }
 }

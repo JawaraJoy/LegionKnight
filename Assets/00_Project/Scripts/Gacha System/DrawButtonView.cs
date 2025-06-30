@@ -22,6 +22,7 @@ namespace LegionKnight
         private UnityEvent<GachaCurrencyCost> m_OnButtonClickBanner = new();
         public virtual void SetButtonView(GachaCurrencyCost cost)
         {
+
             m_Cost = cost;
             m_DrawIcon.sprite = m_Cost.Definition.Icon;
             m_DrawAmount.text = $"x{m_Cost.Amount}";

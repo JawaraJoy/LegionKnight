@@ -11,8 +11,6 @@ namespace LegionKnight
     {
         [SerializeField]
         private int m_TotalDraws = 0;
-        [SerializeField]
-        private bool m_UseAltermatifCurrencyToDraw;
 
         //public PlayableDirector timeline;
 
@@ -33,13 +31,15 @@ namespace LegionKnight
         public int MultiDraw => MultiDrawInternal;
         private int GuaranteedDrawInternal => m_Definition.GuaranteedDraw;
         private List<GachaReward> MainRewardInternal => m_Definition.MainRewards;
-        public int PlayerCurrencyAmountInternal => Player.Instance.GetCurrencyAmount(GetPlayerCurrency());
         private List<GachaReward> GachaRewardsInternal => m_Definition.GachaRewards;
         public BannerDefinition Definition => m_Definition;
         public int TotalDraws => m_TotalDraws;
         public bool SkipTimeline => m_SkipTimeline;
         public Sprite VisualBanner => m_Definition.VisualBanner;
         public Sprite SmallVisualBanner => m_Definition.SmallVisualBanner;
+
+        public DrawDiscount SingleDrawDiscount => m_SingleDrawDiscount;
+        public DrawDiscount MultipleDrawDiscount => m_MultipleDrawDiscount;
 
         public void Init()
         {
@@ -51,30 +51,40 @@ namespace LegionKnight
             {
                 m_TotalDraws = 0;
             }
+            if (UnityService.Instance.HasData(m_Definition.Id + "sfDUsed"))
+            {
+                m_SingleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "sfDUsed"));
+            }
+
+            if (UnityService.Instance.HasData(m_Definition.Id + "mfDUsed"))
+            {
+                m_MultipleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "mfDUsed"));
+            }
         }
         public float GetDrawCountRate()
         {
             return (float)m_TotalDraws / (float)GuaranteedDrawInternal;
         }
-        private CurrencyDefinition GetPlayerCurrency()
+        private GachaCurrencyCost GetSelectedGachaCurrencyCostInternal(int drawAmount)
         {
-            CurrencyDefinition gachaCurrency = GetSelectedGachaCurrencyCostInternal().Definition;
-            return gachaCurrency;
+            int mainCost = m_Definition.MainCurrencyToDraw.Amount * drawAmount;
+            int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(m_Definition.MainCurrencyToDraw.Definition);
+            bool alternatif = playerCurrencyAmount < mainCost;
+            GachaCurrencyCost cost = alternatif ?
+                m_Definition.AlternatifCurrencyToDraw :
+                m_Definition.MainCurrencyToDraw;
+            GachaCurrencyCost final = new GachaCurrencyCost(cost.Definition, cost.Amount * drawAmount);
+            return final;
         }
-        private GachaCurrencyCost GetSelectedGachaCurrencyCostInternal()
+        public GachaCurrencyCost GetSelectedGachaCurrencyCost(int drawAmount)
         {
-            GachaCurrencyCost cost = m_UseAltermatifCurrencyToDraw ? m_Definition.MainCurrencyToDraw : m_Definition.AlternatifCurrencyToDraw;
+            GachaCurrencyCost cost = GetSelectedGachaCurrencyCostInternal(drawAmount);
             return cost;
         }
-        public GachaCurrencyCost GetSelectedGachaCurrencyCost()
+        public GachaCurrencyCost GetFinalCurrencyCost(int drawAmount)
         {
-            GachaCurrencyCost cost = GetSelectedGachaCurrencyCostInternal();
-            return cost;
-        }
-        public GachaCurrencyCost GetFinalCurrencyCost(int amount)
-        {
-            CurrencyDefinition defi = GetSelectedGachaCurrencyCostInternal().Definition;
-            int finalCost = GetFinalCostInternal(amount);
+            CurrencyDefinition defi = GetSelectedGachaCurrencyCostInternal(drawAmount).Definition;
+            int finalCost = GetFinalCostInternal(drawAmount);
             return new GachaCurrencyCost(defi, finalCost);
         }
         public int GetFinalSingleDrawCost()
@@ -87,40 +97,60 @@ namespace LegionKnight
         }
         private int GetFinalCostInternal(int drawCount)
         {
-            int cost = GetSelectedGachaCurrencyCostInternal().Amount * drawCount;
+            int cost = GetSelectedGachaCurrencyCostInternal(drawCount).Amount;
             bool used = m_SingleDrawDiscount.Used;
+            bool firstDrawUse = m_SingleDrawDiscount.FirstDrawUse;
             float discount = m_SingleDrawDiscount.PriceRate;
+            float firstDrawDiscount = m_SingleDrawDiscount.PriceRateFirstDraw;
             if (drawCount > 1)
             {
                 used = m_MultipleDrawDiscount.Used;
+                firstDrawUse = m_MultipleDrawDiscount.FirstDrawUse;
                 discount = m_MultipleDrawDiscount.PriceRate;
+                firstDrawDiscount = m_MultipleDrawDiscount.PriceRateFirstDraw;
+
             }
-            int finalCost = used ? Mathf.RoundToInt(cost * discount) : cost;
-            return finalCost;
+            if (used && firstDrawUse)
+            {
+                cost = Mathf.CeilToInt(cost * discount * firstDrawDiscount);
+            }
+            else if (used)
+            {
+                cost = Mathf.CeilToInt(cost * discount);
+            }
+            else if (firstDrawUse)
+            {
+                cost = Mathf.CeilToInt(cost * firstDrawDiscount);
+            }
+            return cost;
         }
         public void PerformingSingleDraw()
         {
             int finalCost = GetFinalCostInternal(1);
-            m_SingleDrawDiscount.SetUsed(false);
+            m_SingleDrawDiscount.SetFirstDrawUsed(true);
             GameManager.Instance.StartCoroutine(PerformDrawCoroutine(1, finalCost));
+            UnityService.Instance.SaveData(m_Definition.Id + "sfDUsed", m_SingleDrawDiscount.FirstDrawUse);
         }
 
         public void PerformingMultiDraw()
         {
             int finalCost = GetFinalCostInternal(MultiDrawInternal);
-            m_MultipleDrawDiscount.SetUsed(false);
+            m_MultipleDrawDiscount.SetFirstDrawUsed(true);
             GameManager.Instance.StartCoroutine(PerformDrawCoroutine(MultiDrawInternal, finalCost));
+            UnityService.Instance.SaveData(m_Definition.Id + "mfDUsed", m_MultipleDrawDiscount.FirstDrawUse);
         }
 
         private IEnumerator PerformDrawCoroutine(int drawCount, int cost)
         {
-            if (PlayerCurrencyAmountInternal < cost)
+            CurrencyDefinition defi = GetSelectedGachaCurrencyCostInternal(drawCount).Definition;
+            int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(defi);
+            if (playerCurrencyAmount < cost)
             {
-                m_OnDrawResultFail?.Invoke(GetPlayerCurrency());
+                m_OnDrawResultFail?.Invoke(defi);
                 yield break;
             }
 
-            Player.Instance.AddCurrencyAmount(GetPlayerCurrency(), -cost);
+            Player.Instance.AddCurrencyAmount(defi, -cost);
             List<GachaReward> results = new();
             string allRewards = "";
             for (int i = 0; i < drawCount; i++)
@@ -152,26 +182,27 @@ namespace LegionKnight
         {
             if (m_TotalDraws >= GuaranteedDrawInternal)
             {
-                m_TotalDraws = 0; // Reset counter after main reward
+                m_TotalDraws = 0;
                 int random = Random.Range(0, MainRewardInternal.Count);
-
                 return MainRewardInternal[random];
             }
 
-            float roll = Random.value;
+            // Normalize drop rates
+            float totalDropRate = 0f;
+            foreach (var reward in GachaRewardsInternal)
+                totalDropRate += reward.DropRate;
+
+            float roll = Random.value * totalDropRate;
             float cumulative = 0f;
 
             foreach (var reward in GachaRewardsInternal)
             {
                 cumulative += reward.DropRate;
                 if (roll < cumulative)
-                {
-                    GachaReward result = reward;
-                    
-                    return result;
-                }    
+                    return reward;
             }
-            return GachaRewardsInternal[0]; // Default to first reward if no match
+            // Fallback (should not happen if rates are set up correctly)
+            return GachaRewardsInternal[^1];
         }
     }
 }

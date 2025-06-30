@@ -10,11 +10,22 @@ namespace LegionKnight
 
         private void Start()
         {
-            foreach(CurrencyView view in m_CurrencieViews)
+            InitInternal();
+        }
+
+        public void Init()
+        {
+            InitInternal();
+        }
+
+        private void InitInternal()
+        {
+            foreach (CurrencyView view in m_CurrencieViews)
             {
                 view.Init();
             }
         }
+        
         private CurrencyView GetCurrencyView(CurrencyDefinition definition)
         {
             CurrencyView match = m_CurrencieViews.Find(x => x.CurrencyDefinition == definition);

@@ -82,6 +82,13 @@ namespace LegionKnight
                 characterSelectView.Show();
             }
         }
+        public void ShowAll()
+        {
+            foreach (CharacterSelectView characterSelectView in m_SpawnedCharacterSelectView)
+            {
+                characterSelectView.Show();
+            }
+        }
 
         public void Init()
         {

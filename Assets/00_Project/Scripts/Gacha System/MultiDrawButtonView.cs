@@ -25,8 +25,17 @@ namespace LegionKnight
     {
         public void SetMultieDrawButtonView(GachaBanner banner)
         {
-            GachaCurrencyCost cost = banner.GetFinalCurrencyCost(banner.Definition.MultiDraw);
-            GetBannerPanel().SetMultiDrawButtonView(cost);
+            BannerDefinition definition = banner.Definition;
+            int mainCost = banner.GetFinalMultiDrawCost();
+            int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(definition.MainCurrencyToDraw.Definition);
+
+            bool useAlternativeCurrency = playerCurrencyAmount < mainCost;
+            GachaCurrencyCost cost = useAlternativeCurrency
+                ? definition.AlternatifCurrencyToDraw
+                : definition.MainCurrencyToDraw;
+
+            GachaCurrencyCost multiDrawCost = new GachaCurrencyCost(cost.Definition, mainCost);
+            GetBannerPanel().SetMultiDrawButtonView(multiDrawCost);
         }
     }
 }
