@@ -1149,7 +1149,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.65, y: 5}
+  m_Size: {x: 1.1, y: 5}
   m_Direction: 0
 --- !u!114 &3782978526680881856
 MonoBehaviour:
@@ -1385,7 +1385,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
-        m_CallState: 2
+        m_CallState: 0
       - m_Target: {fileID: 2428453725035944463}
         m_TargetAssemblyTypeName: LegionKnight.RigidBodyModifier, Assembly-CSharp
         m_MethodName: FreezePositionX
@@ -1402,6 +1402,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: LegionKnight.RigidBodyModifier, Assembly-CSharp
         m_MethodName: FreezeRotation
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 6983114196135514266}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: RestartHealth
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -12200,6 +12212,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6620163574274411677}
   - component: {fileID: 7689285937031040271}
+  - component: {fileID: 7161008107651865960}
+  - component: {fileID: 2357303486595680014}
   m_Layer: 0
   m_Name: Player Deck
   m_TagString: Untagged
@@ -12234,85 +12248,134 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b1029e3e10509d4c826a10578922ab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DefaultCharacter: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
-  m_UsedCharacter: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
-  m_SelectedCharacter: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
+  m_DefaultCharacter: {fileID: 11400000, guid: 5423f2f9cee332543902f0610357254e, type: 2}
+  m_UsedCharacter: {fileID: 11400000, guid: 5423f2f9cee332543902f0610357254e, type: 2}
+  m_SelectedCharacter: {fileID: 11400000, guid: 5423f2f9cee332543902f0610357254e, type: 2}
   m_CharacterUnits:
   - m_Definition: {fileID: 11400000, guid: c6ceb5811bacf1947a81b0686e4fbb54, type: 2}
     m_Owned: 0
-    m_CurrentStars: 0
-    m_StarShardControl:
-      m_CurrenShardAmount: 0
+    m_Star: 0
+    m_Level: 1
+    m_IsUsed: 0
     m_OnCharacterStarUp:
       m_PersistentCalls:
         m_Calls: []
     m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
+    m_OnLevelUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnExpUpdate:
       m_PersistentCalls:
         m_Calls: []
   - m_Definition: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
-    m_Owned: 1
-    m_CurrentStars: 0
-    m_StarShardControl:
-      m_CurrenShardAmount: 0
+    m_Owned: 0
+    m_Star: 0
+    m_Level: 1
+    m_IsUsed: 0
     m_OnCharacterStarUp:
       m_PersistentCalls:
         m_Calls: []
     m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
+    m_OnLevelUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnExpUpdate:
       m_PersistentCalls:
         m_Calls: []
   - m_Definition: {fileID: 11400000, guid: 9e93ed4a4163c4a478e65ae2db943e77, type: 2}
     m_Owned: 0
-    m_CurrentStars: 0
-    m_StarShardControl:
-      m_CurrenShardAmount: 0
+    m_Star: 0
+    m_Level: 1
+    m_IsUsed: 0
     m_OnCharacterStarUp:
       m_PersistentCalls:
         m_Calls: []
     m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
+    m_OnLevelUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnExpUpdate:
       m_PersistentCalls:
         m_Calls: []
   - m_Definition: {fileID: 11400000, guid: eaa139b553d9bda4bb604be4a8b2b4c1, type: 2}
     m_Owned: 0
-    m_CurrentStars: 0
-    m_StarShardControl:
-      m_CurrenShardAmount: 0
+    m_Star: 0
+    m_Level: 7
+    m_IsUsed: 0
     m_OnCharacterStarUp:
       m_PersistentCalls:
         m_Calls: []
     m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
+    m_OnLevelUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnExpUpdate:
       m_PersistentCalls:
         m_Calls: []
   - m_Definition: {fileID: 11400000, guid: 5423f2f9cee332543902f0610357254e, type: 2}
-    m_Owned: 0
-    m_CurrentStars: 0
-    m_StarShardControl:
-      m_CurrenShardAmount: 0
+    m_Owned: 1
+    m_Star: 0
+    m_Level: 1
+    m_IsUsed: 0
     m_OnCharacterStarUp:
       m_PersistentCalls:
         m_Calls: []
     m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
+    m_OnLevelUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnExpUpdate:
       m_PersistentCalls:
         m_Calls: []
   - m_Definition: {fileID: 11400000, guid: 37c60ec1cb33aa741b448330b2228b3c, type: 2}
     m_Owned: 0
-    m_CurrentStars: 0
-    m_StarShardControl:
-      m_CurrenShardAmount: 0
+    m_Star: 0
+    m_Level: 1
+    m_IsUsed: 0
     m_OnCharacterStarUp:
       m_PersistentCalls:
         m_Calls: []
     m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
+    m_OnLevelUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnExpUpdate:
       m_PersistentCalls:
         m_Calls: []
   - m_Definition: {fileID: 11400000, guid: 6ab4765dddb7254408e9bc24e3185dde, type: 2}
     m_Owned: 0
-    m_CurrentStars: 0
-    m_StarShardControl:
-      m_CurrenShardAmount: 0
+    m_Star: 0
+    m_Level: 1
+    m_IsUsed: 0
     m_OnCharacterStarUp:
       m_PersistentCalls:
         m_Calls: []
     m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
+    m_OnLevelUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnExpUpdate:
       m_PersistentCalls:
         m_Calls: []
   m_OnInitialized:
@@ -12345,9 +12408,172 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 6983114196135514266}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: InitStat
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSelectedCharacter:
     m_PersistentCalls:
       m_Calls: []
+  m_OnCharacterLevelUp:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7161008107651865960}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2357303486595680014}
+        m_TargetAssemblyTypeName: LegionKnight.HeroViewAgent, Assembly-CSharp
+        m_MethodName: OnCharacterLevelUpCharacterView
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnCharacterStarUp:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2357303486595680014}
+        m_TargetAssemblyTypeName: LegionKnight.HeroViewAgent, Assembly-CSharp
+        m_MethodName: OnCharacterLevelUpCharacterView
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!82 &7161008107651865960
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4510488576393087506}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -2071899236069272324, guid: 57a7e273bad2f0a46bbef594e7e76507, type: 2}
+  m_audioClip: {fileID: 8300000, guid: b0e62ed71b1538648b719821f4f63b4c, type: 3}
+  m_Resource: {fileID: 8300000, guid: b0e62ed71b1538648b719821f4f63b4c, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &2357303486595680014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4510488576393087506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79acd3312a8f1544aaac006c80540efa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4535499832059381754
 GameObject:
   m_ObjectHideFlags: 0
@@ -12443,6 +12669,7 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 10
+  m_Defend: 0
   m_Health: 50
   m_Shield: 0
   m_Barrier: 0
@@ -12450,6 +12677,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_OnDamageTaken:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDefendChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnHealthRateChanged:
@@ -23114,10 +23344,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0ec4cb3558267b4fb14d31dc378e25d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ExponentialGrowth: 1.34
+  m_ExponentialGrowth: 1.14
   m_FirstLevelExp: 100
-  m_MaxLevel: 10
-  m_ExpTable: 6400000086000000b3000000ef00000040010000ac0100003d020000ff0200000304000060050000
+  m_MaxLevel: 70
+  m_ExpTable: 64000000720000008100000093000000a7000000be000000d8000000f6000000180100003f0100006b0100009d010000d60100001702000061020000b60200001703000085030000030400009204000035050000ef050000c3060000b5070000c9080000030a0000690b0000010d0000d30e0000e610000043130000f515000007190000871c00008520000012250000422a00002c300000ea3600009a3e00005d4700005a510000bd5c0000b869000084780000638900009e9c00008bb2000089cb000007e8000082080100892d0100c0570100e0870100bcbe010046fd010092440200d995020081f20200225c03008dd40300d35d040051fa0400b8ac050019780600f35f0700436808009495090014ed0a00ab740c00
   m_OnCurrentExpChange:
     m_PersistentCalls:
       m_Calls: []
@@ -23708,6 +23938,17 @@ MonoBehaviour:
     m_OnCurrencyAmountGet:
       m_PersistentCalls:
         m_Calls: []
+  - m_CurrencyDefinition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
+    m_Amount: 0
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!114 &5021998139950130448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24039,7 +24280,7 @@ MonoBehaviour:
     m_StanbyPlatform: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
   - m_IsOwned: 0
     m_Amount: 0
-    m_StanbyPlatform: {fileID: 11400000, guid: 6e52cc758bd383e4b98711f6b051bdd5, type: 2}
+    m_StanbyPlatform: {fileID: 11400000, guid: 8f1136fecdb0fdf46b758b19e57f80c1, type: 2}
   m_OnInitialized:
     m_PersistentCalls:
       m_Calls: []

@@ -52,13 +52,13 @@ MonoBehaviour:
   - m_PostName: Home
     m_Post: {x: 0, y: 8, z: -28}
   - m_PostName: Gameplay
-    m_Post: {x: 0, y: 6, z: -35}
+    m_Post: {x: 0, y: 6, z: -39}
   m_OnSetStayFollow:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ObjectFollow, Assembly-CSharp
-        m_MethodName: SetStayFollow
+      - m_Target: {fileID: 2143795639033570863}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -70,19 +70,7 @@ MonoBehaviour:
         m_CallState: 2
   m_OnSetOffsite:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ObjectFollow, Assembly-CSharp
-        m_MethodName: SetOffsite
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &5690865285836926290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 5
-    PositionDamping: {x: 0, y: 0.2, z: 0}
+    PositionDamping: {x: 0, y: 0, z: 0}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
