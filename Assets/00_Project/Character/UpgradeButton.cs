@@ -13,6 +13,8 @@ namespace LegionKnight
 
         [SerializeField]
         private Button m_UpgradeButton;
+        [SerializeField]
+        private Button m_QuickAccessButton;
 
         private CharacterUnit m_CharacterUnit;
         [SerializeField, ReadOnly]
@@ -56,13 +58,18 @@ namespace LegionKnight
                 m_UpgradeButtonText.text = "Upgrade";
                 m_ShardAmountNeed.Show();
                 m_UpgradeButton.interactable = canLevelUp;
+                
             }
             else
             {
-                m_UpgradeButtonText.text = "Max Level";
                 m_ShardAmountNeed.Hide();
                 m_UpgradeButton.interactable = false;
             }
+            if (isMaxLevel)
+            {
+                m_UpgradeButtonText.text = "Max Level";
+            }
+            m_QuickAccessButton.gameObject.SetActive(!canLevelUp);
         }
 
         private void ShowUpgradeView()

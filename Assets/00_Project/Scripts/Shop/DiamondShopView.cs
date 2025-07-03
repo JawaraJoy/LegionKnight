@@ -16,6 +16,10 @@ namespace LegionKnight
         public void ShowDiamondShop(string showTab)
         {
             ShowInternal();
+            foreach (var shopView in m_ShopViews)
+            {
+                shopView.Hide();
+            }
             GetDiamondShopView().Show();
             GetDiamondShopView().ShowTab(showTab);
         }
@@ -25,6 +29,7 @@ namespace LegionKnight
     {
         public void ShowDiamondShop(string showTab)
         {
+
             GetPanelInternal<ShopPanel>().ShowDiamondShop(showTab);
         }
     }

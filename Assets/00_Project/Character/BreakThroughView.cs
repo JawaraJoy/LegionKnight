@@ -17,6 +17,8 @@ namespace LegionKnight
 
         [SerializeField]
         private Button m_UpgradeButton;
+        [SerializeField]
+        private Button m_QuickAccessButton;
 
         private Currency m_UsedUpgradeShard;
 
@@ -74,6 +76,7 @@ namespace LegionKnight
             m_UsedUpgradeShard = breakShardCurrency;
 
             m_UpgradeButton.interactable = canBreak;
+            m_QuickAccessButton.gameObject.SetActive(!canBreak);
 
             int ownerCurrencyAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeShard.CurrencyDefinition);
             Currency ownedCurrency = new(m_UsedUpgradeShard.CurrencyDefinition, ownerCurrencyAmount);
