@@ -6,7 +6,16 @@ namespace LegionKnight
     [CreateAssetMenu(fileName = "AccountData", menuName = "Legion Knight/AccountData")]
     public class AccountData : ScriptableObject
     {
+        [SerializeField]
+        private DataField[] m_DataFields;
+    }
+
+    [System.Serializable]
+    public class DataField
+    {
+        [SerializeField]
+        private string m_Title;
         [SerializeField, TextArea]
-        private List<string> m_Data = new List<string>();
+        private string m_Value;
     }
 }

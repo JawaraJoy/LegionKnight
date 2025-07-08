@@ -20,14 +20,7 @@ namespace LegionKnight
 
         private void Awake()
         {
-            PlayGamesPlatform.Activate();
-        }
-
-        private void Start()
-        {
-            // Optionally, you can automatically start the sign-in process when the script starts.
-            StartSignInWithGoogle();
-            Debug.Log("GoogleAuth initialized. Ready to start sign-in process.");
+            //PlayGamesPlatform.Activate();
         }
         public void StartSignInWithGoogle()
         {
