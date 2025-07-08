@@ -22,6 +22,13 @@ namespace LegionKnight
         {
             PlayGamesPlatform.Activate();
         }
+
+        private void Start()
+        {
+            // Optionally, you can automatically start the sign-in process when the script starts.
+            StartSignInWithGoogle();
+            Debug.Log("GoogleAuth initialized. Ready to start sign-in process.");
+        }
         public void StartSignInWithGoogle()
         {
             // This method should contain the logic to start the sign-in process with Google Play Games.
