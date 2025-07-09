@@ -48,7 +48,7 @@ namespace LegionKnight
             {
                 StartCoroutine(Countingdown());
             }
-            m_RessurectionButton.gameObject.SetActive(canUseRessurection);
+            //m_RessurectionButton.gameObject.SetActive(canUseRessurection);
 
             
             Player.Instance.SetPause(true);

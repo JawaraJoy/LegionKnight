@@ -20,6 +20,10 @@ namespace LegionKnight
         {
             return m_MainCanvas.GetPanel<T>();
         }
+        public PanelView GetPanel(string uniqueId)
+        {
+            return GetPanelInternal(uniqueId);
+        }
         protected PanelView GetPanelInternal(string uniqueId)
         {
             return m_MainCanvas.GetPanel(uniqueId);
