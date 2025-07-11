@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace LegionKnight
@@ -7,7 +8,8 @@ namespace LegionKnight
         public void EraseBosDamageables()
         {
             EraseBosProjectileInternal();
-            if (!GameManager.Instance.IsInfiniteLevel)
+            StartCoroutine(OpenWinPanelDelay(3f));
+            /*if (!GameManager.Instance.IsInfiniteLevel)
             {
                 GameManager.Instance.SetLevelOver(true);
                 WinPanel winPanel = GameManager.Instance.GetPanel<WinPanel>();
@@ -16,6 +18,25 @@ namespace LegionKnight
                 GameManager.Instance.SetLevelUnlocked(GameManager.Instance.LevelDefinition.NextLevel, true);
                 GameManager.Instance.SetLevelCompleted(GameManager.Instance.LevelDefinition, true);
                 
+            }*/
+        }
+
+        public void OpenWinPanel(float delay)
+        {
+            StartCoroutine(OpenWinPanelDelay(delay));
+        }
+
+        private IEnumerator OpenWinPanelDelay(float delay)
+        {
+            GameManager.Instance.SetLevelOver(true);
+            yield return new WaitForSeconds(delay);
+            if (!GameManager.Instance.IsInfiniteLevel)
+            {
+                WinPanel winPanel = GameManager.Instance.GetPanel<WinPanel>();
+                winPanel.Show();
+                winPanel.SetLevelDefinition(GameManager.Instance.LevelDefinition);
+                GameManager.Instance.SetLevelUnlocked(GameManager.Instance.LevelDefinition.NextLevel, true);
+                GameManager.Instance.SetLevelCompleted(GameManager.Instance.LevelDefinition, true);
             }
         }
         public void EraseBossProjectile()

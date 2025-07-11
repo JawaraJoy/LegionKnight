@@ -10,6 +10,8 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_HeroNameText;
         [SerializeField]
+        private Image m_TypeIcon;
+        [SerializeField]
         private Image m_HeroBigIcon;
         [SerializeField]
         private Image m_HeroSkillIcon;
@@ -54,6 +56,7 @@ namespace LegionKnight
             string rarity = defi.Rarity.ToString();
             m_HeroNameText.text = GetHeroNameTextFormat(defi);
             m_HeroSkillIcon.sprite = defi.Passives[0].Icon;
+            m_TypeIcon.sprite = defi.TypeIcon;
 
             m_UniquePlatformContent.SetActive(defi.UniquePlatform != null);
 

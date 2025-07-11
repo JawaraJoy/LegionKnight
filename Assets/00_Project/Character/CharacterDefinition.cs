@@ -23,6 +23,8 @@ namespace LegionKnight
         [SerializeField]
         private Sprite m_SmallIcon;
         [SerializeField]
+        private Sprite m_TypeIcon;
+        [SerializeField]
         private Rarity m_Rarity = Rarity.Common;
         [SerializeField]
         private Color m_ColorRarity = Color.white;
@@ -44,6 +46,7 @@ namespace LegionKnight
         public Currency ShardConvert => m_ShardConvert;
         public Sprite SmallIcon => m_SmallIcon;
         public Rarity Rarity => m_Rarity;
+        public Sprite TypeIcon => m_TypeIcon;
         public string Label => m_Label;
         public int MaxStars => m_BreakThrough.GetMaxStar();
         public Color ColorRarity => m_ColorRarity;
