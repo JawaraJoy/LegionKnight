@@ -21,6 +21,8 @@ namespace LegionKnight
         public LevelDefinition LevelDefinition => m_LevelDefinition;
 
         [SerializeField]
+        private UnityEvent<BosDefinition> OnLevelStart = new();
+        [SerializeField]
         private UnityEvent OnLevelDone;
 
         private string UnlockedKey => m_LevelDefinition.Id + "unl";
@@ -80,6 +82,7 @@ namespace LegionKnight
             if (m_Unlocked)
             {
                 m_LevelDefinition.StartLevel();
+                OnLevelStart?.Invoke(m_LevelDefinition.BosDefinition);
             }
         }
     }
@@ -293,7 +296,8 @@ namespace LegionKnight
         {
             m_SpawnedBosEnemy = set;
             m_SpawnedBosEnemy.SetBosDefinition(m_SelectedLevelDefinition.BosDefinition);
-            m_SpawnedBosEnemy.InitDamageable(m_BosHealthBonus * m_BosSpawnCount);
+            //m_SpawnedBosEnemy.InitDamageable(m_BosHealthBonus * m_BosSpawnCount
+            m_SpawnedBosEnemy.InitDamageable(m_BosSpawnCount);
         }
         public BosEnemy GetSpawnedBosEnemy()
         {

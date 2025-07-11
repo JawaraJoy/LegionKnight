@@ -300,6 +300,7 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 0
+  m_Defend: 0
   m_Health: 10
   m_Shield: 0
   m_Barrier: 0
@@ -405,6 +406,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
     m_PersistentCalls:
       m_Calls:
@@ -420,6 +424,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnDamageChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnShieldChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -26435,6 +26442,7 @@ GameObject:
   - component: {fileID: 6663901950640248910}
   - component: {fileID: 8556516545870801029}
   - component: {fileID: 5615729976155994111}
+  - component: {fileID: 8952173253707504616}
   m_Layer: 0
   m_Name: Bos Enemy
   m_TagString: Untagged
@@ -26481,7 +26489,19 @@ MonoBehaviour:
   m_BosDefinition: {fileID: 11400000, guid: 7090a21725d9502408643e33f9f95bda, type: 2}
   m_OnSetBosDefinition:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8952173253707504616}
+        m_TargetAssemblyTypeName: LegionKnight.BosSkillContainerAgent, Assembly-CSharp
+        m_MethodName: InitBos
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_BosForm: {fileID: 6040567752974675477}
   m_BosSkill: {fileID: 776969825580286560}
 --- !u!114 &9048604627607117514
@@ -26839,5 +26859,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5522c643cb7e34b41a0360efe67a9027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8952173253707504616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9096491602748821199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b36d7ee425c60444b9143b948caf6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

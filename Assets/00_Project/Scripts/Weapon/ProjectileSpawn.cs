@@ -73,6 +73,10 @@ namespace LegionKnight
                     m_SpawnedProjectileDamage.FindTarget();
                     OnWeaponSpawnedInvoke();
                 }
+                if (result.TryGetComponent(out BosDamageableGrowth bosGrowth))
+                {
+                    bosGrowth.SetLevel(GameManager.Instance.GetSpawnedBosEnemy().GetBosLevel());
+                }
             }
         }
     }

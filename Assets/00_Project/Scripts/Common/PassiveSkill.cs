@@ -59,7 +59,11 @@ namespace LegionKnight
             return target;
         }
 
-        
+        public void SetSkillOwner(SkillOwner owner)
+        {
+            m_SkillOwner = owner;
+        }
+
         public void ForceActivated()
         {
             OnActiveInvoke();
@@ -147,6 +151,13 @@ namespace LegionKnight
         public void SetCanActive(bool set)
         {
             m_CanActive = set;
+        }
+        public void SetOwner(SkillOwner owner)
+        {
+            foreach (SkillActivation skill in m_SkillActivations)
+            {
+                skill.SetSkillOwner(owner);
+            }
         }
         private ProjectileAbility GetAbilityByName(string abilityName)
         {

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6861625195590003693}
   - component: {fileID: 5979340497444359192}
   - component: {fileID: -5505010960483093904}
+  - component: {fileID: 7520897621112302838}
   m_Layer: 0
   m_Name: Bos Attack 2
   m_TagString: Untagged
@@ -70,7 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4259cb547f7422742adb413dd5c54646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AbilityName: Double Saw
+  m_AbilityName: Rock Twist
   m_AbilityOwner: 1
   m_OnAbilityTriggered:
     m_PersistentCalls:
@@ -123,6 +124,7 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 30
+  m_Defend: 0
   m_Health: 50
   m_Shield: 0
   m_Barrier: 0
@@ -144,7 +146,13 @@ MonoBehaviour:
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:
@@ -256,6 +264,56 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7520897621112302838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342333657518190669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90851fc1c155dd74ca636bc5ee69a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_Attack: 18
+    m_Defense: 0
+    m_Health: 50
+  m_GrowthStat:
+    m_Attack: 2
+    m_Defense: 0
+    m_Health: 13
+  m_OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7258963602502329314}
+        m_TargetAssemblyTypeName: LegionKnight.DamageableGrowth, Assembly-CSharp
+        m_MethodName: SetLevel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: LegionKnight.DamageableGrowth, Assembly-CSharp
+        m_MethodName: SetLevel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnStatUpdate:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5403822299663120251
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,6 +328,7 @@ GameObject:
   - component: {fileID: 7584988686361078212}
   - component: {fileID: 4794457284163543077}
   - component: {fileID: 5957200512460412963}
+  - component: {fileID: 8698707489193765403}
   m_Layer: 17
   m_Name: Star Attack (2)
   m_TagString: Bos Enemy
@@ -5174,24 +5233,13 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 1
+  m_Defend: 0
   m_Health: 2
   m_Shield: 0
   m_Barrier: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5979340497444359192}
-        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
-        m_MethodName: TakeDamage
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 5403822299663120251}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -5206,8 +5254,26 @@ MonoBehaviour:
         m_CallState: 2
   m_OnDamageTaken:
     m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5979340497444359192}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnDefendChanged:
+    m_PersistentCalls:
       m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:
@@ -5271,6 +5337,32 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 1.7
+--- !u!114 &8698707489193765403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403822299663120251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90851fc1c155dd74ca636bc5ee69a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_Attack: 0
+    m_Defense: 0
+    m_Health: 0
+  m_GrowthStat:
+    m_Attack: 0
+    m_Defense: 0
+    m_Health: 0
+  m_OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStatUpdate:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5990676915063834088
 GameObject:
   m_ObjectHideFlags: 0
@@ -5285,6 +5377,7 @@ GameObject:
   - component: {fileID: 4405403984373663663}
   - component: {fileID: 2700082440991558563}
   - component: {fileID: 4994055010530522033}
+  - component: {fileID: 7258963602502329314}
   m_Layer: 17
   m_Name: Star Attack (1)
   m_TagString: Bos Enemy
@@ -10189,24 +10282,13 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 1
+  m_Defend: 0
   m_Health: 2
   m_Shield: 0
   m_Barrier: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5979340497444359192}
-        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
-        m_MethodName: TakeDamage
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 5990676915063834088}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -10221,8 +10303,26 @@ MonoBehaviour:
         m_CallState: 2
   m_OnDamageTaken:
     m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5979340497444359192}
+        m_TargetAssemblyTypeName: LegionKnight.Damageable, Assembly-CSharp
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnDefendChanged:
+    m_PersistentCalls:
       m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:
@@ -10286,3 +10386,29 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 1.7
+--- !u!114 &7258963602502329314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5990676915063834088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90851fc1c155dd74ca636bc5ee69a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_Attack: 37
+    m_Defense: 0
+    m_Health: 27
+  m_GrowthStat:
+    m_Attack: 13
+    m_Defense: 0
+    m_Health: 9
+  m_OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStatUpdate:
+    m_PersistentCalls:
+      m_Calls: []

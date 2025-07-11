@@ -13,6 +13,11 @@ namespace LegionKnight
         [SerializeField]
         private BosSkill m_BosSkill;
         public Transform SkillSpawnPost => m_BosSkill.transform;
+
+        private void InitSkill(List<SkillDefinition> skills)
+        {
+            m_BosSkill.Init(skills);
+        }
         public void AddOneMana(int indexSkill)
         {
             m_BosSkill.AddOneMana(indexSkill);

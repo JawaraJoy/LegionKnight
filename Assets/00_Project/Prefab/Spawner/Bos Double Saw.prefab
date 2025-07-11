@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 3983444051362168557}
   - component: {fileID: 2327240354341436972}
   - component: {fileID: 6056410315698184098}
+  - component: {fileID: 6759228952282523126}
   m_Layer: 7
   m_Name: Bos Double Saw
   m_TagString: Untagged
@@ -77,10 +78,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b1d299fcc044547a667705143de450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_AbilityDefinition: {fileID: 0}
   m_RandomSpawn: 0
   m_Skills:
-  - m_DamageOveride: 0
-    m_StartingForce: {x: 0, y: 0}
+  - m_StartingForce: {x: 0, y: 0}
     m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
@@ -119,5 +120,31 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_OnDestroyDone:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &6759228952282523126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6674762459421956216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90851fc1c155dd74ca636bc5ee69a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_Attack: 36
+    m_Defense: 0
+    m_Health: 20
+  m_GrowthStat:
+    m_Attack: 4
+    m_Defense: 0
+    m_Health: 16
+  m_OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStatUpdate:
     m_PersistentCalls:
       m_Calls: []

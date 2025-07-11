@@ -12,8 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b64c37722bce95d419e63fe38c4b2d1e, type: 3}
   m_Name: Bos Level 2
   m_EditorClassIdentifier: 
+  m_StartLevel: 1
   m_Icon: {fileID: 21300000, guid: 0b0829f956dba5744989ac3ba6360eb1, type: 3}
-  m_Health: 3200
+  m_BaseStat:
+    m_Attack: 38
+    m_Defense: 55
+    m_Health: 3234
+  m_StatGainPerLevel:
+    m_Attack: 11
+    m_Defense: 4
+    m_Health: 134
   m_BosPlatforms:
   - {fileID: 11400000, guid: 5dfc092ba61b08343a2677060a687713, type: 2}
   - {fileID: 11400000, guid: d8395f8041dce1b4f9d871f4f54be6c0, type: 2}
+  m_Skills:
+  - m_SkillName: Baricade
+    m_Description: 
+    m_Icon: {fileID: 21300000, guid: 67c6c8bf0d4204e9fb8f6240486783df, type: 3}
+    m_ManaThreshold: 11
+    m_SkillAsset:
+    - m_AssetGUID: d3e3c70393902164a8aa10cfb4b6e337
+      m_SubObjectName: 
+      m_SubObjectGUID: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - m_SkillName: Rock Twist
+    m_Description: 
+    m_Icon: {fileID: 21300000, guid: 67c6c8bf0d4204e9fb8f6240486783df, type: 3}
+    m_ManaThreshold: 33
+    m_SkillAsset:
+    - m_AssetGUID: 77199537108ac96449fbf6e408c65ad7
+      m_SubObjectName: 
+      m_SubObjectGUID: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0

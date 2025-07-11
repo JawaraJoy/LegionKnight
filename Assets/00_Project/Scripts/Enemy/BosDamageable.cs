@@ -21,9 +21,18 @@ namespace LegionKnight
         [SerializeField]
         private BosDamageable m_Damageable;
         public BosDamageable Damageable => m_Damageable;
-        public void InitDamageable(int healthBonus)
+        public void InitDamageable(int spawnCount) // level
         {
-            m_Damageable.Init(0, m_BosDefinition.Health + healthBonus);
+            Stat bosStat = m_BosDefinition.FinalStat(spawnCount);
+            SetBosLevelInternal(m_BosDefinition.StartLevel + spawnCount);
+            int atk = bosStat.Attack;
+            int def = bosStat.Defense;
+            int health = bosStat.Health;
+
+            m_Damageable.SetHealth(health);
+            m_Damageable.SetDamage(atk);
+            m_Damageable.SetDefend(def);
+
         }
         public void Heal(int amount)
         {

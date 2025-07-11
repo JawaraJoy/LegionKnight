@@ -214,7 +214,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 32
+          m_IntArgument: 30
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -228,7 +228,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 32
           m_FloatArgument: 0
-          m_StringArgument: Double Saw
+          m_StringArgument: Rock Twist
           m_BoolArgument: 0
         m_CallState: 2
   m_OnPerfectTouchDown:
@@ -924,6 +924,7 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 30
+  m_Defend: 0
   m_Health: 1
   m_Shield: 0
   m_Barrier: 0
@@ -969,7 +970,13 @@ MonoBehaviour:
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:

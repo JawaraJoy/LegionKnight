@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
@@ -22,6 +23,11 @@ namespace LegionKnight
 
         [SerializeField]
         private Transform m_BosSpawnPost;
+
+        [SerializeField]
+        private UnityEvent<BosDefinition> m_OnLevelStart = new();
+        [SerializeField]
+        private UnityEvent<BosDefinition> m_OnBosSpawned = new();
 
         private List<Platform> m_SpawnedPlatform = new();
 
@@ -47,7 +53,8 @@ namespace LegionKnight
             Player.Instance.AddPlayerStandbyPlatform();
             Player.Instance.AddUniqueHeroPlatform();
             GameManager.Instance.ResetBoss();
-
+            
+            m_OnLevelStart?.Invoke(GetLevelDefinition().BosDefinition);
             //OpenBos();
         }
 
@@ -179,6 +186,7 @@ namespace LegionKnight
                 float offset = Player.Instance.transform.position.y + 100f;
                 bos.SetLocalPosition(new Vector2(0f, offset));
                 m_BosSpawnPost.DetachChildren();
+                m_OnBosSpawned?.Invoke(GetLevelDefinition().BosDefinition);
             }
         }
         private IEnumerator SpawningBosInternal(AsyncOperationHandle<GameObject> handle)

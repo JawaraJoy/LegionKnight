@@ -20,12 +20,15 @@ namespace LegionKnight
         protected int m_CurrentHealth;
         [SerializeField]
         private UnityEvent m_OnDeath = new();
+
         [SerializeField]
         private UnityEvent<int> m_OnDamageTaken = new();
         [SerializeField]
         private UnityEvent<int> m_OnDefendChanged = new();
         [SerializeField]
         private UnityEvent<float> m_OnHealthRateChanged = new();
+        [SerializeField]
+        private UnityEvent<int> m_OnDamageChanged = new();
         [SerializeField]
         private UnityEvent<int> m_OnShieldChanged = new();
         [SerializeField]
@@ -34,10 +37,6 @@ namespace LegionKnight
         private UnityEvent<int> m_OnHealthChanged = new();
         [SerializeField]
         private UnityEvent m_OnProtectGone = new();
-        private void OnEnable()
-        {
-            m_CurrentHealth = m_Health;
-        }
         protected override void OnContactedBehaviourInvoke(GameObject other)
         {
             base.OnContactedBehaviourInvoke(other);
@@ -76,6 +75,11 @@ namespace LegionKnight
         {
             m_CurrentHealth = Mathf.Clamp(m_CurrentHealth, 0, m_Health);
             OnHealthRateChangedInvoke(GetHealthRateInternal());
+        }
+        private void OnDamageChangedInvoke(int damage)
+        {
+            m_OnDamageChanged?.Invoke(damage);
+            Debug.Log($"Damage Changed: {damage}");
         }
         private void OnHealthRateChangedInvoke(float rate)
         {
@@ -176,9 +180,11 @@ namespace LegionKnight
         public void SetHealthInternal(int val)
         {
             m_Health = val;
-            m_CurrentHealth = Mathf.Clamp(m_CurrentHealth, 0, m_Health);
+            m_CurrentHealth = m_Health; // Reset current health to max health
+            ClampHealth();
             OnHealthChangedInvoke(m_CurrentHealth);
-            OnHealthRateChangedInvoke(GetHealthRateInternal());
+
+            Debug.Log($"Health Set: {m_Health}, Current Health: {m_CurrentHealth}");
         }
         public void SetHealth(int set)
         {
@@ -192,7 +198,16 @@ namespace LegionKnight
         {
             SetDefendInternal(val);
         }
-        public void SetDefendInternal(int val)
+        public void SetDamage(int val)
+        {
+            SetDamageInternal(val);
+        }
+        private void SetDamageInternal(int val)
+        {
+            m_Damage = val;
+            OnDamageChangedInvoke(m_Damage);
+        }
+        private void SetDefendInternal(int val)
         {
             m_Defend = val;
             OnDefendChangedInvoke(m_Defend);

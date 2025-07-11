@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 7281183978596629976}
   - component: {fileID: 3359732972585337320}
   - component: {fileID: -3786721618595219240}
+  - component: {fileID: 1415997898942962294}
   m_Layer: 17
   m_Name: Bos Attack
   m_TagString: Untagged
@@ -162,6 +163,7 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 10
+  m_Defend: 0
   m_Health: 20
   m_Shield: 0
   m_Barrier: 0
@@ -195,7 +197,13 @@ MonoBehaviour:
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:
@@ -714,6 +722,32 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1415997898942962294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3991218196195467576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90851fc1c155dd74ca636bc5ee69a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_Attack: 26
+    m_Defense: 0
+    m_Health: 20
+  m_GrowthStat:
+    m_Attack: 0
+    m_Defense: 0
+    m_Health: 5
+  m_OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStatUpdate:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4506408505904246799
 GameObject:
   m_ObjectHideFlags: 0

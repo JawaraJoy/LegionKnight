@@ -1,10 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
 {
     public partial class BosSkillContainer : SkillContainer
     {
-        
     }
     public partial class GameplayPanel
     {

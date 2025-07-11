@@ -9,12 +9,17 @@ namespace LegionKnight
     public partial class SkillContainer : UIView
     {
         [SerializeField]
+        private SkillOwner m_SkillOwner = SkillOwner.Player;
+        [SerializeField]
         private AssetReferenceGameObject m_SkillViewAsset;
 
         [SerializeField]
         private List<SkillView> m_SkillViews = new();
 
         private CharacterDefinition m_CharacterDefnition;
+        private BosDefinition m_BosDefinition;
+
+        private List<SkillDefinition> m_Skills = new();
 
         private SkillView GetSkillView(string skillName)
         {
@@ -40,12 +45,22 @@ namespace LegionKnight
             }
             m_SkillViews.Clear();
         }
-        public void Init()
+        public virtual void Init()
         {
             ClearViews();
-            m_CharacterDefnition = Player.Instance.CharacterDefinition;
-            List<SkillDefinition> skills = m_CharacterDefnition.Passives;
-            foreach (SkillDefinition skill in skills)
+            
+            switch(m_SkillOwner)
+            {
+                case SkillOwner.Player:
+                    m_CharacterDefnition = Player.Instance.CharacterDefinition;
+                    m_Skills = new(m_CharacterDefnition.Passives);
+                    break;
+                case SkillOwner.Boss:
+                    m_BosDefinition = GameManager.Instance.GetSpawnedBosEnemy().BosDefinition;
+                    m_Skills = new(m_BosDefinition.Skills);
+                    break;
+            }
+            foreach (SkillDefinition skill in m_Skills)
             {
                 SpawnSkillView(skill);
             }
@@ -56,6 +71,17 @@ namespace LegionKnight
             m_CharacterDefnition = definition;
             List<SkillDefinition> skills = m_CharacterDefnition.Passives;
             foreach(SkillDefinition skill in skills)
+            {
+                SpawnSkillView(skill);
+            }
+        }
+        public void Init(BosDefinition definition)
+        {
+            ClearViews();
+            m_BosDefinition = definition;
+            List<SkillDefinition> skills = new (m_BosDefinition.Skills);
+
+            foreach (SkillDefinition skill in skills)
             {
                 SpawnSkillView(skill);
             }
