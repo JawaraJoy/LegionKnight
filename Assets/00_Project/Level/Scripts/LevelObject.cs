@@ -36,6 +36,7 @@ namespace LegionKnight
         private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
 
         private const float m_OffsideDestination = -0.1f;
+        public Transform PlatformDestination => m_PlatformDestination;
 
         private float m_SpeedPlatformRate = 1f;
         public float SpeedPlatformRate => m_SpeedPlatformRate;

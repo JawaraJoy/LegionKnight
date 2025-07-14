@@ -109,6 +109,7 @@ namespace LegionKnight
         public LevelDefinition LevelDefinition => m_SelectedLevelDefinition;
         public bool IsInfiniteLevel => m_SelectedLevelDefinition.IsInfiniteLevel;
         public float SpeedPlatformRate => m_LevelObject.SpeedPlatformRate;
+        public Transform PlatformDestination => m_LevelObject.GetPlatformDestination();
 
         private BosEnemy m_SpawnedBosEnemy;
         private int m_BosSpawnCount;
