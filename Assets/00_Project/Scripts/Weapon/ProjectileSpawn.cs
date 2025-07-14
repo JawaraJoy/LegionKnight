@@ -77,6 +77,10 @@ namespace LegionKnight
                 {
                     bosGrowth.SetLevel(GameManager.Instance.GetSpawnedBosEnemy().GetBosLevel());
                 }
+                if (result.TryGetComponent(out BosDotGrowth dot))
+                {
+                    dot.ApplyDamageOvertime();
+                }
             }
         }
     }

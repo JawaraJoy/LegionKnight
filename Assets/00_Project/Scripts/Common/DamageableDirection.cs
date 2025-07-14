@@ -43,7 +43,12 @@ namespace LegionKnight
         }
         protected override void DeathHandler()
         {
-            //base.DeathHandler();
+            if (!IsAlive())
+            {
+                m_ContactDeathOnLeft?.Invoke();
+                OnDeathInvoke();
+            }
+            //m_ContactDeathOnRight?.Invoke();
         }
     }
 }

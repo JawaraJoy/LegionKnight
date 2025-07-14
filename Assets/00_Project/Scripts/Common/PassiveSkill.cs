@@ -10,6 +10,7 @@ namespace LegionKnight
     {
         Player = 0,
         Boss = 1,
+        Level = 2,
     }
     [System.Serializable]
     public partial class SkillActivation
@@ -54,6 +55,9 @@ namespace LegionKnight
                     break;
                 case SkillOwner.Boss:
                     target = GameManager.Instance.SpawnedBosenemy.SkillSpawnPost;
+                    break;
+                case SkillOwner.Level:
+                    target = GameManager.Instance.GetPlatformDestination();
                     break;
             }
             return target;
