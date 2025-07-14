@@ -6,8 +6,16 @@ namespace LegionKnight
     public partial class BosSpawnIndicatorView : UIView
     {
         [SerializeField]
+        private Image m_IndicatorImage;
+        [SerializeField]
         private Slider m_Slider;
 
+        private LevelDefinition m_LevelDefinition;
+        private void Start()
+        {
+            m_LevelDefinition = GameManager.Instance.LevelDefinition;
+            m_IndicatorImage.sprite = m_LevelDefinition.BosDefinition.Icon;
+        }
         public void SetSlider(float set)
         {
             m_Slider.value = set;

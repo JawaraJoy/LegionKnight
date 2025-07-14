@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +12,14 @@ namespace LegionKnight
         [SerializeField]
         private Image m_LevelImage;
         [SerializeField]
+        private TextMeshProUGUI m_LevelNameText;
+        [SerializeField]
         private Button m_StartButton;
         [SerializeField]
         private GameObject m_LockImage;
         [SerializeField]
         private GameObject m_CompleteImage;
+
         [SerializeField]
         private LevelRewardView m_LevelRewardView;
         private void OnEnable()
@@ -25,6 +29,7 @@ namespace LegionKnight
         private void Init()
         {
             m_LevelImage.sprite = m_LevelDefnition.LevelImage;
+            m_LevelNameText.text = m_LevelDefnition.LevelName;
             bool isUnlocked = GameManager.Instance.IsLevelUnlocked(m_LevelDefnition);
             bool isCompleted = GameManager.Instance.IsLevelCompleted(m_LevelDefnition);
 

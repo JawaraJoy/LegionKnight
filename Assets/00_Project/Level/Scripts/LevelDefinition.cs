@@ -12,6 +12,8 @@ namespace LegionKnight
         [SerializeField]
         private string m_LevelScene;
         [SerializeField]
+        private string m_LevelName;
+        [SerializeField]
         private LevelDefinition m_NextLevel;
         [SerializeField]
         private bool m_IsInfiniteLevel;
@@ -44,6 +46,7 @@ namespace LegionKnight
         public Sprite LevelImage => m_LevelImage;
         public LevelDefinition NextLevel => m_NextLevel;
         public bool IsInfiniteLevel => m_IsInfiniteLevel;
+        public string LevelName => m_LevelName;
 
         [SerializeField]
         private CharacterReward m_FirstReward;
