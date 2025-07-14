@@ -116,6 +116,7 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 30
+  m_Defend: 0
   m_Health: 1
   m_Shield: 0
   m_Barrier: 0
@@ -161,7 +162,13 @@ MonoBehaviour:
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:
@@ -202,6 +209,7 @@ GameObject:
   - component: {fileID: 2377613744276850918}
   - component: {fileID: 1855337867908838225}
   - component: {fileID: 304273507243859042}
+  - component: {fileID: 3577524466788163562}
   m_Layer: 13
   m_Name: Platform Contact
   m_TagString: Untagged
@@ -332,6 +340,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3577524466788163562}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerDamageOvertimeAgent, Assembly-CSharp
+        m_MethodName: AddAntidot
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -604,6 +624,18 @@ MonoBehaviour:
   m_Shield: 0
   m_Barrier: 0
   m_ActiveOnStart: 0
+--- !u!114 &3577524466788163562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3710377640450688991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da88eda31351fca41a774cf176bea770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4203514924066136309
 GameObject:
   m_ObjectHideFlags: 0

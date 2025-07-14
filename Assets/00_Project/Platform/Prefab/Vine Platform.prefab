@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7824698166071602506}
   - component: {fileID: 2280245624262641516}
   - component: {fileID: 6998491140428135921}
+  - component: {fileID: 7729796569052758044}
   m_Layer: 13
   m_Name: Platform Contact
   m_TagString: Untagged
@@ -142,6 +143,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7729796569052758044}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerDamageOvertimeAgent, Assembly-CSharp
+        m_MethodName: AddAntidot
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -387,6 +400,18 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
+--- !u!114 &7729796569052758044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2802068197013620163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da88eda31351fca41a774cf176bea770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4341432052450420387
 GameObject:
   m_ObjectHideFlags: 0

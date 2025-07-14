@@ -49,7 +49,7 @@ namespace LegionKnight
         {
             ApplyDamageOverTimeInternal(damagePerSecond, duration);
         }
-        private void ApplyDamageOverTimeInternal(int damagePerSecond, float duration)
+        protected virtual void ApplyDamageOverTimeInternal(int damagePerSecond, float duration)
         {
             m_DamagePerSecond = damagePerSecond;
             m_Duration = duration;
@@ -67,7 +67,7 @@ namespace LegionKnight
             Debug.Log($"Applying damage over time: {m_DamagePerSecond} damage per second for {m_Duration} seconds.");
         }
 
-        private void StopDamageOverTimeInternal()
+        protected virtual void StopDamageOverTimeInternal()
         {
             m_IsActive = false;
             Debug.Log("Stopping damage over time effect.");
