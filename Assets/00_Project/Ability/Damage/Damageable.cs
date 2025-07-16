@@ -131,7 +131,7 @@ namespace LegionKnight
         }
         protected virtual void TakeDamageInternal(int damage)
         {
-            if (!IsAlive()) return;
+            //if (!IsAlive()) return;
             int dmg = DamageFormula(damage, m_Defend);
             if (!IsProtectGoneInternal())
             {
