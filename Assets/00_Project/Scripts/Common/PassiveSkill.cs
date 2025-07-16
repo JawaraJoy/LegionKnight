@@ -95,8 +95,9 @@ namespace LegionKnight
             {
                 if (!m_SkillHandle.CanActive) return;
                 OnActiveInvoke();
-                int rest = m_Mana - m_ManaThreshold;
-                m_Mana = Mathf.Clamp(rest, 0, int.MaxValue);
+                //int rest = m_Mana - m_ManaThreshold;
+                //m_Mana = Mathf.Clamp(rest, 0, int.MaxValue);
+                m_Mana = 0; // Reset mana after activation
             }
             m_FillRate = (float)m_Mana / (float)m_ManaThreshold;
             m_OnManacharge?.Invoke(m_SkillName, m_FillRate);

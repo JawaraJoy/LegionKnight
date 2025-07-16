@@ -837,7 +837,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ContactableList: []
-  m_Damage: 30
+  m_Damage: 150
+  m_Defend: 0
   m_Health: 1
   m_Shield: 0
   m_Barrier: 0
@@ -883,7 +884,13 @@ MonoBehaviour:
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:

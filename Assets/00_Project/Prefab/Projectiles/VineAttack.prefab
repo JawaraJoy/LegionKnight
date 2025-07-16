@@ -1,0 +1,1017 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4148977925491785534
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3751447419160834071}
+  - component: {fileID: 2640245532535567607}
+  m_Layer: 17
+  m_Name: Triangle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3751447419160834071
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4148977925491785534}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3948192539714402216}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &2640245532535567607
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4148977925491785534}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -501565547
+  m_SortingLayer: 12
+  m_SortingOrder: 3
+  m_Sprite: {fileID: 21300000, guid: 0d1fd6fd5c1ad614ca56018437a7320d, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!1 &4342333657518190669
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7511598522910228380}
+  - component: {fileID: 2465180592938094879}
+  - component: {fileID: 4643975866309983324}
+  - component: {fileID: 5269486848869044139}
+  - component: {fileID: 5758292924451297266}
+  - component: {fileID: 1399039710561063290}
+  m_Layer: 0
+  m_Name: VineAttack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7511598522910228380
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342333657518190669}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3948192539714402216}
+  - {fileID: 4228329773421007816}
+  - {fileID: 7943234012611592214}
+  - {fileID: 5222524784630845764}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2465180592938094879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342333657518190669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f7aebe8b9cf6bc4d87e7d74ece053e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ActiveSelfDestructOnStart: 1
+  m_SelfDestructDelay: 10
+  m_Delay: 0
+  m_OnStartDestroy:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDestroyDone:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4643975866309983324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342333657518190669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cafe6ee53a884f41a4e508efbbeca90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CastingName: Jealousy Bloom
+  m_CastingStat:
+    m_CastingTime: 5
+    m_CastingGrowth: 0.1
+  m_OnCastingTimeFlow:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5269486848869044139}
+        m_TargetAssemblyTypeName: LegionKnight.BosBarGameplayAgent, Assembly-CSharp
+        m_MethodName: SetCastingTime
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnCastStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5269486848869044139}
+        m_TargetAssemblyTypeName: LegionKnight.BosBarGameplayAgent, Assembly-CSharp
+        m_MethodName: SetCastingName
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6960458113275898734}
+        m_TargetAssemblyTypeName: LegionKnight.InteruptViewAgent, Assembly-CSharp
+        m_MethodName: ShowInteruptView
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnCastEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8361264024396053548}
+        m_TargetAssemblyTypeName: Rush.TweenHandler, Assembly-CSharp
+        m_MethodName: StartTween
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 5
+          m_StringArgument: Attack
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5269486848869044139}
+        m_TargetAssemblyTypeName: LegionKnight.BosBarGameplayAgent, Assembly-CSharp
+        m_MethodName: HideCastingBar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnCastFailed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5269486848869044139}
+        m_TargetAssemblyTypeName: LegionKnight.BosBarGameplayAgent, Assembly-CSharp
+        m_MethodName: HideCastingBar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_Level: 1
+--- !u!114 &5269486848869044139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342333657518190669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3690d9808786a1418dbf8c8321b8315, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5758292924451297266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342333657518190669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90851fc1c155dd74ca636bc5ee69a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_Attack: 22
+    m_Defense: 0
+    m_Health: 200
+  m_GrowthStat:
+    m_Attack: 5
+    m_Defense: 0
+    m_Health: 12
+  m_OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7258963602502329314}
+        m_TargetAssemblyTypeName: LegionKnight.DamageableGrowth, Assembly-CSharp
+        m_MethodName: SetLevel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8698707489193765403}
+        m_TargetAssemblyTypeName: LegionKnight.DamageableGrowth, Assembly-CSharp
+        m_MethodName: SetLevel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnStatUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1399039710561063290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342333657518190669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7d738c94b6b7d24d9fcc40a2ba05624, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_DamagePerTick: 12
+    m_Duration: 5
+    m_DamagePerTickUpgrade: 3
+    m_DurationUpgrade: 0
+--- !u!1 &5403822299663120251
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4228329773421007816}
+  - component: {fileID: 7584988686361078212}
+  - component: {fileID: 5957200512460412963}
+  - component: {fileID: 8698707489193765403}
+  m_Layer: 17
+  m_Name: Star Attack (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4228329773421007816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403822299663120251}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2526874201775573930}
+  m_Father: {fileID: 7511598522910228380}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &7584988686361078212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403822299663120251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4abd7d246d44b34890104905189143a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CanContact: 1
+  m_ContactLayer:
+    serializedVersion: 2
+    m_Bits: 67584
+  m_OnContacted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1399039710561063290}
+        m_TargetAssemblyTypeName: LegionKnight.BosDotGrowth, Assembly-CSharp
+        m_MethodName: ApplyDamageOvertime
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnDeContacted:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ContactableList: []
+  m_Damage: 1
+  m_Defend: 0
+  m_Health: 2
+  m_Shield: 0
+  m_Barrier: 0
+  m_OnDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5403822299663120251}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnDamageTaken:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnShieldChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnBarrierChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnProtectGone:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!58 &5957200512460412963
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403822299663120251}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 1.7
+--- !u!114 &8698707489193765403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403822299663120251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90851fc1c155dd74ca636bc5ee69a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_Attack: 25
+    m_Defense: 0
+    m_Health: 200
+  m_GrowthStat:
+    m_Attack: 6
+    m_Defense: 0
+    m_Health: 9
+  m_OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStatUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &5747484917684384994
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7943234012611592214}
+  - component: {fileID: 8361264024396053548}
+  m_Layer: 0
+  m_Name: Tween
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7943234012611592214
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5747484917684384994}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7511598522910228380}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8361264024396053548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5747484917684384994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa43502a6a34d6a40866b039d52cc112, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TweenHandlerField:
+    m_TweenList:
+    - m_Id: Attack
+      m_Group: 1
+      m_Content: {fileID: 5990676915063834088}
+      m_TweenForm: 3
+      m_EaseType: 1
+      m_Delay: 0
+      m_EaseDuration: 0.65
+      m_IsLooping: 0
+      m_LoopField:
+        m_Type: 0
+        m_SetCompleteOnRepeat: 0
+        _repeatCount: 0
+      m_FadeCanvas:
+        Start: 0
+        End: 0
+      m_RectPos:
+        StartRectPosition: {x: 0, y: 0}
+        EndRectPosition: {x: 0, y: 0}
+      m_Position:
+        StartPosition: {x: 11, y: 0, z: 0}
+        EndPosition: {x: 1, y: 0, z: 0}
+      m_RotationX: 0
+      m_RotationY: 0
+      m_RotationZ: 0
+      m_Scale:
+        StartScale: {x: 0, y: 0, z: 0}
+        EndScale: {x: 0, y: 0, z: 0}
+      m_ColorImage:
+        StartColor: {r: 0, g: 0, b: 0, a: 0}
+        EndColor: {r: 0, g: 0, b: 0, a: 0}
+      m_ColorMaterial:
+        StartColor: {r: 0, g: 0, b: 0, a: 0}
+        EndColor: {r: 0, g: 0, b: 0, a: 0}
+      m_OnStartTweening:
+        m_PersistentCalls:
+          m_Calls: []
+      m_OnCompleteTweening:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 4405403984373663663}
+            m_TargetAssemblyTypeName: LegionKnight.Contact2D, Assembly-CSharp
+            m_MethodName: SetCanContact
+            m_Mode: 6
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+    - m_Id: Attack 2
+      m_Group: 1
+      m_Content: {fileID: 5403822299663120251}
+      m_TweenForm: 3
+      m_EaseType: 1
+      m_Delay: 0
+      m_EaseDuration: 0.65
+      m_IsLooping: 0
+      m_LoopField:
+        m_Type: 0
+        m_SetCompleteOnRepeat: 0
+        _repeatCount: 0
+      m_FadeCanvas:
+        Start: 0
+        End: 0
+      m_RectPos:
+        StartRectPosition: {x: 0, y: 0}
+        EndRectPosition: {x: 0, y: 0}
+      m_Position:
+        StartPosition: {x: -11, y: 0, z: 0}
+        EndPosition: {x: -1, y: 0, z: 0}
+      m_RotationX: 0
+      m_RotationY: 0
+      m_RotationZ: 0
+      m_Scale:
+        StartScale: {x: 0, y: 0, z: 0}
+        EndScale: {x: 0, y: 0, z: 0}
+      m_ColorImage:
+        StartColor: {r: 0, g: 0, b: 0, a: 0}
+        EndColor: {r: 0, g: 0, b: 0, a: 0}
+      m_ColorMaterial:
+        StartColor: {r: 0, g: 0, b: 0, a: 0}
+        EndColor: {r: 0, g: 0, b: 0, a: 0}
+      m_OnStartTweening:
+        m_PersistentCalls:
+          m_Calls: []
+      m_OnCompleteTweening:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 7584988686361078212}
+            m_TargetAssemblyTypeName: LegionKnight.Contact2D, Assembly-CSharp
+            m_MethodName: SetCanContact
+            m_Mode: 6
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+--- !u!1 &5990676915063834088
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3948192539714402216}
+  - component: {fileID: 4405403984373663663}
+  - component: {fileID: 4994055010530522033}
+  - component: {fileID: 7258963602502329314}
+  m_Layer: 17
+  m_Name: Star Attack (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3948192539714402216
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5990676915063834088}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3751447419160834071}
+  m_Father: {fileID: 7511598522910228380}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &4405403984373663663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5990676915063834088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4abd7d246d44b34890104905189143a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CanContact: 1
+  m_ContactLayer:
+    serializedVersion: 2
+    m_Bits: 67584
+  m_OnContacted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1399039710561063290}
+        m_TargetAssemblyTypeName: LegionKnight.BosDotGrowth, Assembly-CSharp
+        m_MethodName: ApplyDamageOvertime
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnDeContacted:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ContactableList: []
+  m_Damage: 1
+  m_Defend: 0
+  m_Health: 2
+  m_Shield: 0
+  m_Barrier: 0
+  m_OnDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5990676915063834088}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnDamageTaken:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnShieldChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnBarrierChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnProtectGone:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!58 &4994055010530522033
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5990676915063834088}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 1.7
+--- !u!114 &7258963602502329314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5990676915063834088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90851fc1c155dd74ca636bc5ee69a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_Attack: 25
+    m_Defense: 0
+    m_Health: 200
+  m_GrowthStat:
+    m_Attack: 6
+    m_Defense: 0
+    m_Health: 9
+  m_OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStatUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &6586100355228984639
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5222524784630845764}
+  - component: {fileID: 8012329295116857827}
+  - component: {fileID: 6960458113275898734}
+  m_Layer: 0
+  m_Name: Vine Anoy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5222524784630845764
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6586100355228984639}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7511598522910228380}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8012329295116857827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6586100355228984639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 286eaa3f5c60e6b4a93e72bac4bb2de4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AnoyDefinition: {fileID: 11400000, guid: 4e9c2d7ac435f1240a76664237469f09, type: 2}
+  m_OnInterupUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6960458113275898734}
+        m_TargetAssemblyTypeName: LegionKnight.InteruptViewAgent, Assembly-CSharp
+        m_MethodName: SetInteruptText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnAnoyStop:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6960458113275898734}
+        m_TargetAssemblyTypeName: LegionKnight.InteruptViewAgent, Assembly-CSharp
+        m_MethodName: HideInteruptView
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4643975866309983324}
+        m_TargetAssemblyTypeName: LegionKnight.Casting, Assembly-CSharp
+        m_MethodName: StopCasting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6960458113275898734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6586100355228984639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6beff071d9be614791511466e49eb69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &6879038523632679814
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2526874201775573930}
+  - component: {fileID: 3599528224285838378}
+  m_Layer: 17
+  m_Name: Triangle (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2526874201775573930
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6879038523632679814}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 4228329773421007816}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &3599528224285838378
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6879038523632679814}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -501565547
+  m_SortingLayer: 12
+  m_SortingOrder: 3
+  m_Sprite: {fileID: 21300000, guid: 0d1fd6fd5c1ad614ca56018437a7320d, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0

@@ -51,6 +51,7 @@ namespace LegionKnight
 
         private void SpawnProjectile(AsyncOperationHandle<GameObject> handle)
         {
+            int levelBos = GameManager.Instance.GetSpawnedBosEnemy().GetBosLevel();
             CharacterDefinition characterDefi = Player.Instance.UsedCharacter;
             CharacterUnit usedChar = Player.Instance.GetCharacterUnit(characterDefi);
             int level = usedChar.Level;
@@ -75,11 +76,16 @@ namespace LegionKnight
                 }
                 if (result.TryGetComponent(out BosDamageableGrowth bosGrowth))
                 {
-                    bosGrowth.SetLevel(GameManager.Instance.GetSpawnedBosEnemy().GetBosLevel());
+                    bosGrowth.SetLevel(levelBos);
                 }
                 if (result.TryGetComponent(out BosDotGrowth dot))
                 {
                     dot.ApplyDamageOvertime();
+                }
+                if (result.TryGetComponent(out Casting casting))
+                {
+                    casting.InitLevel(levelBos);
+                    casting.StartCasting();
                 }
             }
         }

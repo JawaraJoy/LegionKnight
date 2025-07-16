@@ -4840,7 +4840,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ab90f773c2babb1458313e761a0181b0, type: 2}
+  - {fileID: 2100000, guid: b5d24f24a809168479fdfa62ee80f803, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4956,7 +4956,7 @@ GameObject:
   - component: {fileID: 3423615503660544271}
   - component: {fileID: 6967044556993999344}
   - component: {fileID: 3206014807964991571}
-  m_Layer: 16
+  m_Layer: 17
   m_Name: Slash Porjcetile 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4995,7 +4995,7 @@ MonoBehaviour:
   m_CanContact: 1
   m_ContactLayer:
     serializedVersion: 2
-    m_Bits: 163840
+    m_Bits: 2048
   m_OnContacted:
     m_PersistentCalls:
       m_Calls:
@@ -5016,7 +5016,8 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 10
-  m_Health: 10
+  m_Defend: 0
+  m_Health: 1
   m_Shield: 0
   m_Barrier: 0
   m_OnDeath:
@@ -5025,7 +5026,13 @@ MonoBehaviour:
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:
@@ -5040,13 +5047,17 @@ MonoBehaviour:
   m_OnProtectGone:
     m_PersistentCalls:
       m_Calls: []
-  m_TargetTag: Bos Enemy
+  m_AbilityDefinition: {fileID: 0}
+  m_TargetTag: Player
   m_RotateSpeed: 5
-  m_MinTravelSpeed: 20
-  m_MaxTravelSpeed: 50
+  m_MinTravelSpeed: 15
+  m_MaxTravelSpeed: 15
   m_Rb: {fileID: 3423615503660544271}
-  m_WithoutTarget: 1
+  m_WithoutTarget: 0
   m_VelocityWitoutTarget: {x: 0, y: 1}
+  m_OnAbilityInitialized:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!50 &3423615503660544271
 Rigidbody2D:
   serializedVersion: 5
@@ -5123,7 +5134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ActiveSelfDestructOnStart: 1
-  m_SelfDestructDelay: 3
+  m_SelfDestructDelay: 12
   m_Delay: 0
   m_OnStartDestroy:
     m_PersistentCalls:
@@ -5742,7 +5753,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: -1
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -9998,7 +10009,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2719161662694226217
 Transform:
   m_ObjectHideFlags: 0
