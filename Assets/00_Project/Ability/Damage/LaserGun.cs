@@ -108,13 +108,11 @@ namespace LegionKnight
 
             if (m_FireTimer < shrinkStart)
             {
-                // Grow phase
                 m_CurrentBeamLength = Mathf.Min(m_BeamGrowSpeed * m_FireTimer, maxLength);
                 m_CurrentWidth = m_InitialWidth;
             }
             else
             {
-                // Shrink phase
                 if (m_ShrinkLength)
                     m_CurrentBeamLength = Mathf.Max(m_CurrentBeamLength - m_BeamShrinkSpeed * Time.deltaTime, 0f);
                 if (m_ShrinkWidth)
@@ -125,20 +123,21 @@ namespace LegionKnight
             Vector2 direction = m_FireDirection.normalized;
             float rayLength = Mathf.Max(m_CurrentBeamLength, 0f);
 
-            RaycastHit2D hit = Physics2D.Raycast(origin, direction, rayLength, m_HitMask);
-
+            // Always draw the laser to its full length
             m_EndPoint = origin + (direction * rayLength);
-            if (hit.collider != null)
+
+            // Damage all targets along the laser path
+            if (m_DamageTimer >= m_DamageInterval)
             {
-                m_EndPoint = hit.point;
-                if (m_DamageTimer >= m_DamageInterval)
+                RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, rayLength, m_HitMask);
+                foreach (var hit in hits)
                 {
-                    if (hit.collider.TryGetComponent<Damageable>(out var damageable))
+                    if (hit.collider != null && hit.collider.TryGetComponent<Damageable>(out var damageable))
                     {
                         damageable.TakeDamage(m_Damage);
                     }
-                    m_DamageTimer = 0f;
                 }
+                m_DamageTimer = 0f;
             }
 
             if (m_Renderer != null)
