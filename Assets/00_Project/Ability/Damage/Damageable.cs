@@ -125,8 +125,8 @@ namespace LegionKnight
 
         private int DamageFormula(int attacker, int defender)
         {
-            int underAmor = Mathf.Clamp(120 + defender, 60, int.MaxValue);
-            int dmg = Mathf.RoundToInt( attacker * 120 / (underAmor));
+            int underAmor = Mathf.Clamp(attacker + defender, 5, int.MaxValue);
+            int dmg = Mathf.RoundToInt( attacker * attacker / (underAmor));
             return dmg;
         }
         protected virtual void TakeDamageInternal(int damage)

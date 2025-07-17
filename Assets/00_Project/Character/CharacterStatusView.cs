@@ -37,9 +37,10 @@ namespace LegionKnight
 
             bool isTimeToBreak = characterUnit.CanBreak();
             bool isMaxStar = characterUnit.Star >= characterUnit.MaxStar;
-            bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && isTimeToBreak && !isMaxStar;
+            bool hasBreak = isTimeToBreak && !isMaxStar;
+            //bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && 
 
-            if (canBreak)
+            if (hasBreak)
             {
                 m_OnBreakAvaiable.Invoke();
                 m_BreakButton.Init(definition);

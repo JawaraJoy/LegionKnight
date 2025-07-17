@@ -11,6 +11,8 @@ namespace LegionKnight
 
         [SerializeField]
         private Button m_UpgradeButton;
+        [SerializeField]
+        private Button m_QuickAccessButton;
 
         private CharacterUnit m_CharacterUnit;
         [SerializeField, ReadOnly]
@@ -42,6 +44,7 @@ namespace LegionKnight
             bool isTimeToBreak = unit.CanBreak();
             bool isMaxStar = unit.Star >= unit.MaxStar;
             bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && isTimeToBreak && !isMaxStar;
+            m_QuickAccessButton.gameObject.SetActive(!canBreak);
 
             m_CurrencyUsed = breakShardCurrency;
 
