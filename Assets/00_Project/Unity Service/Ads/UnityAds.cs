@@ -128,7 +128,7 @@ namespace LegionKnight
             }
             OnAdShowCompletedAddListerner(onCompleted);
             Advertisement.Show(GetRewardedID(), this);
-            Advertisement.Load(GetRewardedID(), this); // Reload after showing
+            //Advertisement.Load(GetRewardedID(), this); // Reload after showing
         }
         
         private MobileDevice GetDevice()
@@ -158,8 +158,8 @@ namespace LegionKnight
         public void OnInitializationComplete()
         {
             Debug.Log("Unity Ads Initialization Complete");
-            //Advertisement.Load(GetInterstitialID(), this);
-            //Advertisement.Load(GetBannerID(), this);
+            Advertisement.Load(GetInterstitialID(), this);
+            Advertisement.Load(GetBannerID(), this);
             Advertisement.Load(GetRewardedID(), this);
         }
 
@@ -202,9 +202,9 @@ namespace LegionKnight
         {   
             Debug.Log($"Unity Ads Show Complete: {placementId} - {showCompletionState}");
             OnAdShowCompletedInvoke();
-            //Advertisement.Load(GetInterstitialID(), this);
-            //Advertisement.Load(GetBannerID(), this);
-            //Advertisement.Load(GetRewardedID(), this);
+            Advertisement.Load(GetInterstitialID(), this);
+            Advertisement.Load(GetBannerID(), this);
+            Advertisement.Load(GetRewardedID(), this);
         }
     }
 }
