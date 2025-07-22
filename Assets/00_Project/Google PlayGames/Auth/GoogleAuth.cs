@@ -5,6 +5,24 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
+    [System.Serializable]
+    public class AccountProfile
+    {
+        private readonly string m_AccountName;
+        private readonly string m_Id;
+        private readonly string m_ImageUrl;
+
+        public string AccountName => m_AccountName;
+        public string Id => m_Id;
+        public string ImageUrl => m_ImageUrl;
+
+        public AccountProfile(string accountName, string id, string imageUrl)
+        {
+            m_AccountName = accountName;
+            m_Id = id;
+            m_ImageUrl = imageUrl;
+        }
+    }
     public class GoogleAuth : MonoBehaviour
     {
         [SerializeField]
@@ -18,6 +36,8 @@ namespace LegionKnight
         private string m_Id;
         private string m_ImageUrl;
 
+        [SerializeField]
+        private UnityEvent<AccountProfile> m_OnSigned;
         private void Awake()
         {
             //PlayGamesPlatform.Activate();
@@ -28,7 +48,7 @@ namespace LegionKnight
             // For example, you might call a method from a Google Play Games SDK to initiate the sign-in.
             Debug.Log("Starting sign-in with Google Play Games...");
             // Implement the actual sign-in logic here.
-            
+
             m_OnSignInStarted.Invoke();
             PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
         }
@@ -44,6 +64,7 @@ namespace LegionKnight
                     m_ImageUrl = PlayGamesPlatform.Instance.GetUserImageUrl();
                     m_OnSignInSuccess.Invoke($"Login Success {m_AccountName}");
                     Debug.Log("Sign-in successful. Account Name: " + m_AccountName + ", ID: " + m_Id + ", Image URL: " + m_ImageUrl);
+                    m_OnSigned.Invoke(new AccountProfile(m_AccountName, m_Id, m_ImageUrl));
                     break;
                 case SignInStatus.InternalError:
                     // Sign-in failed
@@ -66,7 +87,7 @@ namespace LegionKnight
     public partial class GooglePlayService
     {
         [SerializeField]
-        private GoogleAuth m_Authentication;
+        private readonly GoogleAuth m_Authentication;
 
         public void StartSignInWithGoogle()
         {

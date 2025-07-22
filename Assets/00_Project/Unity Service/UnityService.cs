@@ -1,23 +1,40 @@
+using System;
 using Unity.Services.Core;
+using Unity.Services.Core.Environments;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
     public partial class UnityService : Singleton<UnityService>
     {
-        private void Start()
+        [SerializeField]
+        private string m_EnvironmentName = "production"; // Set your environment name here
+
+        [SerializeField]
+        private UnityEvent m_OnInitialized = new();
+        [SerializeField]
+        private UnityEvent<string> m_OnInitializationFailed = new();
+        async void Start()
         {
-            UnityServices.InitializeAsync().ContinueWith(task =>
+            try
             {
-                if (task.IsCompletedSuccessfully)
-                {
-                    Debug.Log("Unity Services initialized successfully.");
-                }
-                else
-                {
-                    Debug.LogError("Failed to initialize Unity Services: " + task.Exception);
-                }
-            });
+                var options = new InitializationOptions()
+                    .SetEnvironmentName(m_EnvironmentName);
+
+                await UnityServices.InitializeAsync(options);
+                // Notify that Unity Services have been initialized successfully.
+                m_OnInitialized.Invoke();
+                Debug.Log("Unity Services initialized successfully.");
+            }
+            catch (Exception exception)
+            {
+                // An error occurred during services initialization.
+                string errorMessage = $"Failed to initialize Unity Services: {exception.Message}";
+                Debug.LogError($"Failed to initialize Unity Services: {exception.Message}");
+                // Notify that initialization failed.
+                m_OnInitializationFailed.Invoke(errorMessage);
+            }
         }
     }
 }

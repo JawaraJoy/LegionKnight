@@ -11,6 +11,8 @@ namespace LegionKnight
     {
         [SerializeField]
         private int m_TotalDraws = 0;
+        [SerializeField]
+        private int m_SmallPityCount = 0;
 
         //public PlayableDirector timeline;
 
@@ -30,7 +32,9 @@ namespace LegionKnight
         private int MultiDrawInternal => m_Definition.MultiDraw;
         public int MultiDraw => MultiDrawInternal;
         private int GuaranteedDrawInternal => m_Definition.GuaranteedDraw;
+        private int SmallPityInternal => m_Definition.SmallPity;
         private List<GachaReward> MainRewardInternal => m_Definition.MainRewards;
+        private List<GachaReward> SmallPityRewardInternal => m_Definition.SmallPityRewards;
         private List<GachaReward> GachaRewardsInternal => m_Definition.GachaRewards;
         public BannerDefinition Definition => m_Definition;
         public int TotalDraws => m_TotalDraws;
@@ -41,6 +45,11 @@ namespace LegionKnight
         public DrawDiscount SingleDrawDiscount => m_SingleDrawDiscount;
         public DrawDiscount MultipleDrawDiscount => m_MultipleDrawDiscount;
 
+        public void SetSmallPityCount(int count)
+        {
+            m_SmallPityCount = count;
+        }
+
         public void Init()
         {
             if (UnityService.Instance.HasData(m_Definition.Id + "totaldraws"))
@@ -50,6 +59,14 @@ namespace LegionKnight
             else
             {
                 m_TotalDraws = 0;
+            }
+            if (UnityService.Instance.HasData(m_Definition.Id + "smallPityCount"))
+            {
+                m_SmallPityCount = UnityService.Instance.GetData<int>(m_Definition.Id + "smallPityCount");
+            }
+            else
+            {
+                m_SmallPityCount = 0;
             }
             if (UnityService.Instance.HasData(m_Definition.Id + "sfDUsed"))
             {
@@ -156,10 +173,11 @@ namespace LegionKnight
             for (int i = 0; i < drawCount; i++)
             {
                 m_TotalDraws++;
+                m_SmallPityCount++;
                 GachaReward result = CalculateDrawResult();
                 results.Add(result);
-                
             }
+
             m_OnDrawResultSuccess?.Invoke(results);
             foreach (GachaReward re in results)
             {
@@ -175,6 +193,7 @@ namespace LegionKnight
             }
 
             UnityService.Instance.SaveData(m_Definition.Id + "totaldraws", m_TotalDraws);
+            UnityService.Instance.SaveData(m_Definition.Id + "smallPityCount", m_SmallPityCount);
             Debug.Log($"Gacha Reward {allRewards}");
         }
 
@@ -185,6 +204,13 @@ namespace LegionKnight
                 m_TotalDraws = 0;
                 int random = Random.Range(0, MainRewardInternal.Count);
                 return MainRewardInternal[random];
+            }
+
+            if (m_SmallPityCount >= SmallPityInternal)
+            {
+                m_SmallPityCount = 0;
+                int random = Random.Range(0, SmallPityRewardInternal.Count);
+                return SmallPityRewardInternal[random];
             }
 
             // Normalize drop rates

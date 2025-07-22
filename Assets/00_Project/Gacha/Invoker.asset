@@ -15,8 +15,9 @@ MonoBehaviour:
   m_Id: invban
   m_VisualBanner: {fileID: 21300000, guid: f5c980e067955c24fb4bea485ee94baf, type: 3}
   m_SmallVisualBanner: {fileID: -89808236, guid: e6667e17bf3089b47a9313b7479d9f36, type: 3}
-  m_PromoText: Guaranted to Claim Invoker After 120 Draws
-  m_GuaranteedDraw: 80
+  m_PromoText: Guaranted to Claim Invoker After 70 Draws
+  m_GuaranteedDraw: 70
+  m_SmallPity: 10
   m_MultiDraw: 10
   m_MainCurrencyToDraw:
     m_Definition: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
@@ -26,6 +27,10 @@ MonoBehaviour:
     m_Amount: 20
   m_MainRewards:
   - m_Definition: {fileID: 11400000, guid: c6ceb5811bacf1947a81b0686e4fbb54, type: 2}
+    m_Amount: 1
+    m_DropRate: 1
+  m_SmallPityRewards:
+  - m_Definition: {fileID: 11400000, guid: eaa139b553d9bda4bb604be4a8b2b4c1, type: 2}
     m_Amount: 1
     m_DropRate: 1
   m_GachaRewards:

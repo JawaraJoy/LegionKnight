@@ -17,6 +17,8 @@ namespace LegionKnight
         [SerializeField]
         private int m_GuaranteedDraw = 120;
         [SerializeField]
+        private int m_SmallPity = 10;
+        [SerializeField]
         private int m_MultiDraw = 10;
         
         [SerializeField]
@@ -26,10 +28,14 @@ namespace LegionKnight
         [SerializeField]
         private List<GachaReward> m_MainRewards = new();
         [SerializeField]
+        private List<GachaReward> m_SmallPityRewards = new();
+        [SerializeField]
         private List<GachaReward> m_GachaRewards = new();
         public int MultiDraw => m_MultiDraw;
         public int GuaranteedDraw => m_GuaranteedDraw;
+        public int SmallPity => m_SmallPity;
         public List<GachaReward> MainRewards => m_MainRewards;
+        public List<GachaReward> SmallPityRewards => m_SmallPityRewards;
         public GachaCurrencyCost MainCurrencyToDraw => m_MainCurrencyToDraw;
         public GachaCurrencyCost AlternatifCurrencyToDraw => m_AlternatifCurrencyToDraw;
         public string PromoText => m_PromoText;

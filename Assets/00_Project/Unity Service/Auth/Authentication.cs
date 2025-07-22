@@ -16,18 +16,15 @@ namespace LegionKnight
         private UnityEvent<string> m_OnSignInSuccess;
         [SerializeField]
         private UnityEvent<string> m_OnSignInFailed;
-        private async void Start()
-        {
-            var options = new InitializationOptions()
-                .SetEnvironmentName("production"); // Set your environment name here
-            // Initialize the authentication system
-            await UnityServices.InitializeAsync(options);
-            // Register the Unity Player Accounts sign-in event handler after services initialization.
-            PlayerAccountService.Instance.SignedIn += StartSinginWithUnity;
-        }
 
         public string PlayerId => AuthenticationService.Instance.PlayerId;
         public string Playername => AuthenticationService.Instance.PlayerName;
+
+        public void AddStartSinginWithUnity()
+        {
+            // Register the Unity Player Accounts sign-in event handler after services initialization.
+            PlayerAccountService.Instance.SignedIn += StartSinginWithUnity;
+        }
 
         public async void StartSinginWithUnity()
         {
@@ -136,6 +133,22 @@ namespace LegionKnight
             PlayerAccountService.Instance.SignOut();
         }
         public async void SignInAnonymously()
+        {
+            OnStartSingInInvoke();
+            try
+            {
+                // Sign in anonymously
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                OnSignInSuccessInvoke($"Signed in anonymously {AuthenticationService.Instance.PlayerId} is Successed");
+                Debug.Log($"Signed in anonymously {AuthenticationService.Instance.PlayerId}");
+            }
+            catch (AuthenticationException e)
+            {
+                Debug.LogError($"Failed to sign in: {e}");
+                OnSignInFailedInvoke($"Failed to sign in: {e.Message}");
+            }
+        }
+        public async void SignInAnonymously(AccountProfile profile)
         {
             OnStartSingInInvoke();
             try
