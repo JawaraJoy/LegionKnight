@@ -4,6 +4,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Authentication.PlayerAccounts;
 using System.Threading.Tasks;
 using UnityEngine.Events;
+using Unity.Services.Core.Environments;
 
 namespace LegionKnight
 {
@@ -17,8 +18,10 @@ namespace LegionKnight
         private UnityEvent<string> m_OnSignInFailed;
         private async void Start()
         {
+            var options = new InitializationOptions()
+                .SetEnvironmentName("production"); // Set your environment name here
             // Initialize the authentication system
-            await UnityServices.InitializeAsync();
+            await UnityServices.InitializeAsync(options);
             // Register the Unity Player Accounts sign-in event handler after services initialization.
             PlayerAccountService.Instance.SignedIn += StartSinginWithUnity;
         }
