@@ -171,7 +171,8 @@ namespace LegionKnight
         {
             try
             {
-                await CloudSaveService.Instance.Data.Player.DeleteAsync(key);
+                // Updated to use the new DeleteAsync method with the correct namespace and options
+                await CloudSaveService.Instance.Data.Player.DeleteAsync(key, new Unity.Services.CloudSave.Models.Data.Player.DeleteOptions());
 
                 if (m_PlayerData.ContainsKey(key))
                 {
