@@ -142,5 +142,13 @@ namespace LegionKnight
                 m_Target = nearestEnemy.transform;
             }
         }
+
+        public void SetStat(Stat stat)
+        {
+            if (stat == null) return;
+            m_Damage = stat.Attack;
+            m_Health = stat.Health;
+            m_Defend = stat.Defense;
+        }
     }
 }

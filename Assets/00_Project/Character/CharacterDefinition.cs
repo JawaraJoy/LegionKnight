@@ -32,7 +32,8 @@ namespace LegionKnight
         private int m_StartingStars = 1;
         [SerializeField]
         private BreakThroughFormulaDefinition m_BreakThrough;
-
+        [SerializeField]
+        private AssetReferenceGameObject m_CharacterPrefab;
         [SerializeField]
         private Stat m_BaseStat;
         [SerializeField]
@@ -58,6 +59,8 @@ namespace LegionKnight
         private List<SkillDefinition> m_Passives = new();
         [SerializeField]
         private AbilityDefinition m_Ability;
+
+        public AssetReferenceGameObject CharacterPrefab => m_CharacterPrefab;
         public AbilityDefinition Ability => m_Ability;
         public StandbyPlatformDefinition UniquePlatform => m_UniquePlatform;
         public List<SkillDefinition> Weapons => m_Weapons;

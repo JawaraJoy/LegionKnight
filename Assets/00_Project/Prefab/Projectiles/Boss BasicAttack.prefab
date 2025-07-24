@@ -4956,8 +4956,9 @@ GameObject:
   - component: {fileID: 3423615503660544271}
   - component: {fileID: 6967044556993999344}
   - component: {fileID: 3206014807964991571}
+  - component: {fileID: -4839637079758915640}
   m_Layer: 17
-  m_Name: Slash Porjcetile 1
+  m_Name: Boss BasicAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5015,7 +5016,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ContactableList: []
-  m_Damage: 10
+  m_Damage: 35
   m_Defend: 0
   m_Health: 1
   m_Shield: 0
@@ -5142,6 +5143,44 @@ MonoBehaviour:
   m_OnDestroyDone:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-4839637079758915640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5778197528903469742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90851fc1c155dd74ca636bc5ee69a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BaseStat:
+    m_Attack: 33
+    m_Defense: 0
+    m_Health: 0
+  m_GrowthStat:
+    m_Attack: 5
+    m_Defense: 0
+    m_Health: 0
+  m_OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStatUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 141609671516533268}
+        m_TargetAssemblyTypeName: LegionKnight.ProjectileDamage, Assembly-CSharp
+        m_MethodName: SetStat
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7606832796909153628
 GameObject:
   m_ObjectHideFlags: 0

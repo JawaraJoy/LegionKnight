@@ -1,5 +1,143 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &60301724562514633
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5823902760934574529}
+  - component: {fileID: 6263319407828473327}
+  m_Layer: 7
+  m_Name: Character Spine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5823902760934574529
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60301724562514633}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -2.4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7550205284607530286}
+  - {fileID: 7125118327809136923}
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6263319407828473327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60301724562514633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64bc03afe8a2c4e4daf00a364dd3b9dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SpineParent: {fileID: 7550205284607530286}
+  m_OnSpineObjectAdded:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnSpineObjectShow:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3001851754366507002}
+        m_TargetAssemblyTypeName: LegionKnight.View, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
+  m_OnSpineObjectHide:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnNoSpineObjectFound:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3001851754366507002}
+        m_TargetAssemblyTypeName: LegionKnight.View, Assembly-CSharp
+        m_MethodName: Show
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
+--- !u!1 &354530701017697706
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4398738034117631492}
+  - component: {fileID: 7456184098003870390}
+  m_Layer: 7
+  m_Name: PlayerEnergy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4398738034117631492
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354530701017697706}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7456184098003870390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354530701017697706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e839513ac8f75a478a9f595700dc5c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Energies:
+  - m_Definition: {fileID: 11400000, guid: 589bb512dcb9f5442845ab3809d3ff51, type: 2}
+    m_OnAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnInitialized:
+      m_PersistentCalls:
+        m_Calls: []
+  m_OnEnergyAmountChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &591763758671950720
 GameObject:
   m_ObjectHideFlags: 0
@@ -368,6 +506,7 @@ Transform:
   - {fileID: 4397935093574495683}
   - {fileID: 3643455654615491772}
   - {fileID: 3204241326236343331}
+  - {fileID: 6743755406879369513}
   m_Father: {fileID: 85250483425571224}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7758370064416613710
@@ -416,6 +555,18 @@ MonoBehaviour:
       - m_Target: {fileID: 11400000, guid: b608c1bc94692fe4f8c8e9afe56427f0, type: 2}
         m_TargetAssemblyTypeName: LegionKnight.EffectDefinition, Assembly-CSharp
         m_MethodName: PauseAnimation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7157814459006818736}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerSpineAgent, Assembly-CSharp
+        m_MethodName: PlayIdle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1097,6 +1248,7 @@ GameObject:
   - component: {fileID: 5395353101837719528}
   - component: {fileID: 7282600096559205833}
   - component: {fileID: 2428453725035944463}
+  - component: {fileID: 8088167995666061917}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -1118,6 +1270,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8707370606426729332}
+  - {fileID: 5823902760934574529}
   - {fileID: 3707954418017981889}
   - {fileID: 1705209213341049559}
   - {fileID: 4063114700170636}
@@ -1134,6 +1287,7 @@ Transform:
   - {fileID: 2825699022630719376}
   - {fileID: 607821928996397009}
   - {fileID: 7444124976985631144}
+  - {fileID: 4398738034117631492}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3377274384242518752
@@ -1216,6 +1370,7 @@ MonoBehaviour:
   m_PlayerDamageOvertime: {fileID: 7693833710945153395}
   m_Achievement: {fileID: 735566226273262617}
   m_HealthView: {fileID: 2669609269329695303}
+  m_EnergyController: {fileID: 0}
   m_PlayerProgression: {fileID: 6282812892676271033}
   m_NameSupplyDefinition: {fileID: 11400000, guid: a588d78743d384141ba6a09dfa84836b, type: 2}
   m_PlayerName: 
@@ -1358,6 +1513,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8088167995666061917}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerSpineAgent, Assembly-CSharp
+        m_MethodName: ChangeSpine
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_Character: {fileID: 6867498596800542263}
   m_CharacterJump: {fileID: 1091291144089817512}
   m_CurrencyControl: {fileID: 2942122649447902150}
@@ -1369,6 +1536,7 @@ MonoBehaviour:
   m_ProtectActivation: {fileID: 4755424564415841424}
   m_PlayerTouchDown: {fileID: 7758370064416613710}
   m_Weaponer: {fileID: 6368892546450467708}
+  m_PlayerSpine: {fileID: 6263319407828473327}
   m_TimerManager: {fileID: 1094032072568628607}
 --- !u!114 &6867498596800542263
 MonoBehaviour:
@@ -1742,6 +1910,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Rb: {fileID: 3377274384242518752}
+--- !u!114 &8088167995666061917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084039138725747265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e950c3c896639b4cbc9f111e67e4bb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2207269959471590298
 GameObject:
   m_ObjectHideFlags: 0
@@ -12067,6 +12247,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0737a5213b323ef45a868e0a1fe25d47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &4115058636604689764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6743755406879369513}
+  - component: {fileID: 7157814459006818736}
+  m_Layer: 12
+  m_Name: PlayerSpine Agent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6743755406879369513
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4115058636604689764}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3707954418017981889}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7157814459006818736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4115058636604689764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e950c3c896639b4cbc9f111e67e4bb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4117516375369564756
 GameObject:
   m_ObjectHideFlags: 0
@@ -12344,6 +12568,7 @@ GameObject:
   - component: {fileID: 7689285937031040271}
   - component: {fileID: 7161008107651865960}
   - component: {fileID: 2357303486595680014}
+  - component: {fileID: 4087688594481516297}
   m_Layer: 0
   m_Name: Player Deck
   m_TagString: Untagged
@@ -12562,6 +12787,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 4087688594481516297}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerSpineAgent, Assembly-CSharp
+        m_MethodName: ChangeSpine
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
   m_OnSelectedCharacter:
     m_PersistentCalls:
       m_Calls: []
@@ -12716,6 +12953,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79acd3312a8f1544aaac006c80540efa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4087688594481516297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4510488576393087506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e950c3c896639b4cbc9f111e67e4bb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4535499832059381754
 GameObject:
   m_ObjectHideFlags: 0
@@ -12765,6 +13014,7 @@ GameObject:
   - component: {fileID: 946632543982360485}
   - component: {fileID: 3219939064775467339}
   - component: {fileID: 3177382371050496212}
+  - component: {fileID: 6182607786919626262}
   m_Layer: 11
   m_Name: Damageable
   m_TagString: Untagged
@@ -12824,6 +13074,18 @@ MonoBehaviour:
       - m_Target: {fileID: 7693833710945153395}
         m_TargetAssemblyTypeName: LegionKnight.DamageOvertime, Assembly-CSharp
         m_MethodName: StopDamageOverTime
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6182607786919626262}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerSpineAgent, Assembly-CSharp
+        m_MethodName: PlayDeath
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13021,6 +13283,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Damageable: {fileID: 6983114196135514266}
+--- !u!114 &6182607786919626262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4753443975672528772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e950c3c896639b4cbc9f111e67e4bb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4937011956032672833
 GameObject:
   m_ObjectHideFlags: 0
@@ -22952,8 +23226,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7125118327809136923}
+  m_Children: []
   m_Father: {fileID: 8707370606426729332}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5213383320660505863
@@ -23853,6 +24126,7 @@ GameObject:
   - component: {fileID: 1091291144089817512}
   - component: {fileID: 1180175158745140985}
   - component: {fileID: 2724186224071683650}
+  - component: {fileID: 5562285190564560647}
   m_Layer: 0
   m_Name: Jump
   m_TagString: Untagged
@@ -23913,6 +24187,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1180175158745140985}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
         m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5562285190564560647}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerSpineAgent, Assembly-CSharp
+        m_MethodName: PlayJump
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -24120,6 +24406,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5e7742d14c3dd341ba78e79880b46e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5562285190564560647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6335871343680121323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e950c3c896639b4cbc9f111e67e4bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6970219578649509441
@@ -29092,6 +29390,37 @@ MonoBehaviour:
   m_TextMeshPrefab: {fileID: 44075040304479945, guid: 2de38ba1237142c4084e302400a86386, type: 3}
   m_BeforeText: +
   m_AfterText: <sprite=0>
+--- !u!1 &7475850167570800937
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7550205284607530286}
+  m_Layer: 7
+  m_Name: Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7550205284607530286
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7475850167570800937}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5823902760934574529}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7764102645273973304
 GameObject:
   m_ObjectHideFlags: 0
@@ -29187,7 +29516,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
-    m_Amount: 999999
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -29222,7 +29551,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 2aedec681836937458126066f7ad9559, type: 2}
-    m_Amount: 999999
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -29257,7 +29586,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
-    m_Amount: 20
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -29302,7 +29631,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
-    m_Amount: 50
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -29313,7 +29642,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: e35651a52feb10d478c258b6a2292610, type: 2}
-    m_Amount: 50
+    m_Amount: 1000
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -29324,7 +29653,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 0f06b38a597c7564eaf64f335c113345, type: 2}
-    m_Amount: 50
+    m_Amount: 1000
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -29335,7 +29664,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: d0557bf3d091d224fb350fc4abfc7555, type: 2}
-    m_Amount: 50
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -29444,7 +29773,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8707370606426729332
 Transform:
   m_ObjectHideFlags: 0
@@ -29595,12 +29924,12 @@ Transform:
   m_GameObject: {fileID: 8754720412608221665}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.43, z: 0}
+  m_LocalPosition: {x: 0, y: 0.97000027, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7241083454487294252}
-  m_Father: {fileID: 2262138213098497897}
+  m_Father: {fileID: 5823902760934574529}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6796090831180890728
 MonoBehaviour:
