@@ -1,16 +1,16 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated July 28, 2023. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2023, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
  * conditions of Section 2 of the Spine Editor License Agreement:
  * http://esotericsoftware.com/spine-editor-license
  *
- * Otherwise, it is permitted to integrate the Spine Runtimes into software or
- * otherwise create derivative works of the Spine Runtimes (collectively,
+ * Otherwise, it is permitted to integrate the Spine Runtimes into software
+ * or otherwise create derivative works of the Spine Runtimes (collectively,
  * "Products"), provided that each user of the Products must obtain their own
  * Spine Editor license and redistribution of the Products in any form must
  * include this license and copyright notice.
@@ -23,20 +23,32 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES,
  * BUSINESS INTERRUPTION, OR LOSS OF USE, DATA, OR PROFITS) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE
- * SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
+
+#if (UNITY_5 || UNITY_5_3_OR_NEWER || UNITY_WSA || UNITY_WP8 || UNITY_WP8_1)
+#define IS_UNITY
+#endif
 
 using System;
 
 namespace Spine {
+#if IS_UNITY
+	using Color32F = UnityEngine.Color;
+#endif
+
 	/// <summary>Attachment that displays a texture region using a mesh.</summary>
 	public class MeshAttachment : VertexAttachment, IHasTextureRegion {
 		internal TextureRegion region;
 		internal string path;
 		internal float[] regionUVs, uvs;
 		internal int[] triangles;
-		internal float r = 1, g = 1, b = 1, a = 1;
+		// Color is a struct, set to protected to prevent
+		// Color color = slot.color; color.a = 0.5;
+		// modifying just a copy of the struct instead of the original
+		// object as in reference implementation.
+		protected Color32F color = new Color32F(1, 1, 1, 1);
 		internal int hullLength;
 		private MeshAttachment parentMesh;
 		private Sequence sequence;
@@ -55,10 +67,17 @@ namespace Spine {
 		public float[] UVs { get { return uvs; } set { uvs = value; } }
 		public int[] Triangles { get { return triangles; } set { triangles = value; } }
 
-		public float R { get { return r; } set { r = value; } }
-		public float G { get { return g; } set { g = value; } }
-		public float B { get { return b; } set { b = value; } }
-		public float A { get { return a; } set { a = value; } }
+		public Color32F GetColor () {
+			return color;
+		}
+
+		public void SetColor (Color32F color) {
+			this.color = color;
+		}
+
+		public void SetColor (float r, float g, float b, float a) {
+			color = new Color32F(r, g, b, a);
+		}
 
 		public string Path { get { return path; } set { path = value; } }
 		public Sequence Sequence { get { return sequence; } set { sequence = value; } }
@@ -98,10 +117,7 @@ namespace Spine {
 
 			region = other.region;
 			path = other.path;
-			r = other.r;
-			g = other.g;
-			b = other.b;
-			a = other.a;
+			color = other.color;
 
 			regionUVs = new float[other.regionUVs.Length];
 			Array.Copy(other.regionUVs, 0, regionUVs, 0, regionUVs.Length);
@@ -192,22 +208,20 @@ namespace Spine {
 		}
 
 		/// <summary>If the attachment has a <see cref="Sequence"/>, the region may be changed.</summary>
-		override public void ComputeWorldVertices (Slot slot, int start, int count, float[] worldVertices, int offset, int stride = 2) {
-			if (sequence != null) sequence.Apply(slot, this);
-			base.ComputeWorldVertices(slot, start, count, worldVertices, offset, stride);
+		override public void ComputeWorldVertices (Skeleton skeleton, Slot slot, int start, int count, float[] worldVertices, int offset,
+			int stride = 2) {
+			if (sequence != null) sequence.Apply(slot.AppliedPose, this);
+			base.ComputeWorldVertices(skeleton, slot, start, count, worldVertices, offset, stride);
 		}
 
 		/// <summary>Returns a new mesh with this mesh set as the <see cref="ParentMesh"/>.
 		public MeshAttachment NewLinkedMesh () {
-			MeshAttachment mesh = new MeshAttachment(Name);
+			var mesh = new MeshAttachment(Name);
 
 			mesh.timelineAttachment = timelineAttachment;
 			mesh.region = region;
 			mesh.path = path;
-			mesh.r = r;
-			mesh.g = g;
-			mesh.b = b;
-			mesh.a = a;
+			mesh.color = color;
 			mesh.ParentMesh = parentMesh != null ? parentMesh : this;
 			if (mesh.Region != null) mesh.UpdateRegion();
 			return mesh;

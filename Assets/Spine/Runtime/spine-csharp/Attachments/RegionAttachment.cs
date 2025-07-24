@@ -1,16 +1,16 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated July 28, 2023. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2023, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
  * conditions of Section 2 of the Spine Editor License Agreement:
  * http://esotericsoftware.com/spine-editor-license
  *
- * Otherwise, it is permitted to integrate the Spine Runtimes into software or
- * otherwise create derivative works of the Spine Runtimes (collectively,
+ * Otherwise, it is permitted to integrate the Spine Runtimes into software
+ * or otherwise create derivative works of the Spine Runtimes (collectively,
  * "Products"), provided that each user of the Products must obtain their own
  * Spine Editor license and redistribution of the Products in any form must
  * include this license and copyright notice.
@@ -23,13 +23,21 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES,
  * BUSINESS INTERRUPTION, OR LOSS OF USE, DATA, OR PROFITS) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE
- * SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
+
+#if (UNITY_5 || UNITY_5_3_OR_NEWER || UNITY_WSA || UNITY_WP8 || UNITY_WP8_1)
+#define IS_UNITY
+#endif
 
 using System;
 
 namespace Spine {
+#if IS_UNITY
+	using Color32F = UnityEngine.Color;
+#endif
+
 	/// <summary>Attachment that displays a texture region.</summary>
 	public class RegionAttachment : Attachment, IHasTextureRegion {
 		public const int BLX = 0, BLY = 1;
@@ -40,7 +48,11 @@ namespace Spine {
 		internal TextureRegion region;
 		internal float x, y, rotation, scaleX = 1, scaleY = 1, width, height;
 		internal float[] offset = new float[8], uvs = new float[8];
-		internal float r = 1, g = 1, b = 1, a = 1;
+		// Color is a struct, set to protected to prevent
+		// Color color = slot.color; color.a = 0.5;
+		// modifying just a copy of the struct instead of the original
+		// object as in reference implementation.
+		protected Color32F color = new Color32F(1, 1, 1, 1);
 		internal Sequence sequence;
 
 		public float X { get { return x; } set { x = value; } }
@@ -51,10 +63,17 @@ namespace Spine {
 		public float Width { get { return width; } set { width = value; } }
 		public float Height { get { return height; } set { height = value; } }
 
-		public float R { get { return r; } set { r = value; } }
-		public float G { get { return g; } set { g = value; } }
-		public float B { get { return b; } set { b = value; } }
-		public float A { get { return a; } set { a = value; } }
+		public Color32F GetColor () {
+			return color;
+		}
+
+		public void SetColor (Color32F color) {
+			this.color = color;
+		}
+
+		public void SetColor (float r, float g, float b, float a) {
+			color = new Color32F(r, g, b, a);
+		}
 
 		public string Path { get; set; }
 		public TextureRegion Region { get { return region; } set { region = value; } }
@@ -83,29 +102,13 @@ namespace Spine {
 			height = other.height;
 			Array.Copy(other.uvs, 0, uvs, 0, 8);
 			Array.Copy(other.offset, 0, offset, 0, 8);
-			r = other.r;
-			g = other.g;
-			b = other.b;
-			a = other.a;
+			color = other.color;
 			sequence = other.sequence == null ? null : new Sequence(other.sequence);
 		}
 
 		/// <summary>Calculates the <see cref="Offset"/> and <see cref="UVs"/> using the region and the attachment's transform. Must be called if the
 		/// region, the region's properties, or the transform are changed.</summary>
 		public void UpdateRegion () {
-			float[] uvs = this.uvs;
-			if (region == null) {
-				uvs[BLX] = 0;
-				uvs[BLY] = 0;
-				uvs[ULX] = 0;
-				uvs[ULY] = 1;
-				uvs[URX] = 1;
-				uvs[URY] = 1;
-				uvs[BRX] = 1;
-				uvs[BRY] = 0;
-				return;
-			}
-
 			float width = Width, height = Height;
 			float localX2 = width / 2;
 			float localY2 = height / 2;
@@ -150,7 +153,17 @@ namespace Spine {
 			offset[BRX] = localX2Cos - localYSin;
 			offset[BRY] = localYCos + localX2Sin;
 
-			if (rotated) {
+			float[] uvs = this.uvs;
+			if (region == null) {
+				uvs[BLX] = 0;
+				uvs[BLY] = 0;
+				uvs[ULX] = 0;
+				uvs[ULY] = 1;
+				uvs[URX] = 1;
+				uvs[URY] = 1;
+				uvs[BRX] = 1;
+				uvs[BRY] = 0;
+			} else if (rotated) {
 				uvs[BLX] = region.u2;
 				uvs[BLY] = region.v;
 				uvs[ULX] = region.u2;
@@ -179,10 +192,10 @@ namespace Spine {
 		/// <param name="offset">The worldVertices index to begin writing values.</param>
 		/// <param name="stride">The number of worldVertices entries between the value pairs written.</param>
 		public void ComputeWorldVertices (Slot slot, float[] worldVertices, int offset, int stride = 2) {
-			if (sequence != null) sequence.Apply(slot, this);
+			if (sequence != null) sequence.Apply(slot.AppliedPose, this);
 
 			float[] vertexOffset = this.offset;
-			Bone bone = slot.Bone;
+			BonePose bone = slot.Bone.AppliedPose;
 			float bwx = bone.worldX, bwy = bone.worldY;
 			float a = bone.a, b = bone.b, c = bone.c, d = bone.d;
 			float offsetX, offsetY;

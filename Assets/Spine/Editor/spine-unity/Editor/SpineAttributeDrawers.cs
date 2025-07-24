@@ -1,16 +1,16 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated July 28, 2023. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2023, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
  * conditions of Section 2 of the Spine Editor License Agreement:
  * http://esotericsoftware.com/spine-editor-license
  *
- * Otherwise, it is permitted to integrate the Spine Runtimes into software or
- * otherwise create derivative works of the Spine Runtimes (collectively,
+ * Otherwise, it is permitted to integrate the Spine Runtimes into software
+ * or otherwise create derivative works of the Spine Runtimes (collectively,
  * "Products"), provided that each user of the Products must obtain their own
  * Spine Editor license and redistribution of the Products in any form must
  * include this license and copyright notice.
@@ -23,8 +23,8 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES,
  * BUSINESS INTERRUPTION, OR LOSS OF USE, DATA, OR PROFITS) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE
- * SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
 // Contributed by: Mitch Thompson
@@ -463,17 +463,16 @@ namespace Spine.Unity.Editor {
 		protected override Texture2D Icon { get { return SpineEditorUtilities.Icons.constraintIK; } }
 
 		protected override bool IsValueValid (SkeletonData skeletonData, SerializedProperty property) {
-			return skeletonData.FindIkConstraint(property.stringValue) != null;
+			return skeletonData.FindConstraint<IkConstraintData>(property.stringValue) != null;
 		}
 
 		protected override void PopulateMenu (GenericMenu menu, SerializedProperty property, SpineIkConstraint targetAttribute, SkeletonData data) {
-			ExposedList<IkConstraintData> constraints = skeletonDataAsset.GetSkeletonData(false).IkConstraints;
-
 			if (TargetAttribute.includeNone)
 				menu.AddItem(new GUIContent(NoneString), !property.hasMultipleDifferentValues && string.IsNullOrEmpty(property.stringValue), HandleSelect, new SpineDrawerValuePair(string.Empty, property));
 
-			for (int i = 0; i < constraints.Count; i++) {
-				string name = constraints.Items[i].Name;
+			var ikConstraints = skeletonDataAsset.GetSkeletonData(false).Constraints.OfType<IkConstraintData>();
+			foreach (var ikConstraint in ikConstraints) {
+				string name = ikConstraint.Name;
 				if (name.StartsWith(targetAttribute.startsWith, StringComparison.Ordinal))
 					menu.AddItem(new GUIContent(name), !property.hasMultipleDifferentValues && name == property.stringValue, HandleSelect, new SpineDrawerValuePair(name, property));
 			}
@@ -487,17 +486,16 @@ namespace Spine.Unity.Editor {
 		protected override Texture2D Icon { get { return SpineEditorUtilities.Icons.constraintTransform; } }
 
 		protected override bool IsValueValid (SkeletonData skeletonData, SerializedProperty property) {
-			return skeletonData.FindTransformConstraint(property.stringValue) != null;
+			return skeletonData.FindConstraint<TransformConstraintData>(property.stringValue) != null;
 		}
 
 		protected override void PopulateMenu (GenericMenu menu, SerializedProperty property, SpineTransformConstraint targetAttribute, SkeletonData data) {
-			ExposedList<TransformConstraintData> constraints = skeletonDataAsset.GetSkeletonData(false).TransformConstraints;
-
 			if (TargetAttribute.includeNone)
 				menu.AddItem(new GUIContent(NoneString), !property.hasMultipleDifferentValues && string.IsNullOrEmpty(property.stringValue), HandleSelect, new SpineDrawerValuePair(string.Empty, property));
 
-			for (int i = 0; i < constraints.Count; i++) {
-				string name = constraints.Items[i].Name;
+			var transformConstraints = skeletonDataAsset.GetSkeletonData(false).Constraints.OfType<TransformConstraintData>();
+			foreach (var constraint in transformConstraints) {
+				string name = constraint.Name;
 				if (name.StartsWith(targetAttribute.startsWith, StringComparison.Ordinal))
 					menu.AddItem(new GUIContent(name), !property.hasMultipleDifferentValues && name == property.stringValue, HandleSelect, new SpineDrawerValuePair(name, property));
 			}
@@ -510,17 +508,16 @@ namespace Spine.Unity.Editor {
 		protected override Texture2D Icon { get { return SpineEditorUtilities.Icons.constraintPath; } }
 
 		protected override bool IsValueValid (SkeletonData skeletonData, SerializedProperty property) {
-			return skeletonData.FindPathConstraint(property.stringValue) != null;
+			return skeletonData.FindConstraint<PathConstraintData>(property.stringValue) != null;
 		}
 
 		protected override void PopulateMenu (GenericMenu menu, SerializedProperty property, SpinePathConstraint targetAttribute, SkeletonData data) {
-			ExposedList<PathConstraintData> constraints = skeletonDataAsset.GetSkeletonData(false).PathConstraints;
-
 			if (TargetAttribute.includeNone)
 				menu.AddItem(new GUIContent(NoneString), !property.hasMultipleDifferentValues && string.IsNullOrEmpty(property.stringValue), HandleSelect, new SpineDrawerValuePair(string.Empty, property));
 
-			for (int i = 0; i < constraints.Count; i++) {
-				string name = constraints.Items[i].Name;
+			var pathConstraints = skeletonDataAsset.GetSkeletonData(false).Constraints.OfType<TransformConstraintData>();
+			foreach (var constraint in pathConstraints) {
+				string name = constraint.Name;
 				if (name.StartsWith(targetAttribute.startsWith, StringComparison.Ordinal))
 					menu.AddItem(new GUIContent(name), !property.hasMultipleDifferentValues && name == property.stringValue, HandleSelect, new SpineDrawerValuePair(name, property));
 			}

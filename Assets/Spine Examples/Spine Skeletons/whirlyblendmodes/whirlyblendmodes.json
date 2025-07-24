@@ -1,7 +1,7 @@
 {
 "skeleton": {
-	"hash": "tfwPbA2MCzE",
-	"spine": "4.2.22",
+	"hash": "qF8ySSylHxY",
+	"spine": "4.3.37-beta",
 	"x": -252.71,
 	"y": -232.55,
 	"width": 456.71,
@@ -23,14 +23,19 @@
 	{ "name": "screen", "bone": "screen", "color": "0670c6ff", "attachment": "whirly", "blend": "screen" },
 	{ "name": "additive", "bone": "additive", "color": "0670c6ff", "attachment": "whirly", "blend": "additive" }
 ],
-"transform": [
+"constraints": [
 	{
+		"type": "transform",
 		"name": "rotation",
+		"source": "_rotation",
 		"bones": [ "additive", "multiply", "normal", "screen" ],
-		"target": "_rotation",
-		"mixX": 0,
-		"mixScaleX": 0,
-		"mixShearY": 0
+		"properties": {
+			"rotate": {
+				"to": {
+					"rotate": { "max": 100, "scale": 1 }
+				}
+			}
+		}
 	}
 ],
 "skins": [

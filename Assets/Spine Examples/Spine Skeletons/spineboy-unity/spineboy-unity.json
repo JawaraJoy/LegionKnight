@@ -1,7 +1,7 @@
 {
 "skeleton": {
-	"hash": "XrCABmFcV0A",
-	"spine": "4.2.22",
+	"hash": "ZmOP1QymIHM",
+	"spine": "4.3.37-beta",
 	"x": -221.22,
 	"y": -8.55,
 	"width": 371.09,
@@ -184,76 +184,117 @@
 	{ "name": "gunspath", "bone": "pathbone", "attachment": "gunspath" },
 	{ "name": "projectile source", "bone": "gunTip", "attachment": "projectile source" }
 ],
-"ik": [
+"constraints": [
 	{
+		"type": "ik",
 		"name": "aiming constraint",
-		"bones": [ "aimer" ],
 		"target": "shoot target",
+		"bones": [ "aimer" ],
 		"mix": 0
 	},
 	{
+		"type": "ik",
 		"name": "aiming gun constraint",
-		"order": 1,
-		"bones": [ "rear_upper_arm", "rear_bracer" ],
 		"target": "aiming gun target",
+		"bones": [ "rear_upper_arm", "rear_bracer" ],
 		"mix": 0
-	}
-],
-"transform": [
-	{
-		"name": "gun2 rotation",
-		"order": 4,
-		"bones": [ "gun2" ],
-		"target": "gun rotation",
-		"rotation": 72.7,
-		"mixRotate": 0,
-		"mixX": 0,
-		"mixScaleX": 0,
-		"mixShearY": 0
 	},
 	{
-		"name": "gun3 rotation",
-		"order": 5,
-		"bones": [ "gun3" ],
-		"target": "gun rotation",
-		"rotation": -116.2,
-		"mixRotate": 0,
-		"mixX": 0,
-		"mixScaleX": 0,
-		"mixShearY": 0
-	},
-	{
-		"name": "gun4 rotation",
-		"order": 6,
-		"bones": [ "gun4" ],
-		"target": "gun rotation",
-		"rotation": 166.9,
-		"mixRotate": 0,
-		"mixX": 0,
-		"mixScaleX": 0,
-		"mixShearY": 0
-	},
-	{
-		"name": "gun flying",
-		"order": 3,
-		"bones": [ "gun" ],
-		"target": "free gun bone",
-		"mixRotate": 0,
-		"mixX": 0,
-		"mixScaleX": 0,
-		"mixShearY": 0
-	}
-],
-"path": [
-	{
+		"type": "path",
 		"name": "spinning guns",
-		"order": 2,
+		"slot": "gunspath",
 		"bones": [ "gun4", "gun3", "gun2" ],
-		"target": "gunspath",
 		"spacingMode": "percent",
 		"spacing": 0.335,
 		"mixRotate": 0,
 		"mixX": 0
+	},
+	{
+		"type": "transform",
+		"name": "gun flying",
+		"source": "free gun bone",
+		"bones": [ "gun" ],
+		"properties": {
+			"rotate": {
+				"to": {
+					"rotate": { "max": 100, "scale": 1 }
+				}
+			},
+			"x": {
+				"to": {
+					"x": { "max": 100, "scale": 1 }
+				}
+			},
+			"y": {
+				"to": {
+					"y": { "max": 100, "scale": 1 }
+				}
+			},
+			"scaleX": {
+				"to": {
+					"scaleX": { "scale": 1 }
+				}
+			},
+			"scaleY": {
+				"to": {
+					"scaleY": { "scale": 1 }
+				}
+			},
+			"shearY": {
+				"to": {
+					"shearY": { "max": 100, "scale": 1 }
+				}
+			}
+		},
+		"mixRotate": 0,
+		"mixX": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"type": "transform",
+		"name": "gun2 rotation",
+		"source": "gun rotation",
+		"bones": [ "gun2" ],
+		"rotation": 72.7,
+		"properties": {
+			"rotate": {
+				"to": {
+					"rotate": { "max": 100, "scale": 1 }
+				}
+			}
+		},
+		"mixRotate": 0
+	},
+	{
+		"type": "transform",
+		"name": "gun3 rotation",
+		"source": "gun rotation",
+		"bones": [ "gun3" ],
+		"rotation": -116.2,
+		"properties": {
+			"rotate": {
+				"to": {
+					"rotate": { "max": 100, "scale": 1 }
+				}
+			}
+		},
+		"mixRotate": 0
+	},
+	{
+		"type": "transform",
+		"name": "gun4 rotation",
+		"source": "gun rotation",
+		"bones": [ "gun4" ],
+		"rotation": 166.9,
+		"properties": {
+			"rotate": {
+				"to": {
+					"rotate": { "max": 100, "scale": 1 }
+				}
+			}
+		},
+		"mixRotate": 0
 	}
 ],
 "skins": [
@@ -2052,28 +2093,44 @@
 		},
 		"transform": {
 			"gun flying": [
-				{ "time": 0.6667, "mixRotate": 0, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 },
+				{
+					"time": 0.6667,
+					"mixRotate": 0,
+					"mixX": 0,
+					"mixY": 0,
+					"mixScaleX": 0,
+					"mixScaleY": 0,
+					"mixShearY": 0
+				},
 				{ "time": 0.7, "curve": "stepped" },
 				{ "time": 1.6333 },
-				{ "time": 1.6667, "mixRotate": 0, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 }
+				{
+					"time": 1.6667,
+					"mixRotate": 0,
+					"mixX": 0,
+					"mixY": 0,
+					"mixScaleX": 0,
+					"mixScaleY": 0,
+					"mixShearY": 0
+				}
 			],
 			"gun2 rotation": [
-				{ "time": 0.6333, "mixRotate": 0, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 },
-				{ "time": 0.7333, "mixX": 0, "mixScaleX": 0, "mixShearY": 0, "curve": "stepped" },
-				{ "time": 1.4667, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 },
-				{ "time": 1.6, "mixRotate": 0, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 }
+				{ "time": 0.6333, "mixRotate": 0 },
+				{ "time": 0.7333, "curve": "stepped" },
+				{ "time": 1.4667 },
+				{ "time": 1.6, "mixRotate": 0 }
 			],
 			"gun3 rotation": [
-				{ "time": 0.6333, "mixRotate": 0, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 },
-				{ "time": 0.7333, "mixX": 0, "mixScaleX": 0, "mixShearY": 0, "curve": "stepped" },
-				{ "time": 1.4667, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 },
-				{ "time": 1.6, "mixRotate": 0, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 }
+				{ "time": 0.6333, "mixRotate": 0 },
+				{ "time": 0.7333, "curve": "stepped" },
+				{ "time": 1.4667 },
+				{ "time": 1.6, "mixRotate": 0 }
 			],
 			"gun4 rotation": [
-				{ "time": 0.6333, "mixRotate": 0, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 },
-				{ "time": 0.7333, "mixX": 0, "mixScaleX": 0, "mixShearY": 0, "curve": "stepped" },
-				{ "time": 1.4667, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 },
-				{ "time": 1.6, "mixRotate": 0, "mixX": 0, "mixScaleX": 0, "mixShearY": 0 }
+				{ "time": 0.6333, "mixRotate": 0 },
+				{ "time": 0.7333, "curve": "stepped" },
+				{ "time": 1.4667 },
+				{ "time": 1.6, "mixRotate": 0 }
 			]
 		},
 		"path": {

@@ -1,16 +1,16 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated July 28, 2023. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2023, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
  * conditions of Section 2 of the Spine Editor License Agreement:
  * http://esotericsoftware.com/spine-editor-license
  *
- * Otherwise, it is permitted to integrate the Spine Runtimes into software or
- * otherwise create derivative works of the Spine Runtimes (collectively,
+ * Otherwise, it is permitted to integrate the Spine Runtimes into software
+ * or otherwise create derivative works of the Spine Runtimes (collectively,
  * "Products"), provided that each user of the Products must obtain their own
  * Spine Editor license and redistribution of the Products in any form must
  * include this license and copyright notice.
@@ -23,8 +23,8 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES,
  * BUSINESS INTERRUPTION, OR LOSS OF USE, DATA, OR PROFITS) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE
- * SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
 using System;
@@ -42,13 +42,13 @@ namespace Spine {
 		// Reason is that there is no efficient way to replace or access an already added element, losing any benefits.
 		private Dictionary<SkinKey, SkinEntry> attachments = new Dictionary<SkinKey, SkinEntry>(SkinKeyComparer.Instance);
 		internal readonly ExposedList<BoneData> bones = new ExposedList<BoneData>();
-		internal readonly ExposedList<ConstraintData> constraints = new ExposedList<ConstraintData>();
+		internal readonly ExposedList<IConstraintData> constraints = new ExposedList<IConstraintData>();
 
 		public string Name { get { return name; } }
 		/// <summary>Returns all attachments contained in this skin.</summary>
 		public ICollection<SkinEntry> Attachments { get { return attachments.Values; } }
 		public ExposedList<BoneData> Bones { get { return bones; } }
-		public ExposedList<ConstraintData> Constraints { get { return constraints; } }
+		public ExposedList<IConstraintData> Constraints { get { return constraints; } }
 
 		public Skin (string name) {
 			if (name == null) throw new ArgumentNullException("name", "name cannot be null.");
@@ -67,7 +67,7 @@ namespace Spine {
 			foreach (BoneData data in skin.bones)
 				if (!bones.Contains(data)) bones.Add(data);
 
-			foreach (ConstraintData data in skin.constraints)
+			foreach (IConstraintData data in skin.constraints)
 				if (!constraints.Contains(data)) constraints.Add(data);
 
 			foreach (KeyValuePair<SkinKey, SkinEntry> item in skin.attachments) {
@@ -81,7 +81,7 @@ namespace Spine {
 			foreach (BoneData data in skin.bones)
 				if (!bones.Contains(data)) bones.Add(data);
 
-			foreach (ConstraintData data in skin.constraints)
+			foreach (IConstraintData data in skin.constraints)
 				if (!constraints.Contains(data)) constraints.Add(data);
 
 			foreach (KeyValuePair<SkinKey, SkinEntry> item in skin.attachments) {
@@ -134,10 +134,9 @@ namespace Spine {
 			Slot[] slots = skeleton.slots.Items;
 			foreach (KeyValuePair<SkinKey, SkinEntry> item in oldSkin.attachments) {
 				SkinEntry entry = item.Value;
-				int slotIndex = entry.slotIndex;
-				Slot slot = slots[slotIndex];
+				SlotPose slot = slots[entry.slotIndex].pose;
 				if (slot.Attachment == entry.attachment) {
-					Attachment attachment = GetAttachment(slotIndex, entry.name);
+					Attachment attachment = GetAttachment(entry.slotIndex, entry.name);
 					if (attachment != null) slot.Attachment = attachment;
 				}
 			}

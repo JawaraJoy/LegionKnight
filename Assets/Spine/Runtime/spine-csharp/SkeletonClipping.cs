@@ -1,16 +1,16 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated July 28, 2023. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2023, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
  * conditions of Section 2 of the Spine Editor License Agreement:
  * http://esotericsoftware.com/spine-editor-license
  *
- * Otherwise, it is permitted to integrate the Spine Runtimes into software or
- * otherwise create derivative works of the Spine Runtimes (collectively,
+ * Otherwise, it is permitted to integrate the Spine Runtimes into software
+ * or otherwise create derivative works of the Spine Runtimes (collectively,
  * "Products"), provided that each user of the Products must obtain their own
  * Spine Editor license and redistribution of the Products in any form must
  * include this license and copyright notice.
@@ -23,8 +23,8 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES,
  * BUSINESS INTERRUPTION, OR LOSS OF USE, DATA, OR PROFITS) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE
- * SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
 using System;
@@ -48,13 +48,13 @@ namespace Spine {
 
 		public bool IsClipping { get { return clipAttachment != null; } }
 
-		public int ClipStart (Slot slot, ClippingAttachment clip) {
+		public int ClipStart (Skeleton skeleton, Slot slot, ClippingAttachment clip) {
 			if (clipAttachment != null) return 0;
 			clipAttachment = clip;
 
 			int n = clip.worldVerticesLength;
 			float[] vertices = clippingPolygon.Resize(n).Items;
-			clip.ComputeWorldVertices(slot, 0, n, vertices, 0, 2);
+			clip.ComputeWorldVertices(skeleton, slot, 0, n, vertices, 0, 2);
 			MakeClockwise(clippingPolygon);
 			clippingPolygons = triangulator.Decompose(clippingPolygon, triangulator.Triangulate(clippingPolygon));
 			foreach (ExposedList<float> polygon in clippingPolygons) {
@@ -78,7 +78,7 @@ namespace Spine {
 			clippingPolygon.Clear();
 		}
 
-		public void ClipTriangles (float[] vertices, int[] triangles, int trianglesLength) {
+		public bool ClipTriangles (float[] vertices, int[] triangles, int trianglesLength) {
 			ExposedList<float> clipOutput = this.clipOutput, clippedVertices = this.clippedVertices;
 			ExposedList<int> clippedTriangles = this.clippedTriangles;
 			ExposedList<float>[] polygons = clippingPolygons.Items;
@@ -87,24 +87,25 @@ namespace Spine {
 			int index = 0;
 			clippedVertices.Clear();
 			clippedTriangles.Clear();
+			float[] clipOutputItems = null;
 			for (int i = 0; i < trianglesLength; i += 3) {
-				int vertexOffset = triangles[i] << 1;
-				float x1 = vertices[vertexOffset], y1 = vertices[vertexOffset + 1];
+				int v = triangles[i] << 1;
+				float x1 = vertices[v], y1 = vertices[v + 1];
 
-				vertexOffset = triangles[i + 1] << 1;
-				float x2 = vertices[vertexOffset], y2 = vertices[vertexOffset + 1];
+				v = triangles[i + 1] << 1;
+				float x2 = vertices[v], y2 = vertices[v + 1];
 
-				vertexOffset = triangles[i + 2] << 1;
-				float x3 = vertices[vertexOffset], y3 = vertices[vertexOffset + 1];
+				v = triangles[i + 2] << 1;
+				float x3 = vertices[v], y3 = vertices[v + 1];
 
 				for (int p = 0; p < polygonsCount; p++) {
 					int s = clippedVertices.Count;
 					if (Clip(x1, y1, x2, y2, x3, y3, polygons[p], clipOutput)) {
+						clipOutputItems = clipOutput.Items;
 						int clipOutputLength = clipOutput.Count;
 						if (clipOutputLength == 0) continue;
 
 						int clipOutputCount = clipOutputLength >> 1;
-						float[] clipOutputItems = clipOutput.Items;
 						float[] clippedVerticesItems = clippedVertices.Resize(s + clipOutputCount * 2).Items;
 						for (int ii = 0; ii < clipOutputLength; ii += 2, s += 2) {
 							float x = clipOutputItems[ii], y = clipOutputItems[ii + 1];
@@ -140,9 +141,10 @@ namespace Spine {
 					}
 				}
 			}
+			return clipOutputItems != null;
 		}
 
-		public void ClipTriangles (float[] vertices, int[] triangles, int trianglesLength, float[] uvs) {
+		public bool ClipTriangles (float[] vertices, int[] triangles, int trianglesLength, float[] uvs) {
 			ExposedList<float> clipOutput = this.clipOutput, clippedVertices = this.clippedVertices;
 			ExposedList<int> clippedTriangles = this.clippedTriangles;
 			ExposedList<float>[] polygons = clippingPolygons.Items;
@@ -152,30 +154,30 @@ namespace Spine {
 			clippedVertices.Clear();
 			clippedUVs.Clear();
 			clippedTriangles.Clear();
-
+			float[] clipOutputItems = null;
 			for (int i = 0; i < trianglesLength; i += 3) {
-				int vertexOffset = triangles[i] << 1;
-				float x1 = vertices[vertexOffset], y1 = vertices[vertexOffset + 1];
-				float u1 = uvs[vertexOffset], v1 = uvs[vertexOffset + 1];
+				int v = triangles[i] << 1;
+				float x1 = vertices[v], y1 = vertices[v + 1];
+				float u1 = uvs[v], v1 = uvs[v + 1];
 
-				vertexOffset = triangles[i + 1] << 1;
-				float x2 = vertices[vertexOffset], y2 = vertices[vertexOffset + 1];
-				float u2 = uvs[vertexOffset], v2 = uvs[vertexOffset + 1];
+				v = triangles[i + 1] << 1;
+				float x2 = vertices[v], y2 = vertices[v + 1];
+				float u2 = uvs[v], v2 = uvs[v + 1];
 
-				vertexOffset = triangles[i + 2] << 1;
-				float x3 = vertices[vertexOffset], y3 = vertices[vertexOffset + 1];
-				float u3 = uvs[vertexOffset], v3 = uvs[vertexOffset + 1];
+				v = triangles[i + 2] << 1;
+				float x3 = vertices[v], y3 = vertices[v + 1];
+				float u3 = uvs[v], v3 = uvs[v + 1];
 
 				for (int p = 0; p < polygonsCount; p++) {
 					int s = clippedVertices.Count;
 					if (Clip(x1, y1, x2, y2, x3, y3, polygons[p], clipOutput)) {
+						clipOutputItems = clipOutput.Items;
 						int clipOutputLength = clipOutput.Count;
 						if (clipOutputLength == 0) continue;
 						float d0 = y2 - y3, d1 = x3 - x2, d2 = x1 - x3, d4 = y3 - y1;
 						float d = 1 / (d0 * d2 + d1 * (y1 - y3));
 
 						int clipOutputCount = clipOutputLength >> 1;
-						float[] clipOutputItems = clipOutput.Items;
 						float[] clippedVerticesItems = clippedVertices.Resize(s + clipOutputCount * 2).Items;
 						float[] clippedUVsItems = clippedUVs.Resize(s + clipOutputCount * 2).Items;
 						for (int ii = 0; ii < clipOutputLength; ii += 2, s += 2) {
@@ -226,6 +228,7 @@ namespace Spine {
 					}
 				}
 			}
+			return clipOutputItems != null;
 		}
 
 		///<summary>Clips the input triangle against the convex, clockwise clipping area. If the triangle lies entirely within the clipping

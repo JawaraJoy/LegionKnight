@@ -1,16 +1,16 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated July 28, 2023. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2023, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
  * conditions of Section 2 of the Spine Editor License Agreement:
  * http://esotericsoftware.com/spine-editor-license
  *
- * Otherwise, it is permitted to integrate the Spine Runtimes into software or
- * otherwise create derivative works of the Spine Runtimes (collectively,
+ * Otherwise, it is permitted to integrate the Spine Runtimes into software
+ * or otherwise create derivative works of the Spine Runtimes (collectively,
  * "Products"), provided that each user of the Products must obtain their own
  * Spine Editor license and redistribution of the Products in any form must
  * include this license and copyright notice.
@@ -23,8 +23,8 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES,
  * BUSINESS INTERRUPTION, OR LOSS OF USE, DATA, OR PROFITS) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE
- * SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
 #if UNITY_2019_3_OR_NEWER
@@ -233,14 +233,14 @@ namespace Spine.Unity {
 				Slot slot = drawOrderItems[i];
 				if (!slot.Bone.Active
 #if SLOT_ALPHA_DISABLES_ATTACHMENT
-					|| slot.A == 0f
+					|| slot.AppliedPose.GetColor().a == 0f
 #endif
 					) {
 					workingAttachmentsItems[i] = null;
 					continue;
 				}
 				if (slot.Data.BlendMode == BlendMode.Additive) current.hasPMAAdditiveSlot = true;
-				Attachment attachment = slot.Attachment;
+				Attachment attachment = slot.AppliedPose.Attachment;
 
 				workingAttachmentsItems[i] = attachment;
 				int attachmentTriangleCount;
@@ -248,14 +248,14 @@ namespace Spine.Unity {
 
 				RegionAttachment regionAttachment = attachment as RegionAttachment;
 				if (regionAttachment != null) {
-					if (regionAttachment.Sequence != null) regionAttachment.Sequence.Apply(slot, regionAttachment);
+					if (regionAttachment.Sequence != null) regionAttachment.Sequence.Apply(slot.AppliedPose, regionAttachment);
 					rendererObject = regionAttachment.Region;
 					attachmentVertexCount = 4;
 					attachmentTriangleCount = 6;
 				} else {
 					MeshAttachment meshAttachment = attachment as MeshAttachment;
 					if (meshAttachment != null) {
-						if (meshAttachment.Sequence != null) meshAttachment.Sequence.Apply(slot, meshAttachment);
+						if (meshAttachment.Sequence != null) meshAttachment.Sequence.Apply(slot.AppliedPose, meshAttachment);
 						rendererObject = meshAttachment.Region;
 						attachmentVertexCount = meshAttachment.WorldVerticesLength >> 1;
 						attachmentTriangleCount = meshAttachment.Triangles.Length;
@@ -313,13 +313,13 @@ namespace Spine.Unity {
 				Slot slot = drawOrderItems[i];
 				if (!slot.Bone.Active
 #if SLOT_ALPHA_DISABLES_ATTACHMENT
-					|| slot.A == 0f
+					|| slot.AppliedPose.GetColor().a == 0f
 #endif
 					) continue;
-				Attachment attachment = slot.Attachment;
+				Attachment attachment = slot.AppliedPose.Attachment;
 				IHasTextureRegion rendererAttachment = attachment as IHasTextureRegion;
 				if (rendererAttachment != null) {
-					if (rendererAttachment.Sequence != null) rendererAttachment.Sequence.Apply(slot, rendererAttachment);
+					if (rendererAttachment.Sequence != null) rendererAttachment.Sequence.Apply(slot.AppliedPose, rendererAttachment);
 					AtlasRegion atlasRegion = (AtlasRegion)rendererAttachment.Region;
 					Material material = (Material)atlasRegion.page.rendererObject;
 					if (lastRendererMaterial != material) {
@@ -370,7 +370,7 @@ namespace Spine.Unity {
 				Slot slot = drawOrderItems[i];
 				if (!slot.Bone.Active
 #if SLOT_ALPHA_DISABLES_ATTACHMENT
-					|| (slot.A == 0f && slot.Data != clippingEndSlot)
+					|| (slot.AppliedPose.GetColor().a == 0f && slot.Data != clippingEndSlot)
 #endif
 					) {
 #if SPINE_TRIANGLECHECK
@@ -379,7 +379,7 @@ namespace Spine.Unity {
 					continue;
 				}
 				if (slot.Data.BlendMode == BlendMode.Additive) current.hasPMAAdditiveSlot = true;
-				Attachment attachment = slot.Attachment;
+				Attachment attachment = slot.AppliedPose.Attachment;
 #if SPINE_TRIANGLECHECK
 				workingAttachmentsItems[i] = attachment;
 				int attachmentVertexCount = 0, attachmentTriangleCount = 0;
@@ -390,7 +390,7 @@ namespace Spine.Unity {
 
 				RegionAttachment regionAttachment = attachment as RegionAttachment;
 				if (regionAttachment != null) {
-					if (regionAttachment.Sequence != null) regionAttachment.Sequence.Apply(slot, regionAttachment);
+					if (regionAttachment.Sequence != null) regionAttachment.Sequence.Apply(slot.AppliedPose, regionAttachment);
 					region = regionAttachment.Region;
 #if SPINE_TRIANGLECHECK
 					attachmentVertexCount = 4;
@@ -399,7 +399,7 @@ namespace Spine.Unity {
 				} else {
 					MeshAttachment meshAttachment = attachment as MeshAttachment;
 					if (meshAttachment != null) {
-						if (meshAttachment.Sequence != null) meshAttachment.Sequence.Apply(slot, meshAttachment);
+						if (meshAttachment.Sequence != null) meshAttachment.Sequence.Apply(slot.AppliedPose, meshAttachment);
 						region = meshAttachment.Region;
 #if SPINE_TRIANGLECHECK
 						attachmentVertexCount = meshAttachment.WorldVerticesLength >> 1;
@@ -576,7 +576,8 @@ namespace Spine.Unity {
 			Slot[] drawOrderItems = skeleton.DrawOrder.Items;
 
 			Color32 color = default(Color32);
-			float skeletonA = skeleton.A, skeletonR = skeleton.R, skeletonG = skeleton.G, skeletonB = skeleton.B;
+
+			Color skeletonC = skeleton.GetColor();
 			Vector2 meshBoundsMin = this.meshBoundsMin, meshBoundsMax = this.meshBoundsMax;
 
 			// Settings
@@ -597,17 +598,18 @@ namespace Spine.Unity {
 			if (useClipping) {
 				if (instruction.preActiveClippingSlotSource >= 0) {
 					Slot slot = drawOrderItems[instruction.preActiveClippingSlotSource];
-					clipper.ClipStart(slot, slot.Attachment as ClippingAttachment);
+					clipper.ClipStart(skeleton, slot, slot.AppliedPose.Attachment as ClippingAttachment);
 				}
 			}
 
 			for (int slotIndex = instruction.startSlot; slotIndex < instruction.endSlot; slotIndex++) {
 				Slot slot = drawOrderItems[slotIndex];
+				SlotPose slotPose = slot.AppliedPose;
 				if (!slot.Bone.Active) {
 					clipper.ClipEnd(slot);
 					continue;
 				}
-				Attachment attachment = slot.Attachment;
+				Attachment attachment = slotPose.Attachment;
 				float z = zSpacing * slotIndex;
 
 				float[] workingVerts = this.tempVerts;
@@ -616,7 +618,7 @@ namespace Spine.Unity {
 				int attachmentVertexCount;
 				int attachmentIndexCount;
 
-				Color c = default(Color);
+				Color regionC;
 
 				// Identify and prepare values.
 				RegionAttachment region = attachment as RegionAttachment;
@@ -624,7 +626,7 @@ namespace Spine.Unity {
 					region.ComputeWorldVertices(slot, workingVerts, 0);
 					uvs = region.UVs;
 					attachmentTriangleIndices = regionTriangles;
-					c.r = region.R; c.g = region.G; c.b = region.B; c.a = region.A;
+					regionC = region.GetColor();
 					attachmentVertexCount = 4;
 					attachmentIndexCount = 6;
 				} else {
@@ -635,17 +637,17 @@ namespace Spine.Unity {
 							workingVerts = new float[meshVerticesLength];
 							this.tempVerts = workingVerts;
 						}
-						mesh.ComputeWorldVertices(slot, 0, meshVerticesLength, workingVerts, 0); //meshAttachment.ComputeWorldVertices(slot, tempVerts);
+						mesh.ComputeWorldVertices(skeleton, slot, 0, meshVerticesLength, workingVerts, 0); //meshAttachment.ComputeWorldVertices(slot, tempVerts);
 						uvs = mesh.UVs;
 						attachmentTriangleIndices = mesh.Triangles;
-						c.r = mesh.R; c.g = mesh.G; c.b = mesh.B; c.a = mesh.A;
+						regionC = mesh.GetColor();
 						attachmentVertexCount = meshVerticesLength >> 1; // meshVertexCount / 2;
 						attachmentIndexCount = mesh.Triangles.Length;
 					} else {
 						if (useClipping) {
 							ClippingAttachment clippingAttachment = attachment as ClippingAttachment;
 							if (clippingAttachment != null) {
-								clipper.ClipStart(slot, clippingAttachment);
+								clipper.ClipStart(skeleton, slot, clippingAttachment);
 								continue;
 							}
 						}
@@ -657,17 +659,19 @@ namespace Spine.Unity {
 				}
 
 				float tintBlackAlpha = 1.0f;
+				Color slotC = slotPose.GetColor();
+				Color combinedC = skeletonC * slotC * regionC;
 				if (pmaVertexColors) {
-					float alpha = skeletonA * slot.A * c.a;
+					float alpha = combinedC.a;
 					bool isAdditiveSlot = slot.Data.BlendMode == BlendMode.Additive;
 #if LINEAR_COLOR_SPACE_FIX_ADDITIVE_ALPHA
 					if (linearColorSpace && isAdditiveSlot)
 						alpha = Mathf.LinearToGammaSpace(alpha); // compensate GammaToLinear performed in shader
 #endif
 					color.a = (byte)(alpha * 255);
-					color.r = (byte)(skeletonR * slot.R * c.r * color.a);
-					color.g = (byte)(skeletonG * slot.G * c.g * color.a);
-					color.b = (byte)(skeletonB * slot.B * c.b * color.a);
+					color.r = (byte)(combinedC.r * color.a);
+					color.g = (byte)(combinedC.g * color.a);
+					color.b = (byte)(combinedC.b * color.a);
 					if (canvasGroupTintBlack) {
 						tintBlackAlpha = isAdditiveSlot ? 0 : alpha;
 						color.a = 255;
@@ -676,14 +680,14 @@ namespace Spine.Unity {
 							color.a = 0;
 					}
 				} else {
-					color.a = (byte)(skeletonA * slot.A * c.a * 255);
-					color.r = (byte)(skeletonR * slot.R * c.r * 255);
-					color.g = (byte)(skeletonG * slot.G * c.g * 255);
-					color.b = (byte)(skeletonB * slot.B * c.b * 255);
+					color.a = (byte)(combinedC.a * 255);
+					color.r = (byte)(combinedC.r * 255);
+					color.g = (byte)(combinedC.g * 255);
+					color.b = (byte)(combinedC.b * 255);
 				}
 
-				if (useClipping && clipper.IsClipping) {
-					clipper.ClipTriangles(workingVerts, attachmentTriangleIndices, attachmentIndexCount, uvs);
+				if (useClipping && clipper.IsClipping
+					&& clipper.ClipTriangles(workingVerts, attachmentTriangleIndices, attachmentIndexCount, uvs)) {
 					workingVerts = clipper.ClippedVertices.Items;
 					attachmentVertexCount = clipper.ClippedVertices.Count >> 1;
 					attachmentTriangleIndices = clipper.ClippedTriangles.Items;
@@ -694,21 +698,22 @@ namespace Spine.Unity {
 				// Actually add slot/attachment data into buffers.
 				if (attachmentVertexCount != 0 && attachmentIndexCount != 0) {
 					if (tintBlack) {
-						float r2 = slot.R2;
-						float g2 = slot.G2;
-						float b2 = slot.B2;
+						Color? darkColorOptional = slotPose.GetDarkColor();
+						Color slotDarkC;
+						if (darkColorOptional.HasValue)
+							slotDarkC = darkColorOptional.Value;
+						else
+							slotDarkC = new Color(0, 0, 0);
 						if (pmaVertexColors) {
-							float alpha = skeletonA * slot.A * c.a;
+							float alpha = combinedC.a;
 #if LINEAR_COLOR_SPACE_FIX_ADDITIVE_ALPHA
 							bool isAdditiveSlot = slot.Data.BlendMode == BlendMode.Additive;
 							if (linearColorSpace && isAdditiveSlot)
 								alpha = Mathf.LinearToGammaSpace(alpha); // compensate GammaToLinear performed in shader
 #endif
-							r2 *= alpha;
-							g2 *= alpha;
-							b2 *= alpha;
+							slotDarkC *= alpha;
 						}
-						AddAttachmentTintBlack(r2, g2, b2, tintBlackAlpha, attachmentVertexCount);
+						AddAttachmentTintBlack(slotDarkC, tintBlackAlpha, attachmentVertexCount);
 					}
 
 					//AddAttachment(workingVerts, uvs, color, attachmentTriangleIndices, attachmentVertexCount, attachmentIndexCount, ref meshBoundsMin, ref meshBoundsMax, z);
@@ -849,7 +854,7 @@ namespace Spine.Unity {
 				SubmeshInstruction submesh = instruction.submeshInstructions.Items[si];
 				Skeleton skeleton = submesh.skeleton;
 				Slot[] drawOrderItems = skeleton.DrawOrder.Items;
-				float a = skeleton.A, r = skeleton.R, g = skeleton.G, b = skeleton.B;
+				Color skeletonC = skeleton.GetColor();
 
 				int endSlot = submesh.endSlot;
 				int startSlot = submesh.startSlot;
@@ -868,22 +873,31 @@ namespace Spine.Unity {
 
 					for (int slotIndex = startSlot; slotIndex < endSlot; slotIndex++) {
 						Slot slot = drawOrderItems[slotIndex];
+						SlotPose slotPose = slot.AppliedPose;
+						Color slotC = slotPose.GetColor();
 						if (!slot.Bone.Active
 #if SLOT_ALPHA_DISABLES_ATTACHMENT
-							|| slot.A == 0f
+							|| slotC.a == 0f
 #endif
 							) continue;
-						Attachment attachment = slot.Attachment;
+						Attachment attachment = slotPose.Attachment;
 
-						rg.x = slot.R2; //r
-						rg.y = slot.G2; //g
-						b2.x = slot.B2; //b
+						Color? darkColorOptional = slotPose.GetDarkColor();
+						Color slotDarkC;
+						if (darkColorOptional.HasValue)
+							slotDarkC = darkColorOptional.Value;
+						else
+							slotDarkC = new Color(0, 0, 0);
+						rg.x = slotDarkC.r;
+						rg.y = slotDarkC.g;
+						b2.x = slotDarkC.b;
 						b2.y = 1.0f;
 
 						RegionAttachment regionAttachment = attachment as RegionAttachment;
 						if (regionAttachment != null) {
+							Color regionC = regionAttachment.GetColor();
 							if (settings.pmaVertexColors) {
-								float alpha = a * slot.A * regionAttachment.A;
+								float alpha = skeletonC.a * slotC.a * regionC.a;
 								bool isAdditiveSlot = slot.Data.BlendMode == BlendMode.Additive;
 #if LINEAR_COLOR_SPACE_FIX_ADDITIVE_ALPHA
 								if (linearColorSpace && isAdditiveSlot)
@@ -900,8 +914,9 @@ namespace Spine.Unity {
 						} else { //} if (settings.renderMeshes) {
 							MeshAttachment meshAttachment = attachment as MeshAttachment;
 							if (meshAttachment != null) {
+								Color meshC = meshAttachment.GetColor();
 								if (settings.pmaVertexColors) {
-									float alpha = a * slot.A * meshAttachment.A;
+									float alpha = skeletonC.a * slotC.a * meshC.a;
 									bool isAdditiveSlot = slot.Data.BlendMode == BlendMode.Additive;
 #if LINEAR_COLOR_SPACE_FIX_ADDITIVE_ALPHA
 									if (linearColorSpace && isAdditiveSlot)
@@ -925,17 +940,21 @@ namespace Spine.Unity {
 
 				for (int slotIndex = startSlot; slotIndex < endSlot; slotIndex++) {
 					Slot slot = drawOrderItems[slotIndex];
+					SlotPose slotPose = slot.AppliedPose;
+					Color slotC = slotPose.GetColor();
 					if (!slot.Bone.Active
 #if SLOT_ALPHA_DISABLES_ATTACHMENT
-						|| slot.A == 0f
+						|| slotC.a == 0f
 #endif
 						) continue;
-					Attachment attachment = slot.Attachment;
+					Attachment attachment = slot.AppliedPose.Attachment;
 					float z = slotIndex * settings.zSpacing;
 
 					RegionAttachment regionAttachment = attachment as RegionAttachment;
 					if (regionAttachment != null) {
 						regionAttachment.ComputeWorldVertices(slot, tempVerts, 0);
+						Color regionC = regionAttachment.GetColor();
+						Color combinedC = skeletonC * slotC * regionC;
 
 						float x1 = tempVerts[RegionAttachment.BLX], y1 = tempVerts[RegionAttachment.BLY];
 						float x2 = tempVerts[RegionAttachment.ULX], y2 = tempVerts[RegionAttachment.ULY];
@@ -947,24 +966,24 @@ namespace Spine.Unity {
 						vbi[vertexIndex + 3].x = x3; vbi[vertexIndex + 3].y = y3; vbi[vertexIndex + 3].z = z;
 
 						if (settings.pmaVertexColors) {
-							float alpha = a * slot.A * regionAttachment.A;
+							float alpha = combinedC.a;
 							bool isAdditiveSlot = slot.Data.BlendMode == BlendMode.Additive;
 #if LINEAR_COLOR_SPACE_FIX_ADDITIVE_ALPHA
 							if (linearColorSpace && isAdditiveSlot)
 								alpha = Mathf.LinearToGammaSpace(alpha); // compensate GammaToLinear performed in shader
 #endif
 							color.a = (byte)(alpha * 255);
-							color.r = (byte)(r * slot.R * regionAttachment.R * color.a);
-							color.g = (byte)(g * slot.G * regionAttachment.G * color.a);
-							color.b = (byte)(b * slot.B * regionAttachment.B * color.a);
+							color.r = (byte)(combinedC.r * color.a);
+							color.g = (byte)(combinedC.g * color.a);
+							color.b = (byte)(combinedC.b * color.a);
 							if (canvasGroupTintBlack) color.a = 255;
 							else if (isAdditiveSlot) color.a = 0;
 
 						} else {
-							color.a = (byte)(a * slot.A * regionAttachment.A * 255);
-							color.r = (byte)(r * slot.R * regionAttachment.R * 255);
-							color.g = (byte)(g * slot.G * regionAttachment.G * 255);
-							color.b = (byte)(b * slot.B * regionAttachment.B * 255);
+							color.a = (byte)(combinedC.a * 255);
+							color.r = (byte)(combinedC.r * 255);
+							color.g = (byte)(combinedC.g * 255);
+							color.b = (byte)(combinedC.b * 255);
 						}
 
 						cbi[vertexIndex] = color; cbi[vertexIndex + 1] = color; cbi[vertexIndex + 2] = color; cbi[vertexIndex + 3] = color;
@@ -999,26 +1018,28 @@ namespace Spine.Unity {
 						if (meshAttachment != null) {
 							int verticesArrayLength = meshAttachment.WorldVerticesLength;
 							if (tempVerts.Length < verticesArrayLength) this.tempVerts = tempVerts = new float[verticesArrayLength];
-							meshAttachment.ComputeWorldVertices(slot, tempVerts);
+							meshAttachment.ComputeWorldVertices(skeleton, slot, tempVerts);
+							Color meshC = meshAttachment.GetColor();
+							Color combinedC = skeletonC * slotC * meshC;
 
 							if (settings.pmaVertexColors) {
-								float alpha = a * slot.A * meshAttachment.A;
+								float alpha = combinedC.a;
 								bool isAdditiveSlot = slot.Data.BlendMode == BlendMode.Additive;
 #if LINEAR_COLOR_SPACE_FIX_ADDITIVE_ALPHA
 								if (linearColorSpace && isAdditiveSlot)
 									alpha = Mathf.LinearToGammaSpace(alpha); // compensate GammaToLinear performed in shader
 #endif
 								color.a = (byte)(alpha * 255);
-								color.r = (byte)(r * slot.R * meshAttachment.R * color.a);
-								color.g = (byte)(g * slot.G * meshAttachment.G * color.a);
-								color.b = (byte)(b * slot.B * meshAttachment.B * color.a);
+								color.r = (byte)(combinedC.r * color.a);
+								color.g = (byte)(combinedC.g * color.a);
+								color.b = (byte)(combinedC.b * color.a);
 								if (canvasGroupTintBlack) color.a = 255;
 								else if (isAdditiveSlot) color.a = 0;
 							} else {
-								color.a = (byte)(a * slot.A * meshAttachment.A * 255);
-								color.r = (byte)(r * slot.R * meshAttachment.R * 255);
-								color.g = (byte)(g * slot.G * meshAttachment.G * 255);
-								color.b = (byte)(b * slot.B * meshAttachment.B * 255);
+								color.a = (byte)(combinedC.a * 255);
+								color.r = (byte)(combinedC.r * 255);
+								color.g = (byte)(combinedC.g * 255);
+								color.b = (byte)(combinedC.b * 255);
 							}
 
 							float[] attachmentUVs = meshAttachment.UVs;
@@ -1102,11 +1123,11 @@ namespace Spine.Unity {
 						Slot slot = drawOrderItems[slotIndex];
 						if (!slot.Bone.Active
 #if SLOT_ALPHA_DISABLES_ATTACHMENT
-							|| slot.A == 0f
+							|| slot.AppliedPose.GetColor().a == 0f
 #endif
 							) continue;
 
-						Attachment attachment = drawOrderItems[slotIndex].Attachment;
+						Attachment attachment = drawOrderItems[slotIndex].AppliedPose.Attachment;
 						if (attachment is RegionAttachment) {
 							tris[triangleIndex] = attachmentFirstVertex;
 							tris[triangleIndex + 1] = attachmentFirstVertex + 2;
@@ -1182,9 +1203,9 @@ namespace Spine.Unity {
 			}
 		}
 
-		void AddAttachmentTintBlack (float r2, float g2, float b2, float a, int vertexCount) {
-			Vector2 rg = new Vector2(r2, g2);
-			Vector2 bo = new Vector2(b2, a);
+		void AddAttachmentTintBlack (Color darkColor, float a, int vertexCount) {
+			Vector2 rg = new Vector2(darkColor.r, darkColor.g);
+			Vector2 bo = new Vector2(darkColor.b, a);
 
 			int ovc = vertexBuffer.Count;
 			int newVertexCount = ovc + vertexCount;
@@ -1465,7 +1486,7 @@ namespace Spine.Unity {
 			AttachmentUVs.Add(new Vector2(uvs[RegionAttachment.BLX], uvs[RegionAttachment.BLY]));
 
 			AttachmentColors32.Clear();
-			Color32 c = (Color32)(new Color(regionAttachment.R, regionAttachment.G, regionAttachment.B, regionAttachment.A));
+			Color32 c = (Color32)(regionAttachment.GetColor());
 			for (int i = 0; i < 4; i++)
 				AttachmentColors32.Add(c);
 
@@ -1523,7 +1544,7 @@ namespace Spine.Unity {
 
 			float[] uvs = meshAttachment.UVs;
 			Vector2 uv = default(Vector2);
-			Color32 c = (Color32)(new Color(meshAttachment.R, meshAttachment.G, meshAttachment.B, meshAttachment.A));
+			Color32 c = (Color32)(meshAttachment.GetColor());
 			AttachmentUVs.Clear();
 			AttachmentColors32.Clear();
 			for (int i = 0; i < vertexCount; i++) {
