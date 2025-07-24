@@ -50,11 +50,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d21515cd3ab7d445ba8e1127287786e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IAPManager: {fileID: 1335922600970166545}
-  m_LeaderBoardManager: {fileID: 587357696819557897}
   m_UnityAdsManager: {fileID: 700165663585074583}
   m_AuthenticationManager: {fileID: 5537331884271729272}
   m_CloudSaveManager: {fileID: 3814314757155133575}
+  m_IAPManager: {fileID: 1335922600970166545}
+  m_LeaderBoardManager: {fileID: 587357696819557897}
+  m_EnvironmentName: production
+  m_OnInitialized:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5537331884271729272}
+        m_TargetAssemblyTypeName: LegionKnight.Authentication, Assembly-CSharp
+        m_MethodName: AddStartSinginWithUnity
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnInitializationFailed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1962322448991772036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -566,7 +585,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0969373e7b239e4e921a4c8fbbb304b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AdSetting: {fileID: 11400000, guid: 1a79a76a076e90d40986f2d5671f7ab6, type: 2}
+  m_AdSetting: {fileID: 11400000, guid: 5028ebeccd7780e45b57f862e7040925, type: 2}
   m_OnAdShowCompleted:
     m_PersistentCalls:
       m_Calls: []
@@ -576,5 +595,3 @@ MonoBehaviour:
   m_OnAdLoadFailed:
     m_PersistentCalls:
       m_Calls: []
-  m_IsRewardedAdLoaded: 0
-  m_TimeOut: 5

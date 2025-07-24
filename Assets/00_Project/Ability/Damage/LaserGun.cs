@@ -123,10 +123,9 @@ namespace LegionKnight
             Vector2 direction = m_FireDirection.normalized;
             float rayLength = Mathf.Max(m_CurrentBeamLength, 0f);
 
-            // Always draw the laser to its full length
             m_EndPoint = origin + (direction * rayLength);
 
-            // Damage all targets along the laser path
+            // Damage logic (unchanged)
             if (m_DamageTimer >= m_DamageInterval)
             {
                 RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, rayLength, m_HitMask);
@@ -147,6 +146,16 @@ namespace LegionKnight
                 m_Renderer.SetPosition(1, m_EndPoint);
                 m_Renderer.startWidth = m_CurrentWidth;
                 m_Renderer.endWidth = m_CurrentWidth;
+
+                // --- Texture scale control ---
+                // Calculate the scale based on the current beam length and width
+                float textureLengthScale = m_CurrentBeamLength / m_InitialWidth; // Adjust denominator as needed for your texture
+                float textureWidthScale = 1f; // Usually 1, but you can adjust if your texture needs to scale with width
+
+                if (m_Renderer.material != null)
+                {
+                    m_Renderer.material.mainTextureScale = new Vector2(textureLengthScale, textureWidthScale);
+                }
             }
 
             if (m_FireTimer >= m_FireDuration || (m_CurrentBeamLength <= 0f && m_CurrentWidth <= 0f))

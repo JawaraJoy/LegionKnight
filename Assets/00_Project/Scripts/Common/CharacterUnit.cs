@@ -204,7 +204,11 @@ namespace LegionKnight
         }
         public Currency GetBreakCost()
         {
-            return m_Definition.GetBreakCost(m_Star);
+            return m_Definition.GetBreakShardCost(m_Star);
+        }
+        public Currency GetBreakCoinCost()
+        {
+            return m_Definition.GetBreakCoinCost(m_Star);
         }
     }
 }

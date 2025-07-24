@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c08d86711766d7845ac81fa3ba6bc39b, type: 3}
+  m_Name: Rare Break
+  m_EditorClassIdentifier: 
+  m_ShardDefi: {fileID: 11400000, guid: 0f06b38a597c7564eaf64f335c113345, type: 2}
+  m_CoinDefi: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
+  m_BreakThroughSteps:
+  - m_LevelNeeded: 30
+    m_ShardAmountToBreak: 50
+    m_CoinAmountToBreak: 0
+    m_StatBonus:
+      m_Attack: 25
+      m_Defense: 15
+      m_Health: 100
+  - m_LevelNeeded: 50
+    m_ShardAmountToBreak: 20
+    m_CoinAmountToBreak: 3000
+    m_StatBonus:
+      m_Attack: 45
+      m_Defense: 25
+      m_Health: 165
+  - m_LevelNeeded: 70
+    m_ShardAmountToBreak: 40
+    m_CoinAmountToBreak: 7000
+    m_StatBonus:
+      m_Attack: 75
+      m_Defense: 40
+      m_Health: 275
+  - m_LevelNeeded: 100
+    m_ShardAmountToBreak: 60
+    m_CoinAmountToBreak: 12000
+    m_StatBonus:
+      m_Attack: 75
+      m_Defense: 40
+      m_Health: 275

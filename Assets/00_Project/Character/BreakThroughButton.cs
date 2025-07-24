@@ -8,6 +8,8 @@ namespace LegionKnight
     {
         [SerializeField]
         private CurrencyView m_ShardAmountNeed;
+        [SerializeField]
+        private CurrencyView m_CoinAmountNeed;
 
         [SerializeField]
         private Button m_UpgradeButton;
@@ -17,6 +19,8 @@ namespace LegionKnight
         private CharacterUnit m_CharacterUnit;
         [SerializeField, ReadOnly]
         private Currency m_CurrencyUsed;
+        [SerializeField, ReadOnly]
+        private Currency m_CurrencyUsedCoin;
         public CharacterUnit CharacterUnit => m_CharacterUnit;
         public Currency CurrencyUsed => m_CurrencyUsed;
 
@@ -39,18 +43,29 @@ namespace LegionKnight
             CurrencyDefinition breakShardDefi = unit.GetBreakCost().CurrencyDefinition;
             int breakShardAmount = unit.GetBreakCost().Amount;
 
+            CurrencyDefinition breakCoinDefi = unit.GetBreakCoinCost().CurrencyDefinition;
+            int breakCoinAmount = unit.GetBreakCoinCost().Amount;
+
             Currency breakShardCurrency = new(breakShardDefi, breakShardAmount);
+            Currency breakCoinCurrency = new(breakCoinDefi, breakCoinAmount);
 
             bool isTimeToBreak = unit.CanBreak();
             bool isMaxStar = unit.Star >= unit.MaxStar;
-            bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && isTimeToBreak && !isMaxStar;
-            m_QuickAccessButton.gameObject.SetActive(!canBreak);
+            bool enoughShard = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount;
+            bool enoughCoin = Player.Instance.GetCurrencyAmount(breakCoinDefi) >= breakCoinAmount;
+            bool isEnoughCurrency = enoughShard && enoughCoin;
+
+            bool canBreak = isEnoughCurrency && isTimeToBreak && !isMaxStar;
+
+            m_QuickAccessButton.gameObject.SetActive(!isEnoughCurrency);
 
             m_CurrencyUsed = breakShardCurrency;
+            m_CurrencyUsedCoin = breakCoinCurrency;
 
             m_UpgradeButton.interactable = canBreak;
 
             m_ShardAmountNeed.SetView(m_CurrencyUsed);
+            m_CoinAmountNeed.SetView(m_CurrencyUsedCoin);
         }
 
         private void ShowUpgradeView()

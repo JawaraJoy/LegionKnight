@@ -11,7 +11,11 @@ namespace LegionKnight
         [SerializeField]
         private CurrencyView m_ShardNeed;
         [SerializeField]
+        private CurrencyView m_CoinNeed;
+        [SerializeField]
         private CurrencyView m_ShardOwned;
+        [SerializeField]
+        private CurrencyView m_CoinOwned;
 
         private CharacterUnit m_CharacterUnit;
 
@@ -21,6 +25,7 @@ namespace LegionKnight
         private Button m_QuickAccessButton;
 
         private Currency m_UsedUpgradeShard;
+        private Currency m_UsedUpgradeCoin;
 
         private bool m_IsUpgradeAvailable = false;
 
@@ -49,8 +54,12 @@ namespace LegionKnight
             m_CharacterUnit.AddStar(1);
 
             int ownShardAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeShard.CurrencyDefinition);
+            int ownCoinAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeCoin.CurrencyDefinition);
             int ressShardOwned = ownShardAmount - m_UsedUpgradeShard.Amount;
+            int ressCoinOwned = ownCoinAmount - m_UsedUpgradeCoin.Amount;
+
             Player.Instance.SetCurrencyAmount(m_UsedUpgradeShard.CurrencyDefinition, ressShardOwned);
+            Player.Instance.SetCurrencyAmount(m_UsedUpgradeCoin.CurrencyDefinition, ressCoinOwned);
 
             InitInternal();
             HideInternal();
@@ -65,31 +74,43 @@ namespace LegionKnight
 
             CurrencyDefinition breakShardDefi = m_CharacterUnit.GetBreakCost().CurrencyDefinition;
             int breakShardAmount = m_CharacterUnit.GetBreakCost().Amount;
+            CurrencyDefinition breakCoinDefi = m_CharacterUnit.GetBreakCoinCost().CurrencyDefinition;
+            int breakCoinAmount = m_CharacterUnit.GetBreakCoinCost().Amount;
 
             Currency breakShardCurrency = new(breakShardDefi, breakShardAmount);
+            Currency breakCoinCurrency = new(breakCoinDefi, breakCoinAmount);
 
             bool isTimeToBreak = m_CharacterUnit.CanBreak();
             bool isMaxStar = m_CharacterUnit.Star >= m_CharacterUnit.MaxStar;
-            bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && isTimeToBreak && !isMaxStar;
+            bool enoughShard = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount;
+            bool enoughCoin = Player.Instance.GetCurrencyAmount(breakCoinDefi) >= breakCoinAmount;
+            bool isEnoughCurrency = enoughShard && enoughCoin;
+            bool canBreak = isEnoughCurrency && isTimeToBreak && !isMaxStar;
 
 
             m_UsedUpgradeShard = breakShardCurrency;
+            m_UsedUpgradeCoin = breakCoinCurrency;
 
             m_UpgradeButton.interactable = canBreak;
-            m_QuickAccessButton.gameObject.SetActive(!canBreak);
+            m_QuickAccessButton.gameObject.SetActive(!isEnoughCurrency);
 
-            int ownerCurrencyAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeShard.CurrencyDefinition);
-            Currency ownedCurrency = new(m_UsedUpgradeShard.CurrencyDefinition, ownerCurrencyAmount);
+            int ownerShardAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeShard.CurrencyDefinition);
+            int ownerCoinAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeCoin.CurrencyDefinition);
+            Currency ownedCurrency = new(m_UsedUpgradeShard.CurrencyDefinition, ownerShardAmount);
+            Currency ownedCoin = new(m_UsedUpgradeCoin.CurrencyDefinition, ownerCoinAmount);
 
             m_ShardNeed.SetView(m_UsedUpgradeShard);
+            m_CoinNeed.SetView(m_UsedUpgradeCoin);
 
             m_ShardOwned.SetView(ownedCurrency);
+            m_CoinOwned.SetView(ownedCoin);
 
             m_IsUpgradeAvailable = canBreak;
             m_UpgradeButton.interactable = m_IsUpgradeAvailable;
 
-            m_ShardNameText.text = $"Owned {m_UsedUpgradeShard.CurrencyDefinition.name}:";
+            m_ShardNameText.text = $"Owned:";
             m_ShardNeed.SetView(new Currency(m_UsedUpgradeShard.CurrencyDefinition, m_UsedUpgradeShard.Amount));
+            m_CoinNeed.SetView(new Currency(m_UsedUpgradeCoin.CurrencyDefinition, m_UsedUpgradeCoin.Amount));
         }
 
         protected override void ShowInternal()

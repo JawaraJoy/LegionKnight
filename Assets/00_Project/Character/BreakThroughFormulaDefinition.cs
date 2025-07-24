@@ -8,9 +8,12 @@ namespace LegionKnight
         [SerializeField]
         private CurrencyDefinition m_ShardDefi;
         [SerializeField]
+        private CurrencyDefinition m_CoinDefi;
+        [SerializeField]
         private BreakThroughStep[] m_BreakThroughSteps;
 
         public CurrencyDefinition ShardDefinition => m_ShardDefi;
+        public CurrencyDefinition CoinDefinition => m_CoinDefi;
 
         private BreakThroughStep GetStepInternal(int star)
         {
@@ -61,6 +64,16 @@ namespace LegionKnight
             }
             return GetStepInternal(nextStar).ShardAmountToBreak;
         }
+        public int GetCoinAmountToBreak(int star)
+        {
+            int nextStar = star + 1;
+            if (nextStar < 0 || nextStar >= m_BreakThroughSteps.Length)
+            {
+                Debug.LogError($"Invalid next star level: {nextStar}. Must be between 0 and {m_BreakThroughSteps.Length - 1}.");
+                return -1;
+            }
+            return GetStepInternal(nextStar).CoinAmountToBreak;
+        }
     }
 
     [System.Serializable]
@@ -71,10 +84,13 @@ namespace LegionKnight
         [SerializeField]
         private int m_ShardAmountToBreak;
         [SerializeField]
+        private int m_CoinAmountToBreak;
+        [SerializeField]
         private Stat m_StatBonus;
 
         public int LevelNeeded => m_LevelNeeded;
         public Stat StatBonus => m_StatBonus;
         public int ShardAmountToBreak => m_ShardAmountToBreak;
+        public int CoinAmountToBreak => m_CoinAmountToBreak;
     }
 }

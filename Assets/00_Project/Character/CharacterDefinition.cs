@@ -64,10 +64,15 @@ namespace LegionKnight
         public List<SkillDefinition> Passives => m_Passives;
         public int StartingStars => m_StartingStars;
 
-        public Currency GetBreakCost(int star)
+        public Currency GetBreakShardCost(int star)
         {
             int amount = m_BreakThrough.GetShardAmountToBreak(star);
             return new Currency(m_BreakThrough.ShardDefinition, amount);
+        }
+        public Currency GetBreakCoinCost(int star)
+        {
+            int amount = m_BreakThrough.GetCoinAmountToBreak(star);
+            return new Currency(m_BreakThrough.CoinDefinition, amount);
         }
         public bool CanBreak(int star, int level)
         {

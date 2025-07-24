@@ -32,8 +32,8 @@ namespace LegionKnight
         public void Init(CharacterDefinition definition)
         {
             CharacterUnit characterUnit = Player.Instance.GetCharacterUnit(definition);
-            CurrencyDefinition breakShardDefi = characterUnit.GetBreakCost().CurrencyDefinition;
-            int breakShardAmount = characterUnit.GetBreakCost().Amount;
+            //CurrencyDefinition breakShardDefi = characterUnit.GetBreakCost().CurrencyDefinition;
+            //int breakShardAmount = characterUnit.GetBreakCost().Amount;
 
             bool isTimeToBreak = characterUnit.CanBreak();
             bool isMaxStar = characterUnit.Star >= characterUnit.MaxStar;

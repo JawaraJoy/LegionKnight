@@ -13,15 +13,18 @@ MonoBehaviour:
   m_Name: Paladin Regen Platform
   m_EditorClassIdentifier: 
   m_Descriptions:
-  - m_BaseVal: 4
-    m_UpgradeVal: 1
+  - m_UseHeroAttackScale: 0
+    m_BaseVal: 8
+    m_UpgradeVal: 3
     m_Description: 'Chance to spawn 10%.
 
       Regenerate {0} HP for '
-  - m_BaseVal: 5
+  - m_UseHeroAttackScale: 0
+    m_BaseVal: 5
     m_UpgradeVal: 0
     m_Description: '{0:0.##}s.'
   m_DamageStat:
+    m_IsHeroScale: 0
     m_Attack: 2
     m_Health: 0
     m_AttackUpgrade: 1
@@ -38,9 +41,9 @@ MonoBehaviour:
     m_HealAmount: 0
     m_HealAmountUpgrade: 0
   m_RegenStat:
-    m_RegenAmount: 4
-    m_RegenDuration: 5
-    m_RegenAmountUpgrade: 1
+    m_RegenAmount: 8
+    m_RegenDuration: 3
+    m_RegenAmountUpgrade: 9
     m_RegenDurationUpgrade: 0
   m_StunStat:
     m_StunDuration: 0

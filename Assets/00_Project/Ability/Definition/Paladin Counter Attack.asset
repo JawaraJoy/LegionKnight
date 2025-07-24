@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Descriptions:
   - m_UseHeroAttackScale: 0
-    m_BaseVal: 3
+    m_BaseVal: 5
     m_UpgradeVal: 0.05
-    m_Description: 'Create a Protection Dome around herself for {0:0.##}s, to protect
-      the Hero from Enemy Attack. Also, absorb the incoming damage from enemy attacks,
-      then launch multiple projectiles based how many damage absorbed. '
+    m_Description: Create a Protection Dome around herself for {0:0.##}s, to protect
+      the Hero from Enemy Projectiles. Also, absorb the incoming damage from it,
+      then launch 3 projectiles.
   - m_UseHeroAttackScale: 0
-    m_BaseVal: 2
-    m_UpgradeVal: 1
-    m_Description: The Projectile deal {0} damage on hit.
+    m_BaseVal: 25
+    m_UpgradeVal: 17
+    m_Description: Projectiles deal {0} damage on hit.
   m_DamageStat:
     m_IsHeroScale: 0
-    m_Attack: 2
+    m_Attack: 25
     m_Health: 0
-    m_AttackUpgrade: 1
+    m_AttackUpgrade: 17
     m_HealthUpgrade: 0
   m_DotStat:
     m_DamagePerTick: 0
@@ -35,7 +35,7 @@ MonoBehaviour:
     m_DamagePerTickUpgrade: 0
     m_DurationUpgrade: 0
   m_GuardStat:
-    m_Duration: 10
+    m_Duration: 5
     m_DurationUpgrade: 0.05
   m_HealStat:
     m_HealAmount: 0

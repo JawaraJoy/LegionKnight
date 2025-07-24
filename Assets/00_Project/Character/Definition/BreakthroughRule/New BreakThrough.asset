@@ -13,21 +13,32 @@ MonoBehaviour:
   m_Name: New BreakThrough
   m_EditorClassIdentifier: 
   m_ShardDefi: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
+  m_CoinDefi: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
   m_BreakThroughSteps:
   - m_LevelNeeded: 30
-    m_ShardAmountToBreak: 50
+    m_ShardAmountToBreak: 10
+    m_CoinAmountToBreak: 0
     m_StatBonus:
       m_Attack: 25
       m_Defense: 15
       m_Health: 100
   - m_LevelNeeded: 50
     m_ShardAmountToBreak: 50
+    m_CoinAmountToBreak: 2000
     m_StatBonus:
       m_Attack: 45
       m_Defense: 25
       m_Health: 165
   - m_LevelNeeded: 70
     m_ShardAmountToBreak: 100
+    m_CoinAmountToBreak: 3000
+    m_StatBonus:
+      m_Attack: 75
+      m_Defense: 40
+      m_Health: 275
+  - m_LevelNeeded: 100
+    m_ShardAmountToBreak: 100
+    m_CoinAmountToBreak: 5000
     m_StatBonus:
       m_Attack: 75
       m_Defense: 40
