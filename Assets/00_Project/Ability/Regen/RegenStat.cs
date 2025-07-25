@@ -8,9 +8,14 @@ namespace LegionKnight
         [SerializeField]
         private int m_RegenAmount = 5;
         [SerializeField]
+        private float m_RegenRate = 1f; // This is not used in the RegenStat, but kept for consistency with other stats
+
+        [SerializeField]
         private float m_RegenDuration = 5f;
         [SerializeField]
         private int m_RegenAmountUpgrade = 1;
+        [SerializeField]
+        private float m_RegenRateUpgrade = 0.1f; // This is not used in the RegenStat, but kept for consistency with other stats
         [SerializeField]
         private float m_RegenDurationUpgrade = 0.5f;
         public float RegenDuration => m_RegenDuration;
@@ -18,10 +23,15 @@ namespace LegionKnight
 
         public int RegenAmountUpgrade => m_RegenAmountUpgrade;
         public float RegenDurationUpgrade => m_RegenDurationUpgrade;
+        public float RegenRate => m_RegenRate; // This is not used in the RegenStat, but kept for consistency with other stats
 
         public int GetFinalRegenAmount(int level)
         {
             return m_RegenAmount + m_RegenAmountUpgrade * (level - 1);
+        }
+        public float GetFinalRegenRate(int level)
+        {
+            return m_RegenRate + m_RegenRateUpgrade * (level - 1); // This is not used in the RegenStat, but kept for consistency with other stats
         }
         public float GetFinalRegenDuration(int level)
         {
@@ -67,6 +77,10 @@ namespace LegionKnight
         public float GetFinalRegenDuration(int level)
         {
             return m_RegenStat.GetFinalRegenDuration(level);
+        }
+        public float GetFinalRegenRate(int level)
+        {
+            return m_RegenStat.GetFinalRegenRate(level); // This is not used in the RegenStat, but kept for consistency with other stats
         }
     }
 }

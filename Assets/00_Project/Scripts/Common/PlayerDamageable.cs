@@ -21,6 +21,7 @@ namespace LegionKnight
                 m_Damageable.AddCurrentHealth(amount);
             }
         }
+        public int MaxHealth => m_Damageable.Health;
     }
 
     public partial class Player
@@ -36,5 +37,6 @@ namespace LegionKnight
         {
             m_PlayerDamageable.Heal(amount);
         }
+        public int MaxHealth => m_PlayerDamageable.MaxHealth;
     }
 }

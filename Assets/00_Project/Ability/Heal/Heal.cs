@@ -54,7 +54,10 @@ namespace LegionKnight
             int level = unit.Level;
             // Initialize the ability with the provided definition
             // This can include setting up specific properties or configurations based on the definition
-            m_HealAmount = m_AbilityDefinition.GetFinalHealAmount(level); // Example: get heal amount from ability definition
+            float healRate = m_AbilityDefinition.GetFinalHealRate(level); // Example: get heal rate from ability definition
+            int baseAmount = m_AbilityDefinition.GetFinalHealAmount(level); // Example: get heal amount from ability definition
+            int characterMaxHealth = unit.FinalStat().Health; // Get the character's maximum health
+            m_HealAmount = Mathf.RoundToInt(baseAmount + characterMaxHealth * healRate); // Calculate the final heal amount based on level and rate
 
             ApplyHealInternal(m_HealAmount); // Apply heal based on the ability definition
         }

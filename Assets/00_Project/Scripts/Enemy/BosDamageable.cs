@@ -38,6 +38,11 @@ namespace LegionKnight
         {
             m_Damageable.Heal(amount);
         }
+
+        public int GetBosMaxHealth()
+        {
+            return m_Damageable.Health;
+        }
     }
     public partial class LevelHandler
     {

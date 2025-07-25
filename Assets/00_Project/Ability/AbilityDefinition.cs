@@ -8,6 +8,8 @@ namespace LegionKnight
     public partial class AbilityDefinition : ScriptableObject
     {
         [SerializeField]
+        private SkillOwner m_SkillOwner = SkillOwner.Player;
+        [SerializeField]
         private AbilityDescription[] m_Descriptions;
 
         public string GetFinalDescription(CharacterUnit unit, int level)
@@ -21,6 +23,27 @@ namespace LegionKnight
                 description += m_Descriptions[i].GetDescription(unit, level);
             }
             return description;
+        }
+
+        private GameObject GetOwnerInternal()
+        {
+            if (m_SkillOwner == SkillOwner.Player)
+            {
+                return Player.Instance.gameObject;
+            }
+            else if (m_SkillOwner == SkillOwner.Boss)
+            {
+                return GameManager.Instance.SpawnedBosenemy.gameObject;
+            }
+            else
+            {
+                Debug.LogError("Unknown skill owner type: " + m_SkillOwner);
+                return null;
+            }
+        }
+        public GameObject GetOwner()
+        {
+            return GetOwnerInternal();
         }
     }
 

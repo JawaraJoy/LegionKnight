@@ -32,11 +32,29 @@ namespace LegionKnight
         {
             // Initialize the ability with the provided definition
             // This can include setting up specific properties or configurations based on the definition
-            if (defi != null)
+            
+            if (defi != null) return;
+            GameObject owner = defi.GetOwner(); // Get the owner of the ability from the definition
+            if (owner == null)
             {
-                m_AmountPerTick = defi.GetFinalRegenAmount(level); // Assuming AbilityDefinition has a RegenAmountPerTick property
-                m_Duration = defi.GetFinalRegenDuration(level); // Assuming AbilityDefinition has a RegenDuration property
+                Debug.LogError("Owner of the ability is null. Cannot initialize regeneration.");
+                return;
             }
+            int MaxHealth = 100; // Default max health, can be adjusted based on the character's stats
+            if (owner.TryGetComponent(out Player player))
+            {
+                MaxHealth = player.MaxHealth; // Get the player's maximum health
+            }
+            if (owner.TryGetComponent(out BosEnemy boss))
+            {
+                MaxHealth = boss.GetBosMaxHealth(); // Get the boss's maximum health
+            }
+
+            int baseAmount = defi.GetFinalRegenAmount(level); // Assuming AbilityDefinition has a RegenAmount property
+            float finalRate = defi.GetFinalRegenRate(level); // Assuming AbilityDefinition has a RegenRate property
+            int finalAmount = Mathf.RoundToInt(baseAmount + MaxHealth * finalRate); // Calculate the final amount based on level and rate
+            m_AmountPerTick = baseAmount; // Set the amount per tick from the ability definition
+            m_Duration = defi.GetFinalRegenDuration(level); // Assuming AbilityDefinition has a RegenDuration property
             StartRegen(); // Start the regeneration process
         }
         public void Initialize()

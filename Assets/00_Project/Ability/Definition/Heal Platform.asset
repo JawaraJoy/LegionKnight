@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ed6495d5f041f045962f55592a83365, type: 3}
   m_Name: Heal Platform
   m_EditorClassIdentifier: 
+  m_SkillOwner: 0
   m_Descriptions:
-  - m_BaseVal: 10
+  - m_UseHeroAttackScale: 0
+    m_BaseVal: 10
     m_UpgradeVal: 1
     m_Description: 'Chance to spawn 10%.
 
       Heal Instanly Hero for {0} HP.'
   m_DamageStat:
+    m_IsHeroScale: 0
     m_Attack: 0
     m_Health: 0
     m_AttackUpgrade: 0
@@ -33,11 +36,15 @@ MonoBehaviour:
     m_DurationUpgrade: 0
   m_HealStat:
     m_HealAmount: 10
+    m_HealRate: 0.01
     m_HealAmountUpgrade: 1
+    m_HealRateUpgrade: 0.001
   m_RegenStat:
     m_RegenAmount: 0
+    m_RegenRate: 0
     m_RegenDuration: 0
     m_RegenAmountUpgrade: 0
+    m_RegenRateUpgrade: 0
     m_RegenDurationUpgrade: 0
   m_StunStat:
     m_StunDuration: 0

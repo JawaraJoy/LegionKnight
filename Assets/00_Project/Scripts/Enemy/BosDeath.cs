@@ -28,10 +28,10 @@ namespace LegionKnight
 
         private IEnumerator OpenWinPanelDelay(float delay)
         {
-            GameManager.Instance.SetLevelOver(true);
-            yield return new WaitForSeconds(delay);
             if (!GameManager.Instance.IsInfiniteLevel)
             {
+                yield return new WaitForSeconds(delay);
+                GameManager.Instance.SetLevelOver(true);
                 WinPanel winPanel = GameManager.Instance.GetPanel<WinPanel>();
                 winPanel.Show();
                 winPanel.SetLevelDefinition(GameManager.Instance.LevelDefinition);

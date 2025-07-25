@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f95660b1afb64c34b8b7a9456c25d96a, type: 3}
-  m_Name: Gatot
+  m_Name: Caelis Windgrave
   m_EditorClassIdentifier: 
-  m_Id: gatot
-  m_Label: Gatot
-  m_Icon: {fileID: 21300000, guid: eb3bb233227e59f4986d325a76d90ecb, type: 3}
-  m_SmallIcon: {fileID: 885127493, guid: 091e0f478ce36f049abdfeb839348da8, type: 3}
-  m_TypeIcon: {fileID: 21300000, guid: 863d316d976504fc5a3734b33e10c55e, type: 3}
-  m_Rarity: 1
-  m_ColorRarity: {r: 0.3254717, g: 0.47747788, b: 1, a: 1}
+  m_Id: robin
+  m_Label: Caelis Windgrave
+  m_Icon: {fileID: 21300000, guid: 89ab3e25e1631fa4f94adfa8b99f448c, type: 3}
+  m_SmallIcon: {fileID: -101684357, guid: c1260be25ae54bd4c9fd6baa020d662a, type: 3}
+  m_TypeIcon: {fileID: 21300000, guid: 7d8b6181ad16b4a708f3c323b2efbe4a, type: 3}
+  m_Rarity: 0
+  m_ColorRarity: {r: 0.57022077, g: 0.6245531, b: 0.8113208, a: 1}
   m_StartingStars: 0
-  m_BreakThrough: {fileID: 11400000, guid: 8d0da5d330d3dcc46ab3bb37997c1bce, type: 2}
+  m_BreakThrough: {fileID: 11400000, guid: a5b04141a18b8084ea91e47a78985eb8, type: 2}
   m_CharacterPrefab:
     m_AssetGUID: dba0bc1d80e8cd24198b81e3a416dd4f
     m_SubObjectName: 
@@ -28,16 +28,16 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   m_BaseStat:
-    m_Attack: 33
-    m_Defense: 33
-    m_Health: 500
+    m_Attack: 90
+    m_Defense: 90
+    m_Health: 600
   m_StatGainPerLevel:
-    m_Attack: 6
-    m_Defense: 6
-    m_Health: 21
+    m_Attack: 7
+    m_Defense: 1
+    m_Health: 14
   m_ShardConvert:
     m_CurrencyDefinition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
-    m_Amount: 10
+    m_Amount: 5
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -47,7 +47,7 @@ MonoBehaviour:
     m_OnCurrencyAmountGet:
       m_PersistentCalls:
         m_Calls: []
-  m_UniquePlatform: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
+  m_UniquePlatform: {fileID: 0}
   m_Weapons:
   - m_SkillName: Basic Attack
     m_Description: 
@@ -90,15 +90,17 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
   m_Passives:
-  - m_SkillName: Gaia
-    m_Description: Create a Big Explotion come from himself. Damaging every enemy
-      in Big Area.
-    m_Icon: {fileID: 21300000, guid: 55578f559bed4174fa4725b751a3ac44, type: 3}
-    m_ManaThreshold: 115
+  - m_SkillName: 'Heavy Arrow '
+    m_Description: 'Shot 3 Arrow in Arc Direction
+
+      On Hit : Stun the target
+      for 5s'
+    m_Icon: {fileID: 21300000, guid: 1e4cc8ca904a05e4fbd417e679b4b0ec, type: 3}
+    m_ManaThreshold: 110
     m_SkillAsset:
-    - m_AssetGUID: 8c91b5280116a0e4194da1c20a8169fc
+    - m_AssetGUID: 6b315ae5495fcb4438e0fee0c659cf2d
       m_SubObjectName: 
       m_SubObjectGUID: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
-  m_Ability: {fileID: 11400000, guid: 1ff1ef4f489055a44be9720b8a83f892, type: 2}
+  m_Ability: {fileID: 11400000, guid: e82ef30d671fb58499f9e8afa935995b, type: 2}

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f95660b1afb64c34b8b7a9456c25d96a, type: 3}
-  m_Name: Altair
+  m_Name: Lily
   m_EditorClassIdentifier: 
-  m_Id: altair
-  m_Label: Altiar
-  m_Icon: {fileID: 21300000, guid: bc5af973e2a66df4196a79620dab25ed, type: 3}
-  m_SmallIcon: {fileID: -910726032, guid: 59e89865c9eed1a469f983d1e1c8c5f1, type: 3}
+  m_Id: lala
+  m_Label: Lily
+  m_Icon: {fileID: 21300000, guid: a22cd134e585e2e4a9e4cafb066ed919, type: 3}
+  m_SmallIcon: {fileID: 1569106242, guid: a22de8ad6337f51408ac3609071d182b, type: 3}
   m_TypeIcon: {fileID: 21300000, guid: 7d8b6181ad16b4a708f3c323b2efbe4a, type: 3}
   m_Rarity: 0
   m_ColorRarity: {r: 0.57022077, g: 0.6245531, b: 0.8113208, a: 1}
@@ -28,13 +28,13 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   m_BaseStat:
-    m_Attack: 37
-    m_Defense: 19
-    m_Health: 323
+    m_Attack: 40
+    m_Defense: 20
+    m_Health: 335
   m_StatGainPerLevel:
-    m_Attack: 6
+    m_Attack: 9
     m_Defense: 2
-    m_Health: 6
+    m_Health: 14
   m_ShardConvert:
     m_CurrencyDefinition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
     m_Amount: 5
@@ -90,15 +90,15 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
   m_Passives:
-  - m_SkillName: Poison Dagger
-    m_Description: Shot a Dagger in 3 interval, then apply poison on hit target for
-      5s.
-    m_Icon: {fileID: 21300000, guid: dad722f0c0a1d7840889d42cdcea786e, type: 3}
-    m_ManaThreshold: 100
+  - m_SkillName: Fire Ball
+    m_Description: Shot a Fire Ball, then create an explotion on hit, damaging around
+      in small area
+    m_Icon: {fileID: 21300000, guid: 8ab34da333aadb2419d2bcacbbcd1522, type: 3}
+    m_ManaThreshold: 85
     m_SkillAsset:
-    - m_AssetGUID: d5c4f575667ef914bbb58fa510887004
+    - m_AssetGUID: cd7bb9e5f9714794a9f524d8c127e729
       m_SubObjectName: 
       m_SubObjectGUID: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
-  m_Ability: {fileID: 11400000, guid: 5581c2958bab7354dab0f6c7f1f295d7, type: 2}
+  m_Ability: {fileID: 11400000, guid: b34b1fceb2b26dd43a10c5b9c6cda999, type: 2}

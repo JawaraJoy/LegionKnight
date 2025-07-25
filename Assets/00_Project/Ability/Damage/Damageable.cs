@@ -123,16 +123,30 @@ namespace LegionKnight
             TakeDamageInternal(damage);
         }
 
-        private int DamageFormula(int attacker, int defender)
+        private int DamageFormulaRPG(int attacker, int defender)
         {
             int underAmor = Mathf.Clamp(attacker + defender, 5, int.MaxValue);
             int dmg = Mathf.RoundToInt( attacker * attacker / (underAmor));
+            if (dmg < 1)
+            {
+                dmg = Random.Range(1, 5); // Ensure at least 1 damage is dealt
+            }
+            return dmg;
+        }
+        private int DamageFormulaMoba(int attacker, int defender)
+        {
+            int underAmor = Mathf.Clamp(100 + defender, 5, int.MaxValue);
+            int dmg = Mathf.RoundToInt(attacker * 100 / (underAmor));
+            if (dmg < 1)
+            {
+                dmg = Random.Range(1, 5); // Ensure at least 1 damage is dealt
+            }
             return dmg;
         }
         protected virtual void TakeDamageInternal(int damage)
         {
             //if (!IsAlive()) return;
-            int dmg = DamageFormula(damage, m_Defend);
+            int dmg = DamageFormulaMoba(damage, m_Defend);
             if (!IsProtectGoneInternal())
             {
                 if (m_Barrier > 0)
