@@ -30,8 +30,8 @@ namespace LegionKnight
         {
             if (!GameManager.Instance.IsInfiniteLevel)
             {
-                yield return new WaitForSeconds(delay);
                 GameManager.Instance.SetLevelOver(true);
+                yield return new WaitForSeconds(delay);
                 WinPanel winPanel = GameManager.Instance.GetPanel<WinPanel>();
                 winPanel.Show();
                 winPanel.SetLevelDefinition(GameManager.Instance.LevelDefinition);

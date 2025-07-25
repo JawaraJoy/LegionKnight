@@ -51,11 +51,17 @@ namespace LegionKnight
         {
             if (!m_Initialized) return;
             m_SkeletonAnimation.state.SetAnimation(0, "Attack", false);
+            m_SkeletonAnimation.state.AddAnimation(0, "Idle", true, 0f);
         }
         public void PlayDeath()
         {
             if (!m_Initialized) return;
-            m_SkeletonAnimation.state.SetAnimation(0, "Death", false);
+            m_SkeletonAnimation.state.SetAnimation(0, "Fall", false);
+            //m_SkeletonAnimation.state.AddAnimation(0, "Idle", true, 0f);
+        }
+        public void FlipX()
+        {
+
         }
     }
 }
