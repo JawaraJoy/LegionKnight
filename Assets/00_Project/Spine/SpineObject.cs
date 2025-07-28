@@ -3,20 +3,26 @@ using Spine.Unity;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
     public class SpineObject : View
     {
-        private CharacterDefinition m_Defi;
+        private ScriptableObject m_Defi;
         [SerializeField]
         private SkeletonAnimation m_SkeletonAnimation;
 
         private bool m_Initialized = false;
 
         public bool Initialized => m_Initialized;
-        public CharacterDefinition Defi => m_Defi;
+        public ScriptableObject Defi => m_Defi;
+
+        [SerializeField]
+        private UnityEvent<SpineAnimDefinition> m_OnSetAnim = new ();
+        [SerializeField]
+        private UnityEvent<SpineObject> m_OnAnimationDone = new ();
         public SkeletonAnimation SkeletonAnimation
         {
             get
@@ -30,7 +36,7 @@ namespace LegionKnight
         }
 
         [ContextMenu("Initialize Spine")]
-        public void InitSpine(CharacterDefinition defi)
+        public void InitCharSpine(ScriptableObject defi)
         {
             m_SkeletonAnimation.Initialize(true);
             m_Defi = defi;
@@ -59,9 +65,28 @@ namespace LegionKnight
             m_SkeletonAnimation.state.SetAnimation(0, "Fall", false);
             //m_SkeletonAnimation.state.AddAnimation(0, "Idle", true, 0f);
         }
-        public void FlipX()
+        public void FlipX(bool left)
         {
+            if (!m_Initialized) return;
+            m_SkeletonAnimation.initialFlipX = left;
+        }
+        public void PlayAnimationOnce(string key)
+        {
+            if (!m_Initialized) return;
+            m_SkeletonAnimation.state.SetAnimation(0, key, false);
+        }
+        public void SetAnim(SpineAnimDefinition anim)
+        {
+            if (!m_Initialized) return;
+            if (anim == null) return;
+            anim.Play(m_SkeletonAnimation, () => OnAnimationDone(anim));
+            m_OnSetAnim.Invoke(anim);
+        }
 
+        private void OnAnimationDone(SpineAnimDefinition anim)
+        {
+            m_OnAnimationDone.Invoke(this);
+            Debug.Log($"Animation done for {anim.AnimName}");
         }
     }
 }

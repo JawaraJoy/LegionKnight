@@ -15,6 +15,10 @@ namespace LegionKnight
         {
             AddCurrentHealthInternal(amount);
         }
+        public void DirectAttack()
+        {
+            Player.Instance.TakeDamage(m_Damage);
+        }
     }
     public partial class BosEnemy
     {
@@ -42,6 +46,10 @@ namespace LegionKnight
         public int GetBosMaxHealth()
         {
             return m_Damageable.Health;
+        }
+        public void DirectAttack()
+        {
+            m_Damageable.DirectAttack();
         }
     }
     public partial class LevelHandler

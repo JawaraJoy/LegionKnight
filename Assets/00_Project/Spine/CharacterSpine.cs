@@ -38,7 +38,15 @@ namespace LegionKnight
         }
         private void AddSpineObjectInternal(SpineObject spineObject)
         {
-            string key = spineObject.Defi.Id;
+            string key = "";
+            if (spineObject.Defi is CharacterDefinition characterDef)
+            {
+                key = characterDef.Id;
+            }
+            if (spineObject.Defi is BosDefinition bosDef)
+            {
+                key = bosDef.Id;
+            }
             if (!m_SpineObjects.ContainsKey(key))
             {
                 m_SpineObjects.Add(key, spineObject);
@@ -85,44 +93,80 @@ namespace LegionKnight
         {
             foreach (var spineObject in m_SpineObjects.Values)
             {
-                HideSpineObjectInternal(spineObject.Defi.Id);
+                string id = GetId(spineObject.Defi);
+                HideSpineObjectInternal(id);
             }
         }
 
-        public void ChangeSpine(CharacterDefinition defi)
+        public void ChangeSpine(ScriptableObject defi)
         {
             HideAllSpineInternal();
-            AssetReferenceGameObject existingSpineObject = defi.CharacterPrefab;
+            AssetReferenceGameObject existingSpineObject = GetAsset(defi);
+            string id = GetId(defi);
             if (existingSpineObject == null)
             {
                 Debug.LogError("CharacterDefinition does not have a valid CharacterPrefab.");
                 m_OnNoSpineObjectFound?.Invoke();
                 return;
             }
-            if (HasSpineObject(defi.Id))
+            if (HasSpineObject(id))
             {
-                ShowSpineObjectInternal(defi.Id);
-                m_CurrentSpineObject = GetSpineObject(defi.Id);
+                ShowSpineObjectInternal(id);
+                m_CurrentSpineObject = GetSpineObject(id);
             }
             else
             {
-                StartCoroutine(SpawningSpineObject(defi));
+                StartCoroutine(SpawningCharSpineObject(defi));
             }
+            
         }
-
-        private IEnumerator SpawningSpineObject(CharacterDefinition defi)
+        private AssetReferenceGameObject GetAsset(ScriptableObject defi)
         {
-            m_Handle = defi.CharacterPrefab.InstantiateAsync(m_SpineParent, false);
+            if (defi is CharacterDefinition characterDef)
+            {
+                return characterDef.CharacterPrefab;
+            }
+            if (defi is BosDefinition bosDef)
+            {
+                return bosDef.BosPrefab;
+            }
+            Debug.LogError("ScriptableObject does not have a valid Prefab.");
+            return null;
+        }
+        private string GetId(ScriptableObject defi)
+        {
+            if (defi is CharacterDefinition characterDef)
+            {
+                return characterDef.Id;
+            }
+            if (defi is BosDefinition bosDef)
+            {
+                return bosDef.Id;
+            }
+            Debug.LogError("ScriptableObject does not have a valid Id.");
+            return string.Empty;
+        }
+        private IEnumerator SpawningCharSpineObject(ScriptableObject defi)
+        {
+            AssetReferenceGameObject existingSpineObject = GetAsset(defi);
+            string id = GetId(defi);
+            if (existingSpineObject == null)
+            {
+                Debug.LogError("CharacterDefinition does not have a valid Prefab.");
+                m_OnNoSpineObjectFound?.Invoke();
+                yield break;
+            }
+            m_Handle = existingSpineObject.InstantiateAsync(m_SpineParent, false);
             yield return m_Handle;
             if (m_Handle.Status == AsyncOperationStatus.Succeeded)
             {
                 GameObject spawnedObject = m_Handle.Result;
                 if (spawnedObject.TryGetComponent(out SpineObject spineObject))
                 {
-                    spineObject.InitSpine(defi);
+                    spineObject.InitCharSpine(defi);
                     yield return new WaitUntil(() => spineObject.Initialized);
                     AddSpineObjectInternal(spineObject);
-                    ShowSpineObjectInternal(spineObject.Defi.Id);
+                    ShowSpineObjectInternal(id);
                     m_CurrentSpineObject = spineObject;
                 }
                 else
@@ -139,7 +183,7 @@ namespace LegionKnight
         }
         public void PlayJump()
         {
-            m_CurrentSpineObject?.PlayJump();
+            m_CurrentSpineObject.PlayJump();
         }
         public void PlayIdle()
         {
@@ -147,11 +191,30 @@ namespace LegionKnight
         }
         public void PlayAttack()
         {
-            m_CurrentSpineObject?.PlayAttack();
+            m_CurrentSpineObject.PlayAttack();
         }
         public void PlayDeath()
         {
-            m_CurrentSpineObject?.PlayDeath();
+            m_CurrentSpineObject.PlayDeath();
+        }
+        public void FlipX(bool left)
+        {
+            m_CurrentSpineObject.FlipX(left);
+        }
+        public void SetAnim(SpineAnimDefinition anim)
+        {
+            m_CurrentSpineObject.SetAnim(anim);
+        }
+        public void PlayAnimationOnce(string key)
+        {
+            if (m_CurrentSpineObject != null)
+            {
+                m_CurrentSpineObject.PlayAnimationOnce(key);
+            }
+            else
+            {
+                Debug.LogWarning("No SpineObject is currently set.");
+            }
         }
     }
 }

@@ -9,6 +9,8 @@ namespace LegionKnight
     public partial class BosDefinition : ScriptableObject
     {
         [SerializeField]
+        private string m_Id;
+        [SerializeField]
         private int m_StartLevel = 1;
         [SerializeField]
         private Sprite m_Icon;
@@ -17,16 +19,19 @@ namespace LegionKnight
         [SerializeField]
         private Stat m_StatGainPerLevel;
         [SerializeField]
+        private AssetReferenceGameObject m_BosPrefab;
+        [SerializeField]
         private List<StandbyPlatformDefinition> m_BosPlatforms = new();
         [SerializeField]
         private SkillDefinition[] m_Skills;
 
-
+        public string Id => m_Id;
         public Sprite Icon => m_Icon;
         public List<StandbyPlatformDefinition> BosPlatformsAsset => m_BosPlatforms;
         public SkillDefinition[] Skills => m_Skills;
         public Stat BaseStat => m_BaseStat;
         public int StartLevel => m_StartLevel;
+        public AssetReferenceGameObject BosPrefab => m_BosPrefab;
 
         public Stat FinalStat(int addLevel)
         {

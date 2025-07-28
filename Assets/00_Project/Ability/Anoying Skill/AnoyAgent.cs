@@ -14,23 +14,20 @@ namespace LegionKnight
         private UnityEvent m_OnAnoyStop;
         public AnoyDefinition AnoyDefinition => m_AnoyDefinition;
 
-        private void OnEnable()
+        public void Register()
         {
             Player.Instance.AddAnoy(this);
             GameManager.Instance.AddOnPerfectTouchDown(AddInteruptOne);
         }
-        private void OnDisable()
+        public void Unregister()
         {
             GameManager.Instance.RemoveOnPerfectTouchDown(AddInteruptOne);
             Player.Instance.RemoveAnoy(this);
         }
-        public void RegisterAnoy()
-        {
-            
-        }
         public void StopAnoy()
         {
             m_OnAnoyStop?.Invoke();
+            GameManager.Instance.RemoveOnPerfectTouchDown(AddInteruptOne);
             Player.Instance.RemoveAnoy(this);
         }
 

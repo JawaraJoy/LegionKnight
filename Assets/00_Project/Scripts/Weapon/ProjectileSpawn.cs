@@ -82,7 +82,7 @@ namespace LegionKnight
                 {
                     dot.ApplyDamageOvertime();
                 }
-                if (result.TryGetComponent(out Casting casting))
+                if (result.TryGetComponent(out BosCasting casting))
                 {
                     casting.InitLevel(levelBos);
                     casting.StartCasting();

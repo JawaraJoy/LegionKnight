@@ -986,6 +986,37 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &2942015084080359813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1169987259359526074}
+  m_Layer: 0
+  m_Name: Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1169987259359526074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2942015084080359813}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5738548464648827776}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3620396568054122305
 GameObject:
   m_ObjectHideFlags: 0
@@ -1002,7 +1033,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6581030489989390694
 Transform:
   m_ObjectHideFlags: 0
@@ -11269,6 +11300,64 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &5909015496722112517
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5738548464648827776}
+  - component: {fileID: 7001825305152453541}
+  m_Layer: 0
+  m_Name: Boss Spine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5738548464648827776
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5909015496722112517}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1169987259359526074}
+  m_Father: {fileID: 6721555490230484823}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7001825305152453541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5909015496722112517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dfb6744bd7555f47af682428df68042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SpineParent: {fileID: 1169987259359526074}
+  m_OnSpineObjectAdded:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnSpineObjectShow:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnSpineObjectHide:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnNoSpineObjectFound:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6201328910319786888
 GameObject:
   m_ObjectHideFlags: 0
@@ -26464,6 +26553,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6581030489989390694}
+  - {fileID: 5738548464648827776}
   - {fileID: 5554095293036852163}
   - {fileID: 2060144078254009600}
   - {fileID: 3511848407714668274}
@@ -26502,8 +26592,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7001825305152453541}
+        m_TargetAssemblyTypeName: LegionKnight.CharacterSpine, Assembly-CSharp
+        m_MethodName: ChangeSpine
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_BosForm: {fileID: 6040567752974675477}
   m_BosSkill: {fileID: 776969825580286560}
+  m_BossSpine: {fileID: 7001825305152453541}
 --- !u!114 &9048604627607117514
 MonoBehaviour:
   m_ObjectHideFlags: 0

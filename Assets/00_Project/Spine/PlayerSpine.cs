@@ -32,5 +32,13 @@ namespace LegionKnight
         {
             m_PlayerSpine.PlayDeath();
         }
+        public void FlipX(bool left)
+        {
+            m_PlayerSpine.FlipX(left);
+        }
+        public void SetAnim(SpineAnimDefinition anim)
+        {
+            m_PlayerSpine.SetAnim(anim);
+        }
     }
 }
