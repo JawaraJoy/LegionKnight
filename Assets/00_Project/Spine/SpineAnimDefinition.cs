@@ -24,17 +24,14 @@ namespace LegionKnight
         public string AnimName => m_AnimName;
         public bool Loop => m_Loop;
         public SpineAnimDefinition NextAnim => m_NextAnim;
-
-        private UnityEvent m_OnAnimationDone = new UnityEvent();
-
-        public UnityEvent OnAnimationDone => m_OnAnimationDone;
         public void Play(SkeletonAnimation skeletonAnimation, UnityAction callback = null)
         {
             if (skeletonAnimation == null) return;
             var aa = skeletonAnimation.state.SetAnimation(m_AnimTrack, m_AnimName, m_Loop);
+            float animationTime = aa.AnimationTime;
+            float animationDuration = aa.Animation.Duration;
             aa.Complete += (trackEntry) =>
             {
-                m_OnAnimationDone.Invoke();
                 callback?.Invoke();
                 if (m_NextAnim != null)
                 {

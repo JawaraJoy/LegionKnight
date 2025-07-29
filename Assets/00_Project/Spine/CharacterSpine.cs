@@ -27,6 +27,10 @@ namespace LegionKnight
 
         [SerializeField]
         private UnityEvent m_OnNoSpineObjectFound;
+        [SerializeField]
+        private UnityEvent<SpineAnimDefinition> m_OnAnimationDone;
+        [SerializeField]
+        private SpineEvent[] m_SpineEvents;
         private SpineObject GetSpineObject(string key)
         {
             if (m_SpineObjects.TryGetValue(key, out var spineObject))
@@ -201,10 +205,7 @@ namespace LegionKnight
         {
             m_CurrentSpineObject.FlipX(left);
         }
-        public void SetAnim(SpineAnimDefinition anim)
-        {
-            m_CurrentSpineObject.SetAnim(anim);
-        }
+        
         public void PlayAnimationOnce(string key)
         {
             if (m_CurrentSpineObject != null)
@@ -215,6 +216,35 @@ namespace LegionKnight
             {
                 Debug.LogWarning("No SpineObject is currently set.");
             }
+        }
+        private SpineEvent GetSpineEvent(SpineAnimDefinition defi)
+        {
+            foreach (var spineEvent in m_SpineEvents)
+            {
+                if (spineEvent.Definition == defi)
+                {
+                    return spineEvent;
+                }
+            }
+            return null;
+        }
+        public void SetAnim(SpineAnimDefinition anim)
+        {
+            if (m_CurrentSpineObject == null)
+            {
+                Debug.LogWarning("No SpineObject is currently set.");
+                return;
+            }
+            m_CurrentSpineObject.SetAnim(anim);
+            anim.Play(m_CurrentSpineObject.SkeletonAnimation, () => OnAnimationDone(anim));
+            var spineEvent = GetSpineEvent(anim);
+            spineEvent?.OnStart.Invoke();
+        }
+        private void OnAnimationDone(SpineAnimDefinition anim)
+        {
+            Debug.Log($"Animation done for {anim.AnimName}");
+            var spineEvent = GetSpineEvent(anim);
+            spineEvent?.OnEnd.Invoke();
         }
     }
 }

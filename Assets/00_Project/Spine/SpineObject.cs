@@ -1,4 +1,5 @@
 using NaughtyAttributes;
+using Spine;
 using Spine.Unity;
 using System.Collections;
 using UnityEngine;
@@ -23,6 +24,21 @@ namespace LegionKnight
         private UnityEvent<SpineAnimDefinition> m_OnSetAnim = new ();
         [SerializeField]
         private UnityEvent<SpineObject> m_OnAnimationDone = new ();
+
+        [SerializeField]
+        private SpineEvent[] m_SpineEvents;
+
+        private SpineEvent GetSpineEvent(SpineAnimDefinition defi)
+        {
+            foreach (var spineEvent in m_SpineEvents)
+            {
+                if (spineEvent.Definition == defi)
+                {
+                    return spineEvent;
+                }
+            }
+            return null;
+        }
         public SkeletonAnimation SkeletonAnimation
         {
             get
@@ -82,12 +98,16 @@ namespace LegionKnight
             anim.Play(m_SkeletonAnimation, () => OnAnimationDone(anim));
             m_OnSetAnim.Invoke(anim);
             Debug.Log($"Animation set for {anim.AnimName}");
+            var spineEvent = GetSpineEvent(anim);
+            spineEvent?.OnStart.Invoke();
         }
 
         private void OnAnimationDone(SpineAnimDefinition anim)
         {
             m_OnAnimationDone.Invoke(this);
             Debug.Log($"Animation done for {anim.AnimName}");
+            var spineEvent = GetSpineEvent(anim);
+            spineEvent?.OnEnd.Invoke();
         }
     }
 }
