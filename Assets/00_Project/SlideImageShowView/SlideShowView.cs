@@ -25,7 +25,7 @@ namespace LegionKnight
 
         private void OnEnable()
         {
-            ShowSlide(GameManager.Instance.SlideShowHandler);
+            //ShowSlide(GameManager.Instance.SlideShowHandler);
         }
 
         private void ShowSlide(SlideShowHandler slide)

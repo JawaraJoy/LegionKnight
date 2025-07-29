@@ -77,10 +77,11 @@ namespace LegionKnight
         }
         public void SetAnim(SpineAnimDefinition anim)
         {
-            if (!m_Initialized) return;
+            //if (!m_Initialized) return;
             if (anim == null) return;
             anim.Play(m_SkeletonAnimation, () => OnAnimationDone(anim));
             m_OnSetAnim.Invoke(anim);
+            Debug.Log($"Animation set for {anim.AnimName}");
         }
 
         private void OnAnimationDone(SpineAnimDefinition anim)
