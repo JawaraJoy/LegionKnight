@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class ConversationDefinition : MonoBehaviour
+    public class ConversationDefinition : ScriptableObject
     {
         
     }
