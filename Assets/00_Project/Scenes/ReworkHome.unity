@@ -9505,6 +9505,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1091291144089817512, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnStopJump.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1091291144089817512, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnStopJump.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1091291144089817512, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnStopJump.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 678303919}
+    - target: {fileID: 1091291144089817512, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnStopJump.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1091291144089817512, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnStopJump.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayIdle
+      objectReference: {fileID: 0}
+    - target: {fileID: 1091291144089817512, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnStopJump.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LegionKnight.PlayerSpineAgent, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1091291144089817512, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnStopJump.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2084039138725747265, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_Name
       value: Player
@@ -9619,7 +9647,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6983114196135514266, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6983114196135514266, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -9742,6 +9770,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+--- !u!114 &678303919 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5562285190564560647, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+  m_PrefabInstance: {fileID: 678303918}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e950c3c896639b4cbc9f111e67e4bb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &701250516
 GameObject:
   m_ObjectHideFlags: 0

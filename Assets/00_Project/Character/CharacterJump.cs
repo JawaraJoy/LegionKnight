@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 namespace LegionKnight
 {
@@ -45,6 +46,8 @@ namespace LegionKnight
         private UnityEvent<float> m_OnLinearVelocityYChanged = new();
         [SerializeField]
         private UnityEvent m_OnStartJump = new();
+        [SerializeField]
+        private UnityEvent m_OnStopJump = new();
         [SerializeField]
         private UnityEvent m_OnFlyGetScore = new();
 
@@ -193,6 +196,22 @@ namespace LegionKnight
             m_LinearVelocityY = m_Rb.linearVelocityY;
             OnLinearVelocityChangedInvoke(m_LinearVelocityY);
             ClampJumpDistance();
+            if (m_IsGrounded)
+            {
+                if (m_IsJumping)
+                {
+                    m_OnStopJump?.Invoke();
+                    m_IsJumping = false;
+                }
+                m_StartingJumpPost = m_Rb.position; // Reset starting position when grounded
+            }
+            else
+            {
+                if (m_UseHoldJump && m_Rb.linearVelocityY < 0f && !m_IsJumping)
+                {
+                    m_OnStopJump?.Invoke();
+                }
+            }
         }
 
         private void ClampJumpDistance()
