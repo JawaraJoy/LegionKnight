@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using NaughtyAttributes;
 using Rush;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,6 +19,9 @@ namespace LegionKnight
         [SerializeField]
         private int m_Barrier;
         protected int m_CurrentHealth;
+
+        [SerializeField, ReadOnly]
+        private bool m_Immortal = false; // If true, the damageable is immortal and cannot
         [SerializeField]
         private UnityEvent m_OnDeath = new();
 
@@ -37,6 +41,8 @@ namespace LegionKnight
         private UnityEvent<int> m_OnHealthChanged = new();
         [SerializeField]
         private UnityEvent m_OnProtectGone = new();
+
+
         protected override void OnContactedBehaviourInvoke(GameObject other)
         {
             base.OnContactedBehaviourInvoke(other);
@@ -118,6 +124,18 @@ namespace LegionKnight
             m_Health = health;
             m_CurrentHealth = m_Health;
         }
+        public void SetImmotral(bool immortal)
+        {
+            m_Immortal = immortal;
+            if (immortal)
+            {
+                Debug.Log("Damageable is now immortal.");
+            }
+            else
+            {
+                Debug.Log("Damageable is no longer immortal.");
+            }
+        }
         public void TakeDamage(int damage)
         {
             TakeDamageInternal(damage);
@@ -146,6 +164,11 @@ namespace LegionKnight
         protected virtual void TakeDamageInternal(int damage)
         {
             //if (!IsAlive()) return;
+            if (m_Immortal)
+            {
+                Debug.Log("Damageable is immortal, no damage taken.");
+                return;
+            }
             int dmg = DamageFormulaMoba(damage, m_Defend);
             if (!IsProtectGoneInternal())
             {

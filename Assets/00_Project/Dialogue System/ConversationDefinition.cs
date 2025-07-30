@@ -1,20 +1,30 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace LegionKnight
+namespace LegionKnight.Dialogue
 {
+    [CreateAssetMenu(fileName = "New Conversation", menuName = "Legion Knight/Dialogue/Conversation", order = 1)]
     public class ConversationDefinition : ScriptableObject
     {
         [SerializeField]
-        private DialogueDefinition[] m_Dialogues;
+        private Dialogue[] m_Dialogues;
 
         [SerializeField]
-        private UnityEvent<DialogueDefinition> m_OnConversationStart;
+        private UnityEvent<Dialogue> m_OnConversationStart;
         [SerializeField]
-        private UnityEvent<DialogueDefinition> m_OnConversationEnd;
+        private UnityEvent<Dialogue> m_OnConversationEnd;
 
-        public DialogueDefinition[] Dialogues => m_Dialogues;
-        public UnityEvent<DialogueDefinition> OnConversationStart => m_OnConversationStart;
-        public UnityEvent<DialogueDefinition> OnConversationEnd => m_OnConversationEnd;
+        public Dialogue[] Dialogues => m_Dialogues;
+        public UnityEvent<Dialogue> OnConversationStart => m_OnConversationStart;
+        public UnityEvent<Dialogue> OnConversationEnd => m_OnConversationEnd;
+
+        public void StartConversation()
+        {
+            GameManager.Instance.StartConversation(this);
+        }
+        public void NextConversation()
+        {
+            GameManager.Instance.NextConversatioon();
+        }
     }
 }

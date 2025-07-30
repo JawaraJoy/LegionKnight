@@ -1,3 +1,4 @@
+using LegionKnight.Dialogue;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -188,6 +189,9 @@ namespace LegionKnight
                 bos.SetLocalPosition(new Vector2(0f, offset));
                 m_BosSpawnPost.DetachChildren();
                 m_OnBosSpawned?.Invoke(GetLevelDefinition().BosDefinition);
+                BosDefinition bosDefinition = GetLevelDefinition().BosDefinition;
+                ConversationDefinition conversation = bosDefinition.ConversationDefinition;
+                GameManager.Instance.StartConversation(conversation);
             }
         }
         private IEnumerator SpawningBosInternal(AsyncOperationHandle<GameObject> handle)

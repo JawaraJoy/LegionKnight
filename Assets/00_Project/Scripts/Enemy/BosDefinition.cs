@@ -1,3 +1,4 @@
+using LegionKnight.Dialogue;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -21,12 +22,15 @@ namespace LegionKnight
         [SerializeField]
         private AssetReferenceGameObject m_BosPrefab;
         [SerializeField]
+        private ConversationDefinition m_ConversationDefinition;
+        [SerializeField]
         private List<StandbyPlatformDefinition> m_BosPlatforms = new();
         [SerializeField]
         private SkillDefinition[] m_Skills;
 
         public string Id => m_Id;
         public Sprite Icon => m_Icon;
+        public ConversationDefinition ConversationDefinition => m_ConversationDefinition;
         public List<StandbyPlatformDefinition> BosPlatformsAsset => m_BosPlatforms;
         public SkillDefinition[] Skills => m_Skills;
         public Stat BaseStat => m_BaseStat;
