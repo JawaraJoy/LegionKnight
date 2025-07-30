@@ -1,11 +1,6 @@
-using NaughtyAttributes;
-using Spine;
 using Spine.Unity;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
@@ -108,6 +103,24 @@ namespace LegionKnight
             Debug.Log($"Animation done for {anim.AnimName}");
             var spineEvent = GetSpineEvent(anim);
             spineEvent?.OnEnd.Invoke();
+        }
+        public void SetSkin(string skinName)
+        {
+            if (SkeletonAnimation == null || SkeletonAnimation.skeleton == null) return;
+
+            var skeleton = SkeletonAnimation.skeleton;
+            var skin = skeleton.Data.FindSkin(skinName);
+            if (skin != null)
+            {
+                skeleton.SetSkin(skin);
+                skeleton.SetupPoseSlots(); // Update the skeleton pose to reflect the new skin
+                SkeletonAnimation.LateUpdate(); // Ensure the renderer updates immediately
+                Debug.Log($"Spine skin changed to: {skinName}");
+            }
+            else
+            {
+                Debug.LogWarning($"Spine skin '{skinName}' not found.");
+            }
         }
     }
 }
