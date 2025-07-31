@@ -7,6 +7,8 @@ namespace LegionKnight
     public partial class LevelView : UIView
     {
         [SerializeField]
+        private TextMeshProUGUI m_NameText;
+        [SerializeField]
         private TextMeshProUGUI m_LevelText;
         [SerializeField]
         private Slider m_ExpSlider;
@@ -15,6 +17,7 @@ namespace LegionKnight
         {
             m_ExpSlider.value = Player.Instance.GetPlayerLevelProgressionRate();
             m_LevelText.text = $"LV: {Player.Instance.GetPlayerLevel()}";
+            m_NameText.text = Player.Instance.PlayerName;
             //m_LevelText.text = Player.Instance.GetLevel().ToString();
             //m_ExpSlider.value = Player.Instance.GetExp() / Player.Instance.GetMaxExp();
         }

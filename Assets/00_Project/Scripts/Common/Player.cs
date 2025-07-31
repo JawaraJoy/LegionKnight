@@ -20,6 +20,7 @@ namespace LegionKnight
 
         private bool m_CanUseResurrectionAds = true;
         public bool CanUseResurrectionAds => m_CanUseResurrectionAds;
+        public string PlayerName => m_PlayerName;
         public void SetCanUseResurrectionAds(bool set)
         {
             m_CanUseResurrectionAds = set;
