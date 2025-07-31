@@ -185,7 +185,7 @@ namespace LegionKnight
             if (result.TryGetComponent(out BosEnemy bos))
             {
                 GameManager.Instance.SetSpawnedBosEnemy(bos);
-                float offset = Player.Instance.transform.position.y + 200f;
+                float offset = Player.Instance.transform.position.y + 100f;
                 bos.SetLocalPosition(new Vector2(0f, offset));
                 m_BosSpawnPost.DetachChildren();
                 m_OnBosSpawned?.Invoke(GetLevelDefinition().BosDefinition);

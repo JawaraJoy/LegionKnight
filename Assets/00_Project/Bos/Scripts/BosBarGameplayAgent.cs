@@ -34,5 +34,38 @@ namespace LegionKnight
                 gameplayPanel.HideCastingBar();
             }
         }
+        public void SetBosName(BosDefinition defi)
+        {
+            var gameplayPanel = GetGameplayPanel();
+            if (gameplayPanel != null)
+            {
+                gameplayPanel.SetBosName(defi);
+            }
+        }
+        public void SetHealth(float rate)
+        {
+            var gameplayPanel = GetGameplayPanel();
+            if (gameplayPanel != null)
+            {
+                gameplayPanel.SetHealth(rate);
+            }
+        }
+        public void ShowHealthBar()
+        {
+            var gameplayPanel = GetGameplayPanel();
+            if (gameplayPanel != null)
+            {
+                gameplayPanel.ShowHealthBar();
+            }
+        }
+
+        public void HideHealthBar()
+        {
+            var gameplayPanel = GetGameplayPanel();
+            if (gameplayPanel != null)
+            {
+                gameplayPanel.HideHealthBar();
+            }
+        }
     }
 }

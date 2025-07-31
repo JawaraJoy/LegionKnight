@@ -9,8 +9,11 @@ namespace LegionKnight
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Bos Enemy")]
     public partial class BosDefinition : ScriptableObject
     {
+
         [SerializeField]
         private string m_Id;
+        [SerializeField]
+        private string m_Label;
         [SerializeField]
         private int m_StartLevel = 1;
         [SerializeField]
@@ -29,6 +32,7 @@ namespace LegionKnight
         private SkillDefinition[] m_Skills;
 
         public string Id => m_Id;
+        public string Label => m_Label;
         public Sprite Icon => m_Icon;
         public ConversationDefinition ConversationDefinition => m_ConversationDefinition;
         public List<StandbyPlatformDefinition> BosPlatformsAsset => m_BosPlatforms;

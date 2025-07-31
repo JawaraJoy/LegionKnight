@@ -33,7 +33,7 @@ RectTransform:
   m_Father: {fileID: 8359144168015719033}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 1.5999985, y: 0}
   m_SizeDelta: {x: 2.8, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -119,9 +119,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2efa2cb8d3583f04e856753543bdcb44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TextMeshPrefab: {fileID: 4627514803098843711, guid: 710050dfddd91c3428c4be15c0ad7f65, type: 3}
+  m_TextMeshPrefab: {fileID: 4627514803098843711, guid: c484d6f62a22440478da569a96c8e88b, type: 3}
   m_BeforeText: 
   m_AfterText: 
+  m_SprayRadius: 3
 --- !u!1 &1511037597195118546
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,6 +241,7 @@ GameObject:
   - component: {fileID: 8428523851214305592}
   - component: {fileID: 6803625758039470562}
   - component: {fileID: 5137879748226928241}
+  - component: {fileID: 7565844722389266045}
   m_Layer: 15
   m_Name: Damageable
   m_TagString: Bos Enemy
@@ -417,6 +419,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7565844722389266045}
+        m_TargetAssemblyTypeName: LegionKnight.BosBarGameplayAgent, Assembly-CSharp
+        m_MethodName: HideHealthBar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls:
@@ -441,6 +455,18 @@ MonoBehaviour:
       - m_Target: {fileID: 9121318951909413744}
         m_TargetAssemblyTypeName: LegionKnight.BossHealthView, Assembly-CSharp
         m_MethodName: SetHealthBar
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7565844722389266045}
+        m_TargetAssemblyTypeName: LegionKnight.BosBarGameplayAgent, Assembly-CSharp
+        m_MethodName: SetHealth
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -585,6 +611,18 @@ MonoBehaviour:
   m_OnStunEnd:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7565844722389266045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515918505318151819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3690d9808786a1418dbf8c8321b8315, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1539955495137320482
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,8 +655,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4458450983202856468}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -884,7 +922,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6708196066501924264
 Transform:
   m_ObjectHideFlags: 0
@@ -12049,7 +12087,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 55
+      scalar: 25
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -31970,6 +32008,7 @@ GameObject:
   - component: {fileID: 8556516545870801029}
   - component: {fileID: 5615729976155994111}
   - component: {fileID: 8952173253707504616}
+  - component: {fileID: 3009141861018965176}
   m_Layer: 0
   m_Name: Bos Enemy
   m_TagString: Untagged
@@ -32034,6 +32073,30 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: LegionKnight.CharacterSpine, Assembly-CSharp
         m_MethodName: ChangeSpine
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3009141861018965176}
+        m_TargetAssemblyTypeName: LegionKnight.BosBarGameplayAgent, Assembly-CSharp
+        m_MethodName: SetBosName
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3009141861018965176}
+        m_TargetAssemblyTypeName: LegionKnight.BosBarGameplayAgent, Assembly-CSharp
+        m_MethodName: ShowHealthBar
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -32412,5 +32475,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b36d7ee425c60444b9143b948caf6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3009141861018965176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9096491602748821199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3690d9808786a1418dbf8c8321b8315, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

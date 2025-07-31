@@ -12,6 +12,8 @@ namespace LegionKnight
         [SerializeField]
         private string m_AfterText;
         private DamageNumber m_Spawned;
+        [SerializeField]
+        private float m_SprayRadius = 0.5f;
 
         private string GetText(object val)
         {
@@ -19,7 +21,13 @@ namespace LegionKnight
         }
         public void SpawnText(int val)
         {
-            m_Spawned = m_TextMeshPrefab.Spawn(transform.position, GetText(val), transform);
+            m_Spawned = m_TextMeshPrefab.Spawn(GetRadiusSpawnPosition(), GetText(val), transform);
+        }
+        private Vector3 GetRadiusSpawnPosition()
+        {
+            Vector3 randomPos = Random.insideUnitSphere * m_SprayRadius;
+            randomPos.y = 0.5f; // Ensure the text spawns above the ground
+            return transform.position + randomPos;
         }
     }
 }
