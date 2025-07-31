@@ -317,6 +317,7 @@ MonoBehaviour:
   m_Health: 10
   m_Shield: 0
   m_Barrier: 0
+  m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -1059,7 +1060,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4406706909269569253
 Transform:
   m_ObjectHideFlags: 0
@@ -16732,9 +16733,21 @@ MonoBehaviour:
     m_OnStart:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1790684644681897889}
-          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
-          m_MethodName: PlayFeedbacks
+        - m_Target: {fileID: 7161861598684805662}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Play
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 5615729976155994111}
+          m_TargetAssemblyTypeName: LegionKnight.BosDeath, Assembly-CSharp
+          m_MethodName: EraseBossProjectile
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -16746,7 +16759,31 @@ MonoBehaviour:
           m_CallState: 2
     m_OnEnd:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 9094464321848505402}
+          m_TargetAssemblyTypeName: LegionKnight.PlayerCameraAgent, Assembly-CSharp
+          m_MethodName: SetOffSite
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Normal
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 9048604627607117514}
+          m_TargetAssemblyTypeName: LegionKnight.DestroySelf, Assembly-CSharp
+          m_MethodName: DestroyMe
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &9094464321848505402
 MonoBehaviour:
   m_ObjectHideFlags: 0

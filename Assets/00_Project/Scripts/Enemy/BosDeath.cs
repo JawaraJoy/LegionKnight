@@ -8,7 +8,7 @@ namespace LegionKnight
         public void EraseBosDamageables()
         {
             EraseBosProjectileInternal();
-            StartCoroutine(OpenWinPanelDelay(3f));
+            StartCoroutine(OpenWinPanelDelay(4f));
             /*if (!GameManager.Instance.IsInfiniteLevel)
             {
                 GameManager.Instance.SetLevelOver(true);
