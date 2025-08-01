@@ -1,4 +1,5 @@
 using DamageNumbersPro;
+using TMPro;
 using UnityEngine;
 
 namespace LegionKnight
@@ -14,6 +15,8 @@ namespace LegionKnight
         private DamageNumber m_Spawned;
         [SerializeField]
         private float m_SprayRadius = 0.5f;
+        [SerializeField]
+        private float m_SizeText = 4.0f;
 
         private string GetText(object val)
         {
@@ -22,6 +25,9 @@ namespace LegionKnight
         public void SpawnText(int val)
         {
             m_Spawned = m_TextMeshPrefab.Spawn(GetRadiusSpawnPosition(), GetText(val), transform);
+            var textMesh = m_Spawned.GetTextMesh();
+            if (textMesh == null) return;
+            m_Spawned.GetTextMesh().fontSize = m_SizeText;
         }
         private Vector3 GetRadiusSpawnPosition()
         {
