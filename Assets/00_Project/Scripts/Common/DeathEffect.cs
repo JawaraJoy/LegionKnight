@@ -67,8 +67,6 @@ namespace LegionKnight
             {
                 GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
                 m_Rb.AddForce(Vector2.zero, ForceMode2D.Impulse);
-                m_Rb.constraints |= RigidbodyConstraints2D.FreezePositionX; // Freeze X position to stop movement
-                m_Rb.linearVelocity = Vector2.zero; // Reset velocity to stop any ongoing movement
             }
         }
     }
@@ -104,6 +102,9 @@ namespace LegionKnight
         public void SetPosition(Vector2 post)
         {
             StartCoroutine(PauseInSecond(post, 0.1f));
+            //Player player = Player.Instance;
+            //player.transform.position = post; // Set the position to the specified post
+            //transform.position = post; // Set the position to the specified post
         }
 
         private IEnumerator PauseInSecond(Vector2 post, float second)
