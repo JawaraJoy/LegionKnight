@@ -10,7 +10,7 @@ namespace LegionKnight
         }
         public void ResetPosition()
         {
-            Player.Instance.SetPosition(Vector2.zero);
+            Player.Instance.SetPosition(new Vector2(0, -2.4f));
             Player.Instance.Reborn();
         }
     }

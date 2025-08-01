@@ -28,6 +28,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<BosDefinition> m_OnLevelStart = new();
         [SerializeField]
+        private UnityEvent<LevelDefinition> m_OnLevelDefinitionSet = new();
+        [SerializeField]
         private UnityEvent<BosDefinition> m_OnBosSpawned = new();
 
         private List<Platform> m_SpawnedPlatform = new();
@@ -110,6 +112,7 @@ namespace LegionKnight
             if (m_LevelDefinition == null)
             {
                 m_LevelDefinition = GameManager.Instance.LevelDefinition;
+                m_OnLevelDefinitionSet?.Invoke(m_LevelDefinition);
             }
             return m_LevelDefinition;
         }
@@ -191,6 +194,7 @@ namespace LegionKnight
                 m_OnBosSpawned?.Invoke(GetLevelDefinition().BosDefinition);
                 BosDefinition bosDefinition = GetLevelDefinition().BosDefinition;
                 ConversationDefinition conversation = bosDefinition.ConversationDefinition;
+                if (conversation == null) return;
                 GameManager.Instance.StartConversation(conversation);
             }
         }

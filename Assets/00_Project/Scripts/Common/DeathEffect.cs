@@ -67,6 +67,8 @@ namespace LegionKnight
             {
                 GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
                 m_Rb.AddForce(Vector2.zero, ForceMode2D.Impulse);
+                m_Rb.constraints |= RigidbodyConstraints2D.FreezePositionX; // Freeze X position to stop movement
+                m_Rb.linearVelocity = Vector2.zero; // Reset velocity to stop any ongoing movement
             }
         }
     }
@@ -101,7 +103,21 @@ namespace LegionKnight
         }
         public void SetPosition(Vector2 post)
         {
-            transform.position = post;
+            StartCoroutine(PauseInSecond(post, 0.1f));
+        }
+
+        private IEnumerator PauseInSecond(Vector2 post, float second)
+        {
+            Player player = Player.Instance;
+            player.SetPause(true);
+            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+            
+            rb.linearVelocity = Vector2.zero; // Reset velocity to stop any ongoing movement
+            player.transform.position = post; // Set the position to the specified post
+            rb.simulated = false; // Ensure the Rigidbody2D is simulated
+            yield return new WaitForSeconds(second);
+            Player.Instance.SetPause(false);
+            rb.simulated = true; // Ensure the Rigidbody2D is simulated
         }
 
         private void OnRebornInvoke()

@@ -10,27 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b64c37722bce95d419e63fe38c4b2d1e, type: 3}
-  m_Name: Bos Level 2
+  m_Name: Bos Level 3
   m_EditorClassIdentifier: 
-  m_StartLevel: 1
-  m_Icon: {fileID: 21300000, guid: 0b0829f956dba5744989ac3ba6360eb1, type: 3}
+  m_Id: bos3
+  m_Label: Ira Ignifex, The Ember Sovereign (Wrath)
+  m_StartLevel: 4
+  m_Icon: {fileID: 21300000, guid: 3ae87b1e3267de84594301f73c386736, type: 3}
   m_BaseStat:
-    m_Attack: 38
-    m_Defense: 20
-    m_Health: 9500
+    m_Attack: 44
+    m_Defense: 21
+    m_Health: 8200
   m_StatGainPerLevel:
-    m_Attack: 11
-    m_Defense: 4
-    m_Health: 3800
+    m_Attack: 13
+    m_Defense: 5
+    m_Health: 3200
+  m_BosPrefab:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectGUID: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  m_ConversationDefinition: {fileID: 0}
   m_BosPlatforms:
-  - {fileID: 11400000, guid: 1f38ff6a3bac51f4788aa252d5a85c38, type: 2}
+  - {fileID: 11400000, guid: f3fc887fed139f34cba38ecb381ecb5f, type: 2}
   m_Skills:
-  - m_SkillName: Vine Attack
+  - m_SkillName: Flame Beam
     m_Description: 
-    m_Icon: {fileID: 21300000, guid: d9c58e1f0cc69aa48afff8760cdd5876, type: 3}
-    m_ManaThreshold: 40
+    m_Icon: {fileID: 21300000, guid: 916e1e4086a1b0f4483feae59d285e8a, type: 3}
+    m_ManaThreshold: 60
     m_SkillAsset:
-    - m_AssetGUID: 4213b9736f45cd54a9701e271773ae59
+    - m_AssetGUID: 6948045abc4114c4aadfc56cb4656e23
       m_SubObjectName: 
       m_SubObjectGUID: 
       m_SubObjectType: 

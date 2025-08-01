@@ -6,7 +6,10 @@ namespace LegionKnight
     {
         [SerializeField]
         private Rigidbody2D m_Rb;
-
+        public void ResetVelocity()
+        {
+            m_Rb.linearVelocity = Vector2.zero;
+        }
         private void FreezeConstrain(RigidbodyConstraints2D constraints)
         {
             if (m_Rb == null)
