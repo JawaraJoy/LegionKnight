@@ -30,7 +30,10 @@ namespace LegionKnight
         [SerializeField]
         private int m_PerfectTouchDownPoint;
         [SerializeField]
+        private BackgroundDefinition m_BackgroundDefinition;
+        [SerializeField]
         private List<StandbyPlatformDefinition> m_PlatformAssets = new();
+
 
         [SerializeField]
         private BosDefinition m_BosDefinition;
@@ -55,6 +58,7 @@ namespace LegionKnight
 
         public CharacterReward FirstReward => m_FirstReward;
         public CharacterReward RepeatReward => m_RepeatReward;
+        public BackgroundDefinition BackgroundDefinition => m_BackgroundDefinition;
 
         public bool HasBoss()
         {

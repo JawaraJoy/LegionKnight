@@ -324,8 +324,6 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
-  m_OrnamentType: 0
-  m_NextLoopOrnamentType: 0
   m_Base: {fileID: 745891446}
   m_Ornament: {fileID: 956862981}
   m_NextLoopTransform: {fileID: 1013887352}
@@ -874,7 +872,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &476080816
 Transform:
   m_ObjectHideFlags: 0
@@ -1045,8 +1043,6 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
-  m_OrnamentType: 0
-  m_NextLoopOrnamentType: 0
   m_Base: {fileID: 81916743}
   m_Ornament: {fileID: 476080817}
   m_NextLoopTransform: {fileID: 1009931877}
@@ -1272,8 +1268,6 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
-  m_OrnamentType: 0
-  m_NextLoopOrnamentType: 0
   m_Base: {fileID: 1529117087}
   m_Ornament: {fileID: 384655858}
   m_NextLoopTransform: {fileID: 540420479}
@@ -1349,6 +1343,21 @@ MonoBehaviour:
   m_OnLevelStart:
     m_PersistentCalls:
       m_Calls: []
+  m_OnLevelDefinitionSet:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8791627401902361610}
+        m_TargetAssemblyTypeName: LegionKnight.Background, Assembly-CSharp
+        m_MethodName: Initialize
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnBosSpawned:
     m_PersistentCalls:
       m_Calls: []
@@ -1838,7 +1847,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &956862980
 Transform:
   m_ObjectHideFlags: 0
@@ -2398,8 +2407,6 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
-  m_OrnamentType: 0
-  m_NextLoopOrnamentType: 0
   m_Base: {fileID: 1696151405}
   m_Ornament: {fileID: 2141848229}
   m_NextLoopTransform: {fileID: 1103966530}
@@ -3080,7 +3087,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2141848228
 Transform:
   m_ObjectHideFlags: 0
@@ -5066,10 +5073,12 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
+  m_OrnamentType: 0
+  m_StartBackground: {fileID: 864479378}
   m_LoopTriggers:
   - {fileID: 145954038}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1542801782}
+  - {fileID: 498086028}
   m_LoopTriggersParent: {fileID: 659859401}
 --- !u!212 &8902234312657190039
 SpriteRenderer:
