@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -11,9 +12,24 @@ namespace LegionKnight
         [SerializeField]
         private string m_PostName;
         [SerializeField]
+        private float m_TransitionDuration = 0.1f;
+        [SerializeField]
         private Vector3 m_Post;
         public string PostName => m_PostName;
         public Vector3 Post => m_Post;
+        [SerializeField]
+        private UnityEvent m_OnPostStartSet = new();
+        [SerializeField]
+        private UnityEvent m_OnPostEndSet = new();
+        public float TransitionDuration => m_TransitionDuration;
+        public void OnPostStartSetInvoke()
+        {
+            m_OnPostStartSet?.Invoke();
+        }
+        public void OnPostEndSetInvoke()
+        {
+            m_OnPostEndSet?.Invoke();
+        }
     }
     public partial class PlayerCamera : Singleton<PlayerCamera>
     {
@@ -27,6 +43,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<Vector3> m_OnSetOffsite = new();
 
+        private CameraPostSet m_CurrentPostSet;
         private void Start()
         {
             m_CinemachineCamera.Target.TrackingTarget = Player.Instance.transform;
@@ -56,9 +73,26 @@ namespace LegionKnight
         }
         public void SetOffSite(string postName)
         {
-            Vector3 post = GetCameraPostSet(postName).Post;
-            m_CinemachineCamera.GetComponent<CinemachineFollow>().FollowOffset = post;
-            OnSetOffsite(post);
+            StartCoroutine(SetOffsiteSmooth(postName));
+        }
+        private IEnumerator SetOffsiteSmooth(string postName)
+        {
+            CameraPostSet newPostSet = GetCameraPostSet(postName);
+            newPostSet.OnPostStartSetInvoke();
+            Vector3 newPost = newPostSet.Post;
+            float duration = newPostSet.TransitionDuration;
+            Vector3 currentPost = m_CinemachineCamera.GetComponent<CinemachineFollow>().FollowOffset;
+            float elapsedTime = 0f;
+            while (elapsedTime < duration)
+            {
+                m_CinemachineCamera.GetComponent<CinemachineFollow>().FollowOffset = Vector3.Lerp(currentPost, newPost, elapsedTime / duration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            m_CinemachineCamera.GetComponent<CinemachineFollow>().FollowOffset = newPost;
+            OnSetOffsite(newPost);
+            m_CurrentPostSet = newPostSet;
+            newPostSet.OnPostEndSetInvoke();
         }
     }
 }
