@@ -324,6 +324,7 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
+  m_OrnamentType: 0
   m_Base: {fileID: 745891446}
   m_Ornament: {fileID: 956862981}
   m_NextLoopTransform: {fileID: 1013887352}
@@ -1043,6 +1044,7 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
+  m_OrnamentType: 0
   m_Base: {fileID: 81916743}
   m_Ornament: {fileID: 476080817}
   m_NextLoopTransform: {fileID: 1009931877}
@@ -1268,6 +1270,7 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
+  m_OrnamentType: 0
   m_Base: {fileID: 1529117087}
   m_Ornament: {fileID: 384655858}
   m_NextLoopTransform: {fileID: 540420479}
@@ -2407,6 +2410,7 @@ MonoBehaviour:
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
+  m_OrnamentType: 0
   m_Base: {fileID: 1696151405}
   m_Ornament: {fileID: 2141848229}
   m_NextLoopTransform: {fileID: 1103966530}
@@ -4479,6 +4483,7 @@ GameObject:
   - component: {fileID: 2264527939341937925}
   - component: {fileID: 1012947021513465723}
   - component: {fileID: 5809711105326446974}
+  - component: {fileID: 5969934972022288213}
   m_Layer: 8
   m_Name: Ground Collider
   m_TagString: Untagged
@@ -4486,6 +4491,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5969934972022288213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5969934972022288212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3367c0794ee3a61479844e091a9832c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CanContact: 1
+  m_ContactLayer:
+    serializedVersion: 2
+    m_Bits: 4096
+  m_OnContacted:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDeContacted:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ContactableList: []
 --- !u!4 &6190063239613973543
 Transform:
   m_ObjectHideFlags: 0

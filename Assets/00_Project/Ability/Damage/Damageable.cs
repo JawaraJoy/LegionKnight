@@ -20,6 +20,9 @@ namespace LegionKnight
         private int m_Barrier;
         protected int m_CurrentHealth;
 
+        [SerializeField]
+        private float m_MaxHpRateDamage = 0.1f;
+
         [SerializeField, ReadOnly]
         private bool m_Immortal = false; // If true, the damageable is immortal and cannot
         [SerializeField]

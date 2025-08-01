@@ -101,6 +101,10 @@ namespace LegionKnight
         }
         public void SetPosition(Vector2 post)
         {
+            if (TryGetComponent<Rigidbody2D>(out var rb))
+            {
+                rb.linearVelocity = Vector2.zero; // Reset velocity to prevent unwanted movement
+            }
             transform.position = post;
         }
 
