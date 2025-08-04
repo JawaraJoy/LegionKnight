@@ -56,6 +56,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private UnityEvent m_OnBosDeath = new();
+        public UnityEvent OnBosDeath => m_OnBosDeath;
 
         public void BosDeathTriggered()
         {
@@ -72,6 +73,7 @@ namespace LegionKnight
         {
             m_LevelManager.BosDeathTriggered();
         }
+        public UnityEvent OnBosDeath => m_LevelManager.OnBosDeath;
     }
 
     public partial class LevelManagerAgent

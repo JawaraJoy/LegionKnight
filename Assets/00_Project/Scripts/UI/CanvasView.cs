@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,7 +14,16 @@ namespace LegionKnight
         private bool m_IsBusy;
 
         [SerializeField]
+        private TextMeshProUGUI m_GameVersionText;
+        [SerializeField]
         private UnityEvent<bool> m_OnIsBusyUpdate = new();
+
+        private void Start()
+        {
+            // set aplication bundle version code
+
+            m_GameVersionText.text = Application.version;
+        }
 
         protected T GetPanelInternal<T>() where T : PanelView
         {

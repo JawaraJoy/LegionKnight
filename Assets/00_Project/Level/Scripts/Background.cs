@@ -29,6 +29,11 @@ namespace LegionKnight
         {
             m_OrnamentType = ornament;
         }
+        public void SetOrnament(int ornamentIndex)
+        {
+            OrnamentType ornament = (OrnamentType)ornamentIndex;
+            SetOrnamentsInternal(ornament);
+        }
         private void Awake()
         {
             GameManager.Instance.SetBackGround(this);
@@ -58,10 +63,10 @@ namespace LegionKnight
         private void SetOrnamentsInternal(OrnamentType ornament)
         {
             m_OrnamentType = ornament;
-            foreach (LoopTrigger loopTrigger in m_LoopTriggers)
+            /*foreach (LoopTrigger loopTrigger in m_LoopTriggers)
             {
                 loopTrigger.SetOrnament(ornament);
-            }
+            }*/
         }
 
         public void SetOrnaments(OrnamentType ornament)

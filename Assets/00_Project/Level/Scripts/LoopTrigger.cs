@@ -28,13 +28,15 @@ namespace LegionKnight
 
         private Background m_Background;
 
-        private bool m_EntranceSet = false;
+        private bool m_Triggered = false;
+        public bool Triggered => m_Triggered;
 
         public void Initialize(Background background)
         {
             m_Background = background;
             m_Base.sprite = m_Background.Definition.BaseLoop;
             m_Ornament.sprite = null;
+            m_Triggered = false;
         }
         private void SetOrnamentInternal(OrnamentType ornament)
         {
@@ -67,7 +69,7 @@ namespace LegionKnight
             // Only allow Entrance to be set once
             if (ornament == OrnamentType.Entrance)
             {
-                if (m_EntranceSet)
+                if (m_Triggered)
                 {
                     // If entrance already set, use Full instead
                     SetOrnamentInternal(OrnamentType.Full);
@@ -75,7 +77,7 @@ namespace LegionKnight
                 else
                 {
                     SetOrnamentInternal(OrnamentType.Entrance);
-                    m_EntranceSet = true;
+                    m_Triggered = true;
                 }
             }
             else
@@ -92,12 +94,27 @@ namespace LegionKnight
             }
         }
 
+        public void SetTriggered(bool triggered)
+        {
+            m_Triggered = triggered;
+        }
+
         private void Loop()
         {
+            m_Triggered = false;
             Vector2 position = m_NextLoopTransform.position;
             m_NextLoopTrigger.SetPosition(position);
+            
             m_Background.SetCurrentLoop(m_NextLoopTrigger);
-
+            /*if (m_NextLoopTrigger.Triggered == false)
+            {
+                m_NextLoopTrigger.SetOrnament(m_Background.OrnamentType);
+            }
+            if (m_Background.OrnamentType == OrnamentType.Entrance)
+            {
+                m_Background.SetOrnament(OrnamentType.Full);
+            }*/
+            m_NextLoopTrigger.SetTriggered(true);
         }
 
         private void SetPosition(Vector2 position)

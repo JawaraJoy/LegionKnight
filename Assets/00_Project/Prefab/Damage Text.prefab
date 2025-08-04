@@ -56,7 +56,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7813419849211700074, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
+  - {fileID: 7596086543635071105, guid: 192df433546cf754c9fd156c22c13a72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -142,7 +142,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7813419849211700074, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
+  - {fileID: 7596086543635071105, guid: 192df433546cf754c9fd156c22c13a72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -247,7 +247,7 @@ MonoBehaviour:
     strike: 0
     alpha: 1
     customColor: 0
-    color: {r: 1, g: 1, b: 0, a: 1}
+    color: {r: 1, g: 0.07075471, b: 0.44305596, a: 1}
     mark: 0
     markColor: {r: 0, g: 0, b: 0, a: 0.5}
     horizontal: 0
@@ -377,7 +377,7 @@ MonoBehaviour:
   scaleFadeIn: {x: 0.5, y: 0.5}
   enableCrossScaleFadeIn: 0
   crossScaleFadeIn: {x: 1, y: 1.5}
-  enableShakeFadeIn: 0
+  enableShakeFadeIn: 1
   shakeOffsetFadeIn: {x: 0, y: 1.5}
   shakeFrequencyFadeIn: 4
   durationFadeOut: 0.2
@@ -473,27 +473,36 @@ MonoBehaviour:
     toNumber: 1000
     fromScale: 1
     toScale: 2
-  enableScaleOverTime: 0
+  enableScaleOverTime: 1
   scaleOverTime:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
+      inSlope: 7.5778527
+      outSlope: 7.5778527
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.14482072
+      value: 1.0974301
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 0.7
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      value: 1.1556587
+      inSlope: 0.06808936
+      outSlope: 0.06808936
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -629,7 +638,7 @@ MonoBehaviour:
   enablePooling: 0
   poolSize: 50
   disableOnSceneLoad: 1
-  editorLastFont: Pixel-Glow3D
+  editorLastFont: BRLNSDB SDF3D
   position: {x: 0, y: 0, z: 0}
 --- !u!210 &4238574884940631441
 SortingGroup:
@@ -703,7 +712,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7813419849211700074, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
+  - {fileID: 7596086543635071105, guid: 192df433546cf754c9fd156c22c13a72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -747,8 +756,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: <size=+1>1</size>
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
-  m_sharedMaterial: {fileID: 7813419849211700074, guid: 9c531f7132a5fa44a87992df50ab3582, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 192df433546cf754c9fd156c22c13a72, type: 2}
+  m_sharedMaterial: {fileID: 7596086543635071105, guid: 192df433546cf754c9fd156c22c13a72, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -772,8 +781,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8
-  m_fontSizeBase: 8
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

@@ -8,7 +8,7 @@ namespace LegionKnight
         [SerializeField]
         private int m_Attack;
         [SerializeField]
-        private int m_Defense; 
+        private int m_Defense;
         [SerializeField]
         private int m_Health;
 
