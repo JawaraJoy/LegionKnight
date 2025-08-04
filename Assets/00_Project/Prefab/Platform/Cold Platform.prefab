@@ -504,7 +504,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7aebe8b9cf6bc4d87e7d74ece053e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ActiveSelfDestructOnStart: 1
+  m_ActiveSelfDestructOnStart: 0
   m_SelfDestructDelay: 60
   m_Delay: 0
   m_OnStartDestroy:
@@ -799,9 +799,13 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 1
+  m_Defend: 0
   m_Health: 1
   m_Shield: 0
   m_Barrier: 0
+  m_MaxHpRateDamage: 0
+  m_Fatal: 0
+  m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -844,7 +848,13 @@ MonoBehaviour:
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:

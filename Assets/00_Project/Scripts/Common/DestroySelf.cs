@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.AddressableAssets;
 
 namespace LegionKnight
 {
@@ -20,7 +21,8 @@ namespace LegionKnight
         {
             if (!m_ActiveSelfDestructOnStart) yield break;
             yield return new WaitForSeconds(m_SelfDestructDelay);
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            Addressables.ReleaseInstance(gameObject);
         }
         public void DestroyMe()
         {
@@ -31,7 +33,12 @@ namespace LegionKnight
             m_OnStartDestroy?.Invoke();
             yield return new WaitForSeconds(m_Delay);
             m_OnDestroyDone?.Invoke();
-            Destroy(gameObject);
+            Addressables.ReleaseInstance(gameObject);
+            //Destroy(gameObject);
+        }
+        public void SetActiveSelfDestructOnStart(bool set)
+        {
+            m_ActiveSelfDestructOnStart = set;
         }
     }
 }

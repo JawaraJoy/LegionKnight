@@ -92,6 +92,8 @@ namespace LegionKnight
         [SerializeField]
         private bool m_LevelOver;
         [SerializeField]
+        private int m_MaxPlatformCount = 10;
+        [SerializeField]
         private LevelDefinition m_SelectedLevelDefinition;
         [SerializeField]
         private LevelSelect[] m_LevelSelects;
@@ -102,6 +104,7 @@ namespace LegionKnight
         private Currency m_CurrentScore;
         [SerializeField]
         private UnityEvent m_OnPlay = new();
+        public int MaxPlatformCount => m_MaxPlatformCount;
         public Currency CurrentCoinReward => m_CurrentCoinReward;
         public Currency CurrentScore => m_CurrentScore;
         public Transform PlayerStartPostion => m_LevelObject.PlayerStartPostion;

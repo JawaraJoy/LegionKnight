@@ -21,8 +21,10 @@ namespace LegionKnight
         protected int m_CurrentHealth;
 
         [SerializeField]
-        private float m_MaxHpRateDamage = 0.1f;
+        private float m_MaxHpRateDamage = 0f;
 
+        [SerializeField]
+        private bool m_Fatal = false; // If true, the damageable will die on contact with a fatal damage
         [SerializeField, ReadOnly]
         private bool m_Immortal = false; // If true, the damageable is immortal and cannot
         [SerializeField]
@@ -44,15 +46,16 @@ namespace LegionKnight
         private UnityEvent<int> m_OnHealthChanged = new();
         [SerializeField]
         private UnityEvent m_OnProtectGone = new();
-
-
+        public float MaxHpRateDamage => m_MaxHpRateDamage;
+        public bool IsImmortal => m_Immortal;
+        public bool IsFatal => m_Fatal;
         protected override void OnContactedBehaviourInvoke(GameObject other)
         {
             base.OnContactedBehaviourInvoke(other);
 
             if (other.TryGetComponent(out Damageable projectile))
             {
-                TakeDamageInternal(projectile.Damage);
+                TakeDamageInternal(projectile);
                 //Destroy(projectile.gameObject);
             }
         }
@@ -141,7 +144,7 @@ namespace LegionKnight
         }
         public void TakeDamage(int damage)
         {
-            TakeDamageInternal(damage);
+            TakeDamageInternal(damage, false);
         }
 
         private int DamageFormulaRPG(int attacker, int defender)
@@ -164,7 +167,19 @@ namespace LegionKnight
             }
             return dmg;
         }
-        protected virtual void TakeDamageInternal(int damage)
+        protected virtual void TakeDamageInternal(Damageable damageable)
+        {
+            if (damageable == null) return;
+            int flatDamage = damageable.Damage;
+            float maxHealthRateDamage = damageable.MaxHpRateDamage * m_Health;
+            int damage = Mathf.RoundToInt(flatDamage + maxHealthRateDamage);
+            if (damageable.IsFatal)
+            {
+                damage = m_CurrentHealth; // Set damage to current health if fatal
+            }
+            TakeDamageInternal(damage, damageable.IsFatal);
+        }
+        protected virtual void TakeDamageInternal(int damage, bool fatal)
         {
             //if (!IsAlive()) return;
             if (m_Immortal)
@@ -173,6 +188,10 @@ namespace LegionKnight
                 return;
             }
             int dmg = DamageFormulaMoba(damage, m_Defend);
+            if (fatal)
+            {
+                dmg = damage; // Set damage to current health if fatal
+            }
             if (!IsProtectGoneInternal())
             {
                 if (m_Barrier > 0)

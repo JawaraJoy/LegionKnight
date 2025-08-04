@@ -89,5 +89,19 @@ namespace LegionKnight
                 barrier.AddBarrier(add);
             }
         }
+        public void SetBarrier(int barrier)
+        {
+            foreach (var b in m_Damageable)
+            {
+                b.SetBarrier(barrier);
+            }
+        }
+        public void SetShield(int shield)
+        {
+            foreach (var s in m_Damageable)
+            {
+                s.SetShield(shield);
+            }
+        }
     }
 }

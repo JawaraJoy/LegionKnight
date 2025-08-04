@@ -64,6 +64,11 @@ namespace LegionKnight
 
         public void RemovePlatform(Platform platform)
         {
+            RemovePlatformInternal(platform);
+        }
+
+        private void RemovePlatformInternal(Platform platform)
+        {
             if (m_SpawnedPlatform.Count <= 0) return;
             if (m_SpawnedPlatform.Contains(platform))
             {
@@ -168,6 +173,7 @@ namespace LegionKnight
             GameObject result = handle.Result;
             if (result.TryGetComponent(out Platform platform))
             {
+                
                 //m_PlatformDestination.position = platform.GetContactPosition();
                 SetStartPosition(platform);
             }
@@ -329,6 +335,16 @@ namespace LegionKnight
         private void AddSpawnedPlatform(Platform add)
         {
             m_SpawnedPlatform.Add(add);
+            
+            int count = m_SpawnedPlatform.Count;
+            int maxCount = GameManager.Instance.MaxPlatformCount;
+            if (count >= maxCount)
+            {
+                Platform firstPlatform = m_SpawnedPlatform[0];
+                RemovePlatformInternal(firstPlatform);
+                Addressables.ReleaseInstance(firstPlatform.gameObject);
+                //Destroy(firstPlatform.gameObject);
+            }
         }
 
         private void DestinationReset()

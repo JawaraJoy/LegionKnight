@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace LegionKnight
 {
@@ -49,9 +50,16 @@ namespace LegionKnight
             // Loop through each GameObject and destroy it
             foreach (BosDamageable damageable in damageables)
             {
-                Destroy(damageable.gameObject);
+                Addressables.ReleaseInstance(damageable.gameObject);
+                //Destroy(damageable.gameObject);
             }
-
+            ProjectileDamage[] projectiles = FindObjectsByType<ProjectileDamage>(FindObjectsSortMode.None);
+            // Loop through each GameObject and destroy it
+            foreach (ProjectileDamage projectile in projectiles)
+            {
+                Addressables.ReleaseInstance(projectile.gameObject);
+                //Destroy(projectile.gameObject);
+            }
         }
     }
 }

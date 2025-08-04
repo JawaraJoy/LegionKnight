@@ -19,6 +19,14 @@ namespace LegionKnight
         {
             m_ProtectActivation.AddBarrier(addBarrier);
         }
+        public void SetBarrier(int barrier)
+        {
+            m_ProtectActivation.SetBarrier(barrier);
+        }
+        public void SetShield(int shield)
+        {
+            m_ProtectActivation.SetShield(shield);
+        }
         public void SetProtectActivationAgent(ProtectActivationAgent protectActivationAgent)
         {
             m_ProtectActivation.SetProtectActivationAgent(protectActivationAgent);

@@ -5787,7 +5787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7aebe8b9cf6bc4d87e7d74ece053e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ActiveSelfDestructOnStart: 1
+  m_ActiveSelfDestructOnStart: 0
   m_SelfDestructDelay: 60
   m_Delay: 0
   m_OnStartDestroy:
@@ -5867,6 +5867,8 @@ MonoBehaviour:
   m_TextMeshPrefab: {fileID: 44075040304479945, guid: adb01edd5898d8c4cbc65597a0b6a192, type: 3}
   m_BeforeText: +
   m_AfterText: 
+  m_SprayRadius: 0.5
+  m_SizeText: 4
 --- !u!1 &5418375460081534331
 GameObject:
   m_ObjectHideFlags: 0
@@ -6074,6 +6076,9 @@ MonoBehaviour:
   m_Health: 1
   m_Shield: 0
   m_Barrier: 0
+  m_MaxHpRateDamage: 0.5
+  m_Fatal: 0
+  m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:

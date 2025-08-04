@@ -70,7 +70,6 @@ namespace LegionKnight
                     GameManager.Instance.SetCurrentTouchDownPost(GetContactPosition());
                     GameManager.Instance.SpawnPlatform();
                 }
-
             }
         }
         protected virtual bool IsReachedInternal()

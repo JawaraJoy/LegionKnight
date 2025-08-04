@@ -516,6 +516,7 @@ Transform:
   - {fileID: 4225600588826227299}
   - {fileID: 5831629029992043416}
   - {fileID: 4145043617619426690}
+  - {fileID: 6712511556922737783}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6594461639845942661
@@ -597,6 +598,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 6314226033390395232}
+          m_TargetAssemblyTypeName: LegionKnight.PlatformModifierAgent, Assembly-CSharp
+          m_MethodName: SetPlatformSpeed
+          m_Mode: 4
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_OnEnd:
       m_PersistentCalls:
         m_Calls:
@@ -633,6 +646,18 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 6314226033390395232}
+          m_TargetAssemblyTypeName: LegionKnight.PlatformModifierAgent, Assembly-CSharp
+          m_MethodName: SetPlatformSpeed
+          m_Mode: 4
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -721,6 +746,8 @@ MonoBehaviour:
   m_Health: 0
   m_Shield: 0
   m_Barrier: 0
+  m_MaxHpRateDamage: 0
+  m_Fatal: 0
   m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
@@ -1141,6 +1168,50 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f3690d9808786a1418dbf8c8321b8315, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &7628966544197868627
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6712511556922737783}
+  - component: {fileID: 6314226033390395232}
+  m_Layer: 0
+  m_Name: PlatformSpeedSet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6712511556922737783
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7628966544197868627}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7511598522910228380}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6314226033390395232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7628966544197868627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bf8da297530980479a8808e82e309bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7862081115736555153

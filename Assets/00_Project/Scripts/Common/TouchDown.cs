@@ -100,18 +100,22 @@ namespace LegionKnight
             m_StayPerfect = set;
             OnStayPerfectInvoke(m_StayPerfect);
         }
-        private void SetStayPerfectCombo(int set)
+        private void SetStayPerfectComboInternal(int set)
         {
             m_StayPerfectCombo = set;
         }
-        private void AddStayPerfectCombo(int add)
+        private void AddStayPerfectComboInternal(int add)
         {
             m_StayPerfectCombo += add;
             OnStayPerfectComboInvoke(m_StayPerfectCombo);
         }
+        public void SetStayPerfectCombo(int set)
+        {
+            SetStayPerfectComboInternal(set);
+        }
         private void OnNormalTouchDownInvoke()
         {
-            SetStayPerfectCombo(0);
+            SetStayPerfectComboInternal(0);
             int reward = GameManager.Instance.GetNormalTouchDownPoint();
             //GameManager.Instance.AddCurrencyRewardAmount(reward);
             
@@ -120,7 +124,7 @@ namespace LegionKnight
         }
         private void OnPerfectTouchDownInvoke()
         {
-            AddStayPerfectCombo(1);
+            AddStayPerfectComboInternal(1);
             int reward = m_StayPerfectCombo * GameManager.Instance.GetPerfectTouchDownPoint();
             //GameManager.Instance.AddCurrencyRewardAmount(reward);
             

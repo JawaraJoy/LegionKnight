@@ -14,6 +14,7 @@ namespace LegionKnight
         private LevelManager m_LevelManager;
 
         public bool LevelOver => m_LevelManager.LevelOver;
+        public int MaxPlatformCount => m_LevelManager.MaxPlatformCount;
         public LevelDefinition LevelDefinition => m_LevelManager.LevelDefinition;
         public Currency CurrentCoinReward => m_LevelManager.CurrentCoinReward;
         public Currency CurrentScore => m_LevelManager.CurrentScore;
