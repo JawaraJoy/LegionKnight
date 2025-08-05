@@ -29,7 +29,7 @@ namespace LegionKnight
         }
         public void AddStandByPlatform(StandbyPlatformDefinition platform)
         {
-            if (IsApplyEffectOnLevel())
+            if (IsLevelMatch())
             {
                 GameManager.Instance.AddStandByPlatform(platform);
             }

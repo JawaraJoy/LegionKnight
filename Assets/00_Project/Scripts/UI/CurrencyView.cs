@@ -18,7 +18,9 @@ namespace LegionKnight
         [SerializeField]
         private bool m_UseAbbreviation = true;
         [SerializeField]
-        private UnityEvent m_OnSetViewInvoke = new UnityEvent();
+        private UnityEvent<Currency> m_OnSetViewInvoke = new();
+        [SerializeField]
+        private UnityEvent<int> m_OnSetAmountInvoke = new();
         public void Init()
         {
             if (m_CurrencyDefinition == null)
@@ -39,7 +41,8 @@ namespace LegionKnight
             m_CurrencyDefinition = currency.CurrencyDefinition;
             m_Icon.sprite = currency.CurrencyDefinition.Icon;
             m_AmountText.text = FormatAmountText(currency.Amount);
-            m_OnSetViewInvoke?.Invoke();
+            m_OnSetViewInvoke?.Invoke(currency);
+            m_OnSetAmountInvoke?.Invoke(currency.Amount);
         }
         public virtual void SetView(Currency currency)
         {
