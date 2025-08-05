@@ -36,7 +36,13 @@ namespace LegionKnight
 
         private List<StandbyPlatformDefinition> m_RealStanbyPlatformAssets = new();
         public Transform PlayerStartPostion => m_PlayerStartPosition;
-        private AssetReferenceGameObject BosAssetInternal => GetLevelDefinition().BosAsset;
+        private AssetReferenceGameObject BosAssetInternal
+        {
+            get
+            {
+                return GetLevelDefinition().BosAsset;
+            }
+        }
 
         private const float m_OffsideDestination = -0.1f;
         public Transform PlatformDestination => m_PlatformDestination;
@@ -65,6 +71,13 @@ namespace LegionKnight
         public void RemovePlatform(Platform platform)
         {
             RemovePlatformInternal(platform);
+        }
+
+        public void AddStandByPlatform(StandbyPlatformDefinition platform)
+        {
+            if (platform == null) return;
+            if (m_RealStanbyPlatformAssets.Contains(platform)) return;
+            m_RealStanbyPlatformAssets.Add(platform);
         }
 
         private void RemovePlatformInternal(Platform platform)
@@ -323,6 +336,8 @@ namespace LegionKnight
         }
         private void SetStartPosition(Platform spawn)
         {
+            bool isFatalLevel = GetLevelDefinition().IsFatalLevel;
+            spawn.SetFatal(isFatalLevel);
             spawn.SetStartPosition(LeftOrRight());
             spawn.SetSpeed(GetLevelDefinition().GetSpeed());
             spawn.SetDestination(GetFinalDestination());

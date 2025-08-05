@@ -80,6 +80,9 @@ namespace LegionKnight
     {
         public void BosDeathTriggered()
         {
+            BosEnemy spawnedBosEnemy = GameManager.Instance.GetSpawnedBosEnemy();
+            if(spawnedBosEnemy == null) return;
+            spawnedBosEnemy.Death();
             GameManager.Instance.BosDeathTriggered();
         }
     }

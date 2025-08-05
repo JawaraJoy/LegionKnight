@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -9,6 +10,9 @@ namespace LegionKnight
         private SpriteRenderer m_BosForm;
 
         private int m_BosLevel = 0;
+
+        [SerializeField]
+        private UnityEvent<BosDefinition> m_OnBossDeath;
         public void Init(BosDefinition definition)
         {
             m_BosDefinition = definition;
@@ -43,6 +47,11 @@ namespace LegionKnight
         public int GetBosLevel()
         {
             return m_BosLevel;
+        }
+
+        public void Death()
+        {
+            m_OnBossDeath.Invoke(m_BosDefinition);
         }
     }
 }

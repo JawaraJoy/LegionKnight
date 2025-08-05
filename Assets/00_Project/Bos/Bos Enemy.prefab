@@ -320,6 +320,8 @@ MonoBehaviour:
   m_Health: 10
   m_Shield: 0
   m_Barrier: 0
+  m_MaxHpRateDamage: 0
+  m_Fatal: 0
   m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
@@ -32010,6 +32012,7 @@ GameObject:
   - component: {fileID: 5615729976155994111}
   - component: {fileID: 8952173253707504616}
   - component: {fileID: 3009141861018965176}
+  - component: {fileID: 3525415549494255283}
   m_Layer: 0
   m_Name: Bos Enemy
   m_TagString: Untagged
@@ -32095,6 +32098,21 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_BosForm: {fileID: 6040567752974675477}
+  m_OnBossDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3525415549494255283}
+        m_TargetAssemblyTypeName: LegionKnight.BossDeckManagerAgent, Assembly-CSharp
+        m_MethodName: DefeatedBoss
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_BosSkill: {fileID: 776969825580286560}
   m_BossSpine: {fileID: 7001825305152453541}
 --- !u!114 &9048604627607117514
@@ -32476,5 +32494,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f3690d9808786a1418dbf8c8321b8315, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3525415549494255283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9096491602748821199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aab024184ec98940bf578c25671a735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

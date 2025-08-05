@@ -17,7 +17,6 @@ namespace LegionKnight
 
         //[SerializeField]
         //private AudioClip m_BosBGM;
-
         private float GetTouchDownRate()
         {
             return (float)m_TouchDownCount / (float)m_TouchDownThreshold;

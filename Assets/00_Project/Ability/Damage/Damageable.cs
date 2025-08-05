@@ -71,6 +71,11 @@ namespace LegionKnight
         {
             return m_Barrier < 1;
         }
+        public void SetFatal(bool fatal)
+        {
+            m_Fatal = fatal;
+            Debug.Log($"Set Fatal: {m_Fatal}");
+        }
         public int Damage => m_Damage;
         public int Health => m_Health;
         public int Shield => m_Shield;

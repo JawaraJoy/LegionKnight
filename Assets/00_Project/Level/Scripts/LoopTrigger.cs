@@ -35,6 +35,7 @@ namespace LegionKnight
         {
             m_Background = background;
             m_Base.sprite = m_Background.Definition.BaseLoop;
+            SetOrnamentInternal(m_Background.OrnamentType);
             m_Ornament.sprite = null;
             m_Triggered = false;
         }

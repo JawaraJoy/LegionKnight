@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,6 +17,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private CounterDefinition m_Definition;
+        [SerializeField, ReadOnly]
         private int m_CurrentCount;
         private bool m_Triggered;
         [SerializeField]

@@ -16,6 +16,10 @@ namespace LegionKnight
         {
             GameManager.Instance.RemovePlatform(platform);
         }
+        public void AddStandByPlatform(StandbyPlatformDefinition platform)
+        {
+            GameManager.Instance.AddStandByPlatform(platform);
+        }
         public void SetLevelOver(bool set)
         {
             GameManager.Instance.SetLevelOver(set);

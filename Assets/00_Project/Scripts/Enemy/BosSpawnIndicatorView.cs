@@ -14,7 +14,15 @@ namespace LegionKnight
         private void Start()
         {
             m_LevelDefinition = GameManager.Instance.LevelDefinition;
-            m_IndicatorImage.sprite = m_LevelDefinition.BosDefinition.Icon;
+            Sprite defaultIcon = m_LevelDefinition.BosDefinition?.Icon;
+            if (defaultIcon == null)
+            {
+                HideInternal();
+            }
+            else
+            {
+                m_IndicatorImage.sprite = defaultIcon;
+            }    
         }
         public void SetSlider(float set)
         {

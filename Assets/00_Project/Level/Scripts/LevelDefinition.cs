@@ -38,6 +38,8 @@ namespace LegionKnight
         [SerializeField]
         private BosDefinition m_BosDefinition;
         [SerializeField]
+        private bool m_FatalLevel = false;
+        [SerializeField]
         private AssetReferenceGameObject m_BosAsset;
         [SerializeField]
         private LevelOrnament m_LevelOrnament;
@@ -50,6 +52,7 @@ namespace LegionKnight
         public LevelDefinition NextLevel => m_NextLevel;
         public bool IsInfiniteLevel => m_IsInfiniteLevel;
         public string LevelName => m_LevelName;
+        public bool IsFatalLevel => m_FatalLevel;
 
         [SerializeField]
         private CharacterReward m_FirstReward;

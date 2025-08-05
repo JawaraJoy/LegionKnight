@@ -247,6 +247,10 @@ namespace LegionKnight
         {
             m_LevelObject.RemovePlatform(platform);
         }
+        public void AddStandByPlatform(StandbyPlatformDefinition platform)
+        {
+            m_LevelObject.AddStandByPlatform(platform);
+        }
 
         public void OnPerectTouchDownInvoke()
         {
@@ -299,7 +303,13 @@ namespace LegionKnight
         public void SetSpawnedBosEnemy(BosEnemy set)
         {
             m_SpawnedBosEnemy = set;
-            m_SpawnedBosEnemy.SetBosDefinition(m_SelectedLevelDefinition.BosDefinition);
+            bool isInfite = m_SelectedLevelDefinition.IsInfiniteLevel;
+            BosDefinition bosDef = m_SelectedLevelDefinition.BosDefinition;
+            if (isInfite)
+            {
+                bosDef = GameManager.Instance.GetRandomDefeatedBoss().BosDefinition;
+            }
+            m_SpawnedBosEnemy.SetBosDefinition(bosDef);
             //m_SpawnedBosEnemy.InitDamageable(m_BosHealthBonus * m_BosSpawnCount
             m_SpawnedBosEnemy.InitDamageable(m_BosSpawnCount);
         }

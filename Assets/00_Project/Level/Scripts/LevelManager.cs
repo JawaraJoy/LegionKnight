@@ -53,6 +53,10 @@ namespace LegionKnight
         {
             m_LevelManager.RemovePlatform(platform);
         }
+        public void AddStandByPlatform(StandbyPlatformDefinition platform)
+        {
+            m_LevelManager.AddStandByPlatform(platform);
+        }
         public void SetRewardAmount(int set)
         {
             m_LevelManager.SetRewardAmount(set);
