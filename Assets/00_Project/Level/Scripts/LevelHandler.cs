@@ -275,7 +275,17 @@ namespace LegionKnight
         public void ResetBoss()
         {
             if (!m_SelectedLevelDefinition.HasBoss()) return;
-            RemoveStandbyPlatformInternal(m_SelectedLevelDefinition.GetBosPlatformAssets());
+            List<StandbyPlatformDefinition> bosStandbyPlatforms = m_SelectedLevelDefinition.GetBosPlatformAssets();
+            bool isInfinite = m_SelectedLevelDefinition.IsInfiniteLevel;
+            if (isInfinite)
+            {
+                bool hasBos = m_SpawnedBosEnemy != null;
+                if (hasBos)
+                {
+                    bosStandbyPlatforms = m_SpawnedBosEnemy.BosDefinition.BosPlatformsAsset;
+                }
+            }
+            RemoveStandbyPlatformInternal(bosStandbyPlatforms);
             m_OnResetBoss?.Invoke();
 
             List<BosDamageable> dmg = new(FindObjectsByType<BosDamageable>(FindObjectsInactive.Include, FindObjectsSortMode.None));

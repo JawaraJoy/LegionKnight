@@ -1,6 +1,7 @@
 using MoreMountains.Tools;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace LegionKnight
 {
@@ -10,8 +11,11 @@ namespace LegionKnight
         [SerializeField]
         private BosDefinition m_BosDefinition;
         [SerializeField]
+        private AssetReferenceGameObject m_BosAsset;
+        [SerializeField]
         private bool m_IsDefeated;
         public BosDefinition BosDefinition => m_BosDefinition;
+        public AssetReferenceGameObject BosAsset => m_BosAsset;
         public bool IsDefeated => m_IsDefeated;
 
         private string BossId => m_BosDefinition?.Id + "Defeated";
@@ -36,7 +40,7 @@ namespace LegionKnight
         private BossUnit[] m_BossUnits;
         public BossUnit[] BossUnits => m_BossUnits;
 
-        private BossUnit[] GetDefeatedBossUnit()
+        private List<BossUnit> GetDefeatedBossUnit()
         {
             var defeatedBosses = new List<BossUnit>();
             foreach (var bossUnit in m_BossUnits)
@@ -46,17 +50,18 @@ namespace LegionKnight
                     defeatedBosses.Add(bossUnit);
                 }
             }
-            return defeatedBosses.ToArray();
+            return defeatedBosses;
         }
 
         public BossUnit GetRandomDefeatedBoss()
         {
             var defeatedBosses = GetDefeatedBossUnit();
-            if (defeatedBosses.Length == 0)
+            
+            if (defeatedBosses.Count == 0)
             {
                 return null;
             }
-            int randomIndex = Random.Range(0, defeatedBosses.Length);
+            int randomIndex = Random.Range(0, defeatedBosses.Count);
             return defeatedBosses[randomIndex];
         }
 

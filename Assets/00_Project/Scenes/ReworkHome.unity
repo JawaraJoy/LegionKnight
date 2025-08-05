@@ -708,12 +708,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BossUnits:
   - m_BosDefinition: {fileID: 11400000, guid: 7090a21725d9502408643e33f9f95bda, type: 2}
-    m_IsDefeated: 1
-  - m_BosDefinition: {fileID: 11400000, guid: 5a68040cac9ab05438e4c05e43b02873, type: 2}
+    m_BosAsset:
+      m_AssetGUID: fe9c604675437814b85553ad3b38e325
+      m_SubObjectName: 
+      m_SubObjectGUID: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     m_IsDefeated: 0
+  - m_BosDefinition: {fileID: 11400000, guid: 5a68040cac9ab05438e4c05e43b02873, type: 2}
+    m_BosAsset:
+      m_AssetGUID: c9e392a46c040ad41b7fe2235bd60b46
+      m_SubObjectName: 
+      m_SubObjectGUID: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    m_IsDefeated: 1
   - m_BosDefinition: {fileID: 11400000, guid: ac1a7afc39d60ac4da9292a748615584, type: 2}
+    m_BosAsset:
+      m_AssetGUID: fe9c604675437814b85553ad3b38e325
+      m_SubObjectName: 
+      m_SubObjectGUID: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     m_IsDefeated: 0
   - m_BosDefinition: {fileID: 11400000, guid: 7f6383f198bd3e149a03264ffe82810c, type: 2}
+    m_BosAsset:
+      m_AssetGUID: fe9c604675437814b85553ad3b38e325
+      m_SubObjectName: 
+      m_SubObjectGUID: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     m_IsDefeated: 0
 --- !u!1001 &505776117
 PrefabInstance:
@@ -2996,6 +3020,10 @@ PrefabInstance:
       value: -54.659092
       objectReference: {fileID: 0}
     - target: {fileID: 7095499300489367798, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
+      propertyPath: m_BossDeckManager
+      value: 
+      objectReference: {fileID: 466139722}
+    - target: {fileID: 7095499300489367798, guid: 43dc0410d534af148a8bb5b552bd52b9, type: 3}
       propertyPath: m_BackgroundManager
       value: 
       objectReference: {fileID: 2003064685}
@@ -4503,6 +4531,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 378fc2343c04ee14db07639d5993138b, type: 2}
     - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_OnPerfectTouchDown.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7758370064416613710, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_OnContacted.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: LegionKnight.SpineAnimDefinition, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -4674,6 +4706,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ApplyEffectOnLevel: {fileID: 0}
 --- !u!114 &757947032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4686,6 +4719,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bf8da297530980479a8808e82e309bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ApplyEffectOnLevel: {fileID: 11400000, guid: 6cf4b4026ed0dba4d9bb9318675316f6, type: 2}
 --- !u!1 &791176921
 GameObject:
   m_ObjectHideFlags: 0

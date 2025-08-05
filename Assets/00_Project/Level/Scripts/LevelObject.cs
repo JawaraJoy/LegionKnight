@@ -40,7 +40,14 @@ namespace LegionKnight
         {
             get
             {
-                return GetLevelDefinition().BosAsset;
+                bool isInfinite = GetLevelDefinition().IsInfiniteLevel;
+                AssetReferenceGameObject bosAsset = GetLevelDefinition().BosAsset;
+                if (isInfinite)
+                {
+                    bosAsset = GameManager.Instance.GetRandomDefeatedBoss().BosAsset;
+                    return bosAsset;
+                }
+                return bosAsset;
             }
         }
 

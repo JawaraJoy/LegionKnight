@@ -122,6 +122,8 @@ MonoBehaviour:
   m_TextMeshPrefab: {fileID: 4627514803098843711, guid: 710050dfddd91c3428c4be15c0ad7f65, type: 3}
   m_BeforeText: 
   m_AfterText: 
+  m_SprayRadius: 0.5
+  m_SizeText: 4
 --- !u!1 &1511037597195118546
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,6 +319,8 @@ MonoBehaviour:
   m_Health: 10
   m_Shield: 0
   m_Barrier: 0
+  m_MaxHpRateDamage: 0
+  m_Fatal: 0
   m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
@@ -11767,7 +11771,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7071018726085274375
 Transform:
   m_ObjectHideFlags: 0
@@ -12037,7 +12041,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 55
+      scalar: 25
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -31995,6 +31999,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_BosForm: {fileID: 6040567752974675477}
+  m_OnBossDeath:
+    m_PersistentCalls:
+      m_Calls: []
   m_BosSkill: {fileID: 776969825580286560}
   m_BossSpine: {fileID: 7001825305152453541}
 --- !u!114 &9048604627607117514

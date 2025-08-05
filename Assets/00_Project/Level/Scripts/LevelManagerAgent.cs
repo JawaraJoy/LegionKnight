@@ -4,6 +4,17 @@ namespace LegionKnight
 {
     public partial class LevelManagerAgent : MonoBehaviour
     {
+        [SerializeField]
+        private LevelDefinition m_ApplyEffectOnLevel;
+
+        private bool IsApplyEffectOnLevel()
+        {
+            return m_ApplyEffectOnLevel != null;
+        }
+        private bool IsLevelMatch()
+        {
+            return IsApplyEffectOnLevel() && m_ApplyEffectOnLevel == GameManager.Instance.LevelDefinition;
+        }
         public void Play()
         {
             GameManager.Instance.Play();
@@ -18,7 +29,10 @@ namespace LegionKnight
         }
         public void AddStandByPlatform(StandbyPlatformDefinition platform)
         {
-            GameManager.Instance.AddStandByPlatform(platform);
+            if (IsApplyEffectOnLevel())
+            {
+                GameManager.Instance.AddStandByPlatform(platform);
+            }
         }
         public void SetLevelOver(bool set)
         {
