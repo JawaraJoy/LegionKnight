@@ -112,7 +112,7 @@ namespace LegionKnight
             m_Rb.gravityScale = 0f; // Disable gravity while flying
             m_Rb.bodyType = RigidbodyType2D.Kinematic; // Set to kinematic to prevent physics interactions
             yield return new WaitForSeconds(0.5f); // Wait for the fly duration
-            GameManager.Instance.SetSpeedPlatformRate(m_PlatformSpeedUpOnFly);
+            GameManager.Instance.AddSpeedPlatformRate(m_PlatformSpeedUpOnFly);
         }
 
         private void Fly()
@@ -156,7 +156,7 @@ namespace LegionKnight
         private IEnumerator StopFlying()
         {
             yield return new WaitForSeconds(0.25f); // Wait for the fly duration
-            GameManager.Instance.SetSpeedPlatformRate(1f);
+            GameManager.Instance.AddSpeedPlatformRate(-m_PlatformSpeedUpOnFly);
             GameManager.Instance.SetLevelOver(false);
             GameManager.Instance.SpawnPlatform();
             OnStopFlyInvoke();

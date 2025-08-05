@@ -49,6 +49,10 @@ namespace LegionKnight
         {
             m_LevelManager.SetSpeedPlatformRate(rate);
         }
+        public void AddSpeedPlatformRate(float add)
+        {
+            m_LevelManager.AddSpeedPlatformRate(add);
+        }
         public void RemovePlatform(Platform platform)
         {
             m_LevelManager.RemovePlatform(platform);

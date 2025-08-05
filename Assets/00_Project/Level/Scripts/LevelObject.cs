@@ -53,6 +53,10 @@ namespace LegionKnight
         {
             m_SpeedPlatformRate = rate;
         }
+        public void AddSpeedPlatformRate(float rate)
+        {
+            m_SpeedPlatformRate += rate;
+        }
 
         private float m_FinalOffsideDestination;
         private void Start()

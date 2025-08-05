@@ -349,6 +349,10 @@ namespace LegionKnight
         {
             m_LevelObject.SetSpeedPlatformRate(rate);
         }
+        public void AddSpeedPlatformRate(float add)
+        {
+            m_LevelObject.AddSpeedPlatformRate(add);
+        }
         public int GetNormalTouchDownPoint()
         {
             return m_SelectedLevelDefinition.GetNormalTouchDownPoint();
