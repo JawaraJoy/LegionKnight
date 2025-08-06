@@ -61,6 +61,10 @@ namespace LegionKnight
             
             m_OnTouchDownCountRateChange?.Invoke(GetTouchDownRate());
         }
+        public void Setthreshold(int threshold)
+        {
+            m_TouchDownThreshold = threshold;
+        }
     }
     public partial class LevelManagerAgent
     {
