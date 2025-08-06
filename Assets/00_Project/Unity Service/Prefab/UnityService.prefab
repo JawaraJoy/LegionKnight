@@ -234,6 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ApplyEffectOnLevel: {fileID: 0}
 --- !u!114 &7706837356944348511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,19 +292,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SellProducts:
-  - m_Definition: {fileID: 11400000, guid: 0a59a9605e84c7e448ae006840c54b02, type: 2}
+  - m_Definition: {fileID: 11400000, guid: 22a0249a1354ef940b19155be44c7525, type: 2}
     m_IsAvailable: 1
     m_IsBonusAvailable: 1
-  - m_Definition: {fileID: 11400000, guid: 8f5597aae60543b4f90634cd346077b1, type: 2}
+  - m_Definition: {fileID: 11400000, guid: 24372b30b68fb8b4097c3afe62bbaede, type: 2}
     m_IsAvailable: 1
     m_IsBonusAvailable: 1
-  - m_Definition: {fileID: 11400000, guid: 7958cbcd9b27e2d4f902d3eace6cca1d, type: 2}
+  - m_Definition: {fileID: 11400000, guid: 428afa2ee27b1ef4aabb5c08bd1e6fc4, type: 2}
     m_IsAvailable: 1
     m_IsBonusAvailable: 1
-  - m_Definition: {fileID: 11400000, guid: ac34cc0b2d97dc346b8839ad683dfd55, type: 2}
+  - m_Definition: {fileID: 11400000, guid: 32c1e4ebf101c7f46b7ee1f736ad976b, type: 2}
     m_IsAvailable: 1
     m_IsBonusAvailable: 1
-  - m_Definition: {fileID: 11400000, guid: 68ccd7ac204f9a94688feaa6f002bab1, type: 2}
+  - m_Definition: {fileID: 11400000, guid: a34dbfb8f67d5a5479c11a052482fa86, type: 2}
+    m_IsAvailable: 1
+    m_IsBonusAvailable: 1
+  - m_Definition: {fileID: 11400000, guid: f2013678e520baa42999ace63329fe62, type: 2}
     m_IsAvailable: 1
     m_IsBonusAvailable: 1
   m_OnPurchaseComplete:
@@ -323,6 +327,7 @@ GameObject:
   - component: {fileID: 2751101648577053012}
   - component: {fileID: 5537331884271729272}
   - component: {fileID: 9218670113116890934}
+  - component: {fileID: 4422472847718538564}
   m_Layer: 0
   m_Name: Auth
   m_TagString: Untagged
@@ -411,6 +416,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 4422472847718538564}
+        m_TargetAssemblyTypeName: LegionKnight.BossDeckManagerAgent, Assembly-CSharp
+        m_MethodName: Initialize
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   m_OnSignInFailed:
     m_PersistentCalls:
       m_Calls:
@@ -448,6 +465,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f144c78032b2b044c8f1ea477cf90226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4422472847718538564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4088240084379206386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aab024184ec98940bf578c25671a735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6373719462941965716

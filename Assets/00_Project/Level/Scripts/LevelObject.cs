@@ -223,9 +223,14 @@ namespace LegionKnight
                 m_BosSpawnPost.DetachChildren();
                 m_OnBosSpawned?.Invoke(GetLevelDefinition().BosDefinition);
                 BosDefinition bosDefinition = GetLevelDefinition().BosDefinition;
-                ConversationDefinition conversation = bosDefinition.ConversationDefinition;
-                if (conversation == null) return;
-                GameManager.Instance.StartConversation(conversation);
+
+                bool isInfinite = GetLevelDefinition().IsInfiniteLevel;
+                if (!isInfinite)
+                {
+                    ConversationDefinition conversation = bosDefinition.ConversationDefinition;
+                    if (conversation == null) return;
+                    GameManager.Instance.StartConversation(conversation);
+                }
             }
         }
         private IEnumerator SpawningBosInternal(AsyncOperationHandle<GameObject> handle)

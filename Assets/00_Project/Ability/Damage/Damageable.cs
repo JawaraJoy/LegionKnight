@@ -196,6 +196,7 @@ namespace LegionKnight
             if (fatal)
             {
                 dmg = damage; // Set damage to current health if fatal
+                OnDeathInvoke();
             }
             if (!IsProtectGoneInternal())
             {

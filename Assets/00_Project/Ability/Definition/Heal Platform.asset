@@ -19,7 +19,11 @@ MonoBehaviour:
     m_UpgradeVal: 1
     m_Description: 'Chance to spawn 10%.
 
-      Heal Instanly Hero for {0} HP.'
+      Heal Instanly Hero for {0}'
+  - m_UseHeroAttackScale: 0
+    m_BaseVal: 2.5
+    m_UpgradeVal: 0.1
+    m_Description: + {0}% from Max Hp.
   m_DamageStat:
     m_IsHeroScale: 0
     m_Attack: 0
@@ -36,7 +40,7 @@ MonoBehaviour:
     m_DurationUpgrade: 0
   m_HealStat:
     m_HealAmount: 10
-    m_HealRate: 0.01
+    m_HealRate: 0.025
     m_HealAmountUpgrade: 1
     m_HealRateUpgrade: 0.001
   m_RegenStat:

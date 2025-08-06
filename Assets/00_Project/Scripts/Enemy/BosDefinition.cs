@@ -43,7 +43,7 @@ namespace LegionKnight
 
         public Stat FinalStat(int addLevel)
         {
-            return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, m_StartLevel + addLevel);
+            return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, m_StartLevel + addLevel - 1);
         }
     }
     public partial class BosEnemy
