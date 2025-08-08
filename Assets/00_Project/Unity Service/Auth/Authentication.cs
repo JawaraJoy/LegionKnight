@@ -17,6 +17,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<string> m_OnSignInFailed;
 
+        [SerializeField]
+        private bool m_SignInOnStart = false;
         public string PlayerId => AuthenticationService.Instance.PlayerId;
         public string Playername => AuthenticationService.Instance.PlayerName;
 
@@ -24,6 +26,15 @@ namespace LegionKnight
         {
             // Register the Unity Player Accounts sign-in event handler after services initialization.
             PlayerAccountService.Instance.SignedIn += StartSinginWithUnity;
+        }
+
+        private void Start()
+        {
+            if (m_SignInOnStart)
+            {
+                // Automatically sign in anonymously when the game starts.
+                SignInAnonymously();
+            }
         }
 
         public async void StartSinginWithUnity()

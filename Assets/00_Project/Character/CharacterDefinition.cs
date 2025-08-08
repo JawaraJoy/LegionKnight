@@ -93,7 +93,7 @@ namespace LegionKnight
                 Debug.LogError($"Invalid level: {level}. Must be greater than 0.");
                 return null;
             }
-            Stat levelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level - 1);
+            Stat levelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level);
             Stat starStat = m_BreakThrough.GetStatBonus(star);
             if (starStat == null)
             {
@@ -116,8 +116,8 @@ namespace LegionKnight
                 Debug.LogError($"Invalid level: {level}. Must be greater than 0.");
                 return null;
             }
-            Stat levelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level - 1);
-            Stat nextLevelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level);
+            Stat levelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level);
+            Stat nextLevelStat = Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, level + 1);
             bool canBreak = m_BreakThrough.CanBreak(star, level);
             Stat starStat = m_BreakThrough.GetStatBonus(star);
             Stat nextstarStat = m_BreakThrough.GetStatBonus(star + 1);

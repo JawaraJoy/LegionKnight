@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public partial class BosEnemy : MonoBehaviour
+    public partial class BosEnemy : MonoBehaviour, IEnemy
     {
         [SerializeField]
         private SpriteRenderer m_BosForm;
@@ -13,6 +13,11 @@ namespace LegionKnight
 
         [SerializeField]
         private UnityEvent<BosDefinition> m_OnBossDeath;
+
+        private void Start()
+        {
+            Register();
+        }
         public void Init(BosDefinition definition)
         {
             m_BosDefinition = definition;
@@ -52,6 +57,16 @@ namespace LegionKnight
         public void Death()
         {
             m_OnBossDeath.Invoke(m_BosDefinition);
+        }
+
+        public void Register()
+        {
+            GameManager.Instance.AddEnemy(this);
+        }
+
+        public void UnRegister()
+        {
+            GameManager.Instance.RemoveEnemy(this);
         }
     }
 }

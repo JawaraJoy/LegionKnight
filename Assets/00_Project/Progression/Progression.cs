@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,14 +6,24 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
+    public enum FormulaSelect
+    {
+        One,
+        Two,
+    }
     public partial class Progression : MonoBehaviour
     {
+        [SerializeField]
+        private int m_MaxLevel = 100;
+        [SerializeField]
+        private FormulaSelect m_Formula = FormulaSelect.One;
+        [Header("Formula One")]
         [SerializeField]
         private float m_ExponentialGrowth = 2; // Example: 2 means the experience required for each level increases exponentially
         [SerializeField]
         private int m_FirstLevelExp = 100; // Experience required for the first level
-        [SerializeField]
-        private int m_MaxLevel = 100;
+        [Header("____________")]
+        
         private int m_Level = 1;
         private int m_CurrentExp = 0;
 
@@ -109,7 +120,7 @@ namespace LegionKnight
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            GenerateExpTable();
+            //GenerateExpTable();
         }
 #endif
 
@@ -160,6 +171,7 @@ namespace LegionKnight
                 return m_ExpTable[m_Level - 1];
             return m_ExpTable.Count > 0 ? m_ExpTable[^1] : m_FirstLevelExp;
         }
+
         public int GetCurrentLevel()
         {
             return m_Level;
@@ -169,7 +181,22 @@ namespace LegionKnight
             return m_CurrentExp;
         }
 
+        [ContextMenu("Generate")]
         private void GenerateExpTable()
+        {
+            switch(m_Formula)
+            {
+                case FormulaSelect.One:
+                    FormulaGenerateOne();
+                    break;
+                case FormulaSelect.Two:
+                    FormulaGenerateTwo();
+                    break;
+            }
+            
+        }
+
+        private void FormulaGenerateOne()
         {
             m_ExpTable.Clear();
             int exp = m_FirstLevelExp;
@@ -177,6 +204,17 @@ namespace LegionKnight
             {
                 m_ExpTable.Add(exp);
                 exp = Mathf.FloorToInt(exp * m_ExponentialGrowth);
+            }
+        }
+        private void FormulaGenerateTwo()
+        {
+            m_ExpTable.Clear();
+            int exp = 0;
+            for (int i = 0; i < m_MaxLevel ; i++)
+            {
+                int currentLevel = i + 1;
+                exp = Mathf.RoundToInt(10 * currentLevel * currentLevel + 490);
+                m_ExpTable.Add(exp);
             }
         }
         private Coroutine m_ExpGrowCoroutine;

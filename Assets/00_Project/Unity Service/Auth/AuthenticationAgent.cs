@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Net;
 using UnityEngine;
 
@@ -36,6 +37,25 @@ namespace LegionKnight
         public void ShowWaitingViewSuccessButton(bool set)
         {
             GameManager.Instance.ShowWaitingViewSuccessButton(set);
+        }
+
+        private AuthenticationPanel GetAuthenticationPanel()
+        {
+            return GameManager.Instance.GetPanel<AuthenticationPanel>();
+        }
+        public void ShowAuthPanel()
+        {
+            GetAuthenticationPanel().Show();
+        }
+        public void HideAuthPanel(float wait)
+        {
+            StartCoroutine(WaitToHide(wait));
+        }
+
+        private IEnumerator WaitToHide(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            GetAuthenticationPanel().Hide();
         }
     }
 }

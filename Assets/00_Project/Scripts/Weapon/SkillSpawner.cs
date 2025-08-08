@@ -7,7 +7,7 @@ namespace LegionKnight
     public partial class SkillSpawner : MonoBehaviour
     {
         [SerializeField]
-        private AbilityDefinition m_AbilityDefinition;
+        protected AbilityDefinition m_AbilityDefinition;
         [SerializeField]
         private bool m_RandomSpawn = false;
         [SerializeField]
@@ -115,5 +115,10 @@ namespace LegionKnight
             m_MaxSpawnCount = count;
             StartSpawningInternal();
         }
+
+        public void SetAbility(AbilityDefinition ability)
+        {
+            m_AbilityDefinition = ability;
+        }    
     }
 }

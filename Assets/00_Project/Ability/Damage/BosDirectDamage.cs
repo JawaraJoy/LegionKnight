@@ -25,7 +25,16 @@ namespace LegionKnight
         public void Init()
         {
             BosEnemy bos = GameManager.Instance.SpawnedBosenemy;
-            int level = bos.GetBosLevel();
+            int level;
+            if (bos == null )
+            {
+                level = 1;
+            }
+            else
+            {
+                level = bos.GetBosLevel();
+            }
+
             m_FinalDamage = m_Damage + (m_DamageGrowth * level - 1);
             if (m_DealDamageOnInitialization)
             {

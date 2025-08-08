@@ -14,6 +14,11 @@ namespace LegionKnight
         private string m_Description;
         [SerializeField]
         private Sprite m_Icon;
+        
+        [SerializeField]
+        private Rarity m_Rarity = Rarity.Common;
+        [SerializeField]
+        private Color m_RarityColor; 
         [SerializeField, Range(1, 100)]
         private int m_ChanceRateTospawn;
         [SerializeField]
@@ -27,6 +32,8 @@ namespace LegionKnight
         public string Description => m_Description;
         public Sprite Icon => m_Icon;
         public string Id => m_Id;
+        public Rarity Rarity => m_Rarity;
+        public Color RarityColor => m_RarityColor;
         public AbilityDefinition AbilityDefinition => m_AbilityDefinition;
     }
 }

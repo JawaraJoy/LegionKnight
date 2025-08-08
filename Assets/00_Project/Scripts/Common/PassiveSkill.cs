@@ -11,6 +11,7 @@ namespace LegionKnight
         Player = 0,
         Boss = 1,
         Level = 2,
+        Minion = 3,
     }
     [System.Serializable]
     public partial class SkillActivation

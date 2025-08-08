@@ -38,7 +38,8 @@ namespace LegionKnight
         {
             if (m_SuccessButton != null)
             {
-                m_SuccessButton.gameObject.SetActive(set);
+                //
+                //m_SuccessButton.gameObject.SetActive(set);
             }
         }
     }

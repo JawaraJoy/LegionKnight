@@ -126,6 +126,13 @@ namespace LegionKnight
             }
             return null;
         }
+        public void ResetAllCounter()
+        {
+            foreach(var counter in m_Counters)
+            {
+                counter.ResetCount();
+            }
+        }
         public void ResetCount(CounterDefinition definition)
         {
             var counter = GetCounter(definition);
