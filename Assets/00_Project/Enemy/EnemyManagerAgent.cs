@@ -4,16 +4,13 @@ namespace LegionKnight
 {
     public class EnemyManagerAgent : MonoBehaviour
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        public void SetCanSpawnEnemy(bool can)
         {
-        
+            GameManager.Instance.SetCanSpawnEnemy(can);
         }
-
-        // Update is called once per frame
-        void Update()
+        public void ResetAllToCantSpawn()
         {
-        
+            GameManager.Instance.ResetAllToCantSpawn();
         }
     }
 }

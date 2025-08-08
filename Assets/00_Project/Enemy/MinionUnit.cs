@@ -19,6 +19,10 @@ namespace LegionKnight
         public bool CanSpawn => m_CanSpawn;
         public LevelDefinition LevelAllowed => m_LevelAllowed;
 
+        public void SetCanSpawn(bool canSpawn)
+        {
+            m_CanSpawn = canSpawn;
+        }
         public void SpawnMinion(Transform spot, Vector2 offsite)
         {
             bool levelSync = GameManager.Instance.LevelDefinition == m_LevelAllowed;

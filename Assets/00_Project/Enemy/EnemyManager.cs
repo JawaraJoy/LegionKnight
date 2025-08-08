@@ -29,9 +29,17 @@ namespace LegionKnight
         {
             m_EnemyManager.SpawnMinion(defi);
         }
+        public void SetCanSpawnUnit(MinionDefinition defi, bool set)
+        {
+            m_EnemyManager.SetCanSpawnUnit(defi, set);
+        }
         public void SetCanSpawnEnemy(bool can)
         {
             m_EnemyManager.SetCanSpawnEnemy(can);
+        }
+        public void ResetAllToCantSpawn()
+        {
+            m_EnemyManager.ResetAllToCantSpawn();
         }
     }
 }

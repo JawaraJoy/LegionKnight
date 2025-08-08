@@ -40,6 +40,8 @@ namespace LegionKnight
             m_CountdownText.text = "0";
             m_OnDone.Invoke();
             yield return new WaitForEndOfFrame();
+
+            StartCooldownInternal(m_CooldownTime);
         }
 
         public void StartCooldown(AbilityDefinition ability)

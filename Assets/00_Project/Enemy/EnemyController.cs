@@ -47,8 +47,25 @@ namespace LegionKnight
             }
             return null;
         }
+        public void ResetAllToCantSpawn()
+        {
+            foreach (var unit in m_MinionUnits)
+            {
+                unit.SetCanSpawn(false);
+            }
+        }
+        public void SetCanSpawnUnit(MinionDefinition defi, bool set)
+        {
+            MinionUnit unit = GetMinionUnit(defi);
+            if (unit == null) return;
+            unit.SetCanSpawn(set);
+        }
         public void SpawnMinion(MinionDefinition defi)
         {
+            if (!m_CanSpawnEnemy) return;
+            MinionUnit unit = GetMinionUnit(defi);
+            if (unit == null) return;
+            unit.SpawnMinion(m_SpawningSpot, m_OffsiteRandom);
             //AssetReferenceGameObject asset = defi.ModelPrefab;
             //AsyncOperationHandle<GameObject> handle = asset.InstantiateAsync(m_SpawningSpot, false);
             //StartCoroutine(SpawningMinion(defi, handle));

@@ -11,15 +11,22 @@ namespace LegionKnight
         private int m_Attack;
         [SerializeField]
         private int m_Health;
+        [SerializeField]
+        private int m_Shield;
 
         [SerializeField]
         private int m_AttackUpgrade = 1;
         [SerializeField]
         private int m_HealthUpgrade = 1;
+        [SerializeField]
+        private int m_ShieldUpgrade = 1;
         public int Attack => m_Attack;
         public int Health => m_Health;
         public int AttackUpgrade => m_AttackUpgrade;
         public int HealthUpgrade => m_HealthUpgrade;
+        public int Shield => m_Shield;
+        public int ShieldUpgrade => m_ShieldUpgrade;
+
         public int GetFinalAttack(int level)
         {
             if (m_IsHeroScale)
@@ -52,6 +59,10 @@ namespace LegionKnight
         {
             return m_Health + m_HealthUpgrade * (level - 1);
         }
+        public int GetFinalShield(int level)
+        {
+            return (m_Shield + m_ShieldUpgrade * (level - 1));
+        }
         public void SetAttack(int attack)
         {
             m_Attack = attack;
@@ -83,8 +94,10 @@ namespace LegionKnight
         private DamageStat m_DamageStat;
         public int Attack => m_DamageStat.Attack;
         public int Health => m_DamageStat.Health;
+        public int Shield => m_DamageStat.Shield;
         public int AttackUpgrade => m_DamageStat.AttackUpgrade;
         public int HealthUpgrade => m_DamageStat.HealthUpgrade;
+        public int ShieldUpgrade => m_DamageStat.ShieldUpgrade;
         public int GetFinalAttack(int level)
         {
             return m_DamageStat.GetFinalAttack(level);
@@ -92,6 +105,10 @@ namespace LegionKnight
         public int GetFinalHealth(int level)
         {
             return m_DamageStat.GetFinalHealth(level);
+        }
+        public int GetFinalShield(int level)
+        {
+            return m_DamageStat.GetFinalShield(level);
         }
     }
 
@@ -102,6 +119,7 @@ namespace LegionKnight
             m_Damage = damageStat.Attack;
             m_Health = damageStat.Health;
             m_CurrentHealth = m_Health;
+            m_Shield = damageStat.Shield;
         }
 
         public void InitStat(CharacterDefinition defi)

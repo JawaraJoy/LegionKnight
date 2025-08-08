@@ -14,6 +14,8 @@ namespace LegionKnight
 
         [SerializeField]
         private UnityEvent<AbilityDefinition> m_OnSkillInitialize;
+        [SerializeField]
+        private UnityEvent<int> m_OnDeathGetCoin;
 
         private void Start()
         {
@@ -35,7 +37,10 @@ namespace LegionKnight
             m_Looks.sprite = m_Definition.Looks;
             m_OnSkillInitialize?.Invoke(m_Definition.AbilityDefinition);
         }
-
+        public void Deatch()
+        {
+            m_OnDeathGetCoin?.Invoke(m_Definition.RewrdKilled);
+        }
         public void SetDynamicLevel(int level)
         {
             m_DynamicLevel = level;
@@ -49,6 +54,10 @@ namespace LegionKnight
         public void UnRegister()
         {
             GameManager.Instance.RemoveEnemy(this);
+        }
+        public void AddReward()
+        {
+            m_Definition.AddReward();
         }
     }
 }
