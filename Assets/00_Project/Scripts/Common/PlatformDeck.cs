@@ -10,22 +10,30 @@ namespace LegionKnight
         [SerializeField]
         private bool m_IsOwned;
         [SerializeField]
+        private bool m_IsEquiped;
+        [SerializeField]
         private int m_Amount;
         [SerializeField]
         private StandbyPlatformDefinition m_StanbyPlatform;
         public bool IsOwned => m_IsOwned = m_Amount > 0;
+        public bool IsEquiped => m_IsEquiped;
         public int Amount => m_Amount;
         public StandbyPlatformDefinition StanbyPlatform => m_StanbyPlatform;
         public PlatformUnit(StandbyPlatformDefinition stanbyPlatform)
         {
             m_StanbyPlatform = stanbyPlatform;
             m_IsOwned = false;
+            m_IsEquiped = false;
         }
         public void AddAmount(int add)
         {
             m_Amount += add;
             UnityService.Instance.SaveData(m_StanbyPlatform.Id + "amount", m_Amount);
             m_IsOwned = m_Amount > 0;
+        }
+        public void SetIsEquiped(bool set)
+        {
+            m_IsEquiped = set;
         }
         public void Init()
         {
@@ -54,6 +62,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<StandbyPlatformDefinition> m_OnInitialized = new();
         [SerializeField]
+        private UnityEvent<PlatformUnit> m_OnInitializedUnit = new();
+        [SerializeField]
         private UnityEvent<StandbyPlatformDefinition> m_OnPlatformUsed = new();
         [SerializeField]
         private UnityEvent<StandbyPlatformDefinition> m_OnSelectedPlatform = new();
@@ -69,6 +79,10 @@ namespace LegionKnight
             }
             return null;
         }
+        public PlatformUnit[] GetPlatformUnits()
+        {
+            return m_Deck.ToArray();
+        }
         public PlatformUnit GetPlatformOwned(StandbyPlatformDefinition platform)
         {
             return GetPlatformOwnedInternal(platform);
@@ -81,6 +95,14 @@ namespace LegionKnight
         public StandbyPlatformDefinition GetUsedStanbyPlatform()
         {
             return m_UsedStanbyPlatform;
+        }
+        public void SetIsEquiped(StandbyPlatformDefinition defi, bool isEquiped)
+        {
+            foreach (var platformOwned in m_Deck)
+            {
+                platformOwned.SetIsEquiped(false);
+            }
+            GetPlatformOwnedInternal(defi).SetIsEquiped(isEquiped);
         }
         public void AddPlatformAmount(StandbyPlatformDefinition platform, int add)
         {
@@ -111,7 +133,7 @@ namespace LegionKnight
         }
         public void Init()
         {
-            OnInitializedInvoke();
+            OnInitializedInvoke();  
         }
         private void OnInitializedInvoke()
         {
@@ -119,6 +141,7 @@ namespace LegionKnight
             foreach (PlatformUnit unit in m_Deck)
             {
                 unit.Init();
+                m_OnInitializedUnit?.Invoke(unit);
             }
         }
         private void OnSelectedPlatformInvoke()

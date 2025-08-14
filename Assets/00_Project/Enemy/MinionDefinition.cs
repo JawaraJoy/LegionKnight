@@ -49,7 +49,7 @@ namespace LegionKnight
 
         public void AddReward()
         {
-            GameManager.Instance.AddCurrencyRewardAmount(m_RewardKilled);
+            GameManager.Instance.AddScoreAmount(m_RewardKilled);
             Player.Instance.AddCurrencyAmount(m_ItemRewardKilled.CurrencyDefinition, m_ItemRewardKilled.Amount);
         }
     }

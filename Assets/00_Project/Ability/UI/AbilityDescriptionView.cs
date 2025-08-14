@@ -14,7 +14,7 @@ namespace LegionKnight
 
         public void SetSkill(CharacterDefinition defi)
         {
-            ShowInternal();
+            //ShowInternal();
             m_Platformtitle.Hide();
             m_SkillTitle.Show();
             m_SkillTitle.SetAbility(defi);
@@ -24,7 +24,7 @@ namespace LegionKnight
         }
         public void SetPlatform(CharacterDefinition defi)
         {
-            ShowInternal();
+            //ShowInternal();
             m_SkillTitle.Hide();
             m_Platformtitle.Show();
             m_Platformtitle.SetAbility(defi);

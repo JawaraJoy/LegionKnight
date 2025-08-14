@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,13 +9,21 @@ namespace LegionKnight
         [SerializeField]
         private Image m_EnergyIcon;
         [SerializeField]
-        private Text m_EnergyAmountText;
+        private TextMeshProUGUI m_EnergyAmountText;
+        [SerializeField]
+        private Slider m_Slider;
+
+        [SerializeField]
+        private EnergyDefinition m_Definition;
+        public EnergyDefinition Definition => m_Definition;
         public void SetEnergy(Energy energy)
         {
             m_EnergyIcon.sprite = energy.Definition.Icon;
             int currentAmount = energy.Amount;
             int maxAmount = energy.Definition.MaxAmount;
             m_EnergyAmountText.text = $"{currentAmount}/{maxAmount}";
+            float rateVal = (float)currentAmount / (float)maxAmount;
+            m_Slider.value = rateVal;
         }
     }
 }

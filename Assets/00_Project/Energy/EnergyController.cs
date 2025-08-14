@@ -1,3 +1,6 @@
+using MoreMountains.Tools;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,7 +12,19 @@ namespace LegionKnight
         private Energy[] m_Energies;
         [SerializeField]
         private UnityEvent<Energy> m_OnEnergyAmountChanged;
+        [SerializeField]
+        private UnityEvent<Energy[]> m_OnCanPay;
+        [SerializeField]
+        private UnityEvent<Energy[]> m_OnCantPay;
 
+        public void AddOnCanPay(UnityAction<Energy[]> action)
+        {
+            m_OnCanPay.AddListener(action);
+        }
+        public void AddOnCantPay(UnityAction<Energy[]> action)
+        {
+            m_OnCantPay.AddListener(action);
+        }
         private Energy GetEnergyInternal(EnergyDefinition definition)
         {
             foreach (var energy in m_Energies)
@@ -35,6 +50,13 @@ namespace LegionKnight
             }
             return energy.IsFull;
         }
+        public void Init()
+        {
+            foreach(var energy in m_Energies)
+            {
+                energy.Initialize();
+            }
+        }
         public void Add(EnergyDefinition definition, int amount)
         {
             var energy = GetEnergyInternal(definition);
@@ -57,6 +79,52 @@ namespace LegionKnight
             energy.Set(amount);
             m_OnEnergyAmountChanged?.Invoke(energy);
         }
+        private void Update()
+        {
+            Regen();
+        }
+
+        private void Regen()
+        {
+            foreach(var energy in m_Energies)
+            {
+                energy.Regening();
+            }
+        }
+
+        public void Pay(Energy[] energyCosts)
+        {
+            int amountcanPay = 0;
+            List<Energy> energyNeeds = new List<Energy>();
+            foreach (var cost in energyCosts)
+            {
+                Energy ownEnergy = GetEnergyInternal(cost.Definition);
+                bool canPay = ownEnergy.CanPay(cost.Amount);
+                if (canPay)
+                {
+                    amountcanPay++;
+                }
+                else
+                {
+                    int restAmount = cost.Amount - ownEnergy.Amount;
+                    Energy restEnergy = new Energy(cost.Definition, restAmount);
+                    energyNeeds.Add(restEnergy);
+                }
+            }
+            if (amountcanPay >= energyCosts.Length)
+            {
+                foreach (var cost in energyCosts)
+                {
+                    Energy ownEnergy = GetEnergyInternal(cost.Definition);
+                    ownEnergy.Pay(cost.Amount);
+                }
+                m_OnCanPay.Invoke(energyCosts);
+            }
+            else
+            {
+                m_OnCantPay.Invoke(energyNeeds.ToArray());
+            }
+        }
     }
 
     [System.Serializable]
@@ -64,6 +132,9 @@ namespace LegionKnight
     {
         [SerializeField]
         private EnergyDefinition m_Definition;
+        [SerializeField]
+        private TimerDefinition m_Timer;
+        [SerializeField]
         private int m_Amount;
 
         [SerializeField]
@@ -74,6 +145,8 @@ namespace LegionKnight
         public EnergyDefinition Definition => m_Definition;
         public int Amount => m_Amount;
 
+        private float m_CurrentTimeSpend;
+
         public Energy(EnergyDefinition definition, int amount)
         {
             m_Definition = definition;
@@ -81,26 +154,27 @@ namespace LegionKnight
         }
 
         public bool IsFull => m_Amount >= m_Definition.MaxAmount;
+
         public void Initialize()
         {
-            UnityService.Instance.LoadData(m_Definition.Id);
-            m_Amount = UnityService.Instance.GetData<int>(m_Definition.Id);
+            if (UnityService.Instance.HasData(m_Definition.Id))
+            {
+                SetInternal(UnityService.Instance.GetData<int>(m_Definition.Id));
+            }
+            else
+            {
+                ResetEnergy();
+            }
+            m_Timer.CheckTimer(ResetEnergy, () => AddInternal(0));
             ClampAmount();
-            m_OnAmountChanged?.Invoke(this);
         }
         public void Add(int amount)
         {
-            m_Amount += amount;
-            ClampAmount();
-            m_OnAmountChanged?.Invoke(this);
-            UnityService.Instance.SaveData(m_Definition.Id, m_Amount);
+            AddInternal(amount);
         }
         public void Set(int amount)
         {
-            m_Amount = amount;
-            ClampAmount();
-            m_OnAmountChanged?.Invoke(this);
-            UnityService.Instance.SaveData(m_Definition.Id, m_Amount);
+            SetInternal(amount);
         }
         private void ClampAmount()
         {
@@ -120,6 +194,62 @@ namespace LegionKnight
             else if (m_Amount > m_Definition.MaxAmount)
             {
                 m_Amount = m_Definition.MaxAmount;
+            }
+        }
+        public void Regening()
+        {
+            if (!m_Definition.CanRegen) return;
+            int interval = m_Definition.RegenEverEverySeconds;
+            bool offsiteMax = m_Amount > m_Definition.MaxAmount;
+            //bool canRegen = !offsiteMax && underTimeSpend;
+            if (!offsiteMax)
+            {
+                m_CurrentTimeSpend += Time.deltaTime;
+                if (m_CurrentTimeSpend > interval)
+                {
+                    m_Timer.CheckTimer(ResetEnergy, () => AddInternal(m_Definition.RegenAmount));
+                    m_CurrentTimeSpend = 0f;
+                }
+            }
+        }
+        private void AddInternal(int add)
+        {
+            m_Amount += add;
+            ClampAmount();
+            m_OnAmountChanged?.Invoke(this);
+            UnityService.Instance.SaveData(m_Definition.Id, m_Amount);
+        }
+        private void SetInternal(int set)
+        {
+            m_Amount = set;
+            ClampAmount();
+            m_OnAmountChanged?.Invoke(this);
+            UnityService.Instance.SaveData(m_Definition.Id, m_Amount);
+        }
+        private void ResetEnergy()
+        {
+            bool offsiteMax = m_Amount >= m_Definition.MaxAmount;
+            if (!offsiteMax)
+            {
+                SetInternal(m_Definition.MaxAmount);
+            }
+            m_Timer.StartTimer();
+        }
+
+        private bool CanPayInternal(int cost)
+        {
+            return m_Amount < cost;
+        }
+        public bool CanPay(int cost)
+        {
+            return CanPayInternal(cost);
+        }
+
+        public void Pay(int cost)
+        {
+            if (CanPayInternal(cost))
+            {
+                AddInternal(-cost);
             }
         }
     }

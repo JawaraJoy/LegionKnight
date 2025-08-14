@@ -8,9 +8,13 @@ namespace LegionKnight
     public partial class PlatformSelectView : UIView
     {
         [SerializeField]
-        private StandbyPlatformDefinition m_PlatformPrefab;
+        private StandbyPlatformDefinition m_PlatformDefi;
         [SerializeField]
         private Image m_UnitIcon;
+        [SerializeField]
+        private Image m_RarityColor;
+        [SerializeField]
+        private Image m_EquipedSign;
         [SerializeField]
         private GameObject m_LockIcon;
         [SerializeField]
@@ -19,14 +23,10 @@ namespace LegionKnight
         private Button m_SelectButton;
         [SerializeField]
         private UnityEvent<StandbyPlatformDefinition> m_OnPlatformSelected = new();
-        public StandbyPlatformDefinition PlatformPrefab => m_PlatformPrefab;
-        private void OnEnable()
-        {
-            InitInternal();
-        }
+        public StandbyPlatformDefinition PlatformDefi => m_PlatformDefi;
         private void SelectPlatformInternal()
         {
-            Player.Instance.SelectStandbyPlatform(m_PlatformPrefab);
+            Player.Instance.SelectStandbyPlatform(m_PlatformDefi);
             OnCharacterSelectedInvoke();
         }
         public void SelectPlatform()
@@ -35,25 +35,33 @@ namespace LegionKnight
         }
         private void InitInternal()
         {
-            PlatformUnit platform = Player.Instance.GetPlatformOwned(m_PlatformPrefab);
+            PlatformUnit platform = Player.Instance.GetPlatformOwned(m_PlatformDefi);
             InitInternal(platform);
         }
         private void InitInternal(PlatformUnit unit)
         {
             unit.Init();
-            m_PlatformPrefab = unit.StanbyPlatform;
+            m_PlatformDefi = unit.StanbyPlatform;
             m_LockIcon.SetActive(!unit.IsOwned);
             m_SelectButton.interactable = unit.IsOwned;
-            m_UnitIcon.sprite = m_PlatformPrefab.Icon;
+            m_UnitIcon.sprite = m_PlatformDefi.Icon;
             m_AmountText.text = unit.Amount.ToString();
+            m_RarityColor.color = unit.StanbyPlatform.RarityColor;
+
+            m_EquipedSign.gameObject.SetActive(unit.IsEquiped);
 
             m_SelectButton.onClick.RemoveAllListeners();
             m_SelectButton.onClick.AddListener(SelectPlatformInternal);
         }
 
+        public void Init(PlatformUnit unit)
+        {
+            InitInternal(unit);
+        }
+
         private void OnCharacterSelectedInvoke()
         {
-            m_OnPlatformSelected?.Invoke(m_PlatformPrefab);
+            m_OnPlatformSelected?.Invoke(m_PlatformDefi);
         }
     }
 }

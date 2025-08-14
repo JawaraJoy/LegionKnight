@@ -35,5 +35,10 @@ namespace LegionKnight
         public Rarity Rarity => m_Rarity;
         public Color RarityColor => m_RarityColor;
         public AbilityDefinition AbilityDefinition => m_AbilityDefinition;
+
+        public void SetIsEquiped(bool isEquiped)
+        {
+            Player.Instance.SetPlatformUnitIsEquiped(this, isEquiped);
+        }
     }
 }

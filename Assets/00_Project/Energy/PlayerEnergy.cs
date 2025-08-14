@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -18,6 +19,18 @@ namespace LegionKnight
         public void SetEnergy(EnergyDefinition definition, int amount)
         {
             m_EnergyController.Set(definition, amount);
+        }
+        public void PayEnergies(Energy[] energyCosts)
+        {
+            m_EnergyController.Pay(energyCosts);
+        }
+        public void AddOnCanPayEnergies(UnityAction<Energy[]> action)
+        {
+            m_EnergyController.AddOnCanPay(action);
+        }
+        public void AddOnCantPayEnergies(UnityAction<Energy[]> action)
+        {
+            m_EnergyController.AddOnCantPay(action);
         }
     }
 }

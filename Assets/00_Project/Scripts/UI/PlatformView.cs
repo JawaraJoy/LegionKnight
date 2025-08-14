@@ -14,8 +14,6 @@ namespace LegionKnight
         [SerializeField]
         private Image m_PlatformBigIcon;
         [SerializeField]
-        private Image m_RarityColorBackground;
-        [SerializeField]
         private UnityEvent<StandbyPlatformDefinition> m_OnPlatformSelected = new();
         private void Start()
         {

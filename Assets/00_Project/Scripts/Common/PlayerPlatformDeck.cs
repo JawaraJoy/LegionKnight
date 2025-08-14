@@ -15,6 +15,10 @@ namespace LegionKnight
         {
             return m_PlayerPlatformDeck.GetPlatformOwned(platform);
         }
+        public PlatformUnit[] GetPlatformUnits()
+        {
+            return m_PlayerPlatformDeck.GetPlatformUnits();
+        }
         public bool IsPlatformOwned(StandbyPlatformDefinition platform)
         {
             return m_PlayerPlatformDeck.IsPlatformOwned(platform);
@@ -38,6 +42,10 @@ namespace LegionKnight
         public void AddPlayerStandbyPlatform()
         {
            m_PlayerPlatformDeck.AddPlayerStandbyPlatform();
+        }
+        public void SetPlatformUnitIsEquiped(StandbyPlatformDefinition defi, bool isEquiped)
+        {
+           m_PlayerPlatformDeck.SetIsEquiped(defi, isEquiped);
         }
     }
 }

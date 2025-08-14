@@ -16,10 +16,14 @@ namespace LegionKnight
         [SerializeField]
         protected List<UIView> m_Bindings = new();
 
-        protected T GetBinding<T>() where T : UIView
+        protected T GetBindingInternal<T>() where T : UIView
         {
             T match = (T)m_Bindings.Find(x => x.GetType() == typeof(T)) ?? null;
             return match;
+        }
+        public T GetBinding<T>() where T : UIView
+        {
+            return GetBindingInternal<T>();
         }
         protected T GetBinding<T>(string uniqueId) where T : UIView
         {
