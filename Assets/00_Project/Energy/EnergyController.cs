@@ -13,17 +13,26 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<Energy> m_OnEnergyAmountChanged;
         [SerializeField]
+        private UnityEvent<Energy[]> m_OnTryPay;
+        [SerializeField]
         private UnityEvent<Energy[]> m_OnCanPay;
         [SerializeField]
         private UnityEvent<Energy[]> m_OnCantPay;
 
-        public void AddOnCanPay(UnityAction<Energy[]> action)
+        public UnityEvent<Energy[]> OnTryPay => m_OnTryPay;
+        public UnityEvent<Energy[]> OnCanPay => m_OnCanPay;
+        public UnityEvent<Energy[]> OnCantPay => m_OnCantPay;
+
+        private Energy[] m_PreviousCost;
+        public Energy[] PreviousCost => m_PreviousCost;
+
+        public void TryPayPreviousCost()
         {
-            m_OnCanPay.AddListener(action);
+            TryPayInternal(m_PreviousCost);
         }
-        public void AddOnCantPay(UnityAction<Energy[]> action)
+        public void PayPreviouesCost(UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
         {
-            m_OnCantPay.AddListener(action);
+            PayInternal(m_PreviousCost, onCanPayListen, onCantPayListen);
         }
         private Energy GetEnergyInternal(EnergyDefinition definition)
         {
@@ -91,8 +100,15 @@ namespace LegionKnight
                 energy.Regening();
             }
         }
-
-        public void Pay(Energy[] energyCosts)
+        private void TryPayInternal(Energy[] energiyCosts)
+        {
+            m_OnTryPay?.Invoke(energiyCosts);
+        }
+        public void TryPay(Energy[] energiyCosts)
+        {
+            TryPayInternal(energiyCosts);
+        }
+        private void PayInternal(Energy[] energyCosts, UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
         {
             int amountcanPay = 0;
             List<Energy> energyNeeds = new List<Energy>();
@@ -110,6 +126,7 @@ namespace LegionKnight
                     Energy restEnergy = new Energy(cost.Definition, restAmount);
                     energyNeeds.Add(restEnergy);
                 }
+                Debug.Log($"ammount canpay = {amountcanPay}/ energyCosts Lenght {energyCosts.Length}");
             }
             if (amountcanPay >= energyCosts.Length)
             {
@@ -119,11 +136,18 @@ namespace LegionKnight
                     ownEnergy.Pay(cost.Amount);
                 }
                 m_OnCanPay.Invoke(energyCosts);
+                onCanPayListen.Invoke(energyCosts);
+                m_PreviousCost = energyCosts;
             }
             else
             {
+                onCantPayListen.Invoke(energyNeeds.ToArray());
                 m_OnCantPay.Invoke(energyNeeds.ToArray());
             }
+        }
+        public void Pay(Energy[] energyCosts, UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
+        {
+            PayInternal(energyCosts, onCanPayListen, onCantPayListen);
         }
     }
 
@@ -238,7 +262,7 @@ namespace LegionKnight
 
         private bool CanPayInternal(int cost)
         {
-            return m_Amount < cost;
+            return m_Amount >= cost;
         }
         public bool CanPay(int cost)
         {

@@ -12,6 +12,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private PlayerEnergy m_EnergyController;
+        public Energy[] PreviousEnergyCost => m_EnergyController.PreviousCost;
         public void AddEnergy(EnergyDefinition definition, int amount)
         {
             m_EnergyController.Add(definition, amount);
@@ -20,17 +21,24 @@ namespace LegionKnight
         {
             m_EnergyController.Set(definition, amount);
         }
-        public void PayEnergies(Energy[] energyCosts)
+        public void PayEnergies(Energy[] energyCosts, UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
         {
-            m_EnergyController.Pay(energyCosts);
+            m_EnergyController.Pay(energyCosts, onCanPayListen, onCantPayListen);
         }
-        public void AddOnCanPayEnergies(UnityAction<Energy[]> action)
+        public void TryPayEnergies(Energy[] energiyCosts)
         {
-            m_EnergyController.AddOnCanPay(action);
+            m_EnergyController.TryPay(energiyCosts);
         }
-        public void AddOnCantPayEnergies(UnityAction<Energy[]> action)
+        public void TryPayPreviousEnergyCost()
         {
-            m_EnergyController.AddOnCantPay(action);
+            m_EnergyController.TryPayPreviousCost();
         }
+        public void PayPreviouesEnergyCost(UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
+        {
+            m_EnergyController.PayPreviouesCost(onCanPayListen, onCantPayListen);
+        }
+        public UnityEvent<Energy[]> OnTryPayEnergy => m_EnergyController.OnTryPay;
+        public UnityEvent<Energy[]> OnCanPayEnergy => m_EnergyController.OnCanPay;
+        public UnityEvent<Energy[]> OnCantPayEnergy => m_EnergyController.OnCantPay;
     }
 }

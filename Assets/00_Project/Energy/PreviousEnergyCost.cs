@@ -3,11 +3,8 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public class EnergyCost : MonoBehaviour
+    public class PreviousEnergyCost : MonoBehaviour
     {
-        [SerializeField]
-        private Energy[] m_Costs;
-
         [SerializeField]
         private UnityEvent<Energy[], UnityAction<Energy[]>, UnityAction<Energy[]>> m_OnTryPay;
         [SerializeField]
@@ -17,12 +14,12 @@ namespace LegionKnight
 
         private void PayInternal()
         {
-            Player.Instance.PayEnergies(m_Costs, OnCanPayInvoke, OnCantPayInvoke);
+            Player.Instance.PayPreviouesEnergyCost(OnCanPayInvoke, OnCantPayInvoke);
         }
         private void TryPayInternal()
         {
-            Player.Instance.TryPayEnergies(m_Costs);
-            OnTryPayInvoke(m_Costs);
+            Player.Instance.TryPayPreviousEnergyCost();
+            OnTryPayInvoke(Player.Instance.PreviousEnergyCost);
         }
 
         public void Pay()
@@ -34,7 +31,7 @@ namespace LegionKnight
             TryPayInternal();
         }
 
-        private void OnCanPayInvoke(Energy[] costs) 
+        private void OnCanPayInvoke(Energy[] costs)
         {
             m_OnCanPay.Invoke(costs);
             Player.Instance.OnCanPayEnergy.Invoke(costs);
