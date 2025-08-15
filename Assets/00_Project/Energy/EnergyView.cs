@@ -16,7 +16,17 @@ namespace LegionKnight
         [SerializeField]
         private EnergyDefinition m_Definition;
         public EnergyDefinition Definition => m_Definition;
+        protected override void ShowInternal()
+        {
+            base.ShowInternal();
+            Energy energy = Player.Instance.GetEnergy(m_Definition);
+            SetEnergy(energy);
+        }
         public void SetEnergy(Energy energy)
+        {
+            SetEnergyInternal(energy);
+        }
+        public void SetEnergyInternal(Energy energy)
         {
             m_EnergyIcon.sprite = energy.Definition.Icon;
             int currentAmount = energy.Amount;

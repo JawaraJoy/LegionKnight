@@ -27,6 +27,7 @@ namespace LegionKnight
                 CurrencyApplier(d, totalAmount);
                 CharacterApplier(d);
                 PlatformApplier(d, totalAmount);
+                EnergyApplier(d, totalAmount);
             }
         }
 
@@ -68,6 +69,14 @@ namespace LegionKnight
             {
                 m_Icon.sprite = platform.Icon;
                 Player.Instance.AddPlatformAmount(platform, amount);
+            }
+        }
+        private void EnergyApplier(Object defi, int amount)
+        {
+            if (defi is EnergyDefinition energy)
+            {
+                m_Icon.sprite = energy.Icon;
+                Player.Instance.AddEnergy(energy, amount);
             }
         }
     }

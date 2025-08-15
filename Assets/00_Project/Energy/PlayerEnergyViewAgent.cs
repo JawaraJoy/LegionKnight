@@ -21,5 +21,9 @@ namespace LegionKnight
         {
             GetEnergyConfirmationPanel().SetWarningText(costs);
         }
+        public void SetConfirmationEnergyView(Energy energy)
+        {
+            GetEnergyConfirmationPanel().SetEnergy(energy);
+        }
     }
 }

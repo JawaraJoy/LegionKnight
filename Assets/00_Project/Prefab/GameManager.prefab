@@ -164627,6 +164627,8 @@ GameObject:
   - component: {fileID: 5511402243645010607}
   - component: {fileID: 7022755366467043264}
   - component: {fileID: 4218773035109780496}
+  - component: {fileID: 7627678258726079391}
+  - component: {fileID: 8985059395917873691}
   m_Layer: 5
   m_Name: Play Again Button
   m_TagString: Untagged
@@ -164747,6 +164749,84 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 5940592179954404857}
+        m_TargetAssemblyTypeName: LegionKnight.SceneHandler, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ReworkGameplay
+          m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 909607391831167567}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 8fc95a475480c0b479be697641558228, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &4218773035109780496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5677301385369243774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e7e3378b1d2d34469ca13a597e82df6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7627678258726079391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5677301385369243774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e89d9847efedfa94197bdc8d725a44a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OnTryPay:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8985059395917873691}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerEnergyViewAgent, Assembly-CSharp
+        m_MethodName: SetConfirmationText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnCanPay:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4640080436261930548}
+        m_TargetAssemblyTypeName: LegionKnight.View, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 5940592179954404857}
         m_TargetAssemblyTypeName: LegionKnight.SceneHandler, Assembly-CSharp
@@ -164760,31 +164840,10 @@ MonoBehaviour:
           m_StringArgument: ReworkGameplay
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 909607391831167567}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: PlayOneShot
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: 8fc95a475480c0b479be697641558228, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4218773035109780496}
-        m_TargetAssemblyTypeName: LegionKnight.PlayerAgent, Assembly-CSharp
-        m_MethodName: ResetPosition
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 0
---- !u!114 &4218773035109780496
+  m_OnCantPay:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &8985059395917873691
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164793,7 +164852,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5677301385369243774}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e7e3378b1d2d34469ca13a597e82df6, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ba4d94103895eb4a8250d97f086af20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5678055696054807271

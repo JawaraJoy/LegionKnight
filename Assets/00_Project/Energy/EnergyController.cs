@@ -45,6 +45,10 @@ namespace LegionKnight
             }
             return null;
         }
+        public Energy GetEnergy(EnergyDefinition definition)
+        {
+            return GetEnergyInternal(definition);
+        }
         public bool HasEnergy(EnergyDefinition definition)
         {
             return GetEnergyInternal(definition) != null;

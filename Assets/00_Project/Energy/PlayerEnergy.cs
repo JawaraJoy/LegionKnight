@@ -13,6 +13,10 @@ namespace LegionKnight
         [SerializeField]
         private PlayerEnergy m_EnergyController;
         public Energy[] PreviousEnergyCost => m_EnergyController.PreviousCost;
+        public Energy GetEnergy(EnergyDefinition definition)
+        {
+            return m_EnergyController.GetEnergy(definition);
+        }
         public void AddEnergy(EnergyDefinition definition, int amount)
         {
             m_EnergyController.Add(definition, amount);
