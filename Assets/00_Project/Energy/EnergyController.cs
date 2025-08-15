@@ -26,6 +26,10 @@ namespace LegionKnight
         private Energy[] m_PreviousCost;
         public Energy[] PreviousCost => m_PreviousCost;
 
+        public void ClearPreviousCost()
+        {
+            m_PreviousCost = null;
+        }
         public void TryPayPreviousCost()
         {
             TryPayInternal(m_PreviousCost);

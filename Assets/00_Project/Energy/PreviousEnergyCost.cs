@@ -12,13 +12,15 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<Energy[]> m_OnCantPay;
 
+        [SerializeField]
+        private UnityEvent m_OnNotPay;
+
         private void PayInternal()
         {
             Player.Instance.PayPreviouesEnergyCost(OnCanPayInvoke, OnCantPayInvoke);
         }
         private void TryPayInternal()
         {
-            Player.Instance.TryPayPreviousEnergyCost();
             OnTryPayInvoke(Player.Instance.PreviousEnergyCost);
         }
 
@@ -44,8 +46,17 @@ namespace LegionKnight
         }
         private void OnTryPayInvoke(Energy[] costs)
         {
-            m_OnTryPay.Invoke(costs, OnCanPayInvoke, OnCantPayInvoke);
-            Player.Instance.OnTryPayEnergy.Invoke(costs);
+            if (costs == null || costs.Length == 0)
+            {
+                m_OnNotPay?.Invoke();
+            }
+            else
+            {
+                Player.Instance.TryPayPreviousEnergyCost();
+                m_OnTryPay.Invoke(costs, OnCanPayInvoke, OnCantPayInvoke);
+                Player.Instance.OnTryPayEnergy.Invoke(costs);
+            }
+                
         }
     }
 }

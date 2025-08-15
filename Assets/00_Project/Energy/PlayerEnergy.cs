@@ -33,6 +33,10 @@ namespace LegionKnight
         {
             m_EnergyController.TryPay(energiyCosts);
         }
+        public void ClearPreviousEnergyCost()
+        {
+            m_EnergyController.ClearPreviousCost();
+        }
         public void TryPayPreviousEnergyCost()
         {
             m_EnergyController.TryPayPreviousCost();
