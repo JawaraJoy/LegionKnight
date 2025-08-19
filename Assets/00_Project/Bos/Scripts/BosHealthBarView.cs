@@ -10,6 +10,8 @@ namespace LegionKnight
         private TextMeshProUGUI m_BosName;
         [SerializeField]
         private Slider m_Slider;
+        [SerializeField]
+        private Image m_Fill;
 
         public void SetBosName(BosDefinition defi)
         {
@@ -26,7 +28,7 @@ namespace LegionKnight
         public void SetHealth(float rate)
         {
             m_Slider.value = rate;
-            
+            m_Fill.fillAmount = rate;
         }
     }
 }
