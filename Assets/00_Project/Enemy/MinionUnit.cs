@@ -28,10 +28,10 @@ namespace LegionKnight
             bool levelSync = GameManager.Instance.LevelDefinition == m_LevelAllowed;
             if (!CanSpawn || !levelSync) return;
             AssetReferenceGameObject asset = m_Definition.ModelPrefab;
-            AsyncOperationHandle<GameObject> handle = asset.InstantiateAsync(spot, false);
-            GameManager.Instance.StartCoroutine(SpawningMinion(spot, handle, offsite));
+            AsyncOperationHandle<GameObject> handle = asset.InstantiateAsync(offsite, Quaternion.identity);
+            GameManager.Instance.StartCoroutine(SpawningMinion(spot, handle));
         }
-        private IEnumerator SpawningMinion(Transform spot, AsyncOperationHandle<GameObject> handle, Vector2 offsite)
+        private IEnumerator SpawningMinion(Transform spot, AsyncOperationHandle<GameObject> handle)
         {
             yield return handle;
             if (handle.Status == AsyncOperationStatus.Succeeded)
@@ -42,7 +42,7 @@ namespace LegionKnight
                     minion.Init(m_Definition);
                     spot.DetachChildren();
 
-                    SetPositionRandomRadius(spot, spawned, offsite);
+                   // SetPositionRandomRadius(spot, spawned, offsite);
                 }
             }
         }

@@ -29,7 +29,7 @@ namespace LegionKnight
         private UnityEvent m_OnEnemyGone;
 
         [SerializeField]
-        private Vector2 m_OffsiteRandom;
+        private float m_Radius = 7f;
 
         public void SetSpawningSpot(Transform spot)
         {
@@ -65,39 +65,20 @@ namespace LegionKnight
             if (!m_CanSpawnEnemy) return;
             MinionUnit unit = GetMinionUnit(defi);
             if (unit == null) return;
-            unit.SpawnMinion(m_SpawningSpot, m_OffsiteRandom);
+            unit.SpawnMinion(m_SpawningSpot, GetRandomRadiusSpawn());
             //AssetReferenceGameObject asset = defi.ModelPrefab;
             //AsyncOperationHandle<GameObject> handle = asset.InstantiateAsync(m_SpawningSpot, false);
             //StartCoroutine(SpawningMinion(defi, handle));
         }
-        private IEnumerator SpawningMinion(MinionDefinition defi, AsyncOperationHandle<GameObject> handle)
+
+        private Vector2 GetRandomRadiusSpawn()
         {
-            yield return handle;
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                GameObject spawned = handle.Result;
-                if (spawned.TryGetComponent(out Minion minion))
-                {
-                    minion.Init(defi);
-                    m_SpawningSpot.DetachChildren();
-
-                    SetPositionRandomRadius(spawned);
-                }
-            }
+            Vector2 randomOffset = Random.insideUnitCircle * m_Radius;
+            Vector3 spawnTransformPosition = m_SpawningSpot.position;
+            Vector3 spawnPosition = new Vector3(spawnTransformPosition.x + randomOffset.x, spawnTransformPosition.y + randomOffset.y, 0);
+            return new Vector2 (spawnPosition.x, spawnPosition.y);
         }
-        private void SetPositionRandomRadius(GameObject minion)
-        {
-            float startX = m_SpawningSpot.position.x;
-            float startY = m_SpawningSpot.position.y;
-            float AddX = m_OffsiteRandom.x + startX;
-            float AddY = m_OffsiteRandom.y + startY;
 
-            float randomX = Random.Range(startX, AddX);
-            float randomY = Random.Range(startY, AddY);
-            Vector2 randomRadiues = new(randomX, randomY);
-
-            minion.transform.position = randomRadiues;
-        }
         private void CheckEnemy()
         {
             // is enemy exist if there is 1 enemy on the list
