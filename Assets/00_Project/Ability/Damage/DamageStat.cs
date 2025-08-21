@@ -12,7 +12,7 @@ namespace LegionKnight
         [SerializeField]
         private int m_Health;
         [SerializeField]
-        private int m_Shield;
+        private int m_Barrier;
 
         [SerializeField]
         private int m_AttackUpgrade = 1;
@@ -24,7 +24,7 @@ namespace LegionKnight
         public int Health => m_Health;
         public int AttackUpgrade => m_AttackUpgrade;
         public int HealthUpgrade => m_HealthUpgrade;
-        public int Shield => m_Shield;
+        public int Barrier => m_Barrier;
         public int ShieldUpgrade => m_ShieldUpgrade;
 
         public int GetFinalAttack(int level)
@@ -61,7 +61,7 @@ namespace LegionKnight
         }
         public int GetFinalShield(int level)
         {
-            return (m_Shield + m_ShieldUpgrade * (level - 1));
+            return (m_Barrier + m_ShieldUpgrade * (level - 1));
         }
         public void SetAttack(int attack)
         {
@@ -94,7 +94,7 @@ namespace LegionKnight
         private DamageStat m_DamageStat;
         public int Attack => m_DamageStat.Attack;
         public int Health => m_DamageStat.Health;
-        public int Shield => m_DamageStat.Shield;
+        public int Barrier => m_DamageStat.Barrier;
         public int AttackUpgrade => m_DamageStat.AttackUpgrade;
         public int HealthUpgrade => m_DamageStat.HealthUpgrade;
         public int ShieldUpgrade => m_DamageStat.ShieldUpgrade;
@@ -119,7 +119,7 @@ namespace LegionKnight
             m_Damage = damageStat.Attack;
             m_Health = damageStat.Health;
             m_CurrentHealth = m_Health;
-            m_Shield = damageStat.Shield;
+            m_Barrier = damageStat.Barrier;
         }
 
         public void InitStat(CharacterDefinition defi)

@@ -120,7 +120,7 @@ namespace LegionKnight
             }
 
             Vector2 origin = m_FirePoint.position;
-            Vector2 direction = m_FireDirection.normalized;
+            Vector2 direction = m_FirePoint.TransformDirection(m_FireDirection).normalized;
             float rayLength = Mathf.Max(m_CurrentBeamLength, 0f);
 
             m_EndPoint = origin + (direction * rayLength);

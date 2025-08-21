@@ -195,6 +195,7 @@ namespace LegionKnight
             int dmg = DamageFormulaMoba(damage, m_Defend);
             if (fatal)
             {
+                m_Barrier = 0;
                 dmg = damage; // Set damage to current health if fatal
             }
             if (!IsProtectGoneInternal())

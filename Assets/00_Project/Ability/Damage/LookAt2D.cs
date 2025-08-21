@@ -1,23 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Newtonsoft.Json.Bson;
 
 namespace Rush
 {
+    public enum LookMode
+    {
+        OnStart,
+        Continuous
+    }
+
     [DisallowMultipleComponent]
     public class LookAt2D : MonoBehaviour
     {
+        [Header("Look At Settings")]
+        public LookMode lookMode = LookMode.Continuous;
         [Header("Targeting")]
-        [Tooltip("Tag to search for (e.g., 'Player').")]
-        public string targetTag = "Player";
-
-        [Tooltip("How often (seconds) to rescan for the nearest target.")]
-        [Min(0.02f)] public float rescanInterval = 0.25f;
-
         [Tooltip("Only consider targets within this radius (world units). Set <= 0 for unlimited.")]
         public float searchRadius = 0f;
 
-        [Tooltip("Filter which layers are considered when searching by collider (if no colliders are found, falls back to FindGameObjectsWithTag).")]
+        [Tooltip("Filter which layers are considered as valid targets.")]
         public LayerMask targetLayers = ~0;
+
+        [Tooltip("How often (seconds) to rescan for the nearest target.")]
+        [Min(0.02f)] public float rescanInterval = 0.25f;
 
         [Header("Facing/Rotation")]
         [Tooltip("Rotate this transform's Z so its local forward points at the target.")]
@@ -40,7 +46,6 @@ namespace Rush
         public SpriteRenderer spriteRenderer;
 
         Transform _currentTarget;
-        float _zVel; // For SmoothDampAngle
 
         void Awake()
         {
@@ -62,29 +67,56 @@ namespace Rush
             }
         }
 
+        void Start()
+        {
+            StartLookInternal();
+        }
+        public void StartLook()
+        {
+            StartLookInternal();
+        }
+        private void StartLookInternal()
+        {
+            if (lookMode == LookMode.OnStart)
+            {
+                _currentTarget = FindNearestTarget();
+                if (_currentTarget != null)
+                {
+                    // instantly face the target
+                    Vector2 toTarget = (Vector2)_currentTarget.position - (Vector2)transform.position;
+                    if (toTarget.sqrMagnitude > Mathf.Epsilon)
+                    {
+                        float targetAngle = ComputeLookAngle(toTarget);
+                        SetZRotation(targetAngle); // instant set
+                    }
+                }
+            }
+        }
+
         void Update()
         {
-            if (_currentTarget == null) return;
+            if (lookMode == LookMode.Continuous)
+            {
+                if (_currentTarget == null) _currentTarget = FindNearestTarget();
+                if (_currentTarget != null) LookAtTarget();
+            }
+        }
 
+        void LookAtTarget()
+        {
             Vector2 toTarget = (Vector2)_currentTarget.position - (Vector2)transform.position;
             if (toTarget.sqrMagnitude < Mathf.Epsilon) return;
 
             if (flipSpriteXInstead && spriteRenderer != null)
             {
-                // Flip by X based on horizontal direction; do not rotate
                 bool faceLeft = toTarget.x < 0f;
                 spriteRenderer.flipX = faceLeft;
-                return;
             }
-
-            if (rotateToward)
+            else if (rotateToward)
             {
                 float targetAngle = ComputeLookAngle(toTarget);
-
                 if (maxTurnSpeed <= 0f)
-                {
                     SetZRotation(targetAngle);
-                }
                 else
                 {
                     float currentZ = NormalizeAngle(transform.eulerAngles.z);
@@ -123,14 +155,12 @@ namespace Rush
             Transform nearest = null;
             float bestDistSq = float.PositiveInfinity;
 
-            // If searchRadius > 0 and there are colliders, prefer OverlapCircleAll for performance
             if (searchRadius > 0f)
             {
                 Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, searchRadius, targetLayers);
                 for (int i = 0; i < hits.Length; i++)
                 {
                     Transform t = hits[i].transform;
-                    if (!t.CompareTag(targetTag)) continue;
                     float dSq = ((Vector2)t.position - (Vector2)transform.position).sqrMagnitude;
                     if (dSq < bestDistSq)
                     {
@@ -142,21 +172,19 @@ namespace Rush
                 if (nearest != null) return nearest;
             }
 
-            // Fallback: search by tag across scene
-            GameObject[] candidates;
-            try { candidates = GameObject.FindGameObjectsWithTag(targetTag); }
-            catch { return null; } // Tag might not exist
-
+            // Fallback: Physics2D.OverlapCollider or scene scan
+            GameObject[] candidates = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
             Vector2 p = transform.position;
             for (int i = 0; i < candidates.Length; i++)
             {
-                Transform t = candidates[i].transform;
-                float dSq = ((Vector2)t.position - p).sqrMagnitude;
+                GameObject go = candidates[i];
+                if (((1 << go.layer) & targetLayers) == 0) continue;
+                float dSq = ((Vector2)go.transform.position - p).sqrMagnitude;
                 if (searchRadius > 0f && dSq > searchRadius * searchRadius) continue;
                 if (dSq < bestDistSq)
                 {
                     bestDistSq = dSq;
-                    nearest = t;
+                    nearest = go.transform;
                 }
             }
 
