@@ -17,6 +17,8 @@ namespace LegionKnight
         private AbilityDefinition m_AbilityDefinition;
         [SerializeField]
         private AssetReferenceGameObject m_ModelPrefab;
+        [SerializeField]
+        private AssetReferenceGameObject m_SpineObjectAsset;
 
         [SerializeField]
         private int m_RewardKilled;
@@ -27,6 +29,7 @@ namespace LegionKnight
         public Sprite Looks => m_Looks;
         public AbilityDefinition AbilityDefinition => m_AbilityDefinition;
         public AssetReferenceGameObject ModelPrefab => m_ModelPrefab;
+        public AssetReferenceGameObject SpineObjectAsset => m_SpineObjectAsset;
         public int RewrdKilled => m_RewardKilled;
         private int StartLevelInternal
         {

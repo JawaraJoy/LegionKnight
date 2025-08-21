@@ -1,3 +1,5 @@
+using MoreMountains.Tools;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -36,6 +38,7 @@ namespace LegionKnight
             m_Definition = defi;
             m_Looks.sprite = m_Definition.Looks;
             m_OnSkillInitialize?.Invoke(m_Definition.AbilityDefinition);
+
         }
         public void Deatch()
         {

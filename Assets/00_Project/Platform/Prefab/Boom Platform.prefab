@@ -5018,7 +5018,7 @@ Transform:
   m_GameObject: {fileID: 2802068197013620163}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.5, z: 0}
+  m_LocalPosition: {x: 0, y: 2.38, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5121,13 +5121,13 @@ MonoBehaviour:
           m_StringArgument: Vine Poison
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LegionKnight.SkillSpawner, Assembly-CSharp
-        m_MethodName: SpawnProjectile
-        m_Mode: 1
+      - m_Target: {fileID: 8608576495392676074}
+        m_TargetAssemblyTypeName: LegionKnight.SpineObject, Assembly-CSharp
+        m_MethodName: SetAnim
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: e3df1abb0b2dd13439d83214dd526383, type: 2}
+          m_ObjectArgumentAssemblyTypeName: LegionKnight.SpineAnimDefinition, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -5143,6 +5143,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8608576495392676074}
+        m_TargetAssemblyTypeName: LegionKnight.SpineObject, Assembly-CSharp
+        m_MethodName: SetAnim
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: b42dcd03c036a5e4ea505705e46c8412, type: 2}
+          m_ObjectArgumentAssemblyTypeName: LegionKnight.SpineAnimDefinition, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -5341,19 +5353,19 @@ MonoBehaviour:
         Owner: {fileID: 6998491140428135921}
         DebugActive: 0
         TargetShaker: {fileID: 4537294580240437879}
-        Duration: 0.5
+        Duration: 0.3
         ResetShakerValuesAfterShake: 1
         ResetTargetValuesAfterShake: 1
         ShakeSpeed: 20
-        ShakeRange: 0.5
+        ShakeRange: 0.2
         ShakeMainDirection: {x: 1, y: 1, z: 0}
         RandomizeDirection: 0
         ShakeAltDirection: {x: 0, y: 1, z: 0}
         RandomizeDirectionOnPlay: 0
         AddDirectionalNoise: 1
-        DirectionalNoiseStrengthMin: {x: 0.25, y: 0.25, z: 0.25}
-        DirectionalNoiseStrengthMax: {x: 0.25, y: 0.25, z: 0.25}
-        RandomnessSeed: {x: 5, y: 5, z: 0}
+        DirectionalNoiseStrengthMin: {x: 0.1, y: 0.1, z: 0.25}
+        DirectionalNoiseStrengthMax: {x: 0.1, y: 0.1, z: 0.25}
+        RandomnessSeed: {x: 2, y: 2, z: 0}
         RandomizeSeedOnShake: 1
         UseAttenuation: 1
         AttenuationCurve:
@@ -15415,7 +15427,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnPlatformStart:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8608576495392676074}
+        m_TargetAssemblyTypeName: LegionKnight.SpineObject, Assembly-CSharp
+        m_MethodName: SetAnim
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 42c746a56e26e604ca5241bf33fa0b54, type: 2}
+          m_ObjectArgumentAssemblyTypeName: LegionKnight.SpineAnimDefinition, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnPlatformReachDestination:
     m_PersistentCalls:
       m_Calls: []
@@ -15453,7 +15477,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 2.12}
+  m_Offset: {x: 0, y: 1.6}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -15463,7 +15487,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6.8, y: 2.49}
+  m_Size: {x: 6.8, y: 1.53}
   m_EdgeRadius: 0
 --- !u!114 &-6334354245423822398
 MonoBehaviour:
@@ -15510,6 +15534,137 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ApplyEffectOnLevel: {fileID: 0}
+--- !u!1 &4537536191886969764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 910894681351515288}
+  - component: {fileID: 1131549878624801575}
+  - component: {fileID: 4339218044324024288}
+  - component: {fileID: 1867246996301687601}
+  m_Layer: 0
+  m_Name: Spine GameObject (Casual Platform Obstacle)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &910894681351515288
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4537536191886969764}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.78, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8444519651200216035}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &1131549878624801575
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4537536191886969764}
+  m_Mesh: {fileID: 0}
+--- !u!23 &4339218044324024288
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4537536191886969764}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: e7ea0143ac90bc446895b10883f43939, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -501565547
+  m_SortingLayer: 12
+  m_SortingOrder: 5
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1867246996301687601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4537536191886969764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonDataAsset: {fileID: 11400000, guid: 2eda678d0d8f84a4982166420cd7d0d1, type: 2}
+  initialSkinName: 
+  fixPrefabOverrideViaMeshFilter: 2
+  initialFlipX: 0
+  initialFlipY: 0
+  updateWhenInvisible: 3
+  separatorSlotNames: []
+  zSpacing: 0
+  useClipping: 1
+  immutableTriangles: 0
+  pmaVertexColors: 1
+  clearStateOnDisable: 0
+  tintBlack: 0
+  singleSubmesh: 0
+  fixDrawOrder: 0
+  addNormals: 0
+  calculateTangents: 0
+  maskInteraction: 0
+  maskMaterials:
+    materialsMaskDisabled: []
+    materialsInsideMask: []
+    materialsOutsideMask: []
+  disableRenderingOnOverride: 1
+  physicsPositionInheritanceFactor: {x: 1, y: 1}
+  physicsRotationInheritanceFactor: 1
+  physicsMovementRelativeTo: {fileID: 0}
+  updateTiming: 1
+  unscaledTime: 0
+  _animationName: Bomb Active
+  loop: 1
+  timeScale: 1
 --- !u!1 &4639374055847352626
 GameObject:
   m_ObjectHideFlags: 0
@@ -15623,7 +15778,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5512188146372437076
 Transform:
   m_ObjectHideFlags: 0
@@ -20418,6 +20573,66 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &5755964445957153865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8444519651200216035}
+  - component: {fileID: 8608576495392676074}
+  m_Layer: 0
+  m_Name: Spine Object
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8444519651200216035
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5755964445957153865}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 910894681351515288}
+  m_Father: {fileID: 5908992103421582513}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8608576495392676074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5755964445957153865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bae7a72f0eb2f984c9670b408f71c952, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Content: {fileID: 4537536191886969764}
+  m_OnShow:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHide:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SkeletonAnimation: {fileID: 1867246996301687601}
+  m_OnSetAnim:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnAnimationDone:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SpineEvents: []
 --- !u!1 &5945377614857850241
 GameObject:
   m_ObjectHideFlags: 0
@@ -20616,6 +20831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ApplyEffectOnLevel: {fileID: 0}
 --- !u!1 &8269708676125689350
 GameObject:
   m_ObjectHideFlags: 0
@@ -25491,6 +25707,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8444519651200216035}
   - {fileID: 5512188146372437076}
   m_Father: {fileID: 845137327695532880}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

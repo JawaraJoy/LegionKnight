@@ -51,6 +51,10 @@ namespace LegionKnight
             {
                 key = bosDef.Id;
             }
+            if (spineObject.Defi is MinionDefinition minionDef)
+            {
+                key = minionDef.Label;
+            }
             if (!m_SpineObjects.ContainsKey(key))
             {
                 m_SpineObjects.Add(key, spineObject);
