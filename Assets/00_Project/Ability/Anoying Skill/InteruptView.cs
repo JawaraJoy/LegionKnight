@@ -7,12 +7,15 @@ namespace LegionKnight
     {
         [SerializeField]
         private TextMeshProUGUI m_InteruptText;
+        [SerializeField]
+        private TextMeshProUGUI m_InteruptCountText;
 
         public void SetInteruptText(int current, int max)
         {
             if (m_InteruptText != null)
             {
-                m_InteruptText.text = $"Perfect to Interupt: {current}/{max}";
+                m_InteruptText.text = $"Perfect to Interupt";
+                m_InteruptCountText.text = $"({current}/{max})";
             }
             else
             {
