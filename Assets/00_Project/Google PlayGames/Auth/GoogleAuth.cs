@@ -35,14 +35,22 @@ namespace LegionKnight
         private string m_AccountName;
         private string m_Id;
         private string m_ImageUrl;
-
+        [SerializeField]
+        private bool m_SignInOnStart;
         [SerializeField]
         private UnityEvent<AccountProfile> m_OnSigned;
         private void Awake()
         {
             //PlayGamesPlatform.Activate();
         }
-        public void StartSignInWithGoogle()
+        private void Start()
+        {
+            if (m_SignInOnStart)
+            {
+                StartSignInWithGoogleInternal();
+            }
+        }
+        private void StartSignInWithGoogleInternal()
         {
             // This method should contain the logic to start the sign-in process with Google Play Games.
             // For example, you might call a method from a Google Play Games SDK to initiate the sign-in.
@@ -51,6 +59,10 @@ namespace LegionKnight
 
             m_OnSignInStarted.Invoke();
             PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
+        }
+        public void StartSignInWithGoogle()
+        {
+            StartSignInWithGoogleInternal();
         }
 
         private void ProcessAuthentication(SignInStatus signInStatus)
