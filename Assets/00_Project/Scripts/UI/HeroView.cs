@@ -21,7 +21,6 @@ namespace LegionKnight
         private UnityEvent<CharacterDefinition> m_OnInit = new();
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnCharacterSelected = new();
-
         [SerializeField]
         private GameObject m_UniquePlatformContent;
         private void OnEnable()
@@ -42,12 +41,13 @@ namespace LegionKnight
 
             SetCharacterSelectedInternal(usedCharacter);
             OnInitInvoke(usedCharacter);
+            
         }
 
         private string GetHeroNameTextFormat(CharacterDefinition defi)
         {
             string hex = ColorUtility.ToHtmlStringRGB(defi.ColorRarity);
-            return $"[<color=#{hex}>{defi.Rarity}</color>] {defi.Label}"; // Format: "{Rarity} {HeroName}"
+            return $"{defi.Label} [<color=#{hex}>{defi.Rarity}</color>]"; // Format: "{Rarity} {HeroName}"
         }
         public void SetCharacterSelectedInternal(CharacterDefinition defi)
         {
