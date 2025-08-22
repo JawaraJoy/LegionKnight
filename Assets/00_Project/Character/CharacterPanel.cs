@@ -4,7 +4,7 @@ namespace LegionKnight
 {
     public static partial class PanelId
     {
-        public static string CharacterPanelId = "CharacterPanel";
+        public static string CharacterPanelId = "Character";
     }
     public partial class CharacterPanel : PanelView
     {
