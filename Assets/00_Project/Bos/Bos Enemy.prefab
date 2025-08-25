@@ -422,6 +422,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7001825305152453541}
+        m_TargetAssemblyTypeName: LegionKnight.CharacterSpine, Assembly-CSharp
+        m_MethodName: SetAnim
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 0c2646317890e894eb046f4201155668, type: 2}
+          m_ObjectArgumentAssemblyTypeName: LegionKnight.SpineAnimDefinition, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 7565844722389266045}
         m_TargetAssemblyTypeName: LegionKnight.BosBarGameplayAgent, Assembly-CSharp
         m_MethodName: HideHealthBar
@@ -16760,7 +16772,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
   m_OnSpineObjectHide:
     m_PersistentCalls:
       m_Calls: []
@@ -16772,6 +16784,73 @@ MonoBehaviour:
       m_Calls: []
   m_SpineEvents:
   - m_Definition: {fileID: 11400000, guid: 6336b50ec649e914cb2822254f40a3c5, type: 2}
+    m_OnStart:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7161861598684805662}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Play
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 5615729976155994111}
+          m_TargetAssemblyTypeName: LegionKnight.BosDeath, Assembly-CSharp
+          m_MethodName: EraseBossProjectile
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 776969825580286560}
+          m_TargetAssemblyTypeName: LegionKnight.PassiveSkill, Assembly-CSharp
+          m_MethodName: SetCanActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    m_OnEnd:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 9094464321848505402}
+          m_TargetAssemblyTypeName: LegionKnight.PlayerCameraAgent, Assembly-CSharp
+          m_MethodName: SetOffSite
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Normal
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 9048604627607117514}
+          m_TargetAssemblyTypeName: LegionKnight.DestroySelf, Assembly-CSharp
+          m_MethodName: DestroyMe
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - m_Definition: {fileID: 11400000, guid: 0c2646317890e894eb046f4201155668, type: 2}
     m_OnStart:
       m_PersistentCalls:
         m_Calls:

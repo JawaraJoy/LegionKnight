@@ -27,6 +27,8 @@ namespace LegionKnight
         public void Play(SkeletonAnimation skeletonAnimation, UnityAction callback = null)
         {
             if (skeletonAnimation == null) return;
+            Spine.Animation animData = skeletonAnimation.skeletonDataAsset.GetAnimationStateData().SkeletonData.FindAnimation(m_AnimName);
+            if (animData == null) return;
             var aa = skeletonAnimation.state.SetAnimation(m_AnimTrack, m_AnimName, m_Loop);
             float animationTime = aa.AnimationTime;
             float animationDuration = aa.Animation.Duration;
