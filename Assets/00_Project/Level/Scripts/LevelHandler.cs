@@ -297,7 +297,7 @@ namespace LegionKnight
         public void StoreLevelScore()
         {
             Player.Instance.AddCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
-            int exp = Mathf.RoundToInt(m_CurrentCoinReward.Amount * 0.2f);
+            int exp = Mathf.RoundToInt(m_CurrentScore.Amount * 0.5f);
             Player.Instance.AddPlayerExperience(exp);
             GetLevelSelect(m_SelectedLevelDefinition)?.OnLevelDoneInvoke();
             ResetScore();

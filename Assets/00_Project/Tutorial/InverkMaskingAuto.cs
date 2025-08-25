@@ -27,6 +27,7 @@ namespace LegionKnight
         private Image m_Image;
         private RectTransform m_RectTransform;
 
+        [SerializeField]
         private RectTransform m_TargetRectTransform;
 
         public DialogueDefinition DialogueDefinition => m_Target != null ? m_Target.DialogueDefinition : null;
@@ -61,7 +62,8 @@ namespace LegionKnight
         private void SetupMaterial()
         {
             // Get references to components
-            m_TargetRectTransform = m_Target.GetComponent<RectTransform>();
+            //m_TargetRectTransform = m_Target.GetComponent<RectTransform>();
+            if (m_TargetRectTransform == null ) return;
             if (m_Image == null)
                 m_Image = GetComponent<Image>();
             if (m_RectTransform == null)
@@ -80,6 +82,7 @@ namespace LegionKnight
         public void SetMaskingTarget(MaskingTarget maskingTarget)
         {
             m_Target = maskingTarget;
+            m_TargetRectTransform = m_Target.GetComponent<RectTransform>();
             //StartCoroutine(Delay(0.1f)); // Delay to ensure the target is fully initialized
         }
 
