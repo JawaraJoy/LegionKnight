@@ -15,7 +15,6 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<GachaCurrencyCost> m_OnPerformDrawCost = new();
 
-        [SerializeField]
         private GachaBanner m_SelectedBanner;
         [SerializeField]
         private UnityEvent<GachaBanner> m_OnStart = new();

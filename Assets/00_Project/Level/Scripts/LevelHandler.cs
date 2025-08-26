@@ -102,6 +102,8 @@ namespace LegionKnight
         private Currency m_CurrentCoinReward;
         [SerializeField]
         private Currency m_CurrentScore;
+        [SerializeField, Range(0f, 2f)]
+        private float m_ExpReceiverRate = 1f;
         [SerializeField]
         private UnityEvent m_OnPlay = new();
         public int MaxPlatformCount => m_MaxPlatformCount;
@@ -135,6 +137,8 @@ namespace LegionKnight
         private UnityEvent<LevelSelect> m_OnLevelCompleted = new();
 
         private Vector2 m_LastPlayerPost;
+
+        
 
         public void Init()
         {
@@ -297,7 +301,7 @@ namespace LegionKnight
         public void StoreLevelScore()
         {
             Player.Instance.AddCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
-            int exp = Mathf.RoundToInt(m_CurrentScore.Amount * 0.5f);
+            int exp = Mathf.RoundToInt(m_CurrentScore.Amount * m_ExpReceiverRate);
             Player.Instance.AddPlayerExperience(exp);
             GetLevelSelect(m_SelectedLevelDefinition)?.OnLevelDoneInvoke();
             ResetScore();

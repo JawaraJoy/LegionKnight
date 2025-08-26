@@ -12,11 +12,13 @@ namespace LegionKnight
         private TextMeshProUGUI m_CounterText;
         public void SetCounterSlideValue(float rate)
         {
+            if (!m_CounterSlide.enabled) return;
             m_CounterSlide.value = rate;
         }
         public void SetCounterText(int counter)
         {
-            m_CounterText.text = counter.ToString();
+            int guaranteed = GameManager.Instance.GetSelectedBanner().Definition.GuaranteedDraw;
+            m_CounterText.text = $"{counter}/{guaranteed}";
         }
     }
     public partial class BannerPanel
