@@ -29,7 +29,7 @@ namespace LegionKnight
         public void SetBannerVisual(GachaBanner banner)
         {
             Sprite visual = banner.VisualBanner;
-            string n = banner.Definition.name;
+            string n = banner.Definition.Label;
             GetBannerPanel().SetBannerVisual(visual, n);
         }
     }

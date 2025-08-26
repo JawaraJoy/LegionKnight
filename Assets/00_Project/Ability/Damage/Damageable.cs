@@ -25,6 +25,8 @@ namespace LegionKnight
 
         [SerializeField]
         private bool m_Fatal = false; // If true, the damageable will die on contact with a fatal damage
+        [SerializeField]
+        private bool m_InstantDeath = false;
         [SerializeField, ReadOnly]
         private bool m_Immortal = false; // If true, the damageable is immortal and cannot
         [SerializeField]
@@ -178,6 +180,14 @@ namespace LegionKnight
             int flatDamage = damageable.Damage;
             float maxHealthRateDamage = damageable.MaxHpRateDamage * m_Health;
             int damage = Mathf.RoundToInt(flatDamage + maxHealthRateDamage);
+            if (damageable.m_InstantDeath)
+            {
+                //m_Barrier = 0;
+                //m_Shield = 0;
+                OnDamageTakenInvoke(m_CurrentHealth);
+                OnDeathInvoke();
+                return;
+            }
             if (damageable.IsFatal)
             {
                 damage = m_CurrentHealth; // Set damage to current health if fatal
@@ -192,10 +202,11 @@ namespace LegionKnight
                 Debug.Log("Damageable is immortal, no damage taken.");
                 return;
             }
+            
             int dmg = DamageFormulaMoba(damage, m_Defend);
             if (fatal)
             {
-                m_Barrier = 0;
+                //m_Barrier = 0;
                 dmg = damage; // Set damage to current health if fatal
             }
             if (!IsProtectGoneInternal())

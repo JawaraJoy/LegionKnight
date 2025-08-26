@@ -9,6 +9,8 @@ namespace LegionKnight
         [SerializeField]
         private string m_Id;
         [SerializeField]
+        private string m_Label;
+        [SerializeField]
         private Sprite m_VisualBanner;
         [SerializeField]
         private Sprite m_SmallVisualBanner;
@@ -31,6 +33,7 @@ namespace LegionKnight
         private List<GachaReward> m_SmallPityRewards = new();
         [SerializeField]
         private List<GachaReward> m_GachaRewards = new();
+        public string Label => m_Label;
         public int MultiDraw => m_MultiDraw;
         public int GuaranteedDraw => m_GuaranteedDraw;
         public int SmallPity => m_SmallPity;
