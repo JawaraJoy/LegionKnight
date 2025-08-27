@@ -41,12 +41,14 @@ namespace LegionKnight
             }
         }
 
+        [ContextMenu("Show")]
         protected virtual void ShowInternal()
         {
             if (MasterPanelUtility.IsShow) return;
             m_Content.SetActive(true);
             OnShowInvoke();
         }
+        [ContextMenu("Hide")]
         protected virtual void HideInternal()
         {
             m_Content.SetActive(false);

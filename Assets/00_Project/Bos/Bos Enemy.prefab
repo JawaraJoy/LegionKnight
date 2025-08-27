@@ -322,6 +322,7 @@ MonoBehaviour:
   m_Barrier: 0
   m_MaxHpRateDamage: 0
   m_Fatal: 0
+  m_InstantDeath: 0
   m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
@@ -32087,6 +32088,82 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &8497500573866739421
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2572771280748441754}
+  - component: {fileID: 8473277818982730303}
+  - component: {fileID: 499094680544495501}
+  m_Layer: 0
+  m_Name: Loot Bos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2572771280748441754
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8497500573866739421}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6721555490230484823}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8473277818982730303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8497500573866739421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1070be7289cc7654090b09e0d304b123, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Definition: {fileID: 0}
+  m_OnTakeLoot:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 499094680544495501}
+        m_TargetAssemblyTypeName: LegionKnight.LootStorageManagerAgent, Assembly-CSharp
+        m_MethodName: AddLoot
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnTakeRandomLoots:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &499094680544495501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8497500573866739421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ae167a115d112c49917b2ddcc1b840d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9096491602748821199
 GameObject:
   m_ObjectHideFlags: 0
@@ -32133,6 +32210,7 @@ Transform:
   - {fileID: 7524308360005312065}
   - {fileID: 6708196066501924264}
   - {fileID: 6338782271771985765}
+  - {fileID: 2572771280748441754}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8344595125259145260
@@ -32189,6 +32267,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8473277818982730303}
+        m_TargetAssemblyTypeName: LegionKnight.BossLoots, Assembly-CSharp
+        m_MethodName: SetBossDefinition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_BosForm: {fileID: 6040567752974675477}
   m_OnBossDeath:
     m_PersistentCalls:
@@ -32208,6 +32298,18 @@ MonoBehaviour:
       - m_Target: {fileID: 8344595125259145260}
         m_TargetAssemblyTypeName: LegionKnight.BosEnemy, Assembly-CSharp
         m_MethodName: UnRegister
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8473277818982730303}
+        m_TargetAssemblyTypeName: LegionKnight.Loots, Assembly-CSharp
+        m_MethodName: TakeLoots
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

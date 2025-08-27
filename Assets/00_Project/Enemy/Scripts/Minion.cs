@@ -15,6 +15,8 @@ namespace LegionKnight
         private int m_DynamicLevel = 1;
 
         [SerializeField]
+        private UnityEvent<MinionDefinition> m_OnInitialize;
+        [SerializeField]
         private UnityEvent<AbilityDefinition> m_OnSkillInitialize;
         [SerializeField]
         private UnityEvent<int> m_OnDeathGetCoin;
@@ -37,8 +39,8 @@ namespace LegionKnight
         {
             m_Definition = defi;
             m_Looks.sprite = m_Definition.Looks;
+            m_OnInitialize?.Invoke(m_Definition);
             m_OnSkillInitialize?.Invoke(m_Definition.AbilityDefinition);
-
         }
         public void Deatch()
         {

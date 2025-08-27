@@ -27,6 +27,8 @@ namespace LegionKnight
         [SerializeField]
         private ConversationDefinition m_ConversationDefinition;
         [SerializeField]
+        private LootDefinition m_LootDefinition;
+        [SerializeField]
         private List<StandbyPlatformDefinition> m_BosPlatforms = new();
         [SerializeField]
         private SkillDefinition[] m_Skills;
@@ -35,6 +37,7 @@ namespace LegionKnight
         public string Label => m_Label;
         public Sprite Icon => m_Icon;
         public ConversationDefinition ConversationDefinition => m_ConversationDefinition;
+        public LootDefinition LootDefinition => m_LootDefinition;
         public List<StandbyPlatformDefinition> BosPlatformsAsset => m_BosPlatforms;
         public SkillDefinition[] Skills => m_Skills;
         public Stat BaseStat => m_BaseStat;

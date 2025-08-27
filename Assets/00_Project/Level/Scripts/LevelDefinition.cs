@@ -41,7 +41,7 @@ namespace LegionKnight
         private bool m_FatalLevel = false;
         [SerializeField]
         private AssetReferenceGameObject m_BosAsset;
-        [SerializeField]
+        [SerializeField, System.Obsolete("Not used anymore, deleted later, Use BackgroundDefinition instead")]
         private LevelOrnament m_LevelOrnament;
         public BosDefinition BosDefinition => m_BosDefinition;
         public AssetReferenceGameObject BosAsset => m_BosAsset;
