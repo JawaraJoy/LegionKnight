@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
 {
-    public class WinLootMonitor : LootMonitor
+    public class PreviewLootMonitor : LootMonitor
     {
         private LootStorage m_LootStorage;
         private LootStorage GetLootStorage()
@@ -16,16 +15,9 @@ namespace LegionKnight
         }
         protected override void ShowInternal()
         {
+            ClearAllLootViews();
             base.ShowInternal();
             SpawnLootsViewInternal(GetLootStorage().Looteds);
-        }
-    }
-    public partial class GameManager
-    {
-        public WinLootMonitor GetLevelCompleteLootMonitor()
-        {
-            WinPanel gameplayPanel = GetPanelInternal<WinPanel>();
-            return gameplayPanel.GetBinding<WinLootMonitor>();
         }
     }
 }

@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using static Spine.Unity.Examples.SpineboyFootplanter;
 
 namespace LegionKnight
 {
@@ -15,6 +15,9 @@ namespace LegionKnight
         private Transform m_LootViewSpawn;
 
         private readonly List<LootItemView> m_SpawnedLoots = new();
+
+        [SerializeField]
+        private UnityEvent<LootField> m_OnLootUdate;
 
         private LootItemView GetLootView(ScriptableObject defi)
         {
@@ -47,7 +50,7 @@ namespace LegionKnight
                 yield return StartCoroutine(SpawningLootView(loots[i]));
             }
         }
-        public void SpawnLootView(LootField loot)
+        public virtual void SpawnLootView(LootField loot)
         {
             LootItemView view = GetLootView(loot.Item);
             if (view != null)
@@ -64,7 +67,8 @@ namespace LegionKnight
             else
             {
                 StartCoroutine(SpawningLootView(loot));
-            }   
+            }
+            m_OnLootUdate?.Invoke(loot);
         }
 
         private IEnumerator SpawningLootView(LootField loot)
@@ -81,16 +85,22 @@ namespace LegionKnight
                 }
             }
         }
-        public void ClearAllLoots()
+        private void ClearAllLootViewsInternal()
         {
             foreach (var loot in m_SpawnedLoots)
             {
                 if (loot != null)
                 {
-                    Addressables.Release(loot.gameObject);
+                    loot.Hide();
+                    Addressables.ReleaseInstance(loot.gameObject);
                 }
             }
             m_SpawnedLoots.Clear();
+        }
+        public void ClearAllLootViews()
+        {
+            
+            ClearAllLootViewsInternal();
         }
     }
 }

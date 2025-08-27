@@ -6,11 +6,17 @@ namespace LegionKnight
 {
     public class LootStorage : MonoBehaviour
     {
-        private readonly List<LootField> m_Looteds = new List<LootField>();
+        [SerializeField]
+        private List<LootField> m_Looteds = new List<LootField>();
         [SerializeField]
         private UnityEvent<LootField> m_OnAddLoot;
         [SerializeField]
         private UnityEvent<List<LootField>> m_OnTakeLoots;
+        [SerializeField]
+        private bool m_AutoTakeDirectLoot = true;
+        [SerializeField]
+        private UnityEvent<LootField> m_OnDirectTakeLoot;
+        
         public List<LootField> Looteds => m_Looteds;
         public void TakeLooteds()
         {
@@ -30,6 +36,20 @@ namespace LegionKnight
             m_OnTakeLoots?.Invoke(m_Looteds);
             ClearLootsInternal();
         }
+        public void DirectTakeLoot(LootField loot)
+        {
+            if (!m_AutoTakeDirectLoot)
+            {
+                return;
+            }
+            if (loot.Item is ScriptableObject item)
+            {
+                int amount = loot.Amount;
+                CurrencyApplier(item, amount);
+                CharacterApplier(item);
+            }
+            m_OnDirectTakeLoot?.Invoke(loot);
+        }
         public void AddLoots(LootField[] loots)
         {
             m_Looteds.AddRange(loots);
@@ -37,6 +57,7 @@ namespace LegionKnight
         public void AddLoot(LootField loot)
         {
             m_Looteds.Add(loot);
+            DirectTakeLoot(loot);
             m_OnAddLoot?.Invoke(loot);
         }
         public void ClearLoots()

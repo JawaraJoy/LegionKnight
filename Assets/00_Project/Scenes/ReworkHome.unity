@@ -7395,8 +7395,10 @@ GameObject:
   - component: {fileID: 603774092}
   - component: {fileID: 603774093}
   - component: {fileID: 603774094}
+  - component: {fileID: 603774095}
+  - component: {fileID: 603774096}
   m_Layer: 5
-  m_Name: Loot
+  m_Name: Loot Monitor View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7457,7 +7459,31 @@ MonoBehaviour:
   m_Content: {fileID: 60519673}
   m_OnShow:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 603774095}
+        m_TargetAssemblyTypeName: LegionKnight.GameplayLootMonitorAgent, Assembly-CSharp
+        m_MethodName: ClearAllLootViews
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 603774096}
+        m_TargetAssemblyTypeName: LegionKnight.LootStorageManagerAgent, Assembly-CSharp
+        m_MethodName: TakeLoots
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
@@ -7469,6 +7495,33 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 1228139246}
+  m_OnLootUdate:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &603774095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 603774091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1216ef6bf7652774899a3657858375d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &603774096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 603774091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ae167a115d112c49917b2ddcc1b840d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &608765764
 GameObject:
   m_ObjectHideFlags: 0
@@ -17410,6 +17463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1cbd899fb88c43a9e065c885e50a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Looteds: []
   m_OnAddLoot:
     m_PersistentCalls:
       m_Calls:
@@ -17426,6 +17480,10 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_OnTakeLoots:
+    m_PersistentCalls:
+      m_Calls: []
+  m_AutoTakeDirectLoot: 1
+  m_OnDirectTakeLoot:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &1383324626
@@ -23045,6 +23103,9 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 643942843}
+  m_OnLootUdate:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1848958424
 GameObject:
   m_ObjectHideFlags: 0
@@ -170703,6 +170764,18 @@ MonoBehaviour:
           m_StringArgument: Game
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8555042045868900593}
+        m_TargetAssemblyTypeName: LegionKnight.GameplayLootMonitorAgent, Assembly-CSharp
+        m_MethodName: ClearAllLootViews
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
@@ -208507,6 +208580,18 @@ MonoBehaviour:
       - m_Target: {fileID: 11400000, guid: 50d81ae84cdcc934fb9cb76635a2eff6, type: 2}
         m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
         m_MethodName: ResetCount
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 9172894960416689864}
+        m_TargetAssemblyTypeName: LegionKnight.LootStorageManagerAgent, Assembly-CSharp
+        m_MethodName: ClearLoots
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -250669,6 +250754,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1848457569}
+        m_TargetAssemblyTypeName: LegionKnight.LootMonitor, Assembly-CSharp
+        m_MethodName: ClearAllLootViews
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnHide:
     m_PersistentCalls:
       m_Calls: []
@@ -289293,6 +289390,7 @@ GameObject:
   - component: {fileID: 4640080436092223937}
   - component: {fileID: 909607392265573818}
   - component: {fileID: 3679066690887658208}
+  - component: {fileID: 8555042045868900593}
   m_Layer: 5
   m_Name: Game Over Panel
   m_TagString: Untagged
@@ -289300,6 +289398,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8555042045868900593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8555042045868900592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1216ef6bf7652774899a3657858375d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &8558604980076757151
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -307700,6 +307810,7 @@ GameObject:
   - component: {fileID: 3726172409671668090}
   - component: {fileID: 8130824868146345895}
   - component: {fileID: 9033931244377919296}
+  - component: {fileID: 9172894960416689864}
   m_Layer: 0
   m_Name: SceneCotroller
   m_TagString: Untagged
@@ -307707,6 +307818,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &9172894960416689864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9172894960416689863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ae167a115d112c49917b2ddcc1b840d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &9174510211247792470
 RectTransform:
   m_ObjectHideFlags: 0

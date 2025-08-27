@@ -12,9 +12,9 @@ namespace LegionKnight
         {
             GetGameplayLootMonitor().SpawnLootView(loot);
         }
-        public void ClearAllLoots()
+        public void ClearAllLootViews()
         {
-            GetGameplayLootMonitor().ClearAllLoots();
+            GetGameplayLootMonitor().ClearAllLootViews();
         }
     }
 }
