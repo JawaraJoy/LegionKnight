@@ -5,7 +5,7 @@ namespace LegionKnight
     public class PreviewLootMonitor : LootMonitor
     {
         private LootStorage m_LootStorage;
-        private LootStorage GetLootStorage()
+        protected LootStorage GetLootStorage()
         {
             if (m_LootStorage == null)
             {
@@ -17,7 +17,7 @@ namespace LegionKnight
         {
             ClearAllLootViews();
             base.ShowInternal();
-            SpawnLootsViewInternal(GetLootStorage().Looteds);
+            AddLootsViewInternal(GetLootStorage().Looteds);
         }
     }
 }

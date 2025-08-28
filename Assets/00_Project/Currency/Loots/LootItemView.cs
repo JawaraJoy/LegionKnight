@@ -16,7 +16,7 @@ namespace LegionKnight
                 int amount = lootField.Amount;
                 CurrencyApplier(itemDef, amount);
                 CharacterApplier(itemDef);
-                SetAmount(amount);
+                SetAmountInternal(amount);
             }
         }
 

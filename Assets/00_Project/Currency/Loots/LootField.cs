@@ -18,5 +18,22 @@ namespace LegionKnight
         public bool IsUnique => m_IsUnique;
         public int Amount => m_Amount;
         public float Chance => m_Chance;
+
+        public LootField(ScriptableObject item, bool isUnique, int amount, float chance)
+        {
+            m_Item = item;
+            m_IsUnique = isUnique;
+            m_Amount = amount;
+            m_Chance = chance;
+        }
+
+        public void SetAmount(int amount)
+        {
+            m_Amount = amount;
+        }
+        public void AddAmount(int amount)
+        {
+            m_Amount += amount;
+        }
     }
 }

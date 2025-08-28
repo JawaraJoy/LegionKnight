@@ -4,7 +4,7 @@ namespace LegionKnight
 {
     public class GameOverPreviewLootMonitor : PreviewLootMonitor
     {
-        
+
     }
     public partial class GameManager
     {

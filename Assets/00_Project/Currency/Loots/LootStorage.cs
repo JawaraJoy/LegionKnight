@@ -9,7 +9,11 @@ namespace LegionKnight
         [SerializeField]
         private List<LootField> m_Looteds = new List<LootField>();
         [SerializeField]
-        private UnityEvent<LootField> m_OnAddLoot;
+        private UnityEvent<LootField> m_OnAddNewLoot;
+        [SerializeField]
+        private UnityEvent<LootField> m_OnLootUpdate;
+        [SerializeField]
+        private UnityEvent<LootField> m_OnLootAmountUpdate;
         [SerializeField]
         private UnityEvent<List<LootField>> m_OnTakeLoots;
         [SerializeField]
@@ -18,6 +22,20 @@ namespace LegionKnight
         private UnityEvent<LootField> m_OnDirectTakeLoot;
         
         public List<LootField> Looteds => m_Looteds;
+        private LootField GetLootedInternal(ScriptableObject item)
+        {
+            LootField loot = m_Looteds.Find(x => x.Item == item);
+            if (loot == null)
+            {
+                return null;
+            }
+            return loot;
+        }
+        private bool HasLootedInternal(ScriptableObject item)
+        {
+            LootField loot = GetLootedInternal(item);
+            return loot != null;
+        }
         public void TakeLooteds()
         {
             if (m_Looteds.Count < 1)
@@ -46,19 +64,48 @@ namespace LegionKnight
             {
                 int amount = loot.Amount;
                 CurrencyApplier(item, amount);
+                StandbyPlatformApplier(item, amount);
                 CharacterApplier(item);
             }
             m_OnDirectTakeLoot?.Invoke(loot);
         }
         public void AddLoots(LootField[] loots)
         {
-            m_Looteds.AddRange(loots);
+            foreach (var loot in loots)
+            {
+                AddLootInternal(loot);
+            }
+        }
+
+        private void AddLootInternal(LootField loot)
+        {
+            LootField newLoot = new (loot.Item, loot.IsUnique, loot.Amount, loot.Chance);
+            if (HasLootedInternal(newLoot.Item))
+            {
+                if (newLoot.IsUnique)
+                {
+                    m_Looteds.Add(newLoot);
+                    m_OnAddNewLoot?.Invoke(newLoot);
+                }
+                else
+                {
+                    newLoot = GetLootedInternal(newLoot.Item);
+                    newLoot.AddAmount(loot.Amount);
+                    Debug.Log($"Updated Loot: {newLoot.Item.name} x{newLoot.Amount}");
+                    m_OnLootAmountUpdate?.Invoke(newLoot);
+                }    
+            }
+            else
+            {
+                m_Looteds.Add(newLoot);
+                m_OnAddNewLoot?.Invoke(newLoot);
+            }
+            m_OnLootUpdate?.Invoke(newLoot);
+            DirectTakeLoot(newLoot);
         }
         public void AddLoot(LootField loot)
         {
-            m_Looteds.Add(loot);
-            DirectTakeLoot(loot);
-            m_OnAddLoot?.Invoke(loot);
+            AddLootInternal(loot);
         }
         public void ClearLoots()
         {
@@ -89,6 +136,13 @@ namespace LegionKnight
                 {
                     Player.Instance.SetOwned(character, true);
                 }
+            }
+        }
+        private void StandbyPlatformApplier(ScriptableObject defi, int amount)
+        {
+            if (defi is StandbyPlatformDefinition platform)
+            {
+                Player.Instance.AddPlatformAmount(platform, amount);
             }
         }
     }

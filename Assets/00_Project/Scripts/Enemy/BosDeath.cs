@@ -35,9 +35,10 @@ namespace LegionKnight
                 yield return new WaitForSeconds(delay);
                 WinPanel winPanel = GameManager.Instance.GetPanel<WinPanel>();
                 winPanel.Show();
-                winPanel.SetLevelDefinition(GameManager.Instance.LevelDefinition);
+                Debug.Log("Bos is DEath Show Win Panel");
+                /*winPanel.SetLevelDefinition(GameManager.Instance.LevelDefinition);
                 GameManager.Instance.SetLevelUnlocked(GameManager.Instance.LevelDefinition.NextLevel, true);
-                GameManager.Instance.SetLevelCompleted(GameManager.Instance.LevelDefinition, true);
+                GameManager.Instance.SetLevelCompleted(GameManager.Instance.LevelDefinition, true);*/
             }
         }
         public void EraseBossProjectile()

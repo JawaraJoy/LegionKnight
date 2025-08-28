@@ -39,8 +39,20 @@ namespace LegionKnight
         public ScriptableObject Defi => m_Defi;
         public int Amount => m_Amount;
 
+        public RewardObject(ScriptableObject defi, int amount)
+        {
+            m_Defi = defi;
+            m_Amount = amount;
+        }
+
         public void ClaimReward()
         {
+            
+            if (m_Defi is LootDefinition loots)
+            {
+                LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
+                lootStorage.AddLoots(loots.GetRandomLoots().ToArray());
+            }
             if (m_Defi is CurrencyDefinition currency)
             {
                 Player.Instance.AddCurrencyAmount(currency, m_Amount);

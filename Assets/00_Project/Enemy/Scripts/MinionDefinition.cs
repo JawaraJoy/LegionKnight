@@ -53,7 +53,11 @@ namespace LegionKnight
         public void AddReward()
         {
             GameManager.Instance.AddScoreAmount(m_RewardKilled);
-            Player.Instance.AddCurrencyAmount(m_ItemRewardKilled.CurrencyDefinition, m_ItemRewardKilled.Amount);
+
+            LootField lootField = new(m_ItemRewardKilled.CurrencyDefinition, false, m_ItemRewardKilled.Amount, 1f);
+            LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
+            lootStorage.AddLoot(lootField);
+            //Player.Instance.AddCurrencyAmount(m_ItemRewardKilled.CurrencyDefinition, m_ItemRewardKilled.Amount);
         }
     }
 

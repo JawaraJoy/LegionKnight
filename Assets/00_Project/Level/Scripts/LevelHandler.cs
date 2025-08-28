@@ -300,7 +300,10 @@ namespace LegionKnight
         }
         public void StoreLevelScore()
         {
-            Player.Instance.AddCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
+            LootField lootField = new(m_CurrentScore.CurrencyDefinition, false, m_CurrentScore.Amount, 1f);
+            LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
+            lootStorage.AddLoot(lootField);
+            //Player.Instance.AddCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
             int exp = Mathf.RoundToInt(m_CurrentScore.Amount * m_ExpReceiverRate);
             Player.Instance.AddPlayerExperience(exp);
             GetLevelSelect(m_SelectedLevelDefinition)?.OnLevelDoneInvoke();
