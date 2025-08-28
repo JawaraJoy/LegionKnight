@@ -443,6 +443,7 @@ GameObject:
   - component: {fileID: 5988672743908560700}
   - component: {fileID: 2031113877269979490}
   - component: {fileID: 4738931520110457891}
+  - component: {fileID: 4259569459446800683}
   m_Layer: 7
   m_Name: Boss Umbrae Spine
   m_TagString: Untagged
@@ -546,6 +547,37 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - m_Definition: {fileID: 11400000, guid: 0c2646317890e894eb046f4201155668, type: 2}
+    m_OnStart:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnEnd:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4259569459446800683}
+          m_TargetAssemblyTypeName: LegionKnight.WinPanelAgent, Assembly-CSharp
+          m_MethodName: OpenWinPanel
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 2031113877269979490}
+          m_TargetAssemblyTypeName: LegionKnight.View, Assembly-CSharp
+          m_MethodName: Hide
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!82 &4738931520110457891
 AudioSource:
   m_ObjectHideFlags: 0
@@ -643,3 +675,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4259569459446800683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8542840168631811252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f665cb3ee6c4c434d89ed8aa774954a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

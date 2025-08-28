@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
@@ -13,6 +15,7 @@ namespace LegionKnight
                 CurrencyApplier(reward);
                 CharacterApplier(reward);
                 PlatformApplier(reward);
+                LootApplier(reward);
             }
         }
 
@@ -35,6 +38,14 @@ namespace LegionKnight
             if (defi.Defi is StandbyPlatformDefinition platform)
             {
                 m_Icon.sprite = platform.Icon;
+            }
+        }
+        private void LootApplier(RewardObject defi)
+        {
+            if (defi.Defi is LootDefinition loot)
+            {
+                LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
+                lootStorage.AddLoots(loot.GetRandomLoots().ToArray());
             }
         }
     }

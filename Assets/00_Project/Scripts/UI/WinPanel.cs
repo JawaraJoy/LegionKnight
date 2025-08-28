@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,8 +25,22 @@ namespace LegionKnight
         private UnityEvent<CharacterReward> m_OnSetLevelDefinition = new();
         protected override void ShowInternal()
         {
-            base.ShowInternal();
-            Player.Instance.SetPause(true);
+            if (!GameManager.Instance.IsInfiniteLevel)
+            {
+                GameManager.Instance.SetLevelOver(true);
+                SetLevelDefinition(GameManager.Instance.LevelDefinition);
+                GameManager.Instance.SetLevelUnlocked(GameManager.Instance.LevelDefinition.NextLevel, true);
+                GameManager.Instance.SetLevelCompleted(GameManager.Instance.LevelDefinition, true);
+                UnityAction open = new (base.ShowInternal);
+                StartCoroutine(DelayOpen(3f, open));
+                Player.Instance.SetPause(true);
+            }
+        }
+        private IEnumerator DelayOpen(float delay, UnityAction action)
+        {
+            yield return new WaitForSeconds(delay);
+            if (m_IsShow) yield break;
+            action?.Invoke();
         }
         public override void Hide()
         {

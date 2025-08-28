@@ -46,6 +46,8 @@ namespace LegionKnight
         }
         private IEnumerator AddingLootsView(List<LootField> loots)
         {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitUntil(() => m_IsShow);
             for (int i = 0; i < loots.Count; i++)
             {   
                 Debug.Log($"Loot {i}: {loots[i].Item.name}, IsUnique: {loots[i].IsUnique}");
@@ -57,12 +59,20 @@ namespace LegionKnight
         private IEnumerator AddingLootView(LootField loot)
         {
             Debug.Log($"Adding loot view: {loot.Item.name} x{loot.Amount}");
+            
             bool has = GetLootView(loot) != null;
             bool unique = loot.IsUnique;
-            if (has && unique)
+            Debug.Log($"Has loot view: {has}");
+            if (has)
             {
-                UpdateLootAmountView(loot);
-                Debug.Log($"Has loot view: {has}");
+                if (!unique)
+                {
+                    UpdateLootAmountView(loot);
+                }
+                else
+                {
+                    yield return StartCoroutine(SpawningLootView(loot));
+                }
             }
             else
             {
@@ -96,7 +106,7 @@ namespace LegionKnight
                 GameObject lootView = handle.Result;
                 if (lootView.TryGetComponent(out LootItemView view))
                 {
-                    view.Init(loot);
+                    view.Init(loot);    
                     m_SpawnedLoots.Add(view);
                     m_OnLootUdate?.Invoke(loot);
                 }

@@ -16,10 +16,25 @@ namespace LegionKnight
             m_TitleText.text = reward.RewardState == RewardState.First ? "First Clear" : "Rewards";
             RewardObject[] rewards = reward.Rewards;
 
+            List<RewardObject> expandedRewards = new List<RewardObject>();
             for (int i = 0; i < m_RewardItems.Length; i++)
             {
                 if (i < rewards.Length)
                 {
+                    LootDefinition lootDef = rewards[i].Defi as LootDefinition;
+                    if (lootDef != null)
+                    {
+                        foreach (var loot in lootDef.LootFields)
+                        {
+                            RewardObject lootReward = new RewardObject(loot.Item, loot.Amount);
+                            expandedRewards.Add(lootReward);
+                        }
+                        rewards = expandedRewards.ToArray();
+                    }
+                    else
+                    {
+                        
+                    }
                     m_RewardItems[i].Show();
                     m_RewardItems[i].Init(rewards[i]);
                 }

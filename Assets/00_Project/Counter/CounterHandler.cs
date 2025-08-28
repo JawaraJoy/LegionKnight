@@ -47,6 +47,7 @@ namespace LegionKnight
         private void ResetCountInternal()
         {
             m_CurrentCount = 0;
+            m_Triggered = false;
             OnCountChangedInvoke(m_CurrentCount);
         }
         public void ResetCount()
