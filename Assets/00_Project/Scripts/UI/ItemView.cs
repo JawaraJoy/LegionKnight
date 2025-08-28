@@ -31,17 +31,22 @@ namespace LegionKnight
         {
             m_OnDefinitionSet?.Invoke(defi);
         }
-        protected void SetAmount(int amount)
+        protected void SetAmountInternal(int amount)
         {
             m_AmountValue = amount;
             if (m_Amount != null)
             {
                 m_Amount.text = amount.ToString();
+                Debug.Log($"Set loot amount: {amount}");
             }
+        }
+        public void SetAmount(int amount)
+        {
+            SetAmountInternal(amount);
         }
         public void AddAmount(int amount)
         {
-            SetAmount(m_AmountValue + amount);
+            SetAmountInternal(m_AmountValue + amount);
         }
     }
 }

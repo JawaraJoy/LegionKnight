@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using static Spine.Unity.Examples.SpineboyFootplanter;
 
 namespace LegionKnight
 {
@@ -14,18 +15,19 @@ namespace LegionKnight
         [SerializeField]
         private Transform m_LootViewSpawn;
 
-        private readonly List<LootItemView> m_SpawnedLoots = new();
+        [SerializeField]
+        private List<LootItemView> m_SpawnedLoots = new();
 
         [SerializeField]
         private UnityEvent<LootField> m_OnLootUdate;
 
-        private LootItemView GetLootView(ScriptableObject defi)
+        private LootItemView GetLootView(LootField definition)
         {
-            foreach (var loot in m_SpawnedLoots)
+            foreach (LootItemView loot in m_SpawnedLoots)
             {
-                if (loot.Definition is ScriptableObject targetDefi)
+                if (loot.Definition is LootField lootField)
                 {
-                    if (targetDefi == defi)
+                    if (lootField.Item == definition.Item)
                     {
                         return loot;
                     }
@@ -33,42 +35,56 @@ namespace LegionKnight
             }
             return null;
         }
-        public void SpawnLootsView(List<LootField> loots)
+        public void AddLootsView(List<LootField> loots)
         {
-            SpawnLootsViewInternal(loots);
+            AddLootsViewInternal(loots);
         }
 
-        protected void SpawnLootsViewInternal(List<LootField> loots)
+        protected void AddLootsViewInternal(List<LootField> loots)
         {
-            StartCoroutine(SpawningLootsView(loots));
+            StartCoroutine(AddingLootsView(loots));
         }
-        private IEnumerator SpawningLootsView(List<LootField> loots)
+        private IEnumerator AddingLootsView(List<LootField> loots)
         {
             for (int i = 0; i < loots.Count; i++)
-            {
-                yield return new WaitForSeconds(0.2f);
-                yield return StartCoroutine(SpawningLootView(loots[i]));
+            {   
+                Debug.Log($"Loot {i}: {loots[i].Item.name}, IsUnique: {loots[i].IsUnique}");
+                yield return StartCoroutine(AddingLootView(loots[i]));
+                bool alreadySpawned = GetLootView(loots[i]) != null;
+                yield return new WaitUntil(() => alreadySpawned);
             }
         }
-        public virtual void SpawnLootView(LootField loot)
+        private IEnumerator AddingLootView(LootField loot)
         {
-            LootItemView view = GetLootView(loot.Item);
-            if (view != null)
+            Debug.Log($"Adding loot view: {loot.Item.name} x{loot.Amount}");
+            bool has = GetLootView(loot) != null;
+            bool unique = loot.IsUnique;
+            if (has && unique)
             {
-                if(!loot.IsUnique)
-                {
-                    view.AddAmount(loot.Amount);
-                }
-                else
-                {
-                    StartCoroutine(SpawningLootView(loot));
-                }
+                UpdateLootAmountView(loot);
+                Debug.Log($"Has loot view: {has}");
             }
             else
             {
-                StartCoroutine(SpawningLootView(loot));
+                // spawn new loot view
+                yield return StartCoroutine(SpawningLootView(loot));
             }
-            m_OnLootUdate?.Invoke(loot);
+            yield return new WaitForEndOfFrame();
+        }
+        public virtual void AddLootView(LootField loot)
+        {
+            StartCoroutine(AddingLootView(loot));
+        }
+
+        private void UpdateLootAmountView(LootField loot)
+        {
+            LootItemView view = GetLootView(loot);
+            if (view != null)
+            {
+                view.SetAmount(loot.Amount);
+                m_OnLootUdate?.Invoke(loot);
+                Debug.Log($"Updated loot view: {loot.Item.name} x{loot.Amount}");
+            }
         }
 
         private IEnumerator SpawningLootView(LootField loot)
@@ -82,8 +98,10 @@ namespace LegionKnight
                 {
                     view.Init(loot);
                     m_SpawnedLoots.Add(view);
+                    m_OnLootUdate?.Invoke(loot);
                 }
             }
+            yield return new WaitForEndOfFrame();
         }
         private void ClearAllLootViewsInternal()
         {

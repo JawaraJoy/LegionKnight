@@ -17,7 +17,7 @@ namespace LegionKnight
         {
             ClearAllLootViews();
             base.ShowInternal();
-            SpawnLootsViewInternal(GetLootStorage().Looteds);
+            AddLootsViewInternal(GetLootStorage().Looteds);
         }
     }
 }

@@ -8,9 +8,9 @@ namespace LegionKnight
         {
             return GameManager.Instance.GetGameplayLootMonitor();
         }
-        public void SpawnLoot(LootField loot)
+        public void AddLootView(LootField loot)
         {
-            GetGameplayLootMonitor().SpawnLootView(loot);
+            GetGameplayLootMonitor().AddLootView(loot);
         }
         public void ClearAllLootViews()
         {
