@@ -11,10 +11,15 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_LevelText;
         [SerializeField]
+        private TextMeshProUGUI m_ExpText;
+        [SerializeField]
         private Slider m_ExpSlider;
 
         public void Init()
         {
+            float maxExp = Player.Instance.GetPlayerMaxExp();
+            float currentExp = Player.Instance.GetPlayerCurrentExp();
+            m_ExpText.text = $"{currentExp}/{maxExp}";
             m_ExpSlider.value = Player.Instance.GetPlayerLevelProgressionRate();
             m_LevelText.text = $"LV: {Player.Instance.GetPlayerLevel()}";
             m_NameText.text = Player.Instance.PlayerName;

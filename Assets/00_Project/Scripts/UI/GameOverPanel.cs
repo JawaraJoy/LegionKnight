@@ -32,6 +32,11 @@ namespace LegionKnight
             m_PlayAgainButton.onClick.AddListener(StoreLevelScoreInternal);
             m_HomeButton.onClick.AddListener(StoreLevelScoreInternal);
         }
+        protected override void ShowInternal()
+        {
+            if (m_IsShow) return;
+            base.ShowInternal();
+        }
         public void PlayAgain()
         {
             //GameManager.Instance.LoadScene(m_GameplaySceneName);

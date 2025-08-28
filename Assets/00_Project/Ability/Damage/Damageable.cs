@@ -51,6 +51,8 @@ namespace LegionKnight
         public float MaxHpRateDamage => m_MaxHpRateDamage;
         public bool IsImmortal => m_Immortal;
         public bool IsFatal => m_Fatal;
+
+        protected bool m_AlreadyDead = false;
         protected override void OnContactedBehaviourInvoke(GameObject other)
         {
             base.OnContactedBehaviourInvoke(other);
@@ -72,6 +74,10 @@ namespace LegionKnight
         private bool IsBarrierGoneInternal()
         {
             return m_Barrier < 1;
+        }
+        public void SetAlreadyDead(bool dead)
+        {
+            m_AlreadyDead = dead;
         }
         public void SetFatal(bool fatal)
         {
@@ -350,7 +356,9 @@ namespace LegionKnight
         }
         protected virtual void OnDeathInvoke()
         {
+            if (m_AlreadyDead) return;
             m_OnDeath?.Invoke();
+            m_AlreadyDead = true;
         }
         protected bool IsAlive()
         {
