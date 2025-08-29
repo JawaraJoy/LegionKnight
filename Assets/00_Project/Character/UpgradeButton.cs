@@ -28,16 +28,31 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_UpgradeButtonText;
 
+        [SerializeField]
+        private UnityEvent<CharacterDefinition> m_OnInit = new();
+
+        private CharacterDefinition m_CharacterUsed;
         private void OnEnable()
         {
+            //m_CharacterUsed = Player.Instance.UsedCharacter;
             m_UpgradeButton.onClick.AddListener(ShowUpgradeView);
         }
         private void OnDisable()
         {
             m_UpgradeButton.onClick.RemoveListener(ShowUpgradeView);
         }
-        public void Init(CharacterDefinition defi)
+
+        public void Refresh()
         {
+            if (m_CharacterUsed == null)
+            {
+                m_CharacterUsed = Player.Instance.UsedCharacter;
+            }
+            InitInternal(m_CharacterUsed);
+        }
+        private void InitInternal(CharacterDefinition defi)
+        {
+            m_CharacterUsed = defi;
             CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
             m_CharacterUnit = unit;
 
@@ -50,7 +65,7 @@ namespace LegionKnight
             bool canLevelUp = Player.Instance.GetCurrencyAmount(levelUpCurDefi) >= levelUpCurAmount && !isMaxLevel;
 
             m_CurrencyUsed = levelUpCurrency;
-            
+
 
             m_ShardAmountNeed.SetView(m_CurrencyUsed);
             if (canLevelUp)
@@ -58,7 +73,7 @@ namespace LegionKnight
                 m_UpgradeButtonText.text = "Upgrade";
                 m_ShardAmountNeed.Show();
                 m_UpgradeButton.interactable = canLevelUp;
-                
+
             }
             else
             {
@@ -70,6 +85,11 @@ namespace LegionKnight
                 m_UpgradeButtonText.text = "Max Level";
             }
             m_QuickAccessButton.gameObject.SetActive(!canLevelUp);
+            m_OnInit?.Invoke(defi);
+        }
+        public void Init(CharacterDefinition defi)
+        {
+            InitInternal(defi);
         }
 
         private void ShowUpgradeView()

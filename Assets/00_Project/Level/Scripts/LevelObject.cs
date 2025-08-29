@@ -228,8 +228,20 @@ namespace LegionKnight
                 if (!isInfinite)
                 {
                     ConversationDefinition conversation = bosDefinition.ConversationDefinition;
-                    if (conversation == null) return;
-                    GameManager.Instance.StartConversation(conversation);
+                    if (conversation == null)
+                    {
+                        
+                    }
+                    else
+                    {
+                        GameManager.Instance.StartConversation(conversation);
+                    }
+                }
+                else
+                {
+                    GameplayPanel gameplayPanel = GameManager.Instance.GetPanel<GameplayPanel>();
+                    BosBarGameplay bosBarGameplay = gameplayPanel.GetBinding<BosBarGameplay>();
+                    bosBarGameplay.ShowHealthBar();
                 }
             }
         }
