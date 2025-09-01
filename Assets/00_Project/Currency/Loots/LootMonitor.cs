@@ -115,6 +115,10 @@ namespace LegionKnight
         }
         private void ClearAllLootViewsInternal()
         {
+            if (m_SpawnedLoots.Count < 1)
+            {
+                return;
+            }
             foreach (var loot in m_SpawnedLoots)
             {
                 if (loot != null)

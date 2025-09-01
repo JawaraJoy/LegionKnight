@@ -65,6 +65,7 @@ namespace LegionKnight
                 int amount = loot.Amount;
                 CurrencyApplier(item, amount);
                 StandbyPlatformApplier(item, amount);
+                EnergyApplier(item, amount);
                 CharacterApplier(item);
             }
             m_OnDirectTakeLoot?.Invoke(loot);
@@ -143,6 +144,13 @@ namespace LegionKnight
             if (defi is StandbyPlatformDefinition platform)
             {
                 Player.Instance.AddPlatformAmount(platform, amount);
+            }
+        }
+        private void EnergyApplier(ScriptableObject defi, int amount)
+        {
+            if (defi is EnergyDefinition energy)
+            {
+                Player.Instance.AddEnergy(energy, amount);
             }
         }
     }

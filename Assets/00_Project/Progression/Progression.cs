@@ -31,7 +31,7 @@ namespace LegionKnight
         private const string m_CurrentLevelKey = "Lv";
 
         [SerializeField]
-        private List<int> m_ExpTable = new ();
+        private List<ExpTable> m_ExpTable = new ();
 
         [SerializeField]
         private UnityEvent<int> m_OnCurrentExpChange = new ();
@@ -107,7 +107,10 @@ namespace LegionKnight
         {
             if (m_LevelUpTriggered)
             {
+                LevelUpPanel levelUpPanel = GameManager.Instance.GetPanel<LevelUpPanel>();
                 GameManager.Instance.ShowLevelUpPanel();
+                LootDefinition lootDef = m_ExpTable[m_Level - 1].RewardLevelReached;
+                levelUpPanel.ShowRewardLevelUp(lootDef);
                 m_LevelUpTriggered = false;
             }
         }
@@ -128,7 +131,7 @@ namespace LegionKnight
         {
             if (m_Level > 0 && m_Level <= m_ExpTable.Count)
             {
-                return (float)m_CurrentExp / m_ExpTable[m_Level - 1];
+                return (float)m_CurrentExp / m_ExpTable[m_Level - 1].CurrentMaxExp;
             }
             return 0f;
         }
@@ -168,8 +171,8 @@ namespace LegionKnight
         public int GetCurrentMaxExperience()
         {
             if (m_Level - 1 < m_ExpTable.Count)
-                return m_ExpTable[m_Level - 1];
-            return m_ExpTable.Count > 0 ? m_ExpTable[^1] : m_FirstLevelExp;
+                return m_ExpTable[m_Level - 1].CurrentMaxExp;
+            return m_ExpTable.Count > 0 ? m_ExpTable[^1].CurrentMaxExp : m_FirstLevelExp;
         }
 
         public int GetCurrentLevel()
@@ -202,7 +205,8 @@ namespace LegionKnight
             int exp = m_FirstLevelExp;
             for (int i = 0; i < m_MaxLevel; i++)
             {
-                m_ExpTable.Add(exp);
+                ExpTable expTable = new(exp, null);
+                m_ExpTable.Add(expTable);
                 exp = Mathf.FloorToInt(exp * m_ExponentialGrowth);
             }
         }
@@ -214,7 +218,8 @@ namespace LegionKnight
             {
                 int currentLevel = i + 1;
                 exp = Mathf.RoundToInt(10 * currentLevel * currentLevel + 490);
-                m_ExpTable.Add(exp);
+                ExpTable expTable = new(exp, null);
+                m_ExpTable.Add(expTable);
             }
         }
         private Coroutine m_ExpGrowCoroutine;
