@@ -109,9 +109,12 @@ namespace LegionKnight
             {
                 LevelUpPanel levelUpPanel = GameManager.Instance.GetPanel<LevelUpPanel>();
                 GameManager.Instance.ShowLevelUpPanel();
-                LootDefinition lootDef = m_ExpTable[m_Level - 1].RewardLevelReached;
-                levelUpPanel.ShowRewardLevelUp(lootDef);
                 m_LevelUpTriggered = false;
+                LootDefinition lootDef = m_ExpTable[m_Level - 1].RewardLevelReached;
+                if (lootDef != null)
+                {
+                    levelUpPanel.ShowRewardLevelUp(lootDef);
+                }
             }
         }
         private void OnCurrentExpChangeInvoke()
