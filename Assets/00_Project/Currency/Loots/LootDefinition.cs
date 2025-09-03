@@ -8,8 +8,14 @@ namespace LegionKnight
     public class LootDefinition : ScriptableObject
     {
         [SerializeField]
+        private string m_Id;
+        [SerializeField]
+        private Sprite m_MainIconReward;
+        [SerializeField]
         private LootField[] m_LootFields;
 
+        public string Id => m_Id;
+        public Sprite MainIconReward => m_MainIconReward;
         public LootField[] LootFields => m_LootFields;
 
         private List<LootField> GetRandomLootsInternal()
@@ -37,6 +43,14 @@ namespace LegionKnight
                 return loots[Random.Range(0, loots.Count)];
             }
             return null;
+        }
+
+        public void DirectTakeLoots()
+        {
+            foreach (var loot in m_LootFields)
+            {
+                loot.DirectTakeLoot();
+            }
         }
     }
     

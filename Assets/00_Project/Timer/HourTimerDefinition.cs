@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    [CreateAssetMenu(fileName = "New Daily Timer", menuName = "Legion Knight/Timers/Hourly Timer")]
+    [CreateAssetMenu(fileName = "Hour", menuName = "Legion Knight/Timers/Hourly")]
     public partial class HourTimerDefinition : TimerDefinition
     {
         [SerializeField]
