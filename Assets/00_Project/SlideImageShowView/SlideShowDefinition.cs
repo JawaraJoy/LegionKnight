@@ -8,12 +8,9 @@ namespace LegionKnight
         [SerializeField]
         private string m_SlideShowName;
         [SerializeField]
-        private Sprite[] m_Slides;
-
+        private SlideShows[] m_Slides;
         public string SlideShowName => m_SlideShowName;
-        public Sprite[] Slides => m_Slides;
-
-
+        public SlideShows[] Slides => m_Slides;
         public void StartSlideShow()
         {
             GameManager.Instance.StartSlideShow(this);
@@ -30,5 +27,16 @@ namespace LegionKnight
         {
             GameManager.Instance.SetSlideShow(this);
         }
+    }
+
+    [System.Serializable]
+    public class SlideShows
+    {
+        [SerializeField]
+        private Sprite m_Illustration;
+        [SerializeField, TextArea]
+        private string m_Dialogue;
+        public Sprite Illustration => m_Illustration;
+        public string Dialogue => m_Dialogue;
     }
 }

@@ -37,6 +37,14 @@ namespace LegionKnight
         {
             return m_PlayerProgression.GetLevelProgressionRate();
         }
+        public float GetPlayerCurrentExp()
+        {
+            return m_PlayerProgression.GetCurrentExperience();
+        }
+        public float GetPlayerMaxExp()
+        {
+            return m_PlayerProgression.GetCurrentMaxExperience();
+        }
         public void AddOnLevelUp(UnityAction<int> action)
         {
             m_PlayerProgression.AddOnLevelUp(action);

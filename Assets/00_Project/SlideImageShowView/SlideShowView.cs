@@ -12,6 +12,8 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_SlidePageText;
         [SerializeField]
+        private TextMeshProUGUI m_SlideDialogueText;
+        [SerializeField]
         private Button m_CloseButton;
 
         private void Start()
@@ -25,7 +27,7 @@ namespace LegionKnight
 
         private void OnEnable()
         {
-            //ShowSlide(GameManager.Instance.SlideShowHandler);
+            ShowSlide(GameManager.Instance.SlideShowHandler);
         }
 
         private void ShowSlide(SlideShowHandler slide)
@@ -44,7 +46,8 @@ namespace LegionKnight
                 Debug.LogError("CurrentSlideShow is null.");
                 return;
             }
-            m_SlideImage.sprite = slide.CurrentSlideShow.Slides[slide.CurrentSlideIndex];
+            m_SlideImage.sprite = slide.CurrentSlideShow.Slides[slide.CurrentSlideIndex].Illustration;
+            m_SlideDialogueText.text = slide.CurrentSlideShow.Slides[slide.CurrentSlideIndex].Dialogue;
             m_SlidePageText.text = $"{slide.CurrentSlideIndex + 1}/{slide.TotalSlides}";
 
             // Show the close button if already on the last slide

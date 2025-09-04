@@ -43,5 +43,19 @@ namespace LegionKnight
             // Check if the current time is past the reset time
             return now >= resetTime;
         }
+
+        public virtual int DayCountPassedSinceReset()
+        {
+            return 0;
+        }
+
+        protected virtual DateTime GetLastResetTime()
+        {
+            return DateTime.MinValue;
+        }
+        public virtual string GetRemainingTimeToReset()
+        {
+            return string.Empty;
+        }
     }
 }

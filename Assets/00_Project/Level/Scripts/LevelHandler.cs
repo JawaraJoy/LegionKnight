@@ -138,7 +138,8 @@ namespace LegionKnight
 
         private Vector2 m_LastPlayerPost;
 
-        
+        [SerializeField]
+        private CurrencyDefinition m_ExpDefinition;
 
         public void Init()
         {
@@ -300,12 +301,14 @@ namespace LegionKnight
         }
         public void StoreLevelScore()
         {
-            LootField lootField = new(m_CurrentScore.CurrencyDefinition, false, m_CurrentScore.Amount, 1f);
+            /*LootField coinLoot = new(m_CurrentScore.CurrencyDefinition, false, m_CurrentScore.Amount, 1f);
             LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
-            lootStorage.AddLoot(lootField);
+            lootStorage.AddLoot(coinLoot);
             //Player.Instance.AddCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
             int exp = Mathf.RoundToInt(m_CurrentScore.Amount * m_ExpReceiverRate);
-            Player.Instance.AddPlayerExperience(exp);
+            LootField expLoot = new(m_ExpDefinition, false, exp, 1f);
+            lootStorage.AddLoot(expLoot);*/
+            //Player.Instance.AddPlayerExperience(exp);
             GetLevelSelect(m_SelectedLevelDefinition)?.OnLevelDoneInvoke();
             ResetScore();
         }
@@ -407,11 +410,21 @@ namespace LegionKnight
         private void SetScoreAmountInternal(int set)
         {
             m_CurrentScore.SetAmount(set);
+            
             DetermineHighScore();
         }
         private void AddScoreAmountInternal(int add)
         {
             m_CurrentScore.AddAmount(add);
+            LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
+
+            //Player.Instance.AddCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
+            int exp = Mathf.RoundToInt(add * m_ExpReceiverRate);
+            LootField expLoot = new(m_ExpDefinition, false, exp, 1f);
+            lootStorage.AddLoot(expLoot);
+            Player.Instance.AddPlayerExperience(exp);
+
+            Player.Instance.SetCurrencyAmount(m_ExpDefinition, 0);
             DetermineHighScore();
         }
         public void AddCurrencyRewardAmount(int add)
@@ -425,6 +438,10 @@ namespace LegionKnight
         private void AddCurrencyRewardAmountInternal(int add)
         {
             m_CurrentCoinReward.AddAmount(add);
+            LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
+            LootField coinLoot = new(m_CurrentCoinReward.CurrencyDefinition, false, add, 1f);
+
+            lootStorage.AddLoot(coinLoot);
             DetermineHighScore();
         }
         

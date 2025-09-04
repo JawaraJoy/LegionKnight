@@ -42,6 +42,10 @@ namespace LegionKnight
 
             InitInternal();
         }
+        public void Refresh()
+        {
+            InitInternal();
+        }
 
         public void UpgradeHero()
         {
