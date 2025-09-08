@@ -9,20 +9,19 @@ using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public class MissionView : MonoBehaviour
+    public abstract class MissionView : MonoBehaviour
     {
+        [SerializeField]
+        private AssetReferenceGameObject m_LootItemViewAsset;
         [SerializeField]
         private TextMeshProUGUI m_DescriptionText;
         [SerializeField]
         private TextMeshProUGUI m_ProgressText;
         [SerializeField]
-        private TextMeshProUGUI m_DifficultyText;
+        private TextMeshProUGUI m_PowerText;
         [SerializeField]
         private Slider m_ProgressSlider;
-        [SerializeField]
-        private AssetReferenceGameObject m_LootItemViewAsset;
-
-        private TaskDefinition m_Definition;
+        
         [SerializeField]
         private Transform m_LootViewParent;
 
@@ -34,7 +33,9 @@ namespace LegionKnight
         private GameObject m_OnClaimedContent;
         [SerializeField]
         private Button m_ClaimButton;
+        private TaskDefinition m_Definition;
         public TaskDefinition Definition => m_Definition;
+        protected abstract MissionController GetControllerInternal();
 
         private readonly List<LootItemView> m_RewardViews = new();
         private LootItemView GetLootItemView(LootField loot)
@@ -51,17 +52,22 @@ namespace LegionKnight
         public void Init(TaskDefinition defi)
         {
             m_Definition = defi;
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTask(defi);
+            TaskStatus status = GetControllerInternal().GetTaskStatus(defi);
             string desc = defi.Description;
             string progress = $"{status.CurrentScore}/{defi.TargetScore}";
             float progressValue = (float)status.CurrentScore / defi.TargetScore;
-            int difficulty = defi.DifficultyScore;
+            int difficulty = defi.TaskPower;
             TaskState state = status.CurrentState;
+
             LootDefinition loot = defi.Rewards;
-            StartCoroutine(SpawnLootViews(loot));
+            if (loot != null)
+            {
+                StartCoroutine(SpawnLootViews(loot));
+            }
+
             m_DescriptionText.text = desc;
             m_ProgressText.text = progress;
-            m_DifficultyText.text = difficulty.ToString();
+            m_PowerText.text = difficulty.ToString();
             m_ProgressSlider.value = progressValue;
             UpdateState(state);
 
@@ -72,6 +78,7 @@ namespace LegionKnight
         private IEnumerator SpawnLootViews(LootDefinition loot)
         {
             LootField[] currentRewards = loot.LootFields;
+            if (currentRewards.Length == 0) yield break;
             for (int i = 0; i < currentRewards.Length; i++)
             {
                 if (GetLootItemView(currentRewards[i]) != null)
@@ -109,8 +116,8 @@ namespace LegionKnight
         private void DirectClaim()
         {
             if (m_Definition == null) return;
-            m_Definition.DirectClaimRewards();
-            TaskState state = Player.Instance.DailyMissionManager.GetTask(m_Definition).CurrentState;
+            m_Definition.DirectDailyClaimRewards();
+            TaskState state = GetControllerInternal().GetTaskStatus(m_Definition).CurrentState;
             UpdateState(state);
         }
     }

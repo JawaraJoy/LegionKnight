@@ -10,14 +10,14 @@ namespace LegionKnight
         private string m_Id;
         [SerializeField]
         private string m_Label;
-        [SerializeField]
+        [SerializeField, TextArea]
         private string m_Description;
         [SerializeField]
         private TaskState m_InitialState = TaskState.Locked;
         [SerializeField]
         private int m_TargetScore = 1;
         [SerializeField]
-        private int m_DifficultyScore = 10;
+        private int m_TaskPower = 10;
         [SerializeField]
         private TimerDefinition m_ResetTime;
         [SerializeField]
@@ -27,33 +27,33 @@ namespace LegionKnight
         public string Description => m_Description;
         public TaskState InitialState => m_InitialState;
         public int TargetScore => m_TargetScore;
-        public int DifficultyScore => m_DifficultyScore;
+        public int TaskPower => m_TaskPower;
         public TimerDefinition ResetTime => m_ResetTime;
         public LootDefinition Rewards => m_Rewards;
 
-        public void AddScore(int score)
+        public void AddDailyScore(int score)
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTask(this);
+            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
             status?.AddScore(score);
         }
-        public void SetState(TaskState state)
+        public void SetDailyState(TaskState state)
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTask(this);
+            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
             status?.SetState(state);
         }
-        public void ResetToIntialState()
+        public void ResetDailyToIntialState()
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTask(this);
+            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
             status?.ResetToIntialState();
         }
-        public void SetScore(int score)
+        public void SetDailyScore(int score)
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTask(this);
+            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
             status?.SetScore(score);
         }
-        public void DirectClaimRewards()
+        public void DirectDailyClaimRewards()
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTask(this);
+            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
             status?.DirectClaimRewards();
         }
     }
