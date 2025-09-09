@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace LegionKnight
@@ -12,6 +13,12 @@ namespace LegionKnight
         public void Init(MissionController controller)
         {
             GameManager.Instance.GetDailyMissionMonitor().Init(controller);
+        }
+        public void ShowLoot(LootField[] loots)
+        {
+            LootMonitor lootMonitor = GameManager.Instance.GetLootMonitor();
+            lootMonitor.Show();
+            lootMonitor.AddLootsView(loots.ToList());
         }
     }
 }

@@ -1,5 +1,6 @@
 using MoreMountains.Tools;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -12,6 +13,8 @@ namespace LegionKnight
         private int m_Threshold;
         [SerializeField]
         private LootField m_Rewards;
+        [SerializeField]
+        private UnityEvent<LootField[]> m_OnClaims;
         public int Threshold => m_Threshold;
         public LootField Rewards => m_Rewards;
 
@@ -43,6 +46,9 @@ namespace LegionKnight
         {
             if (m_GrantState == GrantedState.ReadyToClaim)
             {
+                
+                LootField[] loots = new LootField[1] {m_Rewards};
+                m_OnClaims?.Invoke(loots);
                 m_Rewards.DirectTakeLoot();
                 SetGrantedInternal(GrantedState.Claimed);
             }

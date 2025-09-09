@@ -13570,11 +13570,24 @@ MonoBehaviour:
         m_CallState: 2
   m_OnHide:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1757673306}
+        m_TargetAssemblyTypeName: LegionKnight.View, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_UniqueId: Mission
   m_IsBusyPanel: 0
   m_Bindings:
   - {fileID: 2009626817}
+  - {fileID: 1757673306}
 --- !u!1 &523717256
 GameObject:
   m_ObjectHideFlags: 0
@@ -40479,6 +40492,21 @@ MonoBehaviour:
       m_IsUnique: 0
       m_Amount: 35
       m_Chance: 1
+    m_OnClaims:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1490933741}
+          m_TargetAssemblyTypeName: LegionKnight.DailyMissionMonitorAgent, Assembly-CSharp
+          m_MethodName: ShowLoot
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_GrantState: 0
   - m_Id: 14fs
     m_Threshold: 100
@@ -40487,6 +40515,21 @@ MonoBehaviour:
       m_IsUnique: 0
       m_Amount: 1
       m_Chance: 1
+    m_OnClaims:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1490933741}
+          m_TargetAssemblyTypeName: LegionKnight.DailyMissionMonitorAgent, Assembly-CSharp
+          m_MethodName: ShowLoot
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_GrantState: 0
   m_Tasks:
   - m_Definition: {fileID: 11400000, guid: a5c28b7aaa366314898cecde737bc80b, type: 2}
@@ -45631,7 +45674,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 325}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1689335170
 MonoBehaviour:
@@ -135678,6 +135721,18 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 11400000, guid: d9aa63f9639f4904daea627e60150568, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.TaskDefinition, Assembly-CSharp
+          m_MethodName: AddDailyScore
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 1

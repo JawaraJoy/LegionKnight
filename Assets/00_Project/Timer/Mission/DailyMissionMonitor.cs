@@ -20,6 +20,10 @@ namespace LegionKnight
         {
             return GetPanelInternal<MissionPanel>();
         }
+        public LootMonitor GetLootMonitor()
+        {
+            return GetMissionPanel().GetBinding<LootMonitor>();
+        }
         public DailyMissionMonitor GetDailyMissionMonitor()
         {
             return GetMissionPanel().GetBinding<DailyMissionMonitor>();
