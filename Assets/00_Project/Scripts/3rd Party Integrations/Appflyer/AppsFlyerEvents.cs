@@ -87,6 +87,9 @@ namespace LegionKnight
             };
         }
 
+
+        //economics fungible
+        public static void TrackCurrencyEarned ()
     }
 
 
@@ -114,5 +117,27 @@ namespace LegionKnight
     public class AdventureModeEventData
     {
 
+    }
+
+
+
+    public class Wallet
+    {
+        int coins { get; set; }
+        int tickets { get; set; }
+        int diamonds { get; set; }
+        int shards_common { get; set; }
+        int shards_rare { get; set; }
+        int shards_epic { get; set; }
+
+        public Wallet (int _coins, int _tickets, int _diamonds, int _shardCommon, int _shardRare, int _shardEpic)
+        {
+            coins = _coins;
+            tickets = _tickets;
+            diamonds = _diamonds;
+            shards_common = _shardCommon;
+            shards_rare = _shardRare;
+            shards_epic = _shardEpic;
+        }
     }
 }
