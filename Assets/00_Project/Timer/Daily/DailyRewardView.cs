@@ -53,8 +53,10 @@ namespace LegionKnight
         private void Claim()
         {
             m_OnClaimed?.Invoke(m_Reward);
-            DailyRewardPanel panel = GameManager.Instance.GetDailyRewardPanel();
-            panel.ShowClaimedDailyReward(m_Reward);
+            MissionPanel panel = GameManager.Instance.GetPanel<MissionPanel>();
+            DailyRewardMonitor monitor = panel.GetBinding<DailyRewardMonitor>();
+            monitor.ShowClaimedDailyReward(m_Reward);
+
             DailyRewardData data = GameManager.Instance.DailyRewardManager.GetDailyRewardData(m_Reward);
             data.Claim();
             Init();
