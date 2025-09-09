@@ -18,6 +18,12 @@ namespace LegionKnight
         [SerializeField]
         private Button m_RessurectionButton;
         [SerializeField]
+        private Image m_RessurectionImage;
+        [SerializeField]
+        private Color m_RessurectionActiveColor;
+        [SerializeField]
+        private Color m_RessurectionDeactiveColor;
+        [SerializeField]
         private Button m_PlayAgainButton;
         [SerializeField]
         private Button m_HomeButton;
@@ -53,10 +59,15 @@ namespace LegionKnight
             {
                 StartCoroutine(Countingdown());
             }
+            else
+            {
+                m_RessurectionButton.interactable = false;
+                m_RessurectionImage.color = m_RessurectionDeactiveColor;
+            }
             //m_RessurectionButton.gameObject.SetActive(canUseRessurection);
 
-            
             Player.Instance.SetPause(true);
+
         }
         protected override void OnHideInvoke()
         {
@@ -88,7 +99,8 @@ namespace LegionKnight
         {
             
             float time = m_CountdownTime;
-            m_RessurectionButton.gameObject.SetActive(true);
+            m_RessurectionButton.interactable = true;
+            m_RessurectionImage.color = m_RessurectionActiveColor;
             
             while (time > 0)
             {
@@ -98,8 +110,9 @@ namespace LegionKnight
                 yield return null;
             }
             m_CountdownText.text = "0";
-            yield return new WaitForSeconds(1f);
-            m_RessurectionButton.gameObject.SetActive(false);
+            yield return new WaitForEndOfFrame();
+            m_RessurectionButton.interactable = false;
+            m_RessurectionImage.color = m_RessurectionDeactiveColor;
         }
     }
 }

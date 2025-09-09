@@ -13,15 +13,20 @@ namespace LegionKnight
         [SerializeField]
         private AssetReferenceGameObject m_MissionViewAsset;
         [SerializeField]
+        private TextMeshProUGUI m_TitleText;
+        [SerializeField]
         private TextMeshProUGUI m_OveralProgressAmountText;
         [SerializeField]
         private Slider m_OverallProgressSlider;
         [SerializeField]
         private Transform m_MissionViewParent;
         [SerializeField]
+        private TextMeshProUGUI m_ResetTimerText;
+        [SerializeField]
         private TaskThresholdView[] m_TaskThresholdViews;
 
         protected MissionController m_Controller;
+
 
         protected abstract MissionController GetControllerInternal();
 
@@ -65,6 +70,7 @@ namespace LegionKnight
 
         private void InitInternal(MissionController controller)
         {
+            m_TitleText.text = controller.BehaviourName;
             foreach (var task in controller.Task)
             {
                 if (!HasMissionView(task.Definition))
@@ -84,6 +90,9 @@ namespace LegionKnight
             }
             float powerRate = (float)controller.CurrentTaskPower / (float)controller.MaxTaskPower;
             SetTaskProgressSlideInternal(powerRate);
+
+            TimerDefinition defi = controller.ResetTime;
+            m_ResetTimerText.text = defi.GetRemainingTimeToReset();
         }
         private IEnumerator SpawningMissionView(TaskDefinition defi)
         {

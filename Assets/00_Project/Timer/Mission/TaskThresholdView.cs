@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,9 @@ namespace LegionKnight
         [SerializeField]
         private Sprite m_ClaimedSprite;
 
+        [SerializeField]
+        private MMF_Player m_Effect;
+
         protected abstract MissionController GetControllerInternal();
 
         public void Init(TaskThreshold threshold)
@@ -28,13 +32,16 @@ namespace LegionKnight
             {
                 case GrantedState.NotReady:
                     m_GrantedImage.sprite = m_NonActiveSprite;
-                    
+                    m_Effect.gameObject.SetActive(false);
                     break;
                 case GrantedState.ReadyToClaim:
                     m_GrantedImage.sprite = m_ReadyToClaimSprite;
+                    m_Effect.gameObject.SetActive(true);
+                    m_Effect.PlayFeedbacks();
                     break;
                 case GrantedState.Claimed:
                     m_GrantedImage.sprite = m_ClaimedSprite;
+                    m_Effect.gameObject.SetActive(false);
                     break;
             }
             m_ClaimButton.interactable = state == GrantedState.ReadyToClaim;

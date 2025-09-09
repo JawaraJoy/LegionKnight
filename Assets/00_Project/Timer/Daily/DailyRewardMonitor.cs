@@ -7,6 +7,8 @@ namespace LegionKnight
     public class DailyRewardMonitor : UIView
     {
         [SerializeField]
+        private TextMeshProUGUI m_TitleText;
+        [SerializeField]
         private LootMonitor m_PreviewLootMonitor;
 
         [SerializeField]
@@ -30,6 +32,7 @@ namespace LegionKnight
         protected override void ShowInternal()
         {
             base.ShowInternal();
+            m_TitleText.text = DailyRewardInternal.BehaviourName;
             DailyRewardInternal.Refresh();
             foreach (var view in m_DailyRewardViews)
             {

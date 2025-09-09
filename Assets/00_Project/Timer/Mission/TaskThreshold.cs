@@ -35,6 +35,7 @@ namespace LegionKnight
         }
         private void CheckThreshold(int currentScore)
         {
+            if (m_GrantState == GrantedState.Claimed) return;
             if (currentScore >= m_Threshold)
             {
                 SetGrantedInternal(GrantedState.ReadyToClaim);

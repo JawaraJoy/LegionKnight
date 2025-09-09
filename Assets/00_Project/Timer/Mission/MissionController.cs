@@ -6,6 +6,8 @@ namespace LegionKnight
 {
     public class MissionController : MonoBehaviour
     {
+        [SerializeField]
+        private string m_BehaviourName = "Daily Mission";
         [SerializeField, MMReadOnly]
         private int m_MaxTaskPower;
         [SerializeField, MMReadOnly]
@@ -19,6 +21,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<MissionController> m_OnControllerUpdate;
         
+        public string BehaviourName => m_BehaviourName;
         public TaskStatus[] Task => m_Tasks;
         public TaskThreshold[] TaskThresholds => m_Thresholds;
         public int MaxTaskPower => m_MaxTaskPower;
@@ -52,35 +55,37 @@ namespace LegionKnight
             {
                 threshold.Initialize(this);
             }
-            if (m_ResetTime != null)
-            {
-                bool hasResetTimer = UnityService.Instance.HasData(m_ResetTime.TimerId);
-                if (!hasResetTimer)
-                {
-                    m_ResetTime.StartTimer();
-                }
-                else
-                {
-                    if (m_ResetTime.IsTimeToReset())
-                    {
-                        foreach (var mission in m_Tasks)
-                        {
-                            mission.Init();
-                            mission.ResetToIntialState();
-                        }
-                        foreach (var thres in m_Thresholds)
-                        {
-                            thres.Reset();
-                        }
-
-                        SetTaskPowerInternal(0);
-                        m_ResetTime.StartTimer();
-                    }
-                }
-                
-            }
+            CheckTime();
             UpdateCurrentTaskPower();
             Debug.Log($"{DebugKey}: Init");
+        }
+
+        private void CheckTime()
+        {
+            if (m_ResetTime == null) return;
+            bool hasResetTimer = UnityService.Instance.HasData(m_ResetTime.TimerId);
+            if (!hasResetTimer)
+            {
+                m_ResetTime.StartTimer();
+            }
+            else
+            {
+                if (m_ResetTime.IsTimeToReset())
+                {
+                    foreach (var mission in m_Tasks)
+                    {
+                        mission.Init();
+                        mission.ResetToIntialState();
+                    }
+                    foreach (var thres in m_Thresholds)
+                    {
+                        thres.Reset();
+                    }
+
+                    SetTaskPowerInternal(0);
+                    m_ResetTime.StartTimer();
+                }
+            }
         }
 
         public TaskStatus GetTaskStatus(TaskDefinition defi)
@@ -122,8 +127,14 @@ namespace LegionKnight
         {
             float powerRate = (float)m_CurrentTaskPower / (float)m_MaxTaskPower;
             UnityService.Instance.SaveData(TaskPowerKey , m_CurrentTaskPower);
-            m_OnControllerUpdate?.Invoke(this);
+            
             Debug.Log($"{DebugKey}; Update Task currentTaskPower{m_CurrentTaskPower}");
+            foreach (var threshold in m_Thresholds)
+            {
+                threshold.Initialize(this);
+            }
+
+            m_OnControllerUpdate?.Invoke(this);
         }
     }
 

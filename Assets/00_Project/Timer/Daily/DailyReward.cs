@@ -5,11 +5,15 @@ namespace LegionKnight
     public class DailyReward : MonoBehaviour
     {
         [SerializeField]
+        private string m_BehaviourName = "Daily Sign In";
+        [SerializeField]
         private TimerDefinition m_Timer;
         [SerializeField]
         private DailyRewardData[] m_Rewards;
+        public string BehaviourName => m_BehaviourName;
         public TimerDefinition Timer => m_Timer;
-        private const string DailyRewardKeyInternal = "DAILY_REWARD";
+        private const string DailyRewardKeyInternal = "dailyreward";
+        private string ResetKey => DailyRewardKey + "reset";
         public static string DailyRewardKey => DailyRewardKeyInternal;
         private DailyRewardData GetDailyRewardDataInternal(LootDefinition loot)
         {
@@ -32,16 +36,25 @@ namespace LegionKnight
         }
         private void RefreshInternal()
         {
-            bool isReset = m_Timer.IsTimeToReset();
-            if (isReset)
+            bool hasResetTime = UnityService.Instance.HasData(ResetKey);
+            if (hasResetTime)
             {
-                OnTimerReset();
-                Debug.Log($"{DailyRewardKeyInternal}: Timer reset, daily rewards are reset.");
+                bool isReset = m_Timer.IsTimeToReset();
+                if (isReset)
+                {
+                    OnTimerReset();
+                    Debug.Log($"{DailyRewardKeyInternal}: Timer reset, daily rewards are reset.");
+                }
+                else
+                {
+                    Debug.Log($"{DailyRewardKeyInternal}: Not time to reset yet.");
+                }
             }
             else
             {
-                Debug.Log($"{DailyRewardKeyInternal}: Not time to reset yet.");
+                m_Timer.StartTimer();
             }
+
             DailyCheckState();
         }
         private void DailyCheckState()

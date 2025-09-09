@@ -5,18 +5,20 @@ using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public class TabSwitchMonitor : MonoBehaviour
+    public class TabSwitchMonitor : UIView
     {
         [SerializeField]
         private TabButton[] m_Tabs;
 
-        private void Start()
+        protected override void ShowInternal()
         {
+            base.ShowInternal();
             foreach (var tab in m_Tabs)
             {
                 tab.Init(HideAll);
             }
-        }
+            m_Tabs[0].Show(HideAll);
+        }   
 
         private void HideAll()
         {
@@ -31,7 +33,11 @@ namespace LegionKnight
     public class TabButton
     {
         [SerializeField]
+        private bool m_Active = true;
+        [SerializeField]
         private TextMeshProUGUI m_ButtonName;
+        [SerializeField]
+        private TextMeshProUGUI m_HightlightName;
         [SerializeField]
         private Button m_OpenButton;
         [SerializeField]
@@ -41,24 +47,34 @@ namespace LegionKnight
 
         public void Init(UnityAction onShow = null)
         {
+            if (!m_Active) return;
             m_ButtonName.text = m_View.UniqueId;
-            onShow?.Invoke();
+            m_HightlightName.text = m_View.UniqueId;
+            //onShow?.Invoke();
             m_OpenButton.onClick.RemoveAllListeners();
-            m_OpenButton.onClick.AddListener(Show);
+            m_OpenButton.onClick.AddListener(() => ShowInternal(onShow));
         }
 
-        private void Show()
+        public void Show(UnityAction onShow = null)
         {
+            ShowInternal(onShow);
+        }
+        private void ShowInternal(UnityAction onShow = null)
+        {
+            if (!m_Active) return;
+            onShow.Invoke();
+            m_View.gameObject.SetActive(true);
             m_View.Show();
-            m_Hightlight.enabled = true;
-            m_OpenButton.gameObject.SetActive(false);
+            m_Hightlight.gameObject.SetActive(true);
+            //m_OpenButton.gameObject.SetActive(false);
         }
 
         public void Hide()
         {
             m_View.Hide();
-            m_Hightlight.enabled = false;
-            m_OpenButton.gameObject.SetActive(true);
+            m_View.gameObject.SetActive(false);
+            m_Hightlight.gameObject.SetActive(false);
+            //m_OpenButton.gameObject.SetActive(true);
         }
     }
 }

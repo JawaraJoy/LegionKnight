@@ -22,5 +22,10 @@ namespace LegionKnight
             Player.Instance.SetResetTime(this, resetTime);
             callback?.Invoke();
         }
+        public override string GetRemainingTimeToReset()
+        {
+            string remaining = Player.Instance.GetRemainingTimeAsString(m_TimerId, TimerType.Daily);
+            return remaining;
+        }
     }
 }
