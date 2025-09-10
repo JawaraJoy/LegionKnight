@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,7 +12,29 @@ namespace LegionKnight
         [SerializeField]
         private TimerDefinition m_FreeDrawResetTime;
         [SerializeField]
+        private int m_MinimalSpinStep = 40;
+        [SerializeField]
+        private int m_MinAdditionalSpinStep = 16;
+        [SerializeField]
+        private int m_MaxAdditionalSpinStep = 40;
+        [SerializeField]
+        private float m_StartStepDelay = 0.1f;
+        [SerializeField]
+        private float m_MidDelayGrowthStep = 0.05f;
+        [SerializeField]
+        private float m_EndDelayGrowthEachStep = 0.05f;
+        [SerializeField]
         private SpinRewardDefinition[] m_Rewards;
+
+        public int FreeDrawAmount => m_FreeDrawAmount;
+        public TimerDefinition FreeDrawResetTime => m_FreeDrawResetTime;
+        public int MiniSpinStep => m_MinimalSpinStep;
+        public int MinAdditionalSpinStep => m_MinAdditionalSpinStep;
+        public int MaxAdditionalSpinStep => m_MaxAdditionalSpinStep;
+        public float StartStepDelay => m_StartStepDelay;
+        public float MidDelayGrowthStep => m_MidDelayGrowthStep;
+        public float EndDelayGrowthStep => m_EndDelayGrowthEachStep;
+        public SpinRewardDefinition[] Rewards => m_Rewards;
 
         private SpinRewardDefinition GetSpinReward(string id)
         {
