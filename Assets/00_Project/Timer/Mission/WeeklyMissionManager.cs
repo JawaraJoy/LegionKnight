@@ -2,18 +2,15 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class WeeklyMissionManager : MonoBehaviour
+    public partial class WeeklyMissionManager : MissionController
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
         
-        }
+    }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+    public partial class Player
+    {
+        [SerializeField]
+        private WeeklyMissionManager m_WeeklyMissionManager;
+        public WeeklyMissionManager WeeklyMissionManager => m_WeeklyMissionManager;
     }
 }

@@ -15,6 +15,8 @@ namespace LegionKnight
         [SerializeField]
         private TaskState m_InitialState = TaskState.Locked;
         [SerializeField]
+        private MissionCategory m_MissionCategory = MissionCategory.Daily;
+        [SerializeField]
         private int m_TargetScore = 1;
         [SerializeField]
         private int m_TaskPower = 10;
@@ -33,28 +35,48 @@ namespace LegionKnight
 
         public void AddDailyScore(int score)
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
+            TaskStatus status = GetTaskStatus();
             status?.AddScore(score);
         }
         public void SetDailyState(TaskState state)
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
+            TaskStatus status = GetTaskStatus();
             status?.SetState(state);
         }
         public void ResetDailyToIntialState()
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
+            TaskStatus status = GetTaskStatus();
             status?.ResetToIntialState();
         }
         public void SetDailyScore(int score)
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
+            TaskStatus status = GetTaskStatus();
             status?.SetScore(score);
         }
         public void DirectDailyClaimRewards()
         {
-            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
+            TaskStatus status = GetTaskStatus();
             status?.DirectClaimRewards();
         }
+
+        private TaskStatus GetTaskStatus()
+        {
+            TaskStatus status = Player.Instance.DailyMissionManager.GetTaskStatus(this);
+            switch (m_MissionCategory)
+            {
+                case MissionCategory.Daily:
+                    break;
+                case MissionCategory.Weekly:
+                    status = Player.Instance.WeeklyMissionManager.GetTaskStatus(this);
+                    break;
+            }
+            return status;
+        }
+    }
+
+    public enum MissionCategory
+    {
+        Daily = 0,
+        Weekly = 1,
     }
 }
