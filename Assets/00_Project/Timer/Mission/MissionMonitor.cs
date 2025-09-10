@@ -52,6 +52,7 @@ namespace LegionKnight
             m_OverallProgressSlider.value = val;
             int power = GetControllerInternal().CurrentTaskPower;
             m_OveralProgressAmountText.text = power.ToString();
+            InitThresholdViews(GetControllerInternal());
         }
         private bool HasMissionView(TaskDefinition defi)
         {
@@ -82,17 +83,22 @@ namespace LegionKnight
                     GetMissionView(task.Definition).Init(task.Definition);
                 }
             }
+            //InitThresholdViews(controller);
+            float powerRate = (float)controller.CurrentTaskPower / (float)controller.MaxTaskPower;
+            SetTaskProgressSlideInternal(powerRate);
+
+            TimerDefinition defi = controller.ResetTime;
+            m_ResetTimerText.text = defi.GetRemainingTimeToReset();
+        }
+
+        private void InitThresholdViews(MissionController controller)
+        {
             for (int i = 0; i < m_TaskThresholdViews.Length; i++)
             {
                 TaskThreshold threshold = controller.TaskThresholds[i];
                 TaskThresholdView thresholdView = m_TaskThresholdViews[i];
                 thresholdView.Init(threshold);
             }
-            float powerRate = (float)controller.CurrentTaskPower / (float)controller.MaxTaskPower;
-            SetTaskProgressSlideInternal(powerRate);
-
-            TimerDefinition defi = controller.ResetTime;
-            m_ResetTimerText.text = defi.GetRemainingTimeToReset();
         }
         private IEnumerator SpawningMissionView(TaskDefinition defi)
         {
