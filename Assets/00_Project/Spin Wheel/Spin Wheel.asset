@@ -12,14 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4e4d57ac18bcc648b770e66ef442299, type: 3}
   m_Name: Spin Wheel
   m_EditorClassIdentifier: 
-  m_FreeDrawAmount: 0
+  m_FreeDrawAmount: 1
+  m_FreeDrawWatchAmount: 2
   m_FreeDrawResetTime: {fileID: 11400000, guid: c3e84f60b7a8db04a86a6a328c1a12b7, type: 2}
-  m_MinimalSpinStep: 40
+  m_MinimalSpinStep: 24
   m_MinAdditionalSpinStep: 8
   m_MaxAdditionalSpinStep: 32
   m_StartStepDelay: 0.2
-  m_MidDelayGrowthStep: 0.2
-  m_EndDelayGrowthEachStep: 0.3
+  m_MidDelayGrowthStep: 0.3
+  m_EndDelayGrowthEachStep: 0.5
+  m_ClaimDelay: 1
   m_Rewards:
   - {fileID: 11400000, guid: 97259392ebc53a447bd91f230875bc5e, type: 2}
   - {fileID: 11400000, guid: 00fab0c5037df0e47b05a36d8a0d6ac0, type: 2}

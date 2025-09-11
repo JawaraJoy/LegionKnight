@@ -10,6 +10,8 @@ namespace LegionKnight
         [SerializeField]
         private int m_FreeDrawAmount;
         [SerializeField]
+        private int m_FreeDrawWatchAmount;
+        [SerializeField]
         private TimerDefinition m_FreeDrawResetTime;
         [SerializeField]
         private int m_MinimalSpinStep = 40;
@@ -24,9 +26,12 @@ namespace LegionKnight
         [SerializeField]
         private float m_EndDelayGrowthEachStep = 0.05f;
         [SerializeField]
+        private float m_ClaimDelay = 1f;
+        [SerializeField]
         private SpinRewardDefinition[] m_Rewards;
 
         public int FreeDrawAmount => m_FreeDrawAmount;
+        public int FreeDrawWatchAmount => m_FreeDrawWatchAmount;
         public TimerDefinition FreeDrawResetTime => m_FreeDrawResetTime;
         public int MiniSpinStep => m_MinimalSpinStep;
         public int MinAdditionalSpinStep => m_MinAdditionalSpinStep;
@@ -34,6 +39,7 @@ namespace LegionKnight
         public float StartStepDelay => m_StartStepDelay;
         public float MidDelayGrowthStep => m_MidDelayGrowthStep;
         public float EndDelayGrowthStep => m_EndDelayGrowthEachStep;
+        public float ClaimDelay => m_ClaimDelay;
         public SpinRewardDefinition[] Rewards => m_Rewards;
 
         private SpinRewardDefinition GetSpinReward(string id)
@@ -62,7 +68,7 @@ namespace LegionKnight
             return has;
         }
 
-        public bool IsTimeToReset(UnityAction<int> onReset)
+        public bool IsTimeToReset(UnityAction<int> onReset = null)
         {
             bool isTimeToReset = m_FreeDrawResetTime.IsTimeToReset();
             if (isTimeToReset)
