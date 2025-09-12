@@ -76,6 +76,7 @@ namespace LegionKnight
             {
                 if (!HasMissionView(task.Definition))
                 {
+                    if (!enabled)return;
                     StartCoroutine(SpawningMissionView(task.Definition));
                 }
                 else

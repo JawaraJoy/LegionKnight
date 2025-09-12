@@ -24,7 +24,7 @@ namespace LegionKnight
         }
         public override string GetRemainingTimeToReset()
         {
-            string remaining = Player.Instance.GetRemainingTimeAsString(m_TimerId, TimerType.Daily);
+            string remaining = Player.Instance.GetRemainingTimeAsString(m_TimerId, TimerType.Hourly);
             return remaining;
         }
     }

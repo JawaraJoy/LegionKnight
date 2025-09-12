@@ -26,5 +26,9 @@ namespace LegionKnight
         {
             GetMonitor().Claim();
         }
+        public void BusyButtons(bool active)
+        {
+            GetMonitor().BusyButtons(active);
+        }
     }
 }

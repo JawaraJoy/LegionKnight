@@ -12,8 +12,8 @@ namespace LegionKnight
         private SpinWheelDefinition m_Definition;
         public SpinWheelDefinition Definition => m_Definition;
 
-        [SerializeField, MMReadOnly]
-        private int m_SpinDraw;
+        [SerializeField]
+        private Currency m_SpinDraw;
         [SerializeField, MMReadOnly]
         private int m_FreeDrawWatch;
         [SerializeField, MMReadOnly]
@@ -37,13 +37,12 @@ namespace LegionKnight
         private UnityEvent<SpinRewardDefinition> m_OnClaim;
 
         public SpinRewardDefinition SelectedReward => m_SelectedReward;
-        public int FreeDraw => m_SpinDraw;
+        public Currency SpinDraw => m_SpinDraw;
         public int FreeDrawWatch => m_FreeDrawWatch;
         [SerializeField, MMReadOnly]
         private bool m_IsBusy = false;
 
-        private string FreeDrawKey = $"spinfree";
-        private string FreeDrawWatchKey = $"spinwatchfree";
+        private readonly string FreeDrawWatchKey = $"spinwatchfree";
         private void Start()
         {
             m_MaxStepOnIndex = m_Definition.Rewards.Length - 1;
@@ -51,24 +50,15 @@ namespace LegionKnight
 
         public void Init()
         {
-            bool hasFreeDraw = UnityService.Instance.HasData(FreeDrawKey);
             bool hasFreeWatchDraw = UnityService.Instance.HasData(FreeDrawWatchKey);
-            if (hasFreeDraw)
-            {
-                m_SpinDraw = UnityService.Instance.GetData<int>(FreeDrawKey);
-            }
-            else
-            {
-                m_SpinDraw = m_Definition.FreeSpin;
-                m_FreeDrawWatch = m_Definition.FreeDrawWatchAmount;
-            }
+            //int spinDrawAmount = Player.Instance.GetCurrencyAmount(m_SpinDraw.CurrencyDefinition);
+            //m_SpinDraw.SetAmount(spinDrawAmount);
             if (hasFreeWatchDraw)
             {
                 m_FreeDrawWatch = UnityService.Instance.GetData<int>(FreeDrawWatchKey);
             }
             else
             {
-                m_SpinDraw = m_Definition.FreeSpin;
                 m_FreeDrawWatch = m_Definition.FreeDrawWatchAmount;
             }
 
@@ -77,8 +67,9 @@ namespace LegionKnight
             {
                 if (tim.IsTimeToReset())
                 {
-                    m_SpinDraw = m_Definition.FreeSpin;
+                    AddSpinDraw(m_Definition.FreeSpinAmountEachDay);
                     m_FreeDrawWatch = m_Definition.FreeDrawWatchAmount;
+                    tim.StartTimer();
                 }
             }
             else
@@ -87,7 +78,15 @@ namespace LegionKnight
             }
             m_OnInitialized?.Invoke();
         }
-
+        public void SetSpinDraw(int amount)
+        {
+            //Player.Instance.SetCurrencyAmount(m_SpinDraw.CurrencyDefinition, amount);
+            m_SpinDraw.SetAmount(amount);
+        }
+        private void AddSpinDraw(int amount)
+        {
+            Player.Instance.AddCurrencyAmount(m_SpinDraw.CurrencyDefinition, amount);
+        }
         public bool CanClaim()
         {
             return m_SelectedReward != null && !m_IsBusy;
@@ -99,9 +98,9 @@ namespace LegionKnight
             StartCoroutine(StartSpin());
         }
 
-        private bool CanFreeDraw()
+        private bool CanSpinDraw()
         {
-            return m_SpinDraw > 0;
+            return m_SpinDraw.Amount > 0;
         }
 
         private bool CanFreeWatchDraw()
@@ -109,16 +108,12 @@ namespace LegionKnight
             return m_FreeDrawWatch > 0;
         }
 
-        public void Spin()
+        public void Spin(UnityAction onDraw)
         {
-            StartCoroutine(StartSpin());
-        }
-        public void FreeSpin(UnityAction onDraw)
-        {
-            if (CanFreeDraw())
+            if (CanSpinDraw())
             {
                 StartCoroutine(StartSpin());
-                AddFreeDraw(-1);
+                AddSpinDraw(-1);
                 onDraw?.Invoke();
             }
         }
@@ -190,20 +185,6 @@ namespace LegionKnight
         private void TryClaim()
         {
             m_SelectedReward = null;
-        }
-
-        private void AddFreeDraw(int amount)
-        {
-            m_SpinDraw += amount;
-            if (m_SpinDraw < 0)
-            {
-                m_SpinDraw = 0;
-            }
-            if (m_SpinDraw > m_Definition.FreeSpin)
-            {
-                m_SpinDraw = m_Definition.FreeSpin;
-            }
-            UnityService.Instance.SaveData(FreeDrawKey, m_SpinDraw);
         }
         private void AddFreeDrawWatch(int amount)
         {

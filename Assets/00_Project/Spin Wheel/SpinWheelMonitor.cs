@@ -8,7 +8,7 @@ namespace LegionKnight
     public class SpinWheelMonitor : UIView
     {
         [SerializeField]
-        private TextMeshProUGUI m_FreeDrawAmountText;
+        private TextMeshProUGUI m_SpinAmountText;
         [SerializeField]
         private TextMeshProUGUI m_FreeDrawWatchAmountText;
 
@@ -23,13 +23,13 @@ namespace LegionKnight
 
 
         [SerializeField]
-        private Button m_FreeSpinButton;
+        private Button m_SpinButton;
         [SerializeField]
         private Button m_FreeWatchSpinButton;
         private void Start()
         {
-            m_FreeSpinButton.onClick.RemoveAllListeners();
-            m_FreeSpinButton.onClick.AddListener(FreeSpin);
+            m_SpinButton.onClick.RemoveAllListeners();
+            m_SpinButton.onClick.AddListener(Spin);
 
             m_FreeWatchSpinButton.onClick.RemoveAllListeners();
             m_FreeWatchSpinButton.onClick.AddListener(FreeWatchSpin);
@@ -79,11 +79,7 @@ namespace LegionKnight
         }
         private void Spin()
         {
-            GetSpinWheelManagerInternal().Spin();
-        }
-        private void FreeSpin()
-        {
-            GetSpinWheelManagerInternal().FreeSpin(UpdateFreeWatchDrawTextInternal);
+            GetSpinWheelManagerInternal().Spin(UpdateFreeWatchDrawTextInternal);
         }
         private void FreeWatchSpin()
         {
@@ -93,17 +89,22 @@ namespace LegionKnight
         private void UpdateFreeWatchDrawTextInternal()
         {
             SpinWheelManager manager = GetSpinWheelManagerInternal();
-            int freeDrawAmount = manager.FreeDraw;
-            int maxFreeDrawAmount = manager.Definition.FreeDrawAmount;
+            int spinDrawAmount = manager.SpinDraw.Amount;
 
             int freeWatchDrawAmount = manager.FreeDrawWatch;
             int maxFreeWatchDrawAmount = manager.Definition.FreeDrawWatchAmount;
 
-            string freeDrawText = $"{freeDrawAmount}/{maxFreeDrawAmount}";
+            string SpinDrawText = $"x{spinDrawAmount}";
             string freeWatchDrawText = $"{freeWatchDrawAmount}/{maxFreeWatchDrawAmount}";
 
-            m_FreeDrawAmountText.text = freeDrawText;
+            m_SpinAmountText.text = SpinDrawText;
             m_FreeDrawWatchAmountText.text = freeWatchDrawText;
+        }
+
+        public void BusyButtons(bool active)
+        {
+            m_FreeWatchSpinButton.interactable = active;
+            m_SpinButton.interactable = active;
         }
     }
 }

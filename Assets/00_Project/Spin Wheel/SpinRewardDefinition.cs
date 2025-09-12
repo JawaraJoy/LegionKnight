@@ -15,5 +15,7 @@ namespace LegionKnight
         public Color FrameColor => m_FrameColor;
         public LootDefinition Rewards => m_Rewards;
 
+        
+
     }
 }

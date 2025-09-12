@@ -8,9 +8,9 @@ namespace LegionKnight
     public class SpinWheelDefinition : ScriptableObject
     {
         [SerializeField]
-        private int m_FreeDrawAmount;
+        private int m_FreeSpinAmountEachDay = 1;
         [SerializeField]
-        private int m_FreeDrawWatchAmount;
+        private int m_FreeDrawWatchAmount = 2;
         [SerializeField]
         private TimerDefinition m_FreeDrawResetTime;
         [SerializeField]
@@ -30,7 +30,7 @@ namespace LegionKnight
         [SerializeField]
         private SpinRewardDefinition[] m_Rewards;
 
-        public int FreeDrawAmount => m_FreeDrawAmount;
+        public int FreeSpinAmountEachDay => m_FreeSpinAmountEachDay;
         public int FreeDrawWatchAmount => m_FreeDrawWatchAmount;
         public TimerDefinition FreeDrawResetTime => m_FreeDrawResetTime;
         public int MiniSpinStep => m_MinimalSpinStep;
@@ -73,9 +73,14 @@ namespace LegionKnight
             bool isTimeToReset = m_FreeDrawResetTime.IsTimeToReset();
             if (isTimeToReset)
             {
-                onReset.Invoke(m_FreeDrawAmount);
+                onReset.Invoke(m_FreeSpinAmountEachDay);
             }
             return isTimeToReset;
+        }
+
+        public void SetSpinDraw(int amount)
+        {
+            Player.Instance.SpinWheelManager.SetSpinDraw(amount);
         }
     }
 }
