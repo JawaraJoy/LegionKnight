@@ -13,7 +13,7 @@ namespace LegionKnight
         public SpinWheelDefinition Definition => m_Definition;
 
         [SerializeField, MMReadOnly]
-        private int m_FreeDraw;
+        private int m_SpinDraw;
         [SerializeField, MMReadOnly]
         private int m_FreeDrawWatch;
         [SerializeField, MMReadOnly]
@@ -37,7 +37,7 @@ namespace LegionKnight
         private UnityEvent<SpinRewardDefinition> m_OnClaim;
 
         public SpinRewardDefinition SelectedReward => m_SelectedReward;
-        public int FreeDraw => m_FreeDraw;
+        public int FreeDraw => m_SpinDraw;
         public int FreeDrawWatch => m_FreeDrawWatch;
         [SerializeField, MMReadOnly]
         private bool m_IsBusy = false;
@@ -55,11 +55,11 @@ namespace LegionKnight
             bool hasFreeWatchDraw = UnityService.Instance.HasData(FreeDrawWatchKey);
             if (hasFreeDraw)
             {
-                m_FreeDraw = UnityService.Instance.GetData<int>(FreeDrawKey);
+                m_SpinDraw = UnityService.Instance.GetData<int>(FreeDrawKey);
             }
             else
             {
-                m_FreeDraw = m_Definition.FreeDrawAmount;
+                m_SpinDraw = m_Definition.FreeSpin;
                 m_FreeDrawWatch = m_Definition.FreeDrawWatchAmount;
             }
             if (hasFreeWatchDraw)
@@ -68,7 +68,7 @@ namespace LegionKnight
             }
             else
             {
-                m_FreeDraw = m_Definition.FreeDrawAmount;
+                m_SpinDraw = m_Definition.FreeSpin;
                 m_FreeDrawWatch = m_Definition.FreeDrawWatchAmount;
             }
 
@@ -77,7 +77,7 @@ namespace LegionKnight
             {
                 if (tim.IsTimeToReset())
                 {
-                    m_FreeDraw = m_Definition.FreeDrawAmount;
+                    m_SpinDraw = m_Definition.FreeSpin;
                     m_FreeDrawWatch = m_Definition.FreeDrawWatchAmount;
                 }
             }
@@ -101,7 +101,7 @@ namespace LegionKnight
 
         private bool CanFreeDraw()
         {
-            return m_FreeDraw > 0;
+            return m_SpinDraw > 0;
         }
 
         private bool CanFreeWatchDraw()
@@ -194,16 +194,16 @@ namespace LegionKnight
 
         private void AddFreeDraw(int amount)
         {
-            m_FreeDraw += amount;
-            if (m_FreeDraw < 0)
+            m_SpinDraw += amount;
+            if (m_SpinDraw < 0)
             {
-                m_FreeDraw = 0;
+                m_SpinDraw = 0;
             }
-            if (m_FreeDraw > m_Definition.FreeDrawAmount)
+            if (m_SpinDraw > m_Definition.FreeSpin)
             {
-                m_FreeDraw = m_Definition.FreeDrawAmount;
+                m_SpinDraw = m_Definition.FreeSpin;
             }
-            UnityService.Instance.SaveData(FreeDrawKey, m_FreeDraw);
+            UnityService.Instance.SaveData(FreeDrawKey, m_SpinDraw);
         }
         private void AddFreeDrawWatch(int amount)
         {

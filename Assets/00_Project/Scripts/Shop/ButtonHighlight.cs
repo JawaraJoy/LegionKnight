@@ -1,5 +1,6 @@
 using Rush;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -10,6 +11,9 @@ namespace LegionKnight
         [SerializeField]
         private TweenHandler[] m_ButtonHighlights;
 
+        [SerializeField]
+        private UnityEvent m_OnHighlighted;
+
         public void HightLight(int index)
         {
             foreach (var button in m_ButtonHighlights)
@@ -17,6 +21,7 @@ namespace LegionKnight
                 button.ReverseTween(m_HightLightName);
             }
             m_ButtonHighlights[index].StartTween(m_HightLightName);
+            m_OnHighlighted.Invoke();
         }
     }
 }
