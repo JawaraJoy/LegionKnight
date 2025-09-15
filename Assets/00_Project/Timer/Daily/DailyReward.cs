@@ -15,6 +15,18 @@ namespace LegionKnight
         private const string DailyRewardKeyInternal = "dailyreward";
         private string ResetKey => DailyRewardKey + "reset";
         public static string DailyRewardKey => DailyRewardKeyInternal;
+
+        private int m_DayLoginCount;
+        private void AddDayLoginCount(int add)
+        {
+            m_DayLoginCount += add;
+            UnityService.Instance.SaveData(nameof(m_DayLoginCount), m_DayLoginCount);
+        }
+        private void SetDayLoginCount(int set)
+        {
+            m_DayLoginCount = set;
+            UnityService.Instance.SaveData(nameof(m_DayLoginCount), m_DayLoginCount);
+        }
         private DailyRewardData GetDailyRewardDataInternal(LootDefinition loot)
         {
             foreach (var reward in m_Rewards)
@@ -43,6 +55,7 @@ namespace LegionKnight
                 if (isReset)
                 {
                     OnTimerReset();
+                    SetDayLoginCount(m_DayLoginCount);
                     Debug.Log($"{DailyRewardKeyInternal}: Timer reset, daily rewards are reset.");
                 }
                 else
