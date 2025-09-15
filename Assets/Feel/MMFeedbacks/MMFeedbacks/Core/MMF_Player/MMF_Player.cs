@@ -45,6 +45,7 @@ namespace MoreMountains.Feedbacks
 		protected Type _t;
 		protected float _cachedTotalDuration;
 		protected bool _initialized = false;
+		protected Coroutine _pausedFeedbacksCo;
         
 		#endregion
         
@@ -331,6 +332,24 @@ namespace MoreMountains.Feedbacks
 			}
 		}
 
+		/// <summary>
+		/// Plays all feedbacks in the sequence from top to bottom
+		/// </summary>
+		public virtual void PlayFeedbacksTopToBottom()
+		{
+			SetDirectionTopToBottom();
+			PlayFeedbacks();
+		}
+		
+		/// <summary>
+		/// Plays all feedbacks in the sequence from bottom to top
+		/// </summary>
+		public virtual void PlayFeedbacksBottomToTop()
+		{
+			SetDirectionBottomToTop();
+			PlayFeedbacks();
+		}
+
 		#endregion
 
 		#region SEQUENCE
@@ -490,7 +509,7 @@ namespace MoreMountains.Feedbacks
 			else
 			{
 				// if at least one pause was found
-				StartCoroutine(PausedFeedbacksCo(position, feedbacksIntensity));
+				_pausedFeedbacksCo = StartCoroutine(PausedFeedbacksCo(position, feedbacksIntensity));
 			}
 		}
 		
@@ -801,6 +820,10 @@ namespace MoreMountains.Feedbacks
 					FeedbacksList[i].Stop(position, feedbacksIntensity);
 				}    
 			}
+			if (_pausedFeedbacksCo != null)
+			{
+				StopCoroutine(_pausedFeedbacksCo);
+			}
 			IsPlaying = false;
 		}
         
@@ -977,13 +1000,16 @@ namespace MoreMountains.Feedbacks
 		/// Adds the specified MMF_Feedback to the player
 		/// </summary>
 		/// <param name="newFeedback"></param>
-		public virtual void AddFeedback(MMF_Feedback newFeedback)
+		public virtual void AddFeedback(MMF_Feedback newFeedback, bool copy = false)
 		{
 			InitializeFeedbackList();
 			newFeedback.Owner = this;
 			newFeedback.UniqueID = Guid.NewGuid().GetHashCode();
 			FeedbacksList.Add(newFeedback);
-			newFeedback.OnAddFeedback();
+			if (!copy)
+			{
+				newFeedback.OnAddFeedback();
+			}
 			newFeedback.CacheRequiresSetup();
 			newFeedback.InitializeCustomAttributes();
 		}
