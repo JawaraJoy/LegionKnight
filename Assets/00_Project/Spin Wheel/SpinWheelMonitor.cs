@@ -26,6 +26,8 @@ namespace LegionKnight
         private Button m_SpinButton;
         [SerializeField]
         private Button m_FreeWatchSpinButton;
+        [SerializeField]
+        private Button m_CloseButton;
         private void Start()
         {
             m_SpinButton.onClick.RemoveAllListeners();
@@ -105,6 +107,7 @@ namespace LegionKnight
         {
             m_FreeWatchSpinButton.interactable = active;
             m_SpinButton.interactable = active;
+            m_CloseButton.interactable = active;
         }
     }
 }

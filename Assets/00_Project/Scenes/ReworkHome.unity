@@ -24640,6 +24640,7 @@ MonoBehaviour:
   m_SelectedRewardView: {fileID: 923981685}
   m_SpinButton: {fileID: 2119493426}
   m_FreeWatchSpinButton: {fileID: 1822160903}
+  m_CloseButton: {fileID: 759151884}
 --- !u!1 &611361332
 GameObject:
   m_ObjectHideFlags: 0
@@ -44104,6 +44105,7 @@ MonoBehaviour:
     m_Reward: {fileID: 11400000, guid: 5f89290d92c888544b1e99c6b3afbbfd, type: 2}
   - m_State: 1
     m_Reward: {fileID: 11400000, guid: 5620d9b9b711ba645aa5f04789f76bfb, type: 2}
+  m_RewardLenght: 0
 --- !u!1 &1083593626
 GameObject:
   m_ObjectHideFlags: 0
@@ -119913,6 +119915,10 @@ PrefabInstance:
     - target: {fileID: 3814314757155133575, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
       propertyPath: m_OnDataLoaded.m_PersistentCalls.m_Calls.Array.data[8].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904047336095579251, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
+      propertyPath: m_EnvironmentName
+      value: production
       objectReference: {fileID: 0}
     - target: {fileID: 5537331884271729272, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
       propertyPath: m_SignInOnStart

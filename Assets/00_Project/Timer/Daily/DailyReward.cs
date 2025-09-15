@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using UnityEngine;
 
 namespace LegionKnight
@@ -16,17 +17,8 @@ namespace LegionKnight
         private string ResetKey => DailyRewardKey + "reset";
         public static string DailyRewardKey => DailyRewardKeyInternal;
 
-        private int m_DayLoginCount;
-        private void AddDayLoginCount(int add)
-        {
-            m_DayLoginCount += add;
-            UnityService.Instance.SaveData(nameof(m_DayLoginCount), m_DayLoginCount);
-        }
-        private void SetDayLoginCount(int set)
-        {
-            m_DayLoginCount = set;
-            UnityService.Instance.SaveData(nameof(m_DayLoginCount), m_DayLoginCount);
-        }
+        [SerializeField, MMReadOnly]
+        private int m_RewardLenght; 
         private DailyRewardData GetDailyRewardDataInternal(LootDefinition loot)
         {
             foreach (var reward in m_Rewards)
@@ -48,6 +40,7 @@ namespace LegionKnight
         }
         private void RefreshInternal()
         {
+            m_RewardLenght = m_Rewards.Length;
             bool hasResetTime = UnityService.Instance.HasData(ResetKey);
             if (hasResetTime)
             {
@@ -55,7 +48,6 @@ namespace LegionKnight
                 if (isReset)
                 {
                     OnTimerReset();
-                    SetDayLoginCount(m_DayLoginCount);
                     Debug.Log($"{DailyRewardKeyInternal}: Timer reset, daily rewards are reset.");
                 }
                 else
@@ -72,10 +64,10 @@ namespace LegionKnight
         }
         private void DailyCheckState()
         {
-            for (int i = 0; i < m_Rewards.Length; i++)
+            for (int i = 0; i < m_Rewards.Length -1 ; i++)
             {
                 m_Rewards[i].CheckState();
-                int dayCountPassed = m_Timer.DayCountPassedSinceReset();
+                int dayCountPassed = m_Timer.DayCountPassedSinceReset() - 1;
                 bool isDayToClaim = i == dayCountPassed;
                 bool hasPassedDay = i < dayCountPassed;
                 if (isDayToClaim)
