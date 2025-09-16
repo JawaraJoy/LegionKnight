@@ -6,14 +6,21 @@ public partial class LevelPlaySample : MonoBehaviour
 {
     /*[SerializeField]
     private Texture2D lpLogo;*/
-
+    [SerializeField]
+    private string m_ActualAppKey = string.Empty;
+    [SerializeField]
+    private string m_InterstitialID = "Interstitial_Android";
+    [SerializeField]
+    private string m_RewardedID = "Rewarded_Android";
+    [SerializeField]
+    private string m_BanerID = "Banner_Android";
     private LevelPlayBannerAd bannerAd;
     private LevelPlayInterstitialAd interstitialAd;
     private LevelPlayRewardedAd rewardedVideoAd;
 
     bool isAdsEnabled = false;
 
-    public void Start()
+    public void Init()
     {
         Debug.Log("[LevelPlaySample] LevelPlay.ValidateIntegration");
         LevelPlay.ValidateIntegration();
@@ -26,7 +33,8 @@ public partial class LevelPlaySample : MonoBehaviour
 
         // SDK init
         Debug.Log("[LevelPlaySample] LevelPlay SDK initialization");
-        LevelPlay.Init(AdConfig.AppKey);
+        //LevelPlay.Init(AdConfig.AppKey);
+        LevelPlay.Init(m_ActualAppKey);
     }
 
     void EnableAds()
@@ -35,7 +43,8 @@ public partial class LevelPlaySample : MonoBehaviour
         LevelPlay.OnImpressionDataReady += ImpressionDataReadyEvent;
 
         // Create Rewarded Video object
-        rewardedVideoAd = new LevelPlayRewardedAd(AdConfig.RewardedVideoAdUnitId);
+        //rewardedVideoAd = new LevelPlayRewardedAd(AdConfig.RewardedVideoAdUnitId);
+        rewardedVideoAd = new LevelPlayRewardedAd(m_RewardedID);
 
         // Register to Rewarded Video events
         rewardedVideoAd.OnAdLoaded += RewardedVideoOnLoadedEvent;
@@ -48,7 +57,8 @@ public partial class LevelPlaySample : MonoBehaviour
         rewardedVideoAd.OnAdInfoChanged += RewardedVideoOnAdInfoChangedEvent;
 
         // Create Banner object
-        bannerAd = new LevelPlayBannerAd(AdConfig.BannerAdUnitId);
+        //bannerAd = new LevelPlayBannerAd(AdConfig.BannerAdUnitId);
+        bannerAd = new LevelPlayBannerAd(m_BanerID);
 
         // Register to Banner events
         bannerAd.OnAdLoaded += BannerOnAdLoadedEvent;
@@ -61,7 +71,8 @@ public partial class LevelPlaySample : MonoBehaviour
         bannerAd.OnAdExpanded += BannerOnAdExpandedEvent;
 
         // Create Interstitial object
-        interstitialAd = new LevelPlayInterstitialAd(AdConfig.InterstitalAdUnitId);
+        //interstitialAd = new LevelPlayInterstitialAd(AdConfig.InterstitalAdUnitId);
+        interstitialAd = new LevelPlayInterstitialAd(m_InterstitialID);
 
         // Register to Interstitial events
         interstitialAd.OnAdLoaded += InterstitialOnAdLoadedEvent;
@@ -171,6 +182,7 @@ public partial class LevelPlaySample : MonoBehaviour
         Debug.Log($"[LevelPlaySample] Received SdkInitializationCompletedEvent with Config: {config}");
         EnableAds();
         isAdsEnabled = true;
+        rewardedVideoAd.LoadAd();
     }
 
     void SdkInitializationFailedEvent(LevelPlayInitError error)
