@@ -21,11 +21,11 @@ namespace LegionKnight
         {
             return Player.Instance.GetRemainingTimeAsString(m_TimerId, TimerType.Daily);
         }
-        protected override bool IsTimeToResetInternal()
+        /*protected override bool IsTimeToResetInternal()
         {
             bool isResetDay = DateTime.Now.DayOfWeek == (System.DayOfWeek)m_ResetDay;
             return isResetDay;
-        }
+        }*/
 
         public override int DayCountPassedSinceReset()
         {

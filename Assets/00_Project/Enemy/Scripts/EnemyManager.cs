@@ -19,7 +19,7 @@ namespace LegionKnight
         }
         public void RemoveEnemy(IEnemy enemy)
         {
-            m_EnemyManager.AddEnemy(enemy);
+            m_EnemyManager.RemoveEnemy(enemy);
         }
         public void SetSpawningSpot(Transform spot)
         {

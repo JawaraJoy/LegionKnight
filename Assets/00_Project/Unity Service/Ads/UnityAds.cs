@@ -11,6 +11,8 @@ namespace LegionKnight
         private UnityAdSetting m_AdSetting;
 
         [SerializeField]
+        private UnityEvent<UnityAction> m_OnShow = new();
+        [SerializeField]
         private UnityEvent m_OnAdShowCompleted = new();
         [SerializeField]
         private UnityEvent m_OnAdShowFailed = new();
@@ -128,7 +130,8 @@ namespace LegionKnight
             }
             OnAdShowCompletedAddListerner(onCompleted);
             Advertisement.Show(GetRewardedID(), this);
-            //Advertisement.Load(GetRewardedID(), this); // Reload after showing
+            Advertisement.Load(GetRewardedID(), this); // Reload after showing
+            m_OnShow?.Invoke(onCompleted);
         }
         
         private MobileDevice GetDevice()

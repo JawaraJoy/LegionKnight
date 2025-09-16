@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<int> m_OnLevelUp = new ();
 
+        [SerializeField, MMReadOnly]
         private bool m_LevelUpTriggered = false;
 
         private void InitInternal()

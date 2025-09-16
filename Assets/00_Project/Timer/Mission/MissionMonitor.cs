@@ -71,11 +71,13 @@ namespace LegionKnight
 
         private void InitInternal(MissionController controller)
         {
+            if (!gameObject.activeInHierarchy) return;
             m_TitleText.text = controller.BehaviourName;
             foreach (var task in controller.Task)
             {
                 if (!HasMissionView(task.Definition))
                 {
+                    if (!enabled)return;
                     StartCoroutine(SpawningMissionView(task.Definition));
                 }
                 else

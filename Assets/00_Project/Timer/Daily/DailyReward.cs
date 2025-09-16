@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using UnityEngine;
 
 namespace LegionKnight
@@ -15,6 +16,9 @@ namespace LegionKnight
         private const string DailyRewardKeyInternal = "dailyreward";
         private string ResetKey => DailyRewardKey + "reset";
         public static string DailyRewardKey => DailyRewardKeyInternal;
+
+        [SerializeField, MMReadOnly]
+        private int m_RewardLenght; 
         private DailyRewardData GetDailyRewardDataInternal(LootDefinition loot)
         {
             foreach (var reward in m_Rewards)
@@ -36,6 +40,7 @@ namespace LegionKnight
         }
         private void RefreshInternal()
         {
+            m_RewardLenght = m_Rewards.Length;
             bool hasResetTime = UnityService.Instance.HasData(ResetKey);
             if (hasResetTime)
             {
@@ -59,10 +64,10 @@ namespace LegionKnight
         }
         private void DailyCheckState()
         {
-            for (int i = 0; i < m_Rewards.Length; i++)
+            for (int i = 0; i < m_Rewards.Length -1 ; i++)
             {
                 m_Rewards[i].CheckState();
-                int dayCountPassed = m_Timer.DayCountPassedSinceReset();
+                int dayCountPassed = m_Timer.DayCountPassedSinceReset() - 1;
                 bool isDayToClaim = i == dayCountPassed;
                 bool hasPassedDay = i < dayCountPassed;
                 if (isDayToClaim)

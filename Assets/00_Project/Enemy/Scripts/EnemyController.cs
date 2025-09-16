@@ -27,6 +27,8 @@ namespace LegionKnight
         private UnityEvent m_OnAnyEnemies;
         [SerializeField]
         private UnityEvent m_OnEnemyGone;
+        [SerializeField]
+        private UnityEvent<IEnemy> m_OnEnemyDeath;
 
         [SerializeField]
         private float m_Radius = 7f;
@@ -102,6 +104,7 @@ namespace LegionKnight
         public void RemoveEnemy(IEnemy enemy)
         {
             m_EnemyList.Remove(enemy);
+            m_OnEnemyDeath?.Invoke(enemy);
             CheckEnemy();
         }
     }

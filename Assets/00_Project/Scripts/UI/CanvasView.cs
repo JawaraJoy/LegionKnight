@@ -22,7 +22,7 @@ namespace LegionKnight
         {
             // set aplication bundle version code
 
-            m_GameVersionText.text = Application.version;
+            m_GameVersionText.text = $"Ver.{Application.version}";
         }
 
         protected T GetPanelInternal<T>() where T : PanelView
