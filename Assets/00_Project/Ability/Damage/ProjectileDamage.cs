@@ -79,8 +79,10 @@ namespace LegionKnight
         private void Move()
         {
             if (m_VelocityWitoutTarget == Vector2.zero) return;
-            m_Rb.linearVelocity = GetSpeed() * m_VelocityWitoutTarget;
-            Quaternion lookRotation = Quaternion.LookRotation(Vector3.forward, m_VelocityWitoutTarget);
+            //m_Rb.linearVelocity = GetSpeed() * m_VelocityWitoutTarget;
+            Vector2 localUp = transform.up;
+            m_Rb.linearVelocity = localUp * GetSpeed();
+            //Quaternion lookRotation = Quaternion.LookRotation(Vector3.forward, m_VelocityWitoutTarget);
         }
         private void FollowTarget()
         {

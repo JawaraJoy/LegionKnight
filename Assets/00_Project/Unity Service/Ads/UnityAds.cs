@@ -20,7 +20,7 @@ namespace LegionKnight
         private UnityEvent m_OnAdLoadFailed = new();
 
         private MobileDevice m_UseDevice;
-        private void Awake()
+        public void Init()
         {
             if (m_AdSetting == null)
             {

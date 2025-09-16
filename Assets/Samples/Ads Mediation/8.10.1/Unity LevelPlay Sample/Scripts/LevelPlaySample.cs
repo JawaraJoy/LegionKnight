@@ -184,7 +184,6 @@ public partial class LevelPlaySample : MonoBehaviour
     void RewardedVideoOnLoadedEvent(LevelPlayAdInfo adInfo)
     {
         Debug.Log($"[LevelPlaySample] Received RewardedVideoOnLoadedEvent With AdInfo: {adInfo}");
-        m_OnLoadedDone?.Invoke();
     }
 
     void RewardedVideoOnAdLoadFailedEvent(LevelPlayAdError error)

@@ -255,9 +255,9 @@ MonoBehaviour:
   - m_Id: hy34
     m_Threshold: 50
     m_Rewards:
-      m_Item: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
+      m_Item: {fileID: 11400000, guid: efac60ce3e3efd741b3f79517c1e5ef8, type: 2}
       m_IsUnique: 0
-      m_Amount: 35
+      m_Amount: 1
       m_Chance: 1
     m_OnClaims:
       m_PersistentCalls:
@@ -754,8 +754,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7147393638558586799}
   - component: {fileID: 2465254870434424546}
+  - component: {fileID: 2710249524532181283}
+  - component: {fileID: 7416617858326777958}
   m_Layer: 7
-  m_Name: SpenWheelManager
+  m_Name: SpinWheelManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -789,16 +791,268 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Definition: {fileID: 11400000, guid: 65f8808971d289244b8a4156be8bc9d7, type: 2}
+  m_SpinDraw:
+    m_CurrencyDefinition: {fileID: 11400000, guid: efac60ce3e3efd741b3f79517c1e5ef8, type: 2}
+    m_Amount: 0
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
+  m_FreeDrawWatch: 0
   m_StepOnIndex: 0
   m_MaxStepOnIndex: 0
   m_DelayStep: 0
   m_SelectedReward: {fileID: 0}
+  m_OnInitialized:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 46356b7d0d05acf4fa6b4c746650d38f, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.TaskDefinition, Assembly-CSharp
+        m_MethodName: AddDailyScore
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: d9aa63f9639f4904daea627e60150568, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.TaskDefinition, Assembly-CSharp
+        m_MethodName: AddDailyScore
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 3b243ad96f050f14e9c06497e3bba154, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.TaskDefinition, Assembly-CSharp
+        m_MethodName: AddDailyScore
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 68f320b6b08f7fa4daf903702bab0f7b, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.TaskDefinition, Assembly-CSharp
+        m_MethodName: AddDailyScore
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2710249524532181283}
+        m_TargetAssemblyTypeName: LegionKnight.SpinWheelMonitorAgent, Assembly-CSharp
+        m_MethodName: BusyButtons
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnStepChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2710249524532181283}
+        m_TargetAssemblyTypeName: LegionKnight.SpinWheelMonitorAgent, Assembly-CSharp
+        m_MethodName: SetSelected
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7416617858326777958}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnStepDone:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2710249524532181283}
+        m_TargetAssemblyTypeName: LegionKnight.SpinWheelMonitorAgent, Assembly-CSharp
+        m_MethodName: BusyButtons
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   m_OnClaim:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2710249524532181283}
+        m_TargetAssemblyTypeName: LegionKnight.SpinWheelMonitorAgent, Assembly-CSharp
+        m_MethodName: Claim
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7416617858326777958}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: ac4d961bc284bd740b341ae4efd5c970, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsBusy: 0
+--- !u!114 &2710249524532181283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1349983119356154942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4c7caceb866234284e9681fda57d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!82 &7416617858326777958
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1349983119356154942}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -2071899236069272324, guid: 57a7e273bad2f0a46bbef594e7e76507, type: 2}
+  m_audioClip: {fileID: 8300000, guid: 1be2fcc16ab0da84f99ba7c633037620, type: 3}
+  m_Resource: {fileID: 8300000, guid: 1be2fcc16ab0da84f99ba7c633037620, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1396604036348509970
 GameObject:
   m_ObjectHideFlags: 0
@@ -1479,6 +1733,9 @@ MonoBehaviour:
   - m_Definition: {fileID: 11400000, guid: 85986c109cd414c44ba697c32f9e7942, type: 2}
     m_ResetDateString: 
     m_TimeRemainingString: 
+  - m_Definition: {fileID: 11400000, guid: c3e84f60b7a8db04a86a6a328c1a12b7, type: 2}
+    m_ResetDateString: 
+    m_TimeRemainingString: 
 --- !u!1 &1714644440340643297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1985,6 +2242,18 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1483701800898399235}
         m_TargetAssemblyTypeName: LegionKnight.MissionController, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2465254870434424546}
+        m_TargetAssemblyTypeName: LegionKnight.SpinWheel, Assembly-CSharp
         m_MethodName: Init
         m_Mode: 1
         m_Arguments:
@@ -14178,7 +14447,7 @@ MonoBehaviour:
   - m_Id: 34y34
     m_Threshold: 50
     m_Rewards:
-      m_Item: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
+      m_Item: {fileID: 11400000, guid: efac60ce3e3efd741b3f79517c1e5ef8, type: 2}
       m_IsUnique: 0
       m_Amount: 1
       m_Chance: 1
@@ -14201,7 +14470,7 @@ MonoBehaviour:
   - m_Id: 321gfg
     m_Threshold: 150
     m_Rewards:
-      m_Item: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
+      m_Item: {fileID: 11400000, guid: efac60ce3e3efd741b3f79517c1e5ef8, type: 2}
       m_IsUnique: 0
       m_Amount: 1
       m_Chance: 1
@@ -14226,7 +14495,7 @@ MonoBehaviour:
     m_Rewards:
       m_Item: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
       m_IsUnique: 0
-      m_Amount: 2
+      m_Amount: 1
       m_Chance: 1
     m_OnClaims:
       m_PersistentCalls:
@@ -30842,6 +31111,29 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_CurrencyDefinition: {fileID: 11400000, guid: efac60ce3e3efd741b3f79517c1e5ef8, type: 2}
+    m_Amount: 1
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: 65f8808971d289244b8a4156be8bc9d7, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.SpinWheelDefinition, Assembly-CSharp
+          m_MethodName: SetSpinDraw
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
     m_OnCurrencyAmountGet:
       m_PersistentCalls:
         m_Calls: []

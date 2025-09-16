@@ -104,12 +104,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd147a758dd9b8a4e8bc11d7b21279ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTag: Player
-  rescanInterval: 0.25
+  lookMode: 0
   searchRadius: 100
   targetLayers:
     serializedVersion: 2
     m_Bits: 1048576
+  rescanInterval: 0.25
   rotateToward: 1
   flipSpriteXInstead: 0
   localForward: {x: 1, y: 0}
@@ -132,7 +132,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9135835583772817586
 Transform:
   m_ObjectHideFlags: 0
