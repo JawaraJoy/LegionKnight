@@ -51,11 +51,32 @@ MonoBehaviour:
   m_CinemachineCamera: {fileID: 2143795639033570863}
   m_CameraPostSets:
   - m_PostName: Home
+    m_TransitionDuration: 0.1
     m_Post: {x: 0, y: 4, z: -20}
+    m_OnPostStartSet:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnPostEndSet:
+      m_PersistentCalls:
+        m_Calls: []
   - m_PostName: Normal
-    m_Post: {x: 0, y: 6, z: -35}
+    m_TransitionDuration: 0.1
+    m_Post: {x: 0, y: 10, z: -35}
+    m_OnPostStartSet:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnPostEndSet:
+      m_PersistentCalls:
+        m_Calls: []
   - m_PostName: Gameplay
-    m_Post: {x: 0, y: 6, z: -65}
+    m_TransitionDuration: 1
+    m_Post: {x: 0, y: 17, z: -55}
+    m_OnPostStartSet:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnPostEndSet:
+      m_PersistentCalls:
+        m_Calls: []
   m_OnSetStayFollow:
     m_PersistentCalls:
       m_Calls:
@@ -503,7 +524,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 1}
+  m_BackGroundColor: {r: 0.11320752, g: 0.11320752, b: 0.11320752, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
