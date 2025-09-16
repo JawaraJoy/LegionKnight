@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 3839611178124201311}
   - component: {fileID: 1279521256923194067}
   - component: {fileID: 3501554558905267837}
+  - component: {fileID: -5901561782268725284}
   m_Layer: 16
   m_Name: Fire Ball
   m_TagString: Untagged
@@ -189,16 +190,27 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 25
+  m_Defend: 0
   m_Health: 0
   m_Shield: 0
   m_Barrier: 0
+  m_MaxHpRateDamage: 0
+  m_Fatal: 0
+  m_InstantDeath: 0
+  m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls: []
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:
@@ -221,6 +233,9 @@ MonoBehaviour:
   m_Rb: {fileID: 6974741219246434435}
   m_WithoutTarget: 1
   m_VelocityWitoutTarget: {x: 0, y: 1}
+  m_OnAbilityInitialized:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!50 &6974741219246434435
 Rigidbody2D:
   serializedVersion: 5
@@ -449,6 +464,30 @@ MonoBehaviour:
   m_OnSpawnIntervalStop:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-5901561782268725284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397423693318464373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd147a758dd9b8a4e8bc11d7b21279ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lookMode: 0
+  searchRadius: 100
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 163840
+  rescanInterval: 0.25
+  rotateToward: 1
+  flipSpriteXInstead: 0
+  localForward: {x: 0, y: 1}
+  rotationOffsetDegrees: 0
+  maxTurnSpeed: 720
+  spriteRenderer: {fileID: 0}
 --- !u!1 &1965929954154238019
 GameObject:
   m_ObjectHideFlags: 0

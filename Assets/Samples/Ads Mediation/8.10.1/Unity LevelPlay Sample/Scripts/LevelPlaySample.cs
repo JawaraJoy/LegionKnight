@@ -6,14 +6,15 @@ public partial class LevelPlaySample : MonoBehaviour
 {
     /*[SerializeField]
     private Texture2D lpLogo;*/
-
+    [SerializeField]
+    private string m_ActualAppKey;
     private LevelPlayBannerAd bannerAd;
     private LevelPlayInterstitialAd interstitialAd;
     private LevelPlayRewardedAd rewardedVideoAd;
 
     bool isAdsEnabled = false;
 
-    public void Start()
+    public void Init()
     {
         Debug.Log("[LevelPlaySample] LevelPlay.ValidateIntegration");
         LevelPlay.ValidateIntegration();
@@ -27,6 +28,7 @@ public partial class LevelPlaySample : MonoBehaviour
         // SDK init
         Debug.Log("[LevelPlaySample] LevelPlay SDK initialization");
         LevelPlay.Init(AdConfig.AppKey);
+        //LevelPlay.Init(m_ActualAppKey);
     }
 
     void EnableAds()
@@ -171,6 +173,7 @@ public partial class LevelPlaySample : MonoBehaviour
         Debug.Log($"[LevelPlaySample] Received SdkInitializationCompletedEvent with Config: {config}");
         EnableAds();
         isAdsEnabled = true;
+        rewardedVideoAd.LoadAd();
     }
 
     void SdkInitializationFailedEvent(LevelPlayInitError error)
@@ -184,7 +187,6 @@ public partial class LevelPlaySample : MonoBehaviour
     void RewardedVideoOnLoadedEvent(LevelPlayAdInfo adInfo)
     {
         Debug.Log($"[LevelPlaySample] Received RewardedVideoOnLoadedEvent With AdInfo: {adInfo}");
-        m_OnLoadedDone?.Invoke();
     }
 
     void RewardedVideoOnAdLoadFailedEvent(LevelPlayAdError error)

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9104572092508757171}
   - component: {fileID: 2120669921681704596}
   - component: {fileID: 4187943815262539689}
+  - component: {fileID: 2397934372415829028}
   m_Layer: 0
   m_Name: Triple Shot Poison
   m_TagString: Untagged
@@ -92,7 +93,7 @@ MonoBehaviour:
         m_Calls: []
   m_SpawnOnStart: 1
   m_IsSpawnInterval: 1
-  m_SpawnInterval: 0.2
+  m_SpawnInterval: 0.3
   m_MaxSpawnCount: 3
   m_OnSpawnIntervalStop:
     m_PersistentCalls:
@@ -118,6 +119,30 @@ MonoBehaviour:
   m_OnDestroyDone:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2397934372415829028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5604083311049017877}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd147a758dd9b8a4e8bc11d7b21279ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lookMode: 1
+  searchRadius: 100
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 163840
+  rescanInterval: 0.25
+  rotateToward: 1
+  flipSpriteXInstead: 0
+  localForward: {x: 0, y: 1}
+  rotationOffsetDegrees: 0
+  maxTurnSpeed: 720
+  spriteRenderer: {fileID: 0}
 --- !u!1 &6404833499241119415
 GameObject:
   m_ObjectHideFlags: 0
