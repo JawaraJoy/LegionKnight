@@ -16,17 +16,17 @@ public partial class LevelPlaySample : MonoBehaviour
 
     public void Init()
     {
-        Debug.Log("[LevelPlaySample] LevelPlay.ValidateIntegration");
+        //Debug.Log("[LevelPlaySample] LevelPlay.ValidateIntegration");
         LevelPlay.ValidateIntegration();
 
-        Debug.Log($"[LevelPlaySample] Unity version {LevelPlay.UnityVersion}");
+        //Debug.Log($"[LevelPlaySample] Unity version {LevelPlay.UnityVersion}");
 
         Debug.Log("[LevelPlaySample] Register initialization callbacks");
         LevelPlay.OnInitSuccess += SdkInitializationCompletedEvent;
         LevelPlay.OnInitFailed += SdkInitializationFailedEvent;
 
         // SDK init
-        Debug.Log("[LevelPlaySample] LevelPlay SDK initialization");
+        //Debug.Log("[LevelPlaySample] LevelPlay SDK initialization");
         LevelPlay.Init(AdConfig.AppKey);
         //LevelPlay.Init(m_ActualAppKey);
     }
@@ -170,7 +170,7 @@ public partial class LevelPlaySample : MonoBehaviour
 
     void SdkInitializationCompletedEvent(LevelPlayConfiguration config)
     {
-        Debug.Log($"[LevelPlaySample] Received SdkInitializationCompletedEvent with Config: {config}");
+        //Debug.Log($"[LevelPlaySample] Received SdkInitializationCompletedEvent with Config: {config}");
         EnableAds();
         isAdsEnabled = true;
         rewardedVideoAd.LoadAd();
@@ -178,7 +178,7 @@ public partial class LevelPlaySample : MonoBehaviour
 
     void SdkInitializationFailedEvent(LevelPlayInitError error)
     {
-        Debug.Log($"[LevelPlaySample] Received SdkInitializationFailedEvent with Error: {error}");
+        //Debug.Log($"[LevelPlaySample] Received SdkInitializationFailedEvent with Error: {error}");
     }
 
     #endregion
@@ -186,43 +186,43 @@ public partial class LevelPlaySample : MonoBehaviour
     #region AdInfo Rewarded Video
     void RewardedVideoOnLoadedEvent(LevelPlayAdInfo adInfo)
     {
-        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnLoadedEvent With AdInfo: {adInfo}");
+        //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnLoadedEvent With AdInfo: {adInfo}");
     }
 
     void RewardedVideoOnAdLoadFailedEvent(LevelPlayAdError error)
     {
-        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdLoadFailedEvent With Error: {error}");
+        //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdLoadFailedEvent With Error: {error}");
     }
 
     void RewardedVideoOnAdDisplayedEvent(LevelPlayAdInfo adInfo)
     {
-        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdDisplayedEvent With AdInfo: {adInfo}");
+        //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdDisplayedEvent With AdInfo: {adInfo}");
     }
 #pragma warning disable 0618
     void RewardedVideoOnAdDisplayedFailedEvent(LevelPlayAdDisplayInfoError error)
     {
-        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdDisplayedFailedEvent With Error: {error}");
+        //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdDisplayedFailedEvent With Error: {error}");
     }
 #pragma warning restore 0618
     void RewardedVideoOnAdRewardedEvent(LevelPlayAdInfo adInfo, LevelPlayReward reward)
     {
-        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdRewardedEvent With AdInfo: {adInfo} and Reward: {reward}");
+        //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdRewardedEvent With AdInfo: {adInfo} and Reward: {reward}");
         m_OnRewardedAdDone?.Invoke();
     }
 
     void RewardedVideoOnAdClickedEvent(LevelPlayAdInfo adInfo)
     {
-        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdClickedEvent With AdInfo: {adInfo}");
+        //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdClickedEvent With AdInfo: {adInfo}");
     }
 
     void RewardedVideoOnAdClosedEvent(LevelPlayAdInfo adInfo)
     {
-        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdClosedEvent With AdInfo: {adInfo}");
+        //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdClosedEvent With AdInfo: {adInfo}");
     }
 
     void RewardedVideoOnAdInfoChangedEvent(LevelPlayAdInfo adInfo)
     {
-        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdInfoChangedEvent With AdInfo {adInfo}");
+        //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdInfoChangedEvent With AdInfo {adInfo}");
     }
 
     #endregion
@@ -230,7 +230,7 @@ public partial class LevelPlaySample : MonoBehaviour
 
     void InterstitialOnAdLoadedEvent(LevelPlayAdInfo adInfo)
     {
-        Debug.Log($"[LevelPlaySample] Received InterstitialOnAdLoadedEvent With AdInfo: {adInfo}");
+        //Debug.Log($"[LevelPlaySample] Received InterstitialOnAdLoadedEvent With AdInfo: {adInfo}");
     }
 
     void InterstitialOnAdLoadFailedEvent(LevelPlayAdError error)
