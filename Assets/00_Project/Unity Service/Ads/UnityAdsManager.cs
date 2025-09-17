@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public partial class UnityAdsManager : UnityAds
+    public partial class UnityAdsManager : UnityAdsService
     {
         
     }

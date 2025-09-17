@@ -8,7 +8,7 @@ namespace LegionKnight
     {
         public void LoadRewardedAd()
         {
-            //UnityService.Instance.LoadRewardedAd();
+            UnityService.Instance.LoadRewardedAd();
         }
         public void LoadInterstitialAd()
         {

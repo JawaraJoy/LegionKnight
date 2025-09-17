@@ -103,6 +103,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3378064915125110339}
   - component: {fileID: 4585270441523613079}
+  - component: {fileID: 2495564333437545948}
   m_Layer: 0
   m_Name: Triple Shot Stun
   m_TagString: Untagged
@@ -145,7 +146,7 @@ MonoBehaviour:
   m_Skills:
   - m_StartingForce: {x: 0, y: 0}
     m_StartingRotation: {x: 0, y: 0, z: 0}
-    m_Local: 0
+    m_Local: 1
     m_ProjectileAsset:
       m_AssetGUID: 03711be0140833143ab87aba8ddb4193
       m_SubObjectName: 
@@ -158,7 +159,7 @@ MonoBehaviour:
         m_Calls: []
   - m_StartingForce: {x: 0, y: 0}
     m_StartingRotation: {x: 0, y: 0, z: -15}
-    m_Local: 0
+    m_Local: 1
     m_ProjectileAsset:
       m_AssetGUID: 8f836f8eba70d184b8e66fe45e9cf638
       m_SubObjectName: 
@@ -171,7 +172,7 @@ MonoBehaviour:
         m_Calls: []
   - m_StartingForce: {x: 0, y: 0}
     m_StartingRotation: {x: 0, y: 0, z: 15}
-    m_Local: 0
+    m_Local: 1
     m_ProjectileAsset:
       m_AssetGUID: 680558f8fda89cf4ca67e9b8ef3cb07f
       m_SubObjectName: 
@@ -189,3 +190,27 @@ MonoBehaviour:
   m_OnSpawnIntervalStop:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2495564333437545948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6630332035770632008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd147a758dd9b8a4e8bc11d7b21279ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lookMode: 0
+  searchRadius: 100
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 163840
+  rescanInterval: 0.25
+  rotateToward: 1
+  flipSpriteXInstead: 0
+  localForward: {x: 0, y: 1}
+  rotationOffsetDegrees: 0
+  maxTurnSpeed: 720
+  spriteRenderer: {fileID: 0}

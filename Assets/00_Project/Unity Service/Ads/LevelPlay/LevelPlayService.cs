@@ -15,7 +15,7 @@ namespace LegionKnight
             }
             else
             {
-                LoadToShowRewardedAddsInternal(() => ShowRewardedAddsInternal(onRewardAdd));
+                RewardedAdInternal.LoadAd();
             }
         }
 
@@ -26,11 +26,12 @@ namespace LegionKnight
             m_OnRewardedAdDone.AddListener(RewardedAdInternal.LoadAd);
             RewardedAdInternal.ShowAd();
         }
-
-        private void LoadToShowRewardedAddsInternal(UnityAction onLoaded)
+        public void LoadRewardedAds()
         {
-            m_OnLoadedDone?.RemoveAllListeners();
-            m_OnLoadedDone.AddListener(onLoaded);
+            LoadToShowRewardedAddsInternal();
+        }
+        private void LoadToShowRewardedAddsInternal()
+        {
             RewardedAdInternal.LoadAd();
         }
     }
@@ -39,9 +40,6 @@ namespace LegionKnight
 public partial class LevelPlaySample
 {
     protected LevelPlayRewardedAd RewardedAdInternal => rewardedVideoAd;
-
-    [SerializeField]
-    protected UnityEvent m_OnLoadedDone;
     [SerializeField]
     protected UnityEvent m_OnRewardedAdDone;
 }
