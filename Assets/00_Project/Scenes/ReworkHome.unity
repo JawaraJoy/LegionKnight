@@ -6268,6 +6268,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 127745275}
+  - component: {fileID: 127745276}
   m_Layer: 0
   m_Name: PushNotification
   m_TagString: Untagged
@@ -6290,6 +6291,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 977669913490827783}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &127745276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 127745274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9546a827c9f17d74184529bea33d3946, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GameTitle: Aether Jump
+  m_Note: Login to Claim Daily Reward
+  m_SmallIconKey: icon_0
+  m_LargeIconKey: icon_1
+  m_ScheduleInHour: 12
+  m_ScheduleInMinutes: 0
 --- !u!1 &128251981
 GameObject:
   m_ObjectHideFlags: 0
@@ -27449,7 +27468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2942122649447902150, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_Currencies.Array.data[0].m_OnCurrencyAmountChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -59993,6 +60012,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1539199965}
   m_CullTransparentMesh: 1
+--- !u!1 &1540188777 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7435551881046139338, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
+  m_PrefabInstance: {fileID: 977669913490827782}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1541312708
 GameObject:
   m_ObjectHideFlags: 0
@@ -118853,6 +118877,26 @@ PrefabInstance:
     - target: {fileID: 2212135461352782616, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
       propertyPath: m_Name
       value: UnityService
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904047336095579251, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
+      propertyPath: m_OnInitialized.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904047336095579251, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
+      propertyPath: m_OnInitialized.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904047336095579251, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
+      propertyPath: m_OnInitialized.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 1540188777}
+    - target: {fileID: 4904047336095579251, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
+      propertyPath: m_OnInitialized.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904047336095579251, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
+      propertyPath: m_OnInitialized.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: LegionKnight.UnityAdsService, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6224279411924951285, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -218855,7 +218899,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4383312550629586562
 RectTransform:
   m_ObjectHideFlags: 0
