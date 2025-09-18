@@ -1086,6 +1086,11 @@ namespace AppsFlyerSDK
         {
             Debug.Log(string.Format("AppsFlyer_Unity_v{0} {1} called with {2}", kAppsFlyerPluginVersion, methodName, str));
         }
+
+        public static void getConversionData(Action<object> value)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public enum EmailCryptType
