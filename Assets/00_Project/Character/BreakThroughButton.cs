@@ -27,6 +27,8 @@ namespace LegionKnight
         [SerializeField]
         private BreakThroughView m_UpgradeView;
 
+        private CharacterDefinition m_CharacterDefinition;
+
         private void OnEnable()
         {
             m_UpgradeButton.onClick.AddListener(ShowUpgradeView);
@@ -35,8 +37,17 @@ namespace LegionKnight
         {
             m_UpgradeButton.onClick.RemoveListener(ShowUpgradeView);
         }
+        public void Refresh()
+        {
+            if (m_CharacterDefinition == null)
+            {
+                m_CharacterDefinition = Player.Instance.SelectedCharacter;
+            }
+            Init(m_CharacterDefinition);
+        }
         public void Init(CharacterDefinition defi)
         {
+            m_CharacterDefinition = defi;
             CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
             m_CharacterUnit = unit;
 

@@ -1,0 +1,15 @@
+using UnityEngine;
+
+namespace LegionKnight
+{
+    public interface IDescriptable
+    {
+        string Id { get; }
+        string Label { get; }
+        string Description { get; }
+    }
+    public interface IDescriptAmountable : IDescriptable
+    {
+        int Amount { get; }
+    }
+}

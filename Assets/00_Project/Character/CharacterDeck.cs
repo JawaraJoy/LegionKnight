@@ -30,6 +30,7 @@ namespace LegionKnight
         public CharacterDefinition DefaultCharacter => m_DefaultCharacter;
         public List<CharacterUnit> CharacterUnits => m_CharacterUnits;
         public CharacterDefinition UsedCharacter => m_UsedCharacter;
+        public CharacterDefinition SelectedCharacter => m_SelectedCharacter;
         public StandbyPlatformDefinition GetHeroStandbyPlatform()
         {
             return GetCharacterUnitInternal(m_UsedCharacter).UniquePlatform;
@@ -54,6 +55,7 @@ namespace LegionKnight
             if (UnityService.Instance.HasData("usedcharacter"))
             {
                 m_UsedCharacter = GetCharacterUnitInternal(UnityService.Instance.GetData<string>("usedcharacter")).Definition;
+                m_SelectedCharacter = m_UsedCharacter;
             }
             else
             {

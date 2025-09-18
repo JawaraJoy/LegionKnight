@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 12
   m_SortingOrder: 12
   m_Sprite: {fileID: 21300000, guid: b394fe1ad772b874db02fc9fc85630d3, type: 3}
-  m_Color: {r: 0.90352154, g: 0.5186454, b: 0.990566, a: 1}
+  m_Color: {r: 0.23309009, g: 0.29531065, b: 0.509434, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -175,16 +175,27 @@ MonoBehaviour:
       m_Calls: []
   m_ContactableList: []
   m_Damage: 30
+  m_Defend: 0
   m_Health: 0
   m_Shield: 0
   m_Barrier: 0
+  m_MaxHpRateDamage: 0
+  m_Fatal: 0
+  m_InstantDeath: 0
+  m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
       m_Calls: []
   m_OnDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+  m_OnDefendChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnHealthRateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
   m_OnShieldChanged:
@@ -422,7 +433,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1397423693318464373}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 261a39fa5e38f6a49b1b6dfea3587667, type: 3}
   m_Name: 

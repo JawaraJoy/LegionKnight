@@ -35,10 +35,22 @@ namespace LegionKnight
         {
             InitInternal();
         }
+        public void Refresh()
+        {
+            InitInternalSelected();
+        }
+        private void InitInternalSelected()
+        {
+            CharacterDefinition selected = Player.Instance.SelectedCharacter;
+            if (selected == null) return;
+            SetCharacterSelectedInternal(selected);
+            OnInitInvoke(selected);
+
+        }
         private void InitInternal()
         {
             CharacterDefinition usedCharacter = Player.Instance.UsedCharacter;
-
+            if (usedCharacter == null) return;
             SetCharacterSelectedInternal(usedCharacter);
             OnInitInvoke(usedCharacter);
             
@@ -77,6 +89,7 @@ namespace LegionKnight
         }
         private void OnInitInvoke(CharacterDefinition defi)
         {
+            if (defi == null) return;
             m_OnInit?.Invoke(defi);
         }
     }
