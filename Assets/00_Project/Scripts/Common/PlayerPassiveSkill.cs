@@ -45,5 +45,9 @@ namespace LegionKnight
         {
             Player.Instance.SetPassiveCanActive(set);
         }
+        public void AddManaToAllSkill(int add)
+        {
+            Player.Instance.AddManaToAll(add);
+        }
     }
 }

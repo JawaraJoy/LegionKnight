@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Services.CloudSave.Models;
 using UnityEngine;
 
 namespace LegionKnight
@@ -15,6 +16,15 @@ namespace LegionKnight
                 CurrencyApplier(d, reward.Amount);
                 CharacterApplier(d);
                 PlatformApplier(d, reward.Amount);
+
+                if (d is IDescriptable descriptable)
+                {
+                    string itemName = descriptable.Label;
+                    if (gameObject.TryGetComponent(out TextView text))
+                    {
+                        text.SetText(itemName);
+                    }
+                }
             }
         }
 
@@ -45,10 +55,15 @@ namespace LegionKnight
 
         private IEnumerator CharcterDuplicated(CharacterDefinition character)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.5f);
             m_Icon.sprite = character.ShardConvert.CurrencyDefinition.Icon;
             m_Amount.text = character.ShardConvert.Amount.ToString();
             Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
+            string itemName = character.ShardConvert.CurrencyDefinition.Label;
+            if (gameObject.TryGetComponent(out TextView text))
+            {
+                text.SetText(itemName);
+            }
         }
         private void PlatformApplier(ScriptableObject defi, int amount)
         {
