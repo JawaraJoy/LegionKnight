@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public class SpineUI : MonoBehaviour
+    public class SpineUI : UIView
     {
         [SerializeField]
         private SkeletonGraphic m_SkeletonGraphic;
@@ -18,14 +18,27 @@ namespace LegionKnight
         private UnityEvent<SpineAnimDefinition> m_OnPause;
         [SerializeField]
         private UnityEvent<SpineAnimDefinition> m_OnResume;
+
         [SerializeField]
-        private UnityEvent<SpineAnimDefinition> m_OnEventTriggered;
+        private SpineEvent[] m_EventAnimation;
+
+        private SpineEvent GetSpineEvent(SpineAnimDefinition defi)
+        {
+            foreach (var e in m_EventAnimation)
+            {
+                if (e.Definition == defi)
+                {
+                    return e;
+                }
+            }
+            return null;
+        }
         public void Play(SpineAnimDefinition anim)
         {
             anim.PlayUI(m_SkeletonGraphic, ()=> OnCompleteInvoke(anim));
             OnPlayInvoke(anim);
-            if (anim.EventName == string.Empty) return;
             AddEventCallBack(anim);
+            
         }
         public void PauseUI(SpineAnimDefinition anim)
         {
@@ -40,20 +53,18 @@ namespace LegionKnight
 
         private void AddEventCallBack(SpineAnimDefinition anim)
         {
-            anim.AddEventCallBack(m_SkeletonGraphic, OnEventTriggered);
+            anim.AddEventCallBack(m_SkeletonGraphic, gameObject);
         }
 
-        private void OnEventTriggered(SpineAnimDefinition anim)
-        {
-            m_OnEventTriggered?.Invoke(anim);
-        }
         private void OnPlayInvoke(SpineAnimDefinition anim)
         {
             m_OnPlay?.Invoke(anim);
+            GetSpineEvent(anim).OnStart.Invoke();
         }
         private void OnCompleteInvoke(SpineAnimDefinition anim)
         {
             m_OnCompleted?.Invoke(anim);
+            GetSpineEvent(anim).OnEnd.Invoke();
         }
     }
 }

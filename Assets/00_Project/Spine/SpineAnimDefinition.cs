@@ -22,14 +22,11 @@ namespace LegionKnight
         private float m_NextAnimDelay = 0f;
 
         [SerializeField]
-        private string m_EventName;
-
-        private UnityEvent<SpineAnimDefinition> m_ActionOnEvent;
+        private SpineEventDefinition[] m_EventDefinition;
 
         public int AnimTrack => m_AnimTrack;
         public string AnimName => m_AnimName;
         public bool Loop => m_Loop;
-        public string EventName => m_EventName;
         public SpineAnimDefinition NextAnim => m_NextAnim;
         public void Play(SkeletonAnimation skeletonAnimation, UnityAction callback = null)
         {
@@ -93,19 +90,14 @@ namespace LegionKnight
             anim.timeScale = 1f;
         }
 
-        public void AddEventCallBack(SkeletonGraphic anim, UnityAction<SpineAnimDefinition> onEventTriggered)
+        public void AddEventCallBack(SkeletonGraphic anim, GameObject sender)
         {
-            m_ActionOnEvent.RemoveAllListeners();
-            anim.AnimationState.Event += HandleSpineEvent;
-            m_ActionOnEvent.AddListener(onEventTriggered);
-        }
-
-        private void HandleSpineEvent(TrackEntry trackEntry, Spine.Event e)
-        {
-            if (e.Data.Name == m_EventName)
+            foreach(var ev in m_EventDefinition)
             {
-                m_ActionOnEvent?.Invoke(this);
+                ev.AddEventCallBack(anim, sender);
             }
         }
     }
+
+    
 }
