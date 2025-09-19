@@ -4,12 +4,14 @@ using UnityEngine;
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "New Banner", menuName = "Legion Knight/Banner")]
-    public partial class BannerDefinition : ScriptableObject
+    public partial class BannerDefinition : ScriptableObject, IDescriptable
     {
         [SerializeField]
         private string m_Id;
         [SerializeField]
         private string m_Label;
+        [SerializeField]
+        private string m_Description;
         [SerializeField]
         private Sprite m_VisualBanner;
         [SerializeField]
@@ -34,6 +36,7 @@ namespace LegionKnight
         [SerializeField]
         private List<GachaReward> m_GachaRewards = new();
         public string Label => m_Label;
+        public string Description => m_Description;
         public int MultiDraw => m_MultiDraw;
         public int GuaranteedDraw => m_GuaranteedDraw;
         public int SmallPity => m_SmallPity;
@@ -52,10 +55,13 @@ namespace LegionKnight
     {
         [SerializeField]
         private ScriptableObject m_Definition;
+        [SerializeField, TextArea]
+        private string m_Description;
         [SerializeField]
         private int m_Amount;
         [SerializeField, Range(0f, 1f)]
         private float m_DropRate;
+        public string Description => m_Description;
         public ScriptableObject Definition => m_Definition;
         public float DropRate => m_DropRate;
         public int Amount => m_Amount;

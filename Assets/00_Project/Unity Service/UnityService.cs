@@ -19,8 +19,7 @@ namespace LegionKnight
         {
             try
             {
-                var options = new InitializationOptions()
-                    .SetEnvironmentName(m_EnvironmentName);
+                var options = new InitializationOptions().SetEnvironmentName(m_EnvironmentName);
 
                 await UnityServices.InitializeAsync(options);
                 // Notify that Unity Services have been initialized successfully.

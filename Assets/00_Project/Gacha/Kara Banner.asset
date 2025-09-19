@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: ladyban
   m_Label: Kara Solgrace
+  m_Description: 
   m_VisualBanner: {fileID: 21300000, guid: 46d34fa8ed243ff4b9e80d46352ff46e, type: 3}
   m_SmallVisualBanner: {fileID: 21300000, guid: 4042855532f8b0b44be98765a29c18dc, type: 3}
   m_PromoText: Claim Kara After 70 Draws
@@ -28,55 +29,72 @@ MonoBehaviour:
     m_Amount: 100
   m_MainRewards:
   - m_Definition: {fileID: 11400000, guid: 6ab4765dddb7254408e9bc24e3185dde, type: 2}
+    m_Description: 
     m_Amount: 1
     m_DropRate: 1
   m_SmallPityRewards:
   - m_Definition: {fileID: 11400000, guid: eaa139b553d9bda4bb604be4a8b2b4c1, type: 2}
+    m_Description: 
     m_Amount: 1
     m_DropRate: 1
   - m_Definition: {fileID: 11400000, guid: 9e93ed4a4163c4a478e65ae2db943e77, type: 2}
+    m_Description: 
     m_Amount: 1
     m_DropRate: 1
   m_GachaRewards:
   - m_Definition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
-    m_Amount: 10
-    m_DropRate: 0.77
+    m_Description: Level-up & BT coin economy fuel
+    m_Amount: 300
+    m_DropRate: 0.35
+  - m_Definition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
+    m_Description: Level-up & BT coin economy fuel
+    m_Amount: 400
+    m_DropRate: 0.2
+  - m_Definition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
+    m_Description: Level-up & BT coin economy fuel
+    m_Amount: 500
+    m_DropRate: 0.1
   - m_Definition: {fileID: 11400000, guid: 8f1136fecdb0fdf46b758b19e57f80c1, type: 2}
+    m_Description: Used in side maps / exchanges
     m_Amount: 1
     m_DropRate: 0.02
   - m_Definition: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
-    m_Amount: 1
-    m_DropRate: 0.017
-  - m_Definition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
-    m_Amount: 1
-    m_DropRate: 0.05
-  - m_Definition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
-    m_Amount: 2
-    m_DropRate: 0.02
-  - m_Definition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
-    m_Amount: 5
-    m_DropRate: 0.01
-  - m_Definition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
-    m_Amount: 20
-    m_DropRate: 0.2
-  - m_Definition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
-    m_Amount: 50
-    m_DropRate: 0.1
-  - m_Definition: {fileID: 11400000, guid: 5423f2f9cee332543902f0610357254e, type: 2}
-    m_Amount: 1
-    m_DropRate: 0.2
-  - m_Definition: {fileID: 11400000, guid: 37c60ec1cb33aa741b448330b2228b3c, type: 2}
-    m_Amount: 1
-    m_DropRate: 0.2
-  - m_Definition: {fileID: 11400000, guid: 9e93ed4a4163c4a478e65ae2db943e77, type: 2}
-    m_Amount: 1
-    m_DropRate: 0.03
-  - m_Definition: {fileID: 11400000, guid: eaa139b553d9bda4bb604be4a8b2b4c1, type: 2}
+    m_Description: Used in side maps / exchanges
     m_Amount: 1
     m_DropRate: 0.03
   - m_Definition: {fileID: 11400000, guid: efac60ce3e3efd741b3f79517c1e5ef8, type: 2}
+    m_Description: Get 1 Chance to Spin Wheel
+    m_Amount: 1
+    m_DropRate: 0.03
+  - m_Definition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
+    m_Description: Direct BT material, used for any hero
+    m_Amount: 1
+    m_DropRate: 0.05
+  - m_Definition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
+    m_Description: Direct BT material, used for any hero
+    m_Amount: 2
+    m_DropRate: 0.03
+  - m_Definition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
+    m_Description: Direct BT material, used for any hero
+    m_Amount: 5
+    m_DropRate: 0.02
+  - m_Definition: {fileID: 11400000, guid: 5423f2f9cee332543902f0610357254e, type: 2}
+    m_Description: Easy BT3 for F2P; 1 shard per dupe = strong early loop
+    m_Amount: 1
+    m_DropRate: 0.06
+  - m_Definition: {fileID: 11400000, guid: 37c60ec1cb33aa741b448330b2228b3c, type: 2}
+    m_Description: Easy BT3 for F2P; 1 shard per dupe = strong early loop
+    m_Amount: 1
+    m_DropRate: 0.06
+  - m_Definition: {fileID: 11400000, guid: 9e93ed4a4163c4a478e65ae2db943e77, type: 2}
+    m_Description: Mid-tier unit; dupe = 5 conviction shards
+    m_Amount: 1
+    m_DropRate: 0.02
+  - m_Definition: {fileID: 11400000, guid: eaa139b553d9bda4bb604be4a8b2b4c1, type: 2}
+    m_Description: Balanced with Caelis
     m_Amount: 1
     m_DropRate: 0.02
   - m_Definition: {fileID: 11400000, guid: 6ab4765dddb7254408e9bc24e3185dde, type: 2}
+    m_Description: Ultra rare target; dupe = 20 conviction shards; pity protected
     m_Amount: 1
     m_DropRate: 0.01

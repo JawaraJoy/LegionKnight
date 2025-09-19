@@ -64,6 +64,7 @@ namespace LegionKnight
         }
         public List<CharacterUnit> CharacterUnits => m_PlayerDeck.CharacterUnits;
         public CharacterDefinition UsedCharacter => m_PlayerDeck.UsedCharacter;
+        public CharacterDefinition SelectedCharacter => m_PlayerDeck.SelectedCharacter;
     }
     public partial class PlayerAgent
     {
