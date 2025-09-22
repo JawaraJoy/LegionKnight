@@ -103,6 +103,10 @@ namespace LegionKnight
             {
                 Player.Instance.AddPlatformAmount(plat, m_Amount);
             }
+            else if (m_Object is EnergyDefinition ene)
+            {
+                Player.Instance.AddEnergy(ene, m_Amount);
+            }
         }
 
         public string GetLabel()
@@ -127,6 +131,10 @@ namespace LegionKnight
             {
                 return plat.Label;
             }
+            else if (m_Object is EnergyDefinition ene)
+            {
+                return ene.Label;
+            }
             return "";
         }
         private Sprite GetIconInternal()
@@ -142,6 +150,10 @@ namespace LegionKnight
             else if (m_Object is StandbyPlatformDefinition plat)
             {
                 return plat.Icon;
+            }
+            else if (m_Object is EnergyDefinition ene)
+            {
+                return ene.Icon;
             }
             return null;
         }

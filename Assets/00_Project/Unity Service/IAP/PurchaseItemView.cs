@@ -33,7 +33,10 @@ namespace LegionKnight
                         break;
 
                 }
-                
+                if (TryGetComponent(out TextView textView))
+                {
+                    textView.SetText(item.GetLabel());
+                }
             }
         }
     }

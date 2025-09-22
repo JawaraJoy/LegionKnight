@@ -200,6 +200,7 @@ GameObject:
   - component: {fileID: 2019127488247714569}
   - component: {fileID: 3678917805274228738}
   - component: {fileID: 7775729261053811712}
+  - component: {fileID: 6825734986637457607}
   m_Layer: 0
   m_Name: Cloud Save
   m_TagString: Untagged
@@ -346,6 +347,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 6825734986637457607}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerCutSceneManagerAgent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1069859614771893739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,6 +442,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1aab024184ec98940bf578c25671a735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6825734986637457607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2484120564562140198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f50ddce98b7706d4ea8220f1032b0f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2831577676660342122

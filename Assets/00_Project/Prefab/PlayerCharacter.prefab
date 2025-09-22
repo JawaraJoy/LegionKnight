@@ -1,5 +1,107 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9481597568108614
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9007811877491898679}
+  - component: {fileID: 6099482962963227866}
+  - component: {fileID: 6124699426264628548}
+  - component: {fileID: 7164531371028308305}
+  m_Layer: 7
+  m_Name: PlayerCutSceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9007811877491898679
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9481597568108614}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6099482962963227866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9481597568108614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 287d21df3071fe143bc7fb4f6729728c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HasBeenWatchFirstCutScene: 0
+  m_OnAlreadyWatchFirstCutScene:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7164531371028308305}
+        m_TargetAssemblyTypeName: LegionKnight.MainCanvasAgent, Assembly-CSharp
+        m_MethodName: ShowPanel
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Welcome
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnNeverWatchFirstCutScene:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6124699426264628548}
+        m_TargetAssemblyTypeName: LegionKnight.CutScenePanelAgent, Assembly-CSharp
+        m_MethodName: PlayUI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6124699426264628548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9481597568108614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f009bad119e05c64d81d225ea878464f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Definition: {fileID: 11400000, guid: ccdf1c7886410794bb3017e5c4aa885c, type: 2}
+--- !u!114 &7164531371028308305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9481597568108614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5214bbada244faa48978c14a884456f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &60301724562514633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1979,6 +2081,7 @@ Transform:
   - {fileID: 8786173526175022688}
   - {fileID: 5934124704068876473}
   - {fileID: 7147393638558586799}
+  - {fileID: 9007811877491898679}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3377274384242518752
@@ -2279,6 +2382,7 @@ MonoBehaviour:
   m_PlayerTouchDown: {fileID: 7758370064416613710}
   m_Weaponer: {fileID: 6368892546450467708}
   m_SpinWheelManager: {fileID: 2465254870434424546}
+  m_PlayerCutSceneManager: {fileID: 6099482962963227866}
   m_PlayerSpine: {fileID: 6263319407828473327}
   m_TimerManager: {fileID: 1094032072568628607}
 --- !u!114 &6867498596800542263
@@ -31472,8 +31576,12 @@ MonoBehaviour:
     m_StanbyPlatform: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
   - m_IsOwned: 0
     m_IsEquiped: 0
-    m_Amount: 10
+    m_Amount: 0
     m_StanbyPlatform: {fileID: 11400000, guid: 8f1136fecdb0fdf46b758b19e57f80c1, type: 2}
+  - m_IsOwned: 0
+    m_IsEquiped: 0
+    m_Amount: 5
+    m_StanbyPlatform: {fileID: 11400000, guid: 6777ce0c67b23f6468993700e663a76d, type: 2}
   m_OnInitialized:
     m_PersistentCalls:
       m_Calls: []

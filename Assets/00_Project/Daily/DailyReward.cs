@@ -67,7 +67,7 @@ namespace LegionKnight
             for (int i = 0; i < m_Rewards.Length -1 ; i++)
             {
                 m_Rewards[i].CheckState();
-                int dayCountPassed = m_Timer.DayCountPassedSinceReset() - 1;
+                int dayCountPassed = m_Timer.DayCountPassedSinceReset();
                 bool isDayToClaim = i == dayCountPassed;
                 bool hasPassedDay = i < dayCountPassed;
                 if (isDayToClaim)
