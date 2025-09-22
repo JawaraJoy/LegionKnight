@@ -34,7 +34,12 @@ namespace LegionKnight
         private IEnumerator CheckingForUpdate()
         {
             m_OnCheckForUpdate?.Invoke();
-            m_AppUpdateManager = new AppUpdateManager();
+#if UNITY_ANDROID && !UNITY_EDITOR
+            var appUpdateManager = new AppUpdateManager();
+            // run your real update check here
+#else
+            Debug.Log("In-App Update check skipped (not running on Android).");
+#endif
             var appUpdateInfoAsync = m_AppUpdateManager.GetAppUpdateInfo();
             yield return appUpdateInfoAsync;
             if (appUpdateInfoAsync.IsSuccessful)
