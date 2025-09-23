@@ -64,12 +64,15 @@ namespace LegionKnight
         }
         private void DailyCheckState()
         {
-            for (int i = 0; i < m_Rewards.Length -1 ; i++)
+            for (int i = 0; i < m_Rewards.Length; i++)
             {
                 m_Rewards[i].CheckState();
+
                 int dayCountPassed = m_Timer.DayCountPassedSinceReset();
+
                 bool isDayToClaim = i == dayCountPassed;
                 bool hasPassedDay = i < dayCountPassed;
+
                 if (isDayToClaim)
                 {
                     if (m_Rewards[i].State == DailyRewardState.OFF)
@@ -82,6 +85,7 @@ namespace LegionKnight
                 {
                     Debug.Log($"{DailyRewardKeyInternal}: Reward for day {i + 1} is not yet available.");
                 }
+
                 if (hasPassedDay && m_Rewards[i].State != DailyRewardState.CLAIMED)
                 {
                     m_Rewards[i].Pass();

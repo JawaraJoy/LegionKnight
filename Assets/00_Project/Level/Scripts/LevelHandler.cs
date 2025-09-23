@@ -238,6 +238,7 @@ namespace LegionKnight
                 Player.Instance.SetPause(false);
             }
             DelayActionInternal(1f, action);
+            SetLastPlayerPositionInternal(m_LevelObject.PlayerStartPostion.position);
         }
         private void DelayActionInternal(float delay, UnityAction action)
         {
