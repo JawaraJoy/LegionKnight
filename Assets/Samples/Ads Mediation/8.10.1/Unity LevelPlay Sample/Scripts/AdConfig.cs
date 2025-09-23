@@ -9,7 +9,7 @@ public static class AdConfig
     {
         #if UNITY_ANDROID
             //return "85460dcd";
-            return "239bf6d6d";
+            return "239bf6d6d"; // from levelplay
         #elif UNITY_IPHONE
             return "8545d445";
 #else
@@ -44,7 +44,7 @@ public static class AdConfig
     {
         #if UNITY_ANDROID
             //return "76yy3nay3ceui2a3";
-        return "2idc0jgbu3bxhqvv";
+        return "2idc0jgbu3bxhqvv"; // from levelplay
         #elif UNITY_IPHONE
             return "qwouvdrkuwivay5q";
 #else

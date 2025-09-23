@@ -1,4 +1,4 @@
-using GooglePlayGames;
+//using GooglePlayGames;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Authentication.PlayerAccounts;
@@ -167,7 +167,7 @@ namespace LegionKnight
         }
         private async void GoogleplayRequestToken()
         {
-            PlayGamesPlatform.Instance.RequestServerSideAccess(true, SetGooglePlayToken);
+            //PlayGamesPlatform.Instance.RequestServerSideAccess(true, SetGooglePlayToken);
             await GooglePlayAuthenticateWithUnity();
         }
 
@@ -181,7 +181,7 @@ namespace LegionKnight
             try
             {
                 await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(m_GooglePlayToken);
-                m_OnSignInSuccess?.Invoke(PlayGamesPlatform.Instance.GetUserDisplayName());
+               // m_OnSignInSuccess?.Invoke(PlayGamesPlatform.Instance.GetUserDisplayName());
             }
             catch (AuthenticationException e)
             {

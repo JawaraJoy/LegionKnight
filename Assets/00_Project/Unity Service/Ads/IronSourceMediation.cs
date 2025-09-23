@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace LegionKnight
-{
+{/*
     public partial class IronSourceMediation : MonoBehaviour
     {
         [SerializeField]
@@ -17,5 +17,5 @@ namespace LegionKnight
         {
             IronSourceAdQuality.Initialize(AppIDInternal);
         }
-    }
+    }*/
 }

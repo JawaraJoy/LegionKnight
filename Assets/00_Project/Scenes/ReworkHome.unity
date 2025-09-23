@@ -14601,8 +14601,8 @@ MonoBehaviour:
   m_MissionViewAsset:
     m_AssetGUID: f287694c1f710034c99829c7f18d847a
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_TitleText: {fileID: 1466643753}
   m_OveralProgressAmountText: {fileID: 1568461717}
@@ -23081,8 +23081,8 @@ MonoBehaviour:
   m_LootViewAsset:
     m_AssetGUID: 0f97808b5e7021b43a4893f80094c403
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 1738126172}
   m_SpawnedLoots: []
@@ -32188,8 +32188,8 @@ MonoBehaviour:
   m_LootViewAsset:
     m_AssetGUID: 0f97808b5e7021b43a4893f80094c403
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 1228139246}
   m_SpawnedLoots: []
@@ -54262,6 +54262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33fbb0c91092fbb4db411022819e3d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_UpdateMode: 0
   m_OnCheckForUpdate:
     m_PersistentCalls:
       m_Calls:
@@ -54286,7 +54287,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Check for Update ...
+          m_StringArgument: Check for Update ...!
           m_BoolArgument: 0
         m_CallState: 2
   m_OnUpdateInfo:
@@ -54311,6 +54312,57 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
         m_MethodName: SetAvailableInfo
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnUpToDate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1047774951}
+        m_TargetAssemblyTypeName: LegionKnight.GoogleAuthAgent, Assembly-CSharp
+        m_MethodName: StartSignInWithGoogle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 1047774952}
+        m_TargetAssemblyTypeName: LegionKnight.AuthenticationAgent, Assembly-CSharp
+        m_MethodName: SignInAnonymously
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1047774953}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: SetCheckText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Version is Up to date
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1047774953}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -54355,12 +54407,36 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Version is Up to date!
+          m_StringArgument: Download Completed
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1047774953}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
   m_OnFailed:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1047774953}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: ShowFail
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1047774953}
         m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
         m_MethodName: SetCheckText
@@ -54376,6 +54452,18 @@ MonoBehaviour:
   m_OnCanceled:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1047774953}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: ShowFail
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1047774953}
         m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
         m_MethodName: SetCheckText
@@ -62279,8 +62367,8 @@ MonoBehaviour:
   m_LootViewAsset:
     m_AssetGUID: 0f97808b5e7021b43a4893f80094c403
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 1274122028}
   m_SpawnedLoots: []
@@ -78652,8 +78740,8 @@ MonoBehaviour:
   m_LootViewAsset:
     m_AssetGUID: 0f97808b5e7021b43a4893f80094c403
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 372402214}
   m_SpawnedLoots: []
@@ -84944,7 +85032,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1779074831}
         m_TargetAssemblyTypeName: LegionKnight.InAppUpdateAvailable, Assembly-CSharp
         m_MethodName: Quit
         m_Mode: 1
@@ -90631,8 +90719,8 @@ MonoBehaviour:
   m_LootViewAsset:
     m_AssetGUID: 94f8a619a6caf904191d9a3d568d2b42
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 2095483619}
   m_SpawnedLoots: []
@@ -91993,8 +92081,8 @@ MonoBehaviour:
   m_LootViewAsset:
     m_AssetGUID: 94f8a619a6caf904191d9a3d568d2b42
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 2084149884}
   m_SpawnedLoots: []
@@ -98044,8 +98132,8 @@ MonoBehaviour:
   m_LootViewAsset:
     m_AssetGUID: e6fb25ee386713247b6234c6945350b1
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 643942843}
   m_SpawnedLoots: []
@@ -99852,8 +99940,8 @@ MonoBehaviour:
   m_LootViewAsset:
     m_AssetGUID: 0f97808b5e7021b43a4893f80094c403
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LootViewSpawn: {fileID: 717058953}
   m_SpawnedLoots: []
@@ -107223,8 +107311,8 @@ MonoBehaviour:
   m_MissionViewAsset:
     m_AssetGUID: d702468b82c6f544b817c47109e8c257
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_TitleText: {fileID: 1466643753}
   m_OveralProgressAmountText: {fileID: 1666201927}
@@ -116296,8 +116384,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 8870622503747858871}
   m_PriceText: {fileID: 203624084674904659}
@@ -122816,32 +122904,32 @@ MonoBehaviour:
     m_BosAsset:
       m_AssetGUID: fe9c604675437814b85553ad3b38e325
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_IsDefeated: 0
   - m_BosDefinition: {fileID: 11400000, guid: 5a68040cac9ab05438e4c05e43b02873, type: 2}
     m_BosAsset:
       m_AssetGUID: c9e392a46c040ad41b7fe2235bd60b46
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_IsDefeated: 1
   - m_BosDefinition: {fileID: 11400000, guid: ac1a7afc39d60ac4da9292a748615584, type: 2}
     m_BosAsset:
       m_AssetGUID: fe9c604675437814b85553ad3b38e325
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_IsDefeated: 0
   - m_BosDefinition: {fileID: 11400000, guid: 7f6383f198bd3e149a03264ffe82810c, type: 2}
     m_BosAsset:
       m_AssetGUID: fe9c604675437814b85553ad3b38e325
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_IsDefeated: 0
 --- !u!222 &254186666061237840
@@ -145355,8 +145443,8 @@ MonoBehaviour:
   m_CharacterSelectViewAsset:
     m_AssetGUID: 19bd120e7f3d4814cbac6ae103a7125b
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_SpawnedCharacterSelectView: []
   m_SpawnContainer: {fileID: 8779249714825932853}
@@ -178260,10 +178348,10 @@ RectTransform:
   - {fileID: 8173912258271124921}
   m_Father: {fileID: 8918480100888976829}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 482.5, y: -135}
+  m_SizeDelta: {x: 461.66666, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2097864499246127081
 CanvasRenderer:
@@ -178836,10 +178924,10 @@ RectTransform:
   - {fileID: 393263824343891281}
   m_Father: {fileID: 355094257056614289}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 538.3333, y: -67.5}
+  m_SizeDelta: {x: 1076.6666, y: 135}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2115158696317607665
 CanvasRenderer:
@@ -201453,8 +201541,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 8728931906621816995}
   m_PriceText: {fileID: 1880645510828211739}
@@ -203707,10 +203795,10 @@ RectTransform:
   - {fileID: 5070461604918974753}
   m_Father: {fileID: 1044644134819698830}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 803.75, y: -67.5}
+  m_SizeDelta: {x: 515.8333, y: 135}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &2941855147357297587
 RectTransform:
@@ -209302,8 +209390,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 4910985901105014474}
   m_PriceText: {fileID: 1545474848648957553}
@@ -220287,8 +220375,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 2210646074727935537}
   m_PriceText: {fileID: 4894180629757428855}
@@ -232228,8 +232316,8 @@ MonoBehaviour:
   m_ItemViewAsset:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_SpawnPost: {fileID: 592888852038273362}
   m_SpawnedItemViews: []
@@ -239352,8 +239440,8 @@ MonoBehaviour:
   m_SkillViewAsset:
     m_AssetGUID: 8dac74c6a76c2f84c924901b6587de6c
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_SkillViews:
   - {fileID: 4249696144862650924}
@@ -239547,8 +239635,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 2906696491224524849}
   m_PriceText: {fileID: 1583193746681386396}
@@ -241040,10 +241128,10 @@ RectTransform:
   - {fileID: 748751030210044887}
   m_Father: {fileID: 8173912258271124921}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 230.83333, y: -197.86917}
+  m_SizeDelta: {x: 461.66666, y: 79.14767}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4219525849570685817
 MonoBehaviour:
@@ -247586,8 +247674,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 9100740657765893179}
   m_PriceText: {fileID: 3690405539942355693}
@@ -249495,8 +249583,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 6762957199759786037}
   m_PriceText: {fileID: 4794940539113006854}
@@ -257300,8 +257388,8 @@ MonoBehaviour:
   m_PlatformSelectViewAsset:
     m_AssetGUID: 6651ca92f01944f49869dd4be272c541
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_SpawnSpot: {fileID: 6320714326546914314}
 --- !u!1 &4779035453456921773
@@ -263062,10 +263150,10 @@ RectTransform:
   - {fileID: 5622296449067402567}
   m_Father: {fileID: 8173912258271124921}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 230.83333, y: -79.14767}
+  m_SizeDelta: {x: 461.66666, y: 158.29533}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4953239784197523431
 GameObject:
@@ -270479,8 +270567,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 9218586525743832166}
   m_PriceText: {fileID: 6008059314768717306}
@@ -274928,10 +275016,10 @@ RectTransform:
   - {fileID: 1791141864328722338}
   m_Father: {fileID: 8918480100888976829}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 113.33333, y: -135}
+  m_SizeDelta: {x: 226.66666, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5419732912089573024
 CanvasRenderer:
@@ -277441,8 +277529,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 2961988741999777940}
   m_PriceText: {fileID: 7985501820181809811}
@@ -281178,10 +281266,10 @@ RectTransform:
   - {fileID: 3251223719925628937}
   m_Father: {fileID: 4950453299377053266}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 230.83333, y: -79.14767}
+  m_SizeDelta: {x: 461.66666, y: 158.29533}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5623993524501973178
 MonoBehaviour:
@@ -289537,8 +289625,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 1714313741780537655}
   m_PriceText: {fileID: 6691973170515717541}
@@ -297704,8 +297792,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 4925502551076254190}
   m_PriceText: {fileID: 8118094298567077752}
@@ -298153,10 +298241,10 @@ RectTransform:
   - {fileID: 4070674217533829543}
   m_Father: {fileID: 1044644134819698830}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 272.91666, y: -67.5}
+  m_SizeDelta: {x: 515.8333, y: 135}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6180916243465931149
 CanvasRenderer:
@@ -305468,10 +305556,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3251223719925628937}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 230.83333, y: -79.14767}
+  m_SizeDelta: {x: 461.66666, y: 158.29533}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!82 &6412306463116094881
 AudioSource:
@@ -313143,8 +313231,8 @@ MonoBehaviour:
   m_ItemViewAsset:
     m_AssetGUID: 96bf94982791dba4a9126215150424ad
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_SpawnPost: {fileID: 1115917034024961989}
   m_SpawnedItemViews: []
@@ -330797,8 +330885,8 @@ MonoBehaviour:
   m_RankScoreViewAsset:
     m_AssetGUID: 793287b01962a9648a5c680d0698ab8c
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_Spawn: {fileID: 4422578492050834377}
   m_RankScoreViews: []
@@ -346398,8 +346486,8 @@ MonoBehaviour:
   m_ItemViewAsset:
     m_AssetGUID: eb14f99dcac0d1644ac6d0f60e280e49
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_SpawnPost: {fileID: 5726210244648340663}
   m_SpawnedItemViews: []
@@ -359925,8 +360013,8 @@ MonoBehaviour:
   m_ItemViewPrefab:
     m_AssetGUID: 63aacc22b3d2cb24baf1c3486cfceb33
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_LabelText: {fileID: 4819486573131191553}
   m_PriceText: {fileID: 3493329636598831092}
@@ -374919,8 +375007,8 @@ MonoBehaviour:
   m_SkillViewAsset:
     m_AssetGUID: 9603b0c99e8887a4c89623048ae8d51d
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_SkillViews: []
 --- !u!224 &8635889536046239315
@@ -381227,10 +381315,10 @@ RectTransform:
   - {fileID: 1044644134819698830}
   m_Father: {fileID: 355094257056614289}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 538.3333, y: -202.5}
+  m_SizeDelta: {x: 1076.6666, y: 135}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8864889480282239027
 GameObject:

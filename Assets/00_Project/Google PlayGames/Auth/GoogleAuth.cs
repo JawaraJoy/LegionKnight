@@ -1,5 +1,5 @@
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
+//using GooglePlayGames;
+//using GooglePlayGames.BasicApi;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
@@ -23,7 +23,7 @@ namespace LegionKnight
         private string m_GooglePlayEror;
         public string GooglePlayToken => m_GooglePlayToken;
         public string GooglePlayEror => m_GooglePlayEror;
-        private void Awake()
+        /*private void Awake()
         {
             PlayGamesPlatform.Activate();
         }
@@ -48,7 +48,7 @@ namespace LegionKnight
 
         private void ProcessAuthentication(SignInStatus signInStatus)
         {
-            /*switch (signInStatus)
+            *//*switch (signInStatus)
             {
                 case SignInStatus.Success:
                     // Sign-in was successful
@@ -68,7 +68,7 @@ namespace LegionKnight
                 default:
                     
                     break;
-            }*/
+            }*//*
             if (signInStatus == SignInStatus.Success)
             {
                 GoogleplayRequestToken();
@@ -120,7 +120,8 @@ namespace LegionKnight
                 Debug.LogError(ec);
             }
         }
-    }
+    }*/
+        }
 
     public partial class GooglePlayService
     {
@@ -129,7 +130,7 @@ namespace LegionKnight
 
         public void StartSignInWithGoogle()
         {
-            m_Authentication.StartSignInWithGoogle();
+            //m_Authentication.StartSignInWithGoogle();
         }
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -29,4 +29,4 @@ public class CountdownTimer : MonoBehaviour
         AdsObject.GetComponent<AdsManager>().ShowRewarded();
         Debug.Log("Countdown reached zero!");
     }
-}
+}*/
