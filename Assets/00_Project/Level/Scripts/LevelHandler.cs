@@ -147,6 +147,7 @@ namespace LegionKnight
             {
                 levelSelect.Init();
             }
+            
         }
 
 
@@ -470,6 +471,7 @@ namespace LegionKnight
             m_LevelObject.RemoveBos();
             bool hasBos = m_SelectedLevelDefinition.HasBoss();
             GameManager.Instance.SetActiveBosIndicatorView(hasBos);
+            SetLastPlayerPositionInternal(Vector2.zero);
         }
         public void StartBos()
         {
