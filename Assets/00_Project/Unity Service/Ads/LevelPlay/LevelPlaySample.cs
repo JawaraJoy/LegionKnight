@@ -1,3 +1,4 @@
+using LegionKnight;
 using Unity.Services.LevelPlay;
 using UnityEngine;
 
@@ -200,6 +201,12 @@ public partial class LevelPlaySample : MonoBehaviour
     {
         Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdRewardedEvent With AdInfo: {adInfo} and Reward: {reward}");
         m_OnRewardedAdDone?.Invoke();
+        string adNetwork = adInfo.AdNetwork;
+        string adRevenue = adInfo.Revenue.ToString();
+        string adCountry = adInfo.Country;
+        AppsflyerManager.Instance.SendEvent(AFEventName.OnAdWatched, "adcountry", adCountry);
+        AppsflyerManager.Instance.SendEvent(AFEventName.OnAdWatched, "adnetwork", adNetwork);
+        AppsflyerManager.Instance.SendEvent(AFEventName.OnAdWatched, "adrevenue", adRevenue);
     }
 
     void RewardedVideoOnAdClickedEvent(LevelPlayAdInfo adInfo)

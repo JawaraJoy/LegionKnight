@@ -216,6 +216,12 @@ namespace LegionKnight
             if (completed)
             {
                 m_OnLevelCompleted?.Invoke(levelSelect);
+
+                string eventName = AFEventName.OnLevelCompleted;
+                CharacterDefinition usedChar = Player.Instance.UsedCharacter;
+                CharacterUnit usedCharUnit = Player.Instance.GetCharacterUnit(usedChar);
+                AppsflyerManager.Instance.SendEvent(eventName, usedChar.Label, usedCharUnit.Level.ToString());
+                AppsflyerManager.Instance.SendEvent(eventName, LevelDefinition.LevelName, set.BosDefinition.Id);
             }
         }
 

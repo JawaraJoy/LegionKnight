@@ -14,6 +14,8 @@ namespace LegionKnight
         [SerializeField]
         private string m_LevelName;
         [SerializeField]
+        private int m_LevelPower;
+        [SerializeField]
         private LevelDefinition m_NextLevel;
         [SerializeField]
         private bool m_IsInfiniteLevel;
@@ -52,6 +54,7 @@ namespace LegionKnight
         public LevelDefinition NextLevel => m_NextLevel;
         public bool IsInfiniteLevel => m_IsInfiniteLevel;
         public string LevelName => m_LevelName;
+        public int LevelPower => m_LevelPower;
         public bool IsFatalLevel => m_FatalLevel;
 
         [SerializeField]

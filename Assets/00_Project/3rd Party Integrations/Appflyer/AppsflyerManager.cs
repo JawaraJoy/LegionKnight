@@ -1,6 +1,7 @@
 using UnityEngine;
 using AppsFlyerSDK;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -18,6 +19,9 @@ namespace LegionKnight
         private const string TotalRevenueKey = "total_revenue";   // Key for storing total revenue in PlayerPrefs
         private const string DAUCountKey = "dau_count";           // Key for storing daily active users in PlayerPrefs
 
+        [SerializeField]
+        private List<AppsEventContainer> m_EventContainer = new();
+        
         protected override void Awake()
         {
             base.Awake();
@@ -35,8 +39,9 @@ namespace LegionKnight
             TrackMAU();
 
             //recalculating ARPU every 24 hours
-            InvokeRepeating(nameof(TrackARPU), 0f, 86400f);
+            //InvokeRepeating(nameof(TrackARPU), 0f, 86400f);
         }
+        #region Old
 
         //conversion & attribution callbacks
         public void onConversionDataSuccess(string conversionData)
@@ -292,7 +297,68 @@ namespace LegionKnight
             // Return the DAU count from PlayerPrefs
             return PlayerPrefs.GetInt(DAUCountKey, 0);
         }
-
         #endregion
+    
+    #endregion
+        private AppsEventContainer GetEventContainer(string eventName)
+        {
+            AppsEventContainer container = m_EventContainer.Find(x => x.EventName == eventName);
+            if (container == null)
+            {
+                return null;
+            }
+            return container;
+        }
+        public void SendEvent(string eventName, string dataName, string dataValue)
+        {
+            if (GetEventContainer(eventName) == null)
+            {
+                m_EventContainer.Add(new AppsEventContainer(eventName));
+            }
+            GetEventContainer(eventName).SetData(dataName, dataValue);
+            Debug.Log($"[AppFlyer] Send Event{eventName}/{dataName}/{dataValue}");
+        }
+        /*public void TrackRevenue(AFAdRevenueData revenueData, Dictionary<string, string> extraData)
+        {
+            AppsFlyer.logAdRevenue(revenueData, extraData);
+        }*/
     }
+}
+
+[System.Serializable]
+public class AppsEventContainer
+{
+    [SerializeField]
+    private string m_EventName;
+    private readonly Dictionary<string, string> m_Data = new();
+    public string EventName => m_EventName;
+    public AppsEventContainer(string eventName)
+    {
+        m_EventName = eventName;
+    }
+    public void SetData(string dataName, string dataValue)
+    {
+        if (m_Data.ContainsKey(dataName))
+        {
+            m_Data[dataName] = dataValue;
+        }
+        else
+        {
+            m_Data.Add(dataName, dataValue);
+        }
+        AppsFlyer.sendEvent(m_EventName, m_Data);
+        Debug.Log($"[AppFlyer] Send Event{m_EventName}/{dataName}/{dataValue}");
+    }
+}
+
+public static class AFEventName
+{
+    public const string OnPlayerLogin = "onplayerlogin";
+    public const string OnPlayerLevelUp = "onplayerlevelup";
+    public const string OnCharacterLevelUp = "oncharacterlevelup";
+    public const string OnGetItem = "ongetitem";
+    public const string OnAppPurchased = "onapppuchased";
+    public const string OnLevelCompleted = "onlevelcompleted";
+    public const string OnLevelFailed = "onlevelfailed";
+    public const string OnAdWatched = "onadwatched";
 }

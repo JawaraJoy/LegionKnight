@@ -1,4 +1,5 @@
 //using GooglePlayGames;
+using System;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Authentication.PlayerAccounts;
@@ -205,6 +206,9 @@ namespace LegionKnight
             // This event is triggered when the sign-in is successful
             Debug.Log($"Sign-in successful: {playerId}");
             m_OnSignInSuccess?.Invoke(playerId);
+
+            DateTime loginTime = DateTime.Now;
+            AppsflyerManager.Instance.SendEvent(AFEventName.OnPlayerLogin, playerId, loginTime.ToString());
         }
         private void OnSignInFailedInvoke(string error)
         {
