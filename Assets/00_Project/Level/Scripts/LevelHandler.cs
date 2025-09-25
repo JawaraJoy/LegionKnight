@@ -191,6 +191,7 @@ namespace LegionKnight
         public void StartLevel(LevelDefinition defi)
         {
             GetLevelSelect(defi)?.StartLevel();
+            
         }
         public bool HasBoss()
         {

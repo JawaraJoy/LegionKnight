@@ -1,3 +1,5 @@
+using AppsFlyerSDK;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
@@ -56,6 +58,7 @@ namespace LegionKnight
         {
             TaskStatus status = GetTaskStatus();
             status?.DirectClaimRewards();
+            
         }
 
         private TaskStatus GetTaskStatus()

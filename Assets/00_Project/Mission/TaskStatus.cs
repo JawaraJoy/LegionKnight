@@ -1,3 +1,6 @@
+using AppsFlyerSDK;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -67,6 +70,13 @@ namespace LegionKnight
             {
                 
                 SetStateInternal(TaskState.Completed);
+                DateTime completeddate = DateTime.Now;
+                Dictionary<string, string> eventValues = new Dictionary<string, string>
+                {
+                    {"mission", m_Definition.Label},
+                    {"completedate",  completeddate.ToString()}
+                };
+                AppsFlyer.sendEvent(AFEventName.OnMissionCompleted, eventValues);
             }
             else
             {

@@ -1,3 +1,4 @@
+using AppsFlyerSDK;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -54,6 +55,13 @@ namespace LegionKnight
         public void OnItemBoughtInvoke(ShopItemDefinition defi)
         {
             m_OnItemBought?.Invoke(defi);
+
+            Dictionary<string, string> eventValues = new Dictionary<string, string>
+            {
+                {"source", "shop"},
+                {"bundlename", defi.name},
+            };
+            AppsFlyer.sendEvent(AFEventName.OnGetRewards, eventValues);
         }
         public void OnItemBuyInvoke(ShopItemDefinition defi)
         {

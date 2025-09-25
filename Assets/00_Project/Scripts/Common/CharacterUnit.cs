@@ -1,3 +1,5 @@
+using AppsFlyerSDK;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -105,6 +107,15 @@ namespace LegionKnight
                 m_OnLevelUp?.Invoke(this);
                 Player.Instance.OnHeroLevelUp.Invoke(m_Definition);
                 UnityService.Instance.SaveData(m_Definition.Id + "Lv", m_Level);
+                DateTime updateTime = DateTime.Now;
+                Dictionary<string, string> eventValues = new Dictionary<string, string>
+                {
+                    {"playerid", UnityService.Instance.PlayerId},
+                    {"charactername", m_Definition.Label},
+                    {"tolevel", m_Level.ToString()},
+                    {"updatetime", updateTime.ToString()},
+                };
+                AppsFlyer.sendEvent(AFEventName.OnCharacterLevelUp, eventValues);
             }
             else
             {

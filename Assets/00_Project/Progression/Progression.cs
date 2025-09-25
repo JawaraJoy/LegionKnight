@@ -1,5 +1,7 @@
+using AppsFlyerSDK;
 using MoreMountains.Tools;
 using NaughtyAttributes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -73,6 +75,14 @@ namespace LegionKnight
         {
             m_OnLevelUp?.Invoke(m_Level);
             m_LevelUpTriggered = true;
+            DateTime levelupDate = DateTime.Now;
+            Dictionary<string, string> eventValues = new Dictionary<string, string>
+            {
+                {"playerid", UnityService.Instance.PlayerId},
+                {"tolevel", m_Level.ToString()},
+                {"levelupdate", levelupDate.ToString()},
+            };
+            AppsFlyer.sendEvent(AFEventName.OnPlayerLevelUp, eventValues);
         }
         public void AddOnCurrentExpChange(UnityAction<int> action)
         {

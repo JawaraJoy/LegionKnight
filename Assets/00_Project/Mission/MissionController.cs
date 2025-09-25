@@ -1,4 +1,6 @@
+using AppsFlyerSDK;
 using MoreMountains.Tools;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -133,7 +135,6 @@ namespace LegionKnight
             {
                 threshold.Initialize(this);
             }
-
             m_OnControllerUpdate?.Invoke(this);
         }
     }

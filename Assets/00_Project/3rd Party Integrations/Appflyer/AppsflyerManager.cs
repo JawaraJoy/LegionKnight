@@ -367,9 +367,10 @@ public static class AFEventName
     public const string OnPlayerLogin = "onplayerlogin";
     public const string OnPlayerLevelUp = "onplayerlevelup";
     public const string OnCharacterLevelUp = "oncharacterlevelup";
-    public const string OnGetItem = "ongetitem";
+    public const string OnGetRewards = "ongetitem";
     public const string OnAppPurchased = "onapppuchased";
     public const string OnLevelCompleted = "onlevelcompleted";
     public const string OnLevelFailed = "onlevelfailed";
     public const string OnAdWatched = "onadwatched";
+    public const string OnMissionCompleted = "onmissioncompleted";
 }
