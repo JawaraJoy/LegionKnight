@@ -1,3 +1,4 @@
+using AppsFlyerSDK;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -220,8 +221,16 @@ namespace LegionKnight
                 string eventName = AFEventName.OnLevelCompleted;
                 CharacterDefinition usedChar = Player.Instance.UsedCharacter;
                 CharacterUnit usedCharUnit = Player.Instance.GetCharacterUnit(usedChar);
-                AppsflyerManager.Instance.SendEvent(eventName, usedChar.Label, usedCharUnit.Level.ToString());
-                AppsflyerManager.Instance.SendEvent(eventName, LevelDefinition.LevelName, set.BosDefinition.Id);
+                //AppsflyerManager.Instance.SendEvent(eventName, usedChar.Label, usedCharUnit.Level.ToString());
+                //AppsflyerManager.Instance.SendEvent(eventName, LevelDefinition.LevelName, set.BosDefinition.Id);
+                Dictionary<string, string> eventValues = new Dictionary<string, string>
+                {
+                    {"characterused", usedChar.Label},
+                    {"characterlevel", usedCharUnit.Level.ToString()},
+                    {"characterbt", usedCharUnit.Star.ToString()},
+                    {"levelname",  set.LevelName}
+                };
+                AppsFlyer.sendEvent(eventName, eventValues);
             }
         }
 

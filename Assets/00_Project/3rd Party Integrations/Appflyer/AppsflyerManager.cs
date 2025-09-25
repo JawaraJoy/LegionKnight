@@ -24,12 +24,24 @@ namespace LegionKnight
         
         protected override void Awake()
         {
+            
+
+            //recalculating ARPU every 24 hours
+            //InvokeRepeating(nameof(TrackARPU), 0f, 86400f);
+        }
+        private void Start()
+        {
+            Init();
+        }
+
+        private void Init()
+        {
             base.Awake();
 
             //enable debug log while testing
             AppsFlyer.setIsDebug(enableDebug);
 
-            AppsFlyer.initSDK(devKey, null, this);
+            AppsFlyer.initSDK(devKey, string.Empty, this);
             AppsFlyer.startSDK();
 
             //track dau when game start
@@ -37,9 +49,6 @@ namespace LegionKnight
 
             //track mau when game start
             TrackMAU();
-
-            //recalculating ARPU every 24 hours
-            //InvokeRepeating(nameof(TrackARPU), 0f, 86400f);
         }
         #region Old
 
@@ -311,17 +320,19 @@ namespace LegionKnight
         }
         public void SendEvent(string eventName, string dataName, string dataValue)
         {
-            if (GetEventContainer(eventName) == null)
+            /*if (GetEventContainer(eventName) == null)
             {
                 m_EventContainer.Add(new AppsEventContainer(eventName));
             }
             GetEventContainer(eventName).SetData(dataName, dataValue);
-            Debug.Log($"[AppFlyer] Send Event{eventName}/{dataName}/{dataValue}");
+            Debug.Log($"[AppFlyer] Send Event{eventName}/{dataName}/{dataValue}");*/
+            Dictionary<string, string> eventValues = new Dictionary<string, string>
+            {
+                { dataName, dataValue }
+            };
+            AppsFlyer.sendEvent(eventName, eventValues);
+            Debug.Log($"[AppFlyer] Sent Event {eventName}/{dataName}/{dataValue}");
         }
-        /*public void TrackRevenue(AFAdRevenueData revenueData, Dictionary<string, string> extraData)
-        {
-            AppsFlyer.logAdRevenue(revenueData, extraData);
-        }*/
     }
 }
 

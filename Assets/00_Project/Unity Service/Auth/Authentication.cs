@@ -1,5 +1,7 @@
 //using GooglePlayGames;
+using AppsFlyerSDK;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Authentication.PlayerAccounts;
@@ -208,7 +210,12 @@ namespace LegionKnight
             m_OnSignInSuccess?.Invoke(playerId);
 
             DateTime loginTime = DateTime.Now;
-            AppsflyerManager.Instance.SendEvent(AFEventName.OnPlayerLogin, playerId, loginTime.ToString());
+            Dictionary<string, string> eventValues = new Dictionary<string, string>
+            {
+                {"playerid", playerId},
+                {"logintime", loginTime.ToString()}
+            };
+            AppsFlyer.sendEvent(AFEventName.OnPlayerLogin, eventValues);
         }
         private void OnSignInFailedInvoke(string error)
         {
