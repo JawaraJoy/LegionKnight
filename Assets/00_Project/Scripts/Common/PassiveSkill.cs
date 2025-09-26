@@ -130,8 +130,15 @@ namespace LegionKnight
                 }
                 if (result.TryGetComponent(out IAbility abi))
                 {
-                    int level = m_SkillDefinition.GetOwnerLevel();
-                    abi.Initialize(m_SkillDefinition.AbilityDefinition, level);
+                    if (m_SkillDefinition != null)
+                    {
+                        int level = m_SkillDefinition.GetOwnerLevel();
+                        if (m_SkillDefinition.AbilityDefinition != null)
+                        {
+                            abi.Initialize(m_SkillDefinition.AbilityDefinition, level);
+                        }
+                    }
+                    
                 }
             }
         }

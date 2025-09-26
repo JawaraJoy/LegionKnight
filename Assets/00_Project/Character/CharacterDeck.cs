@@ -31,6 +31,15 @@ namespace LegionKnight
         public List<CharacterUnit> CharacterUnits => m_CharacterUnits;
         public CharacterDefinition UsedCharacter => m_UsedCharacter;
         public CharacterDefinition SelectedCharacter => m_SelectedCharacter;
+
+        private void Start()
+        {
+            foreach (CharacterUnit unit in m_CharacterUnits)
+            {
+                //unit.Init();
+                unit.Definition.InitAsOwner();
+            }
+        }
         public StandbyPlatformDefinition GetHeroStandbyPlatform()
         {
             return GetCharacterUnitInternal(m_UsedCharacter).UniquePlatform;
@@ -70,6 +79,7 @@ namespace LegionKnight
             foreach(CharacterUnit unit in m_CharacterUnits)
             {
                 unit.Init();
+                //unit.Definition.InitAsOwner();
             }
         }
         public void SetOwned(CharacterDefinition defi, bool set)

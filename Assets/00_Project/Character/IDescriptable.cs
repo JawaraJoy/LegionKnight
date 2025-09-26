@@ -19,6 +19,11 @@ namespace LegionKnight
         void SetOwner(Object owner);
     }
 
+    public interface IOwner
+    {
+        void InitAsOwner();
+    }
+
     public interface IAbilityOwner
     {
         int GetOwnerLevel();

@@ -47,6 +47,7 @@ namespace LegionKnight
         public void SetOwner(Object owner)
         {
             m_Owner = owner;
+            if (m_AbilityDefinition == null) return;
             m_AbilityDefinition.SetOwner(owner);
         }
     }

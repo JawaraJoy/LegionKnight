@@ -49,8 +49,9 @@ namespace LegionKnight
         }
         private void InitInternal()
         {
+            
+            if (Player.Instance.UsedCharacter == null) return;
             CharacterDefinition usedCharacter = Player.Instance.UsedCharacter;
-            if (usedCharacter == null) return;
             SetCharacterSelectedInternal(usedCharacter);
             OnInitInvoke(usedCharacter);
             

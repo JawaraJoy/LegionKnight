@@ -148,7 +148,7 @@ namespace LegionKnight
         }
         public void SetOwned(bool set)
         {
-            
+
             SetOwnedInternal(set);
         }
         private void SetOwnedInternal(bool set)
@@ -192,7 +192,7 @@ namespace LegionKnight
                 bool used = UnityService.Instance.GetData<bool>("used" + m_Definition.Id);
                 m_IsUsed = used;
             }
-            m_Definition.SetOwner(m_Definition);
+            
         }
         public string CharacterName => m_Definition.name;
         public Sprite Icon => m_Definition.Icon;

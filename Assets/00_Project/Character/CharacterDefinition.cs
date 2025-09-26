@@ -12,7 +12,7 @@ namespace LegionKnight
         Epic,
     }
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Character/Unit")]
-    public partial class CharacterDefinition : ScriptableObject, IDescriptable, IObjectHasOwner, IAbilityOwner
+    public partial class CharacterDefinition : ScriptableObject, IDescriptable, IOwner, IAbilityOwner
     {
         [SerializeField]
         private string m_Id;
@@ -68,14 +68,9 @@ namespace LegionKnight
         public List<SkillDefinition> Passives => m_Passives;
         public int StartingStars => m_StartingStars;
 
-        public Object Owner => this;
-
         public void SetOwner(Object owner)
         {
-            foreach(var pass in m_Passives)
-            {
-                pass.SetOwner(owner);
-            }
+            
         }
 
         public Currency GetBreakShardCost(int star)
@@ -150,6 +145,15 @@ namespace LegionKnight
             CharacterUnit unit = Player.Instance.GetCharacterUnit(this);
             return unit.Level;
         }
+
+        public void InitAsOwner()
+        {
+            foreach (var pass in m_Passives)
+            {
+                pass.SetOwner(this);
+            }
+            m_UniquePlatform.SetOwner(this);
+        }
     }
     [System.Serializable]
     public partial class SkillDefinition : IObjectHasOwner, IAbilityOwner
@@ -177,6 +181,7 @@ namespace LegionKnight
         public void SetOwner(Object owner)
         {
             m_Owner = owner;
+            if (m_AbilityDefinition == null) return;
             m_AbilityDefinition.SetOwner(owner);
         }
 

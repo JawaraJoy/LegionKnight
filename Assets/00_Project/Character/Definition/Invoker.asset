@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: invoker
   m_Label: Injector
+  m_Description: 
   m_Icon: {fileID: 21300000, guid: f5c980e067955c24fb4bea485ee94baf, type: 3}
   m_SmallIcon: {fileID: -89808236, guid: e6667e17bf3089b47a9313b7479d9f36, type: 3}
   m_TypeIcon: {fileID: 21300000, guid: 7d8b6181ad16b4a708f3c323b2efbe4a, type: 3}
@@ -24,8 +25,8 @@ MonoBehaviour:
   m_CharacterPrefab:
     m_AssetGUID: dba0bc1d80e8cd24198b81e3a416dd4f
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_BaseStat:
     m_Attack: 40
@@ -52,58 +53,62 @@ MonoBehaviour:
   - m_SkillName: Basic Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 536ba28a618127942bf310615a4e282b
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 209bfb0f207438247ba51d288b731696
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Double Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 85fb162718871a542aa8d8451f86153d
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Triple Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 903e8cb4f14688641a4301f0beb38c91
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   m_Passives:
   - m_SkillName: Piercer
     m_Description: Shot 1 Powerfull Magic missile, damaging every object in its path.
       And followed by 2 small projectile attacking from side.
     m_Icon: {fileID: 21300000, guid: dc146abd7ac659d439767faac33ef083, type: 3}
+    m_AbilityDefinition: {fileID: 11400000, guid: 865ce19a1d85917448f21d5108c12d0b, type: 2}
     m_ManaThreshold: 95
     m_SkillAsset:
     - m_AssetGUID: b450e95b56aa60243b25cdf8c882bd27
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     - m_AssetGUID: 632211b464c8bb94aafce0f9824eaf80
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
-  m_Ability: {fileID: 11400000, guid: 865ce19a1d85917448f21d5108c12d0b, type: 2}

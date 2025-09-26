@@ -116,6 +116,7 @@ namespace LegionKnight
     {
         public void InitStat(AbilityDefinition damageStat)
         {
+            if (damageStat == null) return;
             m_Damage = damageStat.Attack;
             m_Health = damageStat.Health;
             m_CurrentHealth = m_Health;
@@ -124,6 +125,7 @@ namespace LegionKnight
 
         public void InitStat(CharacterDefinition defi)
         {
+            if (defi == null) return;
             CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
             m_Damage = unit.FinalStat().Attack;
             m_Defend = unit.FinalStat().Defense;
