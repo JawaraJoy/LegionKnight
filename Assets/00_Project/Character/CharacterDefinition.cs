@@ -12,7 +12,7 @@ namespace LegionKnight
         Epic,
     }
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Character/Unit")]
-    public partial class CharacterDefinition : ScriptableObject, IDescriptable, IObjectHasOwner
+    public partial class CharacterDefinition : ScriptableObject, IDescriptable, IObjectHasOwner, IAbilityOwner
     {
         [SerializeField]
         private string m_Id;
@@ -68,8 +68,7 @@ namespace LegionKnight
         public List<SkillDefinition> Passives => m_Passives;
         public int StartingStars => m_StartingStars;
 
-        private Object m_Owner;
-        public Object Owner => m_Owner;
+        public Object Owner => this;
 
         public void SetOwner(Object owner)
         {
@@ -145,9 +144,15 @@ namespace LegionKnight
             }
             return finalStat;
         }
+
+        public int GetOwnerLevel()
+        {
+            CharacterUnit unit = Player.Instance.GetCharacterUnit(this);
+            return unit.Level;
+        }
     }
     [System.Serializable]
-    public partial class SkillDefinition : IObjectHasOwner
+    public partial class SkillDefinition : IObjectHasOwner, IAbilityOwner
     {
         [SerializeField]
         private string m_SkillName;
@@ -173,6 +178,11 @@ namespace LegionKnight
         {
             m_Owner = owner;
             m_AbilityDefinition.SetOwner(owner);
+        }
+
+        public int GetOwnerLevel()
+        {
+            return AbilityUtil.GetOwnerLevel(m_Owner);
         }
     }
 }

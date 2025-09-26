@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "New Minion", menuName = ("Legion Knight/Minion"))]
-    public class MinionDefinition : ScriptableObject
+    public class MinionDefinition : ScriptableObject, IAbilityOwner
     {
         [SerializeField]
         private string m_Label = "Minion";
@@ -43,6 +43,7 @@ namespace LegionKnight
         public void SpawnMinion()
         {
             GameManager.Instance.SpawnMinion(this);
+            m_AbilityDefinition.SetOwner(this);
         }
 
         public void SetCanSpawnUnit(bool set)
@@ -58,6 +59,11 @@ namespace LegionKnight
             LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
             lootStorage.AddLoot(lootField);
             //Player.Instance.AddCurrencyAmount(m_ItemRewardKilled.CurrencyDefinition, m_ItemRewardKilled.Amount);
+        }
+
+        public int GetOwnerLevel()
+        {
+            return m_StartLevel;
         }
     }
 

@@ -7,7 +7,7 @@ using UnityEngine.Events;
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Bos Enemy")]
-    public partial class BosDefinition : ScriptableObject, IObjectHasOwner
+    public partial class BosDefinition : ScriptableObject, IObjectHasOwner, IAbilityOwner
     {
 
         [SerializeField]
@@ -49,6 +49,12 @@ namespace LegionKnight
         public Stat FinalStat(int addLevel)
         {
             return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, m_StartLevel + addLevel - 1);
+        }
+
+        public int GetOwnerLevel()
+        {
+            int addLevel = GameManager.Instance.BossSpawnCount;
+            return m_StartLevel + addLevel;
         }
 
         public void SetOwner(Object owner)

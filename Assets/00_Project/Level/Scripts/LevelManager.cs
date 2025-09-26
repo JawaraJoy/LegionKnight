@@ -12,7 +12,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private LevelManager m_LevelManager;
-
+        public int BossSpawnCount => m_LevelManager.BossSpawnCount;
         public bool LevelOver => m_LevelManager.LevelOver;
         public int MaxPlatformCount => m_LevelManager.MaxPlatformCount;
         public LevelDefinition LevelDefinition => m_LevelManager.LevelDefinition;

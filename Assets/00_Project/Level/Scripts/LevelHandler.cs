@@ -119,8 +119,6 @@ namespace LegionKnight
 
         private BosEnemy m_SpawnedBosEnemy;
         private int m_BosSpawnCount;
-        [SerializeField]
-        private int m_BosHealthBonus;
         public BosEnemy SpawnedBosEnemy => m_SpawnedBosEnemy;
         [SerializeField]
         private UnityEvent m_OnResetBoss = new();
@@ -138,7 +136,7 @@ namespace LegionKnight
         private UnityEvent<LevelSelect> m_OnLevelCompleted = new();
 
         private Vector2 m_LastPlayerPost;
-
+        public int BossSpawnCount => m_BosSpawnCount;
         [SerializeField]
         private CurrencyDefinition m_ExpDefinition;
 
@@ -191,7 +189,7 @@ namespace LegionKnight
         public void StartLevel(LevelDefinition defi)
         {
             GetLevelSelect(defi)?.StartLevel();
-            
+            SetBossSpawnCountInternal(0);
         }
         public bool HasBoss()
         {
@@ -290,6 +288,10 @@ namespace LegionKnight
             SetLastPlayerPositionInternal(playerPost);
         }
         public void SetBosSpawnCount(int set)
+        {
+            SetBossSpawnCountInternal(set);
+        }
+        private void SetBossSpawnCountInternal(int set)
         {
             m_BosSpawnCount = set;
         }

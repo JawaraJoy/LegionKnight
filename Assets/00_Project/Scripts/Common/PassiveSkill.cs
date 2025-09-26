@@ -34,6 +34,8 @@ namespace LegionKnight
         public string SkillName => m_SkillName;
 
         private PassiveSkill m_SkillHandle;
+        private readonly SkillDefinition m_SkillDefinition;
+        public SkillDefinition SkillDefinition => m_SkillDefinition;
         public void Init(PassiveSkill passive)
         {
             m_SkillHandle = passive;
@@ -41,6 +43,7 @@ namespace LegionKnight
         }
         public SkillActivation(SkillDefinition definition)
         {
+            m_SkillDefinition = definition;
             m_SkillName = definition.SkillName;
             m_ManaThreshold = definition.Manathreshold;
             m_SkillAsset = definition.SkillAsset;
@@ -124,6 +127,11 @@ namespace LegionKnight
                 if (result.TryGetComponent(out ISelfAbility ability))
                 {
                     ability.Initialize();
+                }
+                if (result.TryGetComponent(out IAbility abi))
+                {
+                    int level = m_SkillDefinition.GetOwnerLevel();
+                    abi.Initialize(m_SkillDefinition.AbilityDefinition, level);
                 }
             }
         }
