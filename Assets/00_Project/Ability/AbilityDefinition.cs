@@ -5,7 +5,7 @@ namespace LegionKnight
 {
 
     [CreateAssetMenu(fileName = "New Ability", menuName = "Legion Knight/Ability", order = 0)]
-    public partial class AbilityDefinition : ScriptableObject, IObjectOwner
+    public partial class AbilityDefinition : ScriptableObject, IObjectHasOwner
     {
         [SerializeField]
         private SkillOwner m_SkillOwner = SkillOwner.Player;
@@ -56,7 +56,7 @@ namespace LegionKnight
     }
 
     [System.Serializable]
-    public class AbilityDescription : IObjectOwner
+    public class AbilityDescription : IObjectHasOwner
     {
         [SerializeField]
         private bool m_UseHeroAttackScale = false;

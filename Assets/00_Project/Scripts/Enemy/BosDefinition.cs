@@ -7,7 +7,7 @@ using UnityEngine.Events;
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Bos Enemy")]
-    public partial class BosDefinition : ScriptableObject
+    public partial class BosDefinition : ScriptableObject, IObjectHasOwner
     {
 
         [SerializeField]
@@ -44,9 +44,23 @@ namespace LegionKnight
         public int StartLevel => m_StartLevel;
         public AssetReferenceGameObject BosPrefab => m_BosPrefab;
 
+        public Object Owner => this;
+
         public Stat FinalStat(int addLevel)
         {
             return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, m_StartLevel + addLevel - 1);
+        }
+
+        public void SetOwner(Object owner)
+        {
+            foreach(var skill in m_Skills)
+            {
+                skill.SetOwner(owner);
+            }
+            foreach(var platform in m_BosPlatforms)
+            {
+                platform.SetOwner(owner);
+            }
         }
     }
     public partial class BosEnemy

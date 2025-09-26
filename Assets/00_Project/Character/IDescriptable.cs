@@ -13,7 +13,7 @@ namespace LegionKnight
         int Amount { get; }
     }
 
-    public interface IObjectOwner
+    public interface IObjectHasOwner
     {
         Object Owner { get; }
         void SetOwner(Object owner);

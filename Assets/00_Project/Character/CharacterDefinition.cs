@@ -12,7 +12,7 @@ namespace LegionKnight
         Epic,
     }
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Character/Unit")]
-    public partial class CharacterDefinition : ScriptableObject, IDescriptable, IObjectOwner
+    public partial class CharacterDefinition : ScriptableObject, IDescriptable, IObjectHasOwner
     {
         [SerializeField]
         private string m_Id;
@@ -147,7 +147,7 @@ namespace LegionKnight
         }
     }
     [System.Serializable]
-    public partial class SkillDefinition : IObjectOwner
+    public partial class SkillDefinition : IObjectHasOwner
     {
         [SerializeField]
         private string m_SkillName;

@@ -4,7 +4,7 @@ using UnityEngine.AddressableAssets;
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "New Standby Platform", menuName = "Legion Knight/Standby Platform")]
-    public partial class StandbyPlatformDefinition : ScriptableObject, IDescriptable
+    public partial class StandbyPlatformDefinition : ScriptableObject, IDescriptable, IObjectHasOwner
     {
         [SerializeField]
         private string m_Id;
@@ -36,9 +36,18 @@ namespace LegionKnight
         public Color RarityColor => m_RarityColor;
         public AbilityDefinition AbilityDefinition => m_AbilityDefinition;
 
+        private Object m_Owner;
+        public Object Owner => m_Owner;
+
         public void SetIsEquiped(bool isEquiped)
         {
             Player.Instance.SetPlatformUnitIsEquiped(this, isEquiped);
+        }
+
+        public void SetOwner(Object owner)
+        {
+            m_Owner = owner;
+            m_AbilityDefinition.SetOwner(owner);
         }
     }
 }

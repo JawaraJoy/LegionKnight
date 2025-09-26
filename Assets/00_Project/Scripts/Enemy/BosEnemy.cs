@@ -33,6 +33,7 @@ namespace LegionKnight
 
             InitSkill(m_BosDefinition.Skills.ToList());
             m_BosSkill.SetOwner(SkillOwner.Boss);
+            definition.SetOwner(definition);
         }
         public void SetLocalPosition(Vector2 post)
         {
