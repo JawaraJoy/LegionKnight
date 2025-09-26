@@ -20,7 +20,7 @@ namespace LegionKnight
             m_SkillTitle.SetAbility(defi);
             CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
             int level = unit.Level;
-            m_Description.SetDescription(defi.Ability.GetFinalDescription(unit, level));
+            m_Description.SetDescription(defi.Passives[0].AbilityDefinition.GetFinalDescription(unit, level));
         }
         public void SetPlatform(CharacterDefinition defi)
         {

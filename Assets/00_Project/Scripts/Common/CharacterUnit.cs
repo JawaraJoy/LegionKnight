@@ -192,6 +192,7 @@ namespace LegionKnight
                 bool used = UnityService.Instance.GetData<bool>("used" + m_Definition.Id);
                 m_IsUsed = used;
             }
+            m_Definition.SetOwner(m_Definition);
         }
         public string CharacterName => m_Definition.name;
         public Sprite Icon => m_Definition.Icon;
@@ -199,7 +200,6 @@ namespace LegionKnight
         public StandbyPlatformDefinition UniquePlatform => m_Definition.UniquePlatform;
         public List<SkillDefinition> Passives => m_Definition.Passives;
         public List<SkillDefinition> Weapons => m_Definition.Weapons;
-        public AbilityDefinition Ability => m_Definition.Ability;
         public CharacterDefinition Definition => m_Definition;
         public Stat FinalStat()
         {

@@ -12,7 +12,7 @@ namespace LegionKnight
         Epic,
     }
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Character/Unit")]
-    public partial class CharacterDefinition : ScriptableObject, IDescriptable
+    public partial class CharacterDefinition : ScriptableObject, IDescriptable, IObjectOwner
     {
         [SerializeField]
         private string m_Id;
@@ -61,15 +61,23 @@ namespace LegionKnight
         private List<SkillDefinition> m_Weapons = new();
         [SerializeField]
         private List<SkillDefinition> m_Passives = new();
-        [SerializeField]
-        private AbilityDefinition m_Ability;
 
         public AssetReferenceGameObject CharacterPrefab => m_CharacterPrefab;
-        public AbilityDefinition Ability => m_Ability;
         public StandbyPlatformDefinition UniquePlatform => m_UniquePlatform;
         public List<SkillDefinition> Weapons => m_Weapons;
         public List<SkillDefinition> Passives => m_Passives;
         public int StartingStars => m_StartingStars;
+
+        private Object m_Owner;
+        public Object Owner => m_Owner;
+
+        public void SetOwner(Object owner)
+        {
+            foreach(var pass in m_Passives)
+            {
+                pass.SetOwner(owner);
+            }
+        }
 
         public Currency GetBreakShardCost(int star)
         {
@@ -139,7 +147,7 @@ namespace LegionKnight
         }
     }
     [System.Serializable]
-    public partial class SkillDefinition
+    public partial class SkillDefinition : IObjectOwner
     {
         [SerializeField]
         private string m_SkillName;
@@ -147,6 +155,8 @@ namespace LegionKnight
         private string m_Description;
         [SerializeField]
         private Sprite m_Icon;
+        [SerializeField]
+        private AbilityDefinition m_AbilityDefinition;
         [SerializeField]
         private int m_ManaThreshold;
         [SerializeField]
@@ -156,5 +166,13 @@ namespace LegionKnight
         public Sprite Icon => m_Icon;
         public int Manathreshold => m_ManaThreshold;
         public string Description => m_Description;
+        public AbilityDefinition AbilityDefinition => m_AbilityDefinition;
+        private Object m_Owner;
+        public Object Owner => m_Owner;
+        public void SetOwner(Object owner)
+        {
+            m_Owner = owner;
+            m_AbilityDefinition.SetOwner(owner);
+        }
     }
 }

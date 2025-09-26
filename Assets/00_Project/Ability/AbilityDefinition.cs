@@ -5,12 +5,15 @@ namespace LegionKnight
 {
 
     [CreateAssetMenu(fileName = "New Ability", menuName = "Legion Knight/Ability", order = 0)]
-    public partial class AbilityDefinition : ScriptableObject
+    public partial class AbilityDefinition : ScriptableObject, IObjectOwner
     {
         [SerializeField]
         private SkillOwner m_SkillOwner = SkillOwner.Player;
         [SerializeField]
         private AbilityDescription[] m_Descriptions;
+
+        private Object m_Owner;
+        public Object Owner => m_Owner;
 
         public string GetFinalDescription(CharacterUnit unit, int level)
         {
@@ -45,10 +48,15 @@ namespace LegionKnight
         {
             return GetOwnerInternal();
         }
+
+        public void SetOwner(Object owner)
+        {
+            m_Owner = owner;
+        }
     }
 
     [System.Serializable]
-    public class AbilityDescription
+    public class AbilityDescription : IObjectOwner
     {
         [SerializeField]
         private bool m_UseHeroAttackScale = false;
@@ -60,6 +68,9 @@ namespace LegionKnight
         [SerializeField, TextArea]
         private string m_Description;
 
+        private Object m_Owner;
+        public Object Owner => m_Owner;
+
         public string GetDescription(CharacterUnit unit, int level)
         {
             float finalVal = m_BaseVal + (m_UpgradeVal * (level - 1));
@@ -68,6 +79,11 @@ namespace LegionKnight
                 finalVal = (float)GetHeroAttackScale(unit, level) + m_BaseVal + m_UpgradeVal * (level - 1);
             }
             return string.Format(m_Description, finalVal); // Use 'finalVal' here instead of recalculating
+        }
+
+        public void SetOwner(Object owner)
+        {
+            m_Owner = Owner;
         }
 
         private int GetHeroAttackScale(CharacterUnit unit, int level)

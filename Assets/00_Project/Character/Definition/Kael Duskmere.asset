@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: altair
   m_Label: Kael
+  m_Description: 
   m_Icon: {fileID: 21300000, guid: 1202e71fce6c9a34f99025bc82b830be, type: 3}
   m_SmallIcon: {fileID: 21300000, guid: bda81c760e57c324c8cfa7d453572dfc, type: 3}
   m_TypeIcon: {fileID: 21300000, guid: 7d8b6181ad16b4a708f3c323b2efbe4a, type: 3}
@@ -24,8 +25,8 @@ MonoBehaviour:
   m_CharacterPrefab:
     m_AssetGUID: c42305ec035f1ee479c72587fc4baab6
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_BaseStat:
     m_Attack: 37
@@ -52,53 +53,57 @@ MonoBehaviour:
   - m_SkillName: Basic Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 536ba28a618127942bf310615a4e282b
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 209bfb0f207438247ba51d288b731696
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Double Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 85fb162718871a542aa8d8451f86153d
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Triple Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 903e8cb4f14688641a4301f0beb38c91
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   m_Passives:
   - m_SkillName: Poison Dagger
     m_Description: Shot a Dagger in 3 interval, then apply poison on hit target for
       5s.
     m_Icon: {fileID: 21300000, guid: dad722f0c0a1d7840889d42cdcea786e, type: 3}
+    m_AbilityDefinition: {fileID: 11400000, guid: 5581c2958bab7354dab0f6c7f1f295d7, type: 2}
     m_ManaThreshold: 100
     m_SkillAsset:
     - m_AssetGUID: d5c4f575667ef914bbb58fa510887004
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
-  m_Ability: {fileID: 11400000, guid: 5581c2958bab7354dab0f6c7f1f295d7, type: 2}

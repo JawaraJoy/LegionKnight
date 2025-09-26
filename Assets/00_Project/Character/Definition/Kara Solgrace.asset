@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: legioncommander
   m_Label: Kara
+  m_Description: 
   m_Icon: {fileID: 21300000, guid: 46d34fa8ed243ff4b9e80d46352ff46e, type: 3}
   m_SmallIcon: {fileID: 21300000, guid: 4042855532f8b0b44be98765a29c18dc, type: 3}
   m_TypeIcon: {fileID: 21300000, guid: 863d316d976504fc5a3734b33e10c55e, type: 3}
@@ -24,8 +25,8 @@ MonoBehaviour:
   m_CharacterPrefab:
     m_AssetGUID: 0ee386fe9a68b6c4b9f80b79a79b28c8
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_BaseStat:
     m_Attack: 40
@@ -52,42 +53,46 @@ MonoBehaviour:
   - m_SkillName: Basic Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 536ba28a618127942bf310615a4e282b
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 209bfb0f207438247ba51d288b731696
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Double Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 85fb162718871a542aa8d8451f86153d
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Triple Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 903e8cb4f14688641a4301f0beb38c91
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   m_Passives:
   - m_SkillName: Protection
@@ -95,11 +100,11 @@ MonoBehaviour:
       Hero from Enemy Attack. Also, Absorb the incoming damage from Enemy Attacks,
       then launch multiple projectiles based how many damage absorbed.
     m_Icon: {fileID: 21300000, guid: 9065f2c043f6847c0881dfc53ff1c679, type: 3}
+    m_AbilityDefinition: {fileID: 11400000, guid: bf88ee02c28cde143a471b90a3b2de97, type: 2}
     m_ManaThreshold: 100
     m_SkillAsset:
     - m_AssetGUID: 5f20d6f06f8688c4dbd10fcc86f0edf1
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
-  m_Ability: {fileID: 11400000, guid: bf88ee02c28cde143a471b90a3b2de97, type: 2}

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: robin
   m_Label: Caelis
+  m_Description: 
   m_Icon: {fileID: 21300000, guid: 22cc2e7de1df78e4f88b965670c9f3c4, type: 3}
   m_SmallIcon: {fileID: 21300000, guid: 1dc7ca356fe583b429401386b1715eba, type: 3}
   m_TypeIcon: {fileID: 21300000, guid: 7d8b6181ad16b4a708f3c323b2efbe4a, type: 3}
@@ -24,8 +25,8 @@ MonoBehaviour:
   m_CharacterPrefab:
     m_AssetGUID: b8e22ad4bd43dec4a8050c1d82c141f6
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_BaseStat:
     m_Attack: 43
@@ -52,42 +53,46 @@ MonoBehaviour:
   - m_SkillName: Basic Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 536ba28a618127942bf310615a4e282b
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 209bfb0f207438247ba51d288b731696
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Double Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 85fb162718871a542aa8d8451f86153d
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   - m_SkillName: Triple Super Attack
     m_Description: 
     m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
     - m_AssetGUID: 903e8cb4f14688641a4301f0beb38c91
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   m_Passives:
   - m_SkillName: 'Heavy Arrow '
@@ -96,11 +101,11 @@ MonoBehaviour:
       On Hit : Stun the target
       for 5s'
     m_Icon: {fileID: 21300000, guid: 20b1a25f44a40ba4e9f349a197963034, type: 3}
+    m_AbilityDefinition: {fileID: 11400000, guid: e82ef30d671fb58499f9e8afa935995b, type: 2}
     m_ManaThreshold: 110
     m_SkillAsset:
     - m_AssetGUID: 6b315ae5495fcb4438e0fee0c659cf2d
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
-  m_Ability: {fileID: 11400000, guid: e82ef30d671fb58499f9e8afa935995b, type: 2}
