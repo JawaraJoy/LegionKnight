@@ -139,7 +139,8 @@ namespace LegionKnight
         public int BossSpawnCount => m_BosSpawnCount;
         [SerializeField]
         private CurrencyDefinition m_ExpDefinition;
-
+        [SerializeField]
+        private CurrencyDefinition m_PotOfLifeDefinition;
         public void Init()
         {
             foreach (LevelSelect levelSelect in m_LevelSelects)
@@ -240,20 +241,63 @@ namespace LegionKnight
 
         public void RessurectionPlayer()
         {
+            RessurectionPlayerInternal();
+        }
+        private void RessurectionPlayerInternal()
+        {
             Player.Instance.SetPause(true);
             Player.Instance.Reborn();
             Vector2 ressoffsite = new Vector2(m_LastPlayerPost.x, m_LastPlayerPost.y + 5);
             Player.Instance.SetPosition(ressoffsite);
-            
             void action()
             {
                 //m_LevelObject.SetLastSpawnedPlatformActive(true);
                 SetLevelOverInternal(false);
                 SpawnPlatformInternal();
                 Player.Instance.SetPause(false);
+                //SetLastPlayerPositionInternal(m_LevelObject.PlayerStartPostion.position);
             }
             DelayActionInternal(1f, action);
-            SetLastPlayerPositionInternal(m_LevelObject.PlayerStartPostion.position);
+        }
+        public void ApplyPotOfLife()
+        {
+            
+            bool has = Player.Instance.HasCurrency(m_PotOfLifeDefinition, out Currency currency);
+            if (has && currency.Amount > 0)
+            {
+                int maxHealth = Player.Instance.MaxHealth;
+                float rebornRate = 1f;
+                CustomVariable<float> potOfLifeVariable = currency.CurrencyDefinition.GetCustomVariable("rebornRate");
+                if (potOfLifeVariable != null)
+                {
+                    rebornRate = potOfLifeVariable.Value;
+
+                    int rebornHealth = Mathf.RoundToInt(maxHealth * rebornRate);
+                    Player.Instance.SetPause(true);
+                    DelayActionInternal(2, () =>
+                    {
+                        PotOfLifeEff(rebornHealth, currency);
+                    });
+                }
+                else
+                {
+                    GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+                }
+            }
+            else
+            {
+                GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+            }
+        }
+        private int potUseCount = 0;
+        private void PotOfLifeEff(int rebornHealth, Currency currency)
+        {
+            RessurectionPlayerInternal();
+            Player.Instance.SetCurrentHealth(rebornHealth);
+            currency.RemoveAmount(1);
+            GameManager.Instance.GetLootStorageManager().RemoveLoot(new LootField(currency.CurrencyDefinition, false, 0, 0));
+            potUseCount++;
+            Debug.Log($"[Pot of Life] {potUseCount}");
         }
         private void DelayActionInternal(float delay, UnityAction action)
         {
@@ -267,6 +311,10 @@ namespace LegionKnight
         public void RemovePlatform(Platform platform)
         {
             m_LevelObject.RemovePlatform(platform);
+        }
+        public void RemoveStandByPlatform(StandbyPlatformDefinition platform)
+        {
+            m_LevelObject.RemoveStandByPlatform(platform);
         }
         public void AddStandByPlatform(StandbyPlatformDefinition platform)
         {

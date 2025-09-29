@@ -32,10 +32,14 @@ namespace LegionKnight
     {
         [SerializeField]
         private PlayerCurrencyControl m_CurrencyControl;
-
+        public PlayerCurrencyControl CurrencyControl => m_CurrencyControl;
         public void InitPlayerCurrency()
         {
             m_CurrencyControl.InitPlayerCurrency();
+        }
+        public bool HasCurrency(CurrencyDefinition definition, out Currency currency)
+        {
+            return m_CurrencyControl.HasCurrency(definition, out currency);
         }
         public int GetCurrencyAmount(CurrencyDefinition definition)
         {

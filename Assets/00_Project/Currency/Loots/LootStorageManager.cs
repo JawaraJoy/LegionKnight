@@ -32,5 +32,9 @@ namespace LegionKnight
         {
             m_LootStorageManager.ClearLoots();
         }
+        public void RemoveLoot(LootField loot)
+        {
+            m_LootStorageManager.RemoveLoot(loot);
+        }
     }
 }

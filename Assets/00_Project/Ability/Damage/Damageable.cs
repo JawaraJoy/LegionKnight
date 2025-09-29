@@ -260,6 +260,12 @@ namespace LegionKnight
         {
             AddBarrierInternal(val);
         }
+        public void SetCurrentHealth(int val)
+        {
+            m_CurrentHealth = val;
+            ClampHealth();
+            OnHealthChangedInvoke(m_CurrentHealth);
+        }
         public void SetHealthInternal(int val)
         {
             m_Health = val;

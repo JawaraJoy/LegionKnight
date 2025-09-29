@@ -90,6 +90,15 @@ namespace LegionKnight
             if (m_RealStanbyPlatformAssets.Contains(platform)) return;
             m_RealStanbyPlatformAssets.Add(platform);
         }
+        public void RemoveStandByPlatform(StandbyPlatformDefinition platform)
+        {
+            if (platform == null) return;
+            if (m_RealStanbyPlatformAssets.Count <= 0) return;
+            if (m_RealStanbyPlatformAssets.Contains(platform))
+            {
+                m_RealStanbyPlatformAssets.Remove(platform);
+            }
+        }
 
         private void RemovePlatformInternal(Platform platform)
         {
@@ -99,15 +108,20 @@ namespace LegionKnight
                 m_SpawnedPlatform.Remove(platform);
             }
         }
+        public Platform GetLastSpawnedPlatform()
+        {
+            return GetLastSpawnedPlatformInternal();
+        }
 
-        private Platform GetLastSpawnedPlatform()
+        private Platform GetLastSpawnedPlatformInternal()
         {
             if (m_SpawnedPlatform.Count <= 0) return null;
-            return m_SpawnedPlatform[m_SpawnedPlatform.Count - 1];
+            int lastIndex = m_SpawnedPlatform.Count - 1;
+            return m_SpawnedPlatform[lastIndex];
         }
         public void SetLastSpawnedPlatformActive(bool set)
         {
-            GetLastSpawnedPlatform().SetActiveBehaviourCollider(set);
+            GetLastSpawnedPlatformInternal().SetActiveBehaviourCollider(set);
         }
         public void AddRealStanbyPlatform(List<StandbyPlatformDefinition> standby)
         {

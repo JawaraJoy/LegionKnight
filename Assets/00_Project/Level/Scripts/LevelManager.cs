@@ -57,6 +57,10 @@ namespace LegionKnight
         {
             m_LevelManager.RemovePlatform(platform);
         }
+        public void RemoveStandByPlatform(StandbyPlatformDefinition platform)
+        {
+            m_LevelManager.RemoveStandByPlatform(platform);
+        }
         public void AddStandByPlatform(StandbyPlatformDefinition platform)
         {
             m_LevelManager.AddStandByPlatform(platform);
@@ -106,6 +110,10 @@ namespace LegionKnight
         public void RessurectionPlayer()
         {
             m_LevelManager.RessurectionPlayer();
+        }
+        public void ApplyPotOfLife()
+        {
+            m_LevelManager.ApplyPotOfLife();
         }
         public void SpawnPlatform()
         {

@@ -85,6 +85,18 @@ namespace LegionKnight
         {
             StartCoroutine(AddingLootView(loot));
         }
+        public virtual void RemoveLootView(LootField loot)
+        {
+            LootItemView view = GetLootView(loot);
+            if (view != null)
+            {
+                view.Hide();
+                m_SpawnedLoots.Remove(view);
+                Addressables.ReleaseInstance(view.gameObject);
+                m_OnLootUdate?.Invoke(loot);
+                Debug.Log($"Removed loot view: {loot.Item.name}");
+            }
+        }
 
         private void UpdateLootAmountView(LootField loot)
         {

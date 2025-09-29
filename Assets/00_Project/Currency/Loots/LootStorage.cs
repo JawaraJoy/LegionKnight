@@ -15,6 +15,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<LootField> m_OnLootAmountUpdate;
         [SerializeField]
+        private UnityEvent<LootField> m_OnRemoveLoot;
+        [SerializeField]
         private UnityEvent<List<LootField>> m_OnTakeLoots;
         [SerializeField]
         private bool m_AutoTakeDirectLoot = true;
@@ -49,6 +51,8 @@ namespace LegionKnight
                     int amount = loot.Amount;
                     CurrencyApplier(item, amount);
                     CharacterApplier(item);
+                    StandbyPlatformApplier(item, amount);
+                    EnergyApplier(item, amount);
                 }
             }
             m_OnTakeLoots?.Invoke(m_Looteds);
@@ -107,6 +111,20 @@ namespace LegionKnight
         public void AddLoot(LootField loot)
         {
             AddLootInternal(loot);
+        }
+        public void RemoveLoot(LootField loot)
+        {
+            RemoveLootInternal(loot);
+        }
+        private void RemoveLootInternal(LootField loot)
+        {
+            if (HasLootedInternal(loot.Item))
+            {
+                LootField existingLoot = GetLootedInternal(loot.Item);
+                m_Looteds.Remove(existingLoot);
+                Debug.Log($"Removed Loot: {existingLoot.Item.name}");
+                m_OnRemoveLoot?.Invoke(existingLoot);
+            }
         }
         public void ClearLoots()
         {
