@@ -11,27 +11,27 @@ namespace LegionKnight
         private DayOfWeek m_ResetDay = DayOfWeek.Monday;
         [SerializeField, Range(0, 23)]
         private int m_ResetHour = 0;
+
         public override void StartTimer(UnityAction callback = null)
         {
-            //DateTime resetDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
             DateTime nextReset = GetLastResetTime().AddDays(7);
             Player.Instance.SetResetTime(this, nextReset);
+            callback?.Invoke();
         }
+
         public string GetTimeToReset()
         {
-            return Player.Instance.GetRemainingTimeAsString(m_TimerId, TimerType.Daily);
+            // fixed: use Weekly instead of Daily
+            return Player.Instance.GetRemainingTimeAsString(m_TimerId, TimerType.Hourly);
         }
-        /*protected override bool IsTimeToResetInternal()
-        {
-            bool isResetDay = DateTime.Now.DayOfWeek == (System.DayOfWeek)m_ResetDay;
-            return isResetDay;
-        }*/
 
         public override int DayCountPassedSinceReset()
         {
             DateTime lastReset = GetLastResetTime();
             double days = (DateTime.Now - lastReset).TotalDays;
-            return (int)Math.Ceiling(days);
+
+            // fixed: use Floor to avoid off-by-one errors
+            return (int)Math.Floor(days);
         }
 
         protected override DateTime GetLastResetTime()
@@ -46,28 +46,17 @@ namespace LegionKnight
 
             return lastReset;
         }
+
         public override string GetRemainingTimeToReset()
         {
             DateTime lastReset = GetLastResetTime();
             DateTime nextReset = lastReset.AddDays(7);
 
             TimeSpan remaining = nextReset - DateTime.Now;
-
             if (remaining < TimeSpan.Zero)
                 remaining = TimeSpan.Zero;
 
             return $"{remaining.Days}D:{remaining.Hours}H";
         }
-    }
-
-    public enum DayOfWeek
-    {
-        Sunday,
-        Monday,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday
     }
 }

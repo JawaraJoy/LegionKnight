@@ -13,12 +13,14 @@ namespace LegionKnight
         private DailyRewardData[] m_Rewards;
         public string BehaviourName => m_BehaviourName;
         public TimerDefinition Timer => m_Timer;
+
         private const string DailyRewardKeyInternal = "dailyreward";
-        private string ResetKey => DailyRewardKey + "reset";
         public static string DailyRewardKey => DailyRewardKeyInternal;
+        private string ResetKey => DailyRewardKey + "_reset";
 
         [SerializeField, MMReadOnly]
-        private int m_RewardLenght; 
+        private int m_RewardLength;
+
         private DailyRewardData GetDailyRewardDataInternal(LootDefinition loot)
         {
             foreach (var reward in m_Rewards)
@@ -30,14 +32,17 @@ namespace LegionKnight
             }
             return null;
         }
+
         public DailyRewardData GetDailyRewardData(LootDefinition loot)
         {
             return GetDailyRewardDataInternal(loot);
         }
+
         public void Refresh()
         {
             RefreshInternal();
         }
+
         private void RefreshInternal()
         {
             if (m_Timer == null)
@@ -45,8 +50,10 @@ namespace LegionKnight
                 Debug.LogWarning($"{DailyRewardKeyInternal}: Timer is not set.");
                 return;
             }
-            m_RewardLenght = m_Rewards.Length;
+
+            m_RewardLength = m_Rewards.Length;
             bool hasResetTime = UnityService.Instance.HasData(ResetKey);
+
             if (hasResetTime)
             {
                 bool isReset = m_Timer.IsTimeToReset();
@@ -63,10 +70,12 @@ namespace LegionKnight
             else
             {
                 m_Timer.StartTimer();
+                UnityService.Instance.SaveData(ResetKey, 1); // ensure ResetKey is stored
             }
-                
+
             DailyCheckState();
         }
+
         private void DailyCheckState()
         {
             for (int i = 0; i < m_Rewards.Length; i++)
@@ -74,7 +83,6 @@ namespace LegionKnight
                 m_Rewards[i].CheckState();
 
                 int dayCountPassed = m_Timer.DayCountPassedSinceReset();
-
                 bool isDayToClaim = i == dayCountPassed;
                 bool hasPassedDay = i < dayCountPassed;
 
@@ -98,15 +106,19 @@ namespace LegionKnight
                 }
             }
         }
+
         private void OnTimerReset()
         {
             foreach (var reward in m_Rewards)
             {
                 reward.Off();
             }
+
             m_Timer.StartTimer();
+            UnityService.Instance.SaveData(ResetKey, 1); // reset time recorded
         }
     }
+
     [System.Serializable]
     public class DailyRewardData
     {
@@ -114,6 +126,7 @@ namespace LegionKnight
         private DailyRewardState m_State = DailyRewardState.OFF;
         [SerializeField]
         private LootDefinition m_Reward;
+
         public DailyRewardState State { get => m_State; set => m_State = value; }
         public LootDefinition Reward => m_Reward;
 
@@ -124,6 +137,7 @@ namespace LegionKnight
         }
 
         private string Key => $"{DailyReward.DailyRewardKey}_{m_Reward.Id}";
+
         public void CheckState()
         {
             bool hasState = UnityService.Instance.HasData(Key);
@@ -132,22 +146,26 @@ namespace LegionKnight
                 m_State = (DailyRewardState)UnityService.Instance.GetData<int>(Key);
             }
         }
+
         public void Claim()
         {
             m_Reward.DirectTakeLoots();
             m_State = DailyRewardState.CLAIMED;
             UnityService.Instance.SaveData(Key, (int)m_State);
         }
+
         public void Pass()
         {
             m_State = DailyRewardState.PASSED;
             UnityService.Instance.SaveData(Key, (int)m_State);
         }
+
         public void On()
         {
             m_State = DailyRewardState.ON;
             UnityService.Instance.SaveData(Key, (int)m_State);
         }
+
         public void Off()
         {
             m_State = DailyRewardState.OFF;
@@ -162,4 +180,5 @@ namespace LegionKnight
         CLAIMED = 3,
         PASSED = 4
     }
+
 }
