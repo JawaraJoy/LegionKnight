@@ -22,7 +22,7 @@ namespace LegionKnight
         public string GetTimeToReset()
         {
             // fixed: use Weekly instead of Daily
-            return Player.Instance.GetRemainingTimeAsString(m_TimerId, TimerType.Hourly);
+            return Player.Instance.GetRemainingTimeAsString(m_TimerId, TimerType.Daily);
         }
 
         public override int DayCountPassedSinceReset()
@@ -47,6 +47,15 @@ namespace LegionKnight
             return lastReset;
         }
 
+        protected override bool IsTimeToResetInternal()
+        {
+            DateTime now = DateTime.Now;
+            DateTime lastReset = GetLastResetTime();
+            DateTime nextReset = lastReset.AddDays(7);
+
+            return now >= nextReset;
+        }
+
         public override string GetRemainingTimeToReset()
         {
             DateTime lastReset = GetLastResetTime();
@@ -59,4 +68,5 @@ namespace LegionKnight
             return $"{remaining.Days}D:{remaining.Hours}H";
         }
     }
+
 }
