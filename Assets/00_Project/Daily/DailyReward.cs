@@ -40,6 +40,11 @@ namespace LegionKnight
         }
         private void RefreshInternal()
         {
+            if (m_Timer == null)
+            {
+                Debug.LogWarning($"{DailyRewardKeyInternal}: Timer is not set.");
+                return;
+            }
             m_RewardLenght = m_Rewards.Length;
             bool hasResetTime = UnityService.Instance.HasData(ResetKey);
             if (hasResetTime)
@@ -59,7 +64,7 @@ namespace LegionKnight
             {
                 m_Timer.StartTimer();
             }
-
+                
             DailyCheckState();
         }
         private void DailyCheckState()

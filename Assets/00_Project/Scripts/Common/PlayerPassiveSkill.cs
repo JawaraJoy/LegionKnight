@@ -34,6 +34,10 @@ namespace LegionKnight
         {
             m_PassiveSkill.SetCanActive(set);
         }
+        public void AddManaOvertime(int add, float time)
+        {
+            m_PassiveSkill.AddManaOvertime(add, time);
+        }
     }
     public partial class PlayerAgent
     {

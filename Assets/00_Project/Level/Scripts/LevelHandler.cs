@@ -191,6 +191,7 @@ namespace LegionKnight
         {
             GetLevelSelect(defi)?.StartLevel();
             SetBossSpawnCountInternal(0);
+            Player.Instance.SetCurrencyAmount(m_PotOfLifeDefinition, 0);
         }
         public bool HasBoss()
         {
@@ -289,15 +290,12 @@ namespace LegionKnight
                 GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
             }
         }
-        private int potUseCount = 0;
         private void PotOfLifeEff(int rebornHealth, Currency currency)
         {
             RessurectionPlayerInternal();
             Player.Instance.SetCurrentHealth(rebornHealth);
-            currency.RemoveAmount(1);
+            Player.Instance.RemoveCurrencyAmount(currency.CurrencyDefinition, 1);
             GameManager.Instance.GetLootStorageManager().RemoveLoot(new LootField(currency.CurrencyDefinition, false, 0, 0));
-            potUseCount++;
-            Debug.Log($"[Pot of Life] {potUseCount}");
         }
         private void DelayActionInternal(float delay, UnityAction action)
         {

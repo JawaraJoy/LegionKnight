@@ -104,6 +104,10 @@ namespace LegionKnight
         {
             GetSkillView(skillName).SetFill(fill);
         }
+        public void ChargeAmount(string skillName, int amount)
+        {
+            GetSkillView(skillName).ChargeAmount(amount);
+        }
         public void Active(string skillName)
         {
             GetSkillView(skillName).Active();

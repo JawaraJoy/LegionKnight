@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
@@ -70,7 +69,7 @@ namespace LegionKnight
 
         public void SetOwner(Object owner)
         {
-            
+            // the owner no need to set
         }
 
         public Currency GetBreakShardCost(int star)

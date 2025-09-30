@@ -59,6 +59,8 @@ namespace LegionKnight
         public void RemoveCurrencyAmount(CurrencyDefinition definition, int amount)
         {
             m_CurrencyControl.RemoveCurrencyAmount(definition, amount);
+            int currentAmount = m_CurrencyControl.GetCurrencyAmount(definition);
+            UnityService.Instance.SaveData(definition.Id, currentAmount);
         }
     }
     public partial class PlayerAgent

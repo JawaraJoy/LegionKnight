@@ -12,6 +12,10 @@ namespace LegionKnight
         {
             GetBinding<PlayerSkillContainer>().SetFill(skillName, fill);
         }
+        public void ChargeAmount(string skillName, int amount)
+        {
+            GetBinding<PlayerSkillContainer>().ChargeAmount(skillName, amount);
+        }
         public void Active(string skillName)
         {
             GetBinding<PlayerSkillContainer>().Active(skillName);
@@ -41,6 +45,11 @@ namespace LegionKnight
             GameplayPanel panel = GetPanel<GameplayPanel>();
             panel.SetFill(skillName, fill);
         }
+        public void ChargeAmount(string skillName, int amount)
+        {
+            GameplayPanel panel = GetPanel<GameplayPanel>();
+            panel.ChargeAmount(skillName, amount);
+        }
         public void Active(string skillName)
         {
             GameplayPanel panel = GetPanel<GameplayPanel>();
@@ -62,6 +71,10 @@ namespace LegionKnight
         public void SetSkillViewFill(string skillName, float fill)
         {
             GameManager.Instance.SetSkillViewFill(skillName, fill);
+        }
+        public void ChargeAmount(string skillName, int amount)
+        {
+            GameManager.Instance.ChargeAmount(skillName, amount);
         }
         public void Active(string skillName)
         {
