@@ -34,7 +34,7 @@ namespace LegionKnight
             return (int)Math.Floor(days);
         }
 
-        protected override DateTime GetLastResetTime()
+        public override DateTime GetLastResetTime()
         {
             DateTime now = DateTime.Now;
 

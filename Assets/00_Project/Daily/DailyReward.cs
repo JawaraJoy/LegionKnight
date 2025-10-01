@@ -1,5 +1,6 @@
 using MoreMountains.Tools;
 using UnityEngine;
+using System;
 
 namespace LegionKnight
 {
@@ -16,7 +17,7 @@ namespace LegionKnight
 
         private const string DailyRewardKeyInternal = "dailyreward";
         public static string DailyRewardKey => DailyRewardKeyInternal;
-        private string ResetKey => DailyRewardKey + "_reset";
+        private string ResetKey => DailyRewardKey + "resetdailysignin";
 
         [SerializeField, MMReadOnly]
         private int m_RewardLength;
@@ -69,8 +70,16 @@ namespace LegionKnight
             }
             else
             {
-                m_Timer.StartTimer();
-                UnityService.Instance.SaveData(ResetKey, 1); // ensure ResetKey is stored
+                // Align first reset with the actual weekly reset schedule
+                DateTime lastReset = m_Timer is WeeklyTimerDefinition weekly
+                    ? weekly.GetLastResetTime()
+                    : DateTime.Now;
+
+                DateTime nextReset = lastReset.AddDays(7);
+                Player.Instance.SetResetTime(m_Timer, nextReset);
+
+                UnityService.Instance.SaveData(ResetKey, 1);
+                Debug.Log($"{DailyRewardKeyInternal}: First reset aligned to {nextReset}");
             }
 
             DailyCheckState();

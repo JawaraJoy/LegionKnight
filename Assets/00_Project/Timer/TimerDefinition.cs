@@ -49,7 +49,7 @@ namespace LegionKnight
             return 0;
         }
 
-        protected virtual DateTime GetLastResetTime()
+        public virtual DateTime GetLastResetTime()
         {
             return DateTime.MinValue;
         }
