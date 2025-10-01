@@ -86,6 +86,7 @@ namespace LegionKnight
 
                     SetTaskPowerInternal(0);
                     m_ResetTime.StartTimer();
+                    GameManager.Instance.DailyRewardManager?.ForceReset();
                 }
             }
         }

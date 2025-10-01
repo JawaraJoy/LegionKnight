@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+﻿using MoreMountains.Tools;
 using UnityEngine;
 using System;
 
@@ -17,10 +17,6 @@ namespace LegionKnight
 
         private const string DailyRewardKeyInternal = "dailyreward";
         public static string DailyRewardKey => DailyRewardKeyInternal;
-        private string ResetKey => DailyRewardKey + "resetdailysignin";
-
-        [SerializeField, MMReadOnly]
-        private int m_RewardLength;
 
         private DailyRewardData GetDailyRewardDataInternal(LootDefinition loot)
         {
@@ -44,6 +40,7 @@ namespace LegionKnight
             RefreshInternal();
         }
 
+        [Obsolete("Not Reset on specific Day, call forceReset to other function")]
         private void RefreshInternal()
         {
             if (m_Timer == null)
@@ -51,16 +48,14 @@ namespace LegionKnight
                 Debug.LogWarning($"{DailyRewardKeyInternal}: Timer is not set.");
                 return;
             }
-
-            m_RewardLength = m_Rewards.Length;
-            bool hasResetTime = UnityService.Instance.HasData(ResetKey);
+            bool hasResetTime = UnityService.Instance.HasData(m_Timer.TimerId);
 
             if (hasResetTime)
             {
                 bool isReset = m_Timer.IsTimeToReset();
                 if (isReset)
                 {
-                    OnTimerReset();
+                    OnTimerResetInternal();
                     Debug.Log($"{DailyRewardKeyInternal}: Timer reset, daily rewards are reset.");
                 }
                 else
@@ -70,16 +65,9 @@ namespace LegionKnight
             }
             else
             {
-                // Align first reset with the actual weekly reset schedule
-                DateTime lastReset = m_Timer is WeeklyTimerDefinition weekly
-                    ? weekly.GetLastResetTime()
-                    : DateTime.Now;
-
-                DateTime nextReset = lastReset.AddDays(7);
-                Player.Instance.SetResetTime(m_Timer, nextReset);
-
-                UnityService.Instance.SaveData(ResetKey, 1);
-                Debug.Log($"{DailyRewardKeyInternal}: First reset aligned to {nextReset}");
+                // ✅ Just start the timer if none exists
+                m_Timer.StartTimer();
+                Debug.Log($"{DailyRewardKeyInternal}: First reset initialized.");
             }
 
             DailyCheckState();
@@ -116,7 +104,7 @@ namespace LegionKnight
             }
         }
 
-        private void OnTimerReset()
+        private void OnTimerResetInternal()
         {
             foreach (var reward in m_Rewards)
             {
@@ -124,7 +112,11 @@ namespace LegionKnight
             }
 
             m_Timer.StartTimer();
-            UnityService.Instance.SaveData(ResetKey, 1); // reset time recorded
+        }
+        public void ForceReset()
+        {
+            OnTimerResetInternal();
+            Debug.Log($"{DailyRewardKeyInternal}: Force reset executed.");
         }
     }
 
