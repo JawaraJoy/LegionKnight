@@ -40,6 +40,13 @@ namespace LegionKnight
                 content.SetCurrentUpgradeLevel(level);
             }
         }
+        public void ClaimUpgradeReward()
+        {
+            if (Player.Instance.BadgeManager.HasBadge(this, out var content))
+            {
+                content.ClaimReward();
+            }
+        }
     }
 
     [System.Serializable]
@@ -51,9 +58,11 @@ namespace LegionKnight
         private string m_Description;
         [SerializeField]
         private Sprite m_Icon;
-
+        [SerializeField]
+        private LootField[] m_RewardOnUnlock;
         public string Label => m_Label;
         public string Description => m_Description;
         public Sprite Icon => m_Icon;
+        public LootField[] RewardOnUnlock => m_RewardOnUnlock;
     }
 }

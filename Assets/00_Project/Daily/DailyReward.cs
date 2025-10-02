@@ -56,7 +56,7 @@ namespace LegionKnight
                 if (isReset)
                 {
                     OnTimerResetInternal();
-                    Debug.Log($"{DailyRewardKeyInternal}: Timer reset, daily rewards are reset.");
+                    
                 }
                 else
                 {
@@ -110,12 +110,12 @@ namespace LegionKnight
             {
                 reward.Off();
             }
-
+            Debug.Log($"{DailyRewardKeyInternal}: Timer reset, daily rewards are reset.");
             m_Timer.StartTimer();
         }
         public void ForceReset()
         {
-            OnTimerResetInternal();
+            //OnTimerResetInternal();
             Debug.Log($"{DailyRewardKeyInternal}: Force reset executed.");
         }
     }

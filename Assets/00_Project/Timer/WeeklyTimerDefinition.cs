@@ -14,8 +14,20 @@ namespace LegionKnight
 
         public override void StartTimer(UnityAction callback = null)
         {
-            DateTime nextReset = GetLastResetTime().AddDays(7);
-            Player.Instance.SetResetTime(this, nextReset);
+            DateTime now = DateTime.Now;
+
+            // Calculate this week’s scheduled reset time
+            int daysUntilReset = ((int)m_ResetDay - (int)now.DayOfWeek + 7) % 7;
+            DateTime scheduledReset = now.Date.AddDays(daysUntilReset).AddHours(m_ResetHour);
+
+            // If today’s reset already passed, schedule for next week
+            if (scheduledReset <= now)
+                scheduledReset = scheduledReset.AddDays(7);
+
+            Player.Instance.SetResetTime(this, scheduledReset);
+
+            Debug.Log($"[{m_TimerId}] Next reset scheduled at: {scheduledReset}");
+
             callback?.Invoke();
         }
 
@@ -29,8 +41,6 @@ namespace LegionKnight
         {
             DateTime lastReset = GetLastResetTime();
             double days = (DateTime.Now - lastReset).TotalDays;
-
-            // fixed: use Floor to avoid off-by-one errors
             return (int)Math.Floor(days);
         }
 
@@ -50,22 +60,20 @@ namespace LegionKnight
         protected override bool IsTimeToResetInternal()
         {
             DateTime now = DateTime.Now;
-            DateTime lastReset = GetLastResetTime();
-            DateTime nextReset = lastReset.AddDays(7);
+            DateTime storedReset = Player.Instance.GetResetTime(m_TimerId);
 
-            return now >= nextReset;
+            bool isReset = now >= storedReset;
+            Debug.Log($"[{m_TimerId}] Now={now}, StoredReset={storedReset}, IsReset={isReset}");
+            return isReset;
         }
 
         public override string GetRemainingTimeToReset()
         {
-            DateTime lastReset = GetLastResetTime();
-            DateTime nextReset = lastReset.AddDays(7);
+            DateTime resetTime = Player.Instance.GetResetTime(m_TimerId);
+            TimeSpan remaining = resetTime - DateTime.Now;
+            if (remaining < TimeSpan.Zero) remaining = TimeSpan.Zero;
 
-            TimeSpan remaining = nextReset - DateTime.Now;
-            if (remaining < TimeSpan.Zero)
-                remaining = TimeSpan.Zero;
-
-            return $"{remaining.Days}D:{remaining.Hours}H";
+            return $"{remaining.Days}D:{remaining.Hours}H:{remaining.Minutes}M";
         }
     }
 

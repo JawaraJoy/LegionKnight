@@ -49,10 +49,10 @@ namespace LegionKnight
                 if (loot.Item is ScriptableObject item)
                 {
                     int amount = loot.Amount;
-                    CurrencyApplier(item, amount);
-                    CharacterApplier(item);
-                    StandbyPlatformApplier(item, amount);
-                    EnergyApplier(item, amount);
+                    LootField.CurrencyApplier(item, amount);
+                    LootField.CharacterApplier(item);
+                    LootField.StandbyPlatformApplier(item, amount);
+                    LootField.EnergyApplier(item, amount);
                 }
             }
             m_OnTakeLoots?.Invoke(m_Looteds);
@@ -67,10 +67,10 @@ namespace LegionKnight
             if (loot.Item is ScriptableObject item)
             {
                 int amount = loot.Amount;
-                CurrencyApplier(item, amount);
-                StandbyPlatformApplier(item, amount);
-                EnergyApplier(item, amount);
-                CharacterApplier(item);
+                LootField.CurrencyApplier(item, amount);
+                LootField.StandbyPlatformApplier(item, amount);
+                LootField.EnergyApplier(item, amount);
+                LootField.CharacterApplier(item);
             }
             m_OnDirectTakeLoot?.Invoke(loot);
         }
@@ -134,42 +134,6 @@ namespace LegionKnight
         private void ClearLootsInternal()
         {
             m_Looteds.Clear();
-        }
-        private void CurrencyApplier(ScriptableObject defi, int amount)
-        {
-            if (defi is CurrencyDefinition currency)
-            {
-                Player.Instance.AddCurrencyAmount(currency, amount);
-            }
-        }
-        private void CharacterApplier(ScriptableObject defi)
-        {
-            if (defi is CharacterDefinition character)
-            {
-                bool owned = Player.Instance.GetCharacterUnit(character).Owned;
-                if (owned)
-                {
-                    Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
-                }
-                else
-                {
-                    Player.Instance.SetOwned(character, true);
-                }
-            }
-        }
-        private void StandbyPlatformApplier(ScriptableObject defi, int amount)
-        {
-            if (defi is StandbyPlatformDefinition platform)
-            {
-                Player.Instance.AddPlatformAmount(platform, amount);
-            }
-        }
-        private void EnergyApplier(ScriptableObject defi, int amount)
-        {
-            if (defi is EnergyDefinition energy)
-            {
-                Player.Instance.AddEnergy(energy, amount);
-            }
         }
     }
 }

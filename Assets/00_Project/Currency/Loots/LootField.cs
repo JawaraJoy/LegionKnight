@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -38,20 +39,20 @@ namespace LegionKnight
 
         public void DirectTakeLoot()
         {
-            CurrencyApplier(m_Item, m_Amount);
-            StandbyPlatformApplier(m_Item, m_Amount);
-            EnergyApplier(m_Item, m_Amount);
-            CharacterApplier(m_Item);
+            CurrencyApplierInternal(m_Item, m_Amount);
+            StandbyPlatformApplierInternal(m_Item, m_Amount);
+            EnergyApplierInternal(m_Item, m_Amount);
+            CharacterApplierInternal(m_Item);
         }
 
-        private void CurrencyApplier(ScriptableObject defi, int amount)
+        private static void CurrencyApplierInternal(ScriptableObject defi, int amount)
         {
             if (defi is CurrencyDefinition currency)
             {
                 Player.Instance.AddCurrencyAmount(currency, amount);
             }
         }
-        private void CharacterApplier(ScriptableObject defi)
+        private static void CharacterApplierInternal(ScriptableObject defi)
         {
             if (defi is CharacterDefinition character)
             {
@@ -66,19 +67,35 @@ namespace LegionKnight
                 }
             }
         }
-        private void StandbyPlatformApplier(ScriptableObject defi, int amount)
+        private static void StandbyPlatformApplierInternal(ScriptableObject defi, int amount)
         {
             if (defi is StandbyPlatformDefinition platform)
             {
                 Player.Instance.AddPlatformAmount(platform, amount);
             }
         }
-        private void EnergyApplier(ScriptableObject defi, int amount)
+        private static void EnergyApplierInternal(ScriptableObject defi, int amount)
         {
             if (defi is EnergyDefinition energy)
             {
                 Player.Instance.AddEnergy(energy, amount);
             }
+        }
+        public static void CurrencyApplier(ScriptableObject defi, int amount)
+        {
+            CurrencyApplierInternal(defi, amount);
+        }
+        public static void CharacterApplier(ScriptableObject defi)
+        {
+            CharacterApplierInternal(defi);
+        }
+        public static void StandbyPlatformApplier(ScriptableObject defi, int amount)
+        {
+            StandbyPlatformApplierInternal(defi, amount);
+        }
+        public static void EnergyApplier(ScriptableObject defi, int amount)
+        {
+            EnergyApplierInternal(defi, amount);
         }
     }
 }

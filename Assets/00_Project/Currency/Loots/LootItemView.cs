@@ -70,6 +70,7 @@ namespace LegionKnight
             if (defi is StandbyPlatformDefinition platform)
             {
                 m_Icon.sprite = platform.Icon;
+                m_Amount.text = amount.ToString();
             }
         }
         private void EnergyApplier(ScriptableObject defi, int amount)
