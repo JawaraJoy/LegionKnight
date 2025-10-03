@@ -59,6 +59,7 @@ namespace LegionKnight
 
             DailyRewardData data = GameManager.Instance.DailyRewardManager.GetDailyRewardData(m_Reward);
             data.Claim();
+            GameManager.Instance.DailyRewardManager.OnRewardClaimed.Invoke(data);
             //GameManager.Instance.DailyRewardManager.AddDayLoginCount(1);
             Init();
         }

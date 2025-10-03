@@ -17,11 +17,26 @@ MonoBehaviour:
   m_Description: Has Character with level 10 to unlock
   m_Upgrade:
   - m_Label: Seeker I
-    m_Description: Has Character with level 10 to unlock Seeker II
+    m_Description: Has Character with level 20 to unlock Seeker II
     m_Icon: {fileID: 21300000, guid: 06cea55f7f045402f8ea9eacb9924fa5, type: 3}
+    m_RewardOnUnlock:
+    - m_Item: {fileID: 11400000, guid: 2aedec681836937458126066f7ad9559, type: 2}
+      m_IsUnique: 0
+      m_Amount: 10
+      m_Chance: 1
   - m_Label: Seeker II
-    m_Description: Has Character with level 10 to unlock Seeker III
+    m_Description: Has Character with level 30 to unlock Seeker III
     m_Icon: {fileID: 21300000, guid: dc616340029fe46f488deb0845bf7a59, type: 3}
+    m_RewardOnUnlock:
+    - m_Item: {fileID: 11400000, guid: 2aedec681836937458126066f7ad9559, type: 2}
+      m_IsUnique: 0
+      m_Amount: 20
+      m_Chance: 1
   - m_Label: Seeker III
     m_Description: You just Master it
     m_Icon: {fileID: 21300000, guid: 17109f59e55f941a9ba17e827e9f208e, type: 3}
+    m_RewardOnUnlock:
+    - m_Item: {fileID: 11400000, guid: 1c4f9da3f7cf5bd40abbb4259e3305c3, type: 2}
+      m_IsUnique: 0
+      m_Amount: 1
+      m_Chance: 1

@@ -11,7 +11,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private CounterManager m_CounterManager;
-
+        public CounterManager CounterManager => m_CounterManager;
         public void AddCounter(CounterDefinition definition, int count)
         {
             m_CounterManager.AddCount(definition, count);

@@ -11,8 +11,11 @@ namespace LegionKnight
         private Image m_Icon;
         [SerializeField]
         private Button m_DetailsButton;
+        [SerializeField]
+        private Button m_ClaimButton;
 
         private BadgeInfoPanel m_InfoPanel;
+        private LootedPanel m_LootedPanel;
         public BadgeDefinition Definition => m_Definition;
 
         private BadgeManager m_BadgeManager;
@@ -24,11 +27,21 @@ namespace LegionKnight
             }
             return m_BadgeManager;
         }
+        private LootedPanel GetLootedPanel()
+        {
+            if (m_LootedPanel == null)
+            {
+                m_LootedPanel = GameManager.Instance.GetPanel<LootedPanel>();
+            }
+            return m_LootedPanel;
+        }
 
         private void Start()
         {
             m_DetailsButton.onClick.RemoveAllListeners();
             m_DetailsButton.onClick.AddListener(ShowDetails);
+            m_ClaimButton.onClick.RemoveAllListeners();
+            m_ClaimButton.onClick.AddListener(ClaimReward);
         }
         private BadgeInfoPanel GetInfoPanel()
         {
@@ -40,13 +53,22 @@ namespace LegionKnight
         }
         public void Init(BadgeDefinition defi)
         {
+            InitInternal(defi);
+        }
+
+        private void InitInternal(BadgeDefinition defi)
+        {
             m_Definition = defi;
-            if (GetBadgeManager().HasBadge(defi, out var content))
+            if (GetBadgeManager().HasBadge(defi, out BadgeContent content))
             {
                 int currentLevel = content.CurrentUpgradeLevel;
                 bool isUnlocked = content.IsUnlocked;
+                bool canClaim = content.UnClaimedReward > 0;
                 m_Icon.sprite = defi.Upgrade[currentLevel].Icon;
                 m_Icon.color = isUnlocked ? Color.white : Color.gray;
+
+                bool hasMaxLevel = currentLevel >= defi.Upgrade.Length - 1;
+                m_ClaimButton.gameObject.SetActive(canClaim);
             }
             else
             {
@@ -58,6 +80,16 @@ namespace LegionKnight
         {
             GetInfoPanel().Show();
             GetInfoPanel().Init(m_Definition);
+        }
+
+        private void ClaimReward()
+        {
+            if (GetBadgeManager().HasBadge(m_Definition, out BadgeContent content))
+            {
+                content.ClaimReward();
+                GetLootedPanel().ShowLoot(BadgeHandler.RewardOnUnlock(content));
+                Init(m_Definition);
+            }
         }
     }
 }

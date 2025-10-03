@@ -26,6 +26,8 @@ namespace LegionKnight
         private UnityEvent<CharacterUnit> m_OnCharacterStarUp = new();
         [SerializeField]
         private UnityEvent<CharacterUnit> m_OnCharacterShardUpdate = new();
+        [SerializeField]
+        private UnityEvent<bool> m_OnCharacterOwnedChanged = new();
         public bool Owned => m_Owned;
 
         public int Level => m_Level;
@@ -89,6 +91,8 @@ namespace LegionKnight
             UnityService.Instance.SaveData(m_Definition.Id + "Lv", m_Level);
             m_OnLevelUp?.Invoke(this);
             Player.Instance.OnHeroLevelUp.Invoke(m_Definition);
+            Player.Instance.PlayerDeck.OnCharacterLevelUpAmount.Invoke(m_Level);
+            Debug.Log($"Level Up! New Level: {m_Level}");
         }
         public void LevelUp()
         {
@@ -106,6 +110,10 @@ namespace LegionKnight
                 //OnLevelUpInvoke();
                 m_OnLevelUp?.Invoke(this);
                 Player.Instance.OnHeroLevelUp.Invoke(m_Definition);
+                Player.Instance.PlayerDeck.OnCharacterLevelUpAmount.Invoke(m_Level);
+
+                Debug.Log($"Level Up! New Level: {m_Level}");
+
                 UnityService.Instance.SaveData(m_Definition.Id + "Lv", m_Level);
                 DateTime updateTime = DateTime.Now;
                 Dictionary<string, string> eventValues = new Dictionary<string, string>
@@ -154,8 +162,15 @@ namespace LegionKnight
         private void SetOwnedInternal(bool set)
         {
             m_Owned = set;
+            OnCharacterOwnedChangedInvoke();
             UnityService.Instance.SaveData(m_Definition.Id + "Owned", m_Owned);
         }
+
+        private void OnCharacterOwnedChangedInvoke()
+        {
+            m_OnCharacterOwnedChanged?.Invoke(m_Owned);
+        }
+
         public void Init()
         {
             if (UnityService.Instance.HasData(m_Definition.Id + "Owned"))
@@ -192,7 +207,7 @@ namespace LegionKnight
                 bool used = UnityService.Instance.GetData<bool>("used" + m_Definition.Id);
                 m_IsUsed = used;
             }
-            
+            OnCharacterOwnedChangedInvoke();
         }
         public string CharacterName => m_Definition.name;
         public Sprite Icon => m_Definition.Icon;

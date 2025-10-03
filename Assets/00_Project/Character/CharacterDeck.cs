@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,10 +24,23 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnCharacterLevelUp = new();
         [SerializeField]
+        private UnityEvent<int> m_OnCharacterLevelUpAmount = new();
+        [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnCharacterStarUp = new();
+        [SerializeField]
+        private UnityEvent<CharacterDefinition> m_OnCharacterOwned = new();
+        [SerializeField]
+        private UnityEvent<int> m_OnCharacterOwnedAmount = new();
 
         public UnityEvent<CharacterDefinition> OnCharacterLevelUp => m_OnCharacterLevelUp;
         public UnityEvent<CharacterDefinition> OnCharacterStarUp => m_OnCharacterStarUp;
+        public UnityEvent<CharacterDefinition> OnCharacterOwned => m_OnCharacterOwned;
+        public UnityEvent<int> OnCharacterOwnedAmount => m_OnCharacterOwnedAmount;
+        public UnityEvent<int> OnCharacterLevelUpAmount => m_OnCharacterLevelUpAmount;
+        public UnityEvent<CharacterDefinition> OnInitialized => m_OnInitialized;
+        public UnityEvent<CharacterDefinition> OnCharacterUsed => m_OnCharacterUsed;
+        public UnityEvent<CharacterDefinition> OnSelectedCharacter => m_OnSelectedCharacter;
+
         public CharacterDefinition DefaultCharacter => m_DefaultCharacter;
         public List<CharacterUnit> CharacterUnits => m_CharacterUnits;
         public CharacterDefinition UsedCharacter => m_UsedCharacter;
@@ -85,7 +99,26 @@ namespace LegionKnight
         public void SetOwned(CharacterDefinition defi, bool set)
         {
             GetCharacterUnitInternal(defi).SetOwned(set);
+            if (set)
+            {
+                OnCharacterOwnedInvoke(defi);
+            }
         }
+
+        private void OnCharacterOwnedInvoke(CharacterDefinition defi)
+        {
+            m_OnCharacterOwned?.Invoke(defi);
+            int ownedAmount = 0;
+            foreach (CharacterUnit unit in m_CharacterUnits)
+            {
+                if (unit.Owned)
+                {
+                    ownedAmount++;
+                }
+            }
+            m_OnCharacterOwnedAmount?.Invoke(ownedAmount);
+        }
+
         public void SetUsedCharacter()
         {
             m_UsedCharacter = m_SelectedCharacter;
@@ -114,17 +147,9 @@ namespace LegionKnight
             m_OnSelectedCharacter?.Invoke(m_SelectedCharacter);
             GameManager.Instance.SetCharacterSelected(m_SelectedCharacter);
         }
-        private void OnCharacterLevelUpInvoke(CharacterDefinition defi)
-        {
-            m_OnCharacterLevelUp?.Invoke(defi);
-        }
         public void AddExp(CharacterDefinition defi, int exp)
         {
             GetCharacterUnitInternal(defi).AddExp(exp);
-        }
-        public void LevelUp()
-        {
-            GetCharacterUnitInternal(m_UsedCharacter).LevelUp();
         }
         public int GetLevel(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Level;
         public int GetExp(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Exp;

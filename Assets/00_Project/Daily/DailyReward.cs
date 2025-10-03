@@ -1,6 +1,7 @@
 ﻿using MoreMountains.Tools;
 using UnityEngine;
 using System;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -11,9 +12,12 @@ namespace LegionKnight
         [SerializeField]
         private TimerDefinition m_Timer;
         [SerializeField]
+        private UnityEvent<DailyRewardData> m_OnRewardClaimed;
+        [SerializeField]
         private DailyRewardData[] m_Rewards;
         public string BehaviourName => m_BehaviourName;
         public TimerDefinition Timer => m_Timer;
+        public UnityEvent<DailyRewardData> OnRewardClaimed => m_OnRewardClaimed;
 
         private const string DailyRewardKeyInternal = "dailyreward";
         public static string DailyRewardKey => DailyRewardKeyInternal;

@@ -18,19 +18,11 @@ namespace LegionKnight
         public string Description => m_Description;
         public BadgeUpgrade[] Upgrade => m_Upgrade;
 
-        public void Unlock()
-        {
-            if (Player.Instance.BadgeManager.HasBadge(this, out var content) || !content.IsUnlocked)
-            {
-                Player.Instance.BadgeManager.UnlockBadge(this);
-            }
-            
-        }
-        public void AddUpgradeCurrentLevel(int amount)
+        public void AddUnClaimedReward(int amount)
         {
             if (Player.Instance.BadgeManager.HasBadge(this, out var content))
             {
-                content.AddCurrentUpgradeLevel(amount);
+                content.AddUnClaimedReward(amount);
             }
         }
         public void SetUpgradeCurrentLevel(int level)
