@@ -26,6 +26,11 @@ namespace LegionKnight
             //m_LevelText.text = Player.Instance.GetLevel().ToString();
             //m_ExpSlider.value = Player.Instance.GetExp() / Player.Instance.GetMaxExp();
         }
+
+        public void SetNameText(string name)
+        {
+            m_NameText.text = name;
+        }
     }
 
     public partial class HomePanel

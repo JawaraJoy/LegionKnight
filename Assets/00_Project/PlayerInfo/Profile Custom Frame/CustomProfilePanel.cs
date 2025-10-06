@@ -44,7 +44,7 @@ namespace LegionKnight
             m_FrameTabButton.onClick.AddListener(ShowFrame);
 
             m_UseButton.onClick.RemoveAllListeners();
-            m_UseButton.onClick.AddListener(() => SetUsed(true));
+            m_UseButton.onClick.AddListener(() => SetUsed());
         }
         private void SetCurrentSelectedTypeInternal(CustomImageType type)
         {
@@ -117,9 +117,9 @@ namespace LegionKnight
             m_SpawnedImageViews.ForEach(x => x.Hide());
         }
 
-        private void SetUsed(bool set)
+        private void SetUsed()
         {
-            GetCustomProfile().SetUsed(m_CurrentSelectedType, set);
+            GetCustomProfile().SetUsed(m_CurrentSelectedType);
         }
         private IEnumerator RefreshingCustomImageViews()
         {
@@ -164,27 +164,27 @@ namespace LegionKnight
                 if (result.TryGetComponent(out ImageView view))
                 {
                     view.Init(defi);
-                    view.ClearOnSelected();
-                    view.AddListenToOnSelected(UnSelectAllViews);
                     m_SpawnedImageViews.Add(view);
                 }
             }
         }
-
-        private void RefreshAllViews()
+        private void UnSelectectAllViews()
+        {
+            foreach(var view in m_SpawnedImageViews)
+            {
+                view.UnSelected();
+            }
+        }
+        private void RefreshAllViewsInternal()
         {
             foreach(var view in m_SpawnedImageViews)
             {
                 view.Refresh();
             }
         }
-
-        private void UnSelectAllViews()
+        public void RefreshAllViews()
         {
-            foreach( var view in m_SpawnedImageViews)
-            {
-                view.UnSelected();
-            }
+            RefreshAllViewsInternal();
         }
     }
 }

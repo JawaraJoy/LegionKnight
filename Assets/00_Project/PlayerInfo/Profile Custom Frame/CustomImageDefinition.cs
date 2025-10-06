@@ -26,13 +26,9 @@ namespace LegionKnight
         {
             Player.Instance.CustomProfile.SetOwned(this, owned);
         }
-        public void SetSelected(bool selected)
+        public void SetSelected()
         {
-            Player.Instance.CustomProfile.SetSelected(this, selected);
-        }
-        public void SetUsed(bool used)
-        {
-            Player.Instance.CustomProfile.SetUsed(this, used);
+            Player.Instance.CustomProfile.SetSelected(this);
         }
     }
 

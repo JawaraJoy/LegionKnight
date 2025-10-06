@@ -25,14 +25,6 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnSelected;
 
-        public void AddListenToOnSelected(UnityAction action)
-        {
-            m_OnSelected.AddListener(action);
-        }
-        public void ClearOnSelected()
-        {
-            m_OnSelected.RemoveAllListeners();
-        }
         private PlayerCustomProfile GetCustomProfile()
         {
             if (m_Profile == null)
@@ -44,7 +36,7 @@ namespace LegionKnight
         private void Start()
         {
             m_SelectButton.onClick.RemoveAllListeners();
-            m_SelectButton.onClick.AddListener(() => SetSelectectedInternal(true));
+            m_SelectButton.onClick.AddListener(() => SelectectInternal());
         }
         public void Init(CustomImageDefinition defi)
         {
@@ -62,21 +54,20 @@ namespace LegionKnight
             m_SelectButton.interactable = IsOwned();
             m_SelectedImage.gameObject.SetActive(IsSelectedInternal());
         }
-        private void SetSelectectedInternal(bool selected)
+        private void SelectectInternal()
         {
             m_OnSelected.Invoke();
-            GetCustomProfile().SetSelected(m_Definition, selected);
-            m_SelectedImage.gameObject.SetActive(IsSelectedInternal());
+            GetCustomProfile().SetSelected(m_Definition);
+            m_SelectedImage.gameObject.SetActive(true);
         }
-        public void SetSelected(bool selected)
+        public void Select()
         {
-            SetSelectectedInternal(selected);
+            SelectectInternal();
         }
 
         public void UnSelected()
         {
-            GetCustomProfile().SetSelected(m_Definition, false);
-            m_SelectedImage.gameObject.SetActive(IsSelectedInternal());
+            m_SelectedImage.gameObject.SetActive(false);
         }
 
         private bool IsOwned()
@@ -103,10 +94,10 @@ namespace LegionKnight
             switch (m_Definition.Type)
             {
                 case CustomImageType.Frame:
-                    m_IsSelected = GetCustomProfile().HasFrame(m_Definition, out m_ImageContent) && m_ImageContent.Selected;
+                    m_IsSelected = GetCustomProfile().SelectedFrame == m_Definition;
                     break;
                 case CustomImageType.Icon:
-                    m_IsSelected = GetCustomProfile().HasIcon(m_Definition, out m_ImageContent) && m_ImageContent.Selected;
+                    m_IsSelected = GetCustomProfile().SelectedIcon == m_Definition;
                     break;
             }
             return m_IsSelected;

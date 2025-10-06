@@ -21,17 +21,17 @@ namespace LegionKnight
         private string GetRandomFirstName()
         {
             int r = Random.Range(0, m_FirstName.Length);
-            return m_FirstName[0];
+            return m_FirstName[r];
         }
         private string GetRandomLastName()
         {
             int r = Random.Range(0, m_LastName.Length);
-            return m_LastName[0];
+            return m_LastName[r];
         }
 
         public string GetRandomName()
         {
-            return $"{GetRandomFirstName()} {GetRandomLastName()} * {GetRandomNumbers()}";
+            return $"{GetRandomFirstName()} {GetRandomLastName()}*{GetRandomNumbers()}";
         }
     }
 }

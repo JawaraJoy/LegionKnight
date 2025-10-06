@@ -21,6 +21,19 @@ namespace LegionKnight
         private bool m_CanUseResurrectionAds = true;
         public bool CanUseResurrectionAds => m_CanUseResurrectionAds;
         public string PlayerName => m_PlayerName;
+
+        [SerializeField]
+        private UnityEvent<string> m_OnNameChanged = new();
+
+        private PlayerInfoPanel m_CustomProfilePanel;
+        private PlayerInfoPanel GetProfileInfoPanel()
+        {
+            if (m_CustomProfilePanel == null)
+            {
+                m_CustomProfilePanel = GameManager.Instance.GetPanel<PlayerInfoPanel>();
+            }
+            return m_CustomProfilePanel;
+        }
         public void SetCanUseResurrectionAds(bool set)
         {
             m_CanUseResurrectionAds = set;
@@ -39,17 +52,24 @@ namespace LegionKnight
         {
             m_OnStart?.Invoke();
 
-            if (UnityService.Instance.HasData("PlayerName"))
+            if (UnityService.Instance.HasData(m_NameSupplyDefinition.Id))
             {
-                m_PlayerName = UnityService.Instance.GetData<string>("PlayerName");
+                m_PlayerName = UnityService.Instance.GetData<string>(m_NameSupplyDefinition.Id);
             }
             else
             {
                 m_PlayerName = m_NameSupplyDefinition.GetRandomName();
-                UnityService.Instance.SaveData("PlayerName", m_PlayerName);
+                UnityService.Instance.SaveData(m_NameSupplyDefinition.Id, m_PlayerName);
             }
             Debug.Log($"Player name: {m_PlayerName}");
             GameManager.Instance.SetPlayerNameView(m_PlayerName);
+        }
+        public void SetPlayerName(string playerName)
+        {
+            m_PlayerName = playerName;
+            UnityService.Instance.SaveData(m_NameSupplyDefinition.Id, m_PlayerName);
+            m_OnNameChanged?.Invoke(m_PlayerName);
+            GetProfileInfoPanel().GetBinding<LevelView>().SetNameText(m_PlayerName);
         }
         public void AddOnStart(UnityAction action)
         {
