@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class TextView : MonoBehaviour
+    public class TextView : UIView
     {
         [SerializeField]
         private TextMeshProUGUI m_Text;

@@ -28,6 +28,7 @@ namespace LegionKnight
                         text.SetText(itemName);
                     }
                 }
+                Debug.Log($"[Loot] is seted up");
             }
 
         }
