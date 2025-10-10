@@ -12,6 +12,8 @@ namespace LegionKnight.Prototype
         public MailField[] Mails => m_Mails;
         public MailDefinition SelectedMail => m_SelectedMail;
 
+        private bool m_HasNewMail;
+
         public MailField GetSelectedMail()
         {
             if (HasMailInternal(m_SelectedMail.Id, out MailField mail))
@@ -62,7 +64,7 @@ namespace LegionKnight.Prototype
     {
         [SerializeField]
         private MailDefinition m_Definition;
-        [SerializeField]
+        [SerializeField, MMReadOnly]
         private bool m_HasClaim = false;
         [SerializeField, MMReadOnly]
         private MailState m_State;
@@ -120,6 +122,7 @@ namespace LegionKnight.Prototype
                 loot.DirectTakeLoot();
             }
             GetLootedPanel().ShowLoot(m_Definition.Rewards);
+            UnityService.Instance.SaveData(CLAIMKEY, m_HasClaim);
         }
         public void DeleteMail()
         {

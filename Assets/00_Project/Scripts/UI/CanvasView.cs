@@ -17,6 +17,10 @@ namespace LegionKnight
         private TextMeshProUGUI m_GameVersionText;
         [SerializeField]
         private UnityEvent<bool> m_OnIsBusyUpdate = new();
+        [SerializeField]
+        private UnityEvent<PanelView> m_OnPanelShow = new();
+        [SerializeField]
+        private UnityEvent<PanelView> m_OnPanelHide = new();   
 
         private void Start()
         {
@@ -78,6 +82,7 @@ namespace LegionKnight
             {
                 GetPanelInternal(uniqueId).Show();
                 HandleIsBusy();
+                m_OnPanelShow.Invoke(GetPanelInternal(uniqueId));
             }
         }
         protected virtual void HidePanelInternal(string uniqueId)
@@ -86,6 +91,7 @@ namespace LegionKnight
             {
                 GetPanelInternal(uniqueId).Hide();
                 HandleIsBusy();
+                m_OnPanelHide.Invoke(GetPanelInternal(uniqueId));
             }
         }
 
