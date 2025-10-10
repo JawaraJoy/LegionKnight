@@ -209,7 +209,7 @@ namespace LegionKnight
                 return;
             }
             
-            int dmg = DamageFormulaMoba(damage, m_Defend);
+            int dmg = DamageFormulaRPG(damage, m_Defend);
             if (fatal)
             {
                 //m_Barrier = 0;

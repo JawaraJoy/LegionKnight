@@ -18,7 +18,9 @@ namespace LegionKnight
         public void ShowLoot(LootField[] loots)
         {
             Show();
+            GetLootMonitor().ClearAllLootViews();
             GetLootMonitor().AddLootsView(loots.ToList());
         }
+        
     }
 }

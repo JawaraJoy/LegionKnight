@@ -19,9 +19,9 @@ namespace LegionKnight.Prototype
         private bool m_HasNewMail;
 
         [SerializeField]
-        private UnityEvent m_OnRedeemCodeSucced = new();
+        private UnityEvent<MailField> m_OnRedeemCodeSucced = new();
         [SerializeField]
-        private UnityEvent m_OnReeemCodeFailed = new();
+        private UnityEvent<MailField> m_OnReeemCodeFailed = new();
 
         private TextPopUpPanel m_PopUpPanel;
         private TextPopUpPanel GetPopUpPanel()
@@ -36,14 +36,21 @@ namespace LegionKnight.Prototype
         {
             m_RedeemCodeInput = set;
         }
-        private void OnRedeemCodeSuccedInvoke()
+        private void OnRedeemCodeSuccedInvoke(MailField mail)
         {
-            m_OnRedeemCodeSucced?.Invoke();
-            GetPopUpPanel().ShowText("Redeem Code was Success");
+            m_OnRedeemCodeSucced?.Invoke(mail);
+            if (mail.State == MailState.Hide)
+            {
+                GetPopUpPanel().ShowText("Redeem Code was Success");
+            }
+            else
+            {
+                GetPopUpPanel().ShowText("Redeem Code already use");
+            }
         }
-        private void OnRedeemCodeFailedInvoke()
+        private void OnRedeemCodeFailedInvoke(MailField mail)
         {
-            m_OnReeemCodeFailed?.Invoke();
+            m_OnReeemCodeFailed?.Invoke(mail);
             GetPopUpPanel().ShowText("Redeem Code is Invalid or Expired");
         }
         public MailField GetSelectedMail()
@@ -126,12 +133,12 @@ namespace LegionKnight.Prototype
                 m_HasClaim = UnityService.Instance.GetData<bool>(CLAIMKEY);
             }
         }
-        public void TryToRedeem(string code, UnityAction onSuccess, UnityAction onFail)
+        public void TryToRedeem(string code, UnityAction<MailField> onSuccess, UnityAction<MailField> onFail)
         {
             bool codeIsEqual = code == GetReedemCode();
             if (codeIsEqual)
             {
-                onSuccess.Invoke();
+                onSuccess.Invoke(this);
                 if (m_State == MailState.Hide && !HasExpired())
                 {
                     NewMailInternal();
@@ -139,7 +146,7 @@ namespace LegionKnight.Prototype
             }
             else
             {
-                onFail.Invoke();
+                onFail.Invoke(this);
             }
         }
 

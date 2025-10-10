@@ -1,4 +1,5 @@
 using LegionKnight.Dialogue;
+using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,8 +33,10 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<BosDefinition> m_OnBosSpawned = new();
 
+        [SerializeField, MMReadOnly]
         private List<Platform> m_SpawnedPlatform = new();
 
+        [SerializeField, MMReadOnly]
         private List<StandbyPlatformDefinition> m_RealStanbyPlatformAssets = new();
         public Transform PlayerStartPostion => m_PlayerStartPosition;
         private AssetReferenceGameObject BosAssetInternal
