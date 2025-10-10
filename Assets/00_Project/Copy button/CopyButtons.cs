@@ -12,8 +12,15 @@ namespace LegionKnight
         [SerializeField] 
         private Button m_CopyButton;
 
-        [SerializeField]
-        private TextView m_TextView;
+        private TextPopUpPanel m_PopUpPanel;
+        private TextPopUpPanel GetPopUpPanel()
+        {
+            if (m_PopUpPanel == null)
+            {
+                m_PopUpPanel = GameManager.Instance.GetPanel<TextPopUpPanel>();
+            }
+            return m_PopUpPanel;
+        }
 
         private void Awake()
         {
@@ -25,17 +32,7 @@ namespace LegionKnight
         private void CopyText()
         {
             GUIUtility.systemCopyBuffer = m_TextToCopy.text;
-            StartCoroutine(ShowCopiedMessage());
-        }
-
-        private IEnumerator ShowCopiedMessage()
-        {
-            Debug.Log("Copied!");
-            m_TextView.Show();
-            m_TextView.SetText("Content is Copied");
-            yield return new WaitForSeconds(1f);
-            m_TextView.Hide();
-            // Hide "Copied!" message or reset UI
+            GetPopUpPanel().ShowText("Success copied the content");
         }
     }
 }

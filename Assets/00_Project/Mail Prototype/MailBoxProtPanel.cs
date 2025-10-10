@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.UI;
 
 namespace LegionKnight.Prototype
 {
@@ -12,10 +14,23 @@ namespace LegionKnight.Prototype
         private AssetReferenceGameObject m_MailSimpleViewAsset;
         [SerializeField]
         private Transform m_MailViewContainer;
+        [SerializeField]
+        private TMP_InputField m_RedeemInput;
+        [SerializeField]
+        private Button m_RedeemConfirmButton;
 
         private readonly List<MailSimpleProtView> m_MailViews = new();
 
         private PlayerMailBoxProt m_Mail;
+
+        private void Start()
+        {
+            m_RedeemInput.onEndEdit.RemoveAllListeners();
+            m_RedeemInput.onEndEdit.AddListener(SetRedeemCodeInput);
+
+            m_RedeemConfirmButton.onClick.RemoveAllListeners();
+            m_RedeemConfirmButton.onClick.AddListener(TryToRedeemCode);
+        }
         private PlayerMailBoxProt GetMailBox()
         {
             if (m_Mail == null)
@@ -74,6 +89,15 @@ namespace LegionKnight.Prototype
                     m_MailViews.Add(view);
                 }
             }
+        }
+
+        private void TryToRedeemCode()
+        {
+            GetMailBox().TryToRedeem();
+        }
+        private void SetRedeemCodeInput(string set)
+        {
+            GetMailBox().SetRedeemCodeInput(set);
         }
     }
 }

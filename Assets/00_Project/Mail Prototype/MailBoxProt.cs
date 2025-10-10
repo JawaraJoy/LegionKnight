@@ -1,5 +1,7 @@
 using MoreMountains.Tools;
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight.Prototype
 {
@@ -7,6 +9,8 @@ namespace LegionKnight.Prototype
     {
         [SerializeField, MMReadOnly]
         private MailDefinition m_SelectedMail;
+        [SerializeField, MMReadOnly]
+        private string m_RedeemCodeInput;
         [SerializeField]
         private MailField[] m_Mails;
         public MailField[] Mails => m_Mails;
@@ -14,6 +18,34 @@ namespace LegionKnight.Prototype
 
         private bool m_HasNewMail;
 
+        [SerializeField]
+        private UnityEvent m_OnRedeemCodeSucced = new();
+        [SerializeField]
+        private UnityEvent m_OnReeemCodeFailed = new();
+
+        private TextPopUpPanel m_PopUpPanel;
+        private TextPopUpPanel GetPopUpPanel()
+        {
+            if (m_PopUpPanel == null)
+            {
+                m_PopUpPanel = GameManager.Instance.GetPanel<TextPopUpPanel>();
+            }
+            return m_PopUpPanel;
+        }
+        public void SetRedeemCodeInput(string set)
+        {
+            m_RedeemCodeInput = set;
+        }
+        private void OnRedeemCodeSuccedInvoke()
+        {
+            m_OnRedeemCodeSucced?.Invoke();
+            GetPopUpPanel().ShowText("Redeem Code was Success");
+        }
+        private void OnRedeemCodeFailedInvoke()
+        {
+            m_OnReeemCodeFailed?.Invoke();
+            GetPopUpPanel().ShowText("Redeem Code is Invalid or Expired");
+        }
         public MailField GetSelectedMail()
         {
             if (HasMailInternal(m_SelectedMail.Id, out MailField mail))
@@ -57,6 +89,13 @@ namespace LegionKnight.Prototype
                 m_SelectedMail = mail.Definition;
             }
         }
+        public void TryToRedeem()
+        {
+            if (HasMailInternal(m_RedeemCodeInput, out MailField mail))
+            {
+                mail.TryToRedeem(m_RedeemCodeInput, OnRedeemCodeSuccedInvoke, OnRedeemCodeFailedInvoke);
+            }
+        }
     }
 
     [System.Serializable]
@@ -71,7 +110,6 @@ namespace LegionKnight.Prototype
         public MailDefinition Definition => m_Definition;
         public bool HasClaim => m_HasClaim;
         public MailState State => m_State;
-
         private string STATEKEY => $"state{m_Definition.Id}";
         private string CLAIMKEY => $"claim{m_Definition.Id}";
         public void Init()
@@ -88,9 +126,50 @@ namespace LegionKnight.Prototype
                 m_HasClaim = UnityService.Instance.GetData<bool>(CLAIMKEY);
             }
         }
+        public void TryToRedeem(string code, UnityAction onSuccess, UnityAction onFail)
+        {
+            bool codeIsEqual = code == GetReedemCode();
+            if (codeIsEqual)
+            {
+                onSuccess.Invoke();
+                if (m_State == MailState.Hide && !HasExpired())
+                {
+                    NewMailInternal();
+                }
+            }
+            else
+            {
+                onFail.Invoke();
+            }
+        }
+
+        private string GetReedemCode()
+        {
+            bool hasSpecific = m_Definition.ForSpecificPlayer;
+            if (hasSpecific)
+            {
+                return $"{m_Definition.Id}{UnityService.Instance.PlayerId}";
+            }
+            else
+            {
+                return m_Definition.Id;
+            }
+        }
+        private bool HasExpired()
+        {
+            bool hasExpired = DateTime.Now >= m_Definition.ExpiredDate && m_Definition.HasExpiredDate;
+            return hasExpired;
+        }
         public void NewMail()
         {
             m_State = MailState.New;
+            UpdateState();
+            m_Definition.Init();
+        }
+        private void NewMailInternal()
+        {
+            m_State = MailState.New;
+            m_Definition.NewMail();
             UpdateState();
         }
         public void HideMail()

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace LegionKnight.Prototype
@@ -18,6 +19,15 @@ namespace LegionKnight.Prototype
         [SerializeField]
         private LootField[] m_Rewards;
 
+        [Header("Redeem Code")]
+        [SerializeField]
+        private bool m_HasExpiredDate = false;
+        [SerializeField]
+        private string m_ExpiredDate = "10/10/2025";
+        [SerializeField]
+        private bool m_ForSpecificPlayer = false;
+        [SerializeField, TextArea]
+        private string m_PlayerId = "Input player id here, ask the player to share their id";
         public string Id => m_Id;
         public string Label => m_Label;
         public string Description
@@ -37,7 +47,9 @@ namespace LegionKnight.Prototype
         }
         public MailState StartingState => m_StartingState;
         public LootField[] Rewards => m_Rewards;
-
+        public bool ForSpecificPlayer => m_ForSpecificPlayer;
+        public bool HasExpiredDate => m_HasExpiredDate;
+        public DateTime ExpiredDate => DateTime.ParseExact(m_ExpiredDate, "dd/mm/yyyy", null);
         public bool HasRewards()
         {
             return m_Rewards.Length > -1;

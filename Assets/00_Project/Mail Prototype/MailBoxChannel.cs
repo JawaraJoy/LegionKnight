@@ -103,6 +103,7 @@ namespace LegionKnight.Prototype
             if (GetMailBox().HasMail(m_Id, out MailField mail))
             {
                 mail.NewMail();
+                InitSelfInternal();
             }
         }
         public void HideMail()

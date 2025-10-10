@@ -40,7 +40,7 @@ namespace LegionKnight.Prototype
             m_LabelText.text = m_Definition.Label;
             m_StatusText.text = m_Definition.GetMailState().ToString();
             m_RewardStateText.text = m_Definition.StateClaimRewardText();
-            StartCoroutine(SpawItemViews());
+            
 
             if (m_Definition.GetMailState() == MailState.Hide || m_Definition.GetMailState() == MailState.Delete)
             {
@@ -49,6 +49,7 @@ namespace LegionKnight.Prototype
             else
             {
                 ShowInternal();
+                StartCoroutine(SpawItemViews());
             }
         }
 

@@ -27,6 +27,14 @@ namespace LegionKnight
             // set aplication bundle version code
 
             m_GameVersionText.text = $"Ver.{Application.version}";
+
+            m_OnPanelShow.RemoveAllListeners();
+            m_OnPanelHide.RemoveAllListeners();
+            foreach(var panel in m_Panels)
+            {
+                panel.OnShow.AddListener(() => OnPanelShowInvoke(panel));
+                panel.OnHide.AddListener(() => OnPanelHideInvoke(panel));
+            }
         }
 
         protected T GetPanelInternal<T>() where T : PanelView
@@ -82,7 +90,6 @@ namespace LegionKnight
             {
                 GetPanelInternal(uniqueId).Show();
                 HandleIsBusy();
-                m_OnPanelShow.Invoke(GetPanelInternal(uniqueId));
             }
         }
         protected virtual void HidePanelInternal(string uniqueId)
@@ -91,7 +98,6 @@ namespace LegionKnight
             {
                 GetPanelInternal(uniqueId).Hide();
                 HandleIsBusy();
-                m_OnPanelHide.Invoke(GetPanelInternal(uniqueId));
             }
         }
 
@@ -103,6 +109,14 @@ namespace LegionKnight
         private void OnIsBusyUpdateInvoke(bool busy)
         {
             m_OnIsBusyUpdate?.Invoke(busy);
+        }
+        private void OnPanelShowInvoke(PanelView panel)
+        {
+            m_OnPanelShow?.Invoke(panel);
+        }
+        private void OnPanelHideInvoke(PanelView panel)
+        {
+            m_OnPanelHide?.Invoke(panel);
         }
     }
 }
