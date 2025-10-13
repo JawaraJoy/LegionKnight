@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace LegionKnight
 {
@@ -9,7 +10,6 @@ namespace LegionKnight
     public partial class StartGamePanel : PanelView
     {
         public override string UniqueId => PanelId.StartGamePanel;
-
         protected override void OnShowInvoke()
         {
             base.OnShowInvoke();

@@ -12,13 +12,13 @@ namespace LegionKnight
         protected override void OnShowInvoke()
         {
             base.OnShowInvoke();
-            GameTimeScale.SetTimeScale(0);
+            //GameTimeScale.SetTimeScale(0);
             
         }
         protected override void HideInternal()
         {
             base.HideInternal();
-            GameTimeScale.SetTimeScale(1);
+            //GameTimeScale.SetTimeScale(1);
         }
     }
 }

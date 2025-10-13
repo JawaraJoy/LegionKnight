@@ -7,6 +7,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private float m_AutoHideDelay = 0f;
+
         public void ShowText(string text)
         {
             GetBinding<TextView>().SetText(text);
