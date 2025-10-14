@@ -1,132 +1,168 @@
+using MoreMountains.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace LegionKnight
 {
     public partial class TutorialHandler : MonoBehaviour
     {
-        private MaskingTarget m_CurrentMaskingTarget;
+        private TutorialDefinition m_CurrentTutorial;
         [SerializeField]
-        private List<MaskingTarget> m_MaskingTargets = new ();
+        private TutorialContent[] m_Contents;
+        [SerializeField, MMReadOnly]
+        private List<TutorTarget> m_TutorTargets = new ();
+        [SerializeField]
+        private UnityEvent<TutorialDefinition> m_OnTutorialStart = new();
+        [SerializeField]
+        private UnityEvent<TutorTarget> m_OnStepChanged = new();
+        [SerializeField]
+        private UnityEvent<TutorialDefinition> m_OnTutorialEnd = new();
+        public TutorialDefinition CurrentTutorial => m_CurrentTutorial; 
 
-        [SerializeField]
-        private UnityEvent<MaskingTarget> m_OnTutorialStart = new();
-        [SerializeField]
-        private UnityEvent<MaskingTarget> m_OnTutorialDialogueChanged = new();
-        [SerializeField]
-        private UnityEvent<MaskingTarget> m_OnTutorialEnd = new();
-        public MaskingTarget CurrentMaskingTarget => m_CurrentMaskingTarget;
-        public string DialogueId => m_CurrentMaskingTarget != null ? m_CurrentMaskingTarget.DialogueId : string.Empty;
-        public string DialogueTitle => m_CurrentMaskingTarget != null ? m_CurrentMaskingTarget.DialogueId : string.Empty;
-        public string[] DialogueDescriptions => m_CurrentMaskingTarget != null ? m_CurrentMaskingTarget.DialogueDescriptions : new string[0];
+        private static TutorialPanel m_Panel;
+        private static int m_CurrentStep;
+        private static int m_MaxStep;
 
-        private int m_DescriptionIndex = 0;
-        public int DescriptionIndex => m_DescriptionIndex;
-        public bool CanTutor => m_CurrentMaskingTarget != null ? m_CurrentMaskingTarget.CanTutor : false;
-        public string GetDialogueDescription(int index)
+        [SerializeField, MMReadOnly]
+        private Button m_SecondNextButton;
+        private void Awake()
         {
-            if (m_CurrentMaskingTarget != null)
-            {
-                return m_CurrentMaskingTarget.GetDialogueDescription(index);
-            }
-            return string.Empty;
+            TutorTarget[] targets = FindObjectsByType<TutorTarget>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            m_TutorTargets = new List<TutorTarget>(targets);
         }
-        public int DialogueDescriptionCount => m_CurrentMaskingTarget != null ? m_CurrentMaskingTarget.DialogueDescriptionCount : 0;
         public void Init()
         {
-            m_MaskingTargets.Clear();
-            MaskingTarget[] maskingTargets = FindObjectsByType<MaskingTarget>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach (MaskingTarget maskingTarget in maskingTargets)
+            foreach(TutorialContent content in m_Contents)
             {
-                if (!m_MaskingTargets.Contains(maskingTarget))
+                content.Init();
+            }
+        }
+        private TutorialContent GetContent(TutorialDefinition defi)
+        {
+            TutorialContent content = null;
+            foreach (TutorialContent c in m_Contents)
+            {
+                if (c.Definition == defi)
                 {
-                    m_MaskingTargets.Add(maskingTarget);
-                    maskingTarget.Init();
+                    content = c;
                 }
             }
+            return content;
         }
-        public void SetUnlockTutor(string id, bool unlock)
+        private bool HasContentInternal(TutorialDefinition defi, out TutorialContent content)
         {
-            GetMaskingTargetInternal(id)?.SetUnlockTutor(unlock);
+            content = GetContent(defi);
+            return content != null;
         }
-        private MaskingTarget GetMaskingTargetInternal(string id)
+        public bool HasContent(TutorialDefinition defi, out TutorialContent content)
         {
-            foreach (MaskingTarget maskingTarget in m_MaskingTargets)
+            content = GetContent(defi);
+            return content != null;
+        }
+        private static TutorialPanel GetPanelInternal()
+        {
+            if (m_Panel == null)
             {
-                if (maskingTarget.DialogueId == id)
+                m_Panel = GameManager.Instance.GetPanel<TutorialPanel>();
+            }
+            return m_Panel;
+        }
+        public static TutorialPanel GetPanel()
+        {
+            return GetPanelInternal();
+        }
+        private TutorTarget GetTarget(TutorStepDefinition defi)
+        {
+            TutorTarget target = m_TutorTargets.Find(x => x.Definition == defi);
+            if (target == null)
+            {
+                return null;
+            }
+            return target;
+        }
+
+        private bool HasTargetInternal(TutorStepDefinition defi, out TutorTarget target)
+        {
+            target = GetTarget(defi);
+            return target != null;
+        }
+        public void StartTutorial(TutorialDefinition tutorialDefi)
+        {
+            if (HasContentInternal(tutorialDefi, out TutorialContent content))
+            {
+                if (content.IsDone || !content.IsUnlocked) return;
+                m_CurrentTutorial = content.Definition;
+                m_CurrentStep = 0;
+                m_MaxStep = m_CurrentTutorial.Steps.Length;
+                SetStep(m_CurrentStep);
+                OnTutorialStart(tutorialDefi);
+            }
+        }
+        private void NextTutorial()
+        {
+            if (m_CurrentTutorial == null) return;
+
+            // Check if we can move to the next step safely
+            if (m_CurrentStep < m_MaxStep - 1)
+            {
+                m_CurrentStep++;
+                TutorStepDefinition step = m_CurrentTutorial.Steps[m_CurrentStep];
+
+                if (HasTargetInternal(step, out TutorTarget target))
                 {
-                    return maskingTarget;
-                }
+                    OnStepChanged(target);
+                }   
             }
-            Debug.LogError($"Masking target with ID {id} not found.");
-            return null;
+            else
+            {
+                EndTutorial();
+            }
         }
-        public void StartTutorial(DialogueDefinition defi)
+        private void EndTutorial()
         {
-            m_CurrentMaskingTarget = GetMaskingTargetInternal(defi.Id);
-            if (m_CurrentMaskingTarget == null)
-            {
-                Debug.LogError($"Masking target with ID {defi} not found.");
-                return;
-            }
-            if (!m_CurrentMaskingTarget.CanTutor)
-            {
-                Debug.Log("Tutorial Cant be played");
-                OnTutorialEndInvoke(m_CurrentMaskingTarget);
-                return;
-            }
-            if (m_CurrentMaskingTarget != null)
-            {
-                OnTutorialStart(m_CurrentMaskingTarget);
-            }
-            //GameManager.Instance.PlayTutorialPanel(m_CurrentMaskingTarget);
+            GetPanelInternal().Hide();
+            OnTutorialEndInvoke(m_CurrentTutorial);
         }
-
-        public void NextDialogue()
+        private void SetStep(int stepIndex)
         {
-            if (m_CurrentMaskingTarget == null)
+            TutorStepDefinition step = m_CurrentTutorial.Steps[stepIndex];
+            if (HasTargetInternal(step, out TutorTarget target))
             {
-                Debug.LogError("Current masking target is null.");
-                return;
-            }
-            if (m_CurrentMaskingTarget.IsTutorialCompleted)
+                OnStepChanged(target);
+            } 
+        }
+        private void OnTutorialStart(TutorialDefinition defi)
+        {
+            m_OnTutorialStart?.Invoke(defi);
+            GetPanelInternal().Show();
+        }
+        private void OnStepChanged(TutorTarget target)
+        {
+            m_OnStepChanged?.Invoke(target);
+            GetPanelInternal().SetTutorial(target);
+            GetPanelInternal().Refresh();
+            if (target.NextButton != null)
             {
-                Debug.Log("Tutorial already completed.");
-                return;
+                target.NextButton.onClick.RemoveAllListeners();
+                target.NextButton.onClick.AddListener(NextTutorial);
             }
-            m_DescriptionIndex++;
-            if (m_DescriptionIndex >= m_CurrentMaskingTarget.DialogueDescriptionCount)
+            else
             {
-                m_DescriptionIndex = m_CurrentMaskingTarget.DialogueDescriptionCount;
-                return;
+                m_SecondNextButton = GetPanelInternal().NextButton;
+                m_SecondNextButton.onClick.RemoveAllListeners();
+                m_SecondNextButton.onClick.AddListener(NextTutorial);
             }
-            OnTutorialDialogueChanged(m_CurrentMaskingTarget);
         }
-
-        public void EndDialogue()
+        private void OnTutorialEndInvoke(TutorialDefinition defi)
         {
-            if (m_CurrentMaskingTarget == null)
+            m_OnTutorialEnd?.Invoke(defi);
+            GetPanelInternal().Hide();
+            if (HasContentInternal(defi, out TutorialContent content)) 
             {
-                Debug.LogError("Current masking target is null.");
-                return;
+                content.SetIsDone(true);
             }
-            m_CurrentMaskingTarget.EndDialogue();
-            OnTutorialEndInvoke(m_CurrentMaskingTarget);
-            m_CurrentMaskingTarget = null;
-        }
-
-        private void OnTutorialStart(MaskingTarget maskingTarget)
-        {
-            m_OnTutorialStart?.Invoke(maskingTarget);
-        }
-        private void OnTutorialDialogueChanged(MaskingTarget maskingTarget)
-        {
-            m_OnTutorialDialogueChanged?.Invoke(maskingTarget);
-        }
-        private void OnTutorialEndInvoke(MaskingTarget maskingTarget)
-        {
-            m_OnTutorialEnd?.Invoke(maskingTarget);
         }
     }
 }
