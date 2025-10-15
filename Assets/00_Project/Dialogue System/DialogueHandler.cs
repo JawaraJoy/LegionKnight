@@ -50,6 +50,8 @@ namespace LegionKnight.Dialogue
         public void EndConversation()
         {
             Dialogue lastDialogue = GetDialogueInternal(m_SelectedDialogueIndex);
+            if (lastDialogue == null) return;
+
             lastDialogue.OnDialogueEnd.Invoke();
             m_OnDialogueEnd?.Invoke(lastDialogue);
             m_SelectedConversation.OnConversationEnd.Invoke(lastDialogue);

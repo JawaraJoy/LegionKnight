@@ -15,5 +15,7 @@ namespace LegionKnight
         public string Id => m_Id;
         public string Title => m_Title;
         public ConversationDefinition Conversation => m_Conversation;
+
+        public bool HasConversation => m_Conversation != null;
     }
 }

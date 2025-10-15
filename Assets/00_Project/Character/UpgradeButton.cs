@@ -94,6 +94,7 @@ namespace LegionKnight
 
         private void ShowUpgradeView()
         {
+            if (m_UpgradeView == null) return;
             m_UpgradeView.Show();
             m_UpgradeView.Init(m_CharacterUnit);
         }

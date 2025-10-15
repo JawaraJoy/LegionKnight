@@ -136,6 +136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9058996881199998237}
   - component: {fileID: 8737166260542600733}
+  - component: {fileID: 4650262133503385862}
   m_Layer: 5
   m_Name: Mail Simple View
   m_TagString: Untagged
@@ -193,6 +194,26 @@ MonoBehaviour:
   m_StatusText: {fileID: 209258437433747747}
   m_RewardStateText: {fileID: 6449993052109808521}
   m_ItemViewContainer: {fileID: 8466890745210259492}
+--- !u!114 &4650262133503385862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 696014010216374819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85538346f42f84a46b3fe6202a0cbd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorTarget
+  m_Definition: {fileID: 11400000, guid: 4217c17db0bc6d144905dbea8fecf1be, type: 2}
+  m_OStepStart:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  m_NextButton: {fileID: 6614779886547634611}
 --- !u!1 &909770722386603209
 GameObject:
   m_ObjectHideFlags: 0

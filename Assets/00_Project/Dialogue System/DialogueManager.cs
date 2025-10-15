@@ -16,7 +16,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private DialogueManager m_DialogueManager;
-
+        public DialogueManager DialogueManager => m_DialogueManager;
         public void StartConversation(ConversationDefinition conversation)
         {
             m_DialogueManager.StartConversation(conversation);

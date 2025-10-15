@@ -29044,6 +29044,7 @@ GameObject:
   - component: {fileID: 440061953}
   - component: {fileID: 440061952}
   - component: {fileID: 440061955}
+  - component: {fileID: 440061956}
   m_Layer: 5
   m_Name: Button (1)
   m_TagString: Untagged
@@ -29185,6 +29186,26 @@ MonoBehaviour:
   m_FlexibleWidth: 2
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &440061956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 440061950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85538346f42f84a46b3fe6202a0cbd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorTarget
+  m_Definition: {fileID: 11400000, guid: 9f3e3d8527164ab45922463336f237ff, type: 2}
+  m_OStepStart:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  m_NextButton: {fileID: 440061952}
 --- !u!1 &441032753
 GameObject:
   m_ObjectHideFlags: 0
@@ -43459,6 +43480,10 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2942122649447902150, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_Currencies.Array.data[2].m_Amount
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2942122649447902150, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: m_Currencies.Array.data[13].m_Amount
       value: 0
       objectReference: {fileID: 0}
@@ -46616,6 +46641,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 713555825}
+  - component: {fileID: 713555826}
   m_Layer: 5
   m_Name: Mail Button (1)
   m_TagString: Untagged
@@ -46644,6 +46670,26 @@ RectTransform:
   m_AnchoredPosition: {x: 20, y: -1016}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0, y: 0.5}
+--- !u!114 &713555826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713555824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85538346f42f84a46b3fe6202a0cbd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorTarget
+  m_Definition: {fileID: 11400000, guid: a4d1019dd0600994cb7a33d32361127b, type: 2}
+  m_OStepStart:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  m_NextButton: {fileID: 1144439213}
 --- !u!1 &714635400
 GameObject:
   m_ObjectHideFlags: 0
@@ -66992,6 +67038,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1040951644}
   m_CullTransparentMesh: 1
+--- !u!21 &1041235881
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: InvertMaskRuntimeMat
+  m_Shader: {fileID: 4800000, guid: f1f1223567b0fe14cbc538e03eb37bcb, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _HoleRadius: 0.1
+    m_Colors:
+    - _HoleRect: {r: 0.5, g: 0.5, b: 0.3, a: 0.2}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1041524203
 GameObject:
   m_ObjectHideFlags: 0
@@ -78851,6 +78931,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1240900154}
   m_CullTransparentMesh: 1
+--- !u!1 &1242181397
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1242181398}
+  - component: {fileID: 1242181399}
+  m_Layer: 0
+  m_Name: TutorialAgent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1242181398
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242181397}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6459759118199087848}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1242181399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242181397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015f14f564f636f47a7930acbf15488c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorialAgent
 --- !u!1 &1242244044
 GameObject:
   m_ObjectHideFlags: 0
@@ -94316,6 +94440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1497361935}
   - component: {fileID: 1497361936}
+  - component: {fileID: 1497361937}
   m_Layer: 5
   m_Name: Claim Status
   m_TagString: Untagged
@@ -94363,6 +94488,26 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1497361937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497361934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85538346f42f84a46b3fe6202a0cbd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorTarget
+  m_Definition: {fileID: 11400000, guid: 0f230e6ad308b814d8c5674bba01732b, type: 2}
+  m_OStepStart:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  m_NextButton: {fileID: 269904937}
 --- !u!1 &1500292707
 GameObject:
   m_ObjectHideFlags: 0
@@ -100554,6 +100699,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1594391309}
   - component: {fileID: 1594391310}
+  - component: {fileID: 1594391311}
   m_Layer: 5
   m_Name: Close
   m_TagString: Untagged
@@ -100601,6 +100747,26 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
+--- !u!114 &1594391311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594391308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85538346f42f84a46b3fe6202a0cbd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorTarget
+  m_Definition: {fileID: 11400000, guid: 35970f99a7d2e8a43a63d315c3bf684a, type: 2}
+  m_OStepStart:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  m_NextButton: {fileID: 798437893}
 --- !u!1 &1597728750
 GameObject:
   m_ObjectHideFlags: 0
@@ -102468,40 +102634,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 2}
   m_SizeDelta: {x: 1000, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!21 &1624858753
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: InvertMaskRuntimeMat
-  m_Shader: {fileID: 4800000, guid: f1f1223567b0fe14cbc538e03eb37bcb, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _HoleRadius: 0.1
-    m_Colors:
-    - _HoleRect: {r: 0.5, g: 0.5, b: 0.3, a: 0.2}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &1626108385
 GameObject:
   m_ObjectHideFlags: 0
@@ -104126,6 +104258,7 @@ GameObject:
   - component: {fileID: 1645841979}
   - component: {fileID: 1645841981}
   - component: {fileID: 1645841980}
+  - component: {fileID: 1645841982}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -104251,6 +104384,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1645841978}
   m_CullTransparentMesh: 1
+--- !u!114 &1645841982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645841978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85538346f42f84a46b3fe6202a0cbd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorTarget
+  m_Definition: {fileID: 11400000, guid: 6e5e2b25df3a6274ab3cc1974e7bfaca, type: 2}
+  m_OStepStart:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  m_NextButton: {fileID: 323673944}
 --- !u!1 &1646431127
 GameObject:
   m_ObjectHideFlags: 0
@@ -162341,6 +162494,8 @@ MonoBehaviour:
   m_DescriptionText: {fileID: 4275891555508462346}
   m_ButtonText: {fileID: 7530542030866462199}
   m_DialogueButton: {fileID: 9176929464584557246}
+  m_DialoguePost: {fileID: 8844863603472411228}
+  m_RaycasBlockImage: {fileID: 7402531764451080320}
   m_OnDialogueEnd:
     m_PersistentCalls:
       m_Calls:
@@ -168092,7 +168247,7 @@ RectTransform:
   m_Father: {fileID: 904279864864427926}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 859.9999, y: -100}
   m_SizeDelta: {x: 1609.9998, y: 400}
   m_Pivot: {x: 0.5, y: 1}
@@ -199447,8 +199602,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 1624858753}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.28235295}
+  m_Material: {fileID: 1041235881}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.6666667}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -202905,10 +203060,10 @@ RectTransform:
   - {fileID: 8173912258271124921}
   m_Father: {fileID: 8918480100888976829}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 482.5, y: -135}
+  m_SizeDelta: {x: 461.66666, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2097864499246127081
 CanvasRenderer:
@@ -203460,10 +203615,10 @@ RectTransform:
   - {fileID: 393263824343891281}
   m_Father: {fileID: 355094257056614289}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 538.3333, y: -67.5}
+  m_SizeDelta: {x: 1076.6666, y: 135}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2115158696317607665
 CanvasRenderer:
@@ -211420,6 +211575,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
+        - m_Target: {fileID: 11400000, guid: 7ff07673548fdd64db9a9da3a2e51af2, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.TutorialDefinition, Assembly-CSharp
+          m_MethodName: SetIsUnlocked
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
     OnLevelDone:
       m_PersistentCalls:
         m_Calls:
@@ -213996,6 +214163,21 @@ MonoBehaviour:
   - m_Definition: {fileID: 11400000, guid: 01b5077eaf9a093428c60798632d3411, type: 2}
     m_IsDone: 0
     m_IsUnlocked: 0
+    m_OnTutorialStart:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnTutorialEnd:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_Definition: {fileID: 11400000, guid: 7ff07673548fdd64db9a9da3a2e51af2, type: 2}
+    m_IsDone: 0
+    m_IsUnlocked: 0
+    m_OnTutorialStart:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnTutorialEnd:
+      m_PersistentCalls:
+        m_Calls: []
   m_TutorTargets: []
   m_OnTutorialStart:
     m_PersistentCalls:
@@ -230546,7 +230728,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You will get Reward
+  m_text: Buy to obtain
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e1980d03e94584c2b8bf7986c994fd3a, type: 2}
   m_sharedMaterial: {fileID: 7596086543635071105, guid: afb47ac7029ec124c8bd8477e1f6b2c8, type: 2}
@@ -247489,7 +247671,7 @@ RectTransform:
   m_Father: {fileID: 921471446927561145}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 804.9999, y: 0}
   m_SizeDelta: {x: 1609.9998, y: 400}
   m_Pivot: {x: 0.5, y: 1}
@@ -258567,7 +258749,7 @@ MonoBehaviour:
   m_Target: {fileID: 0}
   m_Cursor: {fileID: 2403946024848131954}
   m_HoleCornerRadius: 0.01
-  m_ImageColor: {r: 0, g: 0, b: 0, a: 0.28235295}
+  m_ImageColor: {r: 0, g: 0, b: 0, a: 0.6666667}
   m_TargetOffset: {x: -2, y: -2}
   m_TargetSizeOffset: {x: 4, y: 4}
   m_OnHolePositionChanged:
@@ -260140,6 +260322,7 @@ GameObject:
   - component: {fileID: 8111977660458949281}
   - component: {fileID: 253330085402227715}
   - component: {fileID: 2724374837867725342}
+  - component: {fileID: 8111977660458949282}
   m_Layer: 5
   m_Name: Character Button
   m_TagString: Untagged
@@ -287751,6 +287934,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3751696040256141718}
   - component: {fileID: 1649978868522007373}
+  - component: {fileID: 4988060552725572010}
   m_Layer: 5
   m_Name: Upgrade Button
   m_TagString: Untagged
@@ -287758,6 +287942,26 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &4988060552725572010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4988060552725572009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85538346f42f84a46b3fe6202a0cbd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorTarget
+  m_Definition: {fileID: 11400000, guid: ef8e49687a3ba224290ccb45c8e93151, type: 2}
+  m_OStepStart:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  m_NextButton: {fileID: 4750016898161072331}
 --- !u!114 &4988129797909615640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297592,7 +297796,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &5372090184139556201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298633,10 +298837,10 @@ RectTransform:
   - {fileID: 1791141864328722338}
   m_Father: {fileID: 8918480100888976829}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 113.33333, y: -135}
+  m_SizeDelta: {x: 226.66666, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5419732912089573024
 CanvasRenderer:
@@ -314223,6 +314427,18 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1242181399}
+          m_TargetAssemblyTypeName: LegionKnight.TutorialAgent, Assembly-CSharp
+          m_MethodName: StartTutorial
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 7ff07673548fdd64db9a9da3a2e51af2, type: 2}
+            m_ObjectArgumentAssemblyTypeName: LegionKnight.TutorialDefinition, Assembly-CSharp
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -330873,7 +331089,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1242181398}
   m_Father: {fileID: 1448346208243573291}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &6460071599674622344
@@ -347982,7 +348199,7 @@ RectTransform:
   m_Father: {fileID: 3608591259711643198}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 804.9999, y: -225}
   m_SizeDelta: {x: 1409.9998, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -379859,6 +380076,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3662995130797227969}
+  - component: {fileID: 8042630283174530747}
   m_Layer: 5
   m_Name: Upgrade Button (2)
   m_TagString: Untagged
@@ -379866,6 +380084,26 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8042630283174530747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8042630283174530746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85538346f42f84a46b3fe6202a0cbd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorTarget
+  m_Definition: {fileID: 11400000, guid: adce7849961f413458de28aa0d773006, type: 2}
+  m_OStepStart:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  m_NextButton: {fileID: 5917472992278080334}
 --- !u!224 &8042790930473794756
 RectTransform:
   m_ObjectHideFlags: 0
@@ -381881,6 +382119,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4048973195435525729}
   m_CullTransparentMesh: 1
+--- !u!114 &8111977660458949282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4048973195435525729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85538346f42f84a46b3fe6202a0cbd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorTarget
+  m_Definition: {fileID: 11400000, guid: 581904df32d5c974b805a564255dbecd, type: 2}
+  m_OStepStart:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStepEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  m_NextButton: {fileID: 2724374837867725342}
 --- !u!222 &8112808192218164303
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -382468,7 +382726,6 @@ RectTransform:
   - {fileID: 629354592}
   - {fileID: 280153264}
   - {fileID: 8358343645182060271}
-  - {fileID: 6170928442199595081}
   - {fileID: 5785416795766861729}
   - {fileID: 8659894641842578215}
   - {fileID: 6319717643751177681}
@@ -382483,8 +382740,9 @@ RectTransform:
   - {fileID: 6700649067880275355}
   - {fileID: 4646883670492623781}
   - {fileID: 6887103043548496578}
-  - {fileID: 1527720053}
   - {fileID: 2097882016465927639}
+  - {fileID: 6170928442199595081}
+  - {fileID: 1527720053}
   - {fileID: 1706949922597095762}
   - {fileID: 195843959}
   - {fileID: 3819374654180146336}
@@ -403446,7 +403704,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5642464502252499714}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.00000020015494}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -403455,9 +403713,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 400}
+  m_AnchoredPosition: {x: 0, y: 100}
   m_SizeDelta: {x: -200, y: 600}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &8847011551452052170
 GameObject:
   m_ObjectHideFlags: 0
@@ -403883,10 +404141,10 @@ RectTransform:
   - {fileID: 1044644134819698830}
   m_Father: {fileID: 355094257056614289}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 538.3333, y: -202.5}
+  m_SizeDelta: {x: 1076.6666, y: 135}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8864889480282239027
 GameObject:

@@ -23,8 +23,9 @@ namespace LegionKnight.Prototype
 
         private PlayerMailBoxProt m_Mail;
 
-        private void Start()
+        private void Awake()
         {
+            Refresh();
             m_RedeemInput.onEndEdit.RemoveAllListeners();
             m_RedeemInput.onEndEdit.AddListener(SetRedeemCodeInput);
 
@@ -42,6 +43,11 @@ namespace LegionKnight.Prototype
         public override void Show()
         {
             base.Show();
+            Refresh();
+        }
+
+        private void Refresh()
+        {
             MailField[] mails = GetMailBox().Mails;
             foreach (MailField mail in mails)
             {

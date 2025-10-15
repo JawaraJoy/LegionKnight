@@ -17,5 +17,14 @@ namespace LegionKnight
         [SerializeField]
         private Button m_NextButton;
         public Button NextButton => m_NextButton;
+
+        private void Start()
+        {
+            GameManager.Instance.TutorialManager.AddTarget(this);
+        }
+        private void OnDestroy()
+        {
+            GameManager.Instance.TutorialManager.RemoveTarget(this);
+        }
     }
 }

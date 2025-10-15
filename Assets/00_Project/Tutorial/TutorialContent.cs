@@ -1,5 +1,6 @@
 using MoreMountains.Tools;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -12,9 +13,15 @@ namespace LegionKnight
         private bool m_IsDone = false;
         [SerializeField, MMReadOnly]
         private bool m_IsUnlocked = false;
+        [SerializeField]
+        private UnityEvent<TutorialDefinition> m_OnTutorialStart = new();
+        [SerializeField]
+        private UnityEvent<TutorialDefinition> m_OnTutorialEnd = new();
         public TutorialDefinition Definition => m_Definition;
         public bool IsDone => m_IsDone;
         public bool IsUnlocked => m_IsUnlocked;
+        public UnityEvent<TutorialDefinition> OnTutorialStart => m_OnTutorialStart;
+        public UnityEvent<TutorialDefinition> OnTutorialEnd => m_OnTutorialEnd;
 
         private string ISDONEKEY => $"{m_Definition.Id}isdone";
         private string ISUNLOCKKEY => $"{m_Definition.Id}unlock";
