@@ -49,18 +49,24 @@ namespace LegionKnight
             InitInternal(character);
             
         }
+        private bool m_ButtonalreadyListen = false;
         private void InitInternal(CharacterUnit unit)
         {
             m_Definition = unit.Definition;
             m_LockIcon.SetActive(!unit.Owned);
             m_SelectButton.interactable = unit.Owned;
             m_UnitIcon.sprite = unit.SmallIcon;
-            m_SelectButton.onClick.RemoveAllListeners();
-            m_SelectButton.onClick.AddListener(SelectCharacterInternal);
+            if (!m_ButtonalreadyListen)
+            {
+                m_SelectButton.onClick.AddListener(SelectCharacterInternal);
+            }
+            //m_SelectButton.onClick?.RemoveListener(SelectCharacterInternal);
+            
 
             m_StarGroupView.Init(m_Definition);
             m_Frame.color = unit.Definition.ColorRarity;
             m_LevelText.text = $"Lv {unit.Level}";
+            m_ButtonalreadyListen = true;
         }
         public void Init(CharacterUnit unit)
         {

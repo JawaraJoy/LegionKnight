@@ -30,6 +30,9 @@ namespace LegionKnight
         [SerializeField]
         private GachaCurrencyCost m_AlternatifCurrencyToDraw;
         [SerializeField]
+        private GachaReward m_FirstDrawReward;
+        
+        [SerializeField]
         private List<GachaReward> m_MainRewards = new();
         [SerializeField]
         private List<GachaReward> m_SmallPityRewards = new();
@@ -49,6 +52,7 @@ namespace LegionKnight
         public Sprite VisualBanner => m_VisualBanner;
         public Sprite SmallVisualBanner => m_SmallVisualBanner;
         public string Id => m_Id;
+        public GachaReward FirstDrawReward => m_FirstDrawReward;
     }
     [System.Serializable]
     public partial class GachaReward
