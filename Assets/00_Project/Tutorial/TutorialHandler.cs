@@ -140,6 +140,11 @@ namespace LegionKnight
         {
             if (m_CurrentTutorial == null) return;
             // Check if we can move to the next step safely
+            TutorStepDefinition step = m_CurrentTutorial.Steps[m_CurrentStep];
+            if (step != null)
+            {
+                step.OnStepEnd?.Invoke();
+            }
             if (m_CurrentStep < m_MaxStep - 1)
             {
                 m_CurrentStep++;
@@ -149,11 +154,6 @@ namespace LegionKnight
             {
                 EndTutorial();
             }
-            //RemoveNextOnButton();
-        }
-        private void RemoveNextOnButton()
-        {
-            m_SecondNextButton.onClick?.RemoveListener(NextTutorial);
         }
         private void EndTutorial()
         {
@@ -179,10 +179,13 @@ namespace LegionKnight
             GetPanelInternal().SetTutorial(target);
             GetPanelInternal().Refresh();
 
-            bool hasconversation = target.Definition.Conversation;
+            TutorStepDefinition defi = target.Definition;
+
+            defi.OnStepStart?.Invoke();
+            bool hasconversation = defi.Conversation;
             if (hasconversation)
             {
-                GameManager.Instance.StartConversation(target.Definition.Conversation);
+                GameManager.Instance.StartConversation(defi.Conversation);
             }
             else
             {

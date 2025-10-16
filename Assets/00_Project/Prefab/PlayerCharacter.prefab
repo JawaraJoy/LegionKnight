@@ -189,6 +189,79 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_SpineEvents: []
+--- !u!1 &126342440915540722
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1471394696918251922}
+  - component: {fileID: 6714110512082406061}
+  m_Layer: 7
+  m_Name: Custom Profile Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1471394696918251922
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126342440915540722}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6714110512082406061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126342440915540722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf6ee0ba684ecef408155e511fb90c0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Icons:
+  - m_Definition: {fileID: 11400000, guid: bdbdb3c9d0657c440a268549a5076546, type: 2}
+    m_Owned: 1
+  - m_Definition: {fileID: 11400000, guid: 0a361a42a6f28db409bb0822b919195b, type: 2}
+    m_Owned: 0
+  - m_Definition: {fileID: 11400000, guid: 3803980c21fd8164fa2a6150d2c03063, type: 2}
+    m_Owned: 0
+  - m_Definition: {fileID: 11400000, guid: 838e7dc9dd0479440b9c6b75f46a7269, type: 2}
+    m_Owned: 0
+  - m_Definition: {fileID: 11400000, guid: 62c78d069fd8aa44c81914d852b9e403, type: 2}
+    m_Owned: 0
+  m_Frames:
+  - m_Definition: {fileID: 11400000, guid: 317871e04570ea14da5c8356ac4837c1, type: 2}
+    m_Owned: 1
+  - m_Definition: {fileID: 11400000, guid: adddb42bdab9fbc49a37b65c1fe9eb40, type: 2}
+    m_Owned: 1
+  - m_Definition: {fileID: 11400000, guid: 25e1c8c3807208244a01f596152ca860, type: 2}
+    m_Owned: 1
+  - m_Definition: {fileID: 11400000, guid: 64b204e2eb0e5e746ba3ed59026d4fb2, type: 2}
+    m_Owned: 1
+  - m_Definition: {fileID: 11400000, guid: f2dbe6ce3cecd194aa26d0a13c21a06f, type: 2}
+    m_Owned: 1
+  m_DefaultIcon: {fileID: 11400000, guid: bdbdb3c9d0657c440a268549a5076546, type: 2}
+  m_DefaultFrame: {fileID: 11400000, guid: 317871e04570ea14da5c8356ac4837c1, type: 2}
+  m_SelectedIcon: {fileID: 0}
+  m_SelectedFrame: {fileID: 0}
+  m_UsedIcon: {fileID: 0}
+  m_UsedFrame: {fileID: 0}
+  m_ProfilePicts: []
 --- !u!1 &354530701017697706
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,6 +329,45 @@ MonoBehaviour:
         - m_Target: {fileID: 1702512868549989484}
           m_TargetAssemblyTypeName: LegionKnight.PlayerEnergyViewAgent, Assembly-CSharp
           m_MethodName: SetConfirmationEnergyView
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    m_OnAmountSpend:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: 81870cf3e113a664d82f831dd51caec4, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+          m_MethodName: AddCount
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 11400000, guid: a82c75f4b6c56c04f8afade3d8fe46ff, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+          m_MethodName: AddCount
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 11400000, guid: ea908fe966932fd41b581d4038b8f935, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+          m_MethodName: AddCount
           m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -818,6 +930,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnManaChargeAmount:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4987369106493199891}
+        m_TargetAssemblyTypeName: LegionKnight.GameplayPanelAgent, Assembly-CSharp
+        m_MethodName: ChargeAmount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnManacharge:
     m_PersistentCalls:
       m_Calls:
@@ -1018,6 +1145,42 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: a046aafdd8d11134491fc00a38f666d8, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: AddCount
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 0f2d2ffa34bd38043b5cbc29ec63bd78, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: AddCount
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 295fc93f3cb4e8d4893abcc3596e0afc, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: AddCount
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   m_OnClaim:
     m_PersistentCalls:
       m_Calls:
@@ -1068,7 +1231,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -2071899236069272324, guid: 57a7e273bad2f0a46bbef594e7e76507, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 1be2fcc16ab0da84f99ba7c633037620, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 1be2fcc16ab0da84f99ba7c633037620, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -1592,6 +1755,42 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: bd3a39ace05fb3b43bc96913781f88b7, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: SetCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: f62c7fd482b488d469ffbe9902fd79ce, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: SetCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: f37fe7c9d8442064c967f86e3be8aa8b, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: SetCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnStayPerfect:
     m_PersistentCalls:
       m_Calls: []
@@ -1651,7 +1850,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -4263817900027168411, guid: 57a7e273bad2f0a46bbef594e7e76507, type: 2}
-  m_audioClip: {fileID: 8300000, guid: eaae8fe8d600e1f459f34aa5757fa3b8, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: eaae8fe8d600e1f459f34aa5757fa3b8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -2037,6 +2236,7 @@ GameObject:
   - component: {fileID: 7282600096559205833}
   - component: {fileID: 2428453725035944463}
   - component: {fileID: 8088167995666061917}
+  - component: {fileID: 1298529932421278079}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -2082,6 +2282,9 @@ Transform:
   - {fileID: 5934124704068876473}
   - {fileID: 7147393638558586799}
   - {fileID: 9007811877491898679}
+  - {fileID: 2017878880532612488}
+  - {fileID: 1471394696918251922}
+  - {fileID: 1200486972973644304}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3377274384242518752
@@ -2165,8 +2368,11 @@ MonoBehaviour:
   m_Achievement: {fileID: 735566226273262617}
   m_HealthView: {fileID: 2669609269329695303}
   m_EnergyController: {fileID: 7456184098003870390}
+  m_MailBox: {fileID: 1165169597540787151}
   m_DailyMissionManager: {fileID: 7384750724793309160}
   m_WeeklyMissionManager: {fileID: 1483701800898399235}
+  m_BadgeManager: {fileID: 6152729686356691818}
+  m_CustomProfile: {fileID: 6714110512082406061}
   m_PlayerProgression: {fileID: 6282812892676271033}
   m_NameSupplyDefinition: {fileID: 11400000, guid: a588d78743d384141ba6a09dfa84836b, type: 2}
   m_PlayerName: 
@@ -2260,6 +2466,54 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 7456184098003870390}
         m_TargetAssemblyTypeName: LegionKnight.EnergyController, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6152729686356691818}
+        m_TargetAssemblyTypeName: LegionKnight.BadgeHandler, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6714110512082406061}
+        m_TargetAssemblyTypeName: LegionKnight.CustomProfile, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 81254ea1e04778542ae378bdc0a45a42, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.Prototype.MailDefinition, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1298529932421278079}
+        m_TargetAssemblyTypeName: LegionKnight.TutorialAgent, Assembly-CSharp
         m_MethodName: Init
         m_Mode: 1
         m_Arguments:
@@ -2369,6 +2623,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnNameChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_Character: {fileID: 6867498596800542263}
   m_CharacterJump: {fileID: 1091291144089817512}
   m_CoinComboText: {fileID: 2746353190384096885}
@@ -2575,30 +2832,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 6805749128141819672}
-        m_TargetAssemblyTypeName: LegionKnight.GameplayPanelAgent, Assembly-CSharp
-        m_MethodName: Hide
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 0
-      - m_Target: {fileID: 7012284224952001063}
-        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
-        m_MethodName: ResetBoss
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 0
       - m_Target: {fileID: 3804939165712080917}
         m_TargetAssemblyTypeName: LegionKnight.PlayerCameraAgent, Assembly-CSharp
         m_MethodName: SetStayFollow
@@ -2645,7 +2878,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -2071899236069272324, guid: 57a7e273bad2f0a46bbef594e7e76507, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 3b4014b5f1528f9408e5900260252c73, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 3b4014b5f1528f9408e5900260252c73, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -2842,6 +3075,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e950c3c896639b4cbc9f111e67e4bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1298529932421278079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084039138725747265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015f14f564f636f47a7930acbf15488c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.TutorialAgent
 --- !u!1 &2207269959471590298
 GameObject:
   m_ObjectHideFlags: 0
@@ -2909,6 +3154,116 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &2566183459648005470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2017878880532612488}
+  - component: {fileID: 6152729686356691818}
+  m_Layer: 7
+  m_Name: BadgeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2017878880532612488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2566183459648005470}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6152729686356691818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2566183459648005470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d9a96efe60275a4c9a5bad9d75122ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Badges:
+  - m_Definition: {fileID: 11400000, guid: e523a9c147e9a5f4b95a0d23c2b689a8, type: 2}
+    m_IsUnlocked: 0
+    m_CurrentUpgradeLevel: 0
+    m_OnUnlocked:
+      m_PersistentCalls:
+        m_Calls: []
+    m_UnlclaimedReward: 0
+  - m_Definition: {fileID: 11400000, guid: 6dc0f2960bf7f3f4fab48ce7fad40421, type: 2}
+    m_IsUnlocked: 0
+    m_CurrentUpgradeLevel: 0
+    m_OnUnlocked:
+      m_PersistentCalls:
+        m_Calls: []
+    m_UnlclaimedReward: 0
+  - m_Definition: {fileID: 11400000, guid: 6759622f1d782ad458eac811ea2944e2, type: 2}
+    m_IsUnlocked: 0
+    m_CurrentUpgradeLevel: 0
+    m_OnUnlocked:
+      m_PersistentCalls:
+        m_Calls: []
+    m_UnlclaimedReward: 0
+  - m_Definition: {fileID: 11400000, guid: 0ac707e189de95c4d9473d0db5e86aa5, type: 2}
+    m_IsUnlocked: 0
+    m_CurrentUpgradeLevel: 0
+    m_OnUnlocked:
+      m_PersistentCalls:
+        m_Calls: []
+    m_UnlclaimedReward: 0
+  - m_Definition: {fileID: 11400000, guid: 4f64f5fee7090704fbe96457247dbcac, type: 2}
+    m_IsUnlocked: 0
+    m_CurrentUpgradeLevel: 0
+    m_OnUnlocked:
+      m_PersistentCalls:
+        m_Calls: []
+    m_UnlclaimedReward: 0
+  - m_Definition: {fileID: 11400000, guid: 23104b2a12ae1aa47bb85ef026d4f276, type: 2}
+    m_IsUnlocked: 0
+    m_CurrentUpgradeLevel: 0
+    m_OnUnlocked:
+      m_PersistentCalls:
+        m_Calls: []
+    m_UnlclaimedReward: 0
+  - m_Definition: {fileID: 11400000, guid: 57d84bc29247efd4d863f5f9a8519919, type: 2}
+    m_IsUnlocked: 0
+    m_CurrentUpgradeLevel: 0
+    m_OnUnlocked:
+      m_PersistentCalls:
+        m_Calls: []
+    m_UnlclaimedReward: 0
+  - m_Definition: {fileID: 11400000, guid: da0b61cd17d6ce34dbb415de2b3d1ec3, type: 2}
+    m_IsUnlocked: 0
+    m_CurrentUpgradeLevel: 0
+    m_OnUnlocked:
+      m_PersistentCalls:
+        m_Calls: []
+    m_UnlclaimedReward: 0
+  m_OnBadgeUnlocked:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnBadgeCurrentUpgradeLevelChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnRewardClaimed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2598558995643241899
 GameObject:
   m_ObjectHideFlags: 0
@@ -2989,7 +3344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2efa2cb8d3583f04e856753543bdcb44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TextMeshPrefab: {fileID: 4627514803098843711, guid: 710050dfddd91c3428c4be15c0ad7f65, type: 3}
+  m_TextMeshPrefab: {fileID: 4627514803098843711, guid: d9015e706c55ec340b85d69a0a718c34, type: 3}
   m_BeforeText: 
   m_AfterText: 
   m_SprayRadius: 3
@@ -3145,6 +3500,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3166,6 +3523,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -501565547
   m_SortingLayer: 12
   m_SortingOrder: 2
@@ -8102,6 +8460,8 @@ ParticleSystemRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -8123,6 +8483,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -501565547
   m_SortingLayer: 12
   m_SortingOrder: 0
@@ -13069,6 +13430,8 @@ ParticleSystemRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -13090,6 +13453,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1789204761
   m_SortingLayer: 14
   m_SortingOrder: 5
@@ -13640,6 +14004,9 @@ MonoBehaviour:
   m_OnActive:
     m_PersistentCalls:
       m_Calls: []
+  m_OnManaChargeAmount:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnManacharge:
     m_PersistentCalls:
       m_Calls: []
@@ -13706,6 +14073,9 @@ MonoBehaviour:
     m_OnCharacterShardUpdate:
       m_PersistentCalls:
         m_Calls: []
+    m_OnCharacterOwnedChanged:
+      m_PersistentCalls:
+        m_Calls: []
     m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
     m_OnLevelUp:
       m_PersistentCalls:
@@ -13722,6 +14092,9 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
     m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterOwnedChanged:
       m_PersistentCalls:
         m_Calls: []
     m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
@@ -13742,6 +14115,21 @@ MonoBehaviour:
     m_OnCharacterShardUpdate:
       m_PersistentCalls:
         m_Calls: []
+    m_OnCharacterOwnedChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: 3803980c21fd8164fa2a6150d2c03063, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.CustomImageDefinition, Assembly-CSharp
+          m_MethodName: SetOwned
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
     m_OnLevelUp:
       m_PersistentCalls:
@@ -13760,6 +14148,21 @@ MonoBehaviour:
     m_OnCharacterShardUpdate:
       m_PersistentCalls:
         m_Calls: []
+    m_OnCharacterOwnedChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: 838e7dc9dd0479440b9c6b75f46a7269, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.CustomImageDefinition, Assembly-CSharp
+          m_MethodName: SetOwned
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
     m_OnLevelUp:
       m_PersistentCalls:
@@ -13778,6 +14181,21 @@ MonoBehaviour:
     m_OnCharacterShardUpdate:
       m_PersistentCalls:
         m_Calls: []
+    m_OnCharacterOwnedChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: bdbdb3c9d0657c440a268549a5076546, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.CustomImageDefinition, Assembly-CSharp
+          m_MethodName: SetOwned
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
     m_OnLevelUp:
       m_PersistentCalls:
@@ -13796,6 +14214,21 @@ MonoBehaviour:
     m_OnCharacterShardUpdate:
       m_PersistentCalls:
         m_Calls: []
+    m_OnCharacterOwnedChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: 0a361a42a6f28db409bb0822b919195b, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.CustomImageDefinition, Assembly-CSharp
+          m_MethodName: SetOwned
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
     m_OnLevelUp:
       m_PersistentCalls:
@@ -13814,6 +14247,21 @@ MonoBehaviour:
     m_OnCharacterShardUpdate:
       m_PersistentCalls:
         m_Calls: []
+    m_OnCharacterOwnedChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: 62c78d069fd8aa44c81914d852b9e403, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.CustomImageDefinition, Assembly-CSharp
+          m_MethodName: SetOwned
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
     m_OnLevelUp:
       m_PersistentCalls:
@@ -13917,12 +14365,93 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnCharacterLevelUpAmount:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 3feeb15d71ce47d4ab5e8861d81f7f9b, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: SetCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 0d0b26c4ac9d06644b14e6cb4d151ef7, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: SetCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: f6fc2b062bee26d4f912db6b717ef8d4, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: SetCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnCharacterStarUp:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2357303486595680014}
         m_TargetAssemblyTypeName: LegionKnight.HeroViewAgent, Assembly-CSharp
         m_MethodName: OnCharacterLevelUpCharacterView
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnCharacterOwned:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnCharacterOwnedAmount:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: d2c989da2c6c66c4c99061b99c527872, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: SetCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: f8d1790629fc2bb4aa9736fcf16ffa84, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: SetCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 521fb7d5f2169a14b8330007e597f110, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
+        m_MethodName: SetCount
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13942,7 +14471,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -2071899236069272324, guid: 57a7e273bad2f0a46bbef594e7e76507, type: 2}
-  m_audioClip: {fileID: 8300000, guid: b0e62ed71b1538648b719821f4f63b4c, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: b0e62ed71b1538648b719821f4f63b4c, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -14198,6 +14727,30 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 6182607786919626262}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerSpineAgent, Assembly-CSharp
+        m_MethodName: SetAnim
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: fb4f7cd33fba6b94d8f9af8ffb4c2635, type: 2}
+          m_ObjectArgumentAssemblyTypeName: LegionKnight.SpineAnimDefinition, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1779518700638034787}
+        m_TargetAssemblyTypeName: LegionKnight.DeathEffect, Assembly-CSharp
+        m_MethodName: OnDeathInvoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
   m_OnDamageTaken:
     m_PersistentCalls:
@@ -14231,7 +14784,7 @@ MonoBehaviour:
         m_MethodName: SetAnim
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 378fc2343c04ee14db07639d5993138b, type: 2}
+          m_ObjectArgument: {fileID: 11400000, guid: e3fe7882c98bc6548a609446d35d62de, type: 2}
           m_ObjectArgumentAssemblyTypeName: LegionKnight.SpineAnimDefinition, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -19700,6 +20253,8 @@ ParticleSystemRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -19721,6 +20276,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -501565547
   m_SortingLayer: 12
   m_SortingOrder: 5
@@ -24591,6 +25147,8 @@ ParticleSystemRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -24612,6 +25170,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -501565547
   m_SortingLayer: 12
   m_SortingOrder: 15
@@ -24700,6 +25259,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -24721,6 +25282,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -501565547
   m_SortingLayer: 12
   m_SortingOrder: 3
@@ -25259,44 +25821,152 @@ MonoBehaviour:
   m_ExpTable:
   - m_CurrentMaxExp: 200
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 242
     m_RewardLevelReached: {fileID: 11400000, guid: 726147b612a6a9e439a44bcd53d95120, type: 2}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 292
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 353
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 427
     m_RewardLevelReached: {fileID: 11400000, guid: d0ef990137b3d6b4faf3435e5a891033, type: 2}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: e523a9c147e9a5f4b95a0d23c2b689a8, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.BadgeDefinition, Assembly-CSharp
+          m_MethodName: AddUnClaimedReward
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - m_CurrentMaxExp: 516
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 624
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 755
     m_RewardLevelReached: {fileID: 11400000, guid: 4c6d4973ae28440428e530a6569788ed, type: 2}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 913
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 1104
     m_RewardLevelReached: {fileID: 11400000, guid: 311465e8257c77b4abd36862e7eb3db7, type: 2}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: e523a9c147e9a5f4b95a0d23c2b689a8, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.BadgeDefinition, Assembly-CSharp
+          m_MethodName: AddUnClaimedReward
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - m_CurrentMaxExp: 1335
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 1615
     m_RewardLevelReached: {fileID: 11400000, guid: 8283b7629adce7e49b77dca2ac23b34d, type: 2}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 1954
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 2364
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 2860
     m_RewardLevelReached: {fileID: 11400000, guid: 3654a4d8cc4c220419fc99672b2ae4b4, type: 2}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: e523a9c147e9a5f4b95a0d23c2b689a8, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.BadgeDefinition, Assembly-CSharp
+          m_MethodName: AddUnClaimedReward
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - m_CurrentMaxExp: 3460
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 4186
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 5065
     m_RewardLevelReached: {fileID: 11400000, guid: 1142fe55773561c45a0f06afecefff4d, type: 2}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 6128
     m_RewardLevelReached: {fileID: 0}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - m_CurrentMaxExp: 7414
     m_RewardLevelReached: {fileID: 11400000, guid: 38d89be585f02384d9ff096019ec789b, type: 2}
+    m_OnLevelUpEnter:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: e523a9c147e9a5f4b95a0d23c2b689a8, type: 2}
+          m_TargetAssemblyTypeName: LegionKnight.BadgeDefinition, Assembly-CSharp
+          m_MethodName: AddUnClaimedReward
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   m_OnCurrentExpChange:
     m_PersistentCalls:
       m_Calls: []
@@ -25829,7 +26499,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -4263817900027168411, guid: 57a7e273bad2f0a46bbef594e7e76507, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 4e349dc959014a845b9aa317d1c2b7f0, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 4e349dc959014a845b9aa317d1c2b7f0, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -25940,6 +26610,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e950c3c896639b4cbc9f111e67e4bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &6398119660185548108
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1200486972973644304}
+  - component: {fileID: 1165169597540787151}
+  m_Layer: 7
+  m_Name: Mail
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1200486972973644304
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6398119660185548108}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 85250483425571224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1165169597540787151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6398119660185548108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cef465235cf0e849988c03f3899d654, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.PlayerMailBoxProt
+  m_SelectedMail: {fileID: 0}
+  m_RedeemCodeInput: 
+  m_Mails:
+  - m_Definition: {fileID: 11400000, guid: 81254ea1e04778542ae378bdc0a45a42, type: 2}
+    m_HasClaim: 0
+    m_State: 0
+  - m_Definition: {fileID: 11400000, guid: 4d80e3ee93d3127429ff8a64d23abd41, type: 2}
+    m_HasClaim: 0
+    m_State: 0
+  - m_Definition: {fileID: 11400000, guid: b6a4d5557fb9e44439b23b14feb80d64, type: 2}
+    m_HasClaim: 0
+    m_State: 0
+  m_OnRedeemCodeSucced:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnReeemCodeFailed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6970219578649509441
 GameObject:
   m_ObjectHideFlags: 0
@@ -30775,6 +31507,8 @@ ParticleSystemRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -30796,6 +31530,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -501565547
   m_SortingLayer: 12
   m_SortingOrder: 12
@@ -31038,7 +31773,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: 6a49eebe9050b91409c276a9c0c27baf, type: 2}
-    m_Amount: 0
+    m_Amount: 200
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -31219,7 +31954,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - m_CurrencyDefinition: {fileID: 11400000, guid: efac60ce3e3efd741b3f79517c1e5ef8, type: 2}
-    m_Amount: 1
+    m_Amount: 0
     m_OnCurrencyAmountChanged:
       m_PersistentCalls:
         m_Calls:
@@ -31235,6 +31970,17 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_CurrencyDefinition: {fileID: 11400000, guid: 37fef1c2e6578134292b1c2304cf688a, type: 2}
+    m_Amount: 0
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
     m_OnCurrencyChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -31432,6 +32178,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -31453,6 +32201,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -501565547
   m_SortingLayer: 12
   m_SortingOrder: 100
@@ -31580,8 +32329,12 @@ MonoBehaviour:
     m_StanbyPlatform: {fileID: 11400000, guid: 8f1136fecdb0fdf46b758b19e57f80c1, type: 2}
   - m_IsOwned: 0
     m_IsEquiped: 0
-    m_Amount: 5
-    m_StanbyPlatform: {fileID: 11400000, guid: 6777ce0c67b23f6468993700e663a76d, type: 2}
+    m_Amount: 0
+    m_StanbyPlatform: {fileID: 11400000, guid: b2d6e11d26ea9a6489118185ebb25d2a, type: 2}
+  - m_IsOwned: 0
+    m_IsEquiped: 0
+    m_Amount: 0
+    m_StanbyPlatform: {fileID: 11400000, guid: 08f07b8a434c7914db959f8ad57aa1dc, type: 2}
   m_OnInitialized:
     m_PersistentCalls:
       m_Calls: []
@@ -31677,8 +32430,8 @@ MonoBehaviour:
   m_NormalProtectAsset:
     m_AssetGUID: a73f82c384124d54d904cdd07d3ce660
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   m_Damageable:
   - {fileID: 6983114196135514266}
