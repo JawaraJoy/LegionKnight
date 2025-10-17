@@ -1,5 +1,6 @@
-using UnityEngine;
 using LegionKnight.Dialogue;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 
 namespace LegionKnight
@@ -19,9 +20,11 @@ namespace LegionKnight
         private UnityEvent m_OnStepEnd;
         public string Id => m_Id;
         public string Title => m_Title;
+        
         public ConversationDefinition Conversation => m_Conversation;
         public bool HasConversation => m_Conversation != null;
         public UnityEvent OnStepStart => m_OnStepStart;
         public UnityEvent OnStepEnd => m_OnStepEnd;
+        
     }
 }
