@@ -92,6 +92,10 @@ namespace LegionKnight
                 m_CurrentFlash = flash;
                 StartCoroutine(PlayingFlashMessage(defi));
                 m_CurrentFlash.Definition.OnStart?.Invoke();
+                if (m_CurrentFlash.Definition.IsSetDoneOnStart)
+                {
+                    EndFlash();
+                }
             }
         }
 
