@@ -53,6 +53,7 @@ namespace LegionKnight
                     LootField.CharacterApplier(item);
                     LootField.StandbyPlatformApplier(item, amount);
                     LootField.EnergyApplier(item, amount);
+                    LootField.RandomApplier(item);
                 }
             }
             m_OnTakeLoots?.Invoke(m_Looteds);
@@ -71,6 +72,7 @@ namespace LegionKnight
                 LootField.StandbyPlatformApplier(item, amount);
                 LootField.EnergyApplier(item, amount);
                 LootField.CharacterApplier(item);
+                LootField.RandomApplier(item);
             }
             m_OnDirectTakeLoot?.Invoke(loot);
         }
