@@ -43,8 +43,19 @@ namespace LegionKnight
             StandbyPlatformApplierInternal(m_Item, m_Amount);
             EnergyApplierInternal(m_Item, m_Amount);
             CharacterApplierInternal(m_Item);
+            RandomApplierInternal(m_Item);
         }
-
+        private static void RandomApplierInternal(ScriptableObject defi)
+        {
+            if (defi is LootDefinition loot)
+            {
+                var loots = loot.GetRandomLoots();
+                foreach(LootField field in loots)
+                {
+                    field.DirectTakeLoot();
+                }
+            }
+        }
         private static void CurrencyApplierInternal(ScriptableObject defi, int amount)
         {
             if (defi is CurrencyDefinition currency)
@@ -96,6 +107,10 @@ namespace LegionKnight
         public static void EnergyApplier(ScriptableObject defi, int amount)
         {
             EnergyApplierInternal(defi, amount);
+        }
+        public static void RandomApplier(ScriptableObject defi)
+        {
+            RandomApplierInternal(defi);
         }
     }
 }

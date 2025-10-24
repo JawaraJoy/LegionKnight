@@ -1,4 +1,5 @@
 using AppsFlyerSDK;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -100,15 +101,19 @@ namespace LegionKnight
         private LevelSelect[] m_LevelSelects;
         private LevelObject m_LevelObject;
         [SerializeField]
+        [Obsolete]
         private Currency m_CurrentCoinReward;
         [SerializeField]
+        [Obsolete]
         private Currency m_CurrentScore;
         [SerializeField, Range(0f, 2f)]
         private float m_ExpReceiverRate = 1f;
         [SerializeField]
         private UnityEvent m_OnPlay = new();
         public int MaxPlatformCount => m_MaxPlatformCount;
+        [Obsolete("Soon gonna be replaced by Loot System")]
         public Currency CurrentCoinReward => m_CurrentCoinReward;
+        [Obsolete("Soon gonna be replaced by Loot System")]
         public Currency CurrentScore => m_CurrentScore;
         public Transform PlayerStartPostion => m_LevelObject.PlayerStartPostion;
         public bool LevelOver => m_LevelOver;
@@ -428,7 +433,6 @@ namespace LegionKnight
         public void SetLevelObject(LevelObject set)
         {
             m_LevelObject = set;
-            m_LevelObject.SetGroundLevelView(m_SelectedLevelDefinition.LevelOrnament);
         }
         public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
         {

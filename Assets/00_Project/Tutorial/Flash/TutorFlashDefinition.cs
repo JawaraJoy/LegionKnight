@@ -14,6 +14,8 @@ namespace LegionKnight
         [SerializeField]
         private float m_MessageInternal;
         [SerializeField]
+        private bool m_SetIsDoneOnStart = false;
+        [SerializeField]
         private AssetReferenceGameObject m_FlashUIAsset;
         [SerializeField]
         private UnityEvent m_OnStart;
@@ -25,6 +27,7 @@ namespace LegionKnight
         public AssetReferenceGameObject FlashUIAsset => m_FlashUIAsset;
         public string[] FlashMessages => m_FlashMessages;
         public string Id => m_Id;
+        public bool IsSetDoneOnStart => m_SetIsDoneOnStart;
 
         public void StartFlash()
         {
