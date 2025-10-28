@@ -38,6 +38,7 @@ namespace LegionKnight
         public void ShowHealthBar()
         {
             m_BosHealthBar.Show();
+            Debug.Log("Show Health Bar 2");
         }
         
         public void HideHealthBar()
@@ -100,6 +101,7 @@ namespace LegionKnight
             if (bosBar != null)
             {
                 bosBar.ShowHealthBar();
+                Debug.Log("Show Health Bar");
             }
         }
 
@@ -109,6 +111,7 @@ namespace LegionKnight
             if (bosBar != null)
             {
                 bosBar.HideHealthBar();
+                Debug.Log("Hide Health Bar");
             }
         }
     }

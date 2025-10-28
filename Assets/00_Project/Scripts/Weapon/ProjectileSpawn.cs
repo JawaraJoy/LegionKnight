@@ -27,6 +27,8 @@ namespace LegionKnight
 
         [SerializeField]
         private UnityEvent<ProjectileDamage> m_OnWeaponSpawned = new();
+        [SerializeField]
+        private UnityEvent m_OnSpawned;
 
         private AbilityDefinition m_AbilityDefinition;
 
@@ -100,6 +102,7 @@ namespace LegionKnight
                 {
                     dot.ApplyDamageOvertime();
                 }
+                m_OnSpawned?.Invoke();
             }
         }
     }
