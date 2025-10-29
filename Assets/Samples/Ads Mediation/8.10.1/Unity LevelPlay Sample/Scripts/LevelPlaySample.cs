@@ -6,8 +6,11 @@ public partial class LevelPlaySample : MonoBehaviour
 {
     /*[SerializeField]
     private Texture2D lpLogo;*/
+<<<<<<< HEAD
     [SerializeField]
     private string m_ActualAppKey;
+=======
+>>>>>>> main
     private LevelPlayBannerAd bannerAd;
     private LevelPlayInterstitialAd interstitialAd;
     private LevelPlayRewardedAd rewardedVideoAd;
@@ -38,6 +41,7 @@ public partial class LevelPlaySample : MonoBehaviour
 
         // Create Rewarded Video object
         rewardedVideoAd = new LevelPlayRewardedAd(AdConfig.RewardedVideoAdUnitId);
+        //rewardedVideoAd = new LevelPlayRewardedAd(m_RewardedID);
 
         // Register to Rewarded Video events
         rewardedVideoAd.OnAdLoaded += RewardedVideoOnLoadedEvent;
@@ -51,6 +55,7 @@ public partial class LevelPlaySample : MonoBehaviour
 
         // Create Banner object
         bannerAd = new LevelPlayBannerAd(AdConfig.BannerAdUnitId);
+        //bannerAd = new LevelPlayBannerAd(m_BanerID);
 
         // Register to Banner events
         bannerAd.OnAdLoaded += BannerOnAdLoadedEvent;
@@ -64,6 +69,7 @@ public partial class LevelPlaySample : MonoBehaviour
 
         // Create Interstitial object
         interstitialAd = new LevelPlayInterstitialAd(AdConfig.InterstitalAdUnitId);
+        //interstitialAd = new LevelPlayInterstitialAd(m_InterstitialID);
 
         // Register to Interstitial events
         interstitialAd.OnAdLoaded += InterstitialOnAdLoadedEvent;
@@ -186,7 +192,11 @@ public partial class LevelPlaySample : MonoBehaviour
     #region AdInfo Rewarded Video
     void RewardedVideoOnLoadedEvent(LevelPlayAdInfo adInfo)
     {
+<<<<<<< HEAD
         //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnLoadedEvent With AdInfo: {adInfo}");
+=======
+        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnLoadedEvent With AdInfo: {adInfo}");
+>>>>>>> main
     }
 
     void RewardedVideoOnAdLoadFailedEvent(LevelPlayAdError error)

@@ -262,11 +262,13 @@ namespace LegionKnight
             m_OnPerfectTouchDown?.Invoke();
             Vector2 playerPost = Player.Instance.transform.position;
             SetLastPlayerPositionInternal(playerPost);
+            AddManaToAllBosSkill(1);
         }
         public void OnNormalTouchDown()
         {
             m_OnNormalTouchDown?.Invoke();
             Vector2 playerPost = Player.Instance.transform.position;
+            AddManaToAllBosSkill(10);
             SetLastPlayerPositionInternal(playerPost);
         }
         public void SetBosSpawnCount(int set)

@@ -132,31 +132,7 @@ MonoBehaviour:
   m_Platform: {fileID: 4116744230541724905}
   m_OnNormalTouchDown:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8211704639373595287}
-        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
-        m_MethodName: AddManaToAllBosSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 10
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8211704639373595287}
-        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
-        m_MethodName: ActiveBosProjectileAbility
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Rock Twist
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnPerfectTouchDown:
     m_PersistentCalls:
       m_Calls:
@@ -168,30 +144,6 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8211704639373595287}
-        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
-        m_MethodName: AddManaToAllBosSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8756440780900071404}
-        m_TargetAssemblyTypeName: LegionKnight.PlayerDamageOvertimeAgent, Assembly-CSharp
-        m_MethodName: AddAntidot
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1172,6 +1124,7 @@ MonoBehaviour:
   m_Barrier: 0
   m_MaxHpRateDamage: 0.5
   m_Fatal: 0
+  m_InstantDeath: 0
   m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:

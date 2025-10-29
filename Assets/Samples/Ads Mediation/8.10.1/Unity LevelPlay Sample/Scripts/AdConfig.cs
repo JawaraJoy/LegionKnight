@@ -8,43 +8,47 @@ public static class AdConfig
     static string GetAppKey()
     {
         #if UNITY_ANDROID
-            return "85460dcd";
+            //return "85460dcd";
+            return "239bf6d6d";
         #elif UNITY_IPHONE
             return "8545d445";
-        #else
+#else
             return "unexpected_platform";
-        #endif
+#endif
     }
 
     static string GetBannerAdUnitId()
     {
         #if UNITY_ANDROID
-            return "thnfvcsog13bhn08";
+            //return "thnfvcsog13bhn08";
+        return "Banner_Android_Bidding";
         #elif UNITY_IPHONE
             return "iep3rxsyp9na3rw8";
-        #else
+#else
             return "unexpected_platform";
-        #endif
+#endif
     }
     static string GetInterstitialAdUnitId()
     {
         #if UNITY_ANDROID
-            return "aeyqi3vqlv6o8sh9";
+            //return "aeyqi3vqlv6o8sh9";
+        return "Interstitial_Android_Bidding";
         #elif UNITY_IPHONE
             return "wmgt0712uuux8ju4";
-        #else
+#else
             return "unexpected_platform";
-        #endif
+#endif
     }
 
     static string GetRewardedVideoAdUnitId()
     {
         #if UNITY_ANDROID
-            return "76yy3nay3ceui2a3";
+            //return "76yy3nay3ceui2a3";
+        return "2idc0jgbu3bxhqvv";
         #elif UNITY_IPHONE
             return "qwouvdrkuwivay5q";
-        #else
+#else
             return "unexpected_platform";
-        #endif
+#endif
     }
 }

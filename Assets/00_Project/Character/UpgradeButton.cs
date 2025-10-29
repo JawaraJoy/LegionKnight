@@ -46,7 +46,7 @@ namespace LegionKnight
         {
             if (m_CharacterUsed == null)
             {
-                m_CharacterUsed = Player.Instance.UsedCharacter;
+                m_CharacterUsed = Player.Instance.SelectedCharacter;
             }
             InitInternal(m_CharacterUsed);
         }

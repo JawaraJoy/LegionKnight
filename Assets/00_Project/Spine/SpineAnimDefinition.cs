@@ -1,3 +1,4 @@
+﻿using Spine;
 using Spine.Unity;
 using System.Collections;
 using UnityEngine;
@@ -19,6 +20,9 @@ namespace LegionKnight
         private SpineAnimDefinition m_NextAnim;
         [SerializeField]
         private float m_NextAnimDelay = 0f;
+
+        [SerializeField]
+        private SpineEventDefinition[] m_EventDefinition;
 
         public int AnimTrack => m_AnimTrack;
         public string AnimName => m_AnimName;
@@ -50,5 +54,50 @@ namespace LegionKnight
                 m_NextAnim.Play(anim);
             }
         }
+
+        public void PlayUI(SkeletonGraphic skeletonAnimation, UnityAction onComplete = null)
+        {
+            if (skeletonAnimation == null) return;
+            Spine.Animation animData = skeletonAnimation.skeletonDataAsset.GetAnimationStateData().SkeletonData.FindAnimation(m_AnimName);
+            if (animData == null) return;
+            var aa = skeletonAnimation.AnimationState.SetAnimation(m_AnimTrack, m_AnimName, m_Loop);
+            float animationTime = aa.AnimationTime;
+            float animationDuration = aa.Animation.Duration;
+            aa.Complete += (trackEntry) =>
+            {
+                onComplete?.Invoke();
+                if (m_NextAnim != null)
+                {
+                    skeletonAnimation.StartCoroutine(PlayNextUI(skeletonAnimation, m_NextAnimDelay));
+                }
+            };
+        }
+        private IEnumerator PlayNextUI(SkeletonGraphic anim, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            if (m_NextAnim != null)
+            {
+                m_NextAnim.PlayUI(anim);
+            }
+        }
+
+        public void PauseUI(SkeletonGraphic anim)
+        {
+            anim.timeScale = 0f;
+        }
+        public void ResumeUI(SkeletonGraphic anim)
+        {
+            anim.timeScale = 1f;
+        }
+
+        public void AddEventCallBack(SkeletonGraphic anim, GameObject sender)
+        {
+            foreach(var ev in m_EventDefinition)
+            {
+                ev.AddEventCallBack(anim, sender);
+            }
+        }
     }
+
+    
 }

@@ -47,7 +47,10 @@ MonoBehaviour:
   m_OnRewardedAdDone:
     m_PersistentCalls:
       m_Calls: []
+<<<<<<< HEAD
   m_ActualAppKey: 239bf6d6d
+=======
+>>>>>>> main
 --- !u!1 &2212135461352782616
 GameObject:
   m_ObjectHideFlags: 0
@@ -59,6 +62,7 @@ GameObject:
   - component: {fileID: 6224279411924951285}
   - component: {fileID: 4904047336095579251}
   - component: {fileID: 1962322448991772036}
+  - component: {fileID: 9083886318250041477}
   m_Layer: 0
   m_Name: UnityService
   m_TagString: Untagged
@@ -84,6 +88,7 @@ Transform:
   - {fileID: 8092963523997277274}
   - {fileID: 4211897323866806253}
   - {fileID: 6634712135323267090}
+  - {fileID: 2995581704421847454}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4904047336095579251
@@ -131,6 +136,33 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+<<<<<<< HEAD
+=======
+      - m_Target: {fileID: 9083886318250041477}
+        m_TargetAssemblyTypeName: LegionKnight.GoogleAuthAgent, Assembly-CSharp
+        m_MethodName: StartSignInWithGoogle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 5537331884271729272}
+        m_TargetAssemblyTypeName: LegionKnight.Authentication, Assembly-CSharp
+        m_MethodName: SignInAnonymously
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+>>>>>>> main
   m_OnInitializationFailed:
     m_PersistentCalls:
       m_Calls: []
@@ -144,6 +176,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 12f9050e60f322d45a18fd887c594f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9083886318250041477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2212135461352782616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b93358b92383c3e42a4a25c7601ec952, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2484120564562140198
@@ -162,6 +206,10 @@ GameObject:
   - component: {fileID: 7706837356944348511}
   - component: {fileID: 2019127488247714569}
   - component: {fileID: 3678917805274228738}
+<<<<<<< HEAD
+=======
+  - component: {fileID: 7775729261053811712}
+>>>>>>> main
   m_Layer: 0
   m_Name: Cloud Save
   m_TagString: Untagged
@@ -296,6 +344,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+<<<<<<< HEAD
+=======
+      - m_Target: {fileID: 7775729261053811712}
+        m_TargetAssemblyTypeName: LegionKnight.BossDeckManagerAgent, Assembly-CSharp
+        m_MethodName: Initialize
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+>>>>>>> main
 --- !u!114 &1069859614771893739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -369,6 +432,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33257f8b3a51e4c4cbb692104966432b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
+=======
+--- !u!114 &7775729261053811712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2484120564562140198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aab024184ec98940bf578c25671a735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+>>>>>>> main
 --- !u!1 &2831577676660342122
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,18 +617,6 @@ MonoBehaviour:
           m_StringArgument: Wait for loading Data ...
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 9218670113116890934}
-        m_TargetAssemblyTypeName: LegionKnight.AuthenticationAgent, Assembly-CSharp
-        m_MethodName: ShowWaitingViewSuccessButton
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 0
       - m_Target: {fileID: 3814314757155133575}
         m_TargetAssemblyTypeName: LegionKnight.CloudSave, Assembly-CSharp
         m_MethodName: LoadAllData
@@ -574,7 +640,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
-        m_CallState: 2
+        m_CallState: 0
   m_OnSignInFailed:
     m_PersistentCalls:
       m_Calls:
@@ -614,7 +680,11 @@ MonoBehaviour:
           m_StringArgument: Load Failed, please Relog!
           m_BoolArgument: 1
         m_CallState: 2
+<<<<<<< HEAD
   m_SignInOnStart: 1
+=======
+  m_SignInOnStart: 0
+>>>>>>> main
 --- !u!114 &9218670113116890934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -640,6 +710,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1666950049458378851
+<<<<<<< HEAD
+=======
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -651,6 +723,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33257f8b3a51e4c4cbb692104966432b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &5136120693805706730
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2995581704421847454}
+  - component: {fileID: 2689910341579566921}
+  m_Layer: 0
+  m_Name: PushNotification
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2995581704421847454
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5136120693805706730}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6224279411924951285}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2689910341579566921
+>>>>>>> main
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
+  m_GameObject: {fileID: 4088240084379206386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33257f8b3a51e4c4cbb692104966432b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+=======
+  m_GameObject: {fileID: 5136120693805706730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9546a827c9f17d74184529bea33d3946, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GameTitle: Aether Jump
+  m_Note: Login to Claim Daily Reward
+  m_SmallIconKey: icon_0
+  m_LargeIconKey: icon_1
+  m_ScheduleInHour: 12
+  m_ScheduleInMinutes: 0
+>>>>>>> main
 --- !u!1 &7435551881046139338
 GameObject:
   m_ObjectHideFlags: 0

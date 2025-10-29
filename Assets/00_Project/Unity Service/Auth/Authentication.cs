@@ -1,10 +1,11 @@
-using UnityEngine;
-using Unity.Services.Core;
+using GooglePlayGames;
+using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Authentication.PlayerAccounts;
-using System.Threading.Tasks;
-using UnityEngine.Events;
+using Unity.Services.Core;
 using Unity.Services.Core.Environments;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -21,6 +22,11 @@ namespace LegionKnight
         private bool m_SignInOnStart = false;
         public string PlayerId => AuthenticationService.Instance.PlayerId;
         public string Playername => AuthenticationService.Instance.PlayerName;
+
+        private string m_GooglePlayToken;
+        private string m_GooglePlayEror;
+        public string GooglePlayToken => m_GooglePlayToken;
+        public string GooglePlayEror => m_GooglePlayEror;
 
         public void AddStartSinginWithUnity()
         {
@@ -159,20 +165,33 @@ namespace LegionKnight
                 OnSignInFailedInvoke($"Failed to sign in: {e.Message}");
             }
         }
-        public async void SignInAnonymously(AccountProfile profile)
+        private async void GoogleplayRequestToken()
         {
-            OnStartSingInInvoke();
+            PlayGamesPlatform.Instance.RequestServerSideAccess(true, SetGooglePlayToken);
+            await GooglePlayAuthenticateWithUnity();
+        }
+
+        private void SetGooglePlayToken(string token)
+        {
+            m_GooglePlayToken = token;
+        }
+
+        private async Task GooglePlayAuthenticateWithUnity()
+        {
             try
             {
-                // Sign in anonymously
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                OnSignInSuccessInvoke($"Signed in anonymously {AuthenticationService.Instance.PlayerId} is Successed");
-                Debug.Log($"Signed in anonymously {AuthenticationService.Instance.PlayerId}");
+                await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(m_GooglePlayToken);
+                m_OnSignInSuccess?.Invoke(PlayGamesPlatform.Instance.GetUserDisplayName());
             }
             catch (AuthenticationException e)
             {
-                Debug.LogError($"Failed to sign in: {e}");
-                OnSignInFailedInvoke($"Failed to sign in: {e.Message}");
+                m_OnSignInFailed?.Invoke(e.Message);
+                Debug.LogError(e);
+                throw;
+            }
+            catch (RequestFailedException ec)
+            {
+                Debug.LogError(ec);
             }
         }
         private void OnStartSingInInvoke()
