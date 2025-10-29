@@ -73,6 +73,21 @@ namespace LegionKnight
             ShowRarity(rarity);
         }
 
+        public void ShowAllPlatforms()
+        {
+            foreach (PlatformSelectView platformSelectView in m_SpawnedPlatformSelectionViews)
+            {
+                platformSelectView.Show();
+            }
+        }
+        public void HideAllPlatforms()
+        {
+            foreach (PlatformSelectView platformSelectView in m_SpawnedPlatformSelectionViews)
+            {
+                platformSelectView.Hide();
+            }
+        }
+
         private void ShowRarity(Rarity rarity)
         {
             foreach (PlatformSelectView platformSelectView in m_SpawnedPlatformSelectionViews)
