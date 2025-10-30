@@ -52,6 +52,8 @@ namespace LegionKnight
 
             m_SelectButton.onClick.RemoveAllListeners();
             m_SelectButton.onClick.AddListener(SelectPlatformInternal);
+
+            HideInternal();
         }
 
         public void Init(PlatformUnit unit)

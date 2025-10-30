@@ -33,7 +33,7 @@ namespace LegionKnight
                 {
                     GetSelectView(unit.Definition).Init(unit);
                 }
-            }
+            }        
         }
 
         private CharacterSelectView GetSelectView(CharacterDefinition defi)
@@ -93,7 +93,13 @@ namespace LegionKnight
                 characterSelectView.Show();
             }
         }
-
+        public void HideAll()
+        {
+            foreach (CharacterSelectView characterSelectView in m_SpawnedCharacterSelectView)
+            {
+                characterSelectView.Hide();
+            }
+        }
         public void Init()
         {
             foreach (CharacterSelectView view in m_SpawnedCharacterSelectView)
