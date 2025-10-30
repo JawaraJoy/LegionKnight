@@ -18,7 +18,7 @@ namespace LegionKnight
         [SerializeField]
         private int m_ScheduleInMinutes = 1;
 
-        private void Start()
+        /*private void Start()
         {
             Gley.Notifications.API.Initialize();
         }
@@ -33,6 +33,6 @@ namespace LegionKnight
                 TimeSpan delayFromNow = new(m_ScheduleInHour, m_ScheduleInMinutes, 0);  
                 Gley.Notifications.API.SendNotification(m_GameTitle, m_Note, delayFromNow, m_SmallIconKey, m_LargeIconKey);
             }
-        }
+        }*/
     }
 }

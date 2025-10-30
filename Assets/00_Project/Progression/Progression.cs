@@ -75,6 +75,9 @@ namespace LegionKnight
         {
             m_OnLevelUp?.Invoke(m_Level);
             m_LevelUpTriggered = true;
+
+            GetCurrentOnLevelUpEnter()?.Invoke();
+
             DateTime levelupDate = DateTime.Now;
             Dictionary<string, string> eventValues = new Dictionary<string, string>
             {
@@ -174,6 +177,7 @@ namespace LegionKnight
             {
                 m_CurrentExp -= GetCurrentMaxExperience();
                 m_Level++;
+                
                 UnityService.Instance.SaveData(m_CurrentLevelKey, m_Level);
                 OnLevelUpInvoke();
             }
@@ -188,6 +192,10 @@ namespace LegionKnight
             if (m_Level - 1 < m_ExpTable.Count)
                 return m_ExpTable[m_Level - 1].CurrentMaxExp;
             return m_ExpTable.Count > 0 ? m_ExpTable[^1].CurrentMaxExp : m_FirstLevelExp;
+        }
+        private UnityEvent GetCurrentOnLevelUpEnter()
+        {
+            return m_ExpTable[m_Level - 1].OnLevelUpEnter;
         }
 
         public int GetCurrentLevel()

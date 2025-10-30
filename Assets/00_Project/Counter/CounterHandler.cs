@@ -27,6 +27,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<float> m_OnCountChangedRate;
 
+        private string KeyCurrentCount => "currentcount" + m_Definition.Id;
+
         public Counter(CounterDefinition definition)
         {
             m_Definition = definition;
@@ -43,6 +45,20 @@ namespace LegionKnight
         public int CurrentCount
         {
             get { return m_CurrentCount; }
+        }
+        public void Init()
+        {
+            if (m_Definition.Id == string.Empty) return;
+            bool hasCurrentCountData = UnityService.Instance.HasData(KeyCurrentCount);
+            if (hasCurrentCountData)
+            {
+                m_CurrentCount = UnityService.Instance.GetData<int>(KeyCurrentCount);
+            }
+            else
+            {
+                m_CurrentCount = 0;
+                UnityService.Instance.SaveData(KeyCurrentCount, m_CurrentCount);
+            }
         }
         private void ResetCountInternal()
         {
@@ -69,6 +85,8 @@ namespace LegionKnight
             m_OnCountChanged.Invoke(count);
             OnCountChangedRateInvoke((float)count / (float)m_Definition.CountThreshold);
             OnCountMetInvoke();
+            if (m_Definition.Id == string.Empty) return;
+            UnityService.Instance.SaveData(KeyCurrentCount, m_CurrentCount);
         }
         private void OnCountChangedRateInvoke(float rate)
         {
@@ -127,6 +145,13 @@ namespace LegionKnight
             }
             return null;
         }
+        public void Init()
+        {
+            foreach (var counter in m_Counters)
+            {
+                counter.Init();
+            }
+        }
         public void ResetAllCounter()
         {
             foreach(var counter in m_Counters)
@@ -136,27 +161,15 @@ namespace LegionKnight
         }
         public void ResetCount(CounterDefinition definition)
         {
-            var counter = GetCounter(definition);
-            if (counter != null)
-            {
-                counter.ResetCount();
-            }
+            GetCounter(definition)?.ResetCount();
         }
         public void AddCount(CounterDefinition definition, int count)
         {
-            var counter = GetCounter(definition);
-            if (counter != null)
-            {
-                counter.AddCount(count);
-            }
+            GetCounter(definition)?.AddCount(count);
         }
         public void SetCount(CounterDefinition definition, int count)
         {
-            var counter = GetCounter(definition);
-            if (counter != null)
-            {
-                counter.SetCount(count);
-            }
+            GetCounter(definition)?.SetCount(count);
         }
     }
 }

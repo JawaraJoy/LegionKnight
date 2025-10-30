@@ -28,6 +28,7 @@ namespace LegionKnight
             var textMesh = m_Spawned.GetTextMesh();
             if (textMesh == null) return;
             m_Spawned.GetTextMesh().fontSize = m_SizeText;
+            m_Spawned.transform.SetParent(transform);
         }
         private Vector3 GetRadiusSpawnPosition()
         {

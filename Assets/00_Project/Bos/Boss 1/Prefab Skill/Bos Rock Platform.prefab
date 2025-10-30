@@ -52,6 +52,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -73,6 +75,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -501565547
   m_SortingLayer: 12
   m_SortingOrder: 7
@@ -140,8 +143,8 @@ MonoBehaviour:
     m_SkillAsset:
     - m_AssetGUID: 77199537108ac96449fbf6e408c65ad7
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_OnActive:
       m_PersistentCalls:
@@ -150,6 +153,9 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   m_OnActive:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnManaChargeAmount:
     m_PersistentCalls:
       m_Calls: []
   m_OnManacharge:
@@ -323,7 +329,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
   m_OnPerfectTouchDown:
     m_PersistentCalls:
       m_Calls:
@@ -825,6 +831,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -846,9 +854,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1048968225
   m_SortingLayer: 5
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 32563c56f7fa11c42895f9fc5da9c7c6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -959,6 +968,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -980,9 +991,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1048968225
   m_SortingLayer: 5
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 27ac0be49320fe6428c147679629e609, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1270,6 +1282,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1537213039557203062}
   - {fileID: 5512188146372437076}
   - {fileID: 1028037117315033261}
   m_Father: {fileID: 845137327695532880}
@@ -1555,6 +1568,72 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5992073599574603980, guid: 64909a8d57b4755489a539884379d8a6, type: 3}
   m_PrefabInstance: {fileID: 794682279744973128}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2637108359475632408
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5908992103421582513}
+    m_Modifications:
+    - target: {fileID: 1450950576692417162, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_Name
+      value: PlatfotmEffectBad
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555160960547733674, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+--- !u!4 &1537213039557203062 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3588703740726988142, guid: be6201f855ae8f84ab46a13d029e3ac3, type: 3}
+  m_PrefabInstance: {fileID: 2637108359475632408}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5143723481625572988
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1569,7 +1648,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2992180109407068720, guid: 57fb3b900fd359c4c8d1e8fab7dbbfa4, type: 3}
       propertyPath: managedReferences[3122007805747003534].ColorOverTime.atime1
-      value: 17540
+      value: 46453
       objectReference: {fileID: 0}
     - target: {fileID: 2992180109407068720, guid: 57fb3b900fd359c4c8d1e8fab7dbbfa4, type: 3}
       propertyPath: managedReferences[3122007805747003534].ColorOverTime.atime3
@@ -1577,27 +1656,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2992180109407068720, guid: 57fb3b900fd359c4c8d1e8fab7dbbfa4, type: 3}
       propertyPath: managedReferences[3122007805747003534].ColorOverTime.key0.a
-      value: 0.78431374
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2992180109407068720, guid: 57fb3b900fd359c4c8d1e8fab7dbbfa4, type: 3}
       propertyPath: managedReferences[3122007805747003534].ColorOverTime.key0.b
-      value: 0.3066038
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2992180109407068720, guid: 57fb3b900fd359c4c8d1e8fab7dbbfa4, type: 3}
       propertyPath: managedReferences[3122007805747003534].ColorOverTime.key0.g
-      value: 0.89946353
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2992180109407068720, guid: 57fb3b900fd359c4c8d1e8fab7dbbfa4, type: 3}
       propertyPath: managedReferences[3122007805747003534].ColorOverTime.key1.a
-      value: 0.78431374
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2992180109407068720, guid: 57fb3b900fd359c4c8d1e8fab7dbbfa4, type: 3}
       propertyPath: managedReferences[3122007805747003534].ColorOverTime.key1.b
-      value: 0.3066038
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2992180109407068720, guid: 57fb3b900fd359c4c8d1e8fab7dbbfa4, type: 3}
       propertyPath: managedReferences[3122007805747003534].ColorOverTime.key1.g
-      value: 0.89946353
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2992180109407068720, guid: 57fb3b900fd359c4c8d1e8fab7dbbfa4, type: 3}
       propertyPath: managedReferences[3122007805747003638].ColorOverTime.key0.b

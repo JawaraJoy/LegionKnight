@@ -11,30 +11,40 @@ namespace LegionKnight
         private DayOfWeek m_ResetDay = DayOfWeek.Monday;
         [SerializeField, Range(0, 23)]
         private int m_ResetHour = 0;
+
         public override void StartTimer(UnityAction callback = null)
         {
-            //DateTime resetDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-            DateTime nextReset = GetLastResetTime().AddDays(7);
-            Player.Instance.SetResetTime(this, nextReset);
+            DateTime now = DateTime.Now;
+
+            // Calculate this week’s scheduled reset time
+            int daysUntilReset = ((int)m_ResetDay - (int)now.DayOfWeek + 7) % 7;
+            DateTime scheduledReset = now.Date.AddDays(daysUntilReset).AddHours(m_ResetHour);
+
+            // If today’s reset already passed, schedule for next week
+            if (scheduledReset <= now)
+                scheduledReset = scheduledReset.AddDays(7);
+
+            Player.Instance.SetResetTime(this, scheduledReset);
+
+            Debug.Log($"[{m_TimerId}] Next reset scheduled at: {scheduledReset}");
+
+            callback?.Invoke();
         }
+
         public string GetTimeToReset()
         {
+            // fixed: use Weekly instead of Daily
             return Player.Instance.GetRemainingTimeAsString(m_TimerId, TimerType.Daily);
         }
-        /*protected override bool IsTimeToResetInternal()
-        {
-            bool isResetDay = DateTime.Now.DayOfWeek == (System.DayOfWeek)m_ResetDay;
-            return isResetDay;
-        }*/
 
         public override int DayCountPassedSinceReset()
         {
             DateTime lastReset = GetLastResetTime();
             double days = (DateTime.Now - lastReset).TotalDays;
-            return (int)Math.Ceiling(days);
+            return (int)Math.Floor(days);
         }
 
-        protected override DateTime GetLastResetTime()
+        public override DateTime GetLastResetTime()
         {
             DateTime now = DateTime.Now;
 
@@ -46,28 +56,25 @@ namespace LegionKnight
 
             return lastReset;
         }
+
+        protected override bool IsTimeToResetInternal()
+        {
+            DateTime now = DateTime.Now;
+            DateTime storedReset = Player.Instance.GetResetTime(m_TimerId);
+
+            bool isReset = now >= storedReset;
+            Debug.Log($"[{m_TimerId}] Now={now}, StoredReset={storedReset}, IsReset={isReset}");
+            return isReset;
+        }
+
         public override string GetRemainingTimeToReset()
         {
-            DateTime lastReset = GetLastResetTime();
-            DateTime nextReset = lastReset.AddDays(7);
+            DateTime resetTime = Player.Instance.GetResetTime(m_TimerId);
+            TimeSpan remaining = resetTime - DateTime.Now;
+            if (remaining < TimeSpan.Zero) remaining = TimeSpan.Zero;
 
-            TimeSpan remaining = nextReset - DateTime.Now;
-
-            if (remaining < TimeSpan.Zero)
-                remaining = TimeSpan.Zero;
-
-            return $"{remaining.Days}D:{remaining.Hours}H";
+            return $"{remaining.Days}D:{remaining.Hours}H:{remaining.Minutes}M";
         }
     }
 
-    public enum DayOfWeek
-    {
-        Sunday,
-        Monday,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday
-    }
 }

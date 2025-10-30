@@ -1,4 +1,5 @@
 using AppsFlyerSDK;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -100,15 +101,19 @@ namespace LegionKnight
         private LevelSelect[] m_LevelSelects;
         private LevelObject m_LevelObject;
         [SerializeField]
+        [Obsolete]
         private Currency m_CurrentCoinReward;
         [SerializeField]
+        [Obsolete]
         private Currency m_CurrentScore;
         [SerializeField, Range(0f, 2f)]
         private float m_ExpReceiverRate = 1f;
         [SerializeField]
         private UnityEvent m_OnPlay = new();
         public int MaxPlatformCount => m_MaxPlatformCount;
+        [Obsolete("Soon gonna be replaced by Loot System")]
         public Currency CurrentCoinReward => m_CurrentCoinReward;
+        [Obsolete("Soon gonna be replaced by Loot System")]
         public Currency CurrentScore => m_CurrentScore;
         public Transform PlayerStartPostion => m_LevelObject.PlayerStartPostion;
         public bool LevelOver => m_LevelOver;
@@ -139,7 +144,8 @@ namespace LegionKnight
         public int BossSpawnCount => m_BosSpawnCount;
         [SerializeField]
         private CurrencyDefinition m_ExpDefinition;
-
+        [SerializeField]
+        private CurrencyDefinition m_PotOfLifeDefinition;
         public void Init()
         {
             foreach (LevelSelect levelSelect in m_LevelSelects)
@@ -190,6 +196,7 @@ namespace LegionKnight
         {
             GetLevelSelect(defi)?.StartLevel();
             SetBossSpawnCountInternal(0);
+            Player.Instance.SetCurrencyAmount(m_PotOfLifeDefinition, 0);
         }
         public bool HasBoss()
         {
@@ -240,20 +247,60 @@ namespace LegionKnight
 
         public void RessurectionPlayer()
         {
+            RessurectionPlayerInternal();
+        }
+        private void RessurectionPlayerInternal()
+        {
             Player.Instance.SetPause(true);
             Player.Instance.Reborn();
             Vector2 ressoffsite = new Vector2(m_LastPlayerPost.x, m_LastPlayerPost.y + 5);
             Player.Instance.SetPosition(ressoffsite);
-            
             void action()
             {
                 //m_LevelObject.SetLastSpawnedPlatformActive(true);
                 SetLevelOverInternal(false);
                 SpawnPlatformInternal();
                 Player.Instance.SetPause(false);
+                //SetLastPlayerPositionInternal(m_LevelObject.PlayerStartPostion.position);
             }
             DelayActionInternal(1f, action);
-            SetLastPlayerPositionInternal(m_LevelObject.PlayerStartPostion.position);
+        }
+        public void ApplyPotOfLife()
+        {
+            
+            bool has = Player.Instance.HasCurrency(m_PotOfLifeDefinition, out Currency currency);
+            if (has && currency.Amount > 0)
+            {
+                int maxHealth = Player.Instance.MaxHealth;
+                float rebornRate = 1f;
+                CustomVariable<float> potOfLifeVariable = currency.CurrencyDefinition.GetCustomVariable("rebornRate");
+                if (potOfLifeVariable != null)
+                {
+                    rebornRate = potOfLifeVariable.Value;
+
+                    int rebornHealth = Mathf.RoundToInt(maxHealth * rebornRate);
+                    Player.Instance.SetPause(true);
+                    DelayActionInternal(2, () =>
+                    {
+                        PotOfLifeEff(rebornHealth, currency);
+                    });
+                }
+                else
+                {
+                    GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+                }
+            }
+            else
+            {
+                GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+            }
+        }
+        private void PotOfLifeEff(int rebornHealth, Currency currency)
+        {
+            RessurectionPlayerInternal();
+            Player.Instance.SetCurrentHealth(rebornHealth);
+            Player.Instance.RemoveCurrencyAmount(currency.CurrencyDefinition, 1);
+            GameManager.Instance.GetLootStorageManager().RemoveLoot(new LootField(currency.CurrencyDefinition, false, 0, 0));
         }
         private void DelayActionInternal(float delay, UnityAction action)
         {
@@ -267,6 +314,10 @@ namespace LegionKnight
         public void RemovePlatform(Platform platform)
         {
             m_LevelObject.RemovePlatform(platform);
+        }
+        public void RemoveStandByPlatform(StandbyPlatformDefinition platform)
+        {
+            m_LevelObject.RemoveStandByPlatform(platform);
         }
         public void AddStandByPlatform(StandbyPlatformDefinition platform)
         {
@@ -382,7 +433,6 @@ namespace LegionKnight
         public void SetLevelObject(LevelObject set)
         {
             m_LevelObject = set;
-            m_LevelObject.SetGroundLevelView(m_SelectedLevelDefinition.LevelOrnament);
         }
         public void SetCurrentTouchDownPost(Vector2 playerTouchDown)
         {

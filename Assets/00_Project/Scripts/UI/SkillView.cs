@@ -17,6 +17,8 @@ namespace LegionKnight
         private TextMeshProUGUI m_SkilNameText;
         [SerializeField]
         private UnityEvent m_OnActive;
+        [SerializeField]
+        private UnityEvent<int> m_OnChargeAmount;
         public string SkillName => m_SkillName;
 
         private SkillDefinition m_SkillDefinition;
@@ -31,6 +33,12 @@ namespace LegionKnight
         public void SetFill(float fill)
         {
             m_Fill.fillAmount = fill;
+        }
+
+        public void ChargeAmount(int amount)
+        {
+            m_OnChargeAmount?.Invoke(amount);
+            Debug.Log($"[Charge Mana] {amount} for skill {m_SkillName}");
         }
 
         public void Active()

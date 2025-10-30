@@ -85,6 +85,7 @@ Transform:
   - {fileID: 4211897323866806253}
   - {fileID: 6634712135323267090}
   - {fileID: 2995581704421847454}
+  - {fileID: 4159246748585859383}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4904047336095579251
@@ -99,6 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d21515cd3ab7d445ba8e1127287786e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_InAppUpdate: {fileID: 6653263939773668996}
   m_UnityAdsManager: {fileID: 700165663585074583}
   m_AuthenticationManager: {fileID: 5537331884271729272}
   m_CloudSaveManager: {fileID: 3814314757155133575}
@@ -119,7 +121,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
       - m_Target: {fileID: 700165663585074583}
         m_TargetAssemblyTypeName: LegionKnight.UnityAdsService, Assembly-CSharp
         m_MethodName: Init
@@ -156,6 +158,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 6653263939773668996}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdate, Assembly-CSharp
+        m_MethodName: CheckUpdate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
   m_OnInitializationFailed:
     m_PersistentCalls:
       m_Calls: []
@@ -251,54 +265,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1069859614771893739}
-        m_TargetAssemblyTypeName: LegionKnight.PlayerAgent, Assembly-CSharp
-        m_MethodName: Init
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 8645185124023396168}
-        m_TargetAssemblyTypeName: LegionKnight.ShopManagerAgent, Assembly-CSharp
-        m_MethodName: InitShop
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1604432225273571068}
-        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
-        m_MethodName: InitLevelHandler
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 7706837356944348511}
-        m_TargetAssemblyTypeName: LegionKnight.TutorialAgent, Assembly-CSharp
-        m_MethodName: Init
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 2019127488247714569}
         m_TargetAssemblyTypeName: LegionKnight.AuthenticationAgent, Assembly-CSharp
         m_MethodName: HideAuthPanel
@@ -335,6 +301,54 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1069859614771893739}
+        m_TargetAssemblyTypeName: LegionKnight.PlayerAgent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7706837356944348511}
+        m_TargetAssemblyTypeName: LegionKnight.TutorialAgent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1604432225273571068}
+        m_TargetAssemblyTypeName: LegionKnight.LevelManagerAgent, Assembly-CSharp
+        m_MethodName: InitLevelHandler
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 8645185124023396168}
+        m_TargetAssemblyTypeName: LegionKnight.ShopManagerAgent, Assembly-CSharp
+        m_MethodName: InitShop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 7775729261053811712}
         m_TargetAssemblyTypeName: LegionKnight.BossDeckManagerAgent, Assembly-CSharp
         m_MethodName: Initialize
@@ -349,6 +363,18 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 6825734986637457607}
         m_TargetAssemblyTypeName: LegionKnight.PlayerCutSceneManagerAgent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 4ce0acd832cc4d645bf981c6b9fe21b6, type: 2}
+        m_TargetAssemblyTypeName: LegionKnight.CounterDefinition, Assembly-CSharp
         m_MethodName: Init
         m_Mode: 1
         m_Arguments:
@@ -774,8 +800,308 @@ MonoBehaviour:
   m_Note: Login to Claim Daily Reward
   m_SmallIconKey: icon_0
   m_LargeIconKey: icon_1
-  m_ScheduleInHour: 12
+  m_ScheduleInHour: 24
   m_ScheduleInMinutes: 0
+--- !u!1 &6895750691481671604
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4159246748585859383}
+  - component: {fileID: 6653263939773668996}
+  - component: {fileID: 180946720122833491}
+  - component: {fileID: 2680692174187156808}
+  - component: {fileID: 5647090054126966518}
+  m_Layer: 0
+  m_Name: In AppUpdate
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4159246748585859383
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6895750691481671604}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6224279411924951285}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6653263939773668996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6895750691481671604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33fbb0c91092fbb4db411022819e3d1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UpdateMode: 0
+  m_OnCheckForUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: Show
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: SetCheckText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Check for Update ...!
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnUpdateInfo:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnUpdateAvailable:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: ShowAvaiableInfo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: SetAvailableInfo
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnUpToDate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 180946720122833491}
+        m_TargetAssemblyTypeName: LegionKnight.GoogleAuthAgent, Assembly-CSharp
+        m_MethodName: StartSignInWithGoogle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 2680692174187156808}
+        m_TargetAssemblyTypeName: LegionKnight.AuthenticationAgent, Assembly-CSharp
+        m_MethodName: SignInAnonymously
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: SetCheckText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Version is Up to date
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnDownloaded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 180946720122833491}
+        m_TargetAssemblyTypeName: LegionKnight.GoogleAuthAgent, Assembly-CSharp
+        m_MethodName: StartSignInWithGoogle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 2680692174187156808}
+        m_TargetAssemblyTypeName: LegionKnight.AuthenticationAgent, Assembly-CSharp
+        m_MethodName: SignInAnonymously
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: SetCheckText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Download Completed
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnFailed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: ShowFail
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: SetCheckText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Fail to Download the Update
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnCanceled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: ShowFail
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5647090054126966518}
+        m_TargetAssemblyTypeName: LegionKnight.InAppUpdatePanelAgent, Assembly-CSharp
+        m_MethodName: SetCheckText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Download was Canceled
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_OnProgressChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &180946720122833491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6895750691481671604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b93358b92383c3e42a4a25c7601ec952, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2680692174187156808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6895750691481671604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f144c78032b2b044c8f1ea477cf90226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5647090054126966518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6895750691481671604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1551b8a9b3ffba4ba5f804e11ac9a57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7435551881046139338
 GameObject:
   m_ObjectHideFlags: 0

@@ -172,6 +172,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<Energy> m_OnAmountChanged;
         [SerializeField]
+        private UnityEvent<int> m_OnAmountSpend;
+        [SerializeField]
         private UnityEvent<Energy> m_OnInitialized;
 
         public EnergyDefinition Definition => m_Definition;
@@ -282,6 +284,7 @@ namespace LegionKnight
             if (CanPayInternal(cost))
             {
                 AddInternal(-cost);
+                m_OnAmountSpend?.Invoke(cost);
             }
         }
     }

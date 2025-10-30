@@ -12,7 +12,7 @@ namespace LegionKnight
         [SerializeField]
         private AssetReferenceGameObject m_CharacterSelectViewAsset;
 
-        [SerializeField, ReadOnly]
+        [SerializeField]
         private List<CharacterSelectView> m_SpawnedCharacterSelectView = new();
 
         [SerializeField]
@@ -28,6 +28,10 @@ namespace LegionKnight
                 if (GetSelectView(unit.Definition) == null)
                 {
                     SpawnCharacterSelectView(unit);
+                }
+                else
+                {
+                    GetSelectView(unit.Definition).Init(unit);
                 }
             }
         }

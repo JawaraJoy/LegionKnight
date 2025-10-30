@@ -6,6 +6,8 @@ namespace LegionKnight
     public class CounterDefinition : ScriptableObject
     {
         [SerializeField]
+        private string m_Id;
+        [SerializeField]
         private string m_CounterName;
         [SerializeField]
         private CounterType m_CounterType;
@@ -15,6 +17,11 @@ namespace LegionKnight
         private bool m_TriggerOnce = false;
         [SerializeField]
         private int m_CountThreshold;
+
+        public string Id
+        {
+            get { return m_Id; }
+        }
 
         public bool ResetOnMet
         {
@@ -48,6 +55,10 @@ namespace LegionKnight
         public void ResetCount()
         {
             GameManager.Instance.ResetCounter(this);
+        }
+        public void Init()
+        {
+            GameManager.Instance.CounterManager.Init();
         }
     }
 }

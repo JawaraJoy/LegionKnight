@@ -45,6 +45,13 @@ namespace LegionKnight
         public DrawDiscount SingleDrawDiscount => m_SingleDrawDiscount;
         public DrawDiscount MultipleDrawDiscount => m_MultipleDrawDiscount;
 
+        private bool m_UsedFirstDraw = false;
+        private string USEFIRSTDRAWKEY => $"{m_Definition.Id}isfirstdraw";
+        private void SetUsedFirstDraw(bool isFirstDraw)
+        {
+            m_UsedFirstDraw = isFirstDraw;
+            UnityService.Instance.SaveData(USEFIRSTDRAWKEY, m_UsedFirstDraw);
+        }
         public void SetSmallPityCount(int count)
         {
             m_SmallPityCount = count;
@@ -60,22 +67,27 @@ namespace LegionKnight
             {
                 m_TotalDraws = 0;
             }
-            if (UnityService.Instance.HasData(m_Definition.Id + "smallPityCount"))
+            if (UnityService.Instance.HasData(m_Definition.Id + "smallpityCount"))
             {
-                m_SmallPityCount = UnityService.Instance.GetData<int>(m_Definition.Id + "smallPityCount");
+                m_SmallPityCount = UnityService.Instance.GetData<int>(m_Definition.Id + "smallpityCount");
             }
             else
             {
                 m_SmallPityCount = 0;
             }
-            if (UnityService.Instance.HasData(m_Definition.Id + "sfDUsed"))
+            if (UnityService.Instance.HasData(m_Definition.Id + "sfdused"))
             {
-                m_SingleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "sfDUsed"));
+                m_SingleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "sfdUsed"));
             }
 
-            if (UnityService.Instance.HasData(m_Definition.Id + "mfDUsed"))
+            if (UnityService.Instance.HasData(m_Definition.Id + "mfdUsed"))
             {
-                m_MultipleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "mfDUsed"));
+                m_MultipleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "mfdUsed"));
+            }
+            if (UnityService.Instance.HasData(USEFIRSTDRAWKEY))
+            {
+                bool firstDraw = UnityService.Instance.GetData<bool>(USEFIRSTDRAWKEY);
+                SetUsedFirstDraw(firstDraw);
             }
         }
         public float GetDrawCountRate()
@@ -146,7 +158,7 @@ namespace LegionKnight
             int finalCost = GetFinalCostInternal(1);
             m_SingleDrawDiscount.SetFirstDrawUsed(true);
             GameManager.Instance.StartCoroutine(PerformDrawCoroutine(1, finalCost));
-            UnityService.Instance.SaveData(m_Definition.Id + "sfDUsed", m_SingleDrawDiscount.FirstDrawUse);
+            UnityService.Instance.SaveData(m_Definition.Id + "sfdused", m_SingleDrawDiscount.FirstDrawUse);
         }
 
         public void PerformingMultiDraw()
@@ -154,7 +166,7 @@ namespace LegionKnight
             int finalCost = GetFinalCostInternal(MultiDrawInternal);
             m_MultipleDrawDiscount.SetFirstDrawUsed(true);
             GameManager.Instance.StartCoroutine(PerformDrawCoroutine(MultiDrawInternal, finalCost));
-            UnityService.Instance.SaveData(m_Definition.Id + "mfDUsed", m_MultipleDrawDiscount.FirstDrawUse);
+            UnityService.Instance.SaveData(m_Definition.Id + "mfdUsed", m_MultipleDrawDiscount.FirstDrawUse);
         }
 
         private IEnumerator PerformDrawCoroutine(int drawCount, int cost)
@@ -175,6 +187,14 @@ namespace LegionKnight
                 m_TotalDraws++;
                 m_SmallPityCount++;
                 GachaReward result = CalculateDrawResult();
+                if (m_UsedFirstDraw == false)
+                {
+                    if (m_Definition.FirstDrawReward != null)
+                    {
+                        result = m_Definition.FirstDrawReward;
+                    }
+                    SetUsedFirstDraw(true);
+                }
                 results.Add(result);
             }
 
@@ -193,7 +213,7 @@ namespace LegionKnight
             }
 
             UnityService.Instance.SaveData(m_Definition.Id + "totaldraws", m_TotalDraws);
-            UnityService.Instance.SaveData(m_Definition.Id + "smallPityCount", m_SmallPityCount);
+            UnityService.Instance.SaveData(m_Definition.Id + "smallpityCount", m_SmallPityCount);
             Debug.Log($"Gacha Reward {allRewards}");
         }
 

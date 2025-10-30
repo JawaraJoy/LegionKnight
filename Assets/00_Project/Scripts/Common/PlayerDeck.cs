@@ -12,6 +12,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private PlayerDeck m_PlayerDeck;
+        public PlayerDeck PlayerDeck => m_PlayerDeck;
         public CharacterDefinition DefaultCharacter => m_PlayerDeck.DefaultCharacter;
         public int GetHeroLevel(CharacterDefinition defi) => m_PlayerDeck.GetLevel(defi);
         public int GetHeroExp(CharacterDefinition defi) => m_PlayerDeck.GetExp(defi);

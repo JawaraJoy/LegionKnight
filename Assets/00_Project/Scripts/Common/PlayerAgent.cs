@@ -13,5 +13,13 @@ namespace LegionKnight
             Player.Instance.SetPosition(Vector2.zero);
             Player.Instance.Reborn();
         }
+        public void JumpPress()
+        {
+            Player.Instance.JumpPress();
+        }
+        public void JumpUnPress()
+        {
+            Player.Instance.JumpUnPress();
+        }
     }
 }

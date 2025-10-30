@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -144,6 +145,9 @@ namespace LegionKnight
         }
     }
 
+    // Actually this is not passive skill,
+    // coz the activation is automatic when mana full
+    // we call it passive coz it's auto trigger
     public partial class PassiveSkill : MonoBehaviour
     {
         [SerializeField]
@@ -155,6 +159,8 @@ namespace LegionKnight
 
         [SerializeField]
         private UnityEvent<string> m_OnActive = new();
+        [SerializeField]
+        private UnityEvent<string, int> m_OnManaChargeAmount = new();
         [SerializeField]
         private UnityEvent<string, float> m_OnManacharge = new();
 
@@ -221,6 +227,40 @@ namespace LegionKnight
             foreach(SkillActivation skill in m_SkillActivations)
             {
                 skill.AddMana(add);
+                m_OnManaChargeAmount?.Invoke(skill.SkillName, add);
+            }
+        }
+
+        private Coroutine m_AddManaOvertimeCoroutine;
+        public void AddManaOvertime(int add, float time)
+        {
+            //StopCoroutine(AddingManaOvertimeToAll(add, time));
+            m_AddManaOvertimeCoroutine = StartCoroutine(AddingManaOvertimeToAll(add, time));
+        }
+
+        private IEnumerator AddingManaOvertimeToAll(int add, float duration)
+        {
+            float elapsedTime = 0f;
+            float interval = 1f;
+            float intervalTimer = 0f;
+
+            while (elapsedTime < duration)
+            {
+                float delta = Time.deltaTime;
+                elapsedTime += delta;
+                intervalTimer += delta;
+
+                if (intervalTimer >= interval)
+                {
+                    intervalTimer = 0f;
+                    foreach (SkillActivation skill in m_SkillActivations)
+                    {
+                        skill.AddMana(add);
+                        m_OnManaChargeAmount?.Invoke(skill.SkillName, add);
+                    }
+                }
+
+                yield return null;
             }
         }
         public void Init(List<SkillDefinition> definitions)

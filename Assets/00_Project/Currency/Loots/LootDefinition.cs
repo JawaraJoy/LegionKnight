@@ -18,6 +18,15 @@ namespace LegionKnight
         public Sprite MainIconReward => m_MainIconReward;
         public LootField[] LootFields => m_LootFields;
 
+        private LootedPanel m_Panel;
+        private LootedPanel GetPanel()
+        {
+            if (m_Panel == null)
+            {
+                m_Panel = GameManager.Instance.GetPanel<LootedPanel>();
+            }
+            return m_Panel;
+        }
         private List<LootField> GetRandomLootsInternal()
         {
             List<LootField> loots = new List<LootField>();
@@ -51,6 +60,14 @@ namespace LegionKnight
             {
                 loot.DirectTakeLoot();
             }
+        }
+        public void DirectTakeLootsShow()
+        {
+            foreach (var loot in m_LootFields)
+            {
+                loot.DirectTakeLoot();
+            }
+            GetPanel().ShowLoot(m_LootFields);
         }
     }
     

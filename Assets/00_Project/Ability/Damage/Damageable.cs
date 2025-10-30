@@ -209,7 +209,7 @@ namespace LegionKnight
                 return;
             }
             
-            int dmg = DamageFormulaMoba(damage, m_Defend);
+            int dmg = DamageFormulaRPG(damage, m_Defend);
             if (fatal)
             {
                 //m_Barrier = 0;
@@ -259,6 +259,12 @@ namespace LegionKnight
         public void AddBarrier(int val)
         {
             AddBarrierInternal(val);
+        }
+        public void SetCurrentHealth(int val)
+        {
+            m_CurrentHealth = val;
+            ClampHealth();
+            OnHealthChangedInvoke(m_CurrentHealth);
         }
         public void SetHealthInternal(int val)
         {

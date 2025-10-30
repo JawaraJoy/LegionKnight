@@ -7,6 +7,13 @@ namespace LegionKnight
         [SerializeField]
         private Damageable m_Damageable;
 
+        public void SetCurrentHealth(int health)
+        {
+            if (m_Damageable != null)
+            {
+                m_Damageable.SetCurrentHealth(health);
+            }
+        }
         public void TakeDamage(int damage)
         {
             if (m_Damageable != null)
@@ -32,6 +39,10 @@ namespace LegionKnight
         public void TakeDamage(int damage)
         {
             m_PlayerDamageable.TakeDamage(damage);
+        }
+        public void SetCurrentHealth(int health)
+        {
+            m_PlayerDamageable.SetCurrentHealth(health);
         }
         public void Heal(int amount)
         {

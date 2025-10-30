@@ -35,12 +35,20 @@ namespace LegionKnight
         private float m_PauseDelay;
         [SerializeField]
         private UnityEvent m_OnDeath = new();
-        private void OnDeathInvoke()
+
+        private int m_debugCount = 0;
+        private void OnDeathInvokeInternal()
         {
             m_Rb.constraints &= ~RigidbodyConstraints2D.FreezePositionX; // Unfreeze X position to allow movement
             m_Rb.freezeRotation = true; // Prevent rotation during death effect
             m_OnDeath?.Invoke();
             Player.Instance.Death();
+            ApplyPauseInternal();
+            Debug.Log($"[Death Effect] Applied {m_debugCount++} times");
+        }
+        public void OnDeathInvoke()
+        {
+            OnDeathInvokeInternal();
         }
         private ForceEffect GetForceEffect(string forceName)
         {
@@ -51,10 +59,12 @@ namespace LegionKnight
         {
             Vector2 force = GetForceEffect(forceName).ForceDirection;
             m_Rb.AddForce(force, ForceMode2D.Impulse);
-            ApplyPause();
-            OnDeathInvoke();
         }
-        private void ApplyPause()
+        public void ApplyPause()
+        {
+            ApplyPauseInternal();
+        }
+        private void ApplyPauseInternal()
         {
             if (!m_UsePause) return;
             StartCoroutine(ApplyPausing());
@@ -65,7 +75,7 @@ namespace LegionKnight
             yield return new WaitForSeconds(m_PauseDelay);
             if (DeathCoroutine.IsEnable)
             {
-                GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+                GameManager.Instance.ApplyPotOfLife();
                 m_Rb.AddForce(Vector2.zero, ForceMode2D.Impulse);
             }
         }

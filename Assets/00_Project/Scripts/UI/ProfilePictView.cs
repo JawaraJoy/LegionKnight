@@ -12,6 +12,28 @@ namespace LegionKnight
         [SerializeField]
         private Image m_ProfileBackground;
 
+        private CustomProfile m_Profile;
+
+        private CustomProfile GetCustomProfile()
+        {
+            if (m_Profile == null)
+            {
+                m_Profile = Player.Instance.CustomProfile;
+            }
+            return m_Profile;
+        }
+        private void OnEnable()
+        {
+            InitInternal();
+        }
+        private void Awake()
+        {
+            Player.Instance.CustomProfile.AddProfilePictView(this);
+        }
+        private void OnDestroy()
+        {
+            Player.Instance.CustomProfile.RemoveProfilePictView(this);
+        }
         public void SetProfileIcon(Sprite val)
         {
             m_ProfileIcon.sprite = val;
@@ -23,6 +45,25 @@ namespace LegionKnight
         public void SetProfileBackground(Sprite val)
         {
             m_ProfileBackground.sprite = val;
+        }
+
+        public void Init()
+        {
+            InitInternal();
+        }
+
+        private void InitInternal()
+        {
+            CustomImageDefinition icon = GetCustomProfile().UsedIcon;
+            if (icon != null)
+            {
+                m_ProfileIcon.sprite = icon.Icon;
+            }
+            CustomImageDefinition frame = GetCustomProfile().UsedFrame;
+            if (frame != null)
+            {
+                m_ProfileBackground.sprite = frame.Icon;
+            }
         }
     }
 }

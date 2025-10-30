@@ -1,5 +1,7 @@
-using MoreMountains.Tools;
+﻿using MoreMountains.Tools;
 using UnityEngine;
+using System;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -10,15 +12,16 @@ namespace LegionKnight
         [SerializeField]
         private TimerDefinition m_Timer;
         [SerializeField]
+        private UnityEvent<DailyRewardData> m_OnRewardClaimed;
+        [SerializeField]
         private DailyRewardData[] m_Rewards;
         public string BehaviourName => m_BehaviourName;
         public TimerDefinition Timer => m_Timer;
+        public UnityEvent<DailyRewardData> OnRewardClaimed => m_OnRewardClaimed;
+
         private const string DailyRewardKeyInternal = "dailyreward";
-        private string ResetKey => DailyRewardKey + "reset";
         public static string DailyRewardKey => DailyRewardKeyInternal;
 
-        [SerializeField, MMReadOnly]
-        private int m_RewardLenght; 
         private DailyRewardData GetDailyRewardDataInternal(LootDefinition loot)
         {
             foreach (var reward in m_Rewards)
@@ -30,25 +33,34 @@ namespace LegionKnight
             }
             return null;
         }
+
         public DailyRewardData GetDailyRewardData(LootDefinition loot)
         {
             return GetDailyRewardDataInternal(loot);
         }
+
         public void Refresh()
         {
             RefreshInternal();
         }
+
+        [Obsolete("Not Reset on specific Day, call forceReset to other function")]
         private void RefreshInternal()
         {
-            m_RewardLenght = m_Rewards.Length;
-            bool hasResetTime = UnityService.Instance.HasData(ResetKey);
+            if (m_Timer == null)
+            {
+                Debug.LogWarning($"{DailyRewardKeyInternal}: Timer is not set.");
+                return;
+            }
+            bool hasResetTime = UnityService.Instance.HasData(m_Timer.TimerId);
+
             if (hasResetTime)
             {
                 bool isReset = m_Timer.IsTimeToReset();
                 if (isReset)
                 {
-                    OnTimerReset();
-                    Debug.Log($"{DailyRewardKeyInternal}: Timer reset, daily rewards are reset.");
+                    OnTimerResetInternal();
+                    
                 }
                 else
                 {
@@ -57,11 +69,14 @@ namespace LegionKnight
             }
             else
             {
+                // ✅ Just start the timer if none exists
                 m_Timer.StartTimer();
+                Debug.Log($"{DailyRewardKeyInternal}: First reset initialized.");
             }
 
             DailyCheckState();
         }
+
         private void DailyCheckState()
         {
             for (int i = 0; i < m_Rewards.Length; i++)
@@ -69,7 +84,6 @@ namespace LegionKnight
                 m_Rewards[i].CheckState();
 
                 int dayCountPassed = m_Timer.DayCountPassedSinceReset();
-
                 bool isDayToClaim = i == dayCountPassed;
                 bool hasPassedDay = i < dayCountPassed;
 
@@ -93,15 +107,23 @@ namespace LegionKnight
                 }
             }
         }
-        private void OnTimerReset()
+
+        private void OnTimerResetInternal()
         {
             foreach (var reward in m_Rewards)
             {
                 reward.Off();
             }
+            Debug.Log($"{DailyRewardKeyInternal}: Timer reset, daily rewards are reset.");
             m_Timer.StartTimer();
         }
+        public void ForceReset()
+        {
+            //OnTimerResetInternal();
+            Debug.Log($"{DailyRewardKeyInternal}: Force reset executed.");
+        }
     }
+
     [System.Serializable]
     public class DailyRewardData
     {
@@ -109,6 +131,7 @@ namespace LegionKnight
         private DailyRewardState m_State = DailyRewardState.OFF;
         [SerializeField]
         private LootDefinition m_Reward;
+
         public DailyRewardState State { get => m_State; set => m_State = value; }
         public LootDefinition Reward => m_Reward;
 
@@ -119,6 +142,7 @@ namespace LegionKnight
         }
 
         private string Key => $"{DailyReward.DailyRewardKey}_{m_Reward.Id}";
+
         public void CheckState()
         {
             bool hasState = UnityService.Instance.HasData(Key);
@@ -127,22 +151,26 @@ namespace LegionKnight
                 m_State = (DailyRewardState)UnityService.Instance.GetData<int>(Key);
             }
         }
+
         public void Claim()
         {
             m_Reward.DirectTakeLoots();
             m_State = DailyRewardState.CLAIMED;
             UnityService.Instance.SaveData(Key, (int)m_State);
         }
+
         public void Pass()
         {
             m_State = DailyRewardState.PASSED;
             UnityService.Instance.SaveData(Key, (int)m_State);
         }
+
         public void On()
         {
             m_State = DailyRewardState.ON;
             UnityService.Instance.SaveData(Key, (int)m_State);
         }
+
         public void Off()
         {
             m_State = DailyRewardState.OFF;
@@ -157,4 +185,5 @@ namespace LegionKnight
         CLAIMED = 3,
         PASSED = 4
     }
+
 }

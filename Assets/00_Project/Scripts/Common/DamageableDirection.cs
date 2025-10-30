@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,13 +15,11 @@ namespace LegionKnight
             base.OnContactedBehaviourInvoke(other);
             OnDeathDirection(other);
         }
-
+        private int debugCount = 0;
         private void OnDeathDirection(GameObject other)
         {
-            
             if (other.TryGetComponent(out Contact2D contact))
             {
-                
                 if (!IsAlive())
                 {
                     Vector2 contactPoint = contact.transform.position;
@@ -33,6 +32,7 @@ namespace LegionKnight
                         m_ContactDeathOnLeft?.Invoke();
                     }
                     OnDeathInvoke();
+                    Debug.Log($"[Death direction] invoked {debugCount++} times.");
                 }
             }
         }

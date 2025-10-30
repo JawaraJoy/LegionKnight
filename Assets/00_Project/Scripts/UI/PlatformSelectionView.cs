@@ -14,7 +14,8 @@ namespace LegionKnight
         [SerializeField]
         private Transform m_SpawnSpot;
 
-        private readonly List<PlatformSelectView> m_SpawnedPlatformSelectionViews = new();
+        [SerializeField]
+        private List<PlatformSelectView> m_SpawnedPlatformSelectionViews = new();
 
         public void Init()
         {

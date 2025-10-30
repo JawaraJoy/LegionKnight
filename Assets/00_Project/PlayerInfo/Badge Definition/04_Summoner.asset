@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31d8c9ee1bb6c6b44a6ac1e20fa45fa1, type: 3}
+  m_Name: 04_Summoner
+  m_EditorClassIdentifier: 
+  m_Id: badge4
+  m_Label: Summoner
+  m_Description: Own 2 Character to unlock
+  m_Upgrade:
+  - m_Label: Summoner I
+    m_Description: Own 3 Character to unlock Summoner II
+    m_Icon: {fileID: 21300000, guid: 06cea55f7f045402f8ea9eacb9924fa5, type: 3}
+    m_RewardOnUnlock:
+    - m_Item: {fileID: 11400000, guid: e35651a52feb10d478c258b6a2292610, type: 2}
+      m_IsUnique: 0
+      m_Amount: 5
+      m_Chance: 1
+  - m_Label: Summoner II
+    m_Description: Own 3 Character to unlock Summoner III
+    m_Icon: {fileID: 21300000, guid: dc616340029fe46f488deb0845bf7a59, type: 3}
+    m_RewardOnUnlock:
+    - m_Item: {fileID: 11400000, guid: e35651a52feb10d478c258b6a2292610, type: 2}
+      m_IsUnique: 0
+      m_Amount: 10
+      m_Chance: 1
+  - m_Label: Summoner III
+    m_Description: You just Master it
+    m_Icon: {fileID: 21300000, guid: 17109f59e55f941a9ba17e827e9f208e, type: 3}
+    m_RewardOnUnlock:
+    - m_Item: {fileID: 11400000, guid: e35651a52feb10d478c258b6a2292610, type: 2}
+      m_IsUnique: 0
+      m_Amount: 20
+      m_Chance: 1

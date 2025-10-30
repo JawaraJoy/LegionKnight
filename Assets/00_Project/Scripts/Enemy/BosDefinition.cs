@@ -46,6 +46,15 @@ namespace LegionKnight
 
         public Object Owner => this;
 
+       
+        public void ShowBossBar()
+        {
+            GameplayPanel gameplayPanel = GameManager.Instance.GetPanel<GameplayPanel>();
+            BosBarGameplay bosBarGameplay = gameplayPanel.GetBinding<BosBarGameplay>();
+            bosBarGameplay.ShowHealthBar();
+            Debug.Log("Show Health Bar");
+        }
+
         public Stat FinalStat(int addLevel)
         {
             return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, m_StartLevel + addLevel - 1);

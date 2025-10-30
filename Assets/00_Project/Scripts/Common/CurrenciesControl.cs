@@ -21,6 +21,19 @@ namespace LegionKnight
             Currency match = m_Currencies.Find(x => x.CurrencyDefinition == definition);
             return match;
         }
+        public bool HasCurrency(CurrencyDefinition definition, out Currency currency)
+        {
+            bool has = GetCurrency(definition) != null;
+            if (has)
+            {
+                currency = GetCurrency(definition);
+            }
+            else
+            {
+                currency = null;
+            }
+            return has;
+        }
         public int GetCurrencyAmount(CurrencyDefinition definition)
         {
             return GetCurrency(definition).Amount;
