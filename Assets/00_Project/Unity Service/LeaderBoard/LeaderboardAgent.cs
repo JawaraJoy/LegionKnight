@@ -5,13 +5,13 @@ namespace LegionKnight
     public class LeaderboardAgent : MonoBehaviour
     {
 
-        public void SubmiteScoreEntry(int score)
+        public void SubmitLeaderBoardScoreEntry(int score)
         {
-            UnityService.Instance.SubmiteScoreEntry(score);
+            UnityService.Instance.SubmitScoreEntry(score);
         }
         public void Init()
         {
-            UnityService.Instance.Init();
+            UnityService.Instance.InitLeaderBoard();
         }
     }
 }

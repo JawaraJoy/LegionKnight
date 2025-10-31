@@ -30,11 +30,11 @@ namespace LegionKnight
             return await m_LeaderBoardManager.GetTopRanks();
         }
 
-        public async void SubmiteScoreEntry(int score)
+        public async void SubmitScoreEntry(int score)
         {
             await m_LeaderBoardManager.SubmitScore(score);
         }
-        public void Init()
+        public void InitLeaderBoard()
         {
             m_LeaderBoardManager.Init();
         }
