@@ -160,7 +160,8 @@ namespace LegionKnight
                 // Sign in anonymously
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
                 OnSignInSuccessInvoke($"Signed in anonymously {AuthenticationService.Instance.PlayerId} is Successed");
-                Debug.Log($"Signed in anonymously {AuthenticationService.Instance.PlayerId}");
+
+                Debug.Log($"Signed in anonymously {AuthenticationService.Instance.PlayerId}{AuthenticationService.Instance.IsSignedIn}");
             }
             catch (AuthenticationException e)
             {
@@ -209,6 +210,8 @@ namespace LegionKnight
             Debug.Log($"Sign-in successful: {playerId}");
             m_OnSignInSuccess?.Invoke(playerId);
 
+            UnityService.Instance.InitLeaderBoard();
+
             DateTime loginTime = DateTime.Now;
             Dictionary<string, string> eventValues = new Dictionary<string, string>
             {
@@ -216,6 +219,7 @@ namespace LegionKnight
                 {"logintime", loginTime.ToString()}
             };
             AppsFlyer.sendEvent(AFEventName.OnPlayerLogin, eventValues);
+
         }
         private void OnSignInFailedInvoke(string error)
         {

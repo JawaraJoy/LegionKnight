@@ -15,6 +15,9 @@ namespace LegionKnight
         private UnityEvent m_OnInitialized = new();
         [SerializeField]
         private UnityEvent<string> m_OnInitializationFailed = new();
+
+        private bool m_IsInitialized = false;
+        public bool IsInitialized => m_IsInitialized;
         async void Start()
         {
             try
@@ -24,6 +27,7 @@ namespace LegionKnight
                 await UnityServices.InitializeAsync(options);
                 // Notify that Unity Services have been initialized successfully.
                 m_OnInitialized.Invoke();
+                m_IsInitialized = true;
                 Debug.Log("Unity Services initialized successfully.");
             }
             catch (Exception exception)

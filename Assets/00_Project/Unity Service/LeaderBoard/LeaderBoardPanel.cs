@@ -1,6 +1,8 @@
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Unity.Services.Authentication;
+using Unity.Services.Leaderboards;
 using Unity.Services.Leaderboards.Models;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -10,112 +12,207 @@ namespace LegionKnight
 {
     public partial class LeaderBoardPanel : PanelView
     {
-        [SerializeField]
-        private AssetReferenceGameObject m_RankScoreViewAsset; // Prefab for RankScoreView
-        [SerializeField]
-        private Transform m_Spawn;
-        [SerializeField]
-        private List<RankScoreView> m_RankScoreViews = new(); // Array of RankScoreView to display leaderboard entries
+        [Header("Leaderboard Settings")]
+        [SerializeField] private AssetReferenceGameObject m_RankScoreViewAsset; // Prefab for RankScoreView
+        [SerializeField] private Transform m_Spawn; // Parent container for rank views
+        [SerializeField] private List<RankScoreView> m_RankScoreViews = new(); // Cached RankScoreView list
+        [SerializeField] private RankScoreView m_MyScoreView; // View for player's own score
 
         [SerializeField]
-        private RankScoreView m_MyScoreView; // View for the player's own score
+        private string m_LeaderboardId = "highestscorerank";
+
+        // ---------------------------------------------------
+        // PANEL LIFECYCLE
+        // ---------------------------------------------------
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            ShowLeaderboard();
+            StartCoroutine(ShowLeaderboardCoroutine());
         }
 
-        private async void ShowLeaderboard()
+        protected override void HideInternal()
         {
-            // Load and display the leaderboard when the panel is shown
-            await DisplayLeaderboard();
+            base.HideInternal();
+            StopAllCoroutines();
         }
 
-        public async Task DisplayLeaderboard()
+        // ---------------------------------------------------
+        // MAIN FLOW
+        // ---------------------------------------------------
+        private IEnumerator ShowLeaderboardCoroutine()
         {
-            try
+            // ✅ Ensure UnityService + Authentication are ready
+            yield return WaitForAuthenticationCoroutine();
+
+            if (!AuthenticationService.Instance.IsSignedIn)
             {
-                // Get the leaderboard data and max rank to display
-                var leaderboard = await UnityService.Instance.GetTopRanks();
-                int maxRankToDisplay = UnityService.Instance.MaxRankToDisplay;
+                Debug.LogError("[LeaderBoardPanel] Player is not signed in. Cannot display leaderboard.");
+                yield break;
+            }
 
-                // Sort leaderboard by score in descending order
-                leaderboard.Sort((a, b) => b.Score.CompareTo(a.Score));
+            // ✅ Fetch leaderboard entries
+            var leaderboardTask = UnityService.Instance.GetTopRanks();
+            while (!leaderboardTask.IsCompleted) yield return null;
+            var leaderboard = leaderboardTask.Result;
 
-                // Populate the leaderboard, limiting to the max rank to display
-                int count = Mathf.Min(maxRankToDisplay, leaderboard.Count);
-                for (int i = 0; i < count; i++)
-                {
-                    var entry = leaderboard[i];
+            // 🔍 DEBUG TRACER
+            Debug.Log("[LeaderBoardPanel] ===== LEADERBOARD DEBUG START =====");
+            Debug.Log($"IsInitialized: {UnityService.Instance.IsInitialized}");
+            Debug.Log($"IsSignedIn: {AuthenticationService.Instance.IsSignedIn}");
+            Debug.Log($"Leaderboard ID: {m_LeaderboardId}");
+            Debug.Log($"Leaderboard Entries: {(leaderboard == null ? "NULL" : leaderboard.Count.ToString())}");
+            Debug.Log($"RankScoreViewAsset: {(m_RankScoreViewAsset == null ? "NULL" : m_RankScoreViewAsset.AssetGUID)}");
+            Debug.Log($"Spawn Parent: {(m_Spawn == null ? "NULL" : m_Spawn.name)}");
+            Debug.Log("[LeaderBoardPanel] ===== LEADERBOARD DEBUG END =====");
 
-                    // Ensure enough RankScoreViews are instantiated
-                    if (i >= m_RankScoreViews.Count)
-                    {
-                        var rankScoreView = await SpawnRankScoreView(entry, i + 1);
-                        if (rankScoreView != null)
-                        {
-                            m_RankScoreViews.Add(rankScoreView);
-                        }
-                    }
-                    else
-                    {
-                        // Set the rank, player name, and score in the existing RankScoreView
-                        m_RankScoreViews[i].SetRankScore(entry, i + 1);
-                        m_RankScoreViews[i].gameObject.SetActive(true);
-                    }
-                }
+            if (leaderboard == null || leaderboard.Count == 0)
+            {
+                Debug.LogWarning("[LeaderBoardPanel] No leaderboard entries found.");
+                yield break;
+            }
 
-                // Clear any unused RankScoreViews
-                for (int i = count; i < m_RankScoreViews.Count; i++)
-                {
-                    m_RankScoreViews[i].Clear();
-                    m_RankScoreViews[i].Hide();
-                }
+            // ✅ Sort by score
+            leaderboard.Sort((a, b) => b.Score.CompareTo(a.Score));
 
-                // Find the player's own score
-                var playerId = UnityService.Instance.PlayerId; // Replace with the actual method to get the player's ID
-                var playerEntry = leaderboard.FirstOrDefault(entry => entry.PlayerId == playerId);
+            int maxRankToDisplay = UnityService.Instance.MaxRankToDisplay;
+            int displayCount = Mathf.Min(maxRankToDisplay, leaderboard.Count);
 
-                // Display the player's own score in m_MyScoreView
-                if (playerEntry != null)
-                {
-                    // Find the player's rank
-                    int playerRank = leaderboard.IndexOf(playerEntry) + 1;
+            Debug.Log($"[LeaderBoardPanel] Displaying top {displayCount} entries...");
 
-                    // Set the player's rank, name, and score
-                    m_MyScoreView.SetRankScore(playerEntry, playerRank);
-                    m_MyScoreView.Show();
-                }
+            // ✅ Spawn and populate leaderboard entries
+            for (int i = 0; i < displayCount; i++)
+            {
+                var entry = leaderboard[i];
+                Debug.Log($"[LeaderBoardPanel] Rank #{i + 1} | PlayerId: {entry.PlayerId} | Score: {entry.Score}");
+
+                if (i >= m_RankScoreViews.Count)
+                    yield return SpawnRankScoreViewCoroutine(entry, i + 1);
                 else
                 {
-                    Debug.LogWarning("Player's score not found in the leaderboard.");
-                    m_MyScoreView.Clear();
-                    m_MyScoreView.Hide();
+                    m_RankScoreViews[i].SetRankScore(entry, i + 1);
+                    m_RankScoreViews[i].gameObject.SetActive(true);
                 }
+
+                yield return null; // smooth spawn pacing
             }
-            catch (System.Exception ex)
+
+            // ✅ Hide unused entries
+            for (int i = displayCount; i < m_RankScoreViews.Count; i++)
             {
-                Debug.LogError($"Failed to display leaderboard: {ex.Message}");
+                m_RankScoreViews[i].Clear();
+                m_RankScoreViews[i].Hide();
             }
+
+            // ✅ Show player’s own score
+            yield return DisplayMyScoreCoroutine(leaderboard);
         }
 
-        private async Task<RankScoreView> SpawnRankScoreView(LeaderboardEntry entry, int rank)
+        // ---------------------------------------------------
+        // SPAWN RANK VIEW
+        // ---------------------------------------------------
+        private IEnumerator SpawnRankScoreViewCoroutine(LeaderboardEntry entry, int rank)
         {
-            // Instantiate a new RankScoreView prefab
+            if (m_RankScoreViewAsset == null)
+            {
+                Debug.LogError("[LeaderBoardPanel] RankScoreView asset is not assigned!");
+                yield break;
+            }
+
             var handle = Addressables.InstantiateAsync(m_RankScoreViewAsset, m_Spawn);
-            await handle.Task;
+            yield return handle;
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
-                var rankScoreView = handle.Result.GetComponent<RankScoreView>();
+                var go = handle.Result;
+                var rankScoreView = go.GetComponent<RankScoreView>() ?? go.GetComponentInChildren<RankScoreView>();
+
+                if (rankScoreView == null)
+                {
+                    Debug.LogError("[LeaderBoardPanel] Prefab missing RankScoreView component!");
+                    Addressables.Release(handle);
+                    yield break;
+                }
+
                 rankScoreView.SetRankScore(entry, rank);
-                return rankScoreView;
+                go.SetActive(true);
+                m_RankScoreViews.Add(rankScoreView);
+
+                Debug.Log($"[LeaderBoardPanel] ✅ Spawned RankScoreView #{rank} for player {entry.PlayerId} (Score: {entry.Score})");
             }
             else
             {
-                Debug.LogError("Failed to spawn RankScoreView prefab.");
-                return null;
+                Debug.LogError("[LeaderBoardPanel] ❌ Failed to spawn RankScoreView prefab.");
+                Addressables.Release(handle);
             }
+        }
+
+        // ---------------------------------------------------
+        // DISPLAY PLAYER’S OWN SCORE
+        // ---------------------------------------------------
+        private IEnumerator DisplayMyScoreCoroutine(List<LeaderboardEntry> leaderboard)
+        {
+            string playerId = UnityService.Instance.PlayerId;
+            var playerEntry = leaderboard.FirstOrDefault(e => e.PlayerId == playerId);
+
+            // If not in top ranks, fetch separately
+            if (playerEntry == null)
+            {
+                Debug.Log("[LeaderBoardPanel] Player not in top ranks, fetching individual score...");
+                var scoreTask = LeaderboardsService.Instance.GetPlayerScoreAsync(m_LeaderboardId);
+                while (!scoreTask.IsCompleted) yield return null;
+                playerEntry = scoreTask.Result;
+            }
+
+            if (playerEntry != null)
+            {
+                int rankIndex = leaderboard.FindIndex(e => e.PlayerId == playerId);
+                int rank = (rankIndex >= 0) ? rankIndex + 1 : playerEntry.Rank + 1;
+
+                m_MyScoreView.SetRankScore(playerEntry, rank);
+                m_MyScoreView.Show();
+                Debug.Log($"[LeaderBoardPanel] 👤 Player Rank #{rank} | Score: {playerEntry.Score}");
+            }
+            else
+            {
+                Debug.LogWarning("[LeaderBoardPanel] Player score not found.");
+                m_MyScoreView.Clear();
+                m_MyScoreView.Hide();
+            }
+        }
+
+        // ---------------------------------------------------
+        // WAIT FOR UNITY SERVICE & AUTHENTICATION
+        // ---------------------------------------------------
+        private IEnumerator WaitForAuthenticationCoroutine()
+        {
+            // 🟢 Wait for UnityService initialization
+            int retries = 0;
+            while (!UnityService.Instance.IsInitialized && retries < 50)
+            {
+                retries++;
+                yield return new WaitForSeconds(0.2f);
+            }
+
+            if (!UnityService.Instance.IsInitialized)
+            {
+                Debug.LogError("[LeaderBoardPanel] UnityService failed to initialize in time!");
+                yield break;
+            }
+
+            Debug.Log("[LeaderBoardPanel] UnityService initialized, checking authentication...");
+
+            // 🟢 Auto sign-in if needed
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                Debug.Log("[LeaderBoardPanel] Player not signed in yet. Attempting anonymous sign-in...");
+                var signInTask = AuthenticationService.Instance.SignInAnonymouslyAsync();
+                while (!signInTask.IsCompleted) yield return null;
+            }
+
+            if (AuthenticationService.Instance.IsSignedIn)
+                Debug.Log("[LeaderBoardPanel] Authentication complete.");
+            else
+                Debug.LogError("[LeaderBoardPanel] Sign-in failed.");
         }
     }
 }
