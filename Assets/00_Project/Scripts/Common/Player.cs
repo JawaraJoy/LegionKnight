@@ -1,3 +1,4 @@
+using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -70,6 +71,12 @@ namespace LegionKnight
             UnityService.Instance.SaveData(m_NameSupplyDefinition.Id, m_PlayerName);
             m_OnNameChanged?.Invoke(m_PlayerName);
             GetProfileInfoPanel().GetBinding<LevelView>().SetNameText(m_PlayerName);
+            SetPlayerNameAsync(m_PlayerName);
+        }
+
+        private async void SetPlayerNameAsync(string playerName)
+        {
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(m_PlayerName);
         }
         public void AddOnStart(UnityAction action)
         {

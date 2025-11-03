@@ -56,14 +56,14 @@ namespace LegionKnight
             var leaderboard = leaderboardTask.Result;
 
             // 🔍 DEBUG TRACER
-            Debug.Log("[LeaderBoardPanel] ===== LEADERBOARD DEBUG START =====");
-            Debug.Log($"IsInitialized: {UnityService.Instance.IsInitialized}");
-            Debug.Log($"IsSignedIn: {AuthenticationService.Instance.IsSignedIn}");
-            Debug.Log($"Leaderboard ID: {m_LeaderboardId}");
-            Debug.Log($"Leaderboard Entries: {(leaderboard == null ? "NULL" : leaderboard.Count.ToString())}");
-            Debug.Log($"RankScoreViewAsset: {(m_RankScoreViewAsset == null ? "NULL" : m_RankScoreViewAsset.AssetGUID)}");
-            Debug.Log($"Spawn Parent: {(m_Spawn == null ? "NULL" : m_Spawn.name)}");
-            Debug.Log("[LeaderBoardPanel] ===== LEADERBOARD DEBUG END =====");
+            Debug.Log("[LeaderBoard] ===== LEADERBOARD DEBUG START =====");
+            Debug.Log($"[LeaderBoard] IsInitialized: {UnityService.Instance.IsInitialized}");
+            Debug.Log($"[LeaderBoard] IsSignedIn: {AuthenticationService.Instance.IsSignedIn}");
+            Debug.Log($"[LeaderBoard] Leaderboard ID: {m_LeaderboardId}");
+            Debug.Log($"[LeaderBoard] Leaderboard Entries: {(leaderboard == null ? "NULL" : leaderboard.Count.ToString())}");
+            Debug.Log($"[LeaderBoard] RankScoreViewAsset: {(m_RankScoreViewAsset == null ? "NULL" : m_RankScoreViewAsset.AssetGUID)}");
+            Debug.Log($"[LeaderBoard] Spawn Parent: {(m_Spawn == null ? "NULL" : m_Spawn.name)}");
+            Debug.Log("[LeaderBoard] ===== LEADERBOARD DEBUG END =====");
 
             if (leaderboard == null || leaderboard.Count == 0)
             {

@@ -210,7 +210,7 @@ namespace LegionKnight
             Debug.Log($"Sign-in successful: {playerId}");
             m_OnSignInSuccess?.Invoke(playerId);
 
-            UnityService.Instance.InitLeaderBoard();
+            //UnityService.Instance.InitLeaderBoard();
 
             DateTime loginTime = DateTime.Now;
             Dictionary<string, string> eventValues = new Dictionary<string, string>

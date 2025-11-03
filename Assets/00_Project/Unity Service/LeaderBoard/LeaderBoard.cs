@@ -21,25 +21,6 @@ namespace LegionKnight
         public int MaxRankToDisplay => m_MaxRankToDisplay;
 
         // ---------------------------------------------------
-        // INITIALIZATION
-        // ---------------------------------------------------
-        public async void Init()
-        {
-            try
-            {
-                if (UnityServices.State != ServicesInitializationState.Initialized)
-                {
-                    await UnityServices.InitializeAsync();
-                    Debug.Log("[LeaderBoard] Unity Services initialized.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[LeaderBoard] Failed to initialize Unity Services: {ex.Message}");
-            }
-        }
-
-        // ---------------------------------------------------
         // SUBMIT SCORE
         // ---------------------------------------------------
         public async Task SubmitScore(int score)
@@ -49,54 +30,30 @@ namespace LegionKnight
 
         private async Task SubmitScoreInternal(int score)
         {
-            try
+            if (!AuthenticationService.Instance.IsSignedIn)
             {
-                // Ensure services are initialized
-                if (UnityServices.State != ServicesInitializationState.Initialized)
-                {
-                    Debug.LogWarning("[LeaderBoard] Unity Services not initialized. Attempting initialization...");
-                    await UnityServices.InitializeAsync();
-                }
-
-                // Wait for authentication (since user handles login externally)
-                await WaitForAuthenticationAsync();
-
-                if (!AuthenticationService.Instance.IsSignedIn)
-                {
-                    Debug.LogError("[LeaderBoard] Player is not signed in. Cannot submit score.");
-                    return;
-                }
-
-                // Try to get player's current leaderboard entry
-                LeaderboardEntry playerScoreEntry = null;
-                try
-                {
-                    playerScoreEntry = await LeaderboardsService.Instance.GetPlayerScoreAsync(m_LeaderboardId);
-                }
-                catch (Exception ex)
-                {
-                    if (!ex.Message.Contains("Leaderboard entry could not be found"))
-                    {
-                        Debug.LogError($"[LeaderBoard] Failed to fetch player score: {ex.Message}");
-                        return;
-                    }
-                }
-
-                // Prevent downgrading the score
-                if (playerScoreEntry != null && playerScoreEntry.Score >= score)
-                {
-                    Debug.Log($"[LeaderBoard] Current score ({playerScoreEntry.Score}) is higher or equal to submitted score ({score}). No update.");
-                    return;
-                }
-
-                // Submit score
-                await LeaderboardsService.Instance.AddPlayerScoreAsync(m_LeaderboardId, score);
-                Debug.Log($"[LeaderBoard] Successfully submitted score: {score}");
+                Debug.LogError("[LeaderBoard] Player is not signed in. Cannot submit score.");
+                return;
             }
-            catch (Exception ex)
+
+            Debug.Log($"[LeaderBoard] Submitting score {score} for player {AuthenticationService.Instance.PlayerId}...");
+
+            // Submit score directly to Unity Leaderboards (no try/catch)
+            var result = await LeaderboardsService.Instance.AddPlayerScoreAsync(m_LeaderboardId, score);
+
+            if (result != null)
             {
-                Debug.LogError($"[LeaderBoard] Failed to submit score: {ex.Message}");
+                Debug.Log($"[LeaderBoard] ✅ Score submitted successfully. Player: {result.PlayerId}, Score: {result.Score}");
             }
+            else
+            {
+                Debug.LogError("[LeaderBoard] ❌ Score submission returned null result.");
+            }
+
+            // Immediately fetch back player score to confirm
+            Debug.Log("[LeaderBoard] Fetching back player score...");
+            var playerScore = await LeaderboardsService.Instance.GetPlayerScoreAsync(m_LeaderboardId);
+            Debug.Log($"[LeaderBoard] Player current score: {playerScore.Score}");
         }
 
         // ---------------------------------------------------
@@ -104,29 +61,13 @@ namespace LegionKnight
         // ---------------------------------------------------
         public async Task<List<LeaderboardEntry>> GetTopRanks()
         {
-            try
-            {
-                await WaitForAuthenticationAsync();
+            Debug.Log($"[LeaderBoard] Requesting top ranks for leaderboard: {m_LeaderboardId}");
 
-                if (!AuthenticationService.Instance.IsSignedIn)
-                {
-                    Debug.LogError("[LeaderBoard] Player is not signed in. Cannot retrieve leaderboard.");
-                    return new List<LeaderboardEntry>();
-                }
+            // Directly fetch leaderboard entries (no try/catch)
+            var scoresPage = await LeaderboardsService.Instance.GetScoresAsync(m_LeaderboardId);
 
-                var scores = await LeaderboardsService.Instance.GetScoresAsync(m_LeaderboardId, new GetScoresOptions
-                {
-                    Limit = m_MaxRankToDisplay
-                });
-
-                Debug.Log($"[LeaderBoard] Retrieved {scores.Results.Count} leaderboard entries.");
-                return scores.Results;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[LeaderBoard] Failed to retrieve leaderboard: {ex.Message}");
-                return new List<LeaderboardEntry>();
-            }
+            Debug.Log($"[LeaderBoard] ✅ Retrieved {scoresPage.Results.Count} entries from leaderboard.");
+            return scoresPage.Results;
         }
 
         // ---------------------------------------------------

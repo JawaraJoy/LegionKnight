@@ -11,7 +11,7 @@ namespace LegionKnight
         }
         public void Init()
         {
-            UnityService.Instance.InitLeaderBoard();
+            //UnityService.Instance.InitLeaderBoard();
         }
     }
 }
