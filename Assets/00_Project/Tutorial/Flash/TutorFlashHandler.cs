@@ -134,7 +134,9 @@ namespace LegionKnight
     {
         [SerializeField]
         private TutorFlashDefinition m_Definition;
+        [SerializeField, MMReadOnly]
         private bool m_HasDone = false;
+        [SerializeField, MMReadOnly]
         private bool m_HasPlaying = false;
         public bool HasDone => m_HasDone;
         public bool HasPlaying => m_HasPlaying;

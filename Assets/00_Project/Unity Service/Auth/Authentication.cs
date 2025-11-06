@@ -219,7 +219,6 @@ namespace LegionKnight
                 {"logintime", loginTime.ToString()}
             };
             AppsFlyer.sendEvent(AFEventName.OnPlayerLogin, eventValues);
-
         }
         private void OnSignInFailedInvoke(string error)
         {
