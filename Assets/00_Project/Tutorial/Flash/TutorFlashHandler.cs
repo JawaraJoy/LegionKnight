@@ -125,6 +125,10 @@ namespace LegionKnight
                 content.SetHasDone(true);
                 content.SetIsPlaying(false);
             }
+            else
+            {
+                Debug.LogError($"[TutorFlashHandler] EndFlash Error: Can't find FlashContent for Definition {m_CurrentFlash.Definition.Id}");
+            }
             m_CurrentFlash.Definition.OnEnd?.Invoke();
         }
     }
