@@ -2428,18 +2428,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 7282600096559205833}
-        m_TargetAssemblyTypeName: LegionKnight.LeaderboardAgent, Assembly-CSharp
-        m_MethodName: Init
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 6282812892676271033}
         m_TargetAssemblyTypeName: LegionKnight.Progression, Assembly-CSharp
         m_MethodName: Init
@@ -14062,48 +14050,6 @@ MonoBehaviour:
   m_UsedCharacter: {fileID: 11400000, guid: 5423f2f9cee332543902f0610357254e, type: 2}
   m_SelectedCharacter: {fileID: 11400000, guid: 5423f2f9cee332543902f0610357254e, type: 2}
   m_CharacterUnits:
-  - m_Definition: {fileID: 11400000, guid: c6ceb5811bacf1947a81b0686e4fbb54, type: 2}
-    m_Owned: 0
-    m_Star: 0
-    m_Level: 1
-    m_IsUsed: 0
-    m_OnCharacterStarUp:
-      m_PersistentCalls:
-        m_Calls: []
-    m_OnCharacterShardUpdate:
-      m_PersistentCalls:
-        m_Calls: []
-    m_OnCharacterOwnedChanged:
-      m_PersistentCalls:
-        m_Calls: []
-    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
-    m_OnLevelUp:
-      m_PersistentCalls:
-        m_Calls: []
-    m_OnExpUpdate:
-      m_PersistentCalls:
-        m_Calls: []
-  - m_Definition: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
-    m_Owned: 0
-    m_Star: 0
-    m_Level: 1
-    m_IsUsed: 0
-    m_OnCharacterStarUp:
-      m_PersistentCalls:
-        m_Calls: []
-    m_OnCharacterShardUpdate:
-      m_PersistentCalls:
-        m_Calls: []
-    m_OnCharacterOwnedChanged:
-      m_PersistentCalls:
-        m_Calls: []
-    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
-    m_OnLevelUp:
-      m_PersistentCalls:
-        m_Calls: []
-    m_OnExpUpdate:
-      m_PersistentCalls:
-        m_Calls: []
   - m_Definition: {fileID: 11400000, guid: 9e93ed4a4163c4a478e65ae2db943e77, type: 2}
     m_Owned: 0
     m_Star: 0
@@ -14262,6 +14208,48 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
+    m_OnLevelUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnExpUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_Definition: {fileID: 11400000, guid: c6ceb5811bacf1947a81b0686e4fbb54, type: 2}
+    m_Owned: 0
+    m_Star: 0
+    m_Level: 1
+    m_IsUsed: 0
+    m_OnCharacterStarUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterOwnedChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
+    m_OnLevelUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnExpUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_Definition: {fileID: 11400000, guid: 836bc9517a97d6342bd58f99a62e4a82, type: 2}
+    m_Owned: 0
+    m_Star: 0
+    m_Level: 1
+    m_IsUsed: 0
+    m_OnCharacterStarUp:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterShardUpdate:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCharacterOwnedChanged:
+      m_PersistentCalls:
+        m_Calls: []
     m_LevelFormulaDefinition: {fileID: 11400000, guid: d7ede81341e7e934884bc34e94910fff, type: 2}
     m_OnLevelUp:
       m_PersistentCalls:
@@ -31733,7 +31721,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 23319377594501493}
           m_TargetAssemblyTypeName: LegionKnight.LeaderboardAgent, Assembly-CSharp
-          m_MethodName: SubmiteScoreEntry
+          m_MethodName: SubmitLeaderBoardScoreEntry
           m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -31742,7 +31730,7 @@ MonoBehaviour:
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
-          m_CallState: 0
+          m_CallState: 2
     m_OnCurrencyChanged:
       m_PersistentCalls:
         m_Calls:
@@ -32323,9 +32311,9 @@ MonoBehaviour:
     m_IsEquiped: 0
     m_Amount: 0
     m_StanbyPlatform: {fileID: 11400000, guid: 2ad518d1a289d9741b5f9c2c1050a3db, type: 2}
-  - m_IsOwned: 0
+  - m_IsOwned: 1
     m_IsEquiped: 0
-    m_Amount: 0
+    m_Amount: 1
     m_StanbyPlatform: {fileID: 11400000, guid: 8f1136fecdb0fdf46b758b19e57f80c1, type: 2}
   - m_IsOwned: 0
     m_IsEquiped: 0
