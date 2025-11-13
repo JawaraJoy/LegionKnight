@@ -105,6 +105,7 @@ namespace LegionKnight
             {
                 content.SetIsPlaying(true);
             }
+            Debug.Log($"[TutorFlashHandler] Playing Flash Message for Definition {defi.Id}");
             string[] messages = defi.FlashMessages;
             for (int i = 0; i < messages.Length; i++)
             {
@@ -113,7 +114,7 @@ namespace LegionKnight
                 yield return new WaitForSeconds(defi.MessageInternal);
             }
             yield return new WaitForSeconds(defi.MessageInternal);
-            EndFlash();
+            
         }
 
         private void EndFlash()

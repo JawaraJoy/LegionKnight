@@ -42,12 +42,8 @@ namespace LegionKnight
                 int loginCount = UnityService.Instance.GetData<int>(m_LoginKey);
                 m_LoginRetryCount = loginCount + 1;
             }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>
-            {
-                {"time", DateTime.UtcNow}
-            };
-            LoginEvent(m_LoginRetryCount, parameters);
+            LoginEvent(m_LoginRetryCount);
+            Debug.Log("FB Initialized");
         }
         void OnApplicationPause(bool pauseStatus)
         {
@@ -71,9 +67,15 @@ namespace LegionKnight
             }
         }
         
-        private void LoginEvent(float valueToSum, Dictionary<string, object> parameters)
+        private void LoginEvent(float repeating)
         {
-            LogEventInternal(FacebookEventName.Login, valueToSum, parameters);
+            
+            Debug.Log("FB Login Event Logged");
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                {"time", DateTime.UtcNow}
+            };
+            LogEventInternal(FacebookEventName.Login, repeating, parameters);
             UnityService.Instance.SaveData(m_LoginKey, m_LoginRetryCount);
         }
     }

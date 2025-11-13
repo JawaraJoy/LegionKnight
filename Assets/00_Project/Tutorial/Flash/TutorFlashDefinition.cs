@@ -12,7 +12,7 @@ namespace LegionKnight
         [SerializeField, TextArea]
         private string[] m_FlashMessages;
         [SerializeField]
-        private float m_MessageInternal;
+        private float m_MessageInterval;
         [SerializeField]
         private bool m_SetIsDoneOnStart = false;
         [SerializeField]
@@ -23,7 +23,7 @@ namespace LegionKnight
         private UnityEvent m_OnEnd;
         public UnityEvent OnStart => m_OnStart;
         public UnityEvent OnEnd => m_OnEnd;
-        public float MessageInternal => m_MessageInternal;
+        public float MessageInternal => m_MessageInterval;
         public AssetReferenceGameObject FlashUIAsset => m_FlashUIAsset;
         public string[] FlashMessages => m_FlashMessages;
         public string Id => m_Id;

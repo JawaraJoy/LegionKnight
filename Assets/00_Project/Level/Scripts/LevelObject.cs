@@ -26,6 +26,8 @@ namespace LegionKnight
         [SerializeField]
         private Transform m_BosSpawnPost;
 
+        private Transform m_FinalPostSpawnPlatform;
+
         [SerializeField]
         private UnityEvent<BosDefinition> m_OnLevelStart = new();
         [SerializeField]
@@ -205,6 +207,8 @@ namespace LegionKnight
         private void SpawnPlatformInternal()
         {
             if (GameManager.Instance.LevelOver) return;
+            m_FinalPostSpawnPlatform = LeftOrRight();
+            GetPlatformComingTrack().Show();
             Vector2 farAway = new Vector2(1000f, 0f);
             Addressables.InstantiateAsync(GetRandomPlatformByChance(), farAway, Quaternion.identity).Completed += OnPlatformSpawned;
         }
@@ -260,19 +264,6 @@ namespace LegionKnight
                     BosBarGameplay bosBarGameplay = gameplayPanel.GetBinding<BosBarGameplay>();
                     bosBarGameplay.ShowHealthBar();
                 }
-            }
-        }
-        private IEnumerator SpawningBosInternal(AsyncOperationHandle<GameObject> handle)
-        {
-            yield return handle;
-            if (handle.Status != AsyncOperationStatus.Succeeded) yield break;
-            {
-                GameObject result = handle.Result;
-                if (!result.TryGetComponent(out BosEnemy bos)) yield break;
-                GameManager.Instance.SetSpawnedBosEnemy(bos);
-                float offset = Player.Instance.transform.position.y + 100f;
-                bos.SetLocalPosition(new Vector2(0f, offset));
-                m_BosSpawnPost.DetachChildren();
             }
         }
 
@@ -351,16 +342,45 @@ namespace LegionKnight
             GameManager.Instance.SetLevelOver(set);
         }
 
+        private GameplayPanel GetGameplayPanel()
+        {
+            return GameManager.Instance.GetPanel<GameplayPanel>();
+        }
+
+        private PlatformComingTrack GetPlatformComingTrack()
+        {
+            GameplayPanel gameplayPanel = GetGameplayPanel();
+            return gameplayPanel.GetBinding<PlatformComingTrack>();
+        }
+
+        private bool m_IsLeftSide;
         private Transform LeftOrRight()
         {
-            int random = Random.Range(-100, 100);
-            if (random <= 0)
+            if (LeftOrRightBool())
             {
-                m_FinalOffsideDestination = m_OffsideDestination * -1f;
                 return m_LeftPost;
             }
-            m_FinalOffsideDestination = m_OffsideDestination * 1f;
-            return m_RightPost;
+            else
+            {
+                return m_RightPost;
+            }
+        }
+        private bool LeftOrRightBool()
+        {
+            int random = Random.Range(-100, 100);
+            GetPlatformComingTrack().Hide();
+            m_IsLeftSide = random <= 0;
+            if (m_IsLeftSide)
+            {
+                m_FinalOffsideDestination = m_OffsideDestination * -1f;
+                GetPlatformComingTrack().ShowLeftTrack();
+            }
+            else
+            {
+                m_FinalOffsideDestination = m_OffsideDestination * 1f;
+                GetPlatformComingTrack().ShowRightTrack();
+            }
+            return m_IsLeftSide;
         }
         private Vector2 GetFinalDestination()
         {
@@ -379,17 +399,35 @@ namespace LegionKnight
         {
             return GetLevelDefinition().HasBoss();
         }
+
+        private Transform GetFinalPostSpawnPlatform()
+        {
+            if (m_FinalPostSpawnPlatform == null)
+            {
+                m_FinalPostSpawnPlatform = LeftOrRight();
+            }
+            return m_FinalPostSpawnPlatform;
+        }
         private void SetStartPosition(Platform spawn)
         {
+            GetPlatformComingTrack().Show();
             bool isFatalLevel = GetLevelDefinition().IsFatalLevel;
             spawn.SetFatal(isFatalLevel);
-            spawn.SetStartPosition(LeftOrRight());
+            spawn.SetStartPosition(m_FinalPostSpawnPlatform);
+            
             spawn.SetSpeed(GetLevelDefinition().GetSpeed());
             spawn.SetDestination(GetFinalDestination());
             spawn.transform.SetParent(m_PlatformStack);
             spawn.SetLevelDefnition(GetLevelDefinition());
             spawn.SetCanMove(true);
             AddSpawnedPlatform(spawn);
+            StartCoroutine(HidePlatformTrack());
+        }
+
+        private IEnumerator HidePlatformTrack()
+        {
+            yield return new WaitForSeconds(1f);
+            GetPlatformComingTrack().Hide();
         }
 
         private void AddSpawnedPlatform(Platform add)

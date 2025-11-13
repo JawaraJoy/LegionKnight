@@ -30,6 +30,10 @@ namespace LegionKnight
         {
             GetHandler().AddFlash(this);
         }
+        private void OnDestroy()
+        {
+            GetHandler().RemoveFlash(this);
+        }
         public void ShowFlashUI(string message)
         {
             if (m_SpawnedFlashUI != null)
