@@ -94,7 +94,7 @@ namespace LegionKnight
                 m_CurrentFlash.Definition.OnStart?.Invoke();
                 if (m_CurrentFlash.Definition.IsSetDoneOnStart)
                 {
-                    EndFlash();
+                    content.SetHasDone(true);
                 }
             }
         }
@@ -114,7 +114,7 @@ namespace LegionKnight
                 yield return new WaitForSeconds(defi.MessageInternal);
             }
             yield return new WaitForSeconds(defi.MessageInternal);
-            
+            EndFlash();
         }
 
         private void EndFlash()
