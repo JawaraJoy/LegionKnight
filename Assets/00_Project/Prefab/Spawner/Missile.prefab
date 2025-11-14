@@ -55,13 +55,16 @@ MonoBehaviour:
     m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
-      m_AssetGUID: 1639946409a84b144ba6f8db0eda02fd
+      m_AssetGUID: 9896d318713eed644bb369b85e9807cc
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_SpawnPost: {fileID: 4866235048248152411}
     m_OnWeaponSpawned:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnSpawned:
       m_PersistentCalls:
         m_Calls: []
   m_SpawnOnStart: 1
@@ -168,6 +171,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -189,6 +194,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0

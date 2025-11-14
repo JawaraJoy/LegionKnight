@@ -47,34 +47,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b1d299fcc044547a667705143de450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_AbilityDefinition: {fileID: 0}
   m_RandomSpawn: 0
   m_Skills:
-  - m_DamageOveride: 0
-    m_StartingForce: {x: 0, y: 0}
+  - m_StartingForce: {x: 0, y: 0}
     m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
-      m_AssetGUID: 9896d318713eed644bb369b85e9807cc
+      m_AssetGUID: f63383546767fab459f150d579c36201
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_SpawnPost: {fileID: 2144344153622374576}
     m_OnWeaponSpawned:
       m_PersistentCalls:
         m_Calls: []
-  - m_DamageOveride: 0
-    m_StartingForce: {x: 0, y: 0}
+    m_OnSpawned:
+      m_PersistentCalls:
+        m_Calls: []
+  - m_StartingForce: {x: 0, y: 0}
     m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
-      m_AssetGUID: 9896d318713eed644bb369b85e9807cc
+      m_AssetGUID: f63383546767fab459f150d579c36201
       m_SubObjectName: 
-      m_SubObjectGUID: 
       m_SubObjectType: 
+      m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_SpawnPost: {fileID: 7157562842630991049}
     m_OnWeaponSpawned:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnSpawned:
       m_PersistentCalls:
         m_Calls: []
   m_SpawnOnStart: 1
