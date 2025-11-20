@@ -56,6 +56,11 @@ namespace LegionKnight
             HideInternal();
         }
 
+        public void RefreshEquiped()
+        {
+            PlatformUnit platform = Player.Instance.GetPlatformOwned(m_PlatformDefi);
+            m_EquipedSign.gameObject.SetActive(platform.IsEquiped);
+        }
         public void Init(PlatformUnit unit)
         {
             InitInternal(unit);
