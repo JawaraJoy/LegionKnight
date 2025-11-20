@@ -88,6 +88,14 @@ namespace LegionKnight
             }
         }
 
+        public void RefreshEquiped()
+        {
+            foreach (PlatformSelectView platformSelectView in m_SpawnedPlatformSelectionViews)
+            {
+                platformSelectView.RefreshEquiped();
+            }
+        }
+
         private void ShowRarity(Rarity rarity)
         {
             foreach (PlatformSelectView platformSelectView in m_SpawnedPlatformSelectionViews)

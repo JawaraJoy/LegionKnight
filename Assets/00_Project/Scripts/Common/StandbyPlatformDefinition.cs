@@ -14,7 +14,9 @@ namespace LegionKnight
         private string m_Description;
         [SerializeField]
         private Sprite m_Icon;
-        
+        [SerializeField]
+        private Sprite m_BigIcon;
+
         [SerializeField]
         private Rarity m_Rarity = Rarity.Common;
         [SerializeField]
@@ -31,6 +33,7 @@ namespace LegionKnight
         public string Label => $"{m_Label} Platform";
         public string Description => m_Description;
         public Sprite Icon => m_Icon;
+        public Sprite BigIcon => m_BigIcon;
         public string Id => m_Id;
         public Rarity Rarity => m_Rarity;
         public Color RarityColor => m_RarityColor;

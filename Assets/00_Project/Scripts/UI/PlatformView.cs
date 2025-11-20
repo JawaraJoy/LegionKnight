@@ -21,14 +21,14 @@ namespace LegionKnight
         }
         private void InitInternal()
         {
-            m_PlatformBigIcon.sprite = Player.Instance.GetUsedStanbyPlatform().Icon;
+            m_PlatformBigIcon.sprite = Player.Instance.GetUsedStanbyPlatform().BigIcon;
             m_PlatformNameText.text = Player.Instance.GetUsedStanbyPlatform().Label;
             m_PlatformDescriptionText.text = Player.Instance.GetUsedStanbyPlatform().Description;
             OnPlatformSelectedInvoke(Player.Instance.GetUsedStanbyPlatform());
         }
         public void SetPlatformSelected(StandbyPlatformDefinition platform)
         {
-            m_PlatformBigIcon.sprite = platform.Icon;
+            m_PlatformBigIcon.sprite = platform.BigIcon;
             m_PlatformNameText.text = platform.Label;
             m_PlatformDescriptionText.text = platform.Description;
             OnPlatformSelectedInvoke(platform);
