@@ -45,6 +45,7 @@ namespace LegionKnight
             TutorFlash flash = m_FlashList.Find(x => x.Definition == defi);
             if (flash == null)
             {
+                Debug.LogError($"[TutorFlashHandler] GetFlash Error: Can't find TutorFlash for Definition {defi.Id}");
                 return null;
             }
             return flash;
@@ -63,7 +64,7 @@ namespace LegionKnight
         }
         public void RemoveFlash(TutorFlash flash)
         {
-            if (HasFlash(flash.Definition, out flash))
+            if (m_FlashList.Contains(flash))
             {
                 m_FlashList.Remove(flash);
             }
