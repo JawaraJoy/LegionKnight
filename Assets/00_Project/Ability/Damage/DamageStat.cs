@@ -10,6 +10,8 @@ namespace LegionKnight
         [SerializeField]
         private int m_Attack;
         [SerializeField]
+        private float m_AttackRate = 1.0f; // Attack rate
+        [SerializeField]
         private int m_Health;
         [SerializeField]
         private int m_Barrier;
@@ -17,16 +19,36 @@ namespace LegionKnight
         [SerializeField]
         private int m_AttackUpgrade = 1;
         [SerializeField]
+        private float m_AttackRateUpgrade = 0.1f; // Attack rate upgrade
+        [SerializeField]
         private int m_HealthUpgrade = 1;
         [SerializeField]
         private int m_ShieldUpgrade = 1;
         public int Attack => m_Attack;
+        public float AttackRate => m_AttackRate;
         public int Health => m_Health;
         public int AttackUpgrade => m_AttackUpgrade;
+        public float AttackRateUpgrade => m_AttackRateUpgrade;
         public int HealthUpgrade => m_HealthUpgrade;
         public int Barrier => m_Barrier;
         public int ShieldUpgrade => m_ShieldUpgrade;
 
+        private float AttackRateRule
+        {
+            get
+            {
+                float rate;
+                if ( m_AttackRate <= 0f)
+                {
+                    rate = 1f;
+                }
+                else
+                {
+                    rate = m_AttackRate;
+                }
+                return rate;
+            }
+        }
         public int GetFinalAttack(int level)
         {
             if (m_IsHeroScale)
@@ -47,7 +69,10 @@ namespace LegionKnight
         {
             CharacterUnit unit = GetUsedCharacterUnit(); // Get the character unit based on the current player character
             int heroAttack = unit.FinalStat().Attack;
-            return heroAttack + m_Attack + m_AttackUpgrade * (level - 1);
+            int finalAttackUpgrade = m_AttackUpgrade * (level - 1);
+            float finalAttackRate = AttackRateRule + m_AttackRateUpgrade * (level - 1);
+            int scaledHeroAttack = Mathf.RoundToInt((heroAttack + finalAttackUpgrade) * finalAttackRate);
+            return scaledHeroAttack;
         }
 
         private CharacterUnit GetUsedCharacterUnit()
