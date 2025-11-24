@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace LegionKnight
@@ -62,7 +63,10 @@ namespace LegionKnight
         }
         private int GetFinalAttackInternal(int level)
         {
-            return m_Attack + m_AttackUpgrade * (level - 1);
+            int finalAttackUpgrade = m_AttackUpgrade * (level - 1);
+            float finalAttackRate = AttackRateRule + m_AttackRateUpgrade * (level - 1);
+            int scaledAttack = Mathf.RoundToInt(finalAttackUpgrade * finalAttackRate);
+            return scaledAttack;
         }
 
         private int GetFinalAttackHeroScaleInternal(int level)
@@ -91,6 +95,20 @@ namespace LegionKnight
         public void SetAttack(int attack)
         {
             m_Attack = attack;
+        }
+        public void SetAttackRate(float attackRate)
+        {
+            m_AttackRate = attackRate;
+        }
+        public void AddAttackRate(float attackRate)
+        {
+            m_AttackRate += attackRate;
+        }
+        public IEnumerator AddAttackRateTemping(float attackRate, float duration)
+        {
+            m_AttackRate += attackRate;
+            yield return new WaitForSeconds(duration);
+            m_AttackRate -= attackRate;
         }
         public void SetHealth(int health)
         {
