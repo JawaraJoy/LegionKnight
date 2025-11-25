@@ -3,12 +3,14 @@ using UnityEngine;
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "New Energy", menuName = "Legion Knight/Energy", order = 1)]
-    public class EnergyDefinition : ScriptableObject
+    public class EnergyDefinition : ScriptableObject, IDescriptable
     {
         [SerializeField]
         private string m_Id;
         [SerializeField]
         private string m_Label; // name
+        [SerializeField, TextArea]
+        private string m_Description;
         [SerializeField]
         private Sprite m_Icon; // icon
         [SerializeField]
@@ -29,6 +31,7 @@ namespace LegionKnight
         public int RegenEverEverySeconds => m_RegenEverySeconds;
         public int RegenAmount => m_RegenAmount;
         public bool CanRegen => m_CanRegen;
+        public string Description => m_Description;
 
         public void AddEnergy(int amount)
         {

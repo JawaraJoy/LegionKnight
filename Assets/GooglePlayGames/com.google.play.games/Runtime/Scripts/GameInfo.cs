@@ -38,7 +38,7 @@ namespace GooglePlayGames {
 
         public const string ApplicationId = "877837400039"; // Filled in automatically
         public const string IosClientId = "__IOS_CLIENTID__"; // Filled in automatically
-        public const string WebClientId = "877837400039-f7mde7qmoa1do3pkh765eepkeei4m1pk.apps.googleusercontent.com"; // Filled in automatically
+        public const string WebClientId = "877837400039-vj0tsjrp0fh0svfe64cqec51cci2elbg.apps.googleusercontent.com"; // Filled in automatically
         public const string NearbyConnectionServiceId = "com.jawarajoy.AetherJump";
 
         public static bool ApplicationIdInitialized() {

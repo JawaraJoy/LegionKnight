@@ -4,7 +4,7 @@ using UnityEngine.AddressableAssets;
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "New Standby Platform", menuName = "Legion Knight/Standby Platform")]
-    public partial class StandbyPlatformDefinition : ScriptableObject
+    public partial class StandbyPlatformDefinition : ScriptableObject, IDescriptable
     {
         [SerializeField]
         private string m_Id;

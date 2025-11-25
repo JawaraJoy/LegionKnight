@@ -12,16 +12,19 @@ namespace LegionKnight
         Epic,
     }
     [CreateAssetMenu(fileName = "New Character", menuName = "Legion Knight/Character/Unit")]
-    public partial class CharacterDefinition : ScriptableObject
+    public partial class CharacterDefinition : ScriptableObject, IDescriptable
     {
         [SerializeField]
         private string m_Id;
         [SerializeField]
         private string m_Label;
+        [SerializeField, TextArea]
+        private string m_Description;
         [SerializeField]
         private Sprite m_Icon;
         [SerializeField]
         private Sprite m_SmallIcon;
+
         [SerializeField]
         private Sprite m_TypeIcon;
         [SerializeField]
@@ -41,6 +44,7 @@ namespace LegionKnight
         [SerializeField]
         private Currency m_ShardConvert;
         public string Id => m_Id;
+        public string Description => m_Description;
         public Sprite Icon => m_Icon;
         public Stat BaseStat => m_BaseStat;
         public Stat StatGainPerLevel => m_StatGainPerLevel;

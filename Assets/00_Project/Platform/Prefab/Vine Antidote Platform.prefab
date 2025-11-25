@@ -222,18 +222,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 7729796569052758044}
-        m_TargetAssemblyTypeName: LegionKnight.PlayerDamageOvertimeAgent, Assembly-CSharp
-        m_MethodName: AddAntidot
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 3616904649489759606}
         m_TargetAssemblyTypeName: LegionKnight.PlayerDamageOvertimeAgent, Assembly-CSharp
         m_MethodName: StopPlayerDamageOverTime
@@ -675,6 +663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ApplyEffectOnLevel: {fileID: 0}
 --- !u!1 &5418375460081534331
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,6 +873,7 @@ MonoBehaviour:
   m_Barrier: 0
   m_MaxHpRateDamage: 0.5
   m_Fatal: 0
+  m_InstantDeath: 0
   m_Immortal: 0
   m_OnDeath:
     m_PersistentCalls:
@@ -960,6 +950,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dc8f4136bb75144932d0bd61064e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ApplyEffectOnLevel: {fileID: 0}
 --- !u!1 &8780936892916555226
 GameObject:
   m_ObjectHideFlags: 0

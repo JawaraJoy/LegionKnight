@@ -4,7 +4,24 @@ using System.Collections.Generic;
 // Example for IronSource Unity.
 public class LevelPlaySample : MonoBehaviour
 {
+<<<<<<< HEAD
     public void Start()
+=======
+    /*[SerializeField]
+    private Texture2D lpLogo;*/
+<<<<<<< HEAD
+    [SerializeField]
+    private string m_ActualAppKey;
+=======
+>>>>>>> main
+    private LevelPlayBannerAd bannerAd;
+    private LevelPlayInterstitialAd interstitialAd;
+    private LevelPlayRewardedAd rewardedVideoAd;
+
+    bool isAdsEnabled = false;
+
+    public void Init()
+>>>>>>> 429f903386b0c281d93158507e4503484b9f0f41
     {
 #if UNITY_ANDROID
         string appKey = "85460dcd";
@@ -30,8 +47,14 @@ public class LevelPlaySample : MonoBehaviour
         //Add Init Event
         IronSourceEvents.onSdkInitializationCompletedEvent += SdkInitializationCompletedEvent;
 
+<<<<<<< HEAD
         //Add ImpressionSuccess Event
         IronSourceEvents.onImpressionDataReadyEvent += ImpressionDataReadyEvent;
+=======
+        // Create Rewarded Video object
+        rewardedVideoAd = new LevelPlayRewardedAd(AdConfig.RewardedVideoAdUnitId);
+        //rewardedVideoAd = new LevelPlayRewardedAd(m_RewardedID);
+>>>>>>> 429f903386b0c281d93158507e4503484b9f0f41
 
         //Add AdInfo Rewarded Video Events
         IronSourceRewardedVideoEvents.onAdOpenedEvent += RewardedVideoOnAdOpenedEvent;
@@ -42,6 +65,7 @@ public class LevelPlaySample : MonoBehaviour
         IronSourceRewardedVideoEvents.onAdRewardedEvent += RewardedVideoOnAdRewardedEvent;
         IronSourceRewardedVideoEvents.onAdClickedEvent += RewardedVideoOnAdClickedEvent;
 
+<<<<<<< HEAD
         //Add AdInfo Interstitial Events
         IronSourceInterstitialEvents.onAdReadyEvent += InterstitialOnAdReadyEvent;
         IronSourceInterstitialEvents.onAdLoadFailedEvent += InterstitialOnAdLoadFailed;
@@ -58,6 +82,34 @@ public class LevelPlaySample : MonoBehaviour
         IronSourceBannerEvents.onAdScreenPresentedEvent += BannerOnAdScreenPresentedEvent;
         IronSourceBannerEvents.onAdScreenDismissedEvent += BannerOnAdScreenDismissedEvent;
         IronSourceBannerEvents.onAdLeftApplicationEvent += BannerOnAdLeftApplicationEvent;
+=======
+        // Create Banner object
+        bannerAd = new LevelPlayBannerAd(AdConfig.BannerAdUnitId);
+        //bannerAd = new LevelPlayBannerAd(m_BanerID);
+
+        // Register to Banner events
+        bannerAd.OnAdLoaded += BannerOnAdLoadedEvent;
+        bannerAd.OnAdLoadFailed += BannerOnAdLoadFailedEvent;
+        bannerAd.OnAdDisplayed += BannerOnAdDisplayedEvent;
+        bannerAd.OnAdDisplayFailed += BannerOnAdDisplayFailedEvent;
+        bannerAd.OnAdClicked += BannerOnAdClickedEvent;
+        bannerAd.OnAdCollapsed += BannerOnAdCollapsedEvent;
+        bannerAd.OnAdLeftApplication += BannerOnAdLeftApplicationEvent;
+        bannerAd.OnAdExpanded += BannerOnAdExpandedEvent;
+
+        // Create Interstitial object
+        interstitialAd = new LevelPlayInterstitialAd(AdConfig.InterstitalAdUnitId);
+        //interstitialAd = new LevelPlayInterstitialAd(m_InterstitialID);
+
+        // Register to Interstitial events
+        interstitialAd.OnAdLoaded += InterstitialOnAdLoadedEvent;
+        interstitialAd.OnAdLoadFailed += InterstitialOnAdLoadFailedEvent;
+        interstitialAd.OnAdDisplayed += InterstitialOnAdDisplayedEvent;
+        interstitialAd.OnAdDisplayFailed += InterstitialOnAdDisplayFailedEvent;
+        interstitialAd.OnAdClicked += InterstitialOnAdClickedEvent;
+        interstitialAd.OnAdClosed += InterstitialOnAdClosedEvent;
+        interstitialAd.OnAdInfoChanged += InterstitialOnAdInfoChangedEvent;
+>>>>>>> 429f903386b0c281d93158507e4503484b9f0f41
     }
 
     void OnApplicationPause(bool isPaused)
@@ -134,7 +186,15 @@ public class LevelPlaySample : MonoBehaviour
     #region AdInfo Rewarded Video
     void RewardedVideoOnAdOpenedEvent(IronSourceAdInfo adInfo)
     {
+<<<<<<< HEAD
         Debug.Log("unity-script: I got RewardedVideoOnAdOpenedEvent With AdInfo " + adInfo);
+=======
+<<<<<<< HEAD
+        //Debug.Log($"[LevelPlaySample] Received RewardedVideoOnLoadedEvent With AdInfo: {adInfo}");
+=======
+        Debug.Log($"[LevelPlaySample] Received RewardedVideoOnLoadedEvent With AdInfo: {adInfo}");
+>>>>>>> main
+>>>>>>> 429f903386b0c281d93158507e4503484b9f0f41
     }
 
     void RewardedVideoOnAdClosedEvent(IronSourceAdInfo adInfo)

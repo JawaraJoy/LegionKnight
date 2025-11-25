@@ -8,5 +8,9 @@ namespace LegionKnight
         {
             UnityService.Instance.DeleteAllData();
         }
+        public void LoadAllData()
+        {
+            UnityService.Instance.LoadAllData();
+        }
     }
 }
