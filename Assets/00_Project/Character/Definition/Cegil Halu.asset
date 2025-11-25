@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Cegil Halu
   m_EditorClassIdentifier: 
   m_Id: cegilhalu
-  m_Label: Cegil
+  m_Label: Cassidy
   m_Description: 
   m_Icon: {fileID: 21300000, guid: 46d34fa8ed243ff4b9e80d46352ff46e, type: 3}
   m_SmallIcon: {fileID: 21300000, guid: 4042855532f8b0b44be98765a29c18dc, type: 3}
@@ -48,7 +48,7 @@ MonoBehaviour:
     m_OnCurrencyAmountGet:
       m_PersistentCalls:
         m_Calls: []
-  m_UniquePlatform: {fileID: 11400000, guid: a9fcbc146d4ddc74a8c8a8f1127aa107, type: 2}
+  m_UniquePlatform: {fileID: 11400000, guid: 6f512fab36d4fad48b0cf7db58d3a4b5, type: 2}
   m_Weapons:
   - m_SkillName: Basic Attack
     m_Description: 
@@ -67,7 +67,7 @@ MonoBehaviour:
     m_AbilityDefinition: {fileID: 0}
     m_ManaThreshold: 0
     m_SkillAsset:
-    - m_AssetGUID: 85fb162718871a542aa8d8451f86153d
+    - m_AssetGUID: b595721450d065e469c32777b712cf9b
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
@@ -95,13 +95,11 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
   m_Passives:
-  - m_SkillName: Protection
-    m_Description: Create a Protection Dome around herself for 5s, to protect the
-      Hero from Enemy Attack. Also, Absorb the incoming damage from Enemy Attacks,
-      then launch multiple projectiles based how many damage absorbed.
-    m_Icon: {fileID: 21300000, guid: b7ebbcdd4d25e1a47b6f9728fc3c3ea4, type: 3}
-    m_AbilityDefinition: {fileID: 11400000, guid: bf88ee02c28cde143a471b90a3b2de97, type: 2}
-    m_ManaThreshold: 115
+  - m_SkillName: Wild Shot
+    m_Description: 
+    m_Icon: {fileID: 21300000, guid: 2dc08c4b3439189489c660c738e2918c, type: 3}
+    m_AbilityDefinition: {fileID: 11400000, guid: 865ce19a1d85917448f21d5108c12d0b, type: 2}
+    m_ManaThreshold: 125
     m_SkillAsset:
     - m_AssetGUID: cd7bb9e5f9714794a9f524d8c127e729
       m_SubObjectName: 

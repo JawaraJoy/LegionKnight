@@ -63,19 +63,30 @@ namespace LegionKnight
         }
         private int GetFinalAttackInternal(int level)
         {
-            int finalAttackUpgrade = m_AttackUpgrade * (level - 1);
+            int finalAttackUpgrade = m_Attack + m_AttackUpgrade * (level - 1);
             float finalAttackRate = AttackRateRule + m_AttackRateUpgrade * (level - 1);
             int scaledAttack = Mathf.RoundToInt(finalAttackUpgrade * finalAttackRate);
             return scaledAttack;
         }
 
+        private PlayerDamageBuff m_DamageBuff;
+        private PlayerDamageBuff GetPlayerDamageBuff()
+        {
+            if (m_DamageBuff == null)
+            {
+                m_DamageBuff = Player.Instance.GetPlayerDamageBuff();
+            }
+            return m_DamageBuff;
+        }
         private int GetFinalAttackHeroScaleInternal(int level)
         {
             CharacterUnit unit = GetUsedCharacterUnit(); // Get the character unit based on the current player character
             int heroAttack = unit.FinalStat().Attack;
-            int finalAttackUpgrade = m_AttackUpgrade * (level - 1);
+            int buffAttack = GetPlayerDamageBuff().GetDamageStat().GetFinalAttack(1);
+            int finalAttackUpgrade = m_Attack + buffAttack + m_AttackUpgrade * (level - 1);
             float finalAttackRate = AttackRateRule + m_AttackRateUpgrade * (level - 1);
             int scaledHeroAttack = Mathf.RoundToInt((heroAttack + finalAttackUpgrade) * finalAttackRate);
+            Debug.Log($"{scaledHeroAttack} Final Attack Hero");
             return scaledHeroAttack;
         }
 
@@ -160,8 +171,11 @@ namespace LegionKnight
         public void InitStat(AbilityDefinition damageStat)
         {
             if (damageStat == null) return;
-            m_Damage = damageStat.Attack;
-            m_Health = damageStat.Health;
+            CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance
+            CharacterUnit unit = Player.Instance.GetCharacterUnit(characterDefinition);
+            int level = unit.Level;
+            m_Damage = damageStat.GetFinalAttack(level);
+            m_Health = damageStat.GetFinalHealth(level);
             m_CurrentHealth = m_Health;
             m_Barrier = damageStat.Barrier;
         }

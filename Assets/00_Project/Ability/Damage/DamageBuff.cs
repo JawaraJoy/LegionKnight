@@ -7,13 +7,14 @@ namespace LegionKnight
         [SerializeField]
         private DamageStat m_DamageStat;
 
+        private Coroutine m_AttackRateTempCoroutine;
         public DamageStat GetDamageStat()
         {
             return m_DamageStat;
         }
         public void AddAttackRateTemp(float attackRate, float duration)
         {
-            StartCoroutine(m_DamageStat.AddAttackRateTemping(attackRate, duration));
+            m_AttackRateTempCoroutine = StartCoroutine(m_DamageStat.AddAttackRateTemping(attackRate, duration));
         }
     }
 }

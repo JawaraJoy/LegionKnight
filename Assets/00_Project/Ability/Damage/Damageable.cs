@@ -163,7 +163,7 @@ namespace LegionKnight
         private int DamageFormulaRPG(int attacker, int defender)
         {
             int underAmor = Mathf.Clamp(attacker + defender, 5, int.MaxValue);
-            int dmg = Mathf.RoundToInt( attacker * attacker / (underAmor));
+            int dmg = Mathf.RoundToInt(attacker * attacker / (underAmor));
             if (dmg < 1)
             {
                 dmg = Random.Range(1, 5); // Ensure at least 1 damage is dealt

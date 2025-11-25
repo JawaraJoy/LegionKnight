@@ -89,7 +89,7 @@ namespace LegionKnight
                 foreach (ProjectileSpawn skill in m_Skills)
                 {
                     skill.LoadProjectile(m_AbilityDefinition);
-                }
+                }   
             }
         }
         private void SpawnRandomProjectile()

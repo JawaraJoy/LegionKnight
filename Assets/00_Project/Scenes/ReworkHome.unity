@@ -9622,7 +9622,9 @@ MonoBehaviour:
         AnimateRotationTarget: {fileID: 125656654}
         Mode: 0
         RotationSpace: 0
+        MovementMode: 0
         AnimateRotationDuration: 2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0
         RemapCurveOne: 360
         AnimateX: 0
@@ -10551,7 +10553,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 205257511}
+        MovementMode: 0
         AnimateScaleDuration: 0.2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 1
         RemapCurveOne: 2
         Offset: 0
@@ -15861,7 +15865,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 205257511}
+        MovementMode: 0
         AnimateScaleDuration: 0.2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0
         RemapCurveOne: 1
         Offset: 0
@@ -36758,7 +36764,9 @@ MonoBehaviour:
         AnimateRotationTarget: {fileID: 512669714}
         Mode: 0
         RotationSpace: 0
+        MovementMode: 0
         AnimateRotationDuration: 2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0
         RemapCurveOne: 360
         AnimateX: 0
@@ -39500,40 +39508,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
---- !u!21 &552405690
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: InvertMaskRuntimeMat
-  m_Shader: {fileID: 4800000, guid: f1f1223567b0fe14cbc538e03eb37bcb, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _HoleRadius: 0.1
-    m_Colors:
-    - _HoleRect: {r: 0.5, g: 0.5, b: 0.3, a: 0.2}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &553998315
 GameObject:
   m_ObjectHideFlags: 0
@@ -48453,6 +48427,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3782978526680881856, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
+      propertyPath: m_PlayerDamageBuff
+      value: 
+      objectReference: {fileID: 890991346}
     - target: {fileID: 4100454708745203695, guid: d6ba31941bb236c4897e32953dc7587f, type: 3}
       propertyPath: managedReferences[7626186581857796338].BoundSpriteRenderer
       value: 
@@ -66179,8 +66157,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 890991345}
+  - component: {fileID: 890991346}
   m_Layer: 7
-  m_Name: Addiotional Damage
+  m_Name: Buff damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66201,6 +66180,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 428241683}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &890991346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 890991344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cecabdf4101497440aebbc06eb87f13f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.PlayerDamageBuff
+  m_DamageStat:
+    m_IsHeroScale: 0
+    m_Attack: 0
+    m_AttackRate: 1
+    m_Health: 0
+    m_Barrier: 0
+    m_AttackUpgrade: 0
+    m_AttackRateUpgrade: 0
+    m_HealthUpgrade: 0
+    m_ShieldUpgrade: 0
 --- !u!1 &891263058
 GameObject:
   m_ObjectHideFlags: 0
@@ -74541,7 +74542,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 1391526689}
+        MovementMode: 0
         AnimateScaleDuration: 1
+        AnimatePositionSpeed: 1
         RemapCurveZero: 1
         RemapCurveOne: 3
         Offset: 0
@@ -92858,6 +92861,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1315194244}
   m_CullTransparentMesh: 1
+--- !u!21 &1315488284
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: InvertMaskRuntimeMat
+  m_Shader: {fileID: 4800000, guid: f1f1223567b0fe14cbc538e03eb37bcb, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _HoleRadius: 0.1
+    m_Colors:
+    - _HoleRect: {r: 0.5, g: 0.5, b: 0.3, a: 0.2}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1315927529
 GameObject:
   m_ObjectHideFlags: 0
@@ -93180,7 +93217,9 @@ MonoBehaviour:
         AnimateRotationTarget: {fileID: 1317910929}
         Mode: 0
         RotationSpace: 0
+        MovementMode: 0
         AnimateRotationDuration: 2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0
         RemapCurveOne: 360
         AnimateX: 0
@@ -113090,7 +113129,9 @@ MonoBehaviour:
         AnimateRotationTarget: {fileID: 1600900326}
         Mode: 0
         RotationSpace: 0
+        MovementMode: 0
         AnimateRotationDuration: 2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0
         RemapCurveOne: 360
         AnimateX: 0
@@ -139898,7 +139939,9 @@ MonoBehaviour:
         AnimateRotationTarget: {fileID: 1973110090}
         Mode: 0
         RotationSpace: 0
+        MovementMode: 0
         AnimateRotationDuration: 6
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0
         RemapCurveOne: 360
         AnimateX: 0
@@ -140378,7 +140421,9 @@ MonoBehaviour:
         AnimateRotationTarget: {fileID: 1973579837}
         Mode: 0
         RotationSpace: 0
+        MovementMode: 0
         AnimateRotationDuration: 2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0
         RemapCurveOne: 360
         AnimateX: 0
@@ -148374,7 +148419,9 @@ MonoBehaviour:
         AnimateRotationTarget: {fileID: 2064101954}
         Mode: 0
         RotationSpace: 0
+        MovementMode: 0
         AnimateRotationDuration: 2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0
         RemapCurveOne: 360
         AnimateX: 0
@@ -173880,7 +173927,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 5413376600931767406}
+        MovementMode: 0
         AnimateScaleDuration: 0.2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 1
         RemapCurveOne: 2
         Offset: 0
@@ -175408,7 +175457,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 4642513121852175179}
+        MovementMode: 0
         AnimateScaleDuration: 0.2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 1
         RemapCurveOne: 2
         Offset: 0
@@ -178873,7 +178924,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 212775862349191353}
+        MovementMode: 0
         AnimateScaleDuration: 0.2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 1
         RemapCurveOne: 2
         Offset: 0
@@ -182351,10 +182404,6 @@ PrefabInstance:
     - target: {fileID: 4904047336095579251, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
       propertyPath: m_OnInitialized.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5136120693805706730, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6224279411924951285, guid: 3761f1277b0450c459ec96be524821b8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -208083,7 +208132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 552405690}
+  m_Material: {fileID: 1315488284}
   m_Color: {r: 0, g: 0, b: 0, a: 0.09411765}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -221089,7 +221138,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 117623810990553875}
+        MovementMode: 0
         AnimateScaleDuration: 0.2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 1
         RemapCurveOne: 2
         Offset: 0
@@ -236404,7 +236455,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 2745629902916744791}
+        MovementMode: 0
         AnimateScaleDuration: 0.2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 1
         RemapCurveOne: 2
         Offset: 0
@@ -244821,7 +244874,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 5758634514826934764}
+        MovementMode: 0
         AnimateScaleDuration: 1
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0.7
         RemapCurveOne: 1
         Offset: 0
@@ -271160,7 +271215,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 2768469394322016056}
+        MovementMode: 0
         AnimateScaleDuration: 1
+        AnimatePositionSpeed: 1
         RemapCurveZero: 1
         RemapCurveOne: 2
         Offset: 0
@@ -320404,7 +320461,9 @@ MonoBehaviour:
         Mode: 0
         Space: 2
         RandomizeRemap: 0
+        MovementMode: 0
         AnimatePositionDuration: 0.2
+        AnimatePositionSpeed: 1
         AnimatePositionTween:
           MMTweenDefinitionType: 1
           MMTweenCurve: 4
@@ -349370,7 +349429,9 @@ MonoBehaviour:
         Mode: 0
         Space: 2
         RandomizeRemap: 0
+        MovementMode: 0
         AnimatePositionDuration: 1
+        AnimatePositionSpeed: 1
         AnimatePositionTween:
           MMTweenDefinitionType: 1
           MMTweenCurve: 4
@@ -349665,7 +349726,9 @@ MonoBehaviour:
         Mode: 0
         Space: 2
         RandomizeRemap: 0
+        MovementMode: 0
         AnimatePositionDuration: 3
+        AnimatePositionSpeed: 1
         AnimatePositionTween:
           MMTweenDefinitionType: 1
           MMTweenCurve: 4
@@ -375929,7 +375992,9 @@ MonoBehaviour:
         Mode: 0
         Space: 2
         RandomizeRemap: 0
+        MovementMode: 0
         AnimatePositionDuration: 0.2
+        AnimatePositionSpeed: 1
         AnimatePositionTween:
           MMTweenDefinitionType: 1
           MMTweenCurve: 4
@@ -382133,7 +382198,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 1655769275540982471}
+        MovementMode: 0
         AnimateScaleDuration: 2
+        AnimatePositionSpeed: 1
         RemapCurveZero: 1
         RemapCurveOne: 1.1
         Offset: 0
@@ -393742,7 +393809,9 @@ MonoBehaviour:
         DebugActive: 0
         Mode: 0
         AnimateScaleTarget: {fileID: 1770248230371568265}
+        MovementMode: 0
         AnimateScaleDuration: 0.5
+        AnimatePositionSpeed: 1
         RemapCurveZero: 0
         RemapCurveOne: 1
         Offset: 0
