@@ -13,13 +13,31 @@ MonoBehaviour:
   m_Name: ProfileDataSourceSettings
   m_EditorClassIdentifier: 
   profileGroupTypes:
+  - m_GroupTypePrefix: Automatic
+    m_Variables:
+    - m_Suffix: BuildPath
+      m_Value: CCDBuildData/ManagedEnvironment/ManagedBucket/ManagedBadge
+    - m_Suffix: EnvironmentName
+      m_Value: production
+    - m_Suffix: LoadPath
+      m_Value: https://2e84227d-0412-464d-b438-38d319c8f381.client-api.unity3dusercontent.com/client_api/v1/environments/{CcdManager.EnvironmentName}/buckets/{CcdManager.BucketId}/release_by_badge/{CcdManager.Badge}/entry_by_path/content/?path=
   - m_GroupTypePrefix: Built-In
     m_Variables:
     - m_Suffix: BuildPath
       m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
     - m_Suffix: LoadPath
       m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
-  environments: []
+  environments:
+  - id: 11750dfc-f7ef-4d5d-b287-79055445ad46
+    projectId: 2e84227d-0412-464d-b438-38d319c8f381
+    projectGenesisId: 2e84227d-0412-464d-b438-38d319c8f381
+    name: dev
+    isDefault: 0
+  - id: 2e648941-3d39-4220-84be-39edc8ca6516
+    projectId: 2e84227d-0412-464d-b438-38d319c8f381
+    projectGenesisId: 2e84227d-0412-464d-b438-38d319c8f381
+    name: production
+    isDefault: 1
   currentEnvironment:
     id: 
     projectId: 
