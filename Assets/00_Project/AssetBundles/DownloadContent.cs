@@ -12,10 +12,12 @@ namespace LegionKnight
         [SerializeField] private AssetLabelReference m_LabelToLoad;
 
         [Header("Events")]
-        [SerializeField] private UnityEvent m_OnDownloadStart;
+        [SerializeField] private UnityEvent m_OnInit;
         [SerializeField] private UnityEvent<float> m_OnDownloadProgress;
         [SerializeField] private UnityEvent<long> m_OnDownloadSizeFound; // bytes
         [SerializeField] private UnityEvent m_OnDownloadComplete;
+        [SerializeField] private UnityEvent m_OnContinue;
+        [SerializeField] private UnityEvent m_OnDownloadCanceled;
         [SerializeField] private UnityEvent<string> m_OnLogMessage; // optional UI log output
 
         private bool? m_UserConfirmed = null; // null = undecided, true = confirmed, false = canceled
@@ -26,6 +28,11 @@ namespace LegionKnight
             StartCoroutine(Initing());
         }
 
+        public void Continue()
+        {
+            m_OnContinue?.Invoke();
+        }
+
         private IEnumerator Initing()
         {
             if (m_LabelToLoad == null || string.IsNullOrEmpty(m_LabelToLoad.labelString))
@@ -34,7 +41,7 @@ namespace LegionKnight
                 yield break;
             }
 
-            m_OnDownloadStart?.Invoke();
+            m_OnInit?.Invoke();
             Log("Starting Addressables content check...");
 
             try
@@ -228,6 +235,16 @@ namespace LegionKnight
         {
             Debug.LogError($"[DownloadContent] {msg}");
             m_OnLogMessage?.Invoke($"ERROR: {msg}");
+        }
+    }
+
+    public partial class UnityService
+    {
+        [SerializeField]
+        private DownloadContent m_DownloadContent;
+        public DownloadContent GetDownloadContent()
+        {
+            return m_DownloadContent;
         }
     }
 }

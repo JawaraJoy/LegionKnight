@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class LoadingProgressTab : UIView
+    public class FailTab : UIView
     {
         
     }
