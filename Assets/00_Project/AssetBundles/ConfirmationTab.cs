@@ -29,10 +29,16 @@ namespace LegionKnight
             }
             return m_DownloadContent;
         }
-        public void SetDescription(long sizeDownload)
+        private void SetDescription(long sizeDownload)
         {
             string description = $"Additional content needs to be downloaded to continue. The download size is approximately {sizeDownload / (1024 * 1024)} MB.";
             m_DescriptionText.text = description;
+        }
+
+        public void ConfirDownload(long sizeDownload)
+        {
+            SetDescription(sizeDownload);
+            ShowInternal();
         }
 
         private void Confirm()
@@ -48,8 +54,22 @@ namespace LegionKnight
 
         private void OnDestroy()
         {
-            
+            m_CancelButton.onClick.RemoveListener(Cancel);
+            m_DownloadButton.onClick.RemoveListener(Confirm);
         }
 
+    }
+
+    public partial class DownloadContent
+    {
+        private ConfirmationTab m_ConfirmationTab;
+        private ConfirmationTab GetConfirmationTab()
+        {
+            if (m_ConfirmationTab == null)
+            {
+                m_ConfirmationTab = GetDownloadPanel().GetBinding<ConfirmationTab>();
+            }
+            return m_ConfirmationTab;
+        }
     }
 }

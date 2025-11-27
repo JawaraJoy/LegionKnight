@@ -6,7 +6,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
-    public class DownloadContent : MonoBehaviour
+    public partial class DownloadContent : MonoBehaviour
     {
         [Header("Select your Addressable Label")]
         [SerializeField] private AssetLabelReference m_LabelToLoad;
@@ -23,6 +23,15 @@ namespace LegionKnight
         private bool? m_UserConfirmed = null; // null = undecided, true = confirmed, false = canceled
         private static bool s_Initialized = false; // cache initialization flag
 
+        private DownloadPanel m_DownloadPanel;
+        private DownloadPanel GetDownloadPanel()
+        {
+            if (m_DownloadPanel == null)
+            {
+                m_DownloadPanel = GameManager.Instance.GetPanel<DownloadPanel>();
+            }
+            return m_DownloadPanel;
+        }
         public void Init()
         {
             StartCoroutine(Initing());
@@ -64,6 +73,7 @@ namespace LegionKnight
             finally
             {
                 m_OnDownloadComplete?.Invoke();
+                GetCompleteTab().Show();
             }
         }
 
@@ -151,6 +161,7 @@ namespace LegionKnight
 
             m_OnDownloadSizeFound?.Invoke(downloadSize);
             Log($"New content available! Size: {downloadSize / (1024f * 1024f):F2} MB");
+            GetConfirmationTab().ConfirDownload(downloadSize);
 
             // Wait for player confirmation
             m_UserConfirmed = null;
@@ -159,10 +170,11 @@ namespace LegionKnight
             if (m_UserConfirmed == false)
             {
                 Log("Download canceled by user. Quitting game...");
+                GetFailTab().Show();
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #else
-                Application.Quit();
+                
 #endif
                 callback?.Invoke(false);
                 yield break;
@@ -174,6 +186,7 @@ namespace LegionKnight
             while (!downloadHandle.IsDone)
             {
                 m_OnDownloadProgress?.Invoke(downloadHandle.PercentComplete);
+                GetLoadingProgressTab().SetProgress(downloadHandle.PercentComplete);
                 yield return null;
             }
 
@@ -181,6 +194,7 @@ namespace LegionKnight
             {
                 Log("Download completed successfully!");
                 m_OnDownloadProgress?.Invoke(1f);
+                GetLoadingProgressTab().SetProgress(downloadHandle.PercentComplete);
                 callback?.Invoke(true);
             }
             else
@@ -196,9 +210,9 @@ namespace LegionKnight
         {
             Log($"Loading assets with label: {m_LabelToLoad.labelString}");
 
-            var loadHandle = Addressables.LoadAssetsAsync<GameObject>(m_LabelToLoad, obj =>
+            var loadHandle = Addressables.LoadAssetsAsync<Object>(m_LabelToLoad, asset =>
             {
-                Instantiate(obj);
+                Debug.Log("Loaded asset: " + asset.name + " (" + asset.GetType() + ")");
             });
 
             yield return loadHandle;
@@ -215,7 +229,11 @@ namespace LegionKnight
         public void ConfirmDownload() => m_UserConfirmed = true;
 
         // Called by UI when player cancels
-        public void CancelDownload() => m_UserConfirmed = false;
+        public void CancelDownload()
+        {
+            m_UserConfirmed = false;
+            m_OnDownloadCanceled?.Invoke();
+        }
 
         // Utility: Safe handle release
         private void SafeRelease(AsyncOperationHandle handle)

@@ -27,6 +27,20 @@ namespace LegionKnight
         private void OnContinueButtonPressed()
         {
             GetDownloadContent().Continue();
+            HideInternal();
+        }
+    }
+
+    public partial class DownloadContent
+    {
+        private CompleteTab m_CompleteTab;
+        private CompleteTab GetCompleteTab()
+        {
+            if (m_CompleteTab == null)
+            {
+                m_CompleteTab = GetDownloadPanel().GetBinding<CompleteTab>();
+            }
+            return m_CompleteTab;
         }
     }
 }
