@@ -73,6 +73,7 @@ namespace LegionKnight
             finally
             {
                 m_OnDownloadComplete?.Invoke();
+                GetDownloadPanel().Show();
                 GetCompleteTab().Show();
             }
         }
@@ -97,6 +98,9 @@ namespace LegionKnight
             else
             {
                 LogError("Failed to initialize Addressables!");
+
+                GetDownloadPanel().Show();
+                GetFailTab().Show();
             }
 
             SafeRelease(initHandle);
@@ -115,10 +119,15 @@ namespace LegionKnight
                 yield return updateHandle;
 
                 if (updateHandle.Status == AsyncOperationStatus.Succeeded)
+                {
                     Log("Catalog updated successfully.");
+                }   
                 else
+                {
                     LogError("Catalog update failed!");
-
+                    GetDownloadPanel().Show();
+                    GetFailTab().Show();
+                }
                 SafeRelease(updateHandle);
             }
             else if (checkHandle.Status == AsyncOperationStatus.Succeeded)
@@ -128,6 +137,8 @@ namespace LegionKnight
             else
             {
                 LogError("Failed to check for catalog updates!");
+                GetDownloadPanel().Show();
+                GetFailTab().Show();
             }
 
             SafeRelease(checkHandle);
@@ -145,6 +156,8 @@ namespace LegionKnight
                 LogError("Failed to check download size.");
                 SafeRelease(sizeHandle);
                 callback?.Invoke(false);
+                GetDownloadPanel().Show();
+                GetFailTab().Show();
                 yield break;
             }
 
@@ -156,11 +169,13 @@ namespace LegionKnight
                 Log("All assets already cached. Skipping download.");
                 m_OnDownloadProgress?.Invoke(1f);
                 callback?.Invoke(true);
+                m_OnContinue?.Invoke();
                 yield break;
             }
 
             m_OnDownloadSizeFound?.Invoke(downloadSize);
             Log($"New content available! Size: {downloadSize / (1024f * 1024f):F2} MB");
+            GetDownloadPanel().Show();
             GetConfirmationTab().ConfirDownload(downloadSize);
 
             // Wait for player confirmation
@@ -170,11 +185,10 @@ namespace LegionKnight
             if (m_UserConfirmed == false)
             {
                 Log("Download canceled by user. Quitting game...");
+                GetDownloadPanel().Show();
                 GetFailTab().Show();
 #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-#else
-                
+                UnityEditor.EditorApplication.isPlaying = false;               
 #endif
                 callback?.Invoke(false);
                 yield break;
@@ -182,7 +196,8 @@ namespace LegionKnight
 
             Log("Starting content download...");
             var downloadHandle = Addressables.DownloadDependenciesAsync(m_LabelToLoad, true);
-
+            //GetLoadingProgressTab().Show();
+            GetLoadingProgressTab().LogMessage("Download started.");
             while (!downloadHandle.IsDone)
             {
                 m_OnDownloadProgress?.Invoke(downloadHandle.PercentComplete);
@@ -194,6 +209,7 @@ namespace LegionKnight
             {
                 Log("Download completed successfully!");
                 m_OnDownloadProgress?.Invoke(1f);
+                GetLoadingProgressTab().LogMessage("Download completed.");
                 GetLoadingProgressTab().SetProgress(downloadHandle.PercentComplete);
                 callback?.Invoke(true);
             }
@@ -201,9 +217,13 @@ namespace LegionKnight
             {
                 LogError("Download failed!");
                 callback?.Invoke(false);
+                GetDownloadPanel().Show();
+                GetFailTab().Show();
             }
 
             SafeRelease(downloadHandle);
+            yield return new WaitForSeconds(1f); // brief pause before proceeding
+            GetLoadingProgressTab().Hide();
         }
 
         private IEnumerator LoadAssetsFromLabel()
@@ -218,10 +238,15 @@ namespace LegionKnight
             yield return loadHandle;
 
             if (loadHandle.Status == AsyncOperationStatus.Succeeded)
+            {
                 Log($"Loaded {loadHandle.Result.Count} assets (from cache or cloud).");
+            }    
             else
+            {
                 LogError("Failed to load assets!");
-
+                GetDownloadPanel().Show();
+                GetFailTab().Show();
+            }
             SafeRelease(loadHandle);
         }
 
