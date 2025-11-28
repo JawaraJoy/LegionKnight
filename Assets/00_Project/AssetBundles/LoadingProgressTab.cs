@@ -15,7 +15,7 @@ namespace LegionKnight
         public void SetProgress(float progress)
         {
             m_ProgressBar.value = progress;
-            m_PercentageText.text = $"Downloading content... {progress * 100f:0.00}%";
+            m_PercentageText.text = $"{progress * 100f:0.00}%";
         }
 
         public void LogMessage(string message)
