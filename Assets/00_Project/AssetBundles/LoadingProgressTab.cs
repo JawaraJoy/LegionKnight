@@ -20,20 +20,7 @@ namespace LegionKnight
 
         public void LogMessage(string message)
         {
-            m_LogText.text += message + "\n";
-        }
-    }
-
-    public partial class DownloadContent
-    {
-        private LoadingProgressTab m_LoadingProgressTab;
-        private LoadingProgressTab GetLoadingProgressTab()
-        {
-            if (m_LoadingProgressTab == null)
-            {
-                m_LoadingProgressTab = GetDownloadPanel().GetBinding<LoadingProgressTab>();
-            }
-            return m_LoadingProgressTab;
+            m_LogText.text = message + "\n";
         }
     }
 }

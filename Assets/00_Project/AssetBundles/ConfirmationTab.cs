@@ -43,12 +43,12 @@ namespace LegionKnight
 
         private void Confirm()
         {
-            GetDownloadContent().ConfirmDownload();
+            GetDownloadContent().Confirm();
             HideInternal();
         }
         private void Cancel()
         {
-            GetDownloadContent().CancelDownload();
+            GetDownloadContent().Cancel();
             Application.Quit();
         }
 
@@ -58,18 +58,5 @@ namespace LegionKnight
             m_DownloadButton.onClick.RemoveListener(Confirm);
         }
 
-    }
-
-    public partial class DownloadContent
-    {
-        private ConfirmationTab m_ConfirmationTab;
-        private ConfirmationTab GetConfirmationTab()
-        {
-            if (m_ConfirmationTab == null)
-            {
-                m_ConfirmationTab = GetDownloadPanel().GetBinding<ConfirmationTab>();
-            }
-            return m_ConfirmationTab;
-        }
     }
 }

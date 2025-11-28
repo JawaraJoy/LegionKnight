@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f95660b1afb64c34b8b7a9456c25d96a, type: 3}
+  m_Name: Killjoy
+  m_EditorClassIdentifier: 
+  m_Id: cegilhalu
+  m_Label: KillJoy
+  m_Description: 
+  m_Icon: {fileID: 21300000, guid: 46d34fa8ed243ff4b9e80d46352ff46e, type: 3}
+  m_SmallIcon: {fileID: 21300000, guid: 4042855532f8b0b44be98765a29c18dc, type: 3}
+  m_TypeIcon: {fileID: 21300000, guid: 863d316d976504fc5a3734b33e10c55e, type: 3}
+  m_Rarity: 2
+  m_ColorRarity: {r: 0.6512462, g: 0.38959593, b: 0.9716981, a: 1}
+  m_StartingStars: 0
+  m_BreakThrough: {fileID: 11400000, guid: d389d3450c916c548aedae0a234bfd20, type: 2}
+  m_CharacterPrefab:
+    m_AssetGUID: 5ddb50e7e8e86b44fba53d0db5329aa0
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  m_BaseStat:
+    m_Attack: 50
+    m_Defense: 25
+    m_Health: 425
+  m_StatGainPerLevel:
+    m_Attack: 6
+    m_Defense: 2
+    m_Health: 19
+  m_ShardConvert:
+    m_CurrencyDefinition: {fileID: 11400000, guid: 566c0394cc9392c46a3f13e64ebd0add, type: 2}
+    m_Amount: 20
+    m_OnCurrencyAmountChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    m_OnCurrencyAmountGet:
+      m_PersistentCalls:
+        m_Calls: []
+  m_UniquePlatform: {fileID: 11400000, guid: 6f512fab36d4fad48b0cf7db58d3a4b5, type: 2}
+  m_Weapons:
+  - m_SkillName: Basic Attack
+    m_Description: 
+    m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
+    m_ManaThreshold: 0
+    m_SkillAsset:
+    - m_AssetGUID: 211c613e6402cba49b26a8dab188b0f5
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - m_SkillName: Super Attack
+    m_Description: 
+    m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
+    m_ManaThreshold: 0
+    m_SkillAsset:
+    - m_AssetGUID: b595721450d065e469c32777b712cf9b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - m_SkillName: Double Super Attack
+    m_Description: 
+    m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
+    m_ManaThreshold: 0
+    m_SkillAsset:
+    - m_AssetGUID: 11aef673d72dc6b4d9f990554a98fe93
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - m_SkillName: Triple Super Attack
+    m_Description: 
+    m_Icon: {fileID: 0}
+    m_AbilityDefinition: {fileID: 0}
+    m_ManaThreshold: 0
+    m_SkillAsset:
+    - m_AssetGUID: 1e541ee40017bed4986df980af90ac21
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  m_Passives:
+  - m_SkillName: Wild Shot
+    m_Description: 
+    m_Icon: {fileID: 21300000, guid: 2dc08c4b3439189489c660c738e2918c, type: 3}
+    m_AbilityDefinition: {fileID: 11400000, guid: 865ce19a1d85917448f21d5108c12d0b, type: 2}
+    m_ManaThreshold: 125
+    m_SkillAsset:
+    - m_AssetGUID: cd7bb9e5f9714794a9f524d8c127e729
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0

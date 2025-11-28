@@ -23,24 +23,13 @@ namespace LegionKnight
         {
             m_ContinueButton.onClick.AddListener(OnContinueButtonPressed);
         }
-
+        private DownloadPanel _panel;
+        private DownloadPanel Panel => _panel ??= GameManager.Instance.GetPanel<DownloadPanel>();
         private void OnContinueButtonPressed()
         {
-            GetDownloadContent().Continue();
+            GetDownloadContent().OnContinueAfterSuccessPublic.Invoke();
             HideInternal();
-        }
-    }
-
-    public partial class DownloadContent
-    {
-        private CompleteTab m_CompleteTab;
-        private CompleteTab GetCompleteTab()
-        {
-            if (m_CompleteTab == null)
-            {
-                m_CompleteTab = GetDownloadPanel().GetBinding<CompleteTab>();
-            }
-            return m_CompleteTab;
+            Panel.Hide();
         }
     }
 }

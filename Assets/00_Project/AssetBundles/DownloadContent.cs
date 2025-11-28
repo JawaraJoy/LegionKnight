@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -9,282 +9,353 @@ namespace LegionKnight
     public partial class DownloadContent : MonoBehaviour
     {
         [Header("Select your Addressable Label")]
-        [SerializeField] private AssetLabelReference m_LabelToLoad;
+        [SerializeField] private AssetLabelReference m_Label;
 
-        [Header("Events")]
-        [SerializeField] private UnityEvent m_OnInit;
-        [SerializeField] private UnityEvent<float> m_OnDownloadProgress;
-        [SerializeField] private UnityEvent<long> m_OnDownloadSizeFound; // bytes
-        [SerializeField] private UnityEvent m_OnDownloadComplete;
-        [SerializeField] private UnityEvent m_OnContinue;
-        [SerializeField] private UnityEvent m_OnDownloadCanceled;
-        [SerializeField] private UnityEvent<string> m_OnLogMessage; // optional UI log output
+        [Header("UI Events")]
+        [SerializeField] private UnityEvent OnInit;
+        [SerializeField] private UnityEvent OnShowConfirmation;
+        [SerializeField] private UnityEvent OnShowProgress;
+        [SerializeField] private UnityEvent OnShowSuccess;
+        [SerializeField] private UnityEvent OnContinueAfterSuccess;
+        [SerializeField] private UnityEvent OnShowFail;
 
-        private bool? m_UserConfirmed = null; // null = undecided, true = confirmed, false = canceled
-        private static bool s_Initialized = false; // cache initialization flag
+        [SerializeField] private UnityEvent<long> OnSizeFound;
+        [SerializeField] private UnityEvent<float> OnProgress;
+        [SerializeField] private UnityEvent<string> OnLog;
 
-        private DownloadPanel m_DownloadPanel;
-        private DownloadPanel GetDownloadPanel()
+        private bool? m_UserDecision = null;
+        private static bool s_Initialized;
+
+        public UnityEvent OnContinueAfterSuccessPublic => OnContinueAfterSuccess;
+
+        // --- UI Bindings ---
+        private DownloadPanel _panel;
+        private DownloadPanel Panel => _panel ??= GameManager.Instance.GetPanel<DownloadPanel>();
+
+        private ConfirmationTab _confirmation;
+        private ConfirmationTab Confirmation =>
+            _confirmation ??= Panel.GetBinding<ConfirmationTab>();
+
+        private LoadingProgressTab _progress;
+        private LoadingProgressTab Progress =>
+            _progress ??= Panel.GetBinding<LoadingProgressTab>();
+
+        private CompleteTab _complete;
+        private CompleteTab Complete =>
+            _complete ??= Panel.GetBinding<CompleteTab>();
+
+        private FailTab _fail;
+        private FailTab Fail =>
+            _fail ??= Panel.GetBinding<FailTab>();
+
+        // ---------------------------------------------------------------
+        // PUBLIC METHODS
+        // ---------------------------------------------------------------
+        public void Init() => StartCoroutine(Process());
+
+        public void Confirm() => m_UserDecision = true;
+        public void Cancel() => m_UserDecision = false;
+
+        // ---------------------------------------------------------------
+        // MAIN FLOW
+        // ---------------------------------------------------------------
+        private IEnumerator Process()
         {
-            if (m_DownloadPanel == null)
+            HideAllTabs();
+
+            OnInit?.Invoke();
+            Log("Started downloadable content check...");
+
+            // 1. Addressables init
+            yield return InitializeAddressables();
+            if (!s_Initialized)
+                yield break;
+
+            // 2. Catalog check
+            yield return CheckCatalogUpdates();
+
+            // 3. Detect required download size
+            bool canContinue = false;
+            yield return CheckDependencies(result => canContinue = result);
+
+            if (!canContinue)
+                yield break;
+
+            // 4. Load assets (optional, recommended)
+            bool loadSuccess = false;
+            yield return LoadAssets(result => loadSuccess = result);
+
+            if (!loadSuccess)
             {
-                m_DownloadPanel = GameManager.Instance.GetPanel<DownloadPanel>();
-            }
-            return m_DownloadPanel;
-        }
-        public void Init()
-        {
-            StartCoroutine(Initing());
-        }
-
-        public void Continue()
-        {
-            m_OnContinue?.Invoke();
-        }
-
-        private IEnumerator Initing()
-        {
-            if (m_LabelToLoad == null || string.IsNullOrEmpty(m_LabelToLoad.labelString))
-            {
-                LogError("Label not assigned. Aborting.");
+                ShowFail("Asset loading failed.");
                 yield break;
             }
 
-            m_OnInit?.Invoke();
-            Log("Starting Addressables content check...");
-
-            try
-            {
-                yield return InitializeAddressables();
-                yield return CheckAndUpdateCatalog();
-
-                bool proceed = false;
-                yield return EnsureDependencies(result => proceed = result);
-
-                if (proceed)
-                {
-                    yield return LoadAssetsFromLabel();
-                }
-                else
-                {
-                    Log("Download canceled or failed. Skipping load.");
-                }
-            }
-            finally
-            {
-                m_OnDownloadComplete?.Invoke();
-                GetDownloadPanel().Show();
-                GetCompleteTab().Show();
-            }
+            // 5. Success
+            ShowSuccess("All content is ready.");
         }
 
+        // ---------------------------------------------------------------
+        // INITIALIZATION
+        // ---------------------------------------------------------------
         private IEnumerator InitializeAddressables()
         {
             if (s_Initialized)
+                yield break;
+
+            Log("Initializing Addressables...");
+            var handle = Addressables.InitializeAsync();
+            yield return handle;
+
+            if (handle.Status == AsyncOperationStatus.Succeeded)
             {
-                Log("Addressables already initialized. Skipping re-init.");
+                s_Initialized = true;
+                Log("Addressables initialized.");
+            }
+            else
+            {
+                ShowFail("Failed to initialize Addressables.");
+            }
+
+            SafeRelease(handle);
+        }
+
+        // ---------------------------------------------------------------
+        // CATALOG UPDATE
+        // ---------------------------------------------------------------
+        private IEnumerator CheckCatalogUpdates()
+        {
+            Log("Checking catalog updates...");
+
+            var check = Addressables.CheckForCatalogUpdates(false);
+            yield return check;
+
+            if (check.Status != AsyncOperationStatus.Succeeded)
+            {
+                ShowFail("Catalog check failed.");
+                SafeRelease(check);
                 yield break;
             }
 
-            Log("Initializing Addressables...");
-            var initHandle = Addressables.InitializeAsync();
-            yield return initHandle;
-
-            if (initHandle.Status == AsyncOperationStatus.Succeeded)
-            {
-                Log("Addressables initialized successfully.");
-                s_Initialized = true;
-            }
-            else
-            {
-                LogError("Failed to initialize Addressables!");
-
-                GetDownloadPanel().Show();
-                GetFailTab().Show();
-            }
-
-            SafeRelease(initHandle);
-        }
-
-        private IEnumerator CheckAndUpdateCatalog()
-        {
-            Log("Checking for content updates...");
-            var checkHandle = Addressables.CheckForCatalogUpdates(false);
-            yield return checkHandle;
-
-            if (checkHandle.Status == AsyncOperationStatus.Succeeded && checkHandle.Result.Count > 0)
-            {
-                Log($"Catalog update found ({checkHandle.Result.Count}). Updating...");
-                var updateHandle = Addressables.UpdateCatalogs(checkHandle.Result);
-                yield return updateHandle;
-
-                if (updateHandle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    Log("Catalog updated successfully.");
-                }   
-                else
-                {
-                    LogError("Catalog update failed!");
-                    GetDownloadPanel().Show();
-                    GetFailTab().Show();
-                }
-                SafeRelease(updateHandle);
-            }
-            else if (checkHandle.Status == AsyncOperationStatus.Succeeded)
+            if (check.Result.Count == 0)
             {
                 Log("No catalog updates found.");
-            }
-            else
-            {
-                LogError("Failed to check for catalog updates!");
-                GetDownloadPanel().Show();
-                GetFailTab().Show();
+                SafeRelease(check);
+                yield break;
             }
 
-            SafeRelease(checkHandle);
+            Log($"Catalog updates found: {check.Result.Count}. Updating...");
+            var update = Addressables.UpdateCatalogs(check.Result);
+            yield return update;
+
+            if (update.Status == AsyncOperationStatus.Succeeded)
+                Log("Catalog updated.");
+            else
+                ShowFail("Catalog update failed.");
+
+            SafeRelease(check);
+            SafeRelease(update);
         }
 
-        private IEnumerator EnsureDependencies(System.Action<bool> callback)
+        // ---------------------------------------------------------------
+        // DOWNLOAD SIZE CHECK + CONFIRMATION UI
+        // ---------------------------------------------------------------
+        private IEnumerator CheckDependencies(System.Action<bool> result)
         {
-            Log($"Checking local cache for label: {m_LabelToLoad.labelString}");
+            Log("Checking download size...");
 
-            var sizeHandle = Addressables.GetDownloadSizeAsync(m_LabelToLoad);
+            var sizeHandle = Addressables.GetDownloadSizeAsync(m_Label);
             yield return sizeHandle;
 
             if (sizeHandle.Status != AsyncOperationStatus.Succeeded)
             {
-                LogError("Failed to check download size.");
-                SafeRelease(sizeHandle);
-                callback?.Invoke(false);
-                GetDownloadPanel().Show();
-                GetFailTab().Show();
+                ShowFail("Failed to read download size.");
+                result(false);
                 yield break;
             }
 
-            long downloadSize = sizeHandle.Result;
+            long size = sizeHandle.Result;
             SafeRelease(sizeHandle);
 
-            if (downloadSize <= 0)
+            if (size <= 0)
             {
-                Log("All assets already cached. Skipping download.");
-                m_OnDownloadProgress?.Invoke(1f);
-                callback?.Invoke(true);
-                m_OnContinue?.Invoke();
+                Log("All content is already cached.");
+                result(true);
                 yield break;
             }
 
-            m_OnDownloadSizeFound?.Invoke(downloadSize);
-            Log($"New content available! Size: {downloadSize / (1024f * 1024f):F2} MB");
-            GetDownloadPanel().Show();
-            GetConfirmationTab().ConfirDownload(downloadSize);
+            // UI: Ask player
+            Panel.Show();
+            OnSizeFound?.Invoke(size);
+            Confirmation.ConfirDownload(size);
+            OnShowConfirmation?.Invoke();
 
-            // Wait for player confirmation
-            m_UserConfirmed = null;
-            yield return new WaitUntil(() => m_UserConfirmed.HasValue);
+            m_UserDecision = null;
+            yield return new WaitUntil(() => m_UserDecision.HasValue);
 
-            if (m_UserConfirmed == false)
+            // If player cancels
+            if (m_UserDecision == false)
             {
-                Log("Download canceled by user. Quitting game...");
-                GetDownloadPanel().Show();
-                GetFailTab().Show();
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;               
-#endif
-                callback?.Invoke(false);
+                ShowFail("User canceled download.");
+                result(false);
                 yield break;
             }
 
-            Log("Starting content download...");
-            var downloadHandle = Addressables.DownloadDependenciesAsync(m_LabelToLoad, true);
-            //GetLoadingProgressTab().Show();
-            GetLoadingProgressTab().LogMessage("Download started.");
-            while (!downloadHandle.IsDone)
+            // Player agreed → start download
+            bool downloadSuccess = false;
+            yield return DownloadContentAsync(size, res => downloadSuccess = res);
+
+            result(downloadSuccess);
+        }
+
+        // ---------------------------------------------------------------
+        // DOWNLOAD CONTENT WITH SMOOTH PROGRESS
+        // ---------------------------------------------------------------
+        private IEnumerator DownloadContentAsync(long size, System.Action<bool> callback)
+        {
+            Log($"Downloading {size / (1024f * 1024f):F2} MB...");
+
+            Panel.Show();
+            OnShowProgress?.Invoke();
+            Progress.Show();
+
+            var download = Addressables.DownloadDependenciesAsync(m_Label, true);
+
+            float nextUpdate = 0f;
+
+            while (!download.IsDone)
             {
-                m_OnDownloadProgress?.Invoke(downloadHandle.PercentComplete);
-                GetLoadingProgressTab().SetProgress(downloadHandle.PercentComplete);
+                float p = download.PercentComplete;
+                OnProgress?.Invoke(p);
+
+                if (Time.time > nextUpdate)
+                {
+                    Progress.LogMessage($"Downloading... {(p * 100f):F1}%");
+                    nextUpdate = Time.time + 0.15f;
+                }
+
                 yield return null;
             }
 
-            if (downloadHandle.Status == AsyncOperationStatus.Succeeded)
-            {
-                Log("Download completed successfully!");
-                m_OnDownloadProgress?.Invoke(1f);
-                GetLoadingProgressTab().LogMessage("Download completed.");
-                GetLoadingProgressTab().SetProgress(downloadHandle.PercentComplete);
-                callback?.Invoke(true);
-            }
-            else
-            {
-                LogError("Download failed!");
-                callback?.Invoke(false);
-                GetDownloadPanel().Show();
-                GetFailTab().Show();
-            }
+            bool success = download.Status == AsyncOperationStatus.Succeeded;
 
-            SafeRelease(downloadHandle);
-            yield return new WaitForSeconds(1f); // brief pause before proceeding
-            GetLoadingProgressTab().Hide();
+            SafeRelease(download);
+            Progress.Hide();
+
+            Log(success ? "Download completed." : "Download failed.");
+
+            callback(success);
         }
 
-        private IEnumerator LoadAssetsFromLabel()
+        // ---------------------------------------------------------------
+        // LOAD DOWNLOADED ASSETS (optional)
+        // ---------------------------------------------------------------
+        private IEnumerator LoadAssets(System.Action<bool> callback)
         {
-            Log($"Loading assets with label: {m_LabelToLoad.labelString}");
+            Log("Loading downloaded assets...");
 
-            var loadHandle = Addressables.LoadAssetsAsync<Object>(m_LabelToLoad, asset =>
-            {
-                Debug.Log("Loaded asset: " + asset.name + " (" + asset.GetType() + ")");
-            });
+            var locHandle = Addressables.LoadResourceLocationsAsync(m_Label);
+            yield return locHandle;
 
-            yield return loadHandle;
-
-            if (loadHandle.Status == AsyncOperationStatus.Succeeded)
+            if (locHandle.Status != AsyncOperationStatus.Succeeded)
             {
-                Log($"Loaded {loadHandle.Result.Count} assets (from cache or cloud).");
-            }    
-            else
-            {
-                LogError("Failed to load assets!");
-                GetDownloadPanel().Show();
-                GetFailTab().Show();
+                SafeRelease(locHandle);
+                callback(false);
+                yield break;
             }
-            SafeRelease(loadHandle);
+
+            var locations = locHandle.Result;
+            int total = locations.Count;
+            int loaded = 0;
+
+            Panel.Show();
+            OnShowProgress?.Invoke();
+            Progress.Show();
+
+            foreach (var loc in locations)
+            {
+                var h = Addressables.LoadAssetAsync<Object>(loc);
+                yield return h;
+
+                if (h.Status != AsyncOperationStatus.Succeeded)
+                {
+                    LogError("Asset load failed.");
+                    SafeRelease(h);
+                    SafeRelease(locHandle);
+                    Progress.Hide();
+                    callback(false);
+                    yield break;
+                }
+
+                loaded++;
+                float p = loaded / (float)total;
+                OnProgress?.Invoke(p);
+                Progress.LogMessage($"Loading... {(p * 100f):F1}%");
+
+                SafeRelease(h);
+                yield return null;
+            }
+
+            SafeRelease(locHandle);
+            Progress.Hide();
+            callback(true);
         }
 
-        // Called by UI when player confirms
-        public void ConfirmDownload() => m_UserConfirmed = true;
-
-        // Called by UI when player cancels
-        public void CancelDownload()
+        // ---------------------------------------------------------------
+        // UI HELPERS
+        // ---------------------------------------------------------------
+        private void HideAllTabs()
         {
-            m_UserConfirmed = false;
-            m_OnDownloadCanceled?.Invoke();
+            Confirmation.Hide();
+            Progress.Hide();
+            Complete.Hide();
+            Fail.Hide();
         }
 
-        // Utility: Safe handle release
+        private void ShowSuccess(string msg)
+        {
+            HideAllTabs();
+            Panel.Show();
+            Complete.Show();
+            Log(msg);
+            OnShowSuccess?.Invoke();
+        }
+
+        private void ShowFail(string msg)
+        {
+            HideAllTabs();
+            Panel.Show();
+            Fail.Show();
+            LogError(msg);
+            OnShowFail?.Invoke();
+        }
+
+        // ---------------------------------------------------------------
+        // UTILITY
+        // ---------------------------------------------------------------
         private void SafeRelease(AsyncOperationHandle handle)
         {
             if (handle.IsValid())
                 Addressables.Release(handle);
         }
 
-        // Logging helpers
         private void Log(string msg)
         {
-            Debug.Log($"[DownloadContent] {msg}");
-            m_OnLogMessage?.Invoke(msg);
+            Debug.Log("[DownloadContent] " + msg);
+            OnLog?.Invoke(msg);
         }
 
         private void LogError(string msg)
         {
-            Debug.LogError($"[DownloadContent] {msg}");
-            m_OnLogMessage?.Invoke($"ERROR: {msg}");
+            Debug.LogError("[DownloadContent ERROR] " + msg);
+            OnLog?.Invoke("ERROR: " + msg);
         }
     }
-
     public partial class UnityService
     {
         [SerializeField]
         private DownloadContent m_DownloadContent;
+
         public DownloadContent GetDownloadContent()
         {
             return m_DownloadContent;
