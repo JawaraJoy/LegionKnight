@@ -8,7 +8,7 @@ namespace LegionKnight
 {
     public partial class DownloadContent : MonoBehaviour
     {
-        [Header("Select your Addressable Label")]
+        [Header("Select Label")]
         [SerializeField] private AssetLabelReference m_Label;
 
         [Header("UI Events")]
@@ -28,25 +28,14 @@ namespace LegionKnight
 
         public UnityEvent OnContinueAfterSuccessPublic => OnContinueAfterSuccess;
 
-        // --- UI Bindings ---
-        private DownloadPanel _panel;
-        private DownloadPanel Panel => _panel ??= GameManager.Instance.GetPanel<DownloadPanel>();
+        // UI panels
+        private DownloadPanel Panel => GameManager.Instance.GetPanel<DownloadPanel>();
+        private ConfirmationTab ConfirmTab => Panel.GetBinding<ConfirmationTab>();
+        private LoadingProgressTab ProgressTab => Panel.GetBinding<LoadingProgressTab>();
+        private CompleteTab CompleteTab => Panel.GetBinding<CompleteTab>();
+        private FailTab FailTab => Panel.GetBinding<FailTab>();
 
-        private ConfirmationTab _confirmation;
-        private ConfirmationTab Confirmation => _confirmation ??= Panel.GetBinding<ConfirmationTab>();
-
-        private LoadingProgressTab _progress;
-        private LoadingProgressTab Progress => _progress ??= Panel.GetBinding<LoadingProgressTab>();
-
-        private CompleteTab _complete;
-        private CompleteTab Complete => _complete ??= Panel.GetBinding<CompleteTab>();
-
-        private FailTab _fail;
-        private FailTab Fail => _fail ??= Panel.GetBinding<FailTab>();
-
-        // ---------------------------------------------------------------
-        // ENTRY
-        // ---------------------------------------------------------------
+        // ---------------------------------------------------------
         public void Init()
         {
             StartCoroutine(Process());
@@ -55,66 +44,54 @@ namespace LegionKnight
         public void Confirm() => m_UserDecision = true;
         public void Cancel() => m_UserDecision = false;
 
-        // ---------------------------------------------------------------
-        // MAIN FLOW
-        // ---------------------------------------------------------------
+        // ---------------------------------------------------------
         private IEnumerator Process()
         {
             HideAllTabs();
             OnInit?.Invoke();
-            Log("Starting download workflow...");
 
-            // 1. Initialize
+            // 1. Initialize addressables
             yield return InitializeAddressables();
-            if (!s_Initialized) yield break;
-
-            // 2. Catalog Update
-            yield return CheckCatalogUpdates();
-
-            // 3. Size check + confirm + download
-            bool continueProcess = false;
-            yield return CheckDependencies(r => continueProcess = r);
-
-            if (!continueProcess)
+            if (!s_Initialized)
                 yield break;
 
-            // 4. SUCCESS
-            yield return new WaitForEndOfFrame();
-            ShowSuccess("Content Ready.");
+            // 2. Catalog updates
+            yield return CheckCatalogUpdates();
+
+            // 3. Size check + confirmation + download
+            bool ok = false;
+            yield return CheckDependencies(r => ok = r);
+
+            if (!ok)
+                yield break;
+
+            // 4. Load assets to ensure Unity marks bundle complete
+            yield return LoadAtLeastOneAsset();
+
+            ShowSuccess("Content ready.");
         }
 
-        // ---------------------------------------------------------------
-        // INITIALIZATION
-        // ---------------------------------------------------------------
+        // ---------------------------------------------------------
         private IEnumerator InitializeAddressables()
         {
-            if (s_Initialized) yield break;
+            if (s_Initialized)
+                yield break;
 
-            Log("Initializing Addressables...");
             var init = Addressables.InitializeAsync();
             yield return init;
 
             if (init.Status == AsyncOperationStatus.Succeeded)
-            {
                 s_Initialized = true;
-                Log("Addressables initialized.");
-            }
             else
-            {
-                ShowFail("Failed to initialize Addressables.");
-            }
+                ShowFail("Addressables initialization failed.");
 
             SafeRelease(init);
         }
 
-        // ---------------------------------------------------------------
-        // CATALOG UPDATE
-        // ---------------------------------------------------------------
+        // ---------------------------------------------------------
         private IEnumerator CheckCatalogUpdates()
         {
-            Log("Checking catalog updates...");
-
-            var check = Addressables.CheckForCatalogUpdates();
+            var check = Addressables.CheckForCatalogUpdates(false);
             yield return check;
 
             if (check.Status != AsyncOperationStatus.Succeeded)
@@ -124,37 +101,34 @@ namespace LegionKnight
                 yield break;
             }
 
-            if (check.Result.Count == 0)
+            if (check.Result.Count > 0)
             {
-                Log("No catalog updates.");
-                SafeRelease(check);
-                yield break;
+                var update = Addressables.UpdateCatalogs(check.Result);
+                yield return update;
+
+                if (update.Status != AsyncOperationStatus.Succeeded)
+                {
+                    ShowFail("Catalog update failed.");
+                    SafeRelease(check);
+                    SafeRelease(update);
+                    yield break;
+                }
+
+                SafeRelease(update);
             }
 
-            Log("Updating catalogs...");
-            var update = Addressables.UpdateCatalogs(check.Result);
-            yield return update;
-
-            if (update.Status != AsyncOperationStatus.Succeeded)
-                ShowFail("Catalog update failed.");
-
             SafeRelease(check);
-            SafeRelease(update);
         }
 
-        // ---------------------------------------------------------------
-        // SIZE CHECK + CONFIRM + DOWNLOAD
-        // ---------------------------------------------------------------
+        // ---------------------------------------------------------
         private IEnumerator CheckDependencies(System.Action<bool> callback)
         {
-            Log("Checking download size...");
-
             var sizeHandle = Addressables.GetDownloadSizeAsync(m_Label);
             yield return sizeHandle;
 
             if (sizeHandle.Status != AsyncOperationStatus.Succeeded)
             {
-                ShowFail("Failed to get size.");
+                ShowFail("Failed to check download size.");
                 callback(false);
                 yield break;
             }
@@ -164,158 +138,121 @@ namespace LegionKnight
 
             if (bytes <= 0)
             {
-                Log("All content already cached.");
                 callback(true);
                 yield break;
             }
 
-            // Tell UI
+            // Show confirmation
             Panel.Show();
             OnSizeFound?.Invoke(bytes);
-            Confirmation.ConfirDownload(bytes);
+            ConfirmTab.ConfirDownload(bytes);
             OnShowConfirmation?.Invoke();
 
-            // Wait confirm
             m_UserDecision = null;
             yield return new WaitUntil(() => m_UserDecision.HasValue);
 
             if (m_UserDecision == false)
             {
-                ShowFail("User cancelled.");
+                ShowFail("User canceled download.");
                 callback(false);
                 yield break;
             }
 
-            bool result = false;
-            yield return DownloadAndLoad(bytes, r => result = r);
+            // Download
+            bool ok = false;
+            yield return DownloadBundles(bytes, r => ok = r);
 
-            callback(result);
+            callback(ok);
         }
 
-        // ---------------------------------------------------------------
-        // DOWNLOAD + LOAD ASSET FIXED VERSION
-        // ---------------------------------------------------------------
-        private IEnumerator DownloadAndLoad(long size, System.Action<bool> callback)
+        // ---------------------------------------------------------
+        private IEnumerator DownloadBundles(long size, System.Action<bool> callback)
         {
             Panel.Show();
             OnShowProgress?.Invoke();
-            Progress.Show();
+            ProgressTab.Show();
 
-            Log("Downloading...");
             var download = Addressables.DownloadDependenciesAsync(m_Label, true);
 
-            float stuckTimer = 0f;
-            float lastPercent = 0f;
+            float freezeTimer = 0f;
+            float lastP = 0f;
 
             while (!download.IsDone)
             {
                 float p = download.PercentComplete;
                 OnProgress?.Invoke(p);
-                Progress.SetProgress(p);
+                ProgressTab.SetProgress(p);
 
-                // Anti-stuck fix (0.99 freeze)
-                if (p >= 0.985f)
+                // freeze detection
+                if (Mathf.Approximately(p, lastP))
+                    freezeTimer += Time.deltaTime;
+                else
+                    freezeTimer = 0f;
+
+                lastP = p;
+
+                if (freezeTimer > 3f)
                 {
-                    if (Mathf.Approximately(p, lastPercent))
-                        stuckTimer += Time.deltaTime;
-                    else
-                        stuckTimer = 0f;
-
-                    lastPercent = p;
-
-                    if (stuckTimer >= 3f)
-                    {
-                        Debug.LogWarning("[DownloadContent] STUCK → forcing completion.");
-                        break;
-                    }
+                    Debug.LogWarning("Force finishing — download stuck.");
+                    break;
                 }
 
                 yield return null;
             }
 
-            bool downloadSuccess = download.Status == AsyncOperationStatus.Succeeded;
+            bool success = download.Status == AsyncOperationStatus.Succeeded;
             SafeRelease(download);
 
-            // FINAL SUCCESS VALIDATION
-            long remaining = Addressables.GetDownloadSizeAsync(m_Label).Result;
+            ProgressTab.Hide();
 
-            // Correct definition:
-            bool finalSuccess = downloadSuccess || remaining == 0;
-
-            Progress.Hide();
-
-            if (!finalSuccess)
+            if (!success)
             {
-                ShowFail("Download failed.");
+                ShowFail("Download Failed.");
                 callback(false);
                 yield break;
             }
 
-            // LOAD ASSETS (to verify bundle is valid)
-            Log("Loading assets...");
-            var load = Addressables.LoadAssetsAsync<Object>(m_Label, _ => { });
-            yield return load;
-
-            if (load.Status != AsyncOperationStatus.Succeeded)
-            {
-                ShowFail("Asset loading failed.");
-                SafeRelease(load);
-                callback(false);
-                yield break;
-            }
-
-            SafeRelease(load);
             callback(true);
         }
 
-        // ---------------------------------------------------------------
-        // UI HELPERS
-        // ---------------------------------------------------------------
+        // ---------------------------------------------------------
+        private IEnumerator LoadAtLeastOneAsset()
+        {
+            var load = Addressables.LoadAssetsAsync<Object>(m_Label, null);
+            yield return load;
+            SafeRelease(load);
+        }
+
+        // ---------------------------------------------------------
         private void HideAllTabs()
         {
-            Confirmation?.Hide();
-            Progress?.Hide();
-            Complete?.Hide();
-            Fail?.Hide();
+            ConfirmTab.Hide();
+            ProgressTab.Hide();
+            CompleteTab.Hide();
+            FailTab.Hide();
         }
 
         private void ShowSuccess(string msg)
         {
             HideAllTabs();
             Panel.Show();
-            Complete.Show();
+            CompleteTab.Show();
             OnShowSuccess?.Invoke();
-            Log(msg);
         }
 
         private void ShowFail(string msg)
         {
             HideAllTabs();
             Panel.Show();
-            Fail.Show();
+            FailTab.Show();
             OnShowFail?.Invoke();
-            LogError(msg);
         }
 
-        // ---------------------------------------------------------------
-        // UTILS
-        // ---------------------------------------------------------------
+        // ---------------------------------------------------------
         private void SafeRelease(AsyncOperationHandle handle)
         {
             if (handle.IsValid())
                 Addressables.Release(handle);
-        }
-
-        private void Log(string msg)
-        {
-            Debug.Log("[DownloadContent] " + msg);
-            OnLog?.Invoke(msg);
-        }
-
-        private void LogError(string msg)
-        {
-            Debug.LogError("[DownloadContent ERROR] " + msg);
-            OnLog?.Invoke("ERROR: " + msg);
         }
     }
 
@@ -329,4 +266,3 @@ namespace LegionKnight
         }
     }
 }
-
