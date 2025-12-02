@@ -10,30 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ed6495d5f041f045962f55592a83365, type: 3}
-  m_Name: Cegil Shot
+  m_Name: Big Cegil Shot
   m_EditorClassIdentifier: 
   m_SkillOwner: 0
-  m_Descriptions:
-  - m_UseHeroAttackScale: 0
-    m_BaseVal: 25
-    m_UpgradeVal: 3
-    m_Description: Wild Shot for 6 times, each shot inflict {0} damage to target.
-  - m_UseHeroAttackScale: 0
-    m_BaseVal: 100
-    m_UpgradeVal: 17
-    m_Description: ' Then, release a big shot with shotgun to inflict {0} damage
-      to target.'
+  m_Descriptions: []
   m_CooldownStat:
     m_CooldownTime: 0
     m_CooldownUpgrade: 0
   m_DamageStat:
     m_IsHeroScale: 1
-    m_Attack: 25
-    m_AttackRate: 0.37
+    m_Attack: 100
+    m_AttackRate: 1
     m_Health: 0
     m_Barrier: 0
-    m_AttackUpgrade: 3
-    m_AttackRateUpgrade: 0.02
+    m_AttackUpgrade: 13
+    m_AttackRateUpgrade: 0.014
     m_HealthUpgrade: 0
     m_ShieldUpgrade: 0
   m_DotStat:

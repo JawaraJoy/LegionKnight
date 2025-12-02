@@ -24,6 +24,8 @@ namespace LegionKnight
         private bool m_IsSpawning = false;
 
         [SerializeField]
+        private UnityEvent m_OnSpawnInterval = new();
+        [SerializeField]
         private UnityEvent m_OnSpawnIntervalStop = new();
 
         private void Start()
@@ -79,7 +81,7 @@ namespace LegionKnight
         }
         private void SpawnProjectileInternal()
         {
-            
+            m_OnSpawnInterval?.Invoke();
             if (m_RandomSpawn)
             {
                 SpawnRandomProjectile();
