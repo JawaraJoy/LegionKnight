@@ -1,5 +1,115 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &698244083983515439
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4513613621842367630}
+  - component: {fileID: 5418190837404494354}
+  - component: {fileID: 4492803339142526132}
+  m_Layer: 0
+  m_Name: Cloud Content
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4513613621842367630
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698244083983515439}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6224279411924951285}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5418190837404494354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698244083983515439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ed7d36e13378745bee62507de66424, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.DownloadContent
+  m_Label:
+    m_LabelString: Downloadable
+  OnInit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnShowConfirmation:
+    m_PersistentCalls:
+      m_Calls: []
+  OnShowProgress:
+    m_PersistentCalls:
+      m_Calls: []
+  OnShowSuccess:
+    m_PersistentCalls:
+      m_Calls: []
+  OnContinueAfterSuccess:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3814314757155133575}
+        m_TargetAssemblyTypeName: LegionKnight.CloudSaveManager, Assembly-CSharp
+        m_MethodName: LoadAllData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnShowFail:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSizeFound:
+    m_PersistentCalls:
+      m_Calls: []
+  OnProgress:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLog:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4492803339142526132}
+        m_TargetAssemblyTypeName: LegionKnight.AuthenticationAgent, Assembly-CSharp
+        m_MethodName: SetWaitingText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &4492803339142526132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698244083983515439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f144c78032b2b044c8f1ea477cf90226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.AuthenticationAgent
 --- !u!1 &1508858060550750488
 GameObject:
   m_ObjectHideFlags: 0
@@ -86,6 +196,7 @@ Transform:
   - {fileID: 6634712135323267090}
   - {fileID: 2995581704421847454}
   - {fileID: 4159246748585859383}
+  - {fileID: 4513613621842367630}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4904047336095579251
@@ -101,6 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InAppUpdate: {fileID: 6653263939773668996}
+  m_DownloadContent: {fileID: 5418190837404494354}
   m_UnityAdsManager: {fileID: 700165663585074583}
   m_AuthenticationManager: {fileID: 5537331884271729272}
   m_CloudSaveManager: {fileID: 3814314757155133575}
@@ -652,6 +764,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 5418190837404494354}
+        m_TargetAssemblyTypeName: LegionKnight.DownloadContent, Assembly-CSharp
+        m_MethodName: Init
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 0
   m_OnSignInFailed:
     m_PersistentCalls:
       m_Calls:
@@ -738,6 +862,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2995581704421847454}
   - component: {fileID: 2689910341579566921}
+  - component: {fileID: 5755076080024196539}
   m_Layer: 0
   m_Name: PushNotification
   m_TagString: Untagged
@@ -776,8 +901,28 @@ MonoBehaviour:
   m_Note: Login to Claim Daily Reward
   m_SmallIconKey: icon_0
   m_LargeIconKey: icon_1
-  m_ScheduleInHour: 24
+  m_ScheduleInHour: 23
   m_ScheduleInMinutes: 0
+  m_IsAllowed: 1
+--- !u!114 &5755076080024196539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5136120693805706730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9546a827c9f17d74184529bea33d3946, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.PushNotification
+  m_GameTitle: Aether Jump
+  m_Note: Daily Spin is ready
+  m_SmallIconKey: icon_0
+  m_LargeIconKey: icon_1
+  m_ScheduleInHour: 20
+  m_ScheduleInMinutes: 0
+  m_IsAllowed: 1
 --- !u!1 &6895750691481671604
 GameObject:
   m_ObjectHideFlags: 0
