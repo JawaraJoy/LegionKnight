@@ -5054,7 +5054,7 @@ MonoBehaviour:
   unscaledTime: 0
   _animationName: Idle
   loop: 1
-  timeScale: 1
+  timeScale: 2.1
 --- !u!1 &5349666881396133187
 GameObject:
   m_ObjectHideFlags: 0
@@ -5065,6 +5065,8 @@ GameObject:
   m_Component:
   - component: {fileID: 475613207915105478}
   - component: {fileID: 8140180788379272132}
+  - component: {fileID: 2691274133862130939}
+  - component: {fileID: 5470932415301162124}
   m_Layer: 7
   m_Name: Cegil Halu
   m_TagString: Untagged
@@ -5114,4 +5116,83 @@ MonoBehaviour:
   m_OnAnimationDone:
     m_PersistentCalls:
       m_Calls: []
-  m_SpineEvents: []
+  m_SpineEvents:
+  - m_Definition: {fileID: 11400000, guid: 9e867a13d8602cb4a9c065358241cd68, type: 2}
+    m_OnStart:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2691274133862130939}
+          m_TargetAssemblyTypeName: LegionKnight.PlatformModifierAgentTwo, Assembly-CSharp
+          m_MethodName: SetPlatformSpeed
+          m_Mode: 4
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 0
+        - m_Target: {fileID: 5470932415301162124}
+          m_TargetAssemblyTypeName: LegionKnight.PlayerAgent, Assembly-CSharp
+          m_MethodName: SetCanJump
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    m_OnEnd:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2691274133862130939}
+          m_TargetAssemblyTypeName: LegionKnight.PlatformModifierAgentTwo, Assembly-CSharp
+          m_MethodName: SetPlatformSpeed
+          m_Mode: 4
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 1
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 0
+        - m_Target: {fileID: 5470932415301162124}
+          m_TargetAssemblyTypeName: LegionKnight.PlayerAgent, Assembly-CSharp
+          m_MethodName: SetCanJump
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+--- !u!114 &2691274133862130939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5349666881396133187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 133b69f5c8dd9b040a958ace921e8f0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.PlatformModifierAgentTwo
+--- !u!114 &5470932415301162124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5349666881396133187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e7e3378b1d2d34469ca13a597e82df6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LegionKnight.PlayerAgent

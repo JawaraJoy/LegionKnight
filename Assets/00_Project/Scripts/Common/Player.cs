@@ -7,8 +7,6 @@ namespace LegionKnight
     public partial class Player : Singleton<Player>
     {
         [SerializeField]
-        private NameSupplyDefinition m_NameSupplyDefinition;
-        [SerializeField]
         private string m_PlayerName;
         [SerializeField]
         private CharacterDefinition m_CharacterDefinition;
@@ -21,7 +19,7 @@ namespace LegionKnight
 
         private bool m_CanUseResurrectionAds = true;
         public bool CanUseResurrectionAds => m_CanUseResurrectionAds;
-        public string PlayerName => UnityService.Instance.PlayerName;
+        public string PlayerName => m_PlayerName;
 
         [SerializeField]
         private UnityEvent<string> m_OnNameChanged = new();
@@ -52,23 +50,13 @@ namespace LegionKnight
         private void OnStartInvoke()
         {
             m_OnStart?.Invoke();
-
-            if (UnityService.Instance.HasData(m_NameSupplyDefinition.Id))
-            {
-                m_PlayerName = UnityService.Instance.GetData<string>(m_NameSupplyDefinition.Id);
-            }
-            else
-            {
-                m_PlayerName = m_NameSupplyDefinition.GetRandomName();
-                UnityService.Instance.SaveData(m_NameSupplyDefinition.Id, m_PlayerName);
-            }
+            m_PlayerName = UnityService.Instance.PlayerName;
             Debug.Log($"Player name: {m_PlayerName}");
             GameManager.Instance.SetPlayerNameView(m_PlayerName);
         }
         public void SetPlayerName(string playerName)
         {
             m_PlayerName = playerName;
-            UnityService.Instance.SaveData(m_NameSupplyDefinition.Id, m_PlayerName);
             m_OnNameChanged?.Invoke(m_PlayerName);
             GetProfileInfoPanel().GetBinding<LevelView>().SetNameText(m_PlayerName);
             SetPlayerNameAsync(m_PlayerName);
@@ -76,7 +64,7 @@ namespace LegionKnight
 
         private async void SetPlayerNameAsync(string playerName)
         {
-            await AuthenticationService.Instance.UpdatePlayerNameAsync(m_PlayerName);
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
         }
         public void AddOnStart(UnityAction action)
         {

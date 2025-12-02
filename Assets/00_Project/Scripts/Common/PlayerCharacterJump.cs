@@ -41,6 +41,10 @@ namespace LegionKnight
         {
             m_CharacterJump.StartFly();
         }
+        public void SetCanJump(bool set)
+        {
+            m_CharacterJump.SetCanJump(set);
+        }
 
     }
     public partial class PlayerAgent
@@ -65,6 +69,10 @@ namespace LegionKnight
         public void StartFly()
         {
             Player.Instance.StartFly();
+        }
+        public void SetCanJump(bool set)
+        {
+            Player.Instance.SetCanJump(set);
         }
     }
 }

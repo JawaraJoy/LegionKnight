@@ -39,6 +39,7 @@ namespace LegionKnight
             aa.Complete += (trackEntry) =>
             {
                 callback?.Invoke();
+                Debug.Log($"Animation '{m_AnimName}' completed on track {m_AnimTrack}.");
                 if (m_NextAnim != null)
                 {
                     skeletonAnimation.StartCoroutine(PlayNext(skeletonAnimation, m_NextAnimDelay));
