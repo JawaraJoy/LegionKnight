@@ -49,13 +49,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AbilityDefinition: {fileID: 11400000, guid: 49755ad99cd92f349aeaa9470d7377a7, type: 2}
-  m_RandomSpawn: 0
+  m_RandomSpawn: 1
   m_Skills:
   - m_StartingForce: {x: 0, y: 0}
     m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
-      m_AssetGUID: f63383546767fab459f150d579c36201
+      m_AssetGUID: 44672865a95ceb74e944eb49f692a47a
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
@@ -66,12 +66,24 @@ MonoBehaviour:
         m_Calls: []
     m_OnSpawned:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: -364344586101849029}
+          m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_MethodName: Play
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - m_StartingForce: {x: 0, y: 0}
     m_StartingRotation: {x: 0, y: 0, z: 0}
     m_Local: 0
     m_ProjectileAsset:
-      m_AssetGUID: f63383546767fab459f150d579c36201
+      m_AssetGUID: 44672865a95ceb74e944eb49f692a47a
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
@@ -82,26 +94,26 @@ MonoBehaviour:
         m_Calls: []
     m_OnSpawned:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: -364344586101849029}
+          m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_MethodName: Play
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   m_SpawnOnStart: 1
-  m_IsSpawnInterval: 0
-  m_SpawnInterval: 2
+  m_IsSpawnInterval: 1
+  m_SpawnInterval: 0.2
   m_MaxSpawnCount: 2
   m_OnSpawnInterval:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: -364344586101849029}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnSpawnIntervalStop:
     m_PersistentCalls:
       m_Calls: []
@@ -137,7 +149,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -4263817900027168411, guid: 57a7e273bad2f0a46bbef594e7e76507, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: bc8c3727d81b340f685d13c544c0662c, type: 3}
+  m_Resource: {fileID: 8300000, guid: 400bfadff74d1423c93ffffb0666fa04, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
