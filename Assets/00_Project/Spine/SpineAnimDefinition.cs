@@ -15,7 +15,8 @@ namespace LegionKnight
         private string m_AnimName;
         [SerializeField]
         private bool m_Loop;
-
+        [SerializeField]
+        private float m_Speed = 1f;
         [SerializeField]
         private SpineAnimDefinition m_NextAnim;
         [SerializeField]
@@ -34,6 +35,7 @@ namespace LegionKnight
             Spine.Animation animData = skeletonAnimation.skeletonDataAsset.GetAnimationStateData().SkeletonData.FindAnimation(m_AnimName);
             if (animData == null) return;
             var aa = skeletonAnimation.state.SetAnimation(m_AnimTrack, m_AnimName, m_Loop);
+            aa.TimeScale = m_Speed;
             float animationTime = aa.AnimationTime;
             float animationDuration = aa.Animation.Duration;
             aa.Complete += (trackEntry) =>
