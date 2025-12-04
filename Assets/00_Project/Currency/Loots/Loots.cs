@@ -12,7 +12,10 @@ namespace LegionKnight
         private UnityEvent<LootField> m_OnTakeLoot;
         [SerializeField]
         private UnityEvent<LootField[]> m_OnTakeRandomLoots;
-        
+
+        [SerializeField]
+        private UnityEvent<ScriptableObject> m_OnLootTake;
+
 
         public void SetDefinition(LootDefinition definition)
         {
@@ -28,6 +31,7 @@ namespace LegionKnight
             if (loot != null)
             {
                 m_OnTakeLoot?.Invoke(loot);
+                m_OnLootTake?.Invoke(loot.Item);
             }
         }
         public void TakeLoots()
@@ -40,6 +44,7 @@ namespace LegionKnight
             foreach (var loot in loots)
             {
                 m_OnTakeLoot?.Invoke(loot);
+                m_OnLootTake?.Invoke(loot.Item);
             }
         }
     }

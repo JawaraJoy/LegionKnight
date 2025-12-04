@@ -20,6 +20,8 @@ namespace LegionKnight
 
         [SerializeField]
         private UnityEvent<LootField> m_OnLootUdate;
+        [SerializeField]
+        private UnityEvent<ScriptableObject> m_OnLootDefiUpdate;
 
         private LootItemView GetLootView(LootField definition)
         {
@@ -105,8 +107,14 @@ namespace LegionKnight
             {
                 view.SetAmount(loot.Amount);
                 m_OnLootUdate?.Invoke(loot);
+                
                 Debug.Log($"Updated loot view: {loot.Item.name} x{loot.Amount}");
             }
+        }
+
+        private void OnLootUpdate(ScriptableObject defi)
+        {
+            m_OnLootDefiUpdate?.Invoke(defi);
         }
 
         private IEnumerator SpawningLootView(LootField loot)
