@@ -10,6 +10,13 @@ namespace LegionKnight
 
         private Pad m_Pad;
 
+        // Flight state
+        private bool isFlying = false;
+        private float flySpeed;
+        private float lerpT;
+        private Vector3 startPos;
+        private Vector3 targetPos;
+
         private Pad TargetPad
         {
             get
@@ -32,7 +39,22 @@ namespace LegionKnight
             if (defi is CurrencyDefinition itemDef)
                 m_Renderer.sprite = itemDef.Icon;
 
-            StartCoroutine(FlyToTarget());
+            // Prepare movement values
+            flySpeed = TargetPad.Definition.FlySpeed;
+            lerpT = 0f;
+
+            // Start delayed flight
+            StartCoroutine(StartFlightAfterDelay());
+        }
+
+        private IEnumerator StartFlightAfterDelay()
+        {
+            yield return new WaitForSeconds(m_PadDefinition.DelayBeforeFly);
+
+            startPos = transform.position;
+            targetPos = GetTargetWorldPosition(TargetPad.transform);
+
+            isFlying = true;
         }
 
         // -------------------------
@@ -40,28 +62,6 @@ namespace LegionKnight
         // -------------------------
         private Vector3 GetTargetWorldPosition(Transform target)
         {
-            // If target is a UI element
-            if (target is RectTransform rectTarget)
-            {
-                Canvas canvas = rectTarget.GetComponentInParent<Canvas>();
-
-                // World Space Canvas → already world position
-                if (canvas.renderMode == RenderMode.WorldSpace)
-                {
-                    Vector3 wp = rectTarget.position;
-                    wp.z = 0;
-                    return wp;
-                }
-
-                // Screen Space Canvas → convert to world point
-                Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(null, rectTarget.position);
-
-                float zDistance = Mathf.Abs(Camera.main.transform.position.z - transform.position.z);
-                Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, zDistance));
-                worldPos.z = 0;
-                return worldPos;
-            }
-
             // Normal world object
             Vector3 pos = target.position;
             pos.z = 0;
@@ -69,26 +69,25 @@ namespace LegionKnight
         }
 
         // -------------------------
-        // FLY ANIMATION
+        // UPDATE-BASED FLYING
         // -------------------------
-        private IEnumerator FlyToTarget()
+        private void Update()
         {
-            yield return new WaitForSeconds(m_PadDefinition.DelayBeforeFly);
+            if (!isFlying)
+                return;
 
-            Vector3 startPos = transform.position;
-            Vector3 targetPos = GetTargetWorldPosition(TargetPad.transform);
-            float flySpeed = TargetPad.Definition.FlySpeed;
+            // Update target every frame (UI may move)
+            targetPos = GetTargetWorldPosition(TargetPad.transform);
 
-            float t = 0f;
+            lerpT += Time.deltaTime * flySpeed;
+            transform.position = Vector3.Lerp(startPos, targetPos, lerpT);
 
-            while (t < 1f)
+            // End
+            if (lerpT >= 1f)
             {
-                t += Time.deltaTime * flySpeed;
-                transform.position = Vector3.Lerp(startPos, targetPos, t);
-                yield return null;
+                isFlying = false;
+                gameObject.SetActive(false);
             }
-
-            gameObject.SetActive(false);
         }
     }
 }
