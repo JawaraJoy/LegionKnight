@@ -1,3 +1,4 @@
+using Spine.Unity;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -37,6 +38,8 @@ namespace LegionKnight
         [SerializeField]
         private AssetReferenceGameObject m_CharacterPrefab;
         [SerializeField]
+        private SkeletonDataAsset m_SkeletonDataAsset;
+        [SerializeField]
         private Stat m_BaseStat;
         [SerializeField]
         private Stat m_StatGainPerLevel;
@@ -62,6 +65,7 @@ namespace LegionKnight
         private List<SkillDefinition> m_Passives = new();
 
         public AssetReferenceGameObject CharacterPrefab => m_CharacterPrefab;
+        public SkeletonDataAsset SkeletonDataAsset => m_SkeletonDataAsset;
         public StandbyPlatformDefinition UniquePlatform => m_UniquePlatform;
         public List<SkillDefinition> Weapons => m_Weapons;
         public List<SkillDefinition> Passives => m_Passives;

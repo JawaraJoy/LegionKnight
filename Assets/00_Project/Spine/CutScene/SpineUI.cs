@@ -33,12 +33,25 @@ namespace LegionKnight
             }
             return null;
         }
+        public void SetSkeletonDataAsset(CharacterDefinition characterDefi)
+        {
+            SetSkeletonAssetInternal(characterDefi.SkeletonDataAsset);
+        }
+        private void SetSkeletonAssetInternal(SkeletonDataAsset skeletonDataAsset)
+        {
+            m_SkeletonGraphic.skeletonDataAsset = skeletonDataAsset;
+            m_SkeletonGraphic.Initialize(true);
+        }
         public void Play(SpineAnimDefinition anim)
         {
-            anim.PlayUI(m_SkeletonGraphic, ()=> OnCompleteInvoke(anim));
+            PlayInternal(anim);
+        }
+
+        private void PlayInternal(SpineAnimDefinition anim)
+        {
+            anim.PlayUI(m_SkeletonGraphic, () => OnCompleteInvoke(anim));
             OnPlayInvoke(anim);
             AddEventCallBack(anim);
-            
         }
         public void PauseUI(SpineAnimDefinition anim)
         {
@@ -65,6 +78,7 @@ namespace LegionKnight
         {
             m_OnCompleted?.Invoke(anim);
             GetSpineEvent(anim).OnEnd.Invoke();
+            PlayInternal(anim.NextAnim);
         }
     }
 }

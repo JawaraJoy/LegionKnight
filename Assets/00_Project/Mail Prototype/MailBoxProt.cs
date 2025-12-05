@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight.Prototype
 {
-    public class MailBoxProt : MonoBehaviour
+    public partial class MailBoxProt : MonoBehaviour
     {
         [SerializeField, MMReadOnly]
         private MailDefinition m_SelectedMail;
@@ -16,14 +16,34 @@ namespace LegionKnight.Prototype
         public MailField[] Mails => m_Mails;
         public MailDefinition SelectedMail => m_SelectedMail;
 
-        private bool m_HasNewMail;
-
         [SerializeField]
         private UnityEvent<MailField> m_OnRedeemCodeSucced = new();
         [SerializeField]
         private UnityEvent<MailField> m_OnReeemCodeFailed = new();
+        [SerializeField]
+        private UnityEvent<MailField> m_OnHasNewMail = new();
 
         private TextPopUpPanel m_PopUpPanel;
+
+        private HomePanel m_HomePanel;
+        private CommonUIView m_NotifView;
+
+        private HomePanel GetHomePanel()
+        {
+            if (m_HomePanel == null)
+            {
+                m_HomePanel = GameManager.Instance.GetPanel<HomePanel>();
+            }
+            return m_HomePanel;
+        }
+        private CommonUIView GetNotifView()
+        {
+            if (m_NotifView == null)
+            {
+                m_NotifView = GetHomePanel().GetBinding<CommonUIView>();
+            }
+            return m_NotifView;
+        }
         private TextPopUpPanel GetPopUpPanel()
         {
             if (m_PopUpPanel == null)
@@ -66,7 +86,18 @@ namespace LegionKnight.Prototype
             foreach (MailField m in m_Mails)
             {
                 m.Init();
+                if (m.State == MailState.New)
+                {
+                    OnHasNewEmail(m);
+                }
             }
+        }
+
+        private void OnHasNewEmail(MailField mail)
+        {
+            m_OnHasNewMail?.Invoke(mail);
+            GetPopUpPanel().ShowText("You have new Mail!");
+            GetNotifView().Show();
         }
         private MailField GetMail(string id)
         {

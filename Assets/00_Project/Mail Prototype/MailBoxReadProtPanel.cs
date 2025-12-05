@@ -29,7 +29,25 @@ namespace LegionKnight.Prototype
         private Button m_DeleteButton;
 
         private readonly List<MailItemView> m_MailItems = new();
+        private HomePanel m_HomePanel;
+        private CommonUIView m_NotifView;
 
+        private HomePanel GetHomePanel()
+        {
+            if (m_HomePanel == null)
+            {
+                m_HomePanel = GameManager.Instance.GetPanel<HomePanel>();
+            }
+            return m_HomePanel;
+        }
+        private CommonUIView GetNotifView()
+        {
+            if (m_NotifView == null)
+            {
+                m_NotifView = GetHomePanel().GetBinding<CommonUIView>();
+            }
+            return m_NotifView;
+        }
         private void Start()
         {
             m_ClaimButton.onClick.RemoveAllListeners();
@@ -127,6 +145,12 @@ namespace LegionKnight.Prototype
                     m_MailItems.Add(view);
                 }
             }
+        }
+
+        protected override void OnHideInvoke()
+        {
+            base.OnHideInvoke();
+            GetNotifView().Hide();
         }
     }
 }
