@@ -1,38 +1,50 @@
 using Firebase.Messaging;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LegionKnight
 {
     public class FireNotification : MonoBehaviour
     {
-        private void Start()
+        private async void Start()
         {
-            Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith
-                (
-                    task =>
-                    {
-                        var dependencyStatus = task.Result;
-                        if (dependencyStatus == Firebase.DependencyStatus.Available)
-                        {
-                            Firebase.FirebaseApp app = Firebase.FirebaseApp.DefaultInstance;
-                        }
-                        else
-                        {
-                            Debug.LogError($"{System.String.Format($"Cant Resolve all Firebase Dependecies: {0}", dependencyStatus)}");
-                        }
-                    }
-                );
-            FirebaseMessaging.TokenReceived += OnTokenReceived;
-            FirebaseMessaging.MessageReceived += OnMessageReceived;
+            // Initialize Firebase
+            await InitializeFirebase();
         }
 
-        public void OnTokenReceived(object sender, TokenReceivedEventArgs token)
+        private async Task InitializeFirebase()
         {
-            Debug.Log("Received Registration token:" + token.Token);
+            var dependencyStatus = await Firebase.FirebaseApp.CheckAndFixDependenciesAsync();
+
+            if (dependencyStatus == Firebase.DependencyStatus.Available)
+            {
+                Firebase.FirebaseApp app = Firebase.FirebaseApp.DefaultInstance;
+                Debug.Log("Firebase Ready!");
+
+                // Register FCM events AFTER initialization
+                FirebaseMessaging.TokenReceived += OnTokenReceived;
+                FirebaseMessaging.MessageReceived += OnMessageReceived;
+                FirebaseMessaging.TokenRegistrationOnInitEnabled = true;
+
+                // Get current token immediately
+                string token = await FirebaseMessaging.GetTokenAsync();
+                Debug.Log("FCM Token: " + token);
+            }
+            else
+            {
+                Debug.LogError("Cannot resolve Firebase dependencies: " + dependencyStatus);
+            }
         }
-        public void OnMessageReceived(object sender, MessageReceivedEventArgs e)
+
+        private void OnTokenReceived(object sender, TokenReceivedEventArgs token)
         {
-            Debug.Log("Received a new message from:" + e.Message.From);
+            Debug.Log("Received FCM Token: " + token.Token);
+        }
+
+        private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            Debug.Log("Received a new message from: " + e.Message.From);
         }
     }
 }
