@@ -78,7 +78,10 @@ namespace LegionKnight
         {
             m_OnCompleted?.Invoke(anim);
             GetSpineEvent(anim).OnEnd.Invoke();
-            PlayInternal(anim.NextAnim);
+            if (anim.NextAnim != null)
+            {
+                PlayInternal(anim.NextAnim);
+            }   
         }
     }
 }
