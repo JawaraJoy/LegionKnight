@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
@@ -28,15 +29,21 @@ namespace LegionKnight
         [SerializeField]
         private Button m_HomeButton;
         [SerializeField]
+        private Button m_DoubleRewardButton;
+        [SerializeField]
         private float m_CountdownTime = 5f;
         [SerializeField]
         private TextMeshProUGUI m_CountdownText;
+
+        [SerializeField]
+        private LootMonitor m_LootMonitor;
 
         private void Awake()
         {
             m_RessurectionButton.onClick.AddListener(WatchAds);
             m_PlayAgainButton.onClick.AddListener(StoreLevelScoreInternal);
             m_HomeButton.onClick.AddListener(StoreLevelScoreInternal);
+            m_DoubleRewardButton.onClick.AddListener(DoubleReward);
         }
         protected override void ShowInternal()
         {
@@ -94,7 +101,24 @@ namespace LegionKnight
         {
             UnityService.Instance.ShowRewardedAd(Ressurection);
         }
+        private void DoubleReward()
+        {
+            UnityService.Instance.ShowRewardedAd(DoubleRewardAction);
+        }
 
+        private void DoubleRewardAction()
+        {
+            LootMonitor lootMonitor = m_LootMonitor;
+            if (lootMonitor != null)
+            {
+                Debug.Log("Doubling Reward Loots");
+                lootMonitor.DoubledCountDownLootAmount();
+            }
+            else
+                            {
+                Debug.LogWarning("LootMonitor binding not found in GameOverPanel");
+            }
+        }
         private IEnumerator Countingdown()
         {
             

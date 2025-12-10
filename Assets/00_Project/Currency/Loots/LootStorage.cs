@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,9 +10,13 @@ namespace LegionKnight
         [SerializeField]
         private List<LootField> m_Looteds = new List<LootField>();
         [SerializeField]
+        private List<LootField> m_MirrorLoots = new List<LootField>();
+        [SerializeField]
         private UnityEvent<LootField> m_OnAddNewLoot;
         [SerializeField]
         private UnityEvent<LootField> m_OnLootUpdate;
+        [SerializeField]
+        private UnityEvent<LootField> m_OnMirrorLootUpdate;
         [SerializeField]
         private UnityEvent<LootField> m_OnLootAmountUpdate;
         [SerializeField]
@@ -22,8 +27,15 @@ namespace LegionKnight
         private bool m_AutoTakeDirectLoot = true;
         [SerializeField]
         private UnityEvent<LootField> m_OnDirectTakeLoot;
-        
+        [SerializeField]
+        private UnityEvent<List<LootField>> m_OnMirrorLootsChanged;
+        [SerializeField]
+        private UnityEvent<List<LootField>> m_OnLootedsChanged;
+
         public List<LootField> Looteds => m_Looteds;
+        public List<LootField> MirrorLoots => m_MirrorLoots;
+
+        private bool m_IsTransferring = false;
         private LootField GetLootedInternal(ScriptableObject item)
         {
             LootField loot = m_Looteds.Find(x => x.Item == item);
@@ -48,6 +60,7 @@ namespace LegionKnight
             {
                 if (loot.Item is ScriptableObject item)
                 {
+                    
                     int amount = loot.Amount;
                     LootField.CurrencyApplier(item, amount);
                     LootField.CharacterApplier(item);
@@ -136,6 +149,53 @@ namespace LegionKnight
         private void ClearLootsInternal()
         {
             m_Looteds.Clear();
+        }
+
+        public void CopyMirrorFromLooted()
+        {
+            m_MirrorLoots.Clear();
+            m_MirrorLoots = new List<LootField>(m_Looteds);
+            m_OnMirrorLootsChanged?.Invoke(m_MirrorLoots);
+        }
+
+        public IEnumerator TransferMirrorToLooteds()
+        {
+            m_IsTransferring = true;
+            yield return new WaitForEndOfFrame();
+
+            // IMPORTANT: copy dulu mirror loots agar tidak terkena modifikasi AddLootInternal()
+            List<LootField> mirrorsCopy = new List<LootField>(m_MirrorLoots);
+
+            foreach (var mirrorLoot in mirrorsCopy)
+            {
+                int count = mirrorLoot.Amount;
+
+                for (int i = 0; i < count; i++)
+                {
+                    // Kurangi 1 dari mirror loot asli
+                    mirrorLoot.AddAmount(-1);
+                    m_OnMirrorLootUpdate?.Invoke(mirrorLoot);
+
+                    // Transfer 1 amount
+                    LootField oneLoot = new LootField(
+                        mirrorLoot.Item,
+                        mirrorLoot.IsUnique,
+                        1,
+                        mirrorLoot.Chance
+                    );
+
+                    AddLootInternal(oneLoot);
+
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+
+            // Setelah semuanya selesai
+            m_MirrorLoots.Clear();
+            m_IsTransferring = false;
+
+            m_OnLootedsChanged?.Invoke(m_Looteds);
+            m_OnMirrorLootsChanged?.Invoke(m_MirrorLoots);
         }
     }
 }

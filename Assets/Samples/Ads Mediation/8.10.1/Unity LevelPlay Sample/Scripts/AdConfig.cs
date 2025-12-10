@@ -31,8 +31,7 @@ public static class AdConfig
     static string GetInterstitialAdUnitId()
     {
         #if UNITY_ANDROID
-            //return "aeyqi3vqlv6o8sh9";
-        return "Interstitial_Android_Bidding";
+            return "ykhibcrv1rkn2gv4";
         #elif UNITY_IPHONE
             return "wmgt0712uuux8ju4";
 #else

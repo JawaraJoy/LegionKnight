@@ -11,6 +11,10 @@ namespace LegionKnight
     {
         [SerializeField]
         private PlayerPlatformDeck m_PlayerPlatformDeck;
+        public PlayerPlatformDeck GetPlayerPlatformDeck()
+        {
+            return m_PlayerPlatformDeck;
+        }
         public PlatformUnit GetPlatformOwned(StandbyPlatformDefinition platform)
         {
             return m_PlayerPlatformDeck.GetPlatformOwned(platform);

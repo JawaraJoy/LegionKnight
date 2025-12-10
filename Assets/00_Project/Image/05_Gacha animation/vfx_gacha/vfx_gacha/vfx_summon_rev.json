@@ -1,0 +1,1247 @@
+{
+"skeleton": {
+	"hash": "OlfE8OOY1fo",
+	"spine": "4.3.39-beta",
+	"x": -472.12457,
+	"y": -416.80533,
+	"width": 934.76733,
+	"height": 831.94434,
+	"images": "../../vfx_gacha/",
+	"audio": "./audio"
+},
+"bones": [
+	{ "name": "root" },
+	{ "name": "all aura", "parent": "root", "scaleX": 1.0E-5, "scaleY": 1.0E-5 },
+	{ "name": "aura back", "parent": "all aura" },
+	{ "name": "aura front", "parent": "all aura" },
+	{ "name": "squish", "parent": "root", "x": -9.604565, "y": 34.41189, "scaleX": 0.7698399, "scaleY": 0.49253586 },
+	{ "name": "rotate", "parent": "squish" },
+	{ "name": "circle_1", "parent": "rotate", "x": 14, "y": -76, "scaleX": 1.0E-5, "scaleY": 1.0E-5 },
+	{ "name": "circle_all", "parent": "rotate", "x": 14, "y": -50, "scaleX": 1.0E-5, "scaleY": 1.0E-5 },
+	{ "name": "circle_2", "parent": "rotate", "x": 14, "y": -76.5, "scaleX": 1.0E-5, "scaleY": 1.0E-5 },
+	{ "name": "triangle", "parent": "rotate", "x": 14, "y": -123.5, "scaleX": 1.0E-5, "scaleY": 1.0E-5 },
+	{ "name": "light", "parent": "root", "x": -1.9401964, "y": -10.494673 },
+	{ "name": "strip", "parent": "light" },
+	{ "name": "strip2", "parent": "light", "rotation": 45, "scaleX": 0.7, "scaleY": 0.68 },
+	{ "name": "chara siluet", "parent": "root" },
+	{ "name": "light2", "parent": "root", "x": -1.9061661, "y": -7.453659, "scaleX": 1.0E-5, "scaleY": 1.0E-5 }
+],
+"slots": [
+	{ "name": "strip", "bone": "strip", "color": "ff2b2b00", "attachment": "Layer 3 Copy" },
+	{ "name": "strip5", "bone": "strip2", "color": "ff2b2b00", "attachment": "Layer 3 Copy" },
+	{ "name": "strip2", "bone": "strip", "color": "ff2b2b00", "attachment": "Layer 3 Copy" },
+	{ "name": "strip6", "bone": "strip2", "color": "ff2b2b00", "attachment": "Layer 3 Copy" },
+	{ "name": "strip3", "bone": "strip", "color": "ff2b2b00", "attachment": "Layer 3 Copy" },
+	{ "name": "strip7", "bone": "strip2", "color": "ff2b2b00", "attachment": "Layer 3 Copy" },
+	{ "name": "strip4", "bone": "strip", "color": "ff2b2b00", "attachment": "Layer 3 Copy" },
+	{ "name": "strip8", "bone": "strip2", "color": "ff2b2b00", "attachment": "Layer 3 Copy" },
+	{ "name": "circle_2", "bone": "circle_2", "color": "ff4747ff", "attachment": "Layer 2 Copy 4" },
+	{ "name": "light2", "bone": "light2", "color": "ff0000ff", "attachment": "Layer 3" },
+	{ "name": "Layer 2 Copy 2", "bone": "circle_1", "color": "ffe0e0ff", "attachment": "Layer 2 Copy 2" },
+	{ "name": "triangle", "bone": "triangle", "color": "ffc9c9ff", "attachment": "Layer 5 Copy 2" },
+	{ "name": "Layer 6 Copy 2", "bone": "circle_all", "color": "ffbebeff", "attachment": "Layer 6 Copy 2" },
+	{ "name": "light", "bone": "squish", "color": "ff000019", "attachment": "Layer 3" },
+	{ "name": "pipo-mapeffect013a Copy", "bone": "aura back", "color": "ff0000ff", "attachment": "pipo-mapeffect013a Copy" },
+	{ "name": "chara siluet", "bone": "chara siluet" },
+	{ "name": "pipo-mapeffect013a-front Copy", "bone": "aura front", "color": "fe000086", "attachment": "pipo-mapeffect013a-front Copy" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"chara siluet": {
+				"chara siluet": { "x": 13.03421, "y": 100.851654, "scaleX": 0.5, "scaleY": 0.5, "width": 322, "height": 406 }
+			},
+			"circle_2": {
+				"Layer 2 Copy 4": { "width": 480, "height": 538 }
+			},
+			"Layer 2 Copy 2": {
+				"Layer 2 Copy 2": { "width": 298, "height": 335 }
+			},
+			"Layer 6 Copy 2": {
+				"Layer 6 Copy 2": { "scaleX": 0, "scaleY": 0, "width": 372, "height": 363 }
+			},
+			"light": {
+				"Layer 3": { "x": 10, "y": -85, "scaleX": 0.01, "scaleY": 0.01, "width": 736, "height": 741 }
+			},
+			"light2": {
+				"Layer 3": { "scaleX": 0.5, "scaleY": 0.5, "rotation": -0.016711235, "width": 736, "height": 741 }
+			},
+			"pipo-mapeffect013a-front Copy": {
+				"pipo-mapeffect013a-front Copy": { "x": 0.7960205, "y": 176.8703, "width": 286, "height": 475 },
+				"pipo-mapeffect013a-front Copy 2": { "x": 0.39801025, "y": 159.16586, "width": 280, "height": 427 },
+				"pipo-mapeffect013a-front Copy 3": { "x": 0.19900513, "y": 178.08858, "width": 286, "height": 470 },
+				"pipo-mapeffect013a-front Copy 4": { "x": 0.39801025, "y": 175.94763, "width": 284, "height": 464 },
+				"pipo-mapeffect013a-front Copy 5": { "x": 1.0982513, "y": 177.82059, "width": 286, "height": 474 },
+				"pipo-mapeffect013a-front Copy 6": { "x": 1.2972565, "y": 176.94768, "width": 286, "height": 474 },
+				"pipo-mapeffect013a-front Copy 7": { "x": 0.19900513, "y": 174.58852, "width": 286, "height": 467 },
+				"pipo-mapeffect013a-front Copy 8": { "x": 0.049682617, "y": 174.0112, "width": 285, "height": 471 },
+				"pipo-mapeffect013a-front Copy 9": { "x": 1.704422, "y": 174.33507, "width": 284, "height": 470 },
+				"pipo-mapeffect013a-front Copy 10": { "x": 185.05775, "y": 112.0949, "width": 653, "height": 600 }
+			},
+			"pipo-mapeffect013a Copy": {
+				"pipo-mapeffect013a Copy": { "x": 92.837105, "y": 104.70944, "width": 633, "height": 470 },
+				"pipo-mapeffect013a Copy 2": { "x": -31.488693, "y": 104.39832, "width": 487, "height": 466 },
+				"pipo-mapeffect013a Copy 3": { "x": -31.571548, "y": 107.229774, "width": 492, "height": 465 },
+				"pipo-mapeffect013a Copy 4": { "x": -26.834274, "y": 105.64693, "width": 516, "height": 463 },
+				"pipo-mapeffect013a Copy 5": { "x": 0.42279053, "y": 123.22131, "width": 464, "height": 500 },
+				"pipo-mapeffect013a Copy 6": { "x": 8.168549, "y": 132.55269, "width": 451, "height": 514 },
+				"pipo-mapeffect013a Copy 7": { "x": 8.92276, "y": 144.80415, "width": 531, "height": 542 },
+				"pipo-mapeffect013a Copy 8": { "x": 55.133972, "y": 125.64514, "width": 551, "height": 509 },
+				"pipo-mapeffect013a Copy 9": { "x": 17, "y": 108.552734, "width": 492, "height": 464 },
+				"pipo-mapeffect013a Copy 10": { "x": 55.249428, "y": 91.42366, "width": 569, "height": 487 }
+			},
+			"strip": {
+				"Layer 3 Copy": { "x": -202.6844, "y": 141.22092, "width": 535, "height": 455 }
+			},
+			"strip2": {
+				"Layer 3 Copy": { "x": 197.08295, "y": 141.22092, "scaleX": -1, "width": 535, "height": 455 }
+			},
+			"strip3": {
+				"Layer 3 Copy": { "x": -137.78801, "y": 158.13362, "scaleX": -1, "rotation": 90, "width": 535, "height": 455 }
+			},
+			"strip4": {
+				"Layer 3 Copy": { "x": 136.19739, "y": -138.40193, "scaleX": -1, "rotation": -89.89696, "width": 535, "height": 455 }
+			},
+			"strip5": {
+				"Layer 3 Copy": { "x": -202.6844, "y": 141.22092, "width": 535, "height": 455 }
+			},
+			"strip6": {
+				"Layer 3 Copy": { "x": 197.08295, "y": 141.22092, "scaleX": -1, "width": 535, "height": 455 }
+			},
+			"strip7": {
+				"Layer 3 Copy": { "x": -137.78801, "y": 158.13362, "scaleX": -1, "rotation": 90, "width": 535, "height": 455 }
+			},
+			"strip8": {
+				"Layer 3 Copy": { "x": 136.19739, "y": -138.40193, "scaleX": -1, "rotation": -90, "width": 535, "height": 455 }
+			},
+			"triangle": {
+				"Layer 5 Copy 2": { "rotation": -0.02788353, "width": 346, "height": 310 }
+			}
+		}
+	},
+	{ "name": "blue" },
+	{ "name": "purple" },
+	{ "name": "red" }
+],
+"animations": {
+	"Enter (Blue)": {
+		"slots": {
+			"circle_2": {
+				"rgba": [
+					{ "color": "47c6ffff" }
+				]
+			},
+			"Layer 2 Copy 2": {
+				"rgba": [
+					{ "color": "93e5ffff" }
+				]
+			},
+			"light": {
+				"rgba": [
+					{ "time": 3.0000002, "color": "ff000000" },
+					{ "time": 3.5000002, "color": "ff0000ff" }
+				]
+			},
+			"light2": {
+				"rgba": [
+					{ "time": 3.0000002, "color": "0092ff11" },
+					{ "time": 3.5000002, "color": "009cffff" }
+				]
+			},
+			"pipo-mapeffect013a-front Copy": {
+				"rgba": [
+					{ "time": 1, "color": "009cfe86" },
+					{ "time": 1.3333334, "color": "00dffe00" },
+					{ "time": 1.6666667, "color": "00d8fe9f" }
+				],
+				"attachment": [
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.4666667, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.8666668, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 2, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 2.0333335, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2.0666668, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 2.1000001, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 2.1333334, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 2.1666667, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 2.2, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 2.2333333, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 2.266667, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 2.3333335, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 2.3666668, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 2.4, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2.4333334, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 2.4666667, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 2.5000002, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 2.5333335, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 2.5666668, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 2.6000001, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 2.6333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 2.7, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 2.7333336, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 2.766667, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2.8000002, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 2.8333335, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 2.8666668, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 2.9, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 2.9333334, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 2.966667, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 3.0000002, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 3.0666668, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 3.1000001, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 3.1333334, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 3.1666667, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 3.2000003, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 3.2333336, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 3.266667, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 3.3000002, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 3.3333335, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 3.3666668, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 3.4333334, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 3.466667, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 3.5000002, "name": "pipo-mapeffect013a-front Copy 3" }
+				]
+			},
+			"pipo-mapeffect013a Copy": {
+				"rgba": [
+					{ "time": 1, "color": "0077ff00" },
+					{ "time": 1.6666667, "color": "009fff9e" }
+				],
+				"attachment": [
+					{ "time": 1.0666667, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.1333334, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.2, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.2666668, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.3333334, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.4666667, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.7666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.8333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.8666668, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.9000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 2, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 2.0333335, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 2.1333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 2.1666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 2.2, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 2.2333333, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 2.266667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 2.3000002, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 2.3333335, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 2.3666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 2.4, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 2.4333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 2.5333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 2.5666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 2.6000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 2.6333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 2.6666667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 2.7, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 2.7333336, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 2.766667, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 2.8000002, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 2.8333335, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 2.9333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 2.966667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 3.0000002, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 3.0333335, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 3.0666668, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 3.1000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 3.1333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 3.1666667, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 3.2000003, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 3.2333336, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 3.3333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 3.3666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 3.4, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 3.4333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 3.466667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 3.5000002, "name": "pipo-mapeffect013a Copy 7" }
+				]
+			},
+			"triangle": {
+				"rgba": [
+					{ "time": 0.33333334, "color": "cbc9ff65" }
+				]
+			}
+		},
+		"bones": {
+			"circle_1": {
+				"rotate": [
+					{ "time": 0.6666667 },
+					{ "time": 1.6666667, "value": 60 },
+					{ "time": 3.5000002, "value": 240 }
+				],
+				"scale": [
+					{},
+					{ "time": 0.6666667, "x": 100000, "y": 100000 }
+				]
+			},
+			"light2": {
+				"scale": [
+					{ "time": 3.0000002 },
+					{ "time": 3.5000002, "x": 170000.02, "y": 170000.02 }
+				]
+			},
+			"triangle": {
+				"rotate": [
+					{ "time": 0.33333334, "value": 180 }
+				],
+				"translate": [
+					{ "time": 0.33333334, "y": 96.552605 },
+					{ "time": 1.3333334, "y": 77.008316 },
+					{ "time": 2, "y": 70.310814 }
+				],
+				"scale": [
+					{ "time": 0.33333334 },
+					{ "time": 0.6666667, "x": 100000, "y": 100000 },
+					{ "time": 2, "x": 0, "y": 0 }
+				]
+			},
+			"circle_2": {
+				"rotate": [
+					{ "time": 1 },
+					{ "time": 1.6666667, "value": -60 },
+					{ "time": 3.5000002, "value": -240 }
+				],
+				"scale": [
+					{ "time": 0.16666667 },
+					{ "time": 1.1666667, "x": 100000, "y": 100000 }
+				]
+			},
+			"all aura": {
+				"scale": [
+					{ "time": 1 },
+					{ "time": 1.6666667, "x": 50000, "y": 50000 },
+					{ "time": 3.0000002, "x": 100000, "y": 100000 }
+				]
+			},
+			"circle_all": {
+				"scale": [
+					{ "time": 0.8333334 },
+					{ "time": 1.3666668, "x": 100000, "y": 100000 }
+				]
+			}
+		},
+		"drawOrder": [
+			{
+				"offsets": [
+					{ "slot": "light2", "offset": 7 }
+				]
+			}
+		]
+	},
+	"Enter (Purple)": {
+		"slots": {
+			"circle_2": {
+				"rgba": [
+					{ "color": "47c6ffff" },
+					{ "time": 0.33333334, "color": "e547ffff" }
+				]
+			},
+			"Layer 2 Copy 2": {
+				"rgba": [
+					{ "color": "ff93f5ff" }
+				]
+			},
+			"light": {
+				"rgba": [
+					{ "time": 3.0000002, "color": "ff00e800" },
+					{ "time": 3.5000002, "color": "ff00e5ff" }
+				]
+			},
+			"light2": {
+				"rgba": [
+					{ "time": 3.0000002, "color": "df00ff11" },
+					{ "time": 3.5000002, "color": "ff00ebff" }
+				]
+			},
+			"pipo-mapeffect013a-front Copy": {
+				"rgba": [
+					{ "time": 1, "color": "e500fe86" },
+					{ "time": 1.3333334, "color": "eb00fe00" },
+					{ "time": 1.6666667, "color": "f900fe9f" }
+				],
+				"attachment": [
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.4666667, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.8666668, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 2, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 2.0333335, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2.0666668, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 2.1000001, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 2.1333334, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 2.1666667, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 2.2, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 2.2333333, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 2.266667, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 2.3333335, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 2.3666668, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 2.4, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2.4333334, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 2.4666667, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 2.5000002, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 2.5333335, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 2.5666668, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 2.6000001, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 2.6333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 2.7, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 2.7333336, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 2.766667, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2.8000002, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 2.8333335, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 2.8666668, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 2.9, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 2.9333334, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 2.966667, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 3.0000002, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 3.0666668, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 3.1000001, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 3.1333334, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 3.1666667, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 3.2000003, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 3.2333336, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 3.266667, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 3.3000002, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 3.3333335, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 3.3666668, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 3.4333334, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 3.466667, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 3.5000002, "name": "pipo-mapeffect013a-front Copy 3" }
+				]
+			},
+			"pipo-mapeffect013a Copy": {
+				"rgba": [
+					{ "time": 1, "color": "f300ff00" },
+					{ "time": 1.6666667, "color": "fd00ff9e" }
+				],
+				"attachment": [
+					{ "time": 1.0666667, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.1333334, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.2, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.2666668, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.3333334, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.4666667, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.7666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.8333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.8666668, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.9000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 2, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 2.0333335, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 2.1333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 2.1666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 2.2, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 2.2333333, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 2.266667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 2.3000002, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 2.3333335, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 2.3666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 2.4, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 2.4333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 2.5333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 2.5666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 2.6000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 2.6333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 2.6666667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 2.7, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 2.7333336, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 2.766667, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 2.8000002, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 2.8333335, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 2.9333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 2.966667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 3.0000002, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 3.0333335, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 3.0666668, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 3.1000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 3.1333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 3.1666667, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 3.2000003, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 3.2333336, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 3.3333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 3.3666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 3.4, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 3.4333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 3.466667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 3.5000002, "name": "pipo-mapeffect013a Copy 7" }
+				]
+			},
+			"triangle": {
+				"rgba": [
+					{ "time": 0.33333334, "color": "ecc9ff65" }
+				]
+			}
+		},
+		"bones": {
+			"circle_1": {
+				"rotate": [
+					{ "time": 0.6666667 },
+					{ "time": 1.6666667, "value": 60 },
+					{ "time": 3.5000002, "value": 240 }
+				],
+				"scale": [
+					{},
+					{ "time": 0.6666667, "x": 100000, "y": 100000 }
+				]
+			},
+			"light2": {
+				"scale": [
+					{ "time": 3.0000002 },
+					{ "time": 3.5000002, "x": 170000.02, "y": 170000.02 }
+				]
+			},
+			"triangle": {
+				"rotate": [
+					{ "time": 0.33333334, "value": 180 }
+				],
+				"translate": [
+					{ "time": 0.33333334, "y": 96.552605 },
+					{ "time": 1.3333334, "y": 77.008316 },
+					{ "time": 2, "y": 70.310814 }
+				],
+				"scale": [
+					{ "time": 0.33333334 },
+					{ "time": 0.6666667, "x": 100000, "y": 100000 },
+					{ "time": 2, "x": 0, "y": 0 }
+				]
+			},
+			"circle_2": {
+				"rotate": [
+					{ "time": 1 },
+					{ "time": 1.6666667, "value": -60 },
+					{ "time": 3.5000002, "value": -240 }
+				],
+				"scale": [
+					{ "time": 0.16666667 },
+					{ "time": 1.1666667, "x": 100000, "y": 100000 }
+				]
+			},
+			"all aura": {
+				"scale": [
+					{ "time": 1 },
+					{ "time": 1.6666667, "x": 50000, "y": 50000 },
+					{ "time": 3.0000002, "x": 100000, "y": 100000 }
+				]
+			},
+			"circle_all": {
+				"scale": [
+					{ "time": 0.8333334 },
+					{ "time": 1.3666668, "x": 100000, "y": 100000 }
+				]
+			}
+		},
+		"drawOrder": [
+			{
+				"offsets": [
+					{ "slot": "light2", "offset": 7 }
+				]
+			}
+		]
+	},
+	"Enter (Red)": {
+		"slots": {
+			"Layer 2 Copy 2": {
+				"rgba": [
+					{ "time": 0.33333334, "color": "ff9494ff" }
+				]
+			},
+			"light": {
+				"rgba": [
+					{ "time": 3.0000002, "color": "ff000000" },
+					{ "time": 3.5000002, "color": "ff0000ff" }
+				]
+			},
+			"light2": {
+				"rgba": [
+					{ "time": 3.0000002, "color": "ff000000" },
+					{ "time": 3.5000002, "color": "ff0000ff" }
+				]
+			},
+			"pipo-mapeffect013a-front Copy": {
+				"rgba": [
+					{ "time": 1.3333334, "color": "fe000000" },
+					{ "time": 1.6666667, "color": "fe00009f" }
+				],
+				"attachment": [
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.4666667, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.8666668, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 2, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 2.0333335, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2.0666668, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 2.1000001, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 2.1333334, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 2.1666667, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 2.2, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 2.2333333, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 2.266667, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 2.3333335, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 2.3666668, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 2.4, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2.4333334, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 2.4666667, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 2.5000002, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 2.5333335, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 2.5666668, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 2.6000001, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 2.6333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 2.7, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 2.7333336, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 2.766667, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2.8000002, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 2.8333335, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 2.8666668, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 2.9, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 2.9333334, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 2.966667, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 3.0000002, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 3.0666668, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 3.1000001, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 3.1333334, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 3.1666667, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 3.2000003, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 3.2333336, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 3.266667, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 3.3000002, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 3.3333335, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 3.3666668, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 3.4333334, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 3.466667, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 3.5000002, "name": "pipo-mapeffect013a-front Copy 3" }
+				]
+			},
+			"pipo-mapeffect013a Copy": {
+				"rgba": [
+					{ "time": 1, "color": "ff000000" },
+					{ "time": 1.6666667, "color": "ff00009e" }
+				],
+				"attachment": [
+					{ "time": 1.0666667, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.1333334, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.2, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.2666668, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.3333334, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.4666667, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.7666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.8333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.8666668, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.9000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 2, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 2.0333335, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 2.1333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 2.1666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 2.2, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 2.2333333, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 2.266667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 2.3000002, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 2.3333335, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 2.3666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 2.4, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 2.4333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 2.5333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 2.5666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 2.6000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 2.6333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 2.6666667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 2.7, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 2.7333336, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 2.766667, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 2.8000002, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 2.8333335, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 2.9333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 2.966667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 3.0000002, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 3.0333335, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 3.0666668, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 3.1000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 3.1333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 3.1666667, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 3.2000003, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 3.2333336, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 3.3333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 3.3666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 3.4, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 3.4333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 3.466667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 3.5000002, "name": "pipo-mapeffect013a Copy 7" }
+				]
+			},
+			"triangle": {
+				"rgba": [
+					{ "time": 0.33333334, "color": "ffc9c965" }
+				]
+			}
+		},
+		"bones": {
+			"circle_1": {
+				"rotate": [
+					{ "time": 0.6666667 },
+					{ "time": 1.6666667, "value": 60 },
+					{ "time": 3.5000002, "value": 240 }
+				],
+				"scale": [
+					{},
+					{ "time": 0.6666667, "x": 100000, "y": 100000 }
+				]
+			},
+			"light2": {
+				"scale": [
+					{ "time": 3.0000002 },
+					{ "time": 3.5000002, "x": 170000.02, "y": 170000.02 }
+				]
+			},
+			"triangle": {
+				"rotate": [
+					{ "time": 0.33333334, "value": 180 }
+				],
+				"translate": [
+					{ "time": 0.33333334, "y": 96.552605 },
+					{ "time": 1.3333334, "y": 77.008316 },
+					{ "time": 2, "y": 70.310814 }
+				],
+				"scale": [
+					{ "time": 0.33333334 },
+					{ "time": 0.6666667, "x": 100000, "y": 100000 },
+					{ "time": 2, "x": 0, "y": 0 }
+				]
+			},
+			"circle_2": {
+				"rotate": [
+					{ "time": 1 },
+					{ "time": 1.6666667, "value": -60 },
+					{ "time": 3.5000002, "value": -240 }
+				],
+				"scale": [
+					{ "time": 0.16666667 },
+					{ "time": 1.1666667, "x": 100000, "y": 100000 }
+				]
+			},
+			"all aura": {
+				"scale": [
+					{ "time": 1 },
+					{ "time": 1.6666667, "x": 50000, "y": 50000 },
+					{ "time": 3.0000002, "x": 100000, "y": 100000 }
+				]
+			},
+			"circle_all": {
+				"scale": [
+					{ "time": 0.8333334 },
+					{ "time": 1.3666668, "x": 100000, "y": 100000 }
+				]
+			}
+		},
+		"drawOrder": [
+			{
+				"offsets": [
+					{ "slot": "light2", "offset": 7 }
+				]
+			}
+		]
+	},
+	"Idle (Blue)": {
+		"slots": {
+			"circle_2": {
+				"rgba": [
+					{ "color": "47e6ffff" }
+				]
+			},
+			"light": {
+				"rgba": [
+					{ "time": 2, "color": "ff000000" }
+				]
+			},
+			"light2": {
+				"rgba": [
+					{ "time": 2, "color": "ff000000" }
+				]
+			},
+			"pipo-mapeffect013a-front Copy": {
+				"rgba": [
+					{ "color": "00dcfe68" }
+				],
+				"attachment": [
+					{ "time": 0.06666667, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 0.13333334, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 0.20000002, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 0.26666668, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 0.33333334, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 0.40000004, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 0.4666667, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 0.53333336, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 0.6, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 0.6333334, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 0.6666667, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 0.70000005, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 0.73333335, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 0.7666667, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 0.8000001, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 0.8333334, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 0.86666673, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 0.90000004, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 0.9333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 1.0333334, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.0666667, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 1.1, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 1.1333334, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 1.1666667, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.2, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.2333333, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.2666668, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.3000001, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.3666668, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.4333334, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 1.4666667, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 1.5000001, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.5666667, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.6333334, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.7, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.7666668, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.8333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.9000001, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2, "name": "pipo-mapeffect013a-front Copy 4" }
+				]
+			},
+			"pipo-mapeffect013a Copy": {
+				"rgba": [
+					{ "color": "00eaff4e" }
+				],
+				"attachment": [
+					{ "time": 0.06666667, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 0.13333334, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 0.20000002, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 0.26666668, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 0.33333334, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 0.40000004, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 0.4666667, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 0.53333336, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 0.6, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 0.6666667, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 0.73333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 0.7666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 0.8000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 0.8333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 0.86666673, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 0.90000004, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 0.9333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 0.9666667, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.0333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.1333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.1666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.2, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.2333333, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.2666668, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.3000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.3333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.3666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.4333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.5666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.6333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.7, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.7666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.8333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 2, "name": "pipo-mapeffect013a Copy 4" }
+				]
+			}
+		},
+		"bones": {
+			"circle_1": {
+				"rotate": [
+					{},
+					{ "time": 2, "value": 180 }
+				],
+				"scale": [
+					{ "x": 100000, "y": 100000 }
+				]
+			},
+			"circle_2": {
+				"rotate": [
+					{},
+					{ "time": 2, "value": -178.8 }
+				],
+				"scale": [
+					{ "x": 100000, "y": 100000 }
+				]
+			},
+			"all aura": {
+				"scale": [
+					{ "x": 100000, "y": 100000 }
+				]
+			},
+			"circle_all": {
+				"scale": [
+					{ "time": 0.16666667 },
+					{ "time": 0.70000005, "x": 100000, "y": 100000 }
+				]
+			}
+		}
+	},
+	"Idle (Purple": {
+		"slots": {
+			"circle_2": {
+				"rgba": [
+					{ "color": "fb47ffff" }
+				]
+			},
+			"light": {
+				"rgba": [
+					{ "time": 2, "color": "ff000000" }
+				]
+			},
+			"light2": {
+				"rgba": [
+					{ "time": 2, "color": "ff000000" }
+				]
+			},
+			"pipo-mapeffect013a-front Copy": {
+				"rgba": [
+					{ "color": "ef00fe68" }
+				],
+				"attachment": [
+					{ "time": 0.06666667, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 0.13333334, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 0.20000002, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 0.26666668, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 0.33333334, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 0.40000004, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 0.4666667, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 0.53333336, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 0.6, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 0.6333334, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 0.6666667, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 0.70000005, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 0.73333335, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 0.7666667, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 0.8000001, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 0.8333334, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 0.86666673, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 0.90000004, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 0.9333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 1.0333334, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.0666667, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 1.1, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 1.1333334, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 1.1666667, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.2, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.2333333, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.2666668, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.3000001, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.3666668, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.4333334, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 1.4666667, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 1.5000001, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.5666667, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.6333334, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.7, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.7666668, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.8333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.9000001, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2, "name": "pipo-mapeffect013a-front Copy 4" }
+				]
+			},
+			"pipo-mapeffect013a Copy": {
+				"rgba": [
+					{ "color": "fd00ff4e" }
+				],
+				"attachment": [
+					{ "time": 0.06666667, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 0.13333334, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 0.20000002, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 0.26666668, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 0.33333334, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 0.40000004, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 0.4666667, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 0.53333336, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 0.6, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 0.6666667, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 0.73333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 0.7666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 0.8000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 0.8333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 0.86666673, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 0.90000004, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 0.9333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 0.9666667, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.0333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.1333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.1666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.2, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.2333333, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.2666668, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.3000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.3333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.3666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.4333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.5666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.6333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.7, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.7666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.8333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 2, "name": "pipo-mapeffect013a Copy 4" }
+				]
+			}
+		},
+		"bones": {
+			"circle_1": {
+				"rotate": [
+					{},
+					{ "time": 2, "value": 180 }
+				],
+				"scale": [
+					{ "x": 100000, "y": 100000 }
+				]
+			},
+			"circle_2": {
+				"rotate": [
+					{},
+					{ "time": 2, "value": -178.8 }
+				],
+				"scale": [
+					{ "x": 100000, "y": 100000 }
+				]
+			},
+			"all aura": {
+				"scale": [
+					{ "x": 100000, "y": 100000 }
+				]
+			},
+			"circle_all": {
+				"scale": [
+					{ "time": 0.16666667 },
+					{ "time": 0.70000005, "x": 100000, "y": 100000 }
+				]
+			}
+		}
+	},
+	"Idle (Red)": {
+		"slots": {
+			"light": {
+				"rgba": [
+					{ "time": 2, "color": "ff000000" }
+				]
+			},
+			"light2": {
+				"rgba": [
+					{ "time": 2, "color": "ff000000" }
+				]
+			},
+			"pipo-mapeffect013a-front Copy": {
+				"rgba": [
+					{ "color": "fe000068" }
+				],
+				"attachment": [
+					{ "time": 0.06666667, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 0.13333334, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 0.20000002, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 0.26666668, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 0.33333334, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 0.40000004, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 0.4666667, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 0.53333336, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 0.6, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 0.6333334, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 0.6666667, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 0.70000005, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 0.73333335, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 0.7666667, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 0.8000001, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 0.8333334, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 0.86666673, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 0.90000004, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 0.9333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 1.0333334, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.0666667, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 1.1, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 1.1333334, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 1.1666667, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.2, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.2333333, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.2666668, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.3000001, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.3666668, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.4333334, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 1.4666667, "name": "pipo-mapeffect013a-front Copy 4" },
+					{ "time": 1.5000001, "name": "pipo-mapeffect013a-front Copy 5" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.5666667, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.6333334, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.7, "name": "pipo-mapeffect013a-front Copy 6" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a-front Copy 7" },
+					{ "time": 1.7666668, "name": "pipo-mapeffect013a-front Copy 8" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a-front Copy 9" },
+					{ "time": 1.8333334, "name": "pipo-mapeffect013a-front Copy 10" },
+					{ "time": 1.9000001, "name": "pipo-mapeffect013a-front Copy" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a-front Copy 2" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a-front Copy 3" },
+					{ "time": 2, "name": "pipo-mapeffect013a-front Copy 4" }
+				]
+			},
+			"pipo-mapeffect013a Copy": {
+				"rgba": [
+					{ "color": "ff00004e" }
+				],
+				"attachment": [
+					{ "time": 0.06666667, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 0.13333334, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 0.20000002, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 0.26666668, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 0.33333334, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 0.40000004, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 0.4666667, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 0.53333336, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 0.6, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 0.6666667, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 0.73333335, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 0.7666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 0.8000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 0.8333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 0.86666673, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 0.90000004, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 0.9333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 0.9666667, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.0333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.1333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.1666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.2, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.2333333, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.2666668, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.3000001, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.3333334, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.3666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1.4000001, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.4333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.5333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.5666667, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 1.6000001, "name": "pipo-mapeffect013a Copy 4" },
+					{ "time": 1.6333334, "name": "pipo-mapeffect013a Copy 5" },
+					{ "time": 1.6666667, "name": "pipo-mapeffect013a Copy 6" },
+					{ "time": 1.7, "name": "pipo-mapeffect013a Copy 7" },
+					{ "time": 1.7333335, "name": "pipo-mapeffect013a Copy 8" },
+					{ "time": 1.7666668, "name": "pipo-mapeffect013a Copy 9" },
+					{ "time": 1.8000001, "name": "pipo-mapeffect013a Copy 10" },
+					{ "time": 1.8333334, "name": "pipo-mapeffect013a Copy" },
+					{ "time": 1.9333334, "name": "pipo-mapeffect013a Copy 2" },
+					{ "time": 1.9666668, "name": "pipo-mapeffect013a Copy 3" },
+					{ "time": 2, "name": "pipo-mapeffect013a Copy 4" }
+				]
+			}
+		},
+		"bones": {
+			"circle_1": {
+				"rotate": [
+					{},
+					{ "time": 2, "value": 180 }
+				],
+				"scale": [
+					{ "x": 100000, "y": 100000 }
+				]
+			},
+			"circle_2": {
+				"rotate": [
+					{},
+					{ "time": 2, "value": -178.8 }
+				],
+				"scale": [
+					{ "x": 100000, "y": 100000 }
+				]
+			},
+			"all aura": {
+				"scale": [
+					{ "x": 100000, "y": 100000 }
+				]
+			},
+			"circle_all": {
+				"scale": [
+					{ "time": 0.16666667 },
+					{ "time": 0.70000005, "x": 100000, "y": 100000 }
+				]
+			}
+		}
+	}
+}
+}

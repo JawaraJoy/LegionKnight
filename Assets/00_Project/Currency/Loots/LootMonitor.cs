@@ -23,7 +23,13 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<ScriptableObject> m_OnLootDefiUpdate;
 
-        private LootItemView GetLootView(LootField definition)
+        public List<LootItemView> SpawnedLoots => m_SpawnedLoots;
+
+        public LootItemView GetLootItemView(LootField definition)
+        {
+            return GetLootViewInternal(definition);
+        }
+        private LootItemView GetLootViewInternal(LootField definition)
         {
             foreach (LootItemView loot in m_SpawnedLoots)
             {
@@ -54,7 +60,7 @@ namespace LegionKnight
             {   
                 Debug.Log($"Loot {i}: {loots[i].Item.name}, IsUnique: {loots[i].IsUnique}");
                 yield return StartCoroutine(AddingLootView(loots[i]));
-                bool alreadySpawned = GetLootView(loots[i]) != null;
+                bool alreadySpawned = GetLootViewInternal(loots[i]) != null;
                 yield return new WaitUntil(() => alreadySpawned);
             }
         }
@@ -62,7 +68,7 @@ namespace LegionKnight
         {
             Debug.Log($"Adding loot view: {loot.Item.name} x{loot.Amount}");
             
-            bool has = GetLootView(loot) != null;
+            bool has = GetLootViewInternal(loot) != null;
             bool unique = loot.IsUnique;
             Debug.Log($"Has loot view: {has}");
             if (has)
@@ -83,13 +89,30 @@ namespace LegionKnight
             }
             yield return new WaitForEndOfFrame();
         }
+        public void DoubledCountDownLootAmount()
+        {
+            Debug.Log($"Doubling loot amounts for all spawned loots");
+            foreach (var lootView in m_SpawnedLoots)
+            {
+                if (lootView.Definition is LootField lootField)
+                {
+                    int add = lootField.Amount;
+                    lootView.AddAmountWithCountDown(add);
+                    Debug.Log($"Counting up loot view: {lootField.Item.name} by {add}");
+                }
+                else
+                {
+                    Debug.LogWarning($"Loot view definition is not LootField");
+                }
+            }
+        }
         public virtual void AddLootView(LootField loot)
         {
             StartCoroutine(AddingLootView(loot));
         }
         public virtual void RemoveLootView(LootField loot)
         {
-            LootItemView view = GetLootView(loot);
+            LootItemView view = GetLootViewInternal(loot);
             if (view != null)
             {
                 view.Hide();
@@ -102,7 +125,7 @@ namespace LegionKnight
 
         private void UpdateLootAmountView(LootField loot)
         {
-            LootItemView view = GetLootView(loot);
+            LootItemView view = GetLootViewInternal(loot);
             if (view != null)
             {
                 view.SetAmount(loot.Amount);

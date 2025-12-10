@@ -287,13 +287,27 @@ namespace LegionKnight
                 }
                 else
                 {
-                    GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+                    ShowInternitialAdsAndGameOver();
                 }
             }
             else
             {
-                GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+                ShowInternitialAdsAndGameOver();
             }
+        }
+
+        private void ShowInternitialAdsAndGameOver()
+        {
+            bool canRevive = Player.Instance.CanUseResurrectionAds;
+            if (!canRevive)
+            {
+                UnityService.Instance.UnityAdsManager.LevelPlayService.ShowInternitialAds(() =>
+                {
+                    
+                    Debug.Log("Show Internitial Ads - Game Over");
+                });
+            }
+            GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
         }
         private void PotOfLifeEff(int rebornHealth, Currency currency)
         {

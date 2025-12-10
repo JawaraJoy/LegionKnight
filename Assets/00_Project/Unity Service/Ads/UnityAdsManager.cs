@@ -6,12 +6,16 @@ namespace LegionKnight
 {
     public partial class UnityAdsManager : UnityAdsService
     {
-        
+        [SerializeField]
+        private LevelPlayService m_LevelPlayService;
+        public LevelPlayService LevelPlayService => m_LevelPlayService;
+
     }
     public partial class UnityService
     {
         [SerializeField]
         private UnityAdsManager m_UnityAdsManager;
+        public UnityAdsManager UnityAdsManager => m_UnityAdsManager;
 
         public void LoadRewardedAd()
         {

@@ -175,6 +175,7 @@ public partial class LevelPlaySample : MonoBehaviour
         EnableAds();
         isAdsEnabled = true;
         rewardedVideoAd.LoadAd();
+        interstitialAd.LoadAd();
     }
 
     void SdkInitializationFailedEvent(LevelPlayInitError error)

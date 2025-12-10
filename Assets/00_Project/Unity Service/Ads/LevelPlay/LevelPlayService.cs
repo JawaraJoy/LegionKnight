@@ -18,6 +18,26 @@ namespace LegionKnight
                 RewardedAdInternal.LoadAd();
             }
         }
+        public void ShowInternitialAds(UnityAction onRewardAdd)
+        {
+            bool hasLoad = InterstitialAdInternal.IsAdReady();
+            if (hasLoad)
+            {
+                ShowInternitialAdsInternal(onRewardAdd);
+            }
+            else
+            {
+                InterstitialAdInternal.LoadAd();
+            }
+        }
+        private void ShowInternitialAdsInternal(UnityAction onRewardAdd)
+        {
+            // Implementation for interstitial ads if needed
+            m_OnInterstitialAdDone?.RemoveAllListeners();
+            m_OnInterstitialAdDone.AddListener(onRewardAdd);
+            m_OnInterstitialAdDone.AddListener(InterstitialAdInternal.LoadAd);
+            InterstitialAdInternal.ShowAd();
+        }
 
         private void ShowRewardedAddsInternal(UnityAction onRewardAdd)
         {
@@ -40,6 +60,9 @@ namespace LegionKnight
 public partial class LevelPlaySample
 {
     protected LevelPlayRewardedAd RewardedAdInternal => rewardedVideoAd;
+    protected LevelPlayInterstitialAd InterstitialAdInternal => interstitialAd;
     [SerializeField]
     protected UnityEvent m_OnRewardedAdDone;
+    [SerializeField]
+    protected UnityEvent m_OnInterstitialAdDone;
 }

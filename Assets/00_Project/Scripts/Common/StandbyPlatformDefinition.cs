@@ -25,6 +25,9 @@ namespace LegionKnight
         private int m_ChanceRateTospawn;
         [SerializeField]
         private AssetReferenceGameObject m_Platform;
+        [SerializeField]
+        private WheelItemDefinition m_WheelDefi;
+        public WheelItemDefinition WheelDefi => m_WheelDefi;
 
         [SerializeField]
         private AbilityDefinition m_AbilityDefinition;
