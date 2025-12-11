@@ -23,6 +23,8 @@ namespace LegionKnight
         [SerializeField]
         private float m_MaxHpRateDamage = 0f;
 
+        [SerializeField, MMReadOnly]
+        private bool m_Piercing;
         [SerializeField]
         private bool m_Fatal = false; // If true, the damageable will die on contact with a fatal damage
         [SerializeField]
@@ -159,14 +161,22 @@ namespace LegionKnight
         {
             TakeDamageInternal(damage, false);
         }
-
+        public void SetPiercing(bool piercing)
+        {
+            m_Piercing = piercing;
+        }
         private int DamageFormulaRPG(int attacker, int defender)
         {
+            
             int underAmor = Mathf.Clamp(attacker + defender, 5, int.MaxValue);
             int dmg = Mathf.RoundToInt(attacker * attacker / (underAmor));
             if (dmg < 1)
             {
                 dmg = Random.Range(1, 5); // Ensure at least 1 damage is dealt
+            }
+            if (m_Piercing)
+            {
+                dmg = attacker;
             }
             return dmg;
         }

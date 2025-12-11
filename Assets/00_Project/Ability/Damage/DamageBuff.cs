@@ -8,6 +8,9 @@ namespace LegionKnight
         private DamageStat m_DamageStat;
 
         private Coroutine m_AttackRateTempCoroutine;
+
+        [SerializeField]
+        private ParticleSystem m_AttackRateBuffVFX;
         public DamageStat GetDamageStat()
         {
             return m_DamageStat;
