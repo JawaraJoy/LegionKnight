@@ -27,7 +27,7 @@ namespace LegionKnight
 
         public Pad GetPadByDefinition(PadDefinition definition)
         {
-            return m_Pads.Find(pad => pad.Definition == definition);
+            return m_Pads.Find(pad => pad.Definition.Id == definition.Id);
         }
     }
 }

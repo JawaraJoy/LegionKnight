@@ -22,7 +22,7 @@ namespace LegionKnight
             }
         }
 
-        private void Start()
+        private void Awake()
         {
             Manager.RegisterPad(this);
         }

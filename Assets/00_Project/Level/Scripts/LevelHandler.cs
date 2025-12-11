@@ -195,6 +195,9 @@ namespace LegionKnight
         public void StartLevel(LevelDefinition defi)
         {
             GetLevelSelect(defi)?.StartLevel();
+            bool hasBos = m_SelectedLevelDefinition.HasBoss();
+            GameManager.Instance.SetActiveBosIndicatorView(hasBos);
+            Debug.Log("Has Boss: " + hasBos);
             SetBossSpawnCountInternal(0);
             Player.Instance.SetCurrencyAmount(m_PotOfLifeDefinition, 0);
         }
@@ -358,6 +361,7 @@ namespace LegionKnight
         }
         private void SetBossSpawnCountInternal(int set)
         {
+            //if (m_SelectedLevelDefinition ==)
             m_BosSpawnCount = set;
         }
         private void AddBosSpawnCountInternal(int add)

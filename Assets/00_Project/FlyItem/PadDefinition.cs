@@ -6,6 +6,9 @@ namespace LegionKnight
     public class PadDefinition : ScriptableObject
     {
         [SerializeField]
+        private string m_Id = "ident";
+        public string Id => m_Id;
+        [SerializeField]
         private float m_DelayBeforeFly = 1f;
         [SerializeField]
         private float m_FlySpeed = 1.0f;

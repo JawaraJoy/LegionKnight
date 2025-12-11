@@ -16,6 +16,8 @@ namespace LegionKnight
         private UnityEvent<object> m_OnDefinitionSet = new();
         [SerializeField]
         private UnityEvent<int> m_OnAmountChanged = new();
+        [SerializeField]
+        private UnityEvent m_OnAmountCountChanged = new();
         protected int m_AmountValue;
         protected object m_Definition;
         public object Definition => m_Definition;
@@ -34,18 +36,23 @@ namespace LegionKnight
         {
             StartCoroutine(AddCountDown(addCount));
         }
-
+        int m_AmountTriggerChange = 10;
+        int m_AmountTriggerCount = 0;
         private IEnumerator AddCountDown(int addCount)
         {
             int start = m_AmountValue;
             int target = m_AmountValue + addCount;
-
             for (int i = start; i < target; i++)
             {
                 m_AmountValue = i + 1;
-
                 m_OnAmountChanged?.Invoke(m_AmountValue);
 
+                m_AmountTriggerCount++;
+                if (m_AmountTriggerCount >= 5)
+                {
+                    m_OnAmountCountChanged?.Invoke();
+                    m_AmountTriggerCount = 0;
+                }
                 if (m_Amount != null)
                 {
                     m_Amount.text = m_AmountValue.ToString();
