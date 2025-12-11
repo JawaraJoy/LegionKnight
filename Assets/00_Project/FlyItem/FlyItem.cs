@@ -62,6 +62,15 @@ namespace LegionKnight
         // -------------------------
         private Vector3 GetTargetWorldPosition(Transform target)
         {
+            // If the target is UI (RectTransform) convert to world position
+            if (target is RectTransform rect)
+            {
+                Vector3 screenPos = RectTransformUtility.WorldToScreenPoint(null, rect.position);
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+                worldPos.z = 0; // Ensure 2D plane
+                return worldPos;
+            }
+
             // Normal world object
             Vector3 pos = target.position;
             pos.z = 0;

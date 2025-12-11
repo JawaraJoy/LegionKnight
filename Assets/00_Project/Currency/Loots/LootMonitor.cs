@@ -21,6 +21,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<LootField> m_OnLootUdate;
         [SerializeField]
+        private UnityEvent m_OnDoubledStart;
+        [SerializeField]
         private UnityEvent<ScriptableObject> m_OnLootDefiUpdate;
 
         public List<LootItemView> SpawnedLoots => m_SpawnedLoots;
@@ -35,10 +37,14 @@ namespace LegionKnight
             {
                 if (loot.Definition is LootField lootField)
                 {
-                    if (lootField.Item == definition.Item)
+                    if (lootField.Item is IDescriptable descriptable && definition.Item is IDescriptable descriptable2)
                     {
-                        return loot;
+                        if (descriptable.Id == descriptable2.Id)
+                        {
+                            return loot;
+                        }
                     }
+                    
                 }
             }
             return null;
@@ -91,6 +97,7 @@ namespace LegionKnight
         }
         public void DoubledCountDownLootAmount()
         {
+            m_OnDoubledStart?.Invoke();
             Debug.Log($"Doubling loot amounts for all spawned loots");
             foreach (var lootView in m_SpawnedLoots)
             {
