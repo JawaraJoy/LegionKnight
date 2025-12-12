@@ -126,7 +126,9 @@ namespace LegionKnight
             if (m_CurrentTutorial != null) return;
             if (HasContentInternal(tutorialDefi, out TutorialContent content))
             {
+                // Check if the tutorial is already done or locked
                 if (content.IsDone || !content.IsUnlocked) return;
+                // Start the tutorial if all checks are passed
                 m_CurrentTutorial = content.Definition;
                 m_CurrentStep = 0;
                 m_MaxStep = m_CurrentTutorial.Steps.Length;
