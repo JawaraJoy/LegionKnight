@@ -84,6 +84,12 @@ namespace LegionKnight
             }
             energy.Add(amount);
             m_OnEnergyAmountChanged?.Invoke(energy);
+
+            if(IsFull(definition))
+            {
+                //--Tenjin Record
+                TenjinManager.Instance.SendEventToReEnergy();
+            }
         }
         public void Set(EnergyDefinition definition, int amount)
         {
@@ -95,6 +101,12 @@ namespace LegionKnight
             }
             energy.Set(amount);
             m_OnEnergyAmountChanged?.Invoke(energy);
+
+            if(IsFull(definition))
+            {
+                //--Tenjin Record
+                TenjinManager.Instance.SendEventToReEnergy();
+            }
         }
         private void Update()
         {

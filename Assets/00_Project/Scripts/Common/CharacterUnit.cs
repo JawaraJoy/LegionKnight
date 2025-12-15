@@ -93,6 +93,9 @@ namespace LegionKnight
             Player.Instance.OnHeroLevelUp.Invoke(m_Definition);
             Player.Instance.PlayerDeck.OnCharacterLevelUpAmount.Invoke(m_Level);
             Debug.Log($"Level Up! New Level: {m_Level}");
+
+            //--Tenjin Record
+            TenjinManager.Instance.SendEventToHeroLevelUp(level);
         }
         public void LevelUp()
         {
@@ -145,6 +148,9 @@ namespace LegionKnight
             UnityService.Instance.SaveData(m_Definition.Id + "Star", m_Star);
             OnCharacterStarUpInvoke();
             Player.Instance.OnHeroStarUp.Invoke(m_Definition);
+
+            //--Tenjin Record
+            TenjinManager.Instance.SendEventToCharacterBreakthrough(m_Star);
         }
         private void OnCharacterStarUpInvoke()
         {
