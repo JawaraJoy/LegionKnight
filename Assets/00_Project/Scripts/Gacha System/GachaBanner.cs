@@ -199,6 +199,10 @@ namespace LegionKnight
             }
 
             m_OnDrawResultSuccess?.Invoke(results);
+
+            //--Tenjin Record
+            TenjinManager.Instance.SendEventToGachaPullType(results);
+
             foreach (GachaReward re in results)
             {
                 allRewards += re.Definition.name;

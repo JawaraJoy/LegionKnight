@@ -222,6 +222,9 @@ namespace LegionKnight
                 //m_PlatformDestination.position = platform.GetContactPosition();
                 SetStartPosition(platform);
             }
+
+            //--Tenjin Record
+            TenjinManager.Instance.UpdatePlatformProgression();
         }
         private void SpawnBosInternal()
         {
@@ -300,6 +303,9 @@ namespace LegionKnight
         private void PlayInternal()
         {
             StartCoroutine(Playing());
+
+            //--Tenjin Record
+            TenjinManager.Instance.StartRecordProgression();
         }
 
         private IEnumerator Playing()

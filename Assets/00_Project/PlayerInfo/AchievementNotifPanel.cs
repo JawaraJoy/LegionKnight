@@ -27,6 +27,10 @@ namespace LegionKnight
             string desc = $"Achievement [<color=yellow>{badge.Definition.Upgrade[level].Label}</color>]";
             m_Desc.text = desc;
             m_Note.text = "Go to Profile to claim the Reward!!";
+
+            //--Tenjin Record
+            TenjinManager.Instance.SendEventToUnlockAchievement(badge.Definition.Id);
+            
             StartCoroutine(HideAfterDelay(5f));
         }
 

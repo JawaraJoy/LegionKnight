@@ -111,6 +111,8 @@ namespace LegionKnight
         {
             PlayerPrefs.SetFloat("Record_PlayTime", 0);    
             PlayerPrefs.Save();
+
+            SendEvent("event_app_open");
         }
 
         private void Connect()
@@ -122,8 +124,6 @@ namespace LegionKnight
             baseTenjin.Connect();
 
             Debug.Log("***** TENJIN START *****");
-
-            SendEvent("event_app_open");
         }
 
         public void StartRecordProgression()

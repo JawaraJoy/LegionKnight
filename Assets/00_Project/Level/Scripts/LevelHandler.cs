@@ -240,6 +240,9 @@ namespace LegionKnight
                     {"levelname",  set.LevelName}
                 };
                 AppsFlyer.sendEvent(eventName, eventValues);
+
+                //--Tenjin Record
+                TenjinManager.Instance.StopRecordProgression();
             }
         }
 
