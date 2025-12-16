@@ -13,6 +13,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private EnemyManager m_EnemyManager;
+        public EnemyManager EnemyManager => m_EnemyManager;
         public void AddEnemy(IEnemy enemy)
         {
             m_EnemyManager.AddEnemy(enemy);

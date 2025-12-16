@@ -73,6 +73,16 @@ namespace LegionKnight
             //StartCoroutine(SpawningMinion(defi, handle));
         }
 
+        public void CustomSpawnMinions(MinionDefinition defi, int amount, Transform selectedSpot, float radius)
+        {
+            MinionUnit unit = GetMinionUnit(defi);
+            if (unit == null) return;
+            for (int i = 0; i < amount; i++)
+            {
+                unit.SpawnMinion(selectedSpot, GetRandomRadiesSpawn(selectedSpot, radius));
+            }
+        }
+
         private Vector2 GetRandomRadiusSpawn()
         {
             Vector2 randomOffset = Random.insideUnitCircle * m_Radius;
@@ -80,7 +90,13 @@ namespace LegionKnight
             Vector3 spawnPosition = new Vector3(spawnTransformPosition.x + randomOffset.x, spawnTransformPosition.y + randomOffset.y, 0);
             return new Vector2 (spawnPosition.x, spawnPosition.y);
         }
-
+        private Vector2 GetRandomRadiesSpawn(Transform selectedSpot, float radius)
+        {
+            Vector2 randomOffset = Random.insideUnitCircle * m_Radius;
+            Vector3 spawnTransformPosition = selectedSpot.position;
+            Vector3 spawnPosition = new Vector3(spawnTransformPosition.x + randomOffset.x, spawnTransformPosition.y + randomOffset.y, 0);
+            return new Vector2(spawnPosition.x, spawnPosition.y);
+        }
         private void CheckEnemy()
         {
             // is enemy exist if there is 1 enemy on the list
