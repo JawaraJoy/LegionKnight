@@ -31,6 +31,7 @@ namespace LegionKnight
         private UnityEvent<SpineAnimDefinition> m_OnAnimationDone;
         [SerializeField]
         private SpineEvent[] m_SpineEvents;
+        public SpineObject CurrentSpineObject => m_CurrentSpineObject;
         private SpineObject GetSpineObject(string key)
         {
             if (m_SpineObjects.TryGetValue(key, out var spineObject))

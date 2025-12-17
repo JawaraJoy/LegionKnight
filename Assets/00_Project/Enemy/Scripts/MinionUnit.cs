@@ -31,6 +31,12 @@ namespace LegionKnight
             AsyncOperationHandle<GameObject> handle = asset.InstantiateAsync(offsite, Quaternion.identity);
             GameManager.Instance.StartCoroutine(SpawningMinion(spot, handle));
         }
+        public void CustomSpawnMinion(Transform spot, Vector2 offsite)
+        {
+            AssetReferenceGameObject asset = m_Definition.ModelPrefab;
+            AsyncOperationHandle<GameObject> handle = asset.InstantiateAsync(offsite, Quaternion.identity);
+            GameManager.Instance.StartCoroutine(SpawningMinion(spot, handle));
+        }
         private IEnumerator SpawningMinion(Transform spot, AsyncOperationHandle<GameObject> handle)
         {
             yield return handle;

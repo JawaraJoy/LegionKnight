@@ -12,6 +12,8 @@ namespace LegionKnight
         [SerializeField]
         private BossSpine m_BossSpine;
 
+        public BossSpine BossSpine => m_BossSpine;
+
         public void SetAnim(SpineAnimDefinition anim)
         {
             if (m_BossSpine != null)

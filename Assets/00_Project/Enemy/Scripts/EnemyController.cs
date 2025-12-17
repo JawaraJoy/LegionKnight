@@ -23,6 +23,7 @@ namespace LegionKnight
         private bool m_IsEnemyExist = false;
         [SerializeField]
         private bool m_CanSpawnEnemy = false;
+        public bool CanSpawnEnemy => m_CanSpawnEnemy;
         [SerializeField]
         private UnityEvent m_OnAnyEnemies;
         [SerializeField]
@@ -32,6 +33,7 @@ namespace LegionKnight
 
         [SerializeField]
         private float m_Radius = 7f;
+
 
         public void SetSpawningSpot(Transform spot)
         {
@@ -79,8 +81,9 @@ namespace LegionKnight
             if (unit == null) return;
             for (int i = 0; i < amount; i++)
             {
-                unit.SpawnMinion(selectedSpot, GetRandomRadiesSpawn(selectedSpot, radius));
+                unit.CustomSpawnMinion(selectedSpot, GetRandomRadiesSpawn(selectedSpot, radius));
             }
+            Debug.Log($"Custom Spawned {amount} {defi.name} at {selectedSpot.name} with radius {radius}");
         }
 
         private Vector2 GetRandomRadiusSpawn()

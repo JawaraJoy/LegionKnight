@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace LegionKnight
 {
+    [Obsolete("ProjectileAbility is deprecated, please use the new Ability System.", false)]
     public partial class ProjectileAbility : MonoBehaviour
     {
         [SerializeField]
