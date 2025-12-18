@@ -3,16 +3,26 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
+    public interface IPoolable
+    {
+        void OnSpawned();
+        void OnDespawned();
+    }
+
+
+    // =============================
+    // POOL OBJECT (OPTIONAL BASE)
+    // =============================
     public class PoolObject : MonoBehaviour, IPoolable
     {
         [SerializeField]
         private PoolDefinition m_Definition;
         public PoolDefinition Definition => m_Definition;
-        [SerializeField]
-        private UnityEvent m_OnReSpawn;
-        public void ReActiveOnSpawn()
+        public virtual void OnSpawned() { }
+        public virtual void OnDespawned() 
         {
-            m_OnReSpawn.Invoke();
+            
         }
     }
+
 }

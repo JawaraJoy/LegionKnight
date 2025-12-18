@@ -13,40 +13,31 @@ namespace LegionKnight
         [SerializeField]
         private Transform m_SilenceVFXParent;
 
-        public void TriggerSilenced(GameObject vfxPrefab, float duration)
+        public Transform SilenceVFXParent => m_SilenceVFXParent;
+
+        private Coroutine m_Coroutine;
+        public void TriggerSilenced(float duration)
         {
-            StartCoroutine(TriggeringSilence(vfxPrefab, duration));
+            if (m_Coroutine == null)
+            {
+                m_Coroutine = StartCoroutine(TriggeringSilence(duration));
+            }
         }
 
-        private IEnumerator TriggeringSilence(GameObject vfxPrefab, float duration)
+        private IEnumerator TriggeringSilence(float duration)
         {
             m_OnTriggered?.Invoke();
-            GameObject vfxInstance = null;
-            if (vfxPrefab.TryGetComponent(out PoolObject poolObject))
-            {
-                bool hasPool = ContainerPooling.HasUnitPool(poolObject.Definition.Id);
-                if (hasPool)
-                {
-                    UnitPool pool = ContainerPooling.GetUnitPool(poolObject.Definition.Id);
-                    pool.ReSpawn(m_SilenceVFXParent, false, out GameObject selected);
-                    vfxInstance = selected;
-                }
-                else
-                {
-                    vfxInstance = Instantiate(vfxPrefab, m_SilenceVFXParent);
-                    ContainerPooling.AddUnitPool(poolObject);
-                }
-            }
-            else
-            {
-                vfxInstance = Instantiate(vfxPrefab, m_SilenceVFXParent);
-            }
             yield return new WaitForSeconds(duration);
-            if (vfxInstance != null)
-            {
-                vfxInstance.SetActive(false);
-            }
             m_OnRemoved?.Invoke();
+            foreach (MonoBehaviour vfx in GetComponentsInChildren<MonoBehaviour>())
+            {
+                if (vfx.TryGetComponent(out PoolObject poolObject))
+                {
+                    PoolManager.Instance.Despawn(poolObject.Definition.Id, poolObject.gameObject);
+                }
+            }
+            StopCoroutine(m_Coroutine);
+            m_Coroutine = null;
         }
     }
 }

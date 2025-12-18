@@ -1,75 +1,111 @@
+// ==================================================
+// File: UnitPool.cs
+// ==================================================
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.Profiling;
+
 
 namespace LegionKnight
 {
-    public class UnitPool
+    internal sealed class UnitPool
     {
         private readonly PoolDefinition m_Definition;
-        private readonly List<GameObject> m_Objects = new();
-        public PoolDefinition Definition => m_Definition;
-        public List<GameObject> Objects => m_Objects;
-        public UnitPool(PoolDefinition defi)
+        private readonly Stack<GameObject> m_Inactive;
+        private readonly Transform m_Root;
+
+
+        public UnitPool(PoolDefinition definition, Transform root)
         {
-            m_Definition = defi;
+            m_Definition = definition;
+            m_Root = root;
+            m_Inactive = new Stack<GameObject>(definition.InitialSize);
         }
 
-        private bool MaxCapacityReachedInternal()
+
+        public IEnumerator PrewarmAsync()
         {
-            return m_Objects.Count >= m_Definition.CopyCatAmount;
-        }
-        public bool MaxCapacityReached()
-        {
-            return MaxCapacityReachedInternal();
-        }
-        public bool CapacityZero()
-        {
-            return m_Objects.Count <= 0;
-        }
-        public void AddObject(GameObject obj)
-        {
-            if (!MaxCapacityReachedInternal())
+            Profiler.BeginSample("Pool.Prewarm");
+            for (int i = 0; i < m_Definition.InitialSize; i++)
             {
-                m_Objects.Add(obj);
+                CreateInstance();
+                if (i % 5 == 0)
+                    yield return null;
             }
+            Profiler.EndSample();
         }
-        public void RemoveObject(GameObject obj)
+
+
+        private GameObject CreateInstance()
         {
-            if (m_Objects.Contains(obj))
-            {
-                m_Objects.Remove(obj);
-            }
-        }
-        private GameObject GetRandomInactiveObj()
-        {
-            // select gameobject that is inactive in hierarchy
-            List<GameObject> inactiveObjects = m_Objects.Where(o => !o.activeInHierarchy).ToList();
-            GameObject obj = inactiveObjects[Random.Range(0, inactiveObjects.Count)];
+            GameObject obj = Object.Instantiate(m_Definition.Prefab, m_Root);
+            obj.SetActive(false);
+            m_Inactive.Push(obj);
             return obj;
         }
-        public void ReSpawn(Transform reSpawnSpotParent, bool detachFromParent, out GameObject selected)
+        public bool TrySpawn(Transform target, bool asChild, out GameObject instance)
         {
-            GameObject obj = GetRandomInactiveObj();
-            selected = obj;
-            obj.transform.SetParent(reSpawnSpotParent, false);
-            if (detachFromParent)
-            {
-                // positioning to respawn spot parent but detach from it
-                reSpawnSpotParent.DetachChildren();
-            }
-            obj.SetActive(true);
-            if (obj.TryGetComponent(out IPoolable poolable))
-            {
-                poolable.ReActiveOnSpawn();
-            }
-            Debug.Log($"Unitpool, try to respawn {m_Objects.Count}");
-        }
-    }
+            Profiler.BeginSample("Pool.Spawn");
 
-    public interface IPoolable
-    {
-        void ReActiveOnSpawn();
+
+            if (m_Inactive.Count > 0)
+            {
+                instance = m_Inactive.Pop();
+            }
+            else if (m_Definition.Expandable)
+            {
+                instance = CreateInstance();
+            }
+            else
+            {
+                instance = null;
+                Profiler.EndSample();
+                return false;
+            }
+
+
+            if (asChild)
+            {
+                instance.transform.SetParent(target, false);
+                instance.transform.localPosition = Vector3.zero;
+                instance.transform.localRotation = Quaternion.identity;
+            }
+            else
+            {
+                instance.transform.SetParent(null);
+                instance.transform.position = target.position;
+                instance.transform.rotation = target.rotation;
+            }
+
+
+            instance.SetActive(true);
+
+
+            if (instance.TryGetComponent(out IPoolable poolable))
+                poolable.OnSpawned();
+
+
+            Profiler.EndSample();
+            return true;
+        }
+
+
+        public void Despawn(GameObject instance)
+        {
+            Profiler.BeginSample("Pool.Despawn");
+
+
+            if (instance.TryGetComponent(out IPoolable poolable))
+                poolable.OnDespawned();
+
+
+            instance.SetActive(false);
+            instance.transform.SetParent(m_Root);
+            m_Inactive.Push(instance);
+
+
+            Profiler.EndSample();
+        }
     }
 }

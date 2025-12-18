@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -5,7 +6,7 @@ using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public partial class SkillView : MonoBehaviour
+    public partial class SkillView : PanelView
     {
         [SerializeField]
         private string m_SkillName;
@@ -22,7 +23,6 @@ namespace LegionKnight
         public string SkillName => m_SkillName;
 
         private SkillDefinition m_SkillDefinition;
-
         public void Init(SkillDefinition skillDefinition)
         {
             m_SkillDefinition = skillDefinition;

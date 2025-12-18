@@ -21,6 +21,8 @@ namespace LegionKnight
 
         private List<SkillDefinition> m_Skills = new();
 
+        public List<SkillView> SkillViews => m_SkillViews;
+
         private SkillView GetSkillView(string skillName)
         {
             SkillView match = m_SkillViews.Find(x => x.SkillName == skillName);
