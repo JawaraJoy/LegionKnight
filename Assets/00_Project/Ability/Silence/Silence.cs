@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,9 +13,27 @@ namespace LegionKnight
         [SerializeField]
         private Transform m_SilenceVFXParent;
 
-        public void TriggerSilenced(ParticleSystem vfxPrefab, float duration)
+        private float m_SilenceDuration;
+
+        public void TriggerSilenced(GameObject vfxPrefab, float duration)
         {
 
+        }
+
+        private IEnumerator TriggeringSilence(GameObject vfxPrefab, float duration)
+        {
+            m_OnTriggered?.Invoke();
+            GameObject vfxInstance = null;
+            if (vfxPrefab != null && m_SilenceVFXParent != null)
+            {
+                vfxInstance = Instantiate(vfxPrefab, m_SilenceVFXParent);
+            }
+            yield return new WaitForSeconds(duration);
+            if (vfxInstance != null)
+            {
+                Destroy(vfxInstance);
+            }
+            m_OnRemoved?.Invoke();
         }
     }
 }
