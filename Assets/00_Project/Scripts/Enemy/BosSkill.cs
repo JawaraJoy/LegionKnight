@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class BosSkill : PassiveSkill // The Boss Component
+    public partial class BosSkill : Skill // The Boss Component
     {
 
     }

@@ -13,25 +13,38 @@ namespace LegionKnight
         [SerializeField]
         private Transform m_SilenceVFXParent;
 
-        private float m_SilenceDuration;
-
         public void TriggerSilenced(GameObject vfxPrefab, float duration)
         {
-
+            StartCoroutine(TriggeringSilence(vfxPrefab, duration));
         }
 
         private IEnumerator TriggeringSilence(GameObject vfxPrefab, float duration)
         {
             m_OnTriggered?.Invoke();
             GameObject vfxInstance = null;
-            if (vfxPrefab != null && m_SilenceVFXParent != null)
+            if (vfxPrefab.TryGetComponent(out PoolObject poolObject))
+            {
+                bool hasPool = ContainerPooling.HasUnitPool(poolObject.Definition.Id);
+                if (hasPool)
+                {
+                    UnitPool pool = ContainerPooling.GetUnitPool(poolObject.Definition.Id);
+                    pool.ReSpawn(m_SilenceVFXParent, false, out GameObject selected);
+                    vfxInstance = selected;
+                }
+                else
+                {
+                    vfxInstance = Instantiate(vfxPrefab, m_SilenceVFXParent);
+                    ContainerPooling.AddUnitPool(poolObject);
+                }
+            }
+            else
             {
                 vfxInstance = Instantiate(vfxPrefab, m_SilenceVFXParent);
             }
             yield return new WaitForSeconds(duration);
             if (vfxInstance != null)
             {
-                Destroy(vfxInstance);
+                vfxInstance.SetActive(false);
             }
             m_OnRemoved?.Invoke();
         }

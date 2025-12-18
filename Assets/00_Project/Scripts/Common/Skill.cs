@@ -34,10 +34,10 @@ namespace LegionKnight
         private float m_FillRate;
         public string SkillName => m_SkillName;
 
-        private PassiveSkill m_SkillHandle;
+        private Skill m_SkillHandle;
         private readonly SkillDefinition m_SkillDefinition;
         public SkillDefinition SkillDefinition => m_SkillDefinition;
-        public void Init(PassiveSkill passive)
+        public void Init(Skill passive)
         {
             m_SkillHandle = passive;
             //spawn to ui;
@@ -148,7 +148,7 @@ namespace LegionKnight
     // Actually this is not passive skill,
     // coz the activation is automatic when mana full
     // we call it passive coz it's auto trigger
-    public partial class PassiveSkill : MonoBehaviour
+    public partial class Skill : MonoBehaviour
     {
         [SerializeField]
         private bool m_CanActive = true;

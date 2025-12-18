@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class PlayerPassiveSkill : PassiveSkill
+    public partial class PlayerSkill : Skill
     {
         
     }
     public partial class Player
     {
         [SerializeField]
-        private PlayerPassiveSkill m_PassiveSkill;
-        public PlayerPassiveSkill Skill => m_PassiveSkill;
+        private PlayerSkill m_PassiveSkill;
+        public PlayerSkill Skill => m_PassiveSkill;
         public void InitPassive(CharacterDefinition definition)
         {
             m_PassiveSkill.Init(definition.Passives);

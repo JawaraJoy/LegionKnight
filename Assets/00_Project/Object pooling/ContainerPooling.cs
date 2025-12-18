@@ -19,6 +19,7 @@ namespace LegionKnight
                 newPool.AddObject(pool.gameObject);
                 m_UnitPool.Add(newPool);
             }
+            Debug.Log($"Container, add Unit {m_UnitPool.Count}, {existingPool.Objects.Count}");
         }
         public static void RemoveUnitPool(PoolObject pool)
         {
@@ -28,6 +29,13 @@ namespace LegionKnight
             {
                 m_UnitPool.Remove(existingPool);
             }
+        }
+
+        public static bool HasUnitPool(string id)
+        {
+            bool hasUnit = GetUnitPoolInternal(id) != null;
+            bool atMax = hasUnit && GetUnitPoolInternal(id).MaxCapacityReached();
+            return atMax;
         }
         private static UnitPool GetUnitPoolInternal(string id)
         {

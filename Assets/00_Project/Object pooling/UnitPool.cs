@@ -49,28 +49,26 @@ namespace LegionKnight
             GameObject obj = inactiveObjects[Random.Range(0, inactiveObjects.Count)];
             return obj;
         }
-        public void ReSpawn(Transform reSpawnSpotParent, bool detachFromParent)
+        public void ReSpawn(Transform reSpawnSpotParent, bool detachFromParent, out GameObject selected)
         {
+            GameObject obj = GetRandomInactiveObj();
+            selected = obj;
+            obj.transform.SetParent(reSpawnSpotParent, false);
             if (detachFromParent)
             {
                 // positioning to respawn spot parent but detach from it
-                GetRandomInactiveObj().transform.SetParent(reSpawnSpotParent, false);
                 reSpawnSpotParent.DetachChildren();
             }
-            else
-            {
-                // positioning to respawn spot parent and keep it as child
-                GetRandomInactiveObj().transform.SetParent(reSpawnSpotParent, false);
-            }
-            GetRandomInactiveObj().SetActive(true);
-            if (GetRandomInactiveObj().TryGetComponent(out IUnitPoolable poolable))
+            obj.SetActive(true);
+            if (obj.TryGetComponent(out IPoolable poolable))
             {
                 poolable.ReActiveOnSpawn();
             }
+            Debug.Log($"Unitpool, try to respawn {m_Objects.Count}");
         }
     }
 
-    public interface IUnitPoolable
+    public interface IPoolable
     {
         void ReActiveOnSpawn();
     }

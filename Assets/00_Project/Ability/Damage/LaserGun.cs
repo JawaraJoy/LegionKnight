@@ -45,6 +45,8 @@ namespace LegionKnight
 
         [SerializeField]
         private int m_Damage = 1;
+        [SerializeField]
+        private UnityEvent<GameObject> m_OnDamagedTarget;
 
         [SerializeField]
         private UnityEvent m_OnStartFiring;
@@ -134,6 +136,7 @@ namespace LegionKnight
                     if (hit.collider != null && hit.collider.TryGetComponent<Damageable>(out var damageable))
                     {
                         damageable.TakeDamage(m_Damage);
+                        m_OnDamagedTarget?.Invoke(damageable.gameObject);
                     }
                 }
                 m_DamageTimer = 0f;

@@ -4,9 +4,9 @@ namespace LegionKnight
 {
     public class PlayerSkillAgent : MonoBehaviour
     {
-        private PlayerPassiveSkill m_Skill;
+        private PlayerSkill m_Skill;
 
-        private PlayerPassiveSkill Skill
+        private PlayerSkill Skill
         {
             get
             {
@@ -20,6 +20,11 @@ namespace LegionKnight
         public void AddManaOvertime(int add, float time)
         {
             Player.Instance.AddManaOvertime(add, time);
+        }
+
+        public void SetCanActiveSkill(bool canActive)
+        {
+            Skill.SetCanActive(canActive);
         }
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class PlayerWeaponer : PassiveSkill
+    public partial class PlayerWeaponer : Skill
     {
         
     }
