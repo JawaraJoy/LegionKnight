@@ -20,6 +20,10 @@ namespace LegionKnight
         {
             return m_Objects.Count >= m_Definition.CopyCatAmount;
         }
+        public bool MaxCapacityReached()
+        {
+            return MaxCapacityReachedInternal();
+        }
         public bool CapacityZero()
         {
             return m_Objects.Count <= 0;

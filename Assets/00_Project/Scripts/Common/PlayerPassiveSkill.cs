@@ -10,6 +10,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private PlayerPassiveSkill m_PassiveSkill;
+        public PlayerPassiveSkill Skill => m_PassiveSkill;
         public void InitPassive(CharacterDefinition definition)
         {
             m_PassiveSkill.Init(definition.Passives);
