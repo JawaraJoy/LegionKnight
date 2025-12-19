@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using System.Collections;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace LegionKnight
     {
         [SerializeField]
         private bool m_IsHeroScale = false; // Indicates if the damage stat is scaled with hero stats
+        [SerializeField]
+        private bool m_IsPiercing = false;
         [SerializeField]
         private int m_Attack;
         [SerializeField]
@@ -33,6 +36,8 @@ namespace LegionKnight
         public int HealthUpgrade => m_HealthUpgrade;
         public int Barrier => m_Barrier;
         public int ShieldUpgrade => m_ShieldUpgrade;
+        public bool IsHeroScale => m_IsHeroScale;
+        public bool IsPiercing => m_IsPiercing;
 
         private float AttackRateRule
         {
