@@ -7,8 +7,6 @@ namespace LegionKnight
         [SerializeField]
         private DamageStat m_DamageStat;
 
-        private Coroutine m_AttackRateTempCoroutine;
-
         [SerializeField]
         private ParticleSystem m_AttackRateBuffVFX;
         public DamageStat GetDamageStat()
@@ -17,7 +15,7 @@ namespace LegionKnight
         }
         public void AddAttackRateTemp(float attackRate, float duration)
         {
-            m_AttackRateTempCoroutine = StartCoroutine(m_DamageStat.AddAttackRateTemping(attackRate, duration));
+            StartCoroutine(m_DamageStat.AddAttackRateTemping(attackRate, duration));
         }
     }
 }
