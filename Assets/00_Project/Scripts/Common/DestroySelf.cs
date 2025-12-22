@@ -34,7 +34,16 @@ namespace LegionKnight
             yield return new WaitForSeconds(m_Delay);
             m_OnDestroyDone?.Invoke();
             Addressables.ReleaseInstance(gameObject);
+            StartCoroutine(IfNotDestroyProperly());
             //Destroy(gameObject);
+        }
+        private IEnumerator IfNotDestroyProperly()
+        {
+            yield return new WaitForSeconds(m_Delay);
+            if (gameObject != null)
+            {
+                Destroy(gameObject);
+            }
         }
         public void SetActiveSelfDestructOnStart(bool set)
         {
