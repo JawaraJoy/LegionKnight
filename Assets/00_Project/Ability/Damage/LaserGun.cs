@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public class LaserGun : MonoBehaviour
+    public class LaserGun : MonoBehaviour, IDamageable, ISpawnedBy, IProgressable
     {
         [SerializeField]
         private float m_Distance = 100f;
@@ -46,6 +46,8 @@ namespace LegionKnight
         [SerializeField]
         private int m_Damage = 1;
         [SerializeField]
+        private int m_DamageEachLevel = 1;
+        [SerializeField]
         private UnityEvent<GameObject> m_OnDamagedTarget;
 
         [SerializeField]
@@ -54,9 +56,28 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnStopFiring;
 
+        private int m_Level;
+
+        [SerializeField]
+        private GameObject m_SpawnedBy;
+
         public void SetDamage(int damage)
         {
             m_Damage = damage;
+        }
+
+        public void SetLevel(int level)
+        {
+            m_Level = level;
+        }
+        public void SetSpawnedBy(GameObject spawnedBy)
+        {
+            m_SpawnedBy = spawnedBy;
+        }
+        private int FinalDamage()
+        {
+            
+            return m_Damage + m_DamageEachLevel * (GetLevel() - 1);
         }
 
         private void Awake()
@@ -66,6 +87,16 @@ namespace LegionKnight
                 m_Renderer.positionCount = 2;
                 m_Renderer.startWidth = m_InitialWidth;
                 m_Renderer.endWidth = m_InitialWidth;
+            }
+        }
+
+        private void Start()
+        {
+            m_Level = 1;
+            if (m_SpawnedBy == null) return;
+            if (m_SpawnedBy.TryGetComponent(out BosEnemy bosEnemy))
+            {
+                m_Level = bosEnemy.GetBosLevel();
             }
         }
 
@@ -135,7 +166,7 @@ namespace LegionKnight
                 {
                     if (hit.collider != null && hit.collider.TryGetComponent<Damageable>(out var damageable))
                     {
-                        damageable.TakeDamage(m_Damage);
+                        damageable.TakeDamage(FinalDamage());
                         m_OnDamagedTarget?.Invoke(damageable.gameObject);
                     }
                 }
@@ -166,5 +197,21 @@ namespace LegionKnight
                 StopFiring();
             }
         }
+
+        public GameObject GetSpawnedBy()
+        {
+            return m_SpawnedBy;
+        }
+
+        public int GetLevel()
+        {
+            return SProgressable.GetLevel(m_SpawnedBy);
+        }
+    }
+
+    public partial interface ISpawnedBy
+    {
+        void SetSpawnedBy(GameObject spawnedBy);
+        GameObject GetSpawnedBy();
     }
 }

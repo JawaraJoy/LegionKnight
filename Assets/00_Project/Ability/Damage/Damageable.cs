@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public partial class Damageable : Contact2D
+    public partial class Damageable : Contact2D, IDamageable
     {
         [SerializeField]
         protected int m_Damage;
@@ -389,5 +389,10 @@ namespace LegionKnight
             OnShieldChangedInvoke(m_Shield);
             OnBarrierChangedInvoke(m_Barrier);
         }
+    }
+
+    public partial interface IDamageable
+    {
+        void SetDamage(int damage);
     }
 }

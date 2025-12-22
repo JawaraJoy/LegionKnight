@@ -6,5 +6,7 @@ namespace LegionKnight
     {
         void Register();
         void UnRegister();
+
+        int DynamicLevel { get; }
     }
 }

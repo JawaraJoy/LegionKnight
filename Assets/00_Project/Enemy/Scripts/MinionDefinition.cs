@@ -61,7 +61,7 @@ namespace LegionKnight
             //Player.Instance.AddCurrencyAmount(m_ItemRewardKilled.CurrencyDefinition, m_ItemRewardKilled.Amount);
         }
 
-        public int GetOwnerLevel()
+        public int GetUnitLevel()
         {
             return m_StartLevel;
         }

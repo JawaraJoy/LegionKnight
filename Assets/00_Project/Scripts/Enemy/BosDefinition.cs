@@ -60,7 +60,7 @@ namespace LegionKnight
             return Stat.GetStatByLevel(m_BaseStat, m_StatGainPerLevel, m_StartLevel + addLevel - 1);
         }
 
-        public int GetOwnerLevel()
+        public int GetUnitLevel()
         {
             int addLevel = GameManager.Instance.BossSpawnCount;
             return m_StartLevel + addLevel;

@@ -59,8 +59,6 @@ namespace LegionKnight
     public class AbilityDescription : IObjectHasOwner
     {
         [SerializeField]
-        private bool m_UseHeroAttackScale = false;
-        [SerializeField]
         private float m_BaseVal;
         [SerializeField]
         private float m_UpgradeVal;
@@ -74,25 +72,12 @@ namespace LegionKnight
         public string GetDescription(CharacterUnit unit, int level)
         {
             float finalVal = m_BaseVal + (m_UpgradeVal * (level - 1));
-            if (m_UseHeroAttackScale)
-            {
-                finalVal = (float)GetHeroAttackScale(unit, level) + m_BaseVal + m_UpgradeVal * (level - 1);
-            }
             return string.Format(m_Description, finalVal); // Use 'finalVal' here instead of recalculating
         }
 
         public void SetOwner(Object owner)
         {
             m_Owner = Owner;
-        }
-
-        private int GetHeroAttackScale(CharacterUnit unit, int level)
-        {
-            if (m_UseHeroAttackScale)
-            {
-                return unit.FinalStat().Attack;
-            }
-            return 0; // No hero attack scale applied
         }
     }
 }

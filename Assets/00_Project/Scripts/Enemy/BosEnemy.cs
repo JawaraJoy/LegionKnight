@@ -14,6 +14,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<BosDefinition> m_OnBossDeath;
 
+        public int DynamicLevel => m_BosLevel;
+
         private void Start()
         {
             Register();

@@ -37,6 +37,12 @@ namespace LegionKnight
         private Skill m_SkillHandle;
         private readonly SkillDefinition m_SkillDefinition;
         public SkillDefinition SkillDefinition => m_SkillDefinition;
+
+        private GameObject m_Parent;
+        public void SetParent(GameObject parent)
+        {
+            m_Parent = parent;
+        }
         public void Init(Skill passive)
         {
             m_SkillHandle = passive;
@@ -133,14 +139,18 @@ namespace LegionKnight
                 {
                     if (m_SkillDefinition != null)
                     {
-                        int level = m_SkillDefinition.GetOwnerLevel();
+                        int level = m_SkillDefinition.GetUnitLevel();
                         if (m_SkillDefinition.AbilityDefinition != null)
                         {
                             abi.Initialize(m_SkillDefinition.AbilityDefinition, level);
                         }
                     }
-                    
                 }
+                if (m_Parent.TryGetComponent(out ISpawnedBy spawnedBy))
+                {
+                    spawnedBy.SetSpawnedBy(m_Parent);
+                }
+                
             }
         }
     }
@@ -173,6 +183,7 @@ namespace LegionKnight
             foreach(SkillActivation skill in m_SkillActivations)
             {
                 skill.Init(this);
+                skill.SetParent(gameObject);
             }
         }
         public void SetCanActive(bool set)

@@ -8,7 +8,7 @@ namespace LegionKnight
         {
             if (rawOwner is IAbilityOwner abilityOwner)
             {
-                return abilityOwner.GetOwnerLevel();
+                return abilityOwner.GetUnitLevel();
             }
             return 1;
         }

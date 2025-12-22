@@ -143,7 +143,7 @@ namespace LegionKnight
             return finalStat;
         }
 
-        public int GetOwnerLevel()
+        public int GetUnitLevel()
         {
             CharacterUnit unit = Player.Instance.GetCharacterUnit(this);
             return unit.Level;
@@ -188,7 +188,7 @@ namespace LegionKnight
             m_AbilityDefinition.SetOwner(owner);
         }
 
-        public int GetOwnerLevel()
+        public int GetUnitLevel()
         {
             return AbilityUtil.GetOwnerLevel(m_Owner);
         }

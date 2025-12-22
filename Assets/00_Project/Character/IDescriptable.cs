@@ -26,7 +26,7 @@ namespace LegionKnight
 
     public interface IAbilityOwner
     {
-        int GetOwnerLevel();
+        int GetUnitLevel();
     }
 
     
