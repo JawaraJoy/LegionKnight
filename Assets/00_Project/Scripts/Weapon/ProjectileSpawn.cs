@@ -75,7 +75,7 @@ namespace LegionKnight
                 }
                 if (result.TryGetComponent(out ISelfAbility selfAbility))
                 {
-                    selfAbility.Initialize();
+                    selfAbility.InitializeForPlayer();
                 }
                 if (result.TryGetComponent(out ProjectileDamage projectile))
                 {

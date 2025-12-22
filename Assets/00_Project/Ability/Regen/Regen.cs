@@ -36,28 +36,14 @@ namespace LegionKnight
              // Assuming AbilityDefinition has a RegenDuration property
             StartRegen(); // Start the regeneration process
         }
-        public void Initialize()
+        public virtual void InitializeForPlayer()
         {
             if (m_AbilityDefinition == null) return; // Ensure the ability definition is set
-            GameObject owner = m_AbilityDefinition.GetOwner(); // Get the owner of the ability from the definition
-            if (owner == null)
-            {
-                Debug.LogError("Owner of the ability is null. Cannot initialize regeneration.");
-                return;
-            }
-            int level = 1; // Default level, can be adjusted based on the character's stats
-            int MaxHealth = 100; // Default max health, can be adjusted based on the character's stats
-            if (owner.TryGetComponent(out Player player))
-            {
-                MaxHealth = player.MaxHealth; // Get the player's maximum health
-                CharacterDefinition characterDefinition = player.UsedCharacter; // Get the character definition from the player instance
-                level = player.GetCharacterUnit(characterDefinition).Level; // Get the character's level
-            }
-            if (owner.TryGetComponent(out BosEnemy boss))
-            {
-                MaxHealth = boss.GetBosMaxHealth(); // Get the boss's maximum health
-                level = boss.GetBosLevel(); // Get the boss's level
-            }
+
+            Player player = Player.Instance;
+            int MaxHealth = player.MaxHealth;
+            int level = player.UsedCharacter.GetUnitLevel();
+
             int baseAmount = m_AbilityDefinition.GetFinalRegenAmount(level); // Assuming AbilityDefinition has a RegenAmount property
             float finalRate = m_AbilityDefinition.GetFinalRegenRate(level); // Assuming AbilityDefinition has a RegenRate property
             int finalAmount = Mathf.RoundToInt(baseAmount + MaxHealth * finalRate); // Calculate the final amount based on level and rate

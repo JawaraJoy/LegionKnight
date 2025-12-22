@@ -17,7 +17,7 @@ namespace LegionKnight
                 projectile.ApplyDamageOverTime(m_Damage, m_Duration);
             }
         }
-        public void Initialize()
+        public void InitializeForPlayer()
         {
             if (m_AbilityDefinition == null) return; // Ensure the ability definition is set before proceeding
             CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance

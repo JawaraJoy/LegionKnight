@@ -89,9 +89,20 @@ namespace LegionKnight
             GameManager.Instance.StoreLevelScore();
         }
 
-        public void Ressurection()
+        private void Ressurection()
         {
             //GameManager.Instance.LevelDefinition.StartLevel();
+            StartCoroutine(Ressurectioning());
+        }
+
+        private IEnumerator Ressurectioning()
+        {
+            RevivePanel panel = GameManager.Instance.GetPanel<RevivePanel>();
+            if (panel != null)
+            {
+                panel.Show();
+            }
+            yield return new WaitForSeconds(1);
             GameManager.Instance.RessurectionPlayer();
             HideInternal();
             Player.Instance.SetCanUseResurrectionAds(false);

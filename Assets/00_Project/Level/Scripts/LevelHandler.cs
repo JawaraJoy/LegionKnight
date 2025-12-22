@@ -271,6 +271,8 @@ namespace LegionKnight
             }
             DelayActionInternal(1f, action);
         }
+
+        private UnityEvent m_OnPlayerRevive;
         public void ApplyPotOfLife()
         {
             
@@ -286,7 +288,13 @@ namespace LegionKnight
 
                     int rebornHealth = Mathf.RoundToInt(maxHealth * rebornRate);
                     Player.Instance.SetPause(true);
-                    DelayActionInternal(2, () =>
+                    m_OnPlayerRevive?.Invoke();
+                    RevivePanel panel = GameManager.Instance.GetPanel<RevivePanel>();
+                    if (panel != null)
+                    {
+                        panel.Show();
+                    }
+                    DelayActionInternal(1, () =>
                     {
                         PotOfLifeEff(rebornHealth, currency);
                     });

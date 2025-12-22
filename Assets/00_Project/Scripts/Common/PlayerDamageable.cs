@@ -28,6 +28,7 @@ namespace LegionKnight
                 m_Damageable.AddCurrentHealth(amount);
             }
         }
+
         public int MaxHealth => m_Damageable.Health;
     }
 

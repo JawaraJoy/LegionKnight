@@ -49,6 +49,8 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<int> m_OnHealthChanged = new();
         [SerializeField]
+        private UnityEvent<int> m_OnHealed = new();
+        [SerializeField]
         private UnityEvent m_OnProtectGone = new();
         public float MaxHpRateDamage => m_MaxHpRateDamage;
         public bool IsImmortal => m_Immortal;
@@ -323,9 +325,14 @@ namespace LegionKnight
         }
         protected virtual void AddCurrentHealthInternal(int val)
         {
+            int oldhealt = m_CurrentHealth;
             m_CurrentHealth += val;
             ClampHealth();
             OnHealthChangedInvoke(m_CurrentHealth);
+            if (oldhealt <= m_CurrentHealth)
+            {
+                m_OnHealed?.Invoke(val);
+            }
         }
         protected virtual void AddShieldInteral(int val)
         {

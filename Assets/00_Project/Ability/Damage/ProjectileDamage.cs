@@ -45,7 +45,7 @@ namespace LegionKnight
             }
         }
 
-        public void Initialize()
+        public void InitializeForPlayer()
         {
             if (m_AbilityDefinition == null) return;
             CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance

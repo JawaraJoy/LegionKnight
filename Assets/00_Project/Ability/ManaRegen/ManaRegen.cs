@@ -7,7 +7,7 @@ namespace LegionKnight
         [SerializeField]
         private AbilityDefinition m_AbilityDefinition;
 
-        public void Initialize()
+        public void InitializeForPlayer()
         {
             ApplyAbilityToPlayer();
         }

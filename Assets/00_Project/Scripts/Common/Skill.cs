@@ -133,7 +133,7 @@ namespace LegionKnight
                 GameObject result = handle.Result;
                 if (result.TryGetComponent(out ISelfAbility ability))
                 {
-                    ability.Initialize();
+                    ability.InitializeForPlayer();
                 }
                 if (result.TryGetComponent(out IAbility abi))
                 {

@@ -33,7 +33,7 @@ namespace LegionKnight
             OnContact(collision.gameObject);
         }
 
-        public virtual void Initialize()
+        public virtual void InitializeForPlayer()
         {
             if (m_AbilityDefinition == null) return;
             CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance

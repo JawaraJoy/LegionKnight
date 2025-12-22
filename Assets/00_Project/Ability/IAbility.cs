@@ -9,6 +9,6 @@ namespace LegionKnight
 
     public interface ISelfAbility
     {
-        void Initialize();
+        void InitializeForPlayer();
     }
 }

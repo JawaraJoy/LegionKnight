@@ -47,7 +47,7 @@ namespace LegionKnight
         {
             ApplyHealInternal(m_HealAmount); // Use the default heal amount
         }
-        public void Initialize()
+        public void InitializeForPlayer()
         {
             CharacterDefinition characterDefinition = Player.Instance.UsedCharacter; // Get the character definition from the player instance
             CharacterUnit unit = Player.Instance.GetCharacterUnit(characterDefinition);
