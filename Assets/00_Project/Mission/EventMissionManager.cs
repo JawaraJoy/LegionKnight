@@ -14,10 +14,18 @@ namespace LegionKnight
 
         public static EventMissionManager Instance {get; private set;}
 
-        void Start()
+        public void Init()
         {
             if(!Instance)
+            {
                 Instance = this;
+
+                if(m_DailyEventMissionManager)
+                    m_DailyEventMissionManager.InitController();
+
+                if(m_WeeklyEventMissionManager)
+                    m_WeeklyEventMissionManager.InitController();
+            }
         }
     }
 }

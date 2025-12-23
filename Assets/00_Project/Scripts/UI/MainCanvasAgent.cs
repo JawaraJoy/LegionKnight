@@ -16,6 +16,10 @@ namespace LegionKnight
 
         public void ShowPanel(string panelName)
         {
+            Debug.Log("aaaaaaaaaaaaaaaa");
+            Debug.Log(panelName);
+            
+
             PanelView panel = GetPanelView(panelName);
             if (panel != null)
             {

@@ -4,7 +4,7 @@ namespace LegionKnight
 {
     public class WeeklyEventManager : MissionController
     {
-        void Start()
+        public void InitController()
         {
             base.Init();
         }

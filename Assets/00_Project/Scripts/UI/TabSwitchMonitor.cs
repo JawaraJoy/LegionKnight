@@ -15,6 +15,8 @@ namespace LegionKnight
             base.ShowInternal();
             foreach (var tab in m_Tabs)
             {
+                Debug.Log(gameObject.name + " -- " + tab);
+
                 tab.Init(HideAll);
             }
             m_Tabs[0].Show(HideAll);
@@ -48,6 +50,7 @@ namespace LegionKnight
         public void Init(UnityAction onShow = null)
         {
             if (!m_Active) return;
+
             m_ButtonName.text = m_View.UniqueId;
             m_HightlightName.text = m_View.UniqueId;
             //onShow?.Invoke();
