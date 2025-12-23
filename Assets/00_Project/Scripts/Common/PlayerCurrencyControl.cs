@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LegionKnight
@@ -54,6 +55,17 @@ namespace LegionKnight
         {
             m_CurrencyControl.AddCurrencyAmount(definition, amount);
             int currentAmount = m_CurrencyControl.GetCurrencyAmount(definition);
+
+            //--TaskUpdate - eventdailytask002
+            if(definition.Id == "coin")
+            {
+                TaskDefinition task = EventMissionManager.Instance.DailyEventMissionManager.GetTaskById("eventdailytask002");
+
+                if(task)
+                    task.AddDailyScore(amount);
+            }
+                
+
             UnityService.Instance.SaveData(definition.Id, currentAmount);
         }
         public void RemoveCurrencyAmount(CurrencyDefinition definition, int amount)

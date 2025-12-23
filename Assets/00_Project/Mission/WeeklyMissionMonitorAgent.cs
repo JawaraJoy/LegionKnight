@@ -7,7 +7,10 @@ namespace LegionKnight
     {
         public void Init(MissionController controller)
         {
-            GameManager.Instance.GetWeeklyMissionMonitor().Init(controller);
+            WeeklyMissionMonitor weeklyMissionMonitor = GameManager.Instance.GetWeeklyMissionMonitor();
+
+            if(weeklyMissionMonitor)
+                weeklyMissionMonitor.Init(controller);
         }
         public void ShowLoot(LootField[] loots)
         {

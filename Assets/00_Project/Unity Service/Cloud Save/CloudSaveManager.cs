@@ -21,6 +21,8 @@ namespace LegionKnight
         }
         public void SaveData(string key, object val, UnityAction callback = null)
         {
+            Debug.Log("----- " + key + " - " + val.GetType().ToString());
+
             m_CloudSaveManager.SaveData(key, val, callback);
         }
         public bool HasData(string key)

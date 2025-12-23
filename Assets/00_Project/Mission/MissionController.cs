@@ -147,6 +147,22 @@ namespace LegionKnight
             }
             m_OnControllerUpdate?.Invoke(this);
         }
+
+        public TaskDefinition GetTaskById(string id)
+        {
+            TaskDefinition res = null;
+
+            foreach (var task in m_Tasks)
+            {
+                if(string.Equals(task.Definition.Id, id))
+                {
+                    res = task.Definition;
+                    break;
+                }
+            }
+
+            return res;
+        }
     }
 
     
