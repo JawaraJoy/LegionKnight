@@ -34,6 +34,13 @@ namespace LegionKnight
 
         private MissionView GetMissionView(TaskDefinition defi)
         {
+            Debug.Log("----------------");
+            
+            foreach (var item in m_MissionViews)
+            {
+                Debug.Log(item.Definition.Id);
+            }
+
             foreach (var view in m_MissionViews)
             {
                 if (view.Definition == defi)
@@ -73,8 +80,11 @@ namespace LegionKnight
         {
             if (!gameObject.activeInHierarchy) return;
             m_TitleText.text = controller.BehaviourName;
+
             foreach (var task in controller.Task)
             {
+                Debug.Log(task.Definition.Label + " -- " + !HasMissionView(task.Definition));
+
                 if (!HasMissionView(task.Definition))
                 {
                     if (!enabled)return;

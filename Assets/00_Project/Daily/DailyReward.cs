@@ -26,6 +26,8 @@ namespace LegionKnight
         {
             foreach (var reward in m_Rewards)
             {
+                Debug.Log(reward);
+
                 if (reward.Reward == loot)
                 {
                     return reward;

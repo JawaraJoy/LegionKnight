@@ -10,6 +10,17 @@ namespace LegionKnight
             {
                 m_Controller = Player.Instance.DailyMissionManager;
             }
+
+            /*
+            Debug.Log("xxxxxxxxxxxxxxxx");
+            Debug.Log(m_Controller.Task.Length);
+
+            foreach (var item in m_Controller.Task)
+            {
+                Debug.Log(item.Definition.Id);
+            }
+            */
+
             return m_Controller;
         }
     }

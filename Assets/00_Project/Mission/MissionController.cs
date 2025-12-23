@@ -36,8 +36,13 @@ namespace LegionKnight
         {
             int savedPower = 0;
             int totalPoint = 0;
+
+            Debug.Log("xxxINITxxx");
+
             foreach (var mission in m_Tasks)
             {
+                Debug.Log(mission.Definition.Label);
+
                 mission.Init();
                 mission.OnClaim.RemoveAllListeners();
                 mission.OnClaim.AddListener(() => {
@@ -91,10 +96,14 @@ namespace LegionKnight
             }
         }
 
-        public TaskStatus GetTaskStatus(TaskDefinition defi)
+        public virtual TaskStatus GetTaskStatus(TaskDefinition defi)
         {
+            //Debug.Log("xxxStatusxxx");
+
             foreach (var task in m_Tasks)
             {
+                //Debug.Log(task.Definition.Label);
+
                 if (task.Definition == defi)
                 {
                     return task;

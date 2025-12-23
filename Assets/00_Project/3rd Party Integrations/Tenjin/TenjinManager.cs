@@ -102,7 +102,6 @@ namespace LegionKnight
                     lastRecordTime = Time.time;
                     PlayerPrefs.SetFloat("Record_PlayTime", Time.time - timeStartPlay);
                     PlayerPrefs.Save();
-                    Debug.Log("TimeElapsed: " + (Time.time - timeStartPlay));
                 }
             }
         }

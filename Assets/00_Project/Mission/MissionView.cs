@@ -54,6 +54,8 @@ namespace LegionKnight
             m_Definition = defi;
             TaskStatus status = GetControllerInternal().GetTaskStatus(defi);
             string desc = defi.Description;
+            
+            Debug.Log("xx-" + status);
             string progress = $"{status.CurrentScore}/{defi.TargetScore}";
             float progressValue = (float)status.CurrentScore / defi.TargetScore;
             int difficulty = defi.TaskPower;
