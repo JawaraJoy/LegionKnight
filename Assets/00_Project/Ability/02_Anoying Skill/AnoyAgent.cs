@@ -36,6 +36,11 @@ namespace LegionKnight
             Player.Instance.AddInteruptAnoy(m_AnoyDefinition, 1);
         }
 
+        public void AddInterupt(int interupt)
+        {
+            Player.Instance.AddInteruptAnoy(m_AnoyDefinition, interupt);
+        }
+
         public void OnInteruptUpdateInvoke(int interuptCount)
         {
             m_OnInterupUpdate?.Invoke(interuptCount, m_AnoyDefinition.InteruptDurability);
