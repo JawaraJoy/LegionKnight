@@ -17,6 +17,14 @@ namespace LegionKnight
             }
         }
 
+        public void AddBoss(BosDefinition bosDefinition, string id)
+        {
+            if(bosDefinition.Id.Equals(id))
+            {
+                AddBoss(bosDefinition);
+            }
+        }
+
         public override void ResetCount()
         {
             bossCounter.Clear();
