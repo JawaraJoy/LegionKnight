@@ -16,7 +16,7 @@ namespace Rush
         public void Init(CharacterConfig config)
         {
             m_Config = config;
-            var context = new CharacterContext(m_Config, gameObject);
+            var context = new CharacterContext(m_Config, this);
             m_OnInit?.Invoke(context);
         }
     }

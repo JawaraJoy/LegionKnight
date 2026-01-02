@@ -17,10 +17,10 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private CharacterConfig m_CharacterConfig;
         [SerializeField, MMReadOnly]
-        private GameObject m_CharacterObject;
+        private Character m_CharacterObject;
         public CharacterConfig CharacterConfig => m_CharacterConfig;
-        public GameObject CharacterObject => m_CharacterObject;
-        public CharacterContext(CharacterConfig characterConfig, GameObject characterObject)
+        public Character CharacterObject => m_CharacterObject;
+        public CharacterContext(CharacterConfig characterConfig, Character characterObject)
         {
             m_CharacterConfig = characterConfig;
             m_CharacterObject = characterObject;
