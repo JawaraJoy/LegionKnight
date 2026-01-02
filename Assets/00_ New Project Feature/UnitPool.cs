@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 
 
-namespace LegionKnight
+namespace Rush
 {
     internal sealed class UnitPool
     {

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using LegionKnight;
 
-namespace LegionKnight
+namespace Rush
 {
     public class PoolManager : Singleton<PoolManager>
     {

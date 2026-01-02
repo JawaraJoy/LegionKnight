@@ -1,4 +1,5 @@
 using UnityEngine;
+using Rush;
 
 namespace LegionKnight
 {

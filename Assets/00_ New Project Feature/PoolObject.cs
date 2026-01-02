@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace LegionKnight
+namespace Rush
 {
     public interface IPoolable
     {
         void OnSpawned();
         void OnDespawned();
+        bool IsActive { get; }
     }
 
 
@@ -18,6 +19,9 @@ namespace LegionKnight
         [SerializeField]
         private PoolDefinition m_Definition;
         public PoolDefinition Definition => m_Definition;
+
+        public bool IsActive => gameObject.activeInHierarchy;
+
         public virtual void OnSpawned() { }
         public virtual void OnDespawned() 
         {

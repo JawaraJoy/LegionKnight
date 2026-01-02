@@ -66,7 +66,7 @@ namespace LegionKnight
             m_Damage = damage;
         }
 
-        public void SetLevel(int level)
+        public void SetCurrentLevel(int level)
         {
             m_Level = level;
         }
