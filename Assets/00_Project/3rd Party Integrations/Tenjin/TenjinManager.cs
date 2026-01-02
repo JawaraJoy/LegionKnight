@@ -90,7 +90,7 @@ namespace LegionKnight
         void Cheat()
         {
             Debug.Log("***** TENJIN CHEAT *****");
-            Player.Instance.AddCurrencyAmount(currencyCheat, 1000000);
+            //Player.Instance.AddCurrencyAmount(currencyCheat, 1000000);
         }
 
         void Update()

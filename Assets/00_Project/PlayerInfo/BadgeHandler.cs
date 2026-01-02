@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,6 +14,12 @@ namespace LegionKnight
         private UnityEvent<BadgeContent> m_OnBadgeCurrentUpgradeLevelChanged;
         [SerializeField]
         private UnityEvent<LootField[]> m_OnRewardClaimed;
+
+        public void AddAdditionalBadges(BadgeContent[] additionalBadges)
+        {
+            m_Badges = m_Badges.Concat(additionalBadges).ToArray();
+        }
+
         private BadgeContent GetBadgeContent(BadgeDefinition badge)
         {
             foreach (var badgeContent in m_Badges)
