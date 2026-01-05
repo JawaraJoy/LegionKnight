@@ -36,6 +36,8 @@ namespace LegionKnight
 
         public void AddDailyScore(int score)
         {
+            Debug.Log(":::" + name + " - " + score);
+
             TaskStatus status = GetTaskStatus();
             status?.AddScore(score);
         }
@@ -58,7 +60,7 @@ namespace LegionKnight
         {
             TaskStatus status = GetTaskStatus();
             status?.DirectClaimRewards();
-            
+
         }
 
         private TaskStatus GetTaskStatus()
@@ -71,6 +73,12 @@ namespace LegionKnight
                 case MissionCategory.Weekly:
                     status = Player.Instance.WeeklyMissionManager.GetTaskStatus(this);
                     break;
+                case MissionCategory.EventDaily:
+                    status = EventMissionManager.Instance.DailyEventMissionManager.GetTaskStatus(this);
+                    break;
+                case MissionCategory.EventWeekly:
+                    status = EventMissionManager.Instance.WeeklyEventMissionManager.GetTaskStatus(this);
+                    break;
             }
             return status;
         }
@@ -80,5 +88,7 @@ namespace LegionKnight
     {
         Daily = 0,
         Weekly = 1,
+        EventDaily = 2,
+        EventWeekly = 3
     }
 }

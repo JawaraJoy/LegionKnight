@@ -12,7 +12,10 @@ namespace LegionKnight
         }
         public void Init(MissionController controller)
         {
-            GameManager.Instance.GetDailyMissionMonitor().Init(controller);
+            DailyMissionMonitor dailyMissionMonitor = GameManager.Instance.GetDailyMissionMonitor();
+
+            if(dailyMissionMonitor)
+                dailyMissionMonitor.Init(controller);
         }
         public void ShowLoot(LootField[] loots)
         {

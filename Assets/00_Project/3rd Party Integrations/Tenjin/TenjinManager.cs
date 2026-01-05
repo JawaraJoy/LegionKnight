@@ -90,7 +90,7 @@ namespace LegionKnight
         void Cheat()
         {
             Debug.Log("***** TENJIN CHEAT *****");
-            Player.Instance.AddCurrencyAmount(currencyCheat, 1000000);
+            //Player.Instance.AddCurrencyAmount(currencyCheat, 1000000);
         }
 
         void Update()
@@ -102,7 +102,6 @@ namespace LegionKnight
                     lastRecordTime = Time.time;
                     PlayerPrefs.SetFloat("Record_PlayTime", Time.time - timeStartPlay);
                     PlayerPrefs.Save();
-                    Debug.Log("TimeElapsed: " + (Time.time - timeStartPlay));
                 }
             }
         }

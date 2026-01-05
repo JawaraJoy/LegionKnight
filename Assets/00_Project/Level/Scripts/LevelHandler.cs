@@ -227,6 +227,15 @@ namespace LegionKnight
             {
                 m_OnLevelCompleted?.Invoke(levelSelect);
 
+                //--TaskUpdate - eventweeklytask001
+                if(set.LevelName.IndexOf("Adventure") > -1)
+                {
+                    TaskDefinition task = EventMissionManager.Instance.WeeklyEventMissionManager.GetTaskById("eventweeklytask001");
+
+                    if(task)
+                        task.AddDailyScore(1);
+                }
+
                 string eventName = AFEventName.OnLevelCompleted;
                 CharacterDefinition usedChar = Player.Instance.UsedCharacter;
                 CharacterUnit usedCharUnit = Player.Instance.GetCharacterUnit(usedChar);
@@ -516,6 +525,12 @@ namespace LegionKnight
         }
         private void AddScoreAmountInternal(int add)
         {
+            //--TaskUpdate - eventdailytask004
+            TaskDefinition task = EventMissionManager.Instance.DailyEventMissionManager.GetTaskById("eventdailytask004");
+
+            if(task)
+                task.AddDailyScore(add);
+
             m_CurrentScore.AddAmount(add);
             LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
 

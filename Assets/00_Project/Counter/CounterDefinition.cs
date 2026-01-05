@@ -52,7 +52,7 @@ namespace LegionKnight
         {
             GameManager.Instance.SetCounter(this, count);
         }
-        public void ResetCount()
+        public virtual void ResetCount()
         {
             GameManager.Instance.ResetCounter(this);
         }

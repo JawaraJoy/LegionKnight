@@ -20,6 +20,9 @@ namespace LegionKnight
 
         public void AddUnClaimedReward(int amount)
         {
+            Debug.Log("ttttt");
+            Debug.Log(amount);
+
             if (Player.Instance.BadgeManager.HasBadge(this, out var content))
             {
                 content.AddUnClaimedReward(amount);
@@ -27,6 +30,9 @@ namespace LegionKnight
         }
         public void SetUpgradeCurrentLevel(int level)
         {
+            Debug.Log("sssss");
+            Debug.Log(level);
+
             if (Player.Instance.BadgeManager.HasBadge(this, out var content))
             {
                 content.SetCurrentUpgradeLevel(level);
