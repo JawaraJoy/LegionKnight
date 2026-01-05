@@ -4,16 +4,16 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public partial class Character : MonoBehaviour
+    public partial class Unit : MonoBehaviour
     {
         [SerializeField]
-        private CharacterConfig m_Config;
-        public CharacterConfig Config => m_Config;
+        private UnitConfig m_Config;
+        public UnitConfig Config => m_Config;
 
         [SerializeField]
         private UnityEvent<CharacterContext> m_OnInit;
 
-        public void Init(CharacterConfig config)
+        public void Init(UnitConfig config)
         {
             m_Config = config;
             var context = new CharacterContext(m_Config, this);

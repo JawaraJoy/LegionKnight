@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Character", menuName = "Rush/Character/Character", order = 0)]
-    public partial class CharacterConfig : Configuration
+    [CreateAssetMenu(fileName = "Unit", menuName = "Rush/Unit/Unit", order = 0)]
+    public partial class UnitConfig : Configuration
     {
         [SerializeField]
         private StatsProgressField m_MainStats;
@@ -15,12 +15,12 @@ namespace Rush
     public partial class CharacterContext
     {
         [SerializeField, MMReadOnly]
-        private CharacterConfig m_CharacterConfig;
+        private UnitConfig m_CharacterConfig;
         [SerializeField, MMReadOnly]
-        private Character m_CharacterObject;
-        public CharacterConfig CharacterConfig => m_CharacterConfig;
-        public Character CharacterObject => m_CharacterObject;
-        public CharacterContext(CharacterConfig characterConfig, Character characterObject)
+        private Unit m_CharacterObject;
+        public UnitConfig CharacterConfig => m_CharacterConfig;
+        public Unit CharacterObject => m_CharacterObject;
+        public CharacterContext(UnitConfig characterConfig, Unit characterObject)
         {
             m_CharacterConfig = characterConfig;
             m_CharacterObject = characterObject;

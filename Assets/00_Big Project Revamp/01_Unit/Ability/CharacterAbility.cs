@@ -5,7 +5,7 @@ namespace Rush
 {
     public class CharacterAbility { }
 
-    public partial class CharacterConfig
+    public partial class UnitConfig
     {
         [SerializeField]
         private AbilityConfig[] m_Abilities;

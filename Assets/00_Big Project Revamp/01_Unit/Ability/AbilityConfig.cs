@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Ability", menuName = "Rush/Character/Ability", order = 1)]
+    [CreateAssetMenu(fileName = "Ability", menuName = "Rush/Ability", order = 1)]
     public partial class AbilityConfig : Configuration
     {
         [SerializeField]

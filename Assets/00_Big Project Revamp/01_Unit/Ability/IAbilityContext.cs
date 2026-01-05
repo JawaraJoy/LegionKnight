@@ -7,7 +7,7 @@ namespace Rush
     public partial interface IAbilityContext
     {
         AbilityConfig Config { get; }
-        Character Owner { get; }
+        Unit Owner { get; }
         List<GameObject> Targets { get; }
     }
     [System.Serializable]
@@ -16,13 +16,13 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private AbilityConfig m_Config;
         [SerializeField, MMReadOnly]
-        private Character m_Owner;
+        private Unit m_Owner;
         [SerializeField, MMReadOnly]
         private List<GameObject> m_Targets = new();
         public AbilityConfig Config => m_Config;
-        public Character Owner => m_Owner;
+        public Unit Owner => m_Owner;
         public List<GameObject> Targets => m_Targets;
-        public AbilityContext(AbilityConfig config, Character owner)
+        public AbilityContext(AbilityConfig config, Unit owner)
         {
             m_Config = config;
             m_Owner = owner;
