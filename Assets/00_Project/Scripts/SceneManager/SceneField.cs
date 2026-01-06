@@ -23,7 +23,7 @@ namespace LegionKnight
         public void LoadScene()
         {
             GameTimeScale.SetTimeScale(1f);
-            GameManager.Instance.ShowPanel(PanelId.LoadingPanelId);
+            CanvasManager.Instance.ShowPanel(PanelId.LoadingPanelId);
             //m_SceneName.LoadSceneAsync(m_Mode).Completed += OnSceneLoadedInvoke;
             SceneManager.LoadSceneAsync(m_SceneName, m_Mode).completed += OnSceneLoadedInvoke;
         }
@@ -72,7 +72,7 @@ namespace LegionKnight
             yield return new WaitForEndOfFrame();
             
             yield return new WaitForSeconds(m_HideLoadingPanelDelay);
-            GameManager.Instance.HidePanel(PanelId.LoadingPanelId);
+            CanvasManager.Instance.HidePanel(PanelId.LoadingPanelId);
             m_OnSceneLoaded?.Invoke();
         }
     }

@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         private ShopPanel GetShopPanel()
         {
-            return GameManager.Instance.GetPanel<ShopPanel>();
+            return CanvasManager.Instance.GetPanel<ShopPanel>();
         }
         public void ShowShopPage(string pageName)
         {

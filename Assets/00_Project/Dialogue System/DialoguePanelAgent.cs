@@ -6,7 +6,7 @@ namespace LegionKnight.Dialogue
     {
         private DialoguePanel GetDialoguePanel()
         {
-            DialoguePanel panel = GameManager.Instance.GetPanel<DialoguePanel>();
+            DialoguePanel panel = CanvasManager.Instance.GetPanel<DialoguePanel>();
             return panel;
         }
         public void SetDialogue(Dialogue dialogue)

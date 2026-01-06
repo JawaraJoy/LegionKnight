@@ -38,7 +38,7 @@ namespace LegionKnight
         }
     }
 
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SetSkillViewFill(string skillName, float fill)
         {
@@ -70,23 +70,23 @@ namespace LegionKnight
     {
         public void SetSkillViewFill(string skillName, float fill)
         {
-            GameManager.Instance.SetSkillViewFill(skillName, fill);
+            CanvasManager.Instance.SetSkillViewFill(skillName, fill);
         }
         public void ChargeAmount(string skillName, int amount)
         {
-            GameManager.Instance.ChargeAmount(skillName, amount);
+            CanvasManager.Instance.ChargeAmount(skillName, amount);
         }
         public void Active(string skillName)
         {
-            GameManager.Instance.Active(skillName);
+            CanvasManager.Instance.Active(skillName);
         }
         public void InitCharacterSkill(CharacterDefinition definition)
         {
-            GameManager.Instance.InitCharacterSkill(definition);
+            CanvasManager.Instance.InitCharacterSkill(definition);
         }
         public void ActivePlayerSkillViews(bool set)
         {
-            GameManager.Instance.ActivePlayerSkillViews(set);
+            CanvasManager.Instance.ActivePlayerSkillViews(set);
         }
     }
 }

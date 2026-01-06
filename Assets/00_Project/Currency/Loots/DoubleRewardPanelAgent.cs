@@ -12,7 +12,7 @@ namespace LegionKnight
             {
                 if (m_DoubleRewardPanel == null)
                 {
-                    m_DoubleRewardPanel = GameManager.Instance.GetPanel<DoubleRewardPanel>();
+                    m_DoubleRewardPanel = CanvasManager.Instance.GetPanel<DoubleRewardPanel>();
                 }
                 return m_DoubleRewardPanel;
             }

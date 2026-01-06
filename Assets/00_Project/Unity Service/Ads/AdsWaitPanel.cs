@@ -42,7 +42,7 @@ namespace LegionKnight
             m_WaitingText.text = message;
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         private AdsWaitPanel GetAdsWaitPanel()
         {

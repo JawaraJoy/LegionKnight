@@ -13,7 +13,7 @@ namespace LegionKnight
             return m_Controller;
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public WeeklyMissionMonitor GetWeeklyMissionMonitor()
         {

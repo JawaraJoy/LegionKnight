@@ -50,11 +50,11 @@ namespace LegionKnight
             GetPlatformView().SetPlatformSelected(platform);
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SetPlatformSelected(StandbyPlatformDefinition platform)
         {
-            GetPanel<CharacterPanel>().SetPlatformSelected(platform);
+            GetPanelInternal<CharacterPanel>().SetPlatformSelected(platform);
         }
     }
 }

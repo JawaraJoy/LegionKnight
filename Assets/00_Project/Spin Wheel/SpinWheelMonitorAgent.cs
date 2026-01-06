@@ -8,7 +8,7 @@ namespace LegionKnight
 
         private SpinWheelPanel GetPanel()
         {
-            return GameManager.Instance.GetPanel<SpinWheelPanel>();
+            return CanvasManager.Instance.GetPanel<SpinWheelPanel>();
         }
         private SpinWheelMonitor GetMonitor()
         {

@@ -49,7 +49,7 @@ namespace LegionKnight
        
         public void ShowBossBar()
         {
-            GameplayPanel gameplayPanel = GameManager.Instance.GetPanel<GameplayPanel>();
+            GameplayPanel gameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
             BosBarGameplay bosBarGameplay = gameplayPanel.GetBinding<BosBarGameplay>();
             bosBarGameplay.ShowHealthBar();
             Debug.Log("Show Health Bar");

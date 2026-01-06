@@ -23,8 +23,18 @@ namespace LegionKnight
         {
             m_ContinueButton.onClick.AddListener(OnContinueButtonPressed);
         }
-        private DownloadPanel _panel;
-        private DownloadPanel Panel => _panel ??= GameManager.Instance.GetPanel<DownloadPanel>();
+        private DownloadPanel m_Panel;
+        private DownloadPanel Panel
+        {
+            get
+            {
+                if (m_Panel == null)
+                {
+                    m_Panel = CanvasManager.Instance.GetPanel<DownloadPanel>();
+                }
+                return m_Panel;
+            }
+        }
         private void OnContinueButtonPressed()
         {
             GetDownloadContent().OnContinueAfterSuccessPublic.Invoke();

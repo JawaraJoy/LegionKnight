@@ -7,11 +7,11 @@ namespace LegionKnight
     {
         private EnergyConfirmationPanel GetEnergyConfirmationPanel()
         {
-            return GameManager.Instance.GetPanel<EnergyConfirmationPanel>();
+            return CanvasManager.Instance.GetPanel<EnergyConfirmationPanel>();
         }
         public void SetEnergyView(Energy energy)
         {
-            GameManager.Instance.SetEnergyView(energy);
+            CanvasManager.Instance.SetEnergyView(energy);
         }
         public void SetConfirmationText(Energy[] costs, UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
         {

@@ -40,7 +40,7 @@ namespace LegionKnight
         }
     }
 
-    public partial class GameManager
+    public partial class CanvasManager
     {
         private LevelUpPanel GetLevelUpPanel()
         {

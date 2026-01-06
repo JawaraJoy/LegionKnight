@@ -196,7 +196,7 @@ namespace LegionKnight
         {
             GetLevelSelect(defi)?.StartLevel();
             bool hasBos = m_SelectedLevelDefinition.HasBoss();
-            GameManager.Instance.SetActiveBosIndicatorView(hasBos);
+            CanvasManager.Instance.SetActiveBosIndicatorView(hasBos);
             Debug.Log("Has Boss: " + hasBos);
             SetBossSpawnCountInternal(0);
             Player.Instance.SetCurrencyAmount(m_PotOfLifeDefinition, 0);
@@ -298,7 +298,7 @@ namespace LegionKnight
                     int rebornHealth = Mathf.RoundToInt(maxHealth * rebornRate);
                     Player.Instance.SetPause(true);
                     m_OnPlayerRevive?.Invoke();
-                    RevivePanel panel = GameManager.Instance.GetPanel<RevivePanel>();
+                    RevivePanel panel = CanvasManager.Instance.GetPanel<RevivePanel>();
                     if (panel != null)
                     {
                         panel.Show();
@@ -330,7 +330,7 @@ namespace LegionKnight
                     Debug.Log("Show Internitial Ads - Game Over");
                 });
             }
-            GameManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+            CanvasManager.Instance.ShowPanel(PanelId.GameOverPanelId);
         }
         private void PotOfLifeEff(int rebornHealth, Currency currency)
         {
@@ -582,7 +582,7 @@ namespace LegionKnight
             m_OnPlay?.Invoke();
             m_LevelObject.RemoveBos();
             bool hasBos = m_SelectedLevelDefinition.HasBoss();
-            GameManager.Instance.SetActiveBosIndicatorView(hasBos);
+            CanvasManager.Instance.SetActiveBosIndicatorView(hasBos);
             SetLastPlayerPositionInternal(Vector2.zero);
         }
         public void StartBos()

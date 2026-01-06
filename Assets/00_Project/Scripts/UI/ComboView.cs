@@ -27,7 +27,7 @@ namespace LegionKnight
             GetComboView().SpawnComboNumber(combo);
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SpawnComboNumberUI(int combo)
         {

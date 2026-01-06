@@ -31,7 +31,7 @@ namespace LegionKnight
         {
             if (m_LootedPanel == null)
             {
-                m_LootedPanel = GameManager.Instance.GetPanel<LootedPanel>();
+                m_LootedPanel = CanvasManager.Instance.GetPanel<LootedPanel>();
             }
             return m_LootedPanel;
         }
@@ -47,7 +47,7 @@ namespace LegionKnight
         {
             if (m_InfoPanel == null)
             {
-                m_InfoPanel = GameManager.Instance.GetPanel<BadgeInfoPanel>();
+                m_InfoPanel = CanvasManager.Instance.GetPanel<BadgeInfoPanel>();
             }
             return m_InfoPanel;
         }

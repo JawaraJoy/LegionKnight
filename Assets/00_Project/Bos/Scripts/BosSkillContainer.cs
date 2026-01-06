@@ -29,7 +29,7 @@ namespace LegionKnight
             }
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SetBosSkillViewFill(string skillName, float fill)
         {
@@ -51,15 +51,15 @@ namespace LegionKnight
     {
         public void SetBosSkillViewFill(string skillName, float fill)
         {
-            GameManager.Instance.SetBosSkillViewFill(skillName, fill);
+            CanvasManager.Instance.SetBosSkillViewFill(skillName, fill);
         }
         public void ActiveBosSkill(string skillName)
         {
-            GameManager.Instance.ActiveBosSkill(skillName);
+            CanvasManager.Instance.ActiveBosSkill(skillName);
         }
         public void ActiveBosSkillViews(bool set)
         {
-            GameManager.Instance.ActiveBosSkillViews(set);
+            CanvasManager.Instance.ActiveBosSkillViews(set);
         }
     }
 }

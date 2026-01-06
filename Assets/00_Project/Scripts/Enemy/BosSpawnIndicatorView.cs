@@ -49,7 +49,7 @@ namespace LegionKnight
             }
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SetBosIndicator(float set)
         {
@@ -64,11 +64,11 @@ namespace LegionKnight
     {
         public void SetBosIndicator(float set)
         {
-            GameManager.Instance.SetBosIndicator(set);
+            CanvasManager.Instance.SetBosIndicator(set);
         }
         public void SetActiveBosIndicatorView(bool set)
         {
-            GameManager.Instance.SetActiveBosIndicatorView(set);
+            CanvasManager.Instance.SetActiveBosIndicatorView(set);
         }
     }
 }

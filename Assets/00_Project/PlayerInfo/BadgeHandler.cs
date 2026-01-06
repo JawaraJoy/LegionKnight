@@ -105,7 +105,7 @@ namespace LegionKnight
         {
             if (m_NotifPanel == null)
             {
-                m_NotifPanel = GameManager.Instance.GetPanel<AchievementNotifPanel>();
+                m_NotifPanel = CanvasManager.Instance.GetPanel<AchievementNotifPanel>();
             }
             return m_NotifPanel;
         }

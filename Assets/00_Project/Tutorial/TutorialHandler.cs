@@ -81,7 +81,7 @@ namespace LegionKnight
         {
             if (m_Panel == null)
             {
-                m_Panel = GameManager.Instance.GetPanel<TutorialPanel>();
+                m_Panel = CanvasManager.Instance.GetPanel<TutorialPanel>();
             }
             return m_Panel;
         }
@@ -109,7 +109,7 @@ namespace LegionKnight
         {
             if (m_DialoguePanel == null)
             {
-                m_DialoguePanel = GameManager.Instance.GetPanel<DialoguePanel>();
+                m_DialoguePanel = CanvasManager.Instance.GetPanel<DialoguePanel>();
             }
             return m_DialoguePanel;
         }

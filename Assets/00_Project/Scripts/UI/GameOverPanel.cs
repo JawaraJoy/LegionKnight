@@ -97,7 +97,7 @@ namespace LegionKnight
 
         private IEnumerator Ressurectioning()
         {
-            RevivePanel panel = GameManager.Instance.GetPanel<RevivePanel>();
+            RevivePanel panel = CanvasManager.Instance.GetPanel<RevivePanel>();
             if (panel != null)
             {
                 panel.Show();

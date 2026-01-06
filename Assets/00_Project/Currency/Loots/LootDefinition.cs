@@ -23,7 +23,7 @@ namespace LegionKnight
         {
             if (m_Panel == null)
             {
-                m_Panel = GameManager.Instance.GetPanel<LootedPanel>();
+                m_Panel = CanvasManager.Instance.GetPanel<LootedPanel>();
             }
             return m_Panel;
         }

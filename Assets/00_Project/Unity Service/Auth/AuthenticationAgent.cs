@@ -20,28 +20,28 @@ namespace LegionKnight
         }
         public void ShowWaitingView()
         {
-            GameManager.Instance.ShowWaitingView();
+            CanvasManager.Instance.ShowWaitingView();
         }
         public void HideWaitingView()
         {
-            GameManager.Instance.HideWaitingView();
+            CanvasManager.Instance.HideWaitingView();
         }
         public void SetWaitingText(string text)
         {
-            GameManager.Instance.SetWaitingText(text);
+            CanvasManager.Instance.SetWaitingText(text);
         }
         public void ShowWaitingViewCloseButton(bool set)
         {
-            GameManager.Instance.ShowWaitingViewCloseButton(set);
+            CanvasManager.Instance.ShowWaitingViewCloseButton(set);
         }
         public void ShowWaitingViewSuccessButton(bool set)
         {
-            GameManager.Instance.ShowWaitingViewSuccessButton(set);
+            CanvasManager.Instance.ShowWaitingViewSuccessButton(set);
         }
 
         private AuthenticationPanel GetAuthenticationPanel()
         {
-            return GameManager.Instance.GetPanel<AuthenticationPanel>();
+            return CanvasManager.Instance.GetPanel<AuthenticationPanel>();
         }
         public void ShowAuthPanel()
         {

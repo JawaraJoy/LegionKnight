@@ -8,18 +8,18 @@ namespace LegionKnight
         public void SetTaskProgressSlide(MissionController controller)
         {
             float powerRate = (float)controller.CurrentTaskPower / (float)controller.MaxTaskPower;
-            GameManager.Instance.GetDailyMissionMonitor().SetTaskProgressSlide(powerRate);
+            CanvasManager.Instance.GetDailyMissionMonitor().SetTaskProgressSlide(powerRate);
         }
         public void Init(MissionController controller)
         {
-            DailyMissionMonitor dailyMissionMonitor = GameManager.Instance.GetDailyMissionMonitor();
+            DailyMissionMonitor dailyMissionMonitor = CanvasManager.Instance.GetDailyMissionMonitor();
 
             if(dailyMissionMonitor)
                 dailyMissionMonitor.Init(controller);
         }
         public void ShowLoot(LootField[] loots)
         {
-            LootMonitor lootMonitor = GameManager.Instance.GetLootMonitor();
+            LootMonitor lootMonitor = CanvasManager.Instance.GetLootMonitor();
             lootMonitor.ClearAllLootViews();
             lootMonitor.Show();
             lootMonitor.AddLootsView(loots.ToList());

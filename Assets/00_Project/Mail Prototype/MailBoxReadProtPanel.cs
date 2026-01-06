@@ -36,7 +36,7 @@ namespace LegionKnight.Prototype
         {
             if (m_HomePanel == null)
             {
-                m_HomePanel = GameManager.Instance.GetPanel<HomePanel>();
+                m_HomePanel = CanvasManager.Instance.GetPanel<HomePanel>();
             }
             return m_HomePanel;
         }

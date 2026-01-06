@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         private CharacterPanel GetCharacterPanel()
         {
-            return GameManager.Instance.GetPanel<CharacterPanel>();
+            return CanvasManager.Instance.GetPanel<CharacterPanel>();
         }
 
         private PlatformSelectionView GetPlatformSelectionView()

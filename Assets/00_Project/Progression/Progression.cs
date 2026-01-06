@@ -64,7 +64,7 @@ namespace LegionKnight
             {
                 m_CurrentExp = 0;
             }
-            GameManager.Instance.InitLevelView();
+            CanvasManager.Instance.InitLevelView();
         }
         public void Init()
         {
@@ -107,7 +107,7 @@ namespace LegionKnight
         private void OnCurrentExoRateChangeInvoke(float val)
         {
             m_OnCurrentExpRateChange?.Invoke(val);
-            GameManager.Instance.InitLevelView();
+            CanvasManager.Instance.InitLevelView();
         }
         public void AddOnLevelUp(UnityAction<int> action)
         {
@@ -122,8 +122,8 @@ namespace LegionKnight
         {
             if (m_LevelUpTriggered)
             {
-                LevelUpPanel levelUpPanel = GameManager.Instance.GetPanel<LevelUpPanel>();
-                GameManager.Instance.ShowLevelUpPanel();
+                LevelUpPanel levelUpPanel = CanvasManager.Instance.GetPanel<LevelUpPanel>();
+                CanvasManager.Instance.ShowLevelUpPanel();
                 m_LevelUpTriggered = false;
                 LootDefinition lootDef = m_ExpTable[m_Level - 1].RewardLevelReached;
                 if (lootDef != null)
@@ -135,7 +135,7 @@ namespace LegionKnight
         private void OnCurrentExpChangeInvoke()
         {
             m_OnCurrentExpChange?.Invoke(m_CurrentExp);
-            GameManager.Instance.InitLevelView();
+            CanvasManager.Instance.InitLevelView();
         }
 
 #if UNITY_EDITOR

@@ -147,7 +147,7 @@ namespace LegionKnight
         private void OnSelectedPlatformInvoke()
         {
             m_OnSelectedPlatform?.Invoke(m_SelectedStandbyPlatform);
-            GameManager.Instance.SetPlatformSelected(m_SelectedStandbyPlatform);
+            CanvasManager.Instance.SetPlatformSelected(m_SelectedStandbyPlatform);
         }
         private void OnPlatformUsedInvoke()
         {

@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         private GameplayLootMonitor GetGameplayLootMonitor()
         {
-            return GameManager.Instance.GetGameplayLootMonitor();
+            return CanvasManager.Instance.GetGameplayLootMonitor();
         }
         public void AddLootView(LootField loot)
         {

@@ -7,14 +7,14 @@ namespace LegionKnight
     {
         public void Init(MissionController controller)
         {
-            WeeklyMissionMonitor weeklyMissionMonitor = GameManager.Instance.GetWeeklyMissionMonitor();
+            WeeklyMissionMonitor weeklyMissionMonitor = CanvasManager.Instance.GetWeeklyMissionMonitor();
 
             if(weeklyMissionMonitor)
                 weeklyMissionMonitor.Init(controller);
         }
         public void ShowLoot(LootField[] loots)
         {
-            LootMonitor lootMonitor = GameManager.Instance.GetLootMonitor();
+            LootMonitor lootMonitor = CanvasManager.Instance.GetLootMonitor();
             lootMonitor.ClearAllLootViews();
             lootMonitor.Show();
             lootMonitor.AddLootsView(loots.ToList());

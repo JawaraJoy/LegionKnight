@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         private AlertPanel GetAlertPanel()
         {
-            AlertPanel alertPanel = GameManager.Instance.GetPanel<AlertPanel>();
+            AlertPanel alertPanel = CanvasManager.Instance.GetPanel<AlertPanel>();
             return alertPanel;
         }
 

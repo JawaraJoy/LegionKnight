@@ -8,7 +8,7 @@ namespace LegionKnight
         {
             if (!GameManager.Instance.IsInfiniteLevel)
             {
-                WinPanel winPanel = GameManager.Instance.GetPanel<WinPanel>();
+                WinPanel winPanel = CanvasManager.Instance.GetPanel<WinPanel>();
                 winPanel.Show();
             }
         }

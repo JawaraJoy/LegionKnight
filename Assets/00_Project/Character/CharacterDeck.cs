@@ -145,7 +145,7 @@ namespace LegionKnight
         private void OnSelectedCharacterInvoke()
         {
             m_OnSelectedCharacter?.Invoke(m_SelectedCharacter);
-            GameManager.Instance.SetCharacterSelected(m_SelectedCharacter);
+            CanvasManager.Instance.SetCharacterSelected(m_SelectedCharacter);
         }
         public void AddExp(CharacterDefinition defi, int exp)
         {

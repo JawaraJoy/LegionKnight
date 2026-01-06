@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         public void SpawnComboNumberUI(int combo)
         {
-            GameManager.Instance.SpawnComboNumberUI(combo);
+            CanvasManager.Instance.SpawnComboNumberUI(combo);
         }
     }
 }

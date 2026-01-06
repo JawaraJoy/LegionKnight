@@ -32,7 +32,7 @@ namespace LegionKnight.Prototype
         {
             if (m_HomePanel == null)
             {
-                m_HomePanel = GameManager.Instance.GetPanel<HomePanel>();
+                m_HomePanel = CanvasManager.Instance.GetPanel<HomePanel>();
             }
             return m_HomePanel;
         }
@@ -48,7 +48,7 @@ namespace LegionKnight.Prototype
         {
             if (m_PopUpPanel == null)
             {
-                m_PopUpPanel = GameManager.Instance.GetPanel<TextPopUpPanel>();
+                m_PopUpPanel = CanvasManager.Instance.GetPanel<TextPopUpPanel>();
             }
             return m_PopUpPanel;
         }
@@ -226,7 +226,7 @@ namespace LegionKnight.Prototype
         {
             if (m_LootPanel == null)
             {
-                m_LootPanel = GameManager.Instance.GetPanel<LootedPanel>();
+                m_LootPanel = CanvasManager.Instance.GetPanel<LootedPanel>();
             }
             return m_LootPanel;
         }

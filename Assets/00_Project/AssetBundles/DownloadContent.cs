@@ -29,7 +29,7 @@ namespace LegionKnight
         public UnityEvent OnContinueAfterSuccessPublic => OnContinueAfterSuccess;
 
         // UI panels
-        private DownloadPanel Panel => GameManager.Instance.GetPanel<DownloadPanel>();
+        private DownloadPanel Panel => CanvasManager.Instance.GetPanel<DownloadPanel>();
         private ConfirmationTab ConfirmTab => Panel.GetBinding<ConfirmationTab>();
         private LoadingProgressTab ProgressTab => Panel.GetBinding<LoadingProgressTab>();
         private CompleteTab CompleteTab => Panel.GetBinding<CompleteTab>();

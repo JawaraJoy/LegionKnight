@@ -7,7 +7,7 @@ namespace LegionKnight
         public override void Show()
         {
             base.Show();
-            GameOverPanel gameOver = GameManager.Instance.GetPanel<GameOverPanel>();
+            GameOverPanel gameOver = CanvasManager.Instance.GetPanel<GameOverPanel>();
             if (gameOver != null)
             {
                 gameOver.Hide();

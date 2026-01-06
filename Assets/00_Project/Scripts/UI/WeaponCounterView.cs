@@ -43,7 +43,7 @@ namespace LegionKnight
         }
     }
 
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SetWeaponCounterView(int set)
         {
@@ -55,7 +55,7 @@ namespace LegionKnight
     {
         public void SetWeaponCounterView(int set)
         {
-            GameManager.Instance.SetWeaponCounterView(set);
+            CanvasManager.Instance.SetWeaponCounterView(set);
         }
     }
 }

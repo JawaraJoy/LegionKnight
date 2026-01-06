@@ -8,7 +8,7 @@ namespace LegionKnight
         private SpineAnimDefinition m_Definition;
         private CutScenePanel GetPanel()
         {
-            return GameManager.Instance.GetPanel<CutScenePanel>();
+            return CanvasManager.Instance.GetPanel<CutScenePanel>();
         }
 
         public void PlayUI()

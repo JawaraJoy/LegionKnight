@@ -263,7 +263,7 @@ namespace LegionKnight
                 }
                 else
                 {
-                    GameplayPanel gameplayPanel = GameManager.Instance.GetPanel<GameplayPanel>();
+                    GameplayPanel gameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
                     BosBarGameplay bosBarGameplay = gameplayPanel.GetBinding<BosBarGameplay>();
                     bosBarGameplay.ShowHealthBar();
                 }
@@ -350,7 +350,7 @@ namespace LegionKnight
 
         private GameplayPanel GetGameplayPanel()
         {
-            return GameManager.Instance.GetPanel<GameplayPanel>();
+            return CanvasManager.Instance.GetPanel<GameplayPanel>();
         }
 
         private PlatformComingTrack GetPlatformComingTrack()

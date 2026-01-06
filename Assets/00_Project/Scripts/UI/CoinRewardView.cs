@@ -28,7 +28,7 @@ namespace LegionKnight
             GetCurrencyView().SetView(currency);
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SetCoinRewardView(Currency currency)
         {
@@ -40,7 +40,7 @@ namespace LegionKnight
     {
         public void SetCoinRewardView(Currency currency)
         {
-            GameManager.Instance.SetCoinRewardView(currency);
+            CanvasManager.Instance.SetCoinRewardView(currency);
         }
     }
 }

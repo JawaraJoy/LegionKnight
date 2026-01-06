@@ -33,7 +33,7 @@ namespace LegionKnight
             {
                 GameManager.Instance.SetLevelOver(true);
                 yield return new WaitForSeconds(delay);
-                WinPanel winPanel = GameManager.Instance.GetPanel<WinPanel>();
+                WinPanel winPanel = CanvasManager.Instance.GetPanel<WinPanel>();
                 winPanel.Show();
                 Debug.Log("Bos is DEath Show Win Panel");
                 /*winPanel.SetLevelDefinition(GameManager.Instance.LevelDefinition);

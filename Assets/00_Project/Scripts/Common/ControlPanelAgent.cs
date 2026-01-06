@@ -6,16 +6,16 @@ namespace LegionKnight
     {
         public void Show()
         {
-            GameManager.Instance.ShowPanel(PanelId.ControlPanelId);
+            CanvasManager.Instance.ShowPanel(PanelId.ControlPanelId);
         }
         public void Hide()
         {
-            GameManager.Instance.HidePanel(PanelId.ControlPanelId);
+            CanvasManager.Instance.HidePanel(PanelId.ControlPanelId);
         }
 
         private ControlPanel GetControlPanel()
         {
-            return GameManager.Instance.GetPanel<ControlPanel>();
+            return CanvasManager.Instance.GetPanel<ControlPanel>();
         }
 
         public void SetJumpForceValueText(float val)

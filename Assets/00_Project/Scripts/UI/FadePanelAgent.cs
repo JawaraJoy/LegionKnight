@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         private FadePanel GetFadePanel()
         {
-            return GameManager.Instance.GetPanel<FadePanel>();
+            return CanvasManager.Instance.GetPanel<FadePanel>();
         }
         public void Show()
         {

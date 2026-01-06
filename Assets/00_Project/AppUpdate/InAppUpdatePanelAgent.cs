@@ -10,7 +10,7 @@ namespace LegionKnight
         {
             if (m_Panel == null)
             {
-                m_Panel = GameManager.Instance.GetPanel<InAppUpdatePanel>();
+                m_Panel = CanvasManager.Instance.GetPanel<InAppUpdatePanel>();
             }
             return m_Panel;
         }

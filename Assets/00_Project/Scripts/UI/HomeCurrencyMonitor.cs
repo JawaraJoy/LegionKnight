@@ -20,7 +20,7 @@ namespace LegionKnight
         }
     }
 
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SetHomeCurrencyView(Currency currency)
         {

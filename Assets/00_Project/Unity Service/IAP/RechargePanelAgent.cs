@@ -6,10 +6,10 @@ namespace LegionKnight
     {
         public void ShowRechargePanel()
         {
-            GameManager.Instance.ShowRechargePanel();
+            CanvasManager.Instance.ShowRechargePanel();
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void ShowRechargePanel()
         {

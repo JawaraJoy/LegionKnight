@@ -21,7 +21,7 @@ namespace LegionKnight.Prototype
         {
             if (m_MailBoxProtPanel == null)
             {
-                m_MailBoxProtPanel = GameManager.Instance.GetPanel<MailBoxProtPanel>();
+                m_MailBoxProtPanel = CanvasManager.Instance.GetPanel<MailBoxProtPanel>();
             }
             return m_MailBoxProtPanel;
         }
@@ -29,7 +29,7 @@ namespace LegionKnight.Prototype
         {
             if (m_MailBoxReadProtPanel == null)
             {
-                m_MailBoxReadProtPanel = GameManager.Instance.GetPanel<MailBoxReadProtPanel>();
+                m_MailBoxReadProtPanel = CanvasManager.Instance.GetPanel<MailBoxReadProtPanel>();
             }
             return m_MailBoxReadProtPanel;
         }

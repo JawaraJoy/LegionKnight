@@ -106,7 +106,7 @@ namespace LegionKnight
             GetHeroView().SetCharacterSelected(defi);
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         private CharacterPanel GetCharacterPanel()
         {

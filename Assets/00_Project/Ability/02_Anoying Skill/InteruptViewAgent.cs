@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         private GameplayPanel GetGameplayPanel()
         {
-            GameplayPanel gameplayPanel = GameManager.Instance.GetPanel<GameplayPanel>();
+            GameplayPanel gameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
             if (gameplayPanel == null)
             {
                 Debug.LogError("GameplayPanel not found in GameManager.");

@@ -43,7 +43,7 @@ namespace LegionKnight
         {
             if (m_ProfilePanel == null)
             {
-                m_ProfilePanel = GameManager.Instance.GetPanel<CustomProfilePanel>();
+                m_ProfilePanel = CanvasManager.Instance.GetPanel<CustomProfilePanel>();
             }
             return m_ProfilePanel;
         }

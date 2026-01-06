@@ -9,7 +9,7 @@ namespace LegionKnight
         {
             if (m_Panel == null)
             {
-                m_Panel = GameManager.Instance.GetPanel<TextPopUpPanel>();
+                m_Panel = CanvasManager.Instance.GetPanel<TextPopUpPanel>();
             }
             return m_Panel;
         }

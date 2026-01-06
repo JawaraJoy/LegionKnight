@@ -53,7 +53,7 @@ namespace LegionKnight
         private void Claim()
         {
             m_OnClaimed?.Invoke(m_Reward);
-            MissionPanel panel = GameManager.Instance.GetPanel<MissionPanel>();
+            MissionPanel panel = CanvasManager.Instance.GetPanel<MissionPanel>();
             DailyRewardMonitor monitor = panel.GetBinding<DailyRewardMonitor>();
             monitor.ShowClaimedDailyReward(m_Reward);
 

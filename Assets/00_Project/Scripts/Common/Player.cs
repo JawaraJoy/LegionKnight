@@ -29,7 +29,7 @@ namespace LegionKnight
         {
             if (m_CustomProfilePanel == null)
             {
-                m_CustomProfilePanel = GameManager.Instance.GetPanel<PlayerInfoPanel>();
+                m_CustomProfilePanel = CanvasManager.Instance.GetPanel<PlayerInfoPanel>();
             }
             return m_CustomProfilePanel;
         }
@@ -52,7 +52,7 @@ namespace LegionKnight
             m_OnStart?.Invoke();
             m_PlayerName = UnityService.Instance.PlayerName;
             Debug.Log($"Player name: {m_PlayerName}");
-            GameManager.Instance.SetPlayerNameView(m_PlayerName);
+            CanvasManager.Instance.SetPlayerNameView(m_PlayerName);
         }
         public void SetPlayerName(string playerName)
         {

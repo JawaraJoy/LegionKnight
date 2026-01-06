@@ -7,7 +7,7 @@ namespace LegionKnight
         private ProjectileAbility m_Ability;
         private GameplayPanel GetGameplayPanel()
         {
-            return GameManager.Instance.GetPanel<GameplayPanel>();
+            return CanvasManager.Instance.GetPanel<GameplayPanel>();
         }
         private ProjectileAbility GetProjectileAbility()
         {

@@ -19,7 +19,7 @@ namespace LegionKnight
             GetHighScoreView().SetView(currency);
         }
     }
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SetHomeHighScoreView(Currency currency)
         {

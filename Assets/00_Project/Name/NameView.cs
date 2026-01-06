@@ -26,7 +26,7 @@ namespace LegionKnight
         }
     }
 
-    public partial class GameManager
+    public partial class CanvasManager
     {
         public void SetPlayerNameView(string val)
         {

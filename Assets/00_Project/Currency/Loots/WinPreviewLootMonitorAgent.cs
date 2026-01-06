@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         public virtual void AddLootView(LootField loot)
         {
-            GameManager.Instance.GetWinPreviewLootMonitor().AddLootView(loot);
+            CanvasManager.Instance.GetWinPreviewLootMonitor().AddLootView(loot);
         }
     }
 }

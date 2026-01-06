@@ -7,7 +7,7 @@ namespace LegionKnight
 
         private GameplayPanel GetGameplayPanel()
         {
-            return GameManager.Instance.GetPanel<GameplayPanel>();
+            return CanvasManager.Instance.GetPanel<GameplayPanel>();
         }
         public void SetCastingName(string castingName)
         {

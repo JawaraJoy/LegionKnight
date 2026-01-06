@@ -17,18 +17,4 @@ namespace LegionKnight
             Player.Instance.JumpUnPress();
         }
     }
-    public partial class GameManager
-    {
-        [SerializeField]
-        private ButtonJumpCanvas m_JumpCanvas;
-
-        public void ShowJumpCanvas()
-        {
-            m_JumpCanvas.Show();
-        }
-        public void HideJumpCanvas()
-        {
-            m_JumpCanvas.Hide();
-        }
-    }
 }

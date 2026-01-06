@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         private PanelView GetPanelView(string panelName)
         {
-            PanelView panel = GameManager.Instance.GetPanel(panelName);
+            PanelView panel = CanvasManager.Instance.GetPanel(panelName);
             if (panel == null)
             {
                 Debug.LogError($"Panel with name {panelName} not found.");

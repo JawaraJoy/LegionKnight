@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         public void ShowDiamondShop(string showTab)
         {
-            GameManager.Instance.ShowDiamondShop(showTab);
+            CanvasManager.Instance.ShowDiamondShop(showTab);
         }
     }
 }

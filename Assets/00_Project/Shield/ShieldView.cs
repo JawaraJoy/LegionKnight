@@ -60,7 +60,7 @@ namespace LegionKnight
     {
         public void SetShieldCountView(int count)
         {
-            GameplayPanel gm = GameManager.Instance.GetPanel<GameplayPanel>();
+            GameplayPanel gm = CanvasManager.Instance.GetPanel<GameplayPanel>();
             if (gm != null)
             {
                 gm.SetShieldCount(count);

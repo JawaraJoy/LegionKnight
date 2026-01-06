@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         public void OnCharacterLevelUpCharacterView(CharacterDefinition defi)
         {
-            CharacterPanel cp = GameManager.Instance.GetPanel<CharacterPanel>();
+            CharacterPanel cp = CanvasManager.Instance.GetPanel<CharacterPanel>();
             cp.SetCharacterSelected(defi);
         }
     }

@@ -173,13 +173,13 @@ namespace LegionKnight
 
         public void OnUnityAdsAdLoaded(string placementId)
         {
-            GameManager.Instance.HidePanel(PanelId.AdsWait);
+            CanvasManager.Instance.HidePanel(PanelId.AdsWait);
             Debug.Log($"Unity Ads Ad Loaded: {placementId}");
         }
 
         public void OnUnityAdsFailedToLoad(string placementId, UnityAdsLoadError error, string message)
         {
-            GameManager.Instance.HidePanel(PanelId.AdsWait);
+            CanvasManager.Instance.HidePanel(PanelId.AdsWait);
             Debug.LogError($"Unity Ads Failed to Load: {placementId} - {error} - {message}");
             OnAdLoadFailedInvoke();
         }
@@ -188,7 +188,7 @@ namespace LegionKnight
         {
             Debug.LogError($"Unity Ads Show Failure: {placementId} - {error} - {message}");
             OnAdShowFailedInvoke();
-            GameManager.Instance.ShowAdWaitMessage("Ad Show Failed, Please try again later.", 2f);
+            CanvasManager.Instance.ShowAdWaitMessage("Ad Show Failed, Please try again later.", 2f);
         }
 
         public void OnUnityAdsShowStart(string placementId)

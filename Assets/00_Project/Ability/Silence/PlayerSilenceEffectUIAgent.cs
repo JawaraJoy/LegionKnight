@@ -14,7 +14,7 @@ namespace LegionKnight
             {
                 if (m_Panel == null)
                 {
-                    m_Panel = GameManager.Instance.GetPanel<GameplayPanel>();
+                    m_Panel = CanvasManager.Instance.GetPanel<GameplayPanel>();
                 }
                 return m_Panel;
             }
