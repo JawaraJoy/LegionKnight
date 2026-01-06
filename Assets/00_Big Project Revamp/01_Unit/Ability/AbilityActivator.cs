@@ -6,12 +6,14 @@ namespace Rush
 {
     public class AbilityActivator : MonoBehaviour
     {
+        [SerializeField]
+        private AbilityPurpose m_Purpose = AbilityPurpose.Damaging;
         [SerializeField, MMReadOnly]
         private AbilityContext m_Context;
         [SerializeField]
-        private UnityEvent<IAbilityContext> m_OnInit;
+        private UnityEvent<AbilityContext> m_OnInit;
         [SerializeField]
-        private UnityEvent<IAbilityContext> m_OnActivate;
+        private UnityEvent<AbilityContext> m_OnActivate;
         public void Init(AbilityContext context)
         {
             m_Context = context;

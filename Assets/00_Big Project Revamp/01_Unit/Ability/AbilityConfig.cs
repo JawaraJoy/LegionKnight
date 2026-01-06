@@ -1,44 +1,27 @@
+using MoreMountains.Tools;
 using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Ability", menuName = "Rush/Ability", order = 1)]
+    [CreateAssetMenu(fileName = "Ability", menuName = "Rush/Combat/Ability", order = 1)]
     public partial class AbilityConfig : Configuration
     {
         [SerializeField]
-        private AbilityActivator m_ActivatorPrefab;
+        private ProgressField m_LevelSet;
         [SerializeField]
-        private AbilityStatsField m_Stats;
-        public AbilityActivator ActivatorPrefab => m_ActivatorPrefab;
-        public AbilityStatsField Stats => m_Stats;
-    }
-    [System.Serializable]
-    public class AbilityStatsField : StatsProgressField
-    {
-        [SerializeField]
-        private bool m_ScaleWithCharacterStats = true;
-        public bool ScaleWithCharacterStats => m_ScaleWithCharacterStats;
-    }
-    public partial class AbilityContext
-    {
-        public virtual StatField GetFinalStat()
+        private AbilitySetUpField[] m_AbilitySets;
+        public ProgressField LevelSet => m_LevelSet;
+        public AbilitySetUpField[] AbilitySets => m_AbilitySets;
+        public AbilitySetUpField GetAbilitySetUp(AbilityPurpose purpose)
         {
-            bool scaleWithCharacterStats = Config.Stats.ScaleWithCharacterStats;
-            StatsProgressField characterStats = m_Owner.Config.MainStats;
-            StatField charFinalStat = characterStats.GetFinalStat();
-            StatField abilityBaseStat = Config.Stats.BaseStat;
-            StatField abilityFlatStat = Config.Stats.FlatScaleByLevel;
-            StatField abilityPercentStat = Config.Stats.PercentScaleByLevel;
-
-            StatField finalStat = m_Config.Stats.GetFinalStat();
-            if (scaleWithCharacterStats)
+            foreach (var abilitySet in m_AbilitySets)
             {
-                StatField scaleBaseStat = characterStats.BaseStat + abilityBaseStat;
-                scaleBaseStat += StatField.GetFinalFlatStats(abilityFlatStat, m_CurrentLevel);
-                scaleBaseStat += StatField.GetFinalRateStats(abilityPercentStat, m_CurrentLevel) * charFinalStat;
-                finalStat = scaleBaseStat;
+                if (abilitySet.Purpose == purpose)
+                {
+                    return abilitySet;
+                }
             }
-            return finalStat;
+            return null;
         }
     }
 }

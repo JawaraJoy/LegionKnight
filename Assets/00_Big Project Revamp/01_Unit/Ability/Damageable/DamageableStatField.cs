@@ -1,7 +1,6 @@
-using Rush;
 using UnityEngine;
 
-namespace LegionKnight
+namespace Rush
 {
     [System.Serializable]
     public class DamageableStatField
@@ -17,8 +16,8 @@ namespace LegionKnight
 
         public void Init(AbilityContext context)
         {
-            m_Health = Mathf.Max(0f, context.GetFinalStat().Health);
-            m_Defense = Mathf.Max(0f, context.GetFinalStat().Defense);
+            m_Health = Mathf.Max(0f, context.Owner.Config.MainStats.GetFinalStat().Health);
+            m_Defense = Mathf.Max(0f, context.Owner.Config.MainStats.GetFinalStat().Defense);
         }
     }
 

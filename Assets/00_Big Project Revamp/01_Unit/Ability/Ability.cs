@@ -9,7 +9,7 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private List<AbilityContext> m_AbilityContexts = new();
 
-        public void Init(CharacterContext characterContext)
+        public void Init(UnitContext characterContext)
         {
             AbilityConfig[] abilities = characterContext.CharacterConfig.Abilities;
             for (int i = 0; i < abilities.Length; i++)

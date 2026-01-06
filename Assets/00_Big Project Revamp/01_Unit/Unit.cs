@@ -8,15 +8,18 @@ namespace Rush
     {
         [SerializeField]
         private UnitConfig m_Config;
+        [SerializeField]
+        private ProgressField m_Progresstion;
         public UnitConfig Config => m_Config;
+        public ProgressField Progression => m_Progresstion;
 
         [SerializeField]
-        private UnityEvent<CharacterContext> m_OnInit;
+        private UnityEvent<UnitContext> m_OnInit;
 
         public void Init(UnitConfig config)
         {
             m_Config = config;
-            var context = new CharacterContext(m_Config, this);
+            var context = new UnitContext(m_Config, this);
             m_OnInit?.Invoke(context);
         }
     }

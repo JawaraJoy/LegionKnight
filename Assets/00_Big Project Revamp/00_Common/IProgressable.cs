@@ -2,29 +2,34 @@ using UnityEngine;
 
 namespace Rush
 {
-    public interface IProgressable
+    public partial interface IProgressable
     {
-        int CurrentLevel { get; }
+        int Level { get; }
         int MaxLevel { get; }
-        void SetCurrentLevel(int level);
-        void AddCurrentLevel(int amount);
+        void SetLevel(int level);
+        void AddLevel(int amount);
     }
-    public class ProgressField : IProgressable
+    [System.Serializable]
+    public partial class ProgressField : IProgressable
     {
         [SerializeField]
-        protected int m_CurrentLevel;
+        private int m_Level;
         [SerializeField]
         protected int m_MaxLevel;
-        public int CurrentLevel => m_CurrentLevel;
+        protected int LevelInternal => Mathf.Clamp(m_Level, 1, m_MaxLevel);
+        public int Level => LevelInternal;
         public int MaxLevel => m_MaxLevel;
-
-        public void AddCurrentLevel(int amount)
+        public int GetLevelScaleByOther(ProgressField other)
         {
-            m_CurrentLevel = Mathf.Clamp(m_CurrentLevel + amount, 0, m_MaxLevel);
+            return Mathf.Max(1, LevelInternal + other.LevelInternal);
         }
-        public void SetCurrentLevel(int level)
+        public void AddLevel(int amount)
         {
-            m_CurrentLevel = Mathf.Clamp(level, 0, m_MaxLevel);
+            m_Level = Mathf.Clamp(m_Level + amount, 0, m_MaxLevel);
+        }
+        public void SetLevel(int level)
+        {
+            m_Level = Mathf.Clamp(level, 0, m_MaxLevel);
         }
     }
 }

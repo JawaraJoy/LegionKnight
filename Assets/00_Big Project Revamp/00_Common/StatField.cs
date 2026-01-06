@@ -76,4 +76,14 @@ namespace Rush
             return finalStats;
         }
     }
+
+    [System.Flags]
+    public enum ScalingStat
+    {
+        None = 0,
+        Health = 1 << 0,
+        Attack = 1 << 1,
+        Defense = 1 << 2,
+        All = Health | Attack | Defense,
+    }
 }
