@@ -8,8 +8,10 @@ namespace Rush
     {
         [SerializeField]
         private UnitConfig m_Config;
-        [SerializeField]
+
+        [SerializeField] // change tp progression monobehaviour later
         private ProgressField m_Progresstion;
+        // add Stats Modifier MonoBehaviour later
         public UnitConfig Config => m_Config;
         public ProgressField Progression => m_Progresstion;
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public class CharacterAbility { }
+    public class UnitAbility { }
 
     public partial class UnitConfig
     {

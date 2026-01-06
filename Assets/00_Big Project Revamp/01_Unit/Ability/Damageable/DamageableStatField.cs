@@ -16,8 +16,9 @@ namespace Rush
 
         public void Init(AbilityContext context)
         {
-            m_Health = Mathf.Max(0f, context.Owner.Config.MainStats.GetFinalStat().Health);
-            m_Defense = Mathf.Max(0f, context.Owner.Config.MainStats.GetFinalStat().Defense);
+            int level = context.Owner.Progression.Level;
+            m_Health = Mathf.Max(0f, context.Owner.Config.MainStats.GetFinalStat(level).Health);
+            m_Defense = Mathf.Max(0f, context.Owner.Config.MainStats.GetFinalStat(level).Defense);
         }
     }
 

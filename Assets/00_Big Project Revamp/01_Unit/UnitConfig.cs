@@ -7,23 +7,23 @@ namespace Rush
     public partial class UnitConfig : Configuration
     {
         [SerializeField]
-        private StatsProgressField m_MainStats;
-        public StatsProgressField MainStats => m_MainStats;
+        private StatsField m_MainStats;
+        public StatsField MainStats => m_MainStats;
     }
 
     [System.Serializable]
     public partial class UnitContext
     {
         [SerializeField, MMReadOnly]
-        private UnitConfig m_CharacterConfig;
+        private UnitConfig m_UnitConfig;
         [SerializeField, MMReadOnly]
-        private Unit m_CharacterObject;
-        public UnitConfig CharacterConfig => m_CharacterConfig;
-        public Unit CharacterObject => m_CharacterObject;
-        public UnitContext(UnitConfig characterConfig, Unit characterObject)
+        private Unit m_UnitObject;
+        public UnitConfig UnitConfig => m_UnitConfig;
+        public Unit UnitObject => m_UnitObject;
+        public UnitContext(UnitConfig unitConfig, Unit unitObject)
         {
-            m_CharacterConfig = characterConfig;
-            m_CharacterObject = characterObject;
+            m_UnitConfig = unitConfig;
+            m_UnitObject = unitObject;
         }
     }
 }

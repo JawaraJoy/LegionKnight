@@ -15,6 +15,19 @@ namespace Rush
         public float Attack => m_Attack;
         public float Defense => m_Defense;
 
+        public static StatField Zero
+        {
+            get
+            {
+                return new StatField
+                {
+                    m_Health = 0f,
+                    m_Attack = 0f,
+                    m_Defense = 0f,
+                };
+            }
+        }
+
         public static StatField operator +(StatField a, StatField b)
         {
             return new StatField

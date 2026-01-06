@@ -11,11 +11,11 @@ namespace Rush
 
         public void Init(UnitContext characterContext)
         {
-            AbilityConfig[] abilities = characterContext.CharacterConfig.Abilities;
+            AbilityConfig[] abilities = characterContext.UnitConfig.Abilities;
             for (int i = 0; i < abilities.Length; i++)
             {
                 var abilityConfig = abilities[i];
-                AbilityContext abilityContext = new (abilityConfig, characterContext.CharacterObject);
+                AbilityContext abilityContext = new (abilityConfig, characterContext.UnitObject);
                 RegisterAbilityInternal(abilityContext);
 
             }

@@ -67,8 +67,7 @@ namespace Rush
         {
             AbilitySetUpField abilitySetUp = context.Config.GetAbilitySetUp(purpose);
             ScalingStat scalingStat = abilitySetUp.EffectCalculator.ScaleBy;
-            bool isScalingByLevel = scalingStat != ScalingStat.None;
-            StatField ownerStats = context.Owner.Config.MainStats.GetFinalStat();
+            StatField ownerStats = context.Owner.Config.MainStats.GetFinalStat(context.Owner.Progression.Level);
 
             EffectField baseEffe = abilitySetUp.EffectCalculator.BaseAmount;
             EffectField scaleEffe = abilitySetUp.EffectCalculator.ScaleByLevel;
