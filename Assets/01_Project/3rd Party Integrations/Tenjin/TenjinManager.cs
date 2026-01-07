@@ -19,7 +19,7 @@ namespace LegionKnight
 
         public static TenjinManager Instance { get; private set; }
 
-        private static Dictionary<string, int> productIdCode = new Dictionary<string, int>()
+        public static Dictionary<string, int> productIdCode = new Dictionary<string, int>()
         {
             ["beginner_bosst"] = 0,
             ["first_recharge"] = 1,
@@ -41,7 +41,7 @@ namespace LegionKnight
             ["diamond_99999"] = 17
         };
 
-        private static Dictionary<PurchaseFailureReason, int> failedReasonCode = new Dictionary<PurchaseFailureReason, int>()
+        public static Dictionary<PurchaseFailureReason, int> failedReasonCode = new Dictionary<PurchaseFailureReason, int>()
         {
             [PurchaseFailureReason.PurchasingUnavailable] = 0,
             [PurchaseFailureReason.ExistingPurchasePending] = 1,
@@ -56,7 +56,7 @@ namespace LegionKnight
             [PurchaseFailureReason.Unknown] = 10
         };
 
-        private static Dictionary<Rarity, int> rarityCode = new Dictionary<Rarity, int>()
+        public static Dictionary<Rarity, int> rarityCode = new Dictionary<Rarity, int>()
         {
             [Rarity.Common] = 0,
             [Rarity.Rare] = 1,
@@ -246,10 +246,8 @@ namespace LegionKnight
             }
         }
 
-        public void SendEventToHeroLevelUp(int level)
+        public void SendEventToHeroLevelUp(CharacterDefinition defi, int level)
         {
-            CharacterDefinition defi = Player.Instance.UsedCharacter;
-            
             if(defi != null)
                 Instance.SendEvent("event_hero_level_up_" + defi.Id, level.ToString());
         }
