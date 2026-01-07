@@ -10,6 +10,8 @@ namespace LegionKnight
         private UnityEvent m_ContactDeathOnRight = new();
         [SerializeField]
         private UnityEvent m_ContactDeathOnLeft = new();
+
+        private int m_lastDirection = 0;
         protected override void OnContactedBehaviourInvoke(GameObject other)
         {
             base.OnContactedBehaviourInvoke(other);
@@ -25,11 +27,11 @@ namespace LegionKnight
                     Vector2 contactPoint = contact.transform.position;
                     if (IsContactFromRight(contactPoint))
                     {
-                        m_ContactDeathOnRight?.Invoke();
+                        m_lastDirection = 1;
                     }
                     else
                     {
-                        m_ContactDeathOnLeft?.Invoke();
+                        m_lastDirection = -1;
                     }
                     OnDeathInvoke();
                     Debug.Log($"[Death direction] invoked {debugCount++} times.");
@@ -43,11 +45,16 @@ namespace LegionKnight
         }
         protected override void DeathHandler()
         {
-            if (!IsAlive())
+            if (IsAlive()) return;
+            if (m_lastDirection > 0)
             {
                 m_ContactDeathOnLeft?.Invoke();
-                OnDeathInvoke();
             }
+            else
+            {
+                m_ContactDeathOnRight?.Invoke();
+            }
+            OnDeathInvoke();
             //m_ContactDeathOnRight?.Invoke();
         }
     }
