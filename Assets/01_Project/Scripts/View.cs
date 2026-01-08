@@ -59,6 +59,7 @@ namespace LegionKnight
 
         protected virtual void OnShowInvoke()
         {
+            Debug.Log(gameObject.name);
             m_OnShow?.Invoke();
         }
         protected virtual void OnHideInvoke()

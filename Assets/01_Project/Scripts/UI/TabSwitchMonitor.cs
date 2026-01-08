@@ -15,8 +15,6 @@ namespace LegionKnight
             base.ShowInternal();
             foreach (var tab in m_Tabs)
             {
-                Debug.Log(gameObject.name + " -- " + tab);
-
                 tab.Init(HideAll);
             }
             m_Tabs[0].Show(HideAll);
