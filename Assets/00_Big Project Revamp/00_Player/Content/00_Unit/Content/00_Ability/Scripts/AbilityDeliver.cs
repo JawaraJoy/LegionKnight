@@ -1,26 +1,46 @@
 using MoreMountains.Tools;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
-    public partial class AbilityDeliver : MonoBehaviour
+    public abstract partial class AbilityDeliver : MonoBehaviour
     {
+        [SerializeField]
+        protected AbilityConfig m_Config;
         [SerializeField, MMReadOnly]
-        private AbilityContext m_AbilityContext;
+        protected AbilityContext m_AbilityContext;
+        [SerializeField]
+        protected Transform m_VfxSpawnPost;
         [SerializeField, MMReadOnly]
-        private List<Targetable> m_AttackTargets = new();
-        public List<Targetable> AttackTargets => m_AttackTargets;
-        public void Init(AbilityContext context)
+        protected AbilityPurpose m_Purpose;
+        [SerializeField]
+        private UnityEvent<AbilityContext> m_OnInit;
+        [SerializeField]
+        private UnityEvent<AbilityContext> m_OnActivate;
+        public AbilityConfig Config => m_Config;
+        public AbilityContext AbilityContext => m_AbilityContext;
+        public Transform VfxSpawnPost => m_VfxSpawnPost;
+        public AbilityPurpose Purpose => m_Purpose;
+        protected List<Targetable> GetTargetsInternal()
         {
-            m_AbilityContext = context;
-            m_AbilityContext.SetDeliver(this);
+            List<Targetable> damageables = new(AbilityUltility.GetTargetables(m_AbilityContext));
+            return damageables;
         }
-        public void Activate()
+        public virtual void Init(AbilityConfig config, SkillContext context)
         {
-            m_AttackTargets.Clear();
-            List<Targetable> damageables = new(AbilityUltility.GetTargetables(m_AbilityContext.SkillContext, m_AbilityContext.AbilityConfig));
-            m_AttackTargets.AddRange(damageables);
+            m_AbilityContext = new AbilityContext(this, context);
+            m_Config = config;
+            m_OnInit?.Invoke(m_AbilityContext);
+        }
+        protected void SetPurposeInternal(AbilityPurpose purpose)
+        {
+            m_Purpose = purpose;
+        }
+        public virtual void Activate()
+        {
+            m_OnActivate?.Invoke(m_AbilityContext);
         }
     }
 }

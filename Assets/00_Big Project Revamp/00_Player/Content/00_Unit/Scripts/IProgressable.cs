@@ -12,10 +12,10 @@ namespace Rush
     [System.Serializable]
     public partial class ProgressField : IProgressable
     {
+        [SerializeField, Min(1)]
+        private int m_Level = 1;
         [SerializeField]
-        private int m_Level;
-        [SerializeField]
-        protected int m_MaxLevel;
+        protected int m_MaxLevel = 10;
         protected int LevelInternal => Mathf.Clamp(m_Level, 1, m_MaxLevel);
         public int Level => LevelInternal;
         public int MaxLevel => m_MaxLevel;

@@ -37,5 +37,21 @@ namespace Rush
                 m_Attackers.Remove(attacker);
             }
         }
+
+        /// <summary>
+        /// Rotates spawn point to face target in 2D (XY plane, Z-axis rotation only).
+        /// </summary>
+        public static void LookAtFirstTarget2D(Transform subject, Targetable targetable)
+        {
+            if (targetable == null)
+                return;
+
+            Vector2 direction = targetable.transform.position - subject.position;
+
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            subject.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
     }
 }

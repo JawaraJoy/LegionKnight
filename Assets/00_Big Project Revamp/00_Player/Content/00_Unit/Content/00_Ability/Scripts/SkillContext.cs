@@ -5,22 +5,19 @@ using UnityEngine;
 namespace Rush
 {
     [System.Serializable]
-    public partial class SkillContext : ProgressField
+    public partial class SkillContext
     {
-        [SerializeField, MMReadOnly]
-        private SkillConfig m_Config;
-
-        [SerializeField, MMReadOnly]
-        private Unit m_Owner;
         [SerializeField]
-        private SkillActivator m_ActivatorSpawned;
-        public SkillConfig Config => m_Config;
-        public Unit Owner => m_Owner;
-
-        public SkillContext(SkillConfig config, Unit owner)
+        private SkillActivator m_Activator;
+        [SerializeField, MMReadOnly]
+        private ModuleContext m_ModuleContext;
+        public SkillActivator Activator => m_Activator;
+        public ModuleContext ModuleContext => m_ModuleContext;
+        public bool Initialized => m_ModuleContext.Initialized && m_Activator != null;
+        public SkillContext(SkillActivator activator, ModuleContext moduleContext)
         {
-            m_Config = config;
-            m_Owner = owner;
+            m_Activator = activator;
+            m_ModuleContext = moduleContext;
         }
     }
 }

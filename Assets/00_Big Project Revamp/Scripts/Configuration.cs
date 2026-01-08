@@ -18,11 +18,8 @@ namespace Rush
         private string m_Name;
         [SerializeField, TextArea]
         private string m_Description;
-        [SerializeField]
-        private Color m_Color;
         public string Id => m_Id;
         public string Name => m_Name;
         public string Description => m_Description;
-        public Color Color => m_Color;
     }
 }

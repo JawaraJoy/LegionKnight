@@ -4,6 +4,7 @@ namespace Rush
 {
     public interface IAbility
     {
-       void Init(SkillContext context);
+        bool Initialized { get; }
+        void Init(AbilityContext context);
     }
 }

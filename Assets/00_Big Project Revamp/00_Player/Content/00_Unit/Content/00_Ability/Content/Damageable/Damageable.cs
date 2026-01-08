@@ -1,4 +1,3 @@
-using LegionKnight;
 using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
@@ -34,7 +33,7 @@ namespace Rush
         private UnityEvent<BattleContext> m_OnDeath;
         private const int m_MinimumDefendReduction = 0;
         [SerializeField, MMReadOnly]
-        private SkillContext m_AbilityContext;
+        private AbilityContext m_AbilityContext;
         public int MaxHealth => m_MaxHealth;
         public int Health => m_Health;
         public int Defense => m_Defense;
@@ -44,20 +43,25 @@ namespace Rush
         public int CurrentDamageTaken => m_CurrentDamageTaken;
         public int TotalDamageTaken => m_TotalDamageTaken;
         public bool IsInvicible => m_IsInvicible;
-        public SkillContext AbilityContext => m_AbilityContext;
+        public AbilityContext AbilityContext => m_AbilityContext;
         
-        public void Init(SkillContext context)
+        public void Init(AbilityContext context)
         {
             m_AbilityContext = context;
             Rebornternal(1f);
+        }
+        public void Reborn(float healthRate) // change to rebornContext if too many argument in the future
+        {
+            Rebornternal(healthRate);
         }
         private void Rebornternal(float healthRate)
         {
             if (m_AbilityContext != null)
             {
-                int level = m_AbilityContext.Owner.Progression.Level;
-                float healthFinal = Mathf.Max(0f, m_AbilityContext.Owner.Config.MainStats.GetFinalStat(level).Health);
-                float defenseFinal = Mathf.Max(0f, m_AbilityContext.Owner.Config.MainStats.GetFinalStat(level).Defense);
+                Unit ownerObject = m_AbilityContext.SkillContext.ModuleContext.UnitOwner;
+                int ownerLevel = ownerObject.Progression.Level;
+                float healthFinal = Mathf.Max(0f, ownerObject.Config.MainStats.GetFinalStat(ownerLevel).Health);
+                float defenseFinal = Mathf.Max(0f, ownerObject.Config.MainStats.GetFinalStat(ownerLevel).Defense);
                 m_MaxHealth = Mathf.RoundToInt(healthFinal);
                 m_Health = Mathf.RoundToInt(healthFinal * healthRate);
                 m_Defense = Mathf.RoundToInt(defenseFinal);

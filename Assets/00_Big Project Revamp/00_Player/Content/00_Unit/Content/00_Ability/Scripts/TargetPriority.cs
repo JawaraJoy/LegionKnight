@@ -15,6 +15,7 @@ namespace Rush
         AllEnemies = 8,
         All = 9,
         Self = 10,
+        Player = 11,
     }
     public enum ScaningMethod
     {

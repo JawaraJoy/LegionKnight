@@ -14,12 +14,11 @@ namespace Rush
         public UnitConfig Config => m_Config;
         public ProgressField Progression => m_Progression;
         [SerializeField]
-        private UnityEvent<OwnerContext> m_OnInit;
+        private UnityEvent<Unit> m_OnInit;
         public void Init(UnitConfig config)
         {
             m_Config = config;
-            var context = new OwnerContext(m_Config, this);
-            m_OnInit?.Invoke(context);
+            m_OnInit?.Invoke(this);
         }
         
     }

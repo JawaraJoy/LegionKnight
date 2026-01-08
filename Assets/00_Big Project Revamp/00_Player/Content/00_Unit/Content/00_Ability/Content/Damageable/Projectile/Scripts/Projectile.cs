@@ -1,4 +1,6 @@
+using MoreMountains.Tools;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
@@ -7,7 +9,7 @@ namespace Rush
     /// supports time/distance lifetime, and despawns early on collision.
     /// </summary>
     [DisallowMultipleComponent]
-    public class Projectile : MonoBehaviour, IUpdater, IProjectile
+    public class Projectile : Bindable, IUpdater, IProjectile, IAbility
     {
         public enum LocalAxis
         {
@@ -15,18 +17,31 @@ namespace Rush
             Y,
             Z
         }
+
         public enum PhysicsMode
         {
             Physics3D,
             Physics2D
         }
+
+        [SerializeField, MMReadOnly]
+        private bool m_CanMove = true;
+
         [SerializeField]
         private PhysicsMode m_PhysicsMode = PhysicsMode.Physics3D;
-        [Header("Movement")]
 
+        [SerializeField, MMReadOnly]
+        private ProjectileTargetingMode m_TargetingMode = ProjectileTargetingMode.None;
+        [SerializeField]
+        private bool m_ExplodeOnDespawn = false;
+        [SerializeField]
+        private float m_ExplosionRadius = 5f;
+        [Header("Movement")]
         [SerializeField]
         [Tooltip("Movement speed in units per second")]
         private float m_Speed = 10f;
+        [SerializeField]
+        private float m_HomingTurnSpeed = 0.2f;
 
         [SerializeField]
         [Tooltip("Local axis the projectile will move along")]
@@ -54,14 +69,32 @@ namespace Rush
         [Tooltip("If true, projectile despawns immediately on hit")]
         private bool m_DespawnOnHit = true;
 
+        [SerializeField, MMReadOnly]
+        private Targetable m_Targetable;
+        [SerializeField, MMReadOnly]
+        private Shoter m_Shoter;
+
+        [SerializeField]
+        private UnityEvent<AbilityContext> m_OnShot;
+        [SerializeField]
+        private UnityEvent<GameObject> m_OnHit;
         private Vector3 m_MoveDirection;
         private float m_LifeTimer;
         private float m_TraveledDistance;
 
+        public ProjectileTargetingMode TargetingMode => m_TargetingMode;
+        public bool CanMove => m_CanMove;
         public bool IsActive => gameObject.activeInHierarchy;
         public float Speed => m_Speed;
+        public float HomingTurnSpeed => m_HomingTurnSpeed;
         public float Lifetime => m_Lifetime;
         public float MaxDistance => m_MaxDistance;
+        public Targetable Targetable => m_Targetable;
+        public Shoter Shoter => m_Shoter;
+
+        private AbilityContext m_AbilityContext;
+        public AbilityContext AbilityContext => m_AbilityContext;
+        public bool Initialized => m_AbilityContext.Initialized;
         private void Awake()
         {
             CacheMoveDirection();
@@ -72,16 +105,17 @@ namespace Rush
             ResetLifetime();
             RegisterUpdater();
         }
+
         private void OnDisable()
         {
             UnregisterUpdater();
         }
+
         private void OnDestroy()
         {
             UnregisterUpdater();
         }
 
-        #region Movement
 
         private void CacheMoveDirection()
         {
@@ -111,9 +145,7 @@ namespace Rush
             return distance;
         }
 
-        #endregion
-
-        #region Lifetime
+        
 
         private void UpdateLifetime(float deltaDistance)
         {
@@ -143,10 +175,6 @@ namespace Rush
             m_TraveledDistance = 0f;
         }
 
-        #endregion
-
-        #region Collision
-
         private void OnTriggerEnter(Collider other)
         {
             if (m_PhysicsMode != PhysicsMode.Physics3D)
@@ -168,6 +196,7 @@ namespace Rush
 
             HandleHit(collision.gameObject);
         }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (m_PhysicsMode != PhysicsMode.Physics2D)
@@ -197,40 +226,33 @@ namespace Rush
 
         private void HandleHit(GameObject target)
         {
-            // Hook point:
-            // - Apply damage
-            // - Spawn hit VFX
-            // - Notify other systems
-
             if (m_DespawnOnHit)
             {
                 DisableProjectile();
             }
+            m_OnHit?.Invoke(target);
         }
-
-        #endregion
-
-        #region Pool
 
         private void DisableProjectile()
         {
-            if (TryGetComponent(out PoolObject poolObject))
+            if (m_ExplodeOnDespawn)
             {
-                PoolManager.Instance.Despawn(poolObject.Definition.Id, poolObject.gameObject);
+                Explode();
             }
-            else
-            {
-                gameObject.SetActive(false);
-            }
+
+            m_CanMove = false;
+            gameObject.SetActive(false);
+            m_Shoter.NotifyProjectileFinished(this);
+            
         }
-
-        #endregion
-
-        #region Public API
 
         public void SetSpeed(float speed)
         {
             m_Speed = speed;
+        }
+        public void SetHomingSmoothAngle(float angle)
+        {
+            m_HomingTurnSpeed = angle;
         }
 
         public void SetMoveAxis(LocalAxis axis)
@@ -251,8 +273,14 @@ namespace Rush
 
         public void Tick()
         {
+            if (!m_CanMove) return;
+            if (m_TargetingMode == ProjectileTargetingMode.Homing)
+            {
+                UpdateRotation();
+            }
             float deltaDistance = Move();
             UpdateLifetime(deltaDistance);
+            
         }
 
         private void RegisterUpdater()
@@ -267,14 +295,147 @@ namespace Rush
 
         public void OnSpawned()
         {
-            Debug.Log("Projectile spawned");
+            
         }
 
         public void OnDespawned()
         {
-            Debug.Log("Projectile despawned");
+            
         }
 
-        #endregion
+        public void Init(AbilityContext context)
+        {
+            m_AbilityContext = context;
+            AbilityDeliver deliver = context.AbilityDeliver;
+            if (deliver is Shoter shoter)
+            {
+                m_Shoter = shoter;
+            }
+            ShotAbilityConfig shotConfig = m_Shoter.ShotAbilityConfig;
+            m_TargetingMode = shotConfig.ProjectileTargetingMode;
+
+            m_ExplodeOnDespawn = shotConfig.ExplodeOnDespawn;
+            m_ExplosionRadius = shotConfig.ExplosionRadius;
+
+            m_Speed = shotConfig.ProjectileSpeed;
+            m_HomingTurnSpeed = shotConfig.ProjectileHomingTurnSpeed;
+            m_Lifetime = shotConfig.ProjectileLifetime;
+            m_MaxDistance = shotConfig.MaxDistance;
+            m_DespawnOnHit = shotConfig.DespawnOnHit;
+
+            m_HitLayers = shotConfig.TargetFilter;
+        }
+
+        public void Shot(Targetable targetable = null)
+        {
+            m_Targetable = targetable;
+            switch (m_TargetingMode)
+            {
+                case ProjectileTargetingMode.None:
+                    break;
+                case ProjectileTargetingMode.Facing:
+                    FacingAtFirstTarget2D(targetable);
+                    break;
+                case ProjectileTargetingMode.Homing:
+                    break;
+            }
+            m_CanMove = true;
+            m_OnShot?.Invoke(m_AbilityContext);
+        }
+        private void Explode()
+        {
+            AbilityConfig config = m_AbilityContext.AbilityDeliver.Config;
+
+            if (m_PhysicsMode == PhysicsMode.Physics2D)
+            {
+                Collider2D[] hits = Physics2D.OverlapCircleAll(
+                    transform.position,
+                    m_ExplosionRadius,
+                    config.TargetFilter
+                );
+
+                for (int i = 0; i < hits.Length; i++)
+                {
+                    if (!hits[i].TryGetComponent(out Targetable target))
+                        continue;
+
+                    if (!config.CanTargetDeathUnit && !target.IsAlive)
+                        continue;
+
+                    Debug.Log($"[Explosion] Hit Target (2D): {target.name}", target.gameObject);
+
+                    // HOOK:
+                    // Ability event
+                    // Damage system
+                    // Status effect system
+                }
+            }
+            else
+            {
+                Collider[] hits = Physics.OverlapSphere(
+                    transform.position,
+                    m_ExplosionRadius,
+                    config.TargetFilter
+                );
+
+                for (int i = 0; i < hits.Length; i++)
+                {
+                    if (!hits[i].TryGetComponent(out Targetable target))
+                        continue;
+
+                    if (!config.CanTargetDeathUnit && !target.IsAlive)
+                        continue;
+
+                    Debug.Log($"[Explosion] Hit Target (3D): {target.name}", target.gameObject);
+
+                    // HOOK:
+                    // Ability event
+                    // Damage system
+                    // Status effect system
+                }
+            }
+
+            Debug.Log($"[Explosion] Radius: {m_ExplosionRadius}", gameObject);
+        }
+
+
+        public void SetTargetingMode(ProjectileTargetingMode targetingMode)
+        {
+            m_TargetingMode = targetingMode;
+        }
+        /// <summary>
+        /// Smoothly rotates projectile toward its target (2D homing).
+        /// Rotation is applied on Z axis only.
+        /// </summary>
+        private void UpdateRotation()
+        {
+            if (m_Targetable == null) return;
+            if (!m_CanMove) return;
+
+            Vector3 targetPos = m_Targetable.transform.position;
+            Vector3 dir = targetPos - transform.position;
+
+            if (dir.sqrMagnitude <= 0.0001f)
+                return;
+
+            // angle toward target in degrees (2D)
+            float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            // current Z rotation
+            float currentAngle = transform.eulerAngles.z;
+
+            // smooth rotate toward target angle
+            float newAngle = Mathf.MoveTowardsAngle(
+                currentAngle,
+                targetAngle,
+                m_HomingTurnSpeed * Time.deltaTime
+            );
+
+            transform.rotation = Quaternion.Euler(0f, 0f, newAngle);
+        }
+        private void FacingAtFirstTarget2D(Targetable targetable)
+        {
+            Targetable.LookAtFirstTarget2D(transform, targetable);
+        }
     }
 }
