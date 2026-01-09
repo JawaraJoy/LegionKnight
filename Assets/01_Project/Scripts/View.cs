@@ -46,6 +46,8 @@ namespace LegionKnight
         [ContextMenu("Show")]
         protected virtual void ShowInternal()
         {
+            if(!m_Content) return;
+
             if (MasterPanelUtility.IsShow) return;
             m_Content.SetActive(true);
             OnShowInvoke();
@@ -59,6 +61,7 @@ namespace LegionKnight
 
         protected virtual void OnShowInvoke()
         {
+            Debug.Log(gameObject.name);
             m_OnShow?.Invoke();
         }
         protected virtual void OnHideInvoke()

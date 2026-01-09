@@ -33,6 +33,7 @@ namespace LegionKnight
         public int TaskPower => m_TaskPower;
         public TimerDefinition ResetTime => m_ResetTime;
         public LootDefinition Rewards => m_Rewards;
+        public MissionCategory MissionCategory => m_MissionCategory;
 
         public void AddDailyScore(int score)
         {

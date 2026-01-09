@@ -19,7 +19,7 @@ namespace LegionKnight
 
         public static TenjinManager Instance { get; private set; }
 
-        private static Dictionary<string, int> productIdCode = new Dictionary<string, int>()
+        public static Dictionary<string, int> productIdCode = new Dictionary<string, int>()
         {
             ["beginner_bosst"] = 0,
             ["first_recharge"] = 1,
@@ -41,7 +41,7 @@ namespace LegionKnight
             ["diamond_99999"] = 17
         };
 
-        private static Dictionary<PurchaseFailureReason, int> failedReasonCode = new Dictionary<PurchaseFailureReason, int>()
+        public static Dictionary<PurchaseFailureReason, int> failedReasonCode = new Dictionary<PurchaseFailureReason, int>()
         {
             [PurchaseFailureReason.PurchasingUnavailable] = 0,
             [PurchaseFailureReason.ExistingPurchasePending] = 1,
@@ -56,7 +56,7 @@ namespace LegionKnight
             [PurchaseFailureReason.Unknown] = 10
         };
 
-        private static Dictionary<Rarity, int> rarityCode = new Dictionary<Rarity, int>()
+        public static Dictionary<Rarity, int> rarityCode = new Dictionary<Rarity, int>()
         {
             [Rarity.Common] = 0,
             [Rarity.Rare] = 1,
@@ -235,21 +235,24 @@ namespace LegionKnight
             Instance.SendEvent("event_breakthrough_unlocked", tier.ToString());
         }
 
-        public void SendEventToUnlockAchievement(string achievementId)
+        public void SendEventToUnlockAchievement(BadgeDefinition badge)
         {
-            //--TenjinRecord
-            if(PlayerPrefs.GetInt("Record_UnlockAchievement_" + achievementId, 0) == 0)
+            if(badge)
             {
-                Instance.SendEvent("event_achievement_unlocked", achievementId);
-                PlayerPrefs.SetInt("Record_UnlockAchievement_" + achievementId, 1);
-                PlayerPrefs.Save();
+                string achievementId = badge.Id;
+
+                //--TenjinRecord
+                if(PlayerPrefs.GetInt("Record_UnlockAchievement_" + achievementId, 0) == 0)
+                {
+                    Instance.SendEvent("event_achievement_unlocked_" + achievementId);
+                    PlayerPrefs.SetInt("Record_UnlockAchievement_" + achievementId, 1);
+                    PlayerPrefs.Save();
+                }
             }
         }
 
-        public void SendEventToHeroLevelUp(int level)
+        public void SendEventToHeroLevelUp(CharacterDefinition defi, int level)
         {
-            CharacterDefinition defi = Player.Instance.UsedCharacter;
-            
             if(defi != null)
                 Instance.SendEvent("event_hero_level_up_" + defi.Id, level.ToString());
         }
@@ -320,6 +323,16 @@ namespace LegionKnight
         public void SendEventToAdShown(bool isIntersitial)
         {
             Instance.SendEvent("event_ad_shown", isIntersitial? "1" : "0");
+        }
+
+        public void SendEventToMissionComplete(TaskDefinition task)
+        {
+            if(task)
+            {
+                string eventName = "event_" + (task.MissionCategory == MissionCategory.Daily ? "daily" : "weekly") + "_mission_completed_" + task.Id;
+
+                Instance.SendEvent(eventName);    
+            }
         }
     }
 }

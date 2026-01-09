@@ -121,6 +121,9 @@ namespace LegionKnight
             m_Definition.DirectDailyClaimRewards();
             TaskState state = GetControllerInternal().GetTaskStatus(m_Definition).CurrentState;
             UpdateState(state);
+
+            //--Tenjin Record
+            TenjinManager.Instance.SendEventToMissionComplete(m_Definition);
         }
     }
 }

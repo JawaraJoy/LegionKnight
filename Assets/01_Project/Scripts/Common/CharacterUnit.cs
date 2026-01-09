@@ -95,7 +95,7 @@ namespace LegionKnight
             Debug.Log($"Level Up! New Level: {m_Level}");
 
             //--Tenjin Record
-            TenjinManager.Instance.SendEventToHeroLevelUp(level);
+            TenjinManager.Instance.SendEventToHeroLevelUp(m_Definition, m_Level);
         }
         public void LevelUp()
         {
