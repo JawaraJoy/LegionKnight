@@ -49,8 +49,19 @@ namespace LegionKnight
         {
             if (!m_Active) return;
 
-            m_ButtonName.text = m_View.UniqueId;
-            m_HightlightName.text = m_View.UniqueId;
+            string tabName = "";
+
+            if(m_View.UniqueId.IndexOf("Weekly") > -1)
+            {
+                tabName = "Weekly";
+            }
+            else if(m_View.UniqueId.IndexOf("Daily") > -1)
+            {
+                tabName = "Daily";
+            }
+
+            m_ButtonName.text = tabName;
+            m_HightlightName.text = tabName;
             //onShow?.Invoke();
             m_OpenButton.onClick.RemoveAllListeners();
             m_OpenButton.onClick.AddListener(() => ShowInternal(onShow));

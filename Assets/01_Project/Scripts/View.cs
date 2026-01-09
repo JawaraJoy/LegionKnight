@@ -46,6 +46,8 @@ namespace LegionKnight
         [ContextMenu("Show")]
         protected virtual void ShowInternal()
         {
+            if(!m_Content) return;
+
             if (MasterPanelUtility.IsShow) return;
             m_Content.SetActive(true);
             OnShowInvoke();
