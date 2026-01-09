@@ -138,7 +138,7 @@ namespace Rush
                     return isSameFaction && owner != targetUnit;
 
                 case TargetObject.Player:
-                    return targetUnit.IsPlayer; // asumsi Unit punya flag ini
+                    return targetUnit.IsPlayer;
 
                 default:
                     return false;

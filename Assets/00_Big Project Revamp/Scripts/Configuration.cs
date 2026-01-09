@@ -5,7 +5,7 @@ namespace Rush
     public partial class Configuration : ScriptableObject
     {
         [SerializeField]
-        private BaseInfo m_BaseInfo;
+        protected BaseInfo m_BaseInfo;
         public BaseInfo BaseInfo => m_BaseInfo;
     }
 
