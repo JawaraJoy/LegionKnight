@@ -29,7 +29,7 @@ namespace LegionKnight
             m_Note.text = "Go to Profile to claim the Reward!!";
 
             //--Tenjin Record
-            TenjinManager.Instance.SendEventToUnlockAchievement(badge.Definition.Id);
+            TenjinManager.Instance.SendEventToUnlockAchievement(badge.Definition);
             
             StartCoroutine(HideAfterDelay(5f));
         }

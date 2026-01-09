@@ -235,14 +235,19 @@ namespace LegionKnight
             Instance.SendEvent("event_breakthrough_unlocked", tier.ToString());
         }
 
-        public void SendEventToUnlockAchievement(string achievementId)
+        public void SendEventToUnlockAchievement(BadgeDefinition badge)
         {
-            //--TenjinRecord
-            if(PlayerPrefs.GetInt("Record_UnlockAchievement_" + achievementId, 0) == 0)
+            if(badge)
             {
-                Instance.SendEvent("event_achievement_unlocked", achievementId);
-                PlayerPrefs.SetInt("Record_UnlockAchievement_" + achievementId, 1);
-                PlayerPrefs.Save();
+                string achievementId = badge.Id;
+
+                //--TenjinRecord
+                if(PlayerPrefs.GetInt("Record_UnlockAchievement_" + achievementId, 0) == 0)
+                {
+                    Instance.SendEvent("event_achievement_unlocked_" + achievementId);
+                    PlayerPrefs.SetInt("Record_UnlockAchievement_" + achievementId, 1);
+                    PlayerPrefs.Save();
+                }
             }
         }
 
@@ -318,6 +323,16 @@ namespace LegionKnight
         public void SendEventToAdShown(bool isIntersitial)
         {
             Instance.SendEvent("event_ad_shown", isIntersitial? "1" : "0");
+        }
+
+        public void SendEventToMissionComplete(TaskDefinition task)
+        {
+            if(task)
+            {
+                string eventName = "event_" + (task.MissionCategory == MissionCategory.Daily ? "daily" : "weekly") + "_mission_completed_" + task.Id;
+
+                Instance.SendEvent(eventName);    
+            }
         }
     }
 }
