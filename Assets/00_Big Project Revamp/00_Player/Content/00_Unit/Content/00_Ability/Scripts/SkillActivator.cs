@@ -61,7 +61,7 @@ namespace Rush
         }
         private void SpawnDeliver(DamageAbilityConfig config)
         {
-            AbilityDeliver spawned = Instantiate(config.Deliver, m_DeliverSpawnPost, false);
+            AbilityDeliver spawned = Instantiate(config.DeliverPrefab, m_DeliverSpawnPost, false);
             spawned.Init(config, m_Context);
 
             // Register Check

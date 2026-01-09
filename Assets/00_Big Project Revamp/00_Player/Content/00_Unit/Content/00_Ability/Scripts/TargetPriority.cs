@@ -11,11 +11,14 @@ namespace Rush
         HighestHealth = 4,
         LowestHealthRate = 5,
         HighestHealthRate = 6,
-        AllAllies = 7,
-        AllEnemies = 8,
-        All = 9,
-        Self = 10,
-        Player = 11,
+    }
+    public enum TargetObject
+    {
+        Enemy = 0,
+        Ally = 1,
+        Self = 2,
+        Player = 3,
+        All = 4,
     }
     public enum ScaningMethod
     {

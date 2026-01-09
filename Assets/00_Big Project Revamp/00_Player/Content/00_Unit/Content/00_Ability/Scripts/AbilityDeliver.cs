@@ -25,7 +25,7 @@ namespace Rush
         public AbilityPurpose Purpose => m_Purpose;
         protected List<Targetable> GetTargetsInternal()
         {
-            List<Targetable> damageables = new(AbilityUltility.GetTargetables(m_AbilityContext));
+            List<Targetable> damageables = new(AbilityUltility.GetTargetables(m_AbilityContext, Projectile.PhysicsMode.Physics2D));
             return damageables;
         }
         public virtual void Init(AbilityConfig config, SkillContext context)

@@ -95,8 +95,11 @@ namespace Rush
                             int index = ResolveShapeIndex(mode, fired, ref shapeIndex, ref dir);
                             SpawnSingle(index, fireCount, targets);
                             fired++;
+
+                            yield return new WaitForSeconds(interval); // delay antar peluru
                         }
-                        yield return new WaitForSeconds(burstInterval);
+
+                        yield return new WaitForSeconds(burstInterval); // delay antar burst
                     }
                     break;
 
