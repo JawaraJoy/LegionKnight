@@ -356,7 +356,7 @@ namespace Rush
                             continue;
                     }
                     Debug.Log($"[Explosion] Hit Target (2D): {target.name}", target.gameObject);
-
+                    target.Notify(m_AbilityContext);
                     
                     // HOOK:
                     // Ability event

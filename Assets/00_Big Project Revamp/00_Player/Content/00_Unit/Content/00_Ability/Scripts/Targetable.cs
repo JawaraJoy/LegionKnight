@@ -11,8 +11,8 @@ namespace Rush
         private bool m_IsAlive = true;
         [SerializeField, MMReadOnly]
         private bool m_IsTargeted = false;
-        [SerializeField, MMReadOnly]
-        private List<Attacker> m_Attackers = new();
+        [SerializeField]
+        private UnityEvent<AbilityContext> m_OnNotified;
         public bool IsTargeted => m_IsTargeted;
         public bool IsAlive => m_IsAlive;
         public void SetTargeted(bool targeted)
@@ -23,21 +23,10 @@ namespace Rush
         {
             m_IsAlive = alive;
         }
-        public void AddAttacker(Attacker attacker)
+        public void Notify(AbilityContext context)
         {
-            if (!m_Attackers.Contains(attacker))
-            {
-                m_Attackers.Add(attacker);
-            }
+            m_OnNotified?.Invoke(context);
         }
-        public void RemoveAttacker(Attacker attacker)
-        {
-            if (m_Attackers.Contains(attacker))
-            {
-                m_Attackers.Remove(attacker);
-            }
-        }
-
         /// <summary>
         /// Rotates spawn point to face target in 2D (XY plane, Z-axis rotation only).
         /// </summary>
