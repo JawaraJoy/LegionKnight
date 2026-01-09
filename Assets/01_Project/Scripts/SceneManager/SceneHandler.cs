@@ -15,7 +15,7 @@ namespace LegionKnight
         private UnityEvent m_OnStartLoadScene = new();
         private SceneField GetSceneField(string sceneName)
         {
-            SceneField match = m_Scenes.Find(x => x.SceneConfig.SceneAsset.name == sceneName);
+            SceneField match = m_Scenes.Find(x => x.SceneConfig.SceneName == sceneName);
             return match;
         }
         [Obsolete("Use LoadSceneConfig in the future")]
@@ -26,7 +26,7 @@ namespace LegionKnight
         }
         public void LoadSceneConfig(SceneConfig sceneConfig)
         {
-            LoadSceneInternal(sceneConfig.SceneAsset.name);
+            LoadSceneInternal(sceneConfig.SceneName);
             OnStartLoadScene();
         }
         protected void LoadSceneInternal(string sceneName)
@@ -40,7 +40,7 @@ namespace LegionKnight
         }
         public void UnLoadSceneConfig(SceneConfig sceneConfig)
         {
-            GetSceneField(sceneConfig.SceneAsset.name).UnloadScene();
+            GetSceneField(sceneConfig.SceneName).UnloadScene();
         }
         private void OnStartLoadScene()
         {
