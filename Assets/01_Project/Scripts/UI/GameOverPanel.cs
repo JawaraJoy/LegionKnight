@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -13,8 +14,6 @@ namespace LegionKnight
     }
     public partial class GameOverPanel : PanelView
     {
-        [SerializeField]
-        private string m_GameplaySceneName = "ReworkGameplay";
         public override string UniqueId => PanelId.GameOverPanelId;
         [SerializeField]
         private Button m_RessurectionButton;

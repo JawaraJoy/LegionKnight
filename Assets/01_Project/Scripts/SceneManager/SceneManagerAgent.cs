@@ -1,3 +1,4 @@
+using Rush;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,13 +14,13 @@ namespace LegionKnight
         {
             GameManager.Instance.SceneController.UnLoadScene(sceneName);
         }
-        public void LoadSceneAsset(SceneAsset sceneAsset)
+        public void LoadSceneConfig(SceneConfig sceneAsset)
         {
-            GameManager.Instance.SceneController.LoadSceneAsset(sceneAsset);
+            GameManager.Instance.SceneController.LoadSceneConfig(sceneAsset);
         }
-        public void UnLoadSceneAsset(SceneAsset sceneAsset)
+        public void UnLoadSceneConfig(SceneConfig sceneAsset)
         {
-            GameManager.Instance.SceneController.UnLoadSceneAsset(sceneAsset);
+            GameManager.Instance.SceneController.UnLoadSceneConfig(sceneAsset);
         }
     }
 }

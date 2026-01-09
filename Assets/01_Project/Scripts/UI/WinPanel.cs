@@ -1,6 +1,6 @@
+using Rush;
 using System.Collections;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -14,7 +14,7 @@ namespace LegionKnight
     public partial class WinPanel : PanelView
     {
         [SerializeField]
-        private SceneAsset m_HomeScene;
+        private SceneConfig m_HomeScene;
         [SerializeField]
         private LevelDefinition m_CurrenLevel;
         [SerializeField]
@@ -101,7 +101,7 @@ namespace LegionKnight
         }
         public void BackHome()
         {
-            GameManager.Instance.SceneController.LoadSceneAsset(m_HomeScene);
+            GameManager.Instance.SceneController.LoadSceneConfig(m_HomeScene);
             HideInternal();
             GameManager.Instance.StoreLevelScore();
         }

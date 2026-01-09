@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace LegionKnight
         [SerializeField]
         private string m_Id;
         [SerializeField]
-        private SceneAsset m_LevelScene;
+        private SceneConfig m_LevelScene;
         [SerializeField]
         private string m_LevelName;
         [SerializeField]
@@ -47,7 +48,7 @@ namespace LegionKnight
         public BosDefinition BosDefinition => m_BosDefinition;
         public AssetReferenceGameObject BosAsset => m_BosAsset;
         public string Id => m_Id;
-        public SceneAsset LevelScene => m_LevelScene;
+        public SceneConfig LevelScene => m_LevelScene;
         public Sprite LevelImage => m_LevelImage;
         public LevelDefinition NextLevel => m_NextLevel;
         public bool IsInfiniteLevel => m_IsInfiniteLevel;
@@ -72,7 +73,7 @@ namespace LegionKnight
         public void StartLevel()
         {
             GameManager.Instance.SetLevelDefinition(this);
-            GameManager.Instance.SceneController.LoadSceneAsset(m_LevelScene);
+            GameManager.Instance.SceneController.LoadSceneConfig(m_LevelScene);
             Player.Instance.SetCanUseResurrectionAds(true);
         }
 

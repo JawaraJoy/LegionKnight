@@ -1,3 +1,4 @@
+using Rush;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -14,32 +15,32 @@ namespace LegionKnight
         private UnityEvent m_OnStartLoadScene = new();
         private SceneField GetSceneField(string sceneName)
         {
-            SceneField match = m_Scenes.Find(x => x.SceneAsset.name == sceneName);
+            SceneField match = m_Scenes.Find(x => x.SceneConfig.SceneAsset.name == sceneName);
             return match;
         }
-        [Obsolete("Use LoadSceneAsset in the future")]
+        [Obsolete("Use LoadSceneConfig in the future")]
         public void LoadScene(string sceneName)
         {
             LoadSceneInternal(sceneName);
             OnStartLoadScene();
         }
-        public void LoadSceneAsset(SceneAsset sceneAsset)
+        public void LoadSceneConfig(SceneConfig sceneConfig)
         {
-            LoadSceneInternal(sceneAsset.name);
+            LoadSceneInternal(sceneConfig.SceneAsset.name);
             OnStartLoadScene();
         }
         protected void LoadSceneInternal(string sceneName)
         {
             GetSceneField(sceneName).LoadScene();
         }
-        [Obsolete]
+        [Obsolete("Use UnLoadSceneConfig in the future")]
         public void UnLoadScene(string sceneName)
         {
             GetSceneField(sceneName).UnloadScene();
         }
-        public void UnLoadSceneAsset(SceneAsset sceneAsset)
+        public void UnLoadSceneConfig(SceneConfig sceneConfig)
         {
-            GetSceneField(sceneAsset.name).UnloadScene();
+            GetSceneField(sceneConfig.SceneAsset.name).UnloadScene();
         }
         private void OnStartLoadScene()
         {
