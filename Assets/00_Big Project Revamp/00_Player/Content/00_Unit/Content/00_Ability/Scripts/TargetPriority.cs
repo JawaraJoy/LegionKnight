@@ -20,10 +20,11 @@ namespace Rush
         Player = 3,
         All = 4,
     }
-    public enum ScaningMethod
+    public enum TargetDistributeMode
     {
-        RescanEveryTime = 0,
-        ScanOnce = 1,
+        SameTarget,
+        SplitTargets,
+        RandomPerProjectile
     }
     public enum AbilityPurpose
     {

@@ -12,7 +12,7 @@ namespace Rush
             {
                 if (m_Jump == null)
                 {
-                    m_Jump = Player.Instance.Jump;
+                    m_Jump = RushPlayer.Instance.Jump;
                 }
                 return m_Jump;
             }

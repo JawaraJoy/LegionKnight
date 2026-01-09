@@ -12,7 +12,7 @@ namespace Rush
             {
                 if (m_PlayerNaga == null)
                 {
-                    m_PlayerNaga = Player.Instance.Naga;
+                    m_PlayerNaga = RushPlayer.Instance.Naga;
                 }
                 return m_PlayerNaga;
             }

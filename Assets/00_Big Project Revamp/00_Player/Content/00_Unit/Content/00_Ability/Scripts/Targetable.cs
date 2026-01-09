@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Targetable : MonoBehaviour
+    public class Targetable : Bindable
     {
         [SerializeField, MMReadOnly]
         private bool m_IsAlive = true;

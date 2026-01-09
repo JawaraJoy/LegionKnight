@@ -42,6 +42,14 @@ namespace Rush
         public float DamageReductionRate => m_DamageReductionRate;
         public int CurrentDamageTaken => m_CurrentDamageTaken;
         public int TotalDamageTaken => m_TotalDamageTaken;
+        public float CurrentHealthRate
+        {
+            get
+            {
+                float currentRate = (float)m_Health / m_MaxHealth;
+                return currentRate;
+            }
+        }
         public bool IsInvicible => m_IsInvicible;
         public AbilityContext AbilityContext => m_AbilityContext;
         
@@ -122,7 +130,7 @@ namespace Rush
             int currentHealth = context.Damageable.Health;
             if (currentHealth > 0f)
             {
-                OnDamageTaken(context);
+                m_OnDeath?.Invoke(context);
             }
         }
         protected virtual void SetCurrentDamageTakeInternal(int damage)

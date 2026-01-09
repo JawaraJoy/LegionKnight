@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public partial class Player : Singleton<Player>
+    public partial class RushPlayer : Singleton<RushPlayer>
     {
         
     }

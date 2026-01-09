@@ -6,7 +6,7 @@ namespace Rush
     {
         
     }
-    public partial class Player
+    public partial class RushPlayer
     {
         [SerializeField]
         private PlayerJump m_Jump;

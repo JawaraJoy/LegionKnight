@@ -12,7 +12,7 @@ namespace Rush
             {
                 if (m_PlayerUnit == null)
                 {
-                    m_PlayerUnit = Player.Instance.Unit;
+                    m_PlayerUnit = RushPlayer.Instance.Unit;
                 }
                 return m_PlayerUnit;
             }

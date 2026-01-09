@@ -6,7 +6,7 @@ namespace Rush
     {
         
     }
-    public partial class Player
+    public partial class RushPlayer
     {
         [SerializeField]
         private PlayerRigidbodyModifier m_RigidbodyModifier;

@@ -20,6 +20,7 @@ namespace Rush
         private int m_BurstCount = 3;
         [SerializeField] 
         private float m_BurstInterval = 0.3f;
+        
         [SerializeField]
         private SpawnShapeConfig m_SpawnShape;
 
@@ -38,6 +39,8 @@ namespace Rush
         [SerializeField]
         private ProjectileTargetingMode m_ProjectileTargetingMode = ProjectileTargetingMode.None;
         [SerializeField]
+        private TargetDistributeMode m_TargetDistributeMode;
+        [SerializeField]
         private float m_ProjectileHomingTurnSpeed = 90f;
         [SerializeField]
         [Tooltip("Movement speed in units per second")]
@@ -48,7 +51,9 @@ namespace Rush
         [SerializeField]
         [Tooltip("Maximum distance the projectile can travel (0 = infinite)")]
         private float m_MaxDistance = 10f;
+
         public FireMode FireMode => m_FireMode;
+        public TargetDistributeMode TargetDistributeMode => m_TargetDistributeMode;
         public int BurstCount => m_BurstCount;
         public float BurstInterval => m_BurstInterval;
         public bool ShoterLookAtTargetOnActivate => m_ShoterLookAtTargetOnActivate;

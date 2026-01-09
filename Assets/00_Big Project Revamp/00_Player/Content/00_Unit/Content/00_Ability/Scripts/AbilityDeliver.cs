@@ -23,9 +23,10 @@ namespace Rush
         public AbilityContext AbilityContext => m_AbilityContext;
         public Transform VfxSpawnPost => m_VfxSpawnPost;
         public AbilityPurpose Purpose => m_Purpose;
+        
         protected List<Targetable> GetTargetsInternal()
         {
-            List<Targetable> damageables = new(AbilityUltility.GetTargetables(m_AbilityContext, Projectile.PhysicsMode.Physics2D));
+            List<Targetable> damageables = new(AbilityUltility.ApplyTargetPriority(m_AbilityContext));
             return damageables;
         }
         public virtual void Init(AbilityConfig config, SkillContext context)

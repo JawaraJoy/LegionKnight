@@ -1,3 +1,4 @@
+using LegionKnight;
 using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,18 +19,8 @@ namespace Rush
             Z
         }
 
-        public enum PhysicsMode
-        {
-            Physics3D,
-            Physics2D
-        }
-
         [SerializeField, MMReadOnly]
         private bool m_CanMove = true;
-
-        [SerializeField]
-        private PhysicsMode m_PhysicsMode = PhysicsMode.Physics3D;
-
         [SerializeField, MMReadOnly]
         private ProjectileTargetingMode m_TargetingMode = ProjectileTargetingMode.None;
         [SerializeField]
@@ -95,6 +86,7 @@ namespace Rush
         private AbilityContext m_AbilityContext;
         public AbilityContext AbilityContext => m_AbilityContext;
         public bool Initialized => m_AbilityContext.Initialized;
+
         private void Awake()
         {
             CacheMoveDirection();
@@ -174,10 +166,9 @@ namespace Rush
             m_LifeTimer = 0f;
             m_TraveledDistance = 0f;
         }
-
         private void OnTriggerEnter(Collider other)
         {
-            if (m_PhysicsMode != PhysicsMode.Physics3D)
+            if (RushGameManager.Instance.GameConfig.PhysicsMode != PhysicsMode.Physics3D)
                 return;
 
             if (!IsValidHit(other.gameObject))
@@ -188,7 +179,7 @@ namespace Rush
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (m_PhysicsMode != PhysicsMode.Physics3D)
+            if (RushGameManager.Instance.GameConfig.PhysicsMode != PhysicsMode.Physics3D)
                 return;
 
             if (!IsValidHit(collision.gameObject))
@@ -199,7 +190,7 @@ namespace Rush
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (m_PhysicsMode != PhysicsMode.Physics2D)
+            if (RushGameManager.Instance.GameConfig.PhysicsMode != PhysicsMode.Physics2D)
                 return;
 
             if (!IsValidHit(other.gameObject))
@@ -210,7 +201,7 @@ namespace Rush
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (m_PhysicsMode != PhysicsMode.Physics2D)
+            if (RushGameManager.Instance.GameConfig.PhysicsMode != PhysicsMode.Physics2D)
                 return;
 
             if (!IsValidHit(collision.gameObject))
@@ -332,6 +323,7 @@ namespace Rush
             switch (m_TargetingMode)
             {
                 case ProjectileTargetingMode.None:
+                    m_Targetable = null;
                     break;
                 case ProjectileTargetingMode.Facing:
                     FacingAtFirstTarget2D(targetable);
@@ -346,7 +338,7 @@ namespace Rush
         {
             AbilityConfig config = m_AbilityContext.AbilityDeliver.Config;
 
-            if (m_PhysicsMode == PhysicsMode.Physics2D)
+            if (RushGameManager.Instance.GameConfig.PhysicsMode == PhysicsMode.Physics2D)
             {
                 Collider2D[] hits = Physics2D.OverlapCircleAll(
                     transform.position,
@@ -356,14 +348,16 @@ namespace Rush
 
                 for (int i = 0; i < hits.Length; i++)
                 {
-                    if (!hits[i].TryGetComponent(out Targetable target))
-                        continue;
-
-                    if (!config.CanTargetDeathUnit && !target.IsAlive)
-                        continue;
-
+                    if (hits[i].TryGetComponent(out Targetable target))
+                    {
+                        if (!config.CanTargetDeathUnit && !target.IsAlive)
+                            continue;
+                        if (!AbilityUltility.IsTargetAllowedByTargetObject(m_AbilityContext.AbilityDeliver, target))
+                            continue;
+                    }
                     Debug.Log($"[Explosion] Hit Target (2D): {target.name}", target.gameObject);
 
+                    
                     // HOOK:
                     // Ability event
                     // Damage system

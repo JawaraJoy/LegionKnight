@@ -142,9 +142,7 @@ namespace Rush
 
             SpawnShapeConfig shape = m_ShotAbilityConfig.SpawnShape;
 
-            Vector3 pos = m_VfxSpawnPost.position;
-            Quaternion rot = m_VfxSpawnPost.rotation;
-
+            m_VfxSpawnPost.GetPositionAndRotation(out Vector3 pos, out Quaternion rot);
             if (shape != null)
             {
                 shape.GetSpawnTransform(m_VfxSpawnPost, index, totalCount, out pos, out rot);
@@ -152,15 +150,30 @@ namespace Rush
 
             projectile.transform.SetPositionAndRotation(pos, rot);
 
-            Targetable target = null;
-            if (targets != null && targets.Count > 0)
-            {
-                target = targets[index % targets.Count];
-            }
-
+            Targetable target = ResolveTarget(index, targets);
             projectile.Shot(target);
 
             m_ActiveProjectiles.Add(projectile);
+        }
+        private Targetable ResolveTarget(int shotIndex, List<Targetable> targets)
+        {
+            if (targets == null || targets.Count == 0)
+                return null;
+
+            TargetDistributeMode mode = m_ShotAbilityConfig.TargetDistributeMode;
+
+            switch (mode)
+            {
+                case TargetDistributeMode.SameTarget:
+                    return targets[0];
+
+                case TargetDistributeMode.RandomPerProjectile:
+                    return targets[Random.Range(0, targets.Count)];
+
+                case TargetDistributeMode.SplitTargets:
+                default:
+                    return targets[shotIndex % targets.Count];
+            }
         }
 
 
