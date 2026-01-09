@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -9,7 +10,7 @@ namespace LegionKnight
     public partial class SceneField
     {
         [SerializeField]
-        private string m_SceneName;
+        private SceneAsset m_SceneAsset;
         [SerializeField]
         private LoadSceneMode m_Mode;
         [SerializeField]
@@ -19,26 +20,26 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnSceneUnLoaded = new();
         private AsyncOperation m_Handle;
-        public string SceneName => m_SceneName;
+        public SceneAsset SceneAsset => m_SceneAsset;
         public void LoadScene()
         {
             GameTimeScale.SetTimeScale(1f);
             CanvasManager.Instance.ShowPanel(PanelId.LoadingPanelId);
             //m_SceneName.LoadSceneAsync(m_Mode).Completed += OnSceneLoadedInvoke;
-            SceneManager.LoadSceneAsync(m_SceneName, m_Mode).completed += OnSceneLoadedInvoke;
+            SceneManager.LoadSceneAsync(m_SceneAsset.name, m_Mode).completed += OnSceneLoadedInvoke;
         }
 
         private void OnSceneLoadedInvoke(AsyncOperation handle)
         {
             if (handle.isDone)
             {
-                Debug.Log($"Scene '{m_SceneName}' loaded successfully!");
+                Debug.Log($"Scene '{m_SceneAsset}' loaded successfully!");
                 m_Handle = handle; // Store the handle for unloading
                 GameManager.Instance.StartCoroutine(HidingLoadScene());
             }
             else
             {
-                Debug.LogError($"Failed to load scene '{m_SceneName}'.");
+                Debug.LogError($"Failed to load scene '{m_SceneAsset}'.");
             }
         }
         public void UnloadScene()
@@ -46,7 +47,7 @@ namespace LegionKnight
             if (m_Handle.isDone)
             {
                 //Addressables.UnloadSceneAsync(m_Handle).Completed += OnSceneUnLoadedInvoke;
-                SceneManager.UnloadSceneAsync(m_SceneName).completed += OnSceneUnLoadedInvoke;
+                SceneManager.UnloadSceneAsync(m_SceneAsset.name).completed += OnSceneUnLoadedInvoke;
             }
             else
             {
@@ -58,12 +59,12 @@ namespace LegionKnight
         {
             if (handle.isDone)
             {
-                Debug.Log($"Scene '{m_SceneName}' unloaded successfully!");
+                Debug.Log($"Scene '{m_SceneAsset}' unloaded successfully!");
                 m_OnSceneUnLoaded?.Invoke();
             }
             else
             {
-                Debug.LogError($"Failed to unload scene '{m_SceneName}'.");
+                Debug.LogError($"Failed to unload scene '{m_SceneAsset}'.");
             }
         }
 
