@@ -32,9 +32,14 @@ namespace LegionKnight
         {
             GetSceneField(sceneName).LoadScene();
         }
+        [Obsolete]
         public void UnLoadScene(string sceneName)
         {
             GetSceneField(sceneName).UnloadScene();
+        }
+        public void UnLoadSceneAsset(SceneAsset sceneAsset)
+        {
+            GetSceneField(sceneAsset.name).UnloadScene();
         }
         private void OnStartLoadScene()
         {

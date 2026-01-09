@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,14 +11,14 @@ namespace LegionKnight
     public partial class HomePanel : PanelView
     {
         [SerializeField]
-        private string m_GameplaySceneName;
+        private SceneAsset m_GameplayScene;
         public override string UniqueId => PanelId.HomePanelId;
 
         [SerializeField]
         private UnityEvent m_OnStart;
         public void LoadGameplayScene()
         {
-            GameManager.Instance.LoadScene(m_GameplaySceneName);
+            GameManager.Instance.SceneController.LoadSceneAsset(m_GameplayScene);
         }
 
         private void Start()

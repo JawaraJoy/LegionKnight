@@ -11,13 +11,6 @@ namespace LegionKnight
     {
         [SerializeField]
         private SceneController m_SceneController;
-        public void LoadScene(string sceneName)
-        {
-            m_SceneController.LoadScene(sceneName);
-        }
-        public void UnLoadScene(string sceneName)
-        {
-            m_SceneController.UnLoadScene(sceneName);
-        }
+        public SceneController SceneController => m_SceneController;
     }
 }
