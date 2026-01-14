@@ -27,5 +27,6 @@ namespace Rush
         OnHit = 2,
         OnDeclareAttack = 3,
         OnDamageDealed = 4,
+        OnDamageTaken = 5,
     }
 }

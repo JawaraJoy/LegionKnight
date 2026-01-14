@@ -183,7 +183,7 @@ namespace Rush
                 SkillTriggerState skillTrigger = attackerSkill.SkillConfig.Trigger.TriggerState;
                 if (skillTrigger == SkillTriggerState.OnDamageDealed)
                 {
-                    attackerSkill.ForceActivates();
+                    attackerSkill.ForceActivateAll();
                 }
             }
         }

@@ -9,11 +9,14 @@ namespace Rush
     {
         // Passive/Ultimate/BasicAttack, dll
         [SerializeField]
+        private Sprite m_Icon;
+        [SerializeField]
         private SkillCategory m_Category;
         [SerializeField]
         private ActivationTriggerField m_Activation;
         [SerializeField]
-        private Sprite m_Icon;
+        private CastingField m_Casting;
+        
         [SerializeField]
         private SkillActivator m_ActivatorPrefab;
         [SerializeField]
@@ -25,6 +28,7 @@ namespace Rush
         public Sprite Icon => m_Icon;
         public SkillActivator ActivatorPrefab => m_ActivatorPrefab;
         public ProgressField LevelSet => m_LevelSet;
+        public CastingField Casting => m_Casting;
         public AbilityConfig[] AbilitySets => m_AbilitySets;
         public AbilityConfig GetAbilityConfig(string id)
         {
@@ -37,5 +41,20 @@ namespace Rush
             }
             return null;
         }
+    }
+
+    [System.Serializable]
+    public class CastingField
+    {
+        [SerializeField]
+        private float m_CastDuration;
+        [SerializeField]
+        private int m_MaxInteruptCount;
+        [SerializeField]
+        private bool m_CooldownOnCastFail;
+
+        public float CastDuration => m_CastDuration;
+        public int MaxInterruptCount => m_MaxInteruptCount;
+        public bool CooldownOnCastFail => m_CooldownOnCastFail;
     }
 }

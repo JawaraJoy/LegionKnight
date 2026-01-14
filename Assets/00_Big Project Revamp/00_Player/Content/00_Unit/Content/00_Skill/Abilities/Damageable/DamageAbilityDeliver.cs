@@ -13,7 +13,7 @@ namespace Rush
             if (triggerState == SkillTriggerState.OnDeclareAttack)
             {
                 m_OnActivate.RemoveAllListeners();
-                m_OnActivate.AddListener((x) => skillActivator.ForceActivates());
+                m_OnActivate.AddListener((x) => skillActivator.ForceActivateAll());
             }
         }
     }
