@@ -9,8 +9,8 @@ namespace Rush
         private int m_InitialAmount;
         [SerializeField]
         private float m_MultiplierAmount;
-        public int InitialDamage => m_InitialAmount;
-        public float DamageMultiplier => m_MultiplierAmount;
+        public int InitialAmount => m_InitialAmount;
+        public float MultiplierAmount => m_MultiplierAmount;
         public EffectField Zero
         {
             get

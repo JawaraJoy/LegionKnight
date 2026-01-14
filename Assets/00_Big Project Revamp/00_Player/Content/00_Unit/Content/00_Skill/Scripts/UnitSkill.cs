@@ -1,5 +1,3 @@
-using Rush;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rush
@@ -15,9 +13,5 @@ namespace Rush
         [SerializeField]
         private SkillActivatorConfig[] m_Skills;
         public SkillActivatorConfig[] Skills => m_Skills;
-    }
-    public abstract partial class Unit
-    {
-        
     }
 }

@@ -27,6 +27,18 @@ namespace Rush
                 };
             }
         }
+        public void SetHealth(float health)
+        {
+            m_Health = health;
+        }
+        public void SetAttack(float attack)
+        {
+            m_Attack = attack;
+        }
+        public void SetDefense(float defense)
+        {
+            m_Defense = defense;
+        }
 
         public static StatField operator +(StatField a, StatField b)
         {
@@ -35,6 +47,15 @@ namespace Rush
                 m_Health = a.m_Health + b.m_Health,
                 m_Attack = a.m_Attack + b.m_Attack,
                 m_Defense = a.m_Defense + b.m_Defense,
+            };
+        }
+        public static StatField operator -(StatField a, StatField b)
+        {
+            return new StatField
+            {
+                m_Health = a.m_Health - b.m_Health,
+                m_Attack = a.m_Attack - b.m_Attack,
+                m_Defense = a.m_Defense - b.m_Defense,
             };
         }
         public static StatField operator *(StatField a, StatField b)

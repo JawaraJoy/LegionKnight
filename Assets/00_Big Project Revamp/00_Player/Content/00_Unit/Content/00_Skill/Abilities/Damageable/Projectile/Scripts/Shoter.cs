@@ -60,9 +60,6 @@ namespace Rush
             StopAllCoroutines();
             StartCoroutine(FireRoutine(targets));
 
-            if (targets.Count > 0)
-                FacingFirstTarget2D(targets[0]);
-
             base.Activate();
         }
         private IEnumerator FireRoutine(List<Targetable> targets)
@@ -151,6 +148,7 @@ namespace Rush
             projectile.transform.SetPositionAndRotation(pos, rot);
 
             Targetable target = ResolveTarget(index, targets);
+            ShoterFacingFirstTarget2D(target);
             projectile.Shot(target);
 
             m_ActiveProjectiles.Add(projectile);
@@ -187,7 +185,7 @@ namespace Rush
         /// <summary>
         /// Rotates spawn point to face target in 2D (XY plane, Z-axis rotation only).
         /// </summary>
-        private void FacingFirstTarget2D(Targetable targetable)
+        private void ShoterFacingFirstTarget2D(Targetable targetable)
         {
             if (!m_ShotAbilityConfig.ShoterLookAtTargetOnActivate) return;
             Targetable.LookAtFirstTarget2D(m_VfxSpawnPost, targetable);

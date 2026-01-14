@@ -249,19 +249,19 @@ namespace Rush
             EffectField baseEffe = config.EffectCalculator.BaseAmount;
             EffectField scaleEffe = config.EffectCalculator.ScaleByLevel;
             EffectField finalEffect = EffectField.GetFinalEffect(baseEffe, scaleEffe, skillLevel);
-            float finalScaleAmount = finalEffect.InitialDamage + finalEffect.InitialDamage * finalEffect.DamageMultiplier;
+            float finalScaleAmount = finalEffect.InitialAmount + finalEffect.InitialAmount * finalEffect.MultiplierAmount;
 
             ScalingStat scalingStat = config.EffectCalculator.ScaleBy;
             switch (scalingStat)
             {
                 case ScalingStat.Attack:
-                    finalScaleAmount = ownerStats.Attack * finalEffect.DamageMultiplier + finalEffect.InitialDamage;
+                    finalScaleAmount = ownerStats.Attack * finalEffect.MultiplierAmount + finalEffect.InitialAmount;
                     break;
                 case ScalingStat.Health:
-                    finalScaleAmount = ownerStats.Health * finalEffect.DamageMultiplier + finalEffect.InitialDamage;
+                    finalScaleAmount = ownerStats.Health * finalEffect.MultiplierAmount + finalEffect.InitialAmount;
                     break;
                 case ScalingStat.Defense:
-                    finalScaleAmount = ownerStats.Defense * finalEffect.DamageMultiplier + finalEffect.InitialDamage;
+                    finalScaleAmount = ownerStats.Defense * finalEffect.MultiplierAmount + finalEffect.InitialAmount;
                     break;
 
             }
