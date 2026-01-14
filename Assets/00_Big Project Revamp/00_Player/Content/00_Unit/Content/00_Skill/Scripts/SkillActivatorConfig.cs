@@ -11,7 +11,7 @@ namespace Rush
         [SerializeField]
         private SkillCategory m_Category;
         [SerializeField]
-        private ActivationField m_Activation;
+        private ActivationTriggerField m_Activation;
         [SerializeField]
         private Sprite m_Icon;
         [SerializeField]
@@ -21,7 +21,7 @@ namespace Rush
         [SerializeField]
         private DamageAbilityConfig[] m_AbilitySets;
         public SkillCategory Category => m_Category;
-        public ActivationField Activation => m_Activation;
+        public ActivationTriggerField Trigger => m_Activation;
         public Sprite Icon => m_Icon;
         public SkillActivator ActivatorPrefab => m_ActivatorPrefab;
         public ProgressField LevelSet => m_LevelSet;

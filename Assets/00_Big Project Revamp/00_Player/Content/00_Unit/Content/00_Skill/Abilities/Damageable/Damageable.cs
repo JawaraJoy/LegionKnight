@@ -38,6 +38,8 @@ namespace Rush
         [SerializeField]
         private UnityEvent<HealerContext> m_OnHealed;
         [SerializeField]
+        private UnityEvent<BattleContext> m_OnHit;
+        [SerializeField]
         private UnityEvent<BattleContext> m_OnDamageTaken;
         [SerializeField]
         private UnityEvent<BattleContext> m_OnDeath;
@@ -55,6 +57,7 @@ namespace Rush
         public float DamageReductionRate => m_DamageReductionRate;
         public int CurrentDamageTaken => m_CurrentDamageTaken;
         public int TotalDamageTaken => m_TotalDamageTaken;
+        public UnityEvent<BattleContext> OnHit => m_OnHit;
         public float CurrentHealthRate
         {
             get
@@ -110,6 +113,7 @@ namespace Rush
         {
             BattleContext context = new BattleContext(attacker, this);
             int effectiveDamage = context.DamageFormulaRPG();
+            m_OnHit?.Invoke(context);
             if (m_IsInvicible) return;
             // block damage if barrier exist
             if (m_Barrier > 0)

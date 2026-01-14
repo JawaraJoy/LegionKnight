@@ -246,9 +246,9 @@ namespace Rush
             StatField ownerStats = ownerObject.Config.MainStats.GetFinalStat(ownerLevel);
 
             int skillLevel = context.SkillContext.Activator.Progression.Level;
-            EffectField baseEffe = config.EffectCalculator.BaseAmount;
-            EffectField scaleEffe = config.EffectCalculator.ScaleByLevel;
-            EffectField finalEffect = EffectField.GetFinalEffect(baseEffe, scaleEffe, skillLevel);
+            PowerField baseEffe = config.EffectCalculator.BaseAmount;
+            PowerField scaleEffe = config.EffectCalculator.ScaleByLevel;
+            PowerField finalEffect = PowerField.GetFinalPower(baseEffe, scaleEffe, skillLevel);
             float finalScaleAmount = finalEffect.InitialAmount + finalEffect.InitialAmount * finalEffect.MultiplierAmount;
 
             ScalingStat scalingStat = config.EffectCalculator.ScaleBy;

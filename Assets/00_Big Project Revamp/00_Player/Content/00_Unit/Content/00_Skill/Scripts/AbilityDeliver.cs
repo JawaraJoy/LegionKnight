@@ -18,7 +18,7 @@ namespace Rush
         [SerializeField]
         private UnityEvent<AbilityContext> m_OnInit;
         [SerializeField]
-        private UnityEvent<AbilityContext> m_OnActivate;
+        protected UnityEvent<AbilityContext> m_OnActivate;
         public AbilityConfig Config => m_Config;
         public AbilityContext AbilityContext => m_AbilityContext;
         public Transform VfxSpawnPost => m_VfxSpawnPost;

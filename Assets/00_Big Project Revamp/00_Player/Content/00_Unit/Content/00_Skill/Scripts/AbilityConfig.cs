@@ -34,7 +34,7 @@ namespace Rush
         [SerializeField]
         private AbilityDeliver m_DeliverPrefab;
         [SerializeField]
-        private EffectCalculatorField m_EffectCalculator;
+        private AbilityPowerField m_Power;
         public Sprite Icon => m_Icon;
         public AbilityDeliver DeliverPrefab => m_DeliverPrefab;
         public TargetPriority TargetPriority => m_TargetPriority;
@@ -44,7 +44,7 @@ namespace Rush
         public float InitialDelay => m_InitialDelay;
         public float Range => m_Range;
         public int MaxTargetCount => m_MaxTargetCount;
-        public EffectCalculatorField EffectCalculator => m_EffectCalculator;
+        public AbilityPowerField EffectCalculator => m_Power;
         public bool UseForwardCone => m_UseForwardCone;
         public float ConeAngle => m_ConeAngle;
         public bool RequireLineOfSight => m_RequireLineOfSight;

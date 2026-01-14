@@ -2,6 +2,7 @@ using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
@@ -9,7 +10,7 @@ namespace Rush
     /// Ability deliverer that spawns and reuses projectiles using internal pooling.
     /// Responsible for managing projectile lifecycle: spawn, reuse, and return to pool.
     /// </summary>
-    public class Shoter : AbilityDeliver
+    public class Shoter : DamageAbilityDeliver
     {
         [Header("Projectile")]
 
@@ -46,7 +47,6 @@ namespace Rush
                 m_ShotAbilityConfig = shotAbilityConfig;
                 m_Purpose = AbilityPurpose.Damaging;
             }
-
             PreWarm();
         }
 
@@ -58,18 +58,20 @@ namespace Rush
             List<Targetable> targets = new(GetTargetsInternal());
 
             StopAllCoroutines();
-            StartCoroutine(FireRoutine(targets));
+            StartCoroutine(AttackRoutine(targets));
 
             base.Activate();
         }
-        private IEnumerator FireRoutine(List<Targetable> targets)
+        private IEnumerator AttackRoutine(List<Targetable> targets)
         {
-            int fireCount = m_ShotAbilityConfig.SpawningSetup.FireCount;
-            FireMode mode = m_ShotAbilityConfig.SpawningSetup.FireMode;
+            var setup = m_ShotAbilityConfig.SpawningSetup;
 
-            float interval = m_ShotAbilityConfig.SpawningSetup.FireInterval;
-            int burstCount = m_ShotAbilityConfig.SpawningSetup.BurstCount;
-            float burstInterval = m_ShotAbilityConfig.SpawningSetup.BurstInterval;
+            int fireCount = setup.FireCount;
+            FireMode mode = setup.FireMode;
+
+            float interval = setup.FireInterval;
+            int burstCount = setup.BurstCount;
+            float burstInterval = setup.BurstInterval;
 
             int dir = 1;
             int shapeIndex = 0;

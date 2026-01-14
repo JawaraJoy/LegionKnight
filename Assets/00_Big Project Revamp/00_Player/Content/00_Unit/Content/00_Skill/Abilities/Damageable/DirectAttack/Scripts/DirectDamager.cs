@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public partial class DirectDamager : AbilityDeliver
+    public partial class DirectDamager : DamageAbilityDeliver
     {
         [SerializeField]
         private Attacker m_AttackerPrefab;
