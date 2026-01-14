@@ -135,7 +135,7 @@ namespace Rush
                     return shotIndex; // Instant / Burst / Gatling
             }
         }
-        private void SpawnSingle(int index, int totalCount, List<Targetable> targets)
+        protected virtual void SpawnSingle(int index, int totalCount, List<Targetable> targets)
         {
             Projectile projectile = GetFromPool();
 

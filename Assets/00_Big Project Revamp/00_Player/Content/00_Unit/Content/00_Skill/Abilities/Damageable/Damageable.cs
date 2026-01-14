@@ -177,6 +177,15 @@ namespace Rush
         {
             m_OnDamageTaken?.Invoke(context);
             OnDeathInvoke(context);
+            SkillActivator attackerSkill = context.Attacker.AbilityContext.SkillContext.Activator;
+            if (attackerSkill != null) 
+            {
+                SkillTriggerState skillTrigger = attackerSkill.SkillConfig.Trigger.TriggerState;
+                if (skillTrigger == SkillTriggerState.OnDamageDealed)
+                {
+                    attackerSkill.ForceActivates();
+                }
+            }
         }
         private void OnDeathInvoke(BattleContext context)
         {
