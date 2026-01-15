@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -80,7 +81,7 @@ namespace LegionKnight
         }
         private static void StandbyPlatformApplierInternal(ScriptableObject defi, int amount)
         {
-            if (defi is StandbyPlatformDefinition platform)
+            if (defi is PlatformConfig platform)
             {
                 Player.Instance.AddPlatformAmount(platform, amount);
             }

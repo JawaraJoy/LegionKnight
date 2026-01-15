@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,7 +62,7 @@ namespace LegionKnight
             {
                 Player.Instance.SetOwned(c, true);
             }
-            if (m_Defi is StandbyPlatformDefinition p)
+            if (m_Defi is PlatformConfig p)
             {
                 Player.Instance.AddPlatformAmount(p, m_Amount);
             }

@@ -1,4 +1,6 @@
+using Rush;
 using System.Collections.Generic;
+using Unity.Android.Gradle.Manifest;
 using Unity.Services.LevelPlay;
 using UnityEngine;
 using UnityEngine.Purchasing;
@@ -305,13 +307,12 @@ namespace LegionKnight
                 if (item.Definition is CharacterDefinition character)
                 {
                     rarity = character.Rarity;
+                    Instance.SendEvent("event_gacha_pulltype", rarityCode[rarity].ToString());
                 }
-                else if (item.Definition is StandbyPlatformDefinition platform)
+                else if (item.Definition is PlatformConfig platform)
                 {
-                    rarity = platform.Rarity;
+                    Instance.SendEvent("event_gacha_pulltype", platform.Rarity.BaseInfo.Name.ToString());
                 }
-
-                Instance.SendEvent("event_gacha_pulltype", rarityCode[rarity].ToString());
             }
         }
 

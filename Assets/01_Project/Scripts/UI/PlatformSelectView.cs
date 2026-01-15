@@ -2,13 +2,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Rush;
 
 namespace LegionKnight
 {
     public partial class PlatformSelectView : UIView
     {
         [SerializeField]
-        private StandbyPlatformDefinition m_PlatformDefi;
+        private PlatformConfig m_PlatformDefi;
         [SerializeField]
         private Image m_UnitIcon;
         [SerializeField]
@@ -22,8 +23,8 @@ namespace LegionKnight
         [SerializeField]
         private Button m_SelectButton;
         [SerializeField]
-        private UnityEvent<StandbyPlatformDefinition> m_OnPlatformSelected = new();
-        public StandbyPlatformDefinition PlatformDefi => m_PlatformDefi;
+        private UnityEvent<PlatformConfig> m_OnPlatformSelected = new();
+        public PlatformConfig PlatformDefi => m_PlatformDefi;
         private void SelectPlatformInternal()
         {
             Player.Instance.SelectStandbyPlatform(m_PlatformDefi);
@@ -46,7 +47,7 @@ namespace LegionKnight
             m_SelectButton.interactable = unit.IsOwned;
             m_UnitIcon.sprite = m_PlatformDefi.Icon;
             m_AmountText.text = unit.Amount.ToString();
-            m_RarityColor.color = unit.StanbyPlatform.RarityColor;
+            m_RarityColor.color = unit.StanbyPlatform.Rarity.Color;
 
             m_EquipedSign.gameObject.SetActive(unit.IsEquiped);
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Rush;
 
 namespace LegionKnight
 {
@@ -19,7 +20,7 @@ namespace LegionKnight
         CurrencyDefinition ShardDefinition { get; }
         Sprite SmallIcon { get; }
         int Star { get; }
-        StandbyPlatformDefinition UniquePlatform { get; }
+        PlatformConfig UniquePlatform { get; }
         List<SkillDefinition> Weapons { get; }
 
         void AddExp(int exp);

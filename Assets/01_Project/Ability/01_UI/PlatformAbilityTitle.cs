@@ -7,7 +7,7 @@ namespace LegionKnight
         public override void SetAbility(CharacterDefinition defi)
         {
             m_AbilityIcon.sprite = defi.UniquePlatform.Icon;
-            m_AbilityName.text = defi.UniquePlatform.Label;
+            m_AbilityName.text = defi.UniquePlatform.BaseInfo.Name;
         }
     }
 }

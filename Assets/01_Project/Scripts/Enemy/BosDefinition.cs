@@ -1,4 +1,5 @@
 using LegionKnight.Dialogue;
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -29,7 +30,7 @@ namespace LegionKnight
         [SerializeField]
         private LootDefinition m_LootDefinition;
         [SerializeField]
-        private List<StandbyPlatformDefinition> m_BosPlatforms = new();
+        private List<PlatformConfig> m_BosPlatforms = new();
         [SerializeField]
         private SkillDefinition[] m_Skills;
 
@@ -38,7 +39,7 @@ namespace LegionKnight
         public Sprite Icon => m_Icon;
         public ConversationDefinition ConversationDefinition => m_ConversationDefinition;
         public LootDefinition LootDefinition => m_LootDefinition;
-        public List<StandbyPlatformDefinition> BosPlatformsAsset => m_BosPlatforms;
+        public List<PlatformConfig> BosPlatformsAsset => m_BosPlatforms;
         public SkillDefinition[] Skills => m_Skills;
         public Stat BaseStat => m_BaseStat;
         public int StartLevel => m_StartLevel;
@@ -74,7 +75,7 @@ namespace LegionKnight
             }
             foreach(var platform in m_BosPlatforms)
             {
-                platform.SetOwner(owner);
+                
             }
         }
     }
@@ -83,7 +84,7 @@ namespace LegionKnight
         [SerializeField]
         private BosDefinition m_BosDefinition;
         private Sprite IconInternal => m_BosDefinition.Icon;
-        private List<StandbyPlatformDefinition> BosPlatformsInternal => m_BosDefinition.BosPlatformsAsset;
+        private List<PlatformConfig> BosPlatformsInternal => m_BosDefinition.BosPlatformsAsset;
         private SkillDefinition[] SkillsInternal => m_BosDefinition.Skills;
 
         [SerializeField]

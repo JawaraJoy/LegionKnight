@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using Rush;
 namespace LegionKnight
 {
     public class AttackPlatform : Platform

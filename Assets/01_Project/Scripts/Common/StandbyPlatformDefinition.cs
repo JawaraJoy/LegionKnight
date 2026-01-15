@@ -1,7 +1,8 @@
+using Rush;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace LegionKnight
+namespace LegionKnight.Deleted
 {
     [CreateAssetMenu(fileName = "New Standby Platform", menuName = "Legion Knight/Standby Platform")]
     public partial class StandbyPlatformDefinition : ScriptableObject, IDescriptable, IObjectHasOwner
@@ -45,10 +46,10 @@ namespace LegionKnight
         private Object m_Owner;
         public Object Owner => m_Owner;
 
-        public void SetIsEquiped(bool isEquiped)
+        /*public void SetIsEquiped(bool isEquiped)
         {
             Player.Instance.SetPlatformUnitIsEquiped(this, isEquiped);
-        }
+        }*/
 
         public void SetOwner(Object owner)
         {

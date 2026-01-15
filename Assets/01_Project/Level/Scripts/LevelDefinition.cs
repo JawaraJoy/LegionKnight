@@ -35,7 +35,7 @@ namespace LegionKnight
         [SerializeField]
         private BackgroundDefinition m_BackgroundDefinition;
         [SerializeField]
-        private List<StandbyPlatformDefinition> m_PlatformAssets = new();
+        private List<PlatformConfig> m_PlatformAssets = new();
 
 
         [SerializeField]
@@ -97,11 +97,11 @@ namespace LegionKnight
         {
             return m_PerfectTouchDownPoint;
         }
-        public List<StandbyPlatformDefinition> GetPlatformAssets()
+        public List<PlatformConfig> GetPlatformAssets()
         {
             return m_PlatformAssets;
         }
-        public List<StandbyPlatformDefinition> GetBosPlatformAssets()
+        public List<PlatformConfig> GetBosPlatformAssets()
         {
             return m_BosDefinition.BosPlatformsAsset;
         }

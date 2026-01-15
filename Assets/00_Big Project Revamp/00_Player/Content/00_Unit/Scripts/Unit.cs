@@ -18,7 +18,7 @@ namespace Rush
         public ProgressField Progression => m_Progression;
         [SerializeField]
         private UnityEvent<Unit> m_OnInit;
-        public void Init(UnitConfig config)
+        public virtual void Init(UnitConfig config)
         {
             m_Config = config;
             m_OnInit?.Invoke(this);

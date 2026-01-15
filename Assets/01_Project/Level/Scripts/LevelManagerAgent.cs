@@ -1,4 +1,5 @@
 using UnityEngine;
+using Rush;
 
 namespace LegionKnight
 {
@@ -27,11 +28,11 @@ namespace LegionKnight
         {
             GameManager.Instance.RemovePlatform(platform);
         }
-        public void RemoveStandByPlatform(StandbyPlatformDefinition platform)
+        public void RemoveStandByPlatform(PlatformConfig platform)
         {
             GameManager.Instance.RemoveStandByPlatform(platform);
         }
-        public void AddStandByPlatform(StandbyPlatformDefinition platform)
+        public void AddStandByPlatform(PlatformConfig platform)
         {
             if (IsLevelMatch())
             {

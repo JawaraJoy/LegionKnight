@@ -1,4 +1,5 @@
 using AppsFlyerSDK;
+using Rush;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -352,11 +353,11 @@ namespace LegionKnight
         {
             m_LevelObject.RemovePlatform(platform);
         }
-        public void RemoveStandByPlatform(StandbyPlatformDefinition platform)
+        public void RemoveStandByPlatform(PlatformConfig platform)
         {
             m_LevelObject.RemoveStandByPlatform(platform);
         }
-        public void AddStandByPlatform(StandbyPlatformDefinition platform)
+        public void AddStandByPlatform(PlatformConfig platform)
         {
             m_LevelObject.AddStandByPlatform(platform);
         }
@@ -391,7 +392,7 @@ namespace LegionKnight
         public void ResetBoss()
         {
             if (!m_SelectedLevelDefinition.HasBoss()) return;
-            List<StandbyPlatformDefinition> bosStandbyPlatforms = m_SelectedLevelDefinition.GetBosPlatformAssets();
+            List<PlatformConfig> bosStandbyPlatforms = m_SelectedLevelDefinition.GetBosPlatformAssets();
             bool isInfinite = m_SelectedLevelDefinition.IsInfiniteLevel;
             if (isInfinite)
             {
@@ -412,14 +413,6 @@ namespace LegionKnight
         }
         public void StoreLevelScore()
         {
-            /*LootField coinLoot = new(m_CurrentScore.CurrencyDefinition, false, m_CurrentScore.Amount, 1f);
-            LootStorage lootStorage = GameManager.Instance.GetLootStorageManager();
-            lootStorage.AddLoot(coinLoot);
-            //Player.Instance.AddCurrencyAmount(m_CurrentCoinReward.CurrencyDefinition, m_CurrentCoinReward.Amount);
-            int exp = Mathf.RoundToInt(m_CurrentScore.Amount * m_ExpReceiverRate);
-            LootField expLoot = new(m_ExpDefinition, false, exp, 1f);
-            lootStorage.AddLoot(expLoot);*/
-            //Player.Instance.AddPlayerExperience(exp);
             GetLevelSelect(m_SelectedLevelDefinition)?.OnLevelDoneInvoke();
             ResetScore();
         }
@@ -449,15 +442,15 @@ namespace LegionKnight
         {
             return m_SpawnedBosEnemy;
         }
-        public void AddStandbyPlatform(List<StandbyPlatformDefinition> standby)
+        public void AddStandbyPlatform(List<PlatformConfig> standby)
         {
             m_LevelObject.AddRealStanbyPlatform(standby);
         }
-        public void RemoveStandbyPlatform(List<StandbyPlatformDefinition> standby)
+        public void RemoveStandbyPlatform(List<PlatformConfig> standby)
         {
             RemoveStandbyPlatformInternal(standby);
         }
-        private void RemoveStandbyPlatformInternal(List<StandbyPlatformDefinition> standby)
+        private void RemoveStandbyPlatformInternal(List<PlatformConfig> standby)
         {
             m_LevelObject.RemoveRealStanbyPlatform(standby);
         }

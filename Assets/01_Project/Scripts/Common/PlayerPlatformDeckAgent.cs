@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -5,11 +6,11 @@ namespace LegionKnight
 {
     public partial class PlayerPlatformDeckAgent : MonoBehaviour
     {
-        public StandbyPlatformDefinition GetUsedStanbyPlatform()
+        public PlatformConfig GetUsedStanbyPlatform()
         {
             return Player.Instance.GetUsedStanbyPlatform();
         }
-        public void SetIsOwned(StandbyPlatformDefinition platform, int add)
+        public void SetIsOwned(PlatformConfig platform, int add)
         {
             Player.Instance.AddPlatformAmount(platform, add);
         }
@@ -17,7 +18,7 @@ namespace LegionKnight
         {
             Player.Instance.SetUsedStanbyPlatform();
         }
-        public void SelectStandbyPlatform(StandbyPlatformDefinition platform)
+        public void SelectStandbyPlatform(PlatformConfig platform)
         {
             Player.Instance.SelectStandbyPlatform(platform);
         }

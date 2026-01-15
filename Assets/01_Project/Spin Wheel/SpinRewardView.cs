@@ -1,3 +1,4 @@
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -95,7 +96,7 @@ namespace LegionKnight
         }
         private void StandbyPlatformApplier(ScriptableObject defi, int amount)
         {
-            if (defi is StandbyPlatformDefinition platform)
+            if (defi is PlatformConfig platform)
             {
                 InitInternal(platform.Icon, amount);
             }

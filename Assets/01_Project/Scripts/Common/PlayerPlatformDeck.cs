@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Rush;
 
 namespace LegionKnight
 {
@@ -15,7 +16,7 @@ namespace LegionKnight
         {
             return m_PlayerPlatformDeck;
         }
-        public PlatformUnit GetPlatformOwned(StandbyPlatformDefinition platform)
+        public PlatformUnit GetPlatformOwned(PlatformConfig platform)
         {
             return m_PlayerPlatformDeck.GetPlatformOwned(platform);
         }
@@ -23,19 +24,19 @@ namespace LegionKnight
         {
             return m_PlayerPlatformDeck.GetPlatformUnits();
         }
-        public bool IsPlatformOwned(StandbyPlatformDefinition platform)
+        public bool IsPlatformOwned(PlatformConfig platform)
         {
             return m_PlayerPlatformDeck.IsPlatformOwned(platform);
         }
-        public StandbyPlatformDefinition GetUsedStanbyPlatform()
+        public PlatformConfig GetUsedStanbyPlatform()
         {
             return m_PlayerPlatformDeck.GetUsedStanbyPlatform();
         }
-        public void AddPlatformAmount(StandbyPlatformDefinition platform, int add)
+        public void AddPlatformAmount(PlatformConfig platform, int add)
         {
             m_PlayerPlatformDeck.AddPlatformAmount(platform, add);
         }
-        public void SelectStandbyPlatform(StandbyPlatformDefinition platform)
+        public void SelectStandbyPlatform(PlatformConfig platform)
         {
             m_PlayerPlatformDeck.SelectStandbyPlatform(platform);
         }
@@ -47,7 +48,7 @@ namespace LegionKnight
         {
            m_PlayerPlatformDeck.AddPlayerStandbyPlatform();
         }
-        public void SetPlatformUnitIsEquiped(StandbyPlatformDefinition defi, bool isEquiped)
+        public void SetPlatformUnitIsEquiped(PlatformConfig defi, bool isEquiped)
         {
            m_PlayerPlatformDeck.SetIsEquiped(defi, isEquiped);
         }

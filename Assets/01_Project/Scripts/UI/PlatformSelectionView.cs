@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace LegionKnight
             InitInternal();
         }
 
-        private PlatformSelectView GetSelectView(StandbyPlatformDefinition defi)
+        private PlatformSelectView GetSelectView(PlatformConfig defi)
         {
             PlatformSelectView view = m_SpawnedPlatformSelectionViews.Find(x => x.PlatformDefi == defi);
             return view;
@@ -67,10 +68,9 @@ namespace LegionKnight
         {
             SpawnPlatformSelectInternal(unit);
         }
-        public void ShowRarity(int rarityIndex)
+        public void ShowRarity(RarityConfig rarity)
         {
-            Rarity rarity = (Rarity)rarityIndex;
-            ShowRarity(rarity);
+            ShowRarityInternal(rarity);
         }
 
         public void ShowAllPlatforms()
@@ -96,7 +96,7 @@ namespace LegionKnight
             }
         }
 
-        private void ShowRarity(Rarity rarity)
+        private void ShowRarityInternal(RarityConfig rarity)
         {
             foreach (PlatformSelectView platformSelectView in m_SpawnedPlatformSelectionViews)
             {
@@ -108,7 +108,7 @@ namespace LegionKnight
                 characterSelectView.Show();
             }
         }
-        private PlatformSelectView[] GetPlatformSelectViews(Rarity rarity)
+        private PlatformSelectView[] GetPlatformSelectViews(RarityConfig rarity)
         {
             return m_SpawnedPlatformSelectionViews.FindAll(x => x.PlatformDefi.Rarity == rarity).ToArray();
         }

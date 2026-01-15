@@ -1,3 +1,4 @@
+using Rush;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,7 +55,7 @@ namespace LegionKnight
                 unit.Definition.InitAsOwner();
             }
         }
-        public StandbyPlatformDefinition GetHeroStandbyPlatform()
+        public PlatformConfig GetHeroStandbyPlatform()
         {
             return GetCharacterUnitInternal(m_UsedCharacter).UniquePlatform;
         }

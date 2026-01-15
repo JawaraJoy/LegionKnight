@@ -2,6 +2,7 @@ using Spine.Unity;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Rush;
 
 namespace LegionKnight
 {
@@ -58,7 +59,7 @@ namespace LegionKnight
         public int MaxStars => m_BreakThrough.GetMaxStar();
         public Color ColorRarity => m_ColorRarity;
         [SerializeField]
-        private StandbyPlatformDefinition m_UniquePlatform;
+        private PlatformConfig m_UniquePlatform;
         [SerializeField]
         private List<SkillDefinition> m_Weapons = new();
         [SerializeField]
@@ -66,7 +67,7 @@ namespace LegionKnight
 
         public AssetReferenceGameObject CharacterPrefab => m_CharacterPrefab;
         public SkeletonDataAsset SkeletonDataAsset => m_SkeletonDataAsset;
-        public StandbyPlatformDefinition UniquePlatform => m_UniquePlatform;
+        public PlatformConfig UniquePlatform => m_UniquePlatform;
         public List<SkillDefinition> Weapons => m_Weapons;
         public List<SkillDefinition> Passives => m_Passives;
         public int StartingStars => m_StartingStars;
@@ -155,7 +156,6 @@ namespace LegionKnight
             {
                 pass.SetOwner(this);
             }
-            m_UniquePlatform.SetOwner(this);
         }
     }
     [System.Serializable]
