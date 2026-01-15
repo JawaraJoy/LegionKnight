@@ -35,6 +35,9 @@ namespace Rush
         private AbilityDeliver m_DeliverPrefab;
         [SerializeField]
         private AbilityPowerField m_Power;
+        [SerializeField]
+        private StatusEffectConfig[] m_StatusEffectOnDelivered;
+        public StatusEffectConfig[] StatusEffectOnDelivered => m_StatusEffectOnDelivered;
         public Sprite Icon => m_Icon;
         public AbilityDeliver DeliverPrefab => m_DeliverPrefab;
         public TargetPriority TargetPriority => m_TargetPriority;

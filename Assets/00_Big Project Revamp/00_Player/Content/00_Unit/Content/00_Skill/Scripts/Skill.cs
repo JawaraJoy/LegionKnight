@@ -1,5 +1,6 @@
 using MoreMountains.Tools;
 using System.Collections.Generic;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 namespace Rush
@@ -23,6 +24,10 @@ namespace Rush
         {
             return m_SkillActivators.Find(x => x.Context.Activator.SkillConfig.BaseInfo.Id == id);
         }
+        public SkillActivator GetSkillActivator(SkillActivatorConfig config)
+        {
+            return GetSkillActivatorInternal(config.BaseInfo.Id);
+        }
         private List<SkillActivator> GetSkillsByCategoryInternal(SkillCategoryConfig category)
         {
             List<SkillActivator> findCategories = new List<SkillActivator>();
@@ -34,6 +39,25 @@ namespace Rush
                 }
             }
             return findCategories;
+        }
+        private List<SkillActivator> GetSkillsByMultiCategoryInternal(SkillCategoryConfig[] skillCategories)
+        {
+            List<SkillActivator> findCategories = new List<SkillActivator>();
+            foreach (SkillActivator activator in m_SkillActivators)
+            {
+                foreach (SkillCategoryConfig skillCategory in skillCategories)
+                {
+                    if (activator.SkillConfig.Category == skillCategory)
+                    {
+                        findCategories.Add(activator);
+                    }
+                }
+            }
+            return findCategories;
+        }
+        public IReadOnlyList<SkillActivator> GetSkillsByMultiCategory(SkillCategoryConfig[] skillCategories)
+        {
+            return GetSkillsByMultiCategoryInternal(skillCategories);
         }
         public void SetSkillCategoryLevel(SkillCategoryConfig category, int level)
         {
@@ -57,6 +81,19 @@ namespace Rush
             if (hasSkillActivator) 
             { 
                 activator = GetSkillActivatorInternal(id);
+            }
+            else
+            {
+                activator = null;
+            }
+            return hasSkillActivator;
+        }
+        public bool HasSkillActivator(SkillActivatorConfig config, out SkillActivator activator)
+        {
+            bool hasSkillActivator = GetSkillActivatorInternal(config.BaseInfo.Id) != null;
+            if (hasSkillActivator)
+            {
+                activator = GetSkillActivatorInternal(config.BaseInfo.Id);
             }
             else
             {

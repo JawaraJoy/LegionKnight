@@ -13,6 +13,8 @@ namespace Rush
         public AbilityContext AbilityContext => m_AbilityContext;
         [SerializeField]
         private UnityEvent<AbilityContext> m_OnHealStart;
+        [SerializeField]
+        private UnityEvent<int> m_OnHealAmount;
         public UnityEvent<AbilityContext> OnHealStart => m_OnHealStart;
         [SerializeField]
         private UnityEvent<AbilityContext> m_OnHealDone;
@@ -37,6 +39,7 @@ namespace Rush
             m_OnHealStart?.Invoke(m_AbilityContext);
             StopAllCoroutines();
             StartCoroutine(Healing(target, delay));
+            
         }
 
         private IEnumerator Healing(Targetable target, float delay)
@@ -57,6 +60,7 @@ namespace Rush
                 if (target.HasBind(out Damageable damageable))
                 {
                     damageable.Heal(this);
+                    m_OnHealAmount?.Invoke(m_HealAmount);
                 }
 
                 if (i < m_HealConfig.HealTickCount - 1 && m_HealConfig.HealTickInterval > 0f)

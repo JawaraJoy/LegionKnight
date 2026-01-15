@@ -72,16 +72,16 @@ namespace Rush
             StatField finalAdditionalStat = StatField.Zero;
             foreach (StatInfluencer influencer in m_Influencers)
             {
-                StatField additionalStat = StatModifierUltility.GetFinalAddionalStat(influencer.Context, m_ModuleContext.UnitOwner);
+                StatField additionalInfluencerStat = StatModifierUtility.GetFinalAddionalStat(influencer.Context, m_ModuleContext.UnitOwner);
                 if (influencer.IsActive)
                 {
                     switch (influencer.Config.ModifierType)
                     {
                         case ModifierType.Buff:
-                            finalAdditionalStat += additionalStat;
+                            finalAdditionalStat += additionalInfluencerStat;
                             break;
                         case ModifierType.Debuff:
-                            finalAdditionalStat -= additionalStat;
+                            finalAdditionalStat -= additionalInfluencerStat;
                             break;
                     }
                 }

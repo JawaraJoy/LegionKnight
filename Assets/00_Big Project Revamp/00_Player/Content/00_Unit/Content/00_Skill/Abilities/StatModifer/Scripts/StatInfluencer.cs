@@ -9,7 +9,11 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private float m_TotalDuration = 0f;
         [SerializeField, MMReadOnly]
-        private float m_RemainingDuration = 10f;
+        private float m_RemainingDuration = 1f;
+        [SerializeField, MMReadOnly]
+        private float m_TotalStackUpdateDuration = 10f;
+        [SerializeField, MMReadOnly]
+        private float m_RemainingStackUpdateDuration = 0f;
         [SerializeField, MMReadOnly]
         private int m_StackCount = 0;
         [SerializeField, MMReadOnly]
@@ -29,15 +33,24 @@ namespace Rush
         [SerializeField]
         private UnityEvent m_OnStackExceedMax;
         public float RemainingDuration => m_RemainingDuration;
+        private float TotalStackUpdateDurationInternal
+        {
+            get
+            {
+                return Mathf.Clamp(m_TotalStackUpdateDuration, 0f, m_TotalDuration);
+            }
+        }
         public int StackCount => m_StackCount;
         public StatInfluencerContext Context => m_Context;
         public bool IsActive => gameObject.activeInHierarchy;
+
 
         [SerializeField, MMReadOnly]
         private StatInfluencerConfig m_Config;
         public StatInfluencerConfig Config => m_Config;
         public void Activate(AbilityContext context)
         {
+            ClearListeners();
             gameObject.SetActive(true);
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
 
@@ -54,7 +67,7 @@ namespace Rush
 
             switch (m_Config.HowToRemove)
             {
-                case HowStatRemoved.Permanent:
+                case HowStatRemoved.None:
                     break;
                 case HowStatRemoved.RemoveOnDurationEnd:
                     m_OnDurationEnd.AddListener(OnDeactiveInvoke);
@@ -65,11 +78,9 @@ namespace Rush
                 case HowStatRemoved.RemoveOnStackExceedMax:
                     m_OnStackExceedMax.AddListener(OnDeactiveInvoke);
                     break;
-                case HowStatRemoved.RemoveStackOnDurationEnd:
-                    m_OnDurationEnd.AddListener(OnDurationTickReduceStack); // ✅
-                    break;
             }
             StartTimer();
+            m_RemainingStackUpdateDuration = TotalStackUpdateDurationInternal;
             m_OnActive?.Invoke(m_Context);
         }
         public void UpdateStack()
@@ -82,22 +93,6 @@ namespace Rush
                 case HowStackUpdate.Subtractive:
                     AddStackInternal(-m_Config.UpdatePerStackCount);
                     break;
-            }
-        }
-        private void OnDurationTickReduceStack()
-        {
-            // kurangi stack
-            AddStackInternal(-m_Config.UpdatePerStackCount);
-
-            if (m_StackCount > 0)
-            {
-                // reset timer untuk tick berikutnya
-                StartTimer();
-            }
-            else
-            {
-                // stack habis → deactivate
-                OnDeactiveInvoke();
             }
         }
 
@@ -124,6 +119,7 @@ namespace Rush
         private void OnStackUpdateInvoke()
         {
             m_OnStackChange?.Invoke(m_StackCount);
+            m_RemainingStackUpdateDuration = TotalStackUpdateDurationInternal;
             if (m_Config.ResetDurationOnStackUpdate)
             {
                 StartTimer();
@@ -168,15 +164,30 @@ namespace Rush
         /// </summary>
         public void Tick()
         {
-            if (!gameObject.activeInHierarchy) return;
-
             m_RemainingDuration -= Time.deltaTime;
-            m_OnDurationUpdate?.Invoke(m_RemainingDuration / m_TotalDuration);
+            float normalized = m_TotalDuration > 0f ? m_RemainingDuration / m_TotalDuration : 0f;
+            m_OnDurationUpdate?.Invoke(normalized);
 
             if (m_RemainingDuration <= 0f)
             {
                 m_RemainingDuration = 0f;
                 m_OnDurationEnd?.Invoke();
+            }
+            if (m_Config.UseStackDuration) 
+            {
+                TickStackDuration();
+            }
+        }
+
+        private void TickStackDuration()
+        {
+            if (!gameObject.activeInHierarchy) return;
+            m_RemainingStackUpdateDuration -= Time.deltaTime;
+
+            if (m_RemainingStackUpdateDuration <= 0f)
+            {
+                AddStackInternal(-m_Config.UpdatePerStackCount);
+                m_RemainingStackUpdateDuration = TotalStackUpdateDurationInternal;
             }
         }
 

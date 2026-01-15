@@ -1,10 +1,8 @@
-using LegionKnight;
-using MoreMountains.Tools;
 using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Skill Activator", menuName = "Rush/Combat/Activator", order = 1)]
+    [CreateAssetMenu(fileName = "Skill", menuName = "Rush/Combat/Skill", order = 1)]
     public partial class SkillActivatorConfig : Configuration
     {
         // Passive/Ultimate/BasicAttack, dll
@@ -12,6 +10,8 @@ namespace Rush
         private Sprite m_Icon;
         [SerializeField]
         private SkillCategoryConfig m_Category;
+        [SerializeField]
+        private SkillActivationState m_InitializeState = SkillActivationState.Idle;
         [SerializeField]
         private ActivationTriggerField m_Activation;
         [SerializeField]
@@ -22,7 +22,7 @@ namespace Rush
         [SerializeField]
         private ProgressField m_LevelSet;
         [SerializeField]
-        private DamageAbilityConfig[] m_AbilitySets;
+        private AbilityConfig[] m_AbilitySets;
         public SkillCategoryConfig Category => m_Category;
         public ActivationTriggerField Activation => m_Activation;
         public Sprite Icon => m_Icon;
@@ -30,6 +30,7 @@ namespace Rush
         public ProgressField LevelSet => m_LevelSet;
         public CastingField Casting => m_Casting;
         public AbilityConfig[] AbilitySets => m_AbilitySets;
+        public SkillActivationState InitializeState => m_InitializeState;
         public AbilityConfig GetAbilityConfig(string id)
         {
             foreach (var config in m_AbilitySets)

@@ -9,7 +9,6 @@ namespace Rush
         private SkillType m_SkillType;
         public SkillType SkillType => m_SkillType;
     }
-
     public enum SkillType
     {
         Active = 0,

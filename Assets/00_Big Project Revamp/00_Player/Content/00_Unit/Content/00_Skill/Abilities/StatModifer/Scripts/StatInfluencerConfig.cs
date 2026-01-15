@@ -9,8 +9,7 @@ namespace Rush
         private StatInfluencer m_StatInfluencerPrefab;
         [SerializeField]
         private ModifierType m_ModifierType = ModifierType.Buff;
-        [SerializeField]
-        private bool m_IsPermanent;
+        
         [SerializeField]
         private float m_Duration = 5f;
         [SerializeField]
@@ -20,6 +19,10 @@ namespace Rush
         [SerializeField]
         private int m_UpdatePerStackCount = 1;
         [SerializeField]
+        private bool m_UseStackDuration = true;
+        [SerializeField]
+        private float m_StackDurationUpdate = 1f;
+        [SerializeField]
         private bool m_ResetDurationOnStackUpdate = true;
         [SerializeField]
         private HowStackUpdate m_HowStackUpdate = HowStackUpdate.Addictive;
@@ -27,8 +30,9 @@ namespace Rush
         private HowStatRemoved m_HowToRemove = HowStatRemoved.RemoveOnDurationEnd;
         public ModifierType ModifierType => m_ModifierType;
         public StatInfluencer StatInfluencerPrefab => m_StatInfluencerPrefab;
-        public bool IsPermanent => m_IsPermanent;
+        public bool UseStackDuration => m_UseStackDuration;
         public float Duration => m_Duration;
+        public float StackDurationUpdate => m_StackDurationUpdate;
         public float DurationGrowthByLevel => m_DurationGrowthByLevel;
         public float FinalDurationByLevel(int level)
         {
@@ -56,7 +60,7 @@ namespace Rush
     }
     public enum HowStatRemoved
     {
-        Permanent,
+        None,
         RemoveOnDurationEnd,
         RemoveOnStackZero,
         RemoveOnStackExceedMax,

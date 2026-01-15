@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,7 +13,7 @@ namespace Rush
         Cooldown,
         Silenced
     }
-    public class SkillActivator : Bindable, IUpdater
+    public partial class SkillActivator : Bindable, IUpdater
     {
         [Header("Config")]
         [SerializeField]
@@ -119,7 +120,7 @@ namespace Rush
                     damageable.OnHit.AddListener(_ => TryActivate());
                 }
             }
-
+            ChangeState(m_SkillConfig.InitializeState);
             SpawnDelivers();
         }
 
@@ -129,9 +130,6 @@ namespace Rush
 
         public void Tick()
         {
-            if (!IsActive)
-                return;
-
             switch (m_State)
             {
                 case SkillActivationState.Casting:
@@ -161,12 +159,7 @@ namespace Rush
             return m_State == SkillActivationState.Idle;
         }
 
-        public void SetSilenced(bool silenced)
-        {
-            ChangeState(silenced
-                ? SkillActivationState.Silenced
-                : SkillActivationState.Idle);
-        }
+        
 
         #endregion
 
@@ -216,7 +209,6 @@ namespace Rush
                 ExecuteSkill();
             }
         }
-
         #endregion
 
         #region Casting

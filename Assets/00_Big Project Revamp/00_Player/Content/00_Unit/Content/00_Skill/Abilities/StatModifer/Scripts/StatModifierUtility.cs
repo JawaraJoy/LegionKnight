@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Rush
 {
     [System.Serializable]
-    public static partial class StatModifierUltility
+    public static partial class StatModifierUtility
     {
         public static StatField GetFinalAddionalStat(StatInfluencerContext context, Unit unitTarget)
         {
@@ -22,6 +22,9 @@ namespace Rush
                     break;
                 case ScalingStat.Defense:
                     result.SetDefense(ownerStat.Defense * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                    break;
+                default:
+                    Debug.LogWarning($"Unhandled ScalingStat: {EffectScore.ScaleBy}");
                     break;
             }
             return result;

@@ -1,7 +1,6 @@
-using Rush;
 using UnityEngine;
 
-namespace LegionKnight
+namespace Rush
 {
     public interface IStatInfluencer
     {

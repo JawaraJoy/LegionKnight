@@ -358,12 +358,30 @@ namespace Rush
             if (bindableTarget.HasBind(out Unit targetUnit))
             {
                 senderActivator.OnAbilityDeliverd?.Invoke(targetUnit);
+                ApplyStatusEffect(senderContext, targetUnit);
             }
         }
         public static void OnSkillDeliveredInvoke(AbilityContext senderContext, Unit targetUnit)
         {
             SkillActivator senderActivator = senderContext.SkillContext.Activator;
             senderActivator.OnAbilityDeliverd?.Invoke(targetUnit);
+            ApplyStatusEffect(senderContext, targetUnit);
+        }
+
+        private static void ApplyStatusEffect(AbilityContext senderContext, Unit targetUnit)
+        {
+            AbilityConfig abilityConfig = senderContext.AbilityDeliver.Config;
+            StatusEffectConfig[] statusEffects = abilityConfig.StatusEffectOnDelivered;
+            
+            if (statusEffects.Length <= 0) return;
+            if (targetUnit.HasBind(out StatusEffectController controller))
+            {
+                foreach (var effect in statusEffects)
+                {
+                    controller.ApplyEffector(effect, senderContext, targetUnit);
+                }
+            }
+            
         }
     }
 }
