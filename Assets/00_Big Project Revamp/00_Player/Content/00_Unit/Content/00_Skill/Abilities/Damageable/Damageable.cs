@@ -1,12 +1,12 @@
-﻿using LegionKnight;
-using MoreMountains.Tools;
+﻿using MoreMountains.Tools;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Damageable : MonoBehaviour
+    public class Damageable : Bindable
     {
         [SerializeField, Tooltip("How many times this unit can reborn after death")]
         private int m_RebornCount = 0;
@@ -113,8 +113,8 @@ namespace Rush
         {
             BattleContext context = new BattleContext(attacker, this);
             int effectiveDamage = context.DamageFormulaRPG();
-            m_OnHit?.Invoke(context);
             if (m_IsInvicible) return;
+            OnHitInvoke(context);
             // block damage if barrier exist
             if (m_Barrier > 0)
             {
@@ -156,6 +156,7 @@ namespace Rush
             HealerContext context = new HealerContext(healer, this);
             AddHealthInternal(healer.HealAmount);
             m_OnHealed?.Invoke(context);
+            AbilityUltility.OnSkillDeliveredInvoke(healer.AbilityContext, this);
         }
         private void OnHealthDepleted(BattleContext context)
         {
@@ -173,19 +174,20 @@ namespace Rush
             yield return new WaitForSeconds(delay);
             ReborInternal(1f);
         }
+        private void OnHitInvoke(BattleContext context)
+        {
+            m_OnHit?.Invoke(context);
+            // attacker ability delivered here
+            AbilityUltility.OnSkillDeliveredInvoke(context.Attacker.AbilityContext, this);
+            AbilityUltility.OnCombatReceivedForceActivates(this, SkillTriggerState.OnHit);
+        }
         private void OnDamageTaken(BattleContext context)
         {
             m_OnDamageTaken?.Invoke(context);
             OnDeathInvoke(context);
-            SkillActivator attackerSkill = context.Attacker.AbilityContext.SkillContext.Activator;
-            if (attackerSkill != null) 
-            {
-                SkillTriggerState skillTrigger = attackerSkill.SkillConfig.Trigger.TriggerState;
-                if (skillTrigger == SkillTriggerState.OnDamageDealed)
-                {
-                    attackerSkill.ForceActivateAll();
-                }
-            }
+            Unit unitAttacker = context.Attacker.AbilityContext.SkillContext.ModuleContext.UnitOwner;
+            AbilityUltility.OnCombatReceivedForceActivates(unitAttacker, SkillTriggerState.OnDamageDealed);
+            AbilityUltility.OnCombatReceivedForceActivates(this, SkillTriggerState.OnDamageTaken);
         }
         private void OnDeathInvoke(BattleContext context)
         {

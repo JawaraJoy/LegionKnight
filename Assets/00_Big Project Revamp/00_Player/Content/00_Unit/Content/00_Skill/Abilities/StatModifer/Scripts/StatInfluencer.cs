@@ -40,47 +40,48 @@ namespace Rush
         {
             gameObject.SetActive(true);
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
-            if (!m_Context.Initialized)
+
+            m_Context = new StatInfluencerContext(context, this);
+            AbilityConfig abilityConfig = context.AbilityDeliver.Config;
+            if (abilityConfig is StatInfluencerConfig config)
             {
-                m_Context = new StatInfluencerContext(context, this);
-                AbilityConfig abilityConfig = context.AbilityDeliver.Config;
-                if (abilityConfig is StatInfluencerConfig config)
-                {
-                    m_Config = config;
-                }
-                int skillLevel = m_Context.AbilityContext.SkillContext.Activator.Progression.Level;
-                m_TotalDuration = m_Config.FinalDurationByLevel(skillLevel);
-                m_StackCount = m_Config.GetStartingStack();
-                switch (m_Config.HowToRemove)
-                {
-                    case HowStatRemoved.RemoveOnDurationEnd:
-                        m_OnDurationEnd.AddListener(OnDeactiveInvoke);
-                        break;
-                    case HowStatRemoved.RemoveOnStackZero:
-                        m_OnStackEmpty.AddListener(OnDeactiveInvoke);
-                        break;
-                    case HowStatRemoved.RemoveOnStackExceedMax:
-                        m_OnStackExceedMax.AddListener(OnDeactiveInvoke);
-                        break;
-                    case HowStatRemoved.RemoveStackOnDurationEnd:
-                        m_OnDurationEnd.AddListener(OnDurationTickReduceStack); // ✅
-                        break;
-                }
-                StartTimer();
-                m_OnActive?.Invoke(m_Context);
+                m_Config = config;
             }
-            else
+
+            int skillLevel = m_Context.AbilityContext.SkillContext.Activator.Progression.Level;
+            m_TotalDuration = m_Config.FinalDurationByLevel(skillLevel);
+            SetStackInternal(m_Config.GetStartingStack());
+
+            switch (m_Config.HowToRemove)
             {
-                switch (m_Config.HowStackUpdate)
-                {
-                    case HowStackUpdate.Addictive:
-                        AddStackInternal(m_Config.UpdatePerStackCount);
-                        break;
-                    case HowStackUpdate.Subtractive:
-                        AddStackInternal(-m_Config.UpdatePerStackCount);
-                        break;
-                }
-                
+                case HowStatRemoved.Permanent:
+                    break;
+                case HowStatRemoved.RemoveOnDurationEnd:
+                    m_OnDurationEnd.AddListener(OnDeactiveInvoke);
+                    break;
+                case HowStatRemoved.RemoveOnStackZero:
+                    m_OnStackEmpty.AddListener(OnDeactiveInvoke);
+                    break;
+                case HowStatRemoved.RemoveOnStackExceedMax:
+                    m_OnStackExceedMax.AddListener(OnDeactiveInvoke);
+                    break;
+                case HowStatRemoved.RemoveStackOnDurationEnd:
+                    m_OnDurationEnd.AddListener(OnDurationTickReduceStack); // ✅
+                    break;
+            }
+            StartTimer();
+            m_OnActive?.Invoke(m_Context);
+        }
+        public void UpdateStack()
+        {
+            switch (m_Config.HowStackUpdate)
+            {
+                case HowStackUpdate.Addictive:
+                    AddStackInternal(m_Config.UpdatePerStackCount);
+                    break;
+                case HowStackUpdate.Subtractive:
+                    AddStackInternal(-m_Config.UpdatePerStackCount);
+                    break;
             }
         }
         private void OnDurationTickReduceStack()
@@ -110,10 +111,18 @@ namespace Rush
             m_RemainingDuration = 0;
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
-
+        private void SetStackInternal(int stack)
+        {
+            m_StackCount = stack;
+            OnStackUpdateInvoke();
+        }
         private void AddStackInternal(int add)
         {
             m_StackCount += add;
+            OnStackUpdateInvoke();
+        }
+        private void OnStackUpdateInvoke()
+        {
             m_OnStackChange?.Invoke(m_StackCount);
             if (m_Config.ResetDurationOnStackUpdate)
             {

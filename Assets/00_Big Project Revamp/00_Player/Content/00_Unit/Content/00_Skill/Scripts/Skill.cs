@@ -12,7 +12,7 @@ namespace Rush
         private ModuleContext m_ModuleContext;
         [SerializeField, MMReadOnly]
         private List<SkillActivator> m_SkillActivators = new();
-
+        public IReadOnlyList<SkillActivator> SkillActivators => m_SkillActivators;
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
@@ -23,7 +23,7 @@ namespace Rush
         {
             return m_SkillActivators.Find(x => x.Context.Activator.SkillConfig.BaseInfo.Id == id);
         }
-        private List<SkillActivator> GetSkillsByCategoryInternal(SkillCategory category)
+        private List<SkillActivator> GetSkillsByCategoryInternal(SkillCategoryConfig category)
         {
             List<SkillActivator> findCategories = new List<SkillActivator>();
             foreach (SkillActivator activator in m_SkillActivators) 
@@ -35,7 +35,7 @@ namespace Rush
             }
             return findCategories;
         }
-        public void SetSkillCategoryLevel(SkillCategory category, int level)
+        public void SetSkillCategoryLevel(SkillCategoryConfig category, int level)
         {
             List<SkillActivator> activators = GetSkillsByCategoryInternal(category);
             foreach(SkillActivator activator in activators)
@@ -43,7 +43,7 @@ namespace Rush
                 activator.Progression.SetLevel(level);
             }
         }
-        public void AddSkillCategoryLevel(SkillCategory category, int level)
+        public void AddSkillCategoryLevel(SkillCategoryConfig category, int level)
         {
             List<SkillActivator> activators = GetSkillsByCategoryInternal(category);
             foreach (SkillActivator activator in activators)

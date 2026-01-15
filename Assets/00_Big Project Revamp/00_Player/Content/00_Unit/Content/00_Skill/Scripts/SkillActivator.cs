@@ -5,16 +5,15 @@ using UnityEngine.Events;
 
 namespace Rush
 {
+    public enum SkillActivationState
+    {
+        Idle,
+        Casting,
+        Cooldown,
+        Silenced
+    }
     public class SkillActivator : Bindable, IUpdater
     {
-        public enum SkillActivationState
-        {
-            Idle,
-            Casting,
-            Cooldown,
-            Silenced
-        }
-
         [Header("Config")]
         [SerializeField]
         private SkillActivatorConfig m_SkillConfig;
@@ -48,10 +47,13 @@ namespace Rush
         private UnityEvent<AbilityContext> m_OnActivateIndividu;
         [SerializeField]
         private UnityEvent<SkillContext> m_OnActivates;
+        [SerializeField]
+        private UnityEvent<Unit> m_OnAbilityDelivered;
         public ProgressField Progression => m_Progression;
         public SkillActivatorConfig SkillConfig => m_SkillConfig;
         public SkillContext Context => m_Context;
         public IReadOnlyList<AbilityDeliver> Delivers => m_Delivers;
+        public UnityEvent<Unit> OnAbilityDeliverd => m_OnAbilityDelivered;
 
         public bool IsActive => gameObject.activeInHierarchy;
 
@@ -109,7 +111,7 @@ namespace Rush
 
             m_OnInit?.Invoke(m_Context);
 
-            if (m_SkillConfig.Trigger.TriggerState == SkillTriggerState.OnHit)
+            if (m_SkillConfig.Activation.TriggerState == SkillTriggerState.OnHit)
             {
                 if (ownerContext.UnitOwner.HasBind(out Damageable damageable))
                 {
@@ -177,12 +179,12 @@ namespace Rush
 
             m_RemainingCharge += amount;
 
-            if (m_RemainingCharge >= m_SkillConfig.Trigger.Charge)
+            if (m_RemainingCharge >= m_SkillConfig.Activation.Charge)
             {
-                float overflow = m_RemainingCharge - m_SkillConfig.Trigger.Charge;
+                float overflow = m_RemainingCharge - m_SkillConfig.Activation.Charge;
 
-                if (m_SkillConfig.Trigger.TriggerState == SkillTriggerState.OnChargeFull &&
-                    m_SkillConfig.Trigger.AutoActiveOnReady)
+                if (m_SkillConfig.Activation.TriggerState == SkillTriggerState.OnChargeFull &&
+                    m_SkillConfig.Activation.AutoActiveOnReady)
                 {
                     TryActivateInternal();
                 }
@@ -292,7 +294,7 @@ namespace Rush
 
         private void EnterCooldown()
         {
-            m_RemainingCooldown = m_SkillConfig.Trigger.Cooldown;
+            m_RemainingCooldown = m_SkillConfig.Activation.Cooldown;
             ChangeState(SkillActivationState.Cooldown);
         }
 
@@ -305,7 +307,7 @@ namespace Rush
                 m_RemainingCooldown = 0f;
                 ChangeState(SkillActivationState.Idle);
 
-                if (m_SkillConfig.Trigger.AutoActiveOnReady)
+                if (m_SkillConfig.Activation.AutoActiveOnReady)
                 {
                     TryActivate();
                 }
@@ -322,7 +324,7 @@ namespace Rush
 
             ForceActivateAllInternal();
 
-            if (m_SkillConfig.Trigger.TriggerState == SkillTriggerState.OnCooldownDone)
+            if (m_SkillConfig.Activation.TriggerState == SkillTriggerState.OnCooldownDone)
             {
                 EnterCooldown();
             }

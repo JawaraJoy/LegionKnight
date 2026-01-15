@@ -44,6 +44,13 @@ namespace Rush
             }
             m_Damage = Mathf.RoundToInt(damage);
         }
-
+        private void OnAttackStartInvoke()
+        {
+            m_OnAttackStart?.Invoke(m_AbilityContext);
+        }
+        private void OnAttackDoneInvoke()
+        {
+            m_OnAttackDone?.Invoke(m_AbilityContext);
+        }
     }
 }

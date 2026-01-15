@@ -10,6 +10,8 @@ namespace Rush
         [SerializeField]
         private ModifierType m_ModifierType = ModifierType.Buff;
         [SerializeField]
+        private bool m_IsPermanent;
+        [SerializeField]
         private float m_Duration = 5f;
         [SerializeField]
         private float m_DurationGrowthByLevel = 0f;
@@ -25,6 +27,7 @@ namespace Rush
         private HowStatRemoved m_HowToRemove = HowStatRemoved.RemoveOnDurationEnd;
         public ModifierType ModifierType => m_ModifierType;
         public StatInfluencer StatInfluencerPrefab => m_StatInfluencerPrefab;
+        public bool IsPermanent => m_IsPermanent;
         public float Duration => m_Duration;
         public float DurationGrowthByLevel => m_DurationGrowthByLevel;
         public float FinalDurationByLevel(int level)
@@ -53,10 +56,10 @@ namespace Rush
     }
     public enum HowStatRemoved
     {
+        Permanent,
         RemoveOnDurationEnd,
         RemoveOnStackZero,
         RemoveOnStackExceedMax,
-        RemoveStackOnDurationEnd, // ✅ NEW
     }
     public enum HowStackUpdate
     {

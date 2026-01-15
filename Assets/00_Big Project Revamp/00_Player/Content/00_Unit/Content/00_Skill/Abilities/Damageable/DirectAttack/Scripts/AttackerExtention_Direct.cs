@@ -14,7 +14,7 @@ namespace Rush
         /// </summary>
         public void DirectAttack(Targetable target, float delay)
         {
-            m_OnAttackStart?.Invoke(m_AbilityContext);
+            OnAttackStartInvoke();
             StartCoroutine(DirectAttacking(target, delay));
         }
         private IEnumerator DirectAttacking(Targetable target, float delay)
@@ -30,9 +30,10 @@ namespace Rush
                     ExplodeDirectAttack(target, config);
                 }
             }
-            m_OnAttackDone?.Invoke(m_AbilityContext);
+            OnAttackDoneInvoke();
         }
 
+        // Can be Simpled
         public void ExplodeDirectAttack(Targetable target, DirectDamageAbilityConfig config)
         {
             PhysicsMode mode = RushGameManager.Instance.GameConfig.PhysicsMode;

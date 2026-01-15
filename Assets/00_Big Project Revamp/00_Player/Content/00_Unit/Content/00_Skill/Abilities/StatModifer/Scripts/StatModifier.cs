@@ -44,7 +44,15 @@ namespace Rush
         {
             if (HasStatInfluencer(abilityContext, out StatInfluencer found))
             {
-                found.Activate(abilityContext);
+                
+                if (found.IsActive)
+                {
+                    found.UpdateStack();
+                }
+                else
+                {
+                    found.Activate(abilityContext);
+                }
             }
             else
             {
@@ -57,6 +65,7 @@ namespace Rush
                     m_Influencers.Add(spawnedInfluencer);
                 }
             }
+            AbilityUltility.OnSkillDeliveredInvoke(abilityContext, m_ModuleContext.UnitOwner);
         }
         public StatField GetFinalStat(StatField unitStat)
         {

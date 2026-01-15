@@ -319,5 +319,51 @@ namespace Rush
                     targets.RemoveAt(i);
             }
         }
+        public static void OnCombatReceivedForceActivates(Bindable bindable, SkillTriggerState filterState)
+        {
+            if (bindable.HasBind(out Unit unitTaken))
+            {
+                if (unitTaken.HasBind(out Skill skill))
+                {
+                    List<SkillActivator> activators = new(skill.SkillActivators);
+                    foreach (var activator in activators)
+                    {
+                        SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;
+                        if (state == filterState)
+                        {
+                            activator.ForceActivateAll();
+                        }
+                    }
+                }
+            }
+        }
+        public static void OnCombatReceivedForceActivates(Unit unit, SkillTriggerState filterState)
+        {
+            if (unit.HasBind(out Skill skill))
+            {
+                List<SkillActivator> activators = new(skill.SkillActivators);
+                foreach (var activator in activators)
+                {
+                    SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;
+                    if (state == filterState)
+                    {
+                        activator.ForceActivateAll();
+                    }
+                }
+            }
+        }
+        public static void OnSkillDeliveredInvoke(AbilityContext senderContext, Bindable bindableTarget)
+        {
+            SkillActivator senderActivator = senderContext.SkillContext.Activator;
+            if (bindableTarget.HasBind(out Unit targetUnit))
+            {
+                senderActivator.OnAbilityDeliverd?.Invoke(targetUnit);
+            }
+        }
+        public static void OnSkillDeliveredInvoke(AbilityContext senderContext, Unit targetUnit)
+        {
+            SkillActivator senderActivator = senderContext.SkillContext.Activator;
+            senderActivator.OnAbilityDeliverd?.Invoke(targetUnit);
+        }
     }
 }
