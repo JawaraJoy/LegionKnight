@@ -1,6 +1,5 @@
 using LegionKnight.Dialogue;
 using MoreMountains.Tools;
-using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,7 +39,7 @@ namespace LegionKnight
         private List<Platform> m_SpawnedPlatform = new();
 
         [SerializeField, MMReadOnly]
-        private List<PlatformConfig> m_RealStanbyPlatformAssets = new();
+        private List<StandbyPlatformDefinition> m_RealStanbyPlatformAssets = new();
         public Transform PlayerStartPostion => m_PlayerStartPosition;
         private AssetReferenceGameObject BosAssetInternal
         {
@@ -90,13 +89,13 @@ namespace LegionKnight
             RemovePlatformInternal(platform);
         }
 
-        public void AddStandByPlatform(PlatformConfig platform)
+        public void AddStandByPlatform(StandbyPlatformDefinition platform)
         {
             if (platform == null) return;
             if (m_RealStanbyPlatformAssets.Contains(platform)) return;
             m_RealStanbyPlatformAssets.Add(platform);
         }
-        public void RemoveStandByPlatform(PlatformConfig platform)
+        public void RemoveStandByPlatform(StandbyPlatformDefinition platform)
         {
             if (platform == null) return;
             if (m_RealStanbyPlatformAssets.Count <= 0) return;
@@ -129,25 +128,25 @@ namespace LegionKnight
         {
             GetLastSpawnedPlatformInternal().SetActiveBehaviourCollider(set);
         }
-        public void AddRealStanbyPlatform(List<PlatformConfig> standby)
+        public void AddRealStanbyPlatform(List<StandbyPlatformDefinition> standby)
         {
             AddRealStanbyPlatformInternal(standby);
         }
-        public void RemoveRealStanbyPlatform(List<PlatformConfig> standby)
+        public void RemoveRealStanbyPlatform(List<StandbyPlatformDefinition> standby)
         {
             RemoveRealStanbyPlatformInternal(standby);
         }
-        private void AddRealStanbyPlatformInternal(List<PlatformConfig> standby)
+        private void AddRealStanbyPlatformInternal(List<StandbyPlatformDefinition> standby)
         {
-            foreach (PlatformConfig p in standby)
+            foreach (StandbyPlatformDefinition p in standby)
             {
                 m_RealStanbyPlatformAssets.Add(p);
             }
         }
-        private void RemoveRealStanbyPlatformInternal(List<PlatformConfig> standby)
+        private void RemoveRealStanbyPlatformInternal(List<StandbyPlatformDefinition> standby)
         {
             if (m_RealStanbyPlatformAssets.Count <= 0) return;
-            foreach (PlatformConfig p in standby)
+            foreach (StandbyPlatformDefinition p in standby)
             {
                 if (m_RealStanbyPlatformAssets.Contains(p))
                 {
@@ -179,11 +178,11 @@ namespace LegionKnight
             AssetReferenceGameObject selected = null;
 
             // Skip nulls and platforms with null Platform property
-            foreach (PlatformConfig platform in m_RealStanbyPlatformAssets)
+            foreach (StandbyPlatformDefinition platform in m_RealStanbyPlatformAssets)
             {
-                if (platform == null || platform.PlatformPrefab == null)
+                if (platform == null || platform.Platform == null)
                     continue;
-                totalChance += platform.ChanceToSpawn;
+                totalChance += platform.ChanceRateToSpawn;
             }
 
             if (totalChance == 0)
@@ -192,14 +191,14 @@ namespace LegionKnight
             int random = Random.Range(0, totalChance);
 
             float cumulativeChance = 0;
-            foreach (PlatformConfig platform in m_RealStanbyPlatformAssets)
+            foreach (StandbyPlatformDefinition platform in m_RealStanbyPlatformAssets)
             {
-                if (platform == null || platform.PlatformPrefab == null)
+                if (platform == null || platform.Platform == null)
                     continue;
-                cumulativeChance += platform.ChanceToSpawn;
+                cumulativeChance += platform.ChanceRateToSpawn;
                 if (random < cumulativeChance)
                 {
-                    selected = platform.PlatformPrefab;
+                    selected = platform.Platform;
                     break;
                 }
             }

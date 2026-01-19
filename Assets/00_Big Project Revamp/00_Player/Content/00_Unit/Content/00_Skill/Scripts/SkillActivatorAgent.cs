@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Rush
+namespace LegionKnight
 {
     public class SkillActivatorAgent : MonoBehaviour
     {

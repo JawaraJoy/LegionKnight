@@ -1,4 +1,3 @@
-using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -100,7 +99,7 @@ namespace LegionKnight
             {
                 Player.Instance.SetOwned(character, true);
             }
-            else if (m_Object is PlatformConfig plat)
+            else if (m_Object is StandbyPlatformDefinition plat)
             {
                 Player.Instance.AddPlatformAmount(plat, m_Amount);
             }
@@ -128,9 +127,9 @@ namespace LegionKnight
             {
                 return character.Label;
             }
-            else if (m_Object is PlatformConfig plat)
+            else if (m_Object is StandbyPlatformDefinition plat)
             {
-                return plat.BaseInfo.Name;
+                return plat.Label;
             }
             else if (m_Object is EnergyDefinition ene)
             {
@@ -148,7 +147,7 @@ namespace LegionKnight
             {
                 return character.Icon;
             }
-            else if (m_Object is PlatformConfig plat)
+            else if (m_Object is StandbyPlatformDefinition plat)
             {
                 return plat.Icon;
             }

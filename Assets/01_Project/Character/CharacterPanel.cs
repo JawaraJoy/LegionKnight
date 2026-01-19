@@ -1,4 +1,3 @@
-using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -36,10 +35,10 @@ namespace LegionKnight
                 m_CharacterSelectionView.HideAll();
             }
         }
-        public void ShowRarity(RarityConfig rarity)
+        public void ShowRarity(int rarityIndex)
         { 
             m_CharacterSelectionView.ShowRarity(rarityIndex);
-            m_PlatformSelectionView.ShowRarity(rarity);
+            m_PlatformSelectionView.ShowRarity(rarityIndex);
             Adjust();
         }
         public void ShowAll()

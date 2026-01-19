@@ -1,4 +1,3 @@
-using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -54,13 +53,13 @@ namespace LegionKnight
         
         public void AddUniqueHeroPlatform()
         {
-            GameManager.Instance.AddStandbyPlatform(new List<PlatformConfig> { GetHeroStandbyPlatformInternal() });
+            GameManager.Instance.AddStandbyPlatform(new List<StandbyPlatformDefinition> { GetHeroStandbyPlatformInternal() });
         }
-        private PlatformConfig GetHeroStandbyPlatformInternal()
+        private StandbyPlatformDefinition GetHeroStandbyPlatformInternal()
         {
             return m_PlayerDeck.GetHeroStandbyPlatform();
         }
-        public PlatformConfig GetHeroStandbyPlatform()
+        public StandbyPlatformDefinition GetHeroStandbyPlatform()
         {
             return m_PlayerDeck.GetHeroStandbyPlatform();
         }

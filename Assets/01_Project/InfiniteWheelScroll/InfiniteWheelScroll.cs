@@ -1,7 +1,6 @@
 ﻿// CLEAN REWRITE – Infinite Wheel Scroll (Drag + Snap + Scale + Fade + Curve)
 // Uses m_ prefix, ScriptableObject data, clean architecture, no unused parameters.
 
-using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -69,7 +68,7 @@ namespace LegionKnight
             List<PlatformUnit> platformUnits = new(platformDeck.GetPlatformUnits());
             foreach (PlatformUnit unit in platformUnits)
             {
-                WheelItemDefinition item = unit.StanbyPlatform.WheelItemDefinition;
+                WheelItemDefinition item = unit.StanbyPlatform.WheelDefi;
                 if (!m_ItemDefinitions.Contains(item))
                 {
                     m_ItemDefinitions.Add(item);

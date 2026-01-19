@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,7 +35,7 @@ namespace LegionKnight
         }
         private void PlatformApplier(RewardObject defi)
         {
-            if (defi.Defi is PlatformConfig platform)
+            if (defi.Defi is StandbyPlatformDefinition platform)
             {
                 m_Icon.sprite = platform.Icon;
             }

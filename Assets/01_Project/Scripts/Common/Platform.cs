@@ -1,14 +1,13 @@
-using Rush;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    [Obsolete]
-    public partial class Platform : Unit
+    public partial class Platform : MonoBehaviour
     {
+        
         [SerializeField]
         private List<Collider2D> m_ColliderBehaviourActives = new();
         [SerializeField]
@@ -21,6 +20,7 @@ namespace LegionKnight
         private Collider2D m_ContactCollider;
         [SerializeField]
         protected PlatformContact m_PlatformContact;
+
         [SerializeField]
         private UnityEvent<GameObject> m_OnPlayerAttached = new();
         [SerializeField]

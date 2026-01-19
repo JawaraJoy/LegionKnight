@@ -1,4 +1,3 @@
-using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -58,11 +57,11 @@ namespace LegionKnight
         {
             m_LevelManager.RemovePlatform(platform);
         }
-        public void RemoveStandByPlatform(PlatformConfig platform)
+        public void RemoveStandByPlatform(StandbyPlatformDefinition platform)
         {
             m_LevelManager.RemoveStandByPlatform(platform);
         }
-        public void AddStandByPlatform(PlatformConfig platform)
+        public void AddStandByPlatform(StandbyPlatformDefinition platform)
         {
             m_LevelManager.AddStandByPlatform(platform);
         }
@@ -74,7 +73,7 @@ namespace LegionKnight
         {
             m_LevelManager.SetLevelOver(set);
         }
-        public void AddStandbyPlatform(List<PlatformConfig> standby)
+        public void AddStandbyPlatform(List<StandbyPlatformDefinition> standby)
         {
             m_LevelManager.AddStandbyPlatform(standby);
         }

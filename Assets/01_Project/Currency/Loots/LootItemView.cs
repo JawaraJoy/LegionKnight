@@ -1,4 +1,3 @@
-using Rush;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -69,7 +68,7 @@ namespace LegionKnight
         }
         private void StandbyPlatformApplier(ScriptableObject defi, int amount)
         {
-            if (defi is PlatformConfig platform)
+            if (defi is StandbyPlatformDefinition platform)
             {
                 m_Icon.sprite = platform.Icon;
                 m_Amount.text = amount.ToString();

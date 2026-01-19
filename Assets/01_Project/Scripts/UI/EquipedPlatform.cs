@@ -1,5 +1,5 @@
 using MoreMountains.Tools;
-using Rush;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -14,8 +14,8 @@ namespace LegionKnight
         private UnityEvent<PlatformUnit> m_OnPlatformEquiped;
 
         [SerializeField, MMReadOnly]
-        private PlatformConfig m_Selected;
-        public void SetSelected(PlatformConfig select)
+        private StandbyPlatformDefinition m_Selected;
+        public void SetSelected(StandbyPlatformDefinition select)
         {
             m_Selected = select;
         }
@@ -28,7 +28,7 @@ namespace LegionKnight
         }
         public void Init()
         {
-            PlatformConfig equiped = Player.Instance.GetUsedStanbyPlatform();
+            StandbyPlatformDefinition equiped = Player.Instance.GetUsedStanbyPlatform();
             bool isOwned = Player.Instance.IsPlatformOwned(equiped);
             if (isOwned)
             {

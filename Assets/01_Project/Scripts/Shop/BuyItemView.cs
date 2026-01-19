@@ -1,4 +1,3 @@
-using Rush;
 using System.Collections;
 using UnityEngine;
 
@@ -66,7 +65,7 @@ namespace LegionKnight
         }
         private void PlatformApplier(Object defi, int amount)
         {
-            if (defi is PlatformConfig platform)
+            if (defi is StandbyPlatformDefinition platform)
             {
                 m_Icon.sprite = platform.Icon;
                 Player.Instance.AddPlatformAmount(platform, amount);

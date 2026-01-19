@@ -1,4 +1,3 @@
-using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -152,7 +151,7 @@ namespace LegionKnight
             {
                 Player.Instance.AddCurrencyAmount(currencyDefinition, m_BonusAmount);
             }
-            if (item is PlatformConfig standby)
+            if (item is StandbyPlatformDefinition standby)
             {
                 Player.Instance.AddPlatformAmount(standby, m_Amount);
             }
