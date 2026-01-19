@@ -16,13 +16,7 @@ namespace Rush
         [SerializeField]
         private float m_PositionSpread = 0.2f;
 
-        public override void GetSpawnTransform(
-            Transform origin,
-            int index,
-            int totalCount,
-            out Vector3 position,
-            out Quaternion rotation
-        )
+        public override void GetSpawnTransform(Transform origin, int index, int totalCount, out Vector3 position, out Quaternion rotation)
         {
             float angle = UnityEngine.Random.Range(-m_RandomAngle, m_RandomAngle);
             rotation = origin.rotation * Quaternion.Euler(0f, 0f, angle);

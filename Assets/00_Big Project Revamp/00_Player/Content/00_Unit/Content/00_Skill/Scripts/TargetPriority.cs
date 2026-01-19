@@ -30,6 +30,7 @@ namespace Rush
     {
         Damaging = 0,
         Healing = 1,
-        StatModifier = 2,
+        Charging = 2,
+        StatModifier = 3,
     }
 }
