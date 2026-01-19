@@ -24,6 +24,9 @@ namespace LegionKnight
         private Sprite m_Icon;
         [SerializeField]
         private Sprite m_SmallIcon;
+        [SerializeField]
+        private Sprite m_LargeIcon;
+        public Sprite LargeIcon => m_LargeIcon;
 
         [SerializeField]
         private Sprite m_TypeIcon;

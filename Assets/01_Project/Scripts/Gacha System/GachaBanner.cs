@@ -19,7 +19,7 @@ namespace LegionKnight
         [SerializeField]
         private BannerDefinition m_Definition;
         [SerializeField]
-        private bool m_SkipTimeline = false;
+        private bool m_SkipAnimation = false;
         [SerializeField]
         private DrawDiscount m_SingleDrawDiscount;
         [SerializeField]
@@ -38,7 +38,7 @@ namespace LegionKnight
         private List<GachaReward> GachaRewardsInternal => m_Definition.GachaRewards;
         public BannerDefinition Definition => m_Definition;
         public int TotalDraws => m_TotalDraws;
-        public bool SkipTimeline => m_SkipTimeline;
+        public bool SkipAnimation => m_SkipAnimation;
         public Sprite VisualBanner => m_Definition.VisualBanner;
         public Sprite SmallVisualBanner => m_Definition.SmallVisualBanner;
 
@@ -209,7 +209,7 @@ namespace LegionKnight
                 //re.ApplyRewardToPlayer();
             }
             
-            if (!m_SkipTimeline)
+            if (!m_SkipAnimation)
             {
                 //timeline.Play();
                 //yield return new WaitUntil(() => timeline.state != PlayState.Playing);

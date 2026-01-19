@@ -71,7 +71,7 @@ namespace LegionKnight
                 onComplete?.Invoke();
                 if (m_NextAnim != null)
                 {
-                    skeletonAnimation.StartCoroutine(PlayNextUI(skeletonAnimation, m_NextAnimDelay));
+                    //skeletonAnimation.StartCoroutine(PlayNextUI(skeletonAnimation, m_NextAnimDelay));
                     //m_NextAnim.PlayUI(skeletonAnimation);
                 }
             };

@@ -51,11 +51,15 @@ namespace LegionKnight
 
             string tabName = "";
 
+            if (m_View.UniqueId.IndexOf("Sign In") > -1)
+            {
+                tabName = "Sign In";
+            }
             if(m_View.UniqueId.IndexOf("Weekly") > -1)
             {
                 tabName = "Weekly";
             }
-            else if(m_View.UniqueId.IndexOf("Daily") > -1)
+            if(m_View.UniqueId.IndexOf("Daily") > -1)
             {
                 tabName = "Daily";
             }
