@@ -324,13 +324,17 @@ namespace LegionKnight
             bool canRevive = Player.Instance.CanUseResurrectionAds;
             if (!canRevive)
             {
-                UnityService.Instance.UnityAdsManager.LevelPlayService.ShowInternitialAds(() =>
+                /*UnityService.Instance.UnityAdsManager.LevelPlayService.ShowInternitialAds(() =>
                 {
-                    
                     Debug.Log("Show Internitial Ads - Game Over");
-                });
+                    CanvasManager.Instance.HidePanel(PanelId.DiedPanel);
+                    CanvasManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+                });*/
+                CanvasManager.Instance.HidePanel(PanelId.DiedPanel);
+                CanvasManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+                return;
             }
-            CanvasManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+            CanvasManager.Instance.ShowPanel(PanelId.DiedPanel);
         }
         private void PotOfLifeEff(int rebornHealth, Currency currency)
         {

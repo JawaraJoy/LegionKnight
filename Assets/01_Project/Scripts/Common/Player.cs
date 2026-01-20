@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.Events;
@@ -17,6 +18,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<CharacterDefinition> m_OnSetCharacterDefinition = new();
 
+        [SerializeField, MMReadOnly]
         private bool m_CanUseResurrectionAds = true;
         public bool CanUseResurrectionAds => m_CanUseResurrectionAds;
         public string PlayerName => m_PlayerName;

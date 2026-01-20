@@ -1,5 +1,3 @@
-using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,30 +11,17 @@ namespace LegionKnight
     {
         public override string UniqueId => PanelId.GameOverPanelId;
         [SerializeField]
-        private Button m_RessurectionButton;
-        [SerializeField]
-        private Image m_RessurectionImage;
-        [SerializeField]
-        private Color m_RessurectionActiveColor;
-        [SerializeField]
-        private Color m_RessurectionDeactiveColor;
-        [SerializeField]
         private Button m_PlayAgainButton;
         [SerializeField]
         private Button m_HomeButton;
         [SerializeField]
         private Button m_DoubleRewardButton;
-        [SerializeField]
-        private float m_CountdownTime = 5f;
-        [SerializeField]
-        private TextMeshProUGUI m_CountdownText;
 
         [SerializeField]
         private LootMonitor m_LootMonitor;
 
         private void Awake()
         {
-            m_RessurectionButton.onClick.AddListener(WatchAds);
             m_PlayAgainButton.onClick.AddListener(StoreLevelScoreInternal);
             m_HomeButton.onClick.AddListener(StoreLevelScoreInternal);
             m_DoubleRewardButton.onClick.AddListener(DoubleReward);
@@ -48,35 +33,18 @@ namespace LegionKnight
         }
         public void PlayAgain()
         {
-            //GameManager.Instance.LoadScene(m_GameplaySceneName);
             GameManager.Instance.Play();
         }
         protected override void OnShowInvoke()
         {
             base.OnShowInvoke();
-            //GameTimeScale.SetTimeScale(0);
-            //UnityService.Instance.LoadRewardedAd();
-
-            bool canUseRessurection = Player.Instance.CanUseResurrectionAds;
-            if (canUseRessurection)
-            {
-                StartCoroutine(Countingdown());
-            }
-            else
-            {
-                m_RessurectionButton.interactable = false;
-                m_RessurectionImage.color = m_RessurectionDeactiveColor;
-            }
-            //m_RessurectionButton.gameObject.SetActive(canUseRessurection);
-
-            Player.Instance.SetPause(true);
+            //Player.Instance.SetPause(true);
 
         }
         protected override void OnHideInvoke()
         {
             base.OnHideInvoke();
             GameTimeScale.SetTimeScale(1);
-            
             Player.Instance.SetPause(false);
         }
 
@@ -85,29 +53,6 @@ namespace LegionKnight
             GameManager.Instance.StoreLevelScore();
         }
 
-        private void Ressurection()
-        {
-            //GameManager.Instance.LevelDefinition.StartLevel();
-            StartCoroutine(Ressurectioning());
-        }
-
-        private IEnumerator Ressurectioning()
-        {
-            RevivePanel panel = CanvasManager.Instance.GetPanel<RevivePanel>();
-            if (panel != null)
-            {
-                panel.Show();
-            }
-            yield return new WaitForSeconds(1);
-            GameManager.Instance.RessurectionPlayer();
-            HideInternal();
-            Player.Instance.SetCanUseResurrectionAds(false);
-        }
-
-        private void WatchAds()
-        {
-            UnityService.Instance.ShowRewardedAd(Ressurection);
-        }
         private void DoubleReward()
         {
             UnityService.Instance.ShowRewardedAd(DoubleRewardAction);
@@ -125,25 +70,6 @@ namespace LegionKnight
                             {
                 Debug.LogWarning("LootMonitor binding not found in GameOverPanel");
             }
-        }
-        private IEnumerator Countingdown()
-        {
-            
-            float time = m_CountdownTime;
-            m_RessurectionButton.interactable = true;
-            m_RessurectionImage.color = m_RessurectionActiveColor;
-            
-            while (time > 0)
-            {
-                Debug.Log( $"Count Down {time}");
-                time -= Time.deltaTime;
-                m_CountdownText.text = Mathf.CeilToInt(time).ToString();
-                yield return null;
-            }
-            m_CountdownText.text = "0";
-            yield return new WaitForEndOfFrame();
-            m_RessurectionButton.interactable = false;
-            m_RessurectionImage.color = m_RessurectionDeactiveColor;
         }
     }
 }
