@@ -32,8 +32,6 @@ namespace LegionKnight
         [SerializeField, MMReadOnly]
         private List<GachaReward> m_GachaFiltered = new List<GachaReward>();
         [SerializeField]
-        private UnityEvent<SkeletonDataAsset> m_OnSpineAssetPulled;
-        [SerializeField]
         private UnityEvent<List<GachaReward>> m_OnPreviewDone;
         protected override void HideInternal()
         {
@@ -49,21 +47,17 @@ namespace LegionKnight
             m_GachaPulled.Clear();
             m_GachaPulled = new List<GachaReward>(gacharRewards);    
             m_GachaFiltered.Clear();
-            foreach (GachaReward gaachaReward in gacharRewards)
+            foreach (GachaReward gachaReward in gacharRewards)
             {
-                if (gaachaReward.Definition is CharacterDefinition)
+                if (gachaReward.Definition is CharacterDefinition || gachaReward.Definition is StandbyPlatformDefinition)
                 {
-                    m_GachaFiltered.Add(gaachaReward);
-                }
-                if (gaachaReward.Definition is StandbyPlatformDefinition)
-                {
-                    m_GachaFiltered.Add(gaachaReward);
+                    m_GachaFiltered.Add(gachaReward);
                 }
             }
-            GachaReward gachaReward = m_GachaFiltered[m_GachaIndex];
             
             if (m_GachaFiltered.Count > 0)
             {
+                GachaReward gachaReward = m_GachaFiltered[m_GachaIndex];
                 ShowPull(gachaReward);
             }
             else
@@ -83,12 +77,18 @@ namespace LegionKnight
             ShowPull(so);
         }
 
+        private Coroutine m_PlayCoroutine;
         private void ShowPull(GachaReward gachaReward)
         {
-            
+            if (m_PlayCoroutine != null)
+            {
+                StopCoroutine(m_PlayCoroutine);
+                m_PlayCoroutine = null;
+            }
+
             if (gachaReward.Definition is CharacterDefinition character)
             {
-                StartCoroutine(PlayGachaEffect(gachaReward, character));
+                m_PlayCoroutine = StartCoroutine(PlayGachaEffect(gachaReward, character));
             }
             else
             {
@@ -98,7 +98,8 @@ namespace LegionKnight
             }
             ShowInternal();
         }
-
+        [SerializeField]
+        private float m_RevealDelay = 3f;
         private IEnumerator PlayGachaEffect(GachaReward reward, CharacterDefinition character)
         {
             m_AnimationItemView.Init(reward);
@@ -121,10 +122,11 @@ namespace LegionKnight
                     break;
             }
             m_CharacterSpineUI.SetSkeletonDataAsset(character);
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(m_RevealDelay);
             m_CharacterSpineUI.Show();
         }
 
+        // called on button
         public void ShowAnimationItemView()
         {
             m_AnimationItemView.Show();

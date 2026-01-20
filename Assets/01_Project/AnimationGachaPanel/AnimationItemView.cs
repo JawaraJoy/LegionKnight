@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -7,10 +8,13 @@ namespace LegionKnight
     {
         [SerializeField]
         private TextMeshProUGUI m_ItemName;
+        [SerializeField, Obsolete]
+        private CharacterDefinition m_Exceptable;
         protected override void OnDefinitionSetInvoke(object defi)
         {
             base.OnDefinitionSetInvoke(defi);
             m_Amount.gameObject.SetActive(false);
+            m_ItemName.gameObject.SetActive(true);
             if (defi is GachaReward reward)
             {
                 if (reward.Definition is IDescriptable descriptable)
@@ -31,6 +35,10 @@ namespace LegionKnight
                 {
                     m_Icon.sprite = character.LargeIcon;
                     m_ItemName.text = GetHeroNameTextFormat(character);
+                }
+                if (reward.Definition == m_Exceptable)
+                {
+                    m_ItemName.gameObject.SetActive(false);
                 }
             }
             

@@ -1,9 +1,6 @@
-using Rush;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 namespace LegionKnight

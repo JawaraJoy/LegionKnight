@@ -1,3 +1,4 @@
+using Spine.Unity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,6 +15,8 @@ namespace LegionKnight
         private string m_Description;
         [SerializeField]
         private Sprite m_Icon;
+        [SerializeField]
+        private SkeletonDataAsset m_SkeletonDataAsset;
         [SerializeField]
         private CustomImageType m_Type;
         public string Id => m_Id;
