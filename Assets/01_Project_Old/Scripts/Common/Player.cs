@@ -7,7 +7,7 @@ namespace LegionKnight
 {
     public partial class Player : Singleton<Player>
     {
-        [SerializeField]
+        [SerializeField, MMReadOnly]
         private string m_PlayerName;
         [SerializeField]
         private CharacterDefinition m_CharacterDefinition;

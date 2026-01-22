@@ -1,9 +1,12 @@
+using LegionKnight;
 using UnityEngine;
 
 namespace Rush
 {
-    public abstract partial class UnitConfig : Configuration
+    public abstract partial class UnitConfig : Configuration, IHasIcon
     {
+        [SerializeField]
+        private Sprite m_Icon;
         [SerializeField]
         private Unit m_UnitPrefab;
         [SerializeField]
@@ -19,5 +22,7 @@ namespace Rush
         public FactionConfig Faction => m_Faction;
         public ProgressField StartingLevel => m_StartingLevel;
         public StatsField MainStats => m_MainStats;
+
+        public Sprite Icon => m_Icon;
     }
 }

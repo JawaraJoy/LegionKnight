@@ -283,16 +283,26 @@ namespace LegionKnight
     }
 
     [System.Serializable]
-    public class ImageContent
+    public class ImageContent : IProductHasCondition
     {
         [SerializeField]
         private CustomImageDefinition m_Definition;
         [SerializeField]
         private bool m_Owned;
+        [SerializeField, MMReadOnly]
+        private ProductCondition m_Condition;
         public CustomImageDefinition Definition => m_Definition;
         public bool Owned => m_Owned;
 
+        public ProductCondition Condition => m_Condition;
+
         private string OWNED_KEY => $"owned{m_Definition.Id}";
+
+        public void ChangeCondition(ProductCondition condition)
+        {
+            m_Condition = condition;
+        }
+
         public void Init()
         {
             bool hasOwnedData = UnityService.Instance.HasData(m_Definition.Id);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -80,6 +81,7 @@ namespace LegionKnight
             }
         }
     }
+    [Obsolete]
     public partial class Character
     {
         [SerializeField]
