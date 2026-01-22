@@ -1,6 +1,7 @@
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace LegionKnight
+namespace Rush
 {
     public enum ProductCondition
     {
@@ -12,5 +13,11 @@ namespace LegionKnight
     {
         void ChangeCondition(ProductCondition condition);
         ProductCondition Condition { get; }
+        UnityEvent<ProductCondition> OnConditionChanged { get; }
+    }
+
+    public static class ProducNoticeUtil
+    {
+
     }
 }

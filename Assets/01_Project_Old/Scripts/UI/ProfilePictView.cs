@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using Rush;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +20,8 @@ namespace LegionKnight
         [SerializeField, MMReadOnly]
         private AnimatorOverrideController m_OverrideController;
         private CustomProfile m_Profile;
-
+        [SerializeField]
+        private ProfileViewNoticeButton m_NoticeButton;
         private CustomProfile GetCustomProfile()
         {
             if (m_Profile == null)
@@ -95,6 +97,7 @@ namespace LegionKnight
                     m_ProfileBackground.sprite = frame.Icon;
                 }
             }
+            m_NoticeButton.NoticeCheck();
         }
     }
 }

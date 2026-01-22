@@ -1,6 +1,8 @@
 using MoreMountains.Tools;
 using System.Collections.Generic;
 using UnityEngine;
+using Rush;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -58,18 +60,26 @@ namespace LegionKnight
             if (!m_ProfilePicts.Contains(pict)) return;
             m_ProfilePicts.Remove(pict);
         }
-        private ImageContent GetIcon(CustomImageDefinition defi)
+        private ImageContent GetIconInternal(CustomImageDefinition defi)
         {
             foreach (var icon in m_Icons)
             {
-                if (icon.Definition == defi)
+                if (icon.Definition.Id == defi.Id)
                 {
                     return icon;
                 }
             }
             return null;
         }
-        private ImageContent GetIcon(string id)
+        public ImageContent GetIcon(CustomImageDefinition defi)
+        {
+            return GetIconInternal(defi);
+        }
+        public ImageContent GetFrame(CustomImageDefinition defi)
+        {
+            return GetFrameInternal(defi);
+        }
+        private ImageContent GetIconInternal(string id)
         {
             foreach (var icon in m_Icons)
             {
@@ -80,11 +90,11 @@ namespace LegionKnight
             }
             return null;
         }
-        private ImageContent GetFrame(CustomImageDefinition defi)
+        private ImageContent GetFrameInternal(CustomImageDefinition defi)
         {
             foreach (var frame in m_Frames)
             {
-                if (frame.Definition == defi)
+                if (frame.Definition.Id == defi.Id)
                 {
                     return frame;
                 }
@@ -104,17 +114,17 @@ namespace LegionKnight
         }
         private bool HasIconInternal(CustomImageDefinition defi, out ImageContent content)
         {
-            content = GetIcon(defi);
+            content = GetIconInternal(defi);
             return content != null;
         }
         private bool HasIconInternal(string id, out ImageContent content)
         {
-            content = GetIcon(id);
+            content = GetIconInternal(id);
             return content != null;
         }
         private bool HasFrameInternal(CustomImageDefinition defi, out ImageContent content)
         {
-            content = GetFrame(defi);
+            content = GetFrameInternal(defi);
             return content != null;
         }
         private bool HasFrameInternal(string id, out ImageContent content)
@@ -213,9 +223,13 @@ namespace LegionKnight
             {
                 frame.Init();
             }
-            Refresh();
+            RefreshInternal();
         }
-        private void Refresh()
+        public void Refres()
+        {
+            RefreshInternal();
+        }
+        private void RefreshInternal()
         {
             foreach (var pp in m_ProfilePicts)
             {
@@ -262,7 +276,7 @@ namespace LegionKnight
                     }
                     break;
             }
-            Refresh();  
+            RefreshInternal();  
         }
         public void SetUsed(CustomImageType typ)
         {
@@ -278,7 +292,7 @@ namespace LegionKnight
                     break;
             }
             
-            Refresh();
+            RefreshInternal();
         }
     }
 
@@ -290,32 +304,53 @@ namespace LegionKnight
         [SerializeField]
         private bool m_Owned;
         [SerializeField, MMReadOnly]
-        private ProductCondition m_Condition;
+        private ProductCondition m_Condition = ProductCondition.Locked;
+        private UnityEvent<ProductCondition> m_OnConditionChanged = new();
         public CustomImageDefinition Definition => m_Definition;
         public bool Owned => m_Owned;
 
         public ProductCondition Condition => m_Condition;
 
+        public UnityEvent<ProductCondition> OnConditionChanged => m_OnConditionChanged;
+
         private string OWNED_KEY => $"owned{m_Definition.Id}";
+        private string CONDITION_KEY => $"con{m_Definition.Id}";
 
         public void ChangeCondition(ProductCondition condition)
         {
+            ChangeConditionInternal(condition);
+        }
+        private void ChangeConditionInternal(ProductCondition condition)
+        {
             m_Condition = condition;
+            UnityService.Instance.SaveData(CONDITION_KEY, m_Condition);
+            m_OnConditionChanged?.Invoke(condition);
         }
 
         public void Init()
         {
-            bool hasOwnedData = UnityService.Instance.HasData(m_Definition.Id);
+            bool hasOwnedData = UnityService.Instance.HasData(OWNED_KEY);
+            bool hasConditionData = UnityService.Instance.HasData(CONDITION_KEY);
             if (hasOwnedData)
             {
-                m_Owned = UnityService.Instance.GetData<bool>(m_Definition.Id);
+                m_Owned = UnityService.Instance.GetData<bool>(OWNED_KEY);
+            }
+            if (hasConditionData)
+            {
+                m_Condition = UnityService.Instance.GetData<ProductCondition>(CONDITION_KEY);
             }
         }
         public void SetOwned(bool owned)
         {
+            if (owned == true && m_Owned == false)
+            {
+                CanvasManager.Instance.GetPanel<NewUnlockedPopUpPanel>().ShowPopUp(m_Definition);
+                ChangeConditionInternal(ProductCondition.NewUnlocked);
+                Player.Instance.CustomProfile.Refres();
+            }
             m_Owned = owned;
             UnityService.Instance.SaveData(OWNED_KEY, m_Owned);
-            CanvasManager.Instance.GetPanel<NewUnlockedPopUpPanel>().ShowPopUp(m_Definition);
+            
         }
     }
 }

@@ -1,7 +1,10 @@
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
@@ -25,7 +28,6 @@ namespace LegionKnight
         private CustomImageType m_CurrentSelectedType = CustomImageType.Icon;
 
         private PlayerCustomProfile m_CustomProfile;
-
         private PlayerCustomProfile GetCustomProfile()
         {
             if (m_CustomProfile == null)
@@ -37,6 +39,7 @@ namespace LegionKnight
 
         private void Start()
         {
+            
             m_IconTabButton.onClick.RemoveAllListeners();
             m_IconTabButton.onClick.AddListener(ShowIcon);
 
@@ -54,6 +57,7 @@ namespace LegionKnight
         {
             SetCurrentSelectedTypeInternal(type);
         }
+
         protected override void ShowInternal()
         {
             base.ShowInternal();
@@ -151,6 +155,7 @@ namespace LegionKnight
                     yield return StartCoroutine(SpawningCustomImageView(defi));
                 }
             }
+            
             yield return new WaitForEndOfFrame();
             ShowIconInternal();
         }
@@ -165,8 +170,15 @@ namespace LegionKnight
                 {
                     view.Init(defi);
                     m_SpawnedImageViews.Add(view);
+                    /*ImageViewNoticeButton noticeButton = view.NoticeButton;
+                    if (noticeButton != null)
+                    {
+                        noticeButton.SetDefinition(defi);
+                        noticeButton.NoticeCheck();
+                    }*/
                 }
             }
+            
         }
         private void UnSelectectAllViews()
         {

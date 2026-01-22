@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using Rush;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -25,7 +26,11 @@ namespace LegionKnight
         private PlayerCustomProfile m_Profile;
         public bool IsSelected => m_IsSelected;
         public CustomImageDefinition Definition => m_Definition;
+        public Button SelectButton => m_SelectButton;
 
+        [SerializeField]
+        private ImageViewNoticeButton m_NoticeButton;
+        public ImageViewNoticeButton NoticeButton => m_NoticeButton;
         [SerializeField]
         private UnityEvent m_OnSelected;
         [SerializeField, MMReadOnly]
@@ -61,8 +66,9 @@ namespace LegionKnight
         public void Init(CustomImageDefinition defi)
         {
             m_Definition = defi;
-            
             RefreshInternal();
+            m_NoticeButton.SetDefinition(m_Definition);
+            m_NoticeButton.NoticeCheck();
         }
         
         public void Refresh()
@@ -90,9 +96,23 @@ namespace LegionKnight
         }
         private void SelectectInternal()
         {
+            ImageContent imageContent = Player.Instance.CustomProfile.GetIcon(m_Definition);
+
+            switch (m_Definition.Type)
+            {
+                case CustomImageType.Frame:
+                    imageContent = Player.Instance.CustomProfile.GetFrame(m_Definition);
+                    break;
+                case CustomImageType.Icon:
+                    imageContent = Player.Instance.CustomProfile.GetIcon(m_Definition);
+                    break;
+            }
+            imageContent.ChangeCondition(ProductCondition.NoticeUnlocked);
+            m_NoticeButton.NoticeCheck();
             m_OnSelected.Invoke();
             GetCustomProfile().SetSelected(m_Definition);
             m_SelectedImage.gameObject.SetActive(true);
+            
         }
         public void Select()
         {
