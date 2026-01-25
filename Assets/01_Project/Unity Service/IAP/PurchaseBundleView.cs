@@ -89,6 +89,9 @@ namespace LegionKnight
         {
             UnityService.Instance.SetIsAvailablePurchase(m_ProductDefinition.Id, set);
             bool available = UnityService.Instance.IsProductAvailable(m_ProductDefinition.Id);
+
+            Debug.Log("Product '" + m_ProductDefinition.Id + "' availability : " + available);
+
             m_NotAvailableView.SetActive(!available);
             m_PurchaseButton.interactable = available;
         }

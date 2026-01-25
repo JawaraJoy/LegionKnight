@@ -39,7 +39,7 @@ namespace LegionKnight
             {
                 return;
             }
-            Gley.Notifications.API.Initialize();
+            //Gley.Notifications.API.Initialize();
         }
         private void OnApplicationFocus(bool focus)
         {
@@ -49,12 +49,12 @@ namespace LegionKnight
             }
             if (focus)
             {
-                Gley.Notifications.API.CancelAllNotifications();
+                //Gley.Notifications.API.CancelAllNotifications();
             }
             else
             {
                 TimeSpan delayFromNow = new(m_ScheduleInHour, m_ScheduleInMinutes, 0);
-                Gley.Notifications.API.SendNotification(m_GameTitle, m_Note, delayFromNow, m_SmallIconKey, m_LargeIconKey);
+                //Gley.Notifications.API.SendNotification(m_GameTitle, m_Note, delayFromNow, m_SmallIconKey, m_LargeIconKey);
             }
         }
     }
