@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,7 +24,27 @@ namespace LegionKnight
         }
         public void AddAttackRateTemp(float attackRate, float duration)
         {
-            StartCoroutine(m_DamageStat.AddAttackRateTemping(attackRate, duration));
+            StartCoroutine(AddAttackRateTemping(attackRate, duration));
+        }
+        public void AddAttackTemp(int atk, float duration)
+        {
+            StartCoroutine(AddAttackTemping(atk, duration));
+        }
+        private IEnumerator AddAttackRateTemping(float attackRate, float duration)
+        {
+            m_DamageStat.AddAttackRate(attackRate);
+            OnBuffStartInvoke();
+            yield return new WaitForSeconds(duration);
+            m_DamageStat.AddAttackRate(-attackRate);
+            OnBuffEndInvoke();
+        }
+        public IEnumerator AddAttackTemping(int attack, float duration)
+        {
+            m_DamageStat.AddAttack(attack);
+            OnBuffStartInvoke();
+            yield return new WaitForSeconds(duration);
+            m_DamageStat.AddAttack(-attack);
+            OnBuffEndInvoke();
         }
 
         private void OnBuffStartInvoke()

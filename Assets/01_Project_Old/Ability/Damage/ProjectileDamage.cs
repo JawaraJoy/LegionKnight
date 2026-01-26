@@ -99,15 +99,27 @@ namespace LegionKnight
                 }
             }
             if (m_Target == null) return;
-            // Calculate direction to the target
-            Vector3 direction = (m_Target.position - transform.position).normalized;
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            // Direction to target (2D)
+            Vector2 direction = (m_Target.position - transform.position);
 
-            // Smoothly rotate towards the target
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, m_RotateSpeed * Time.deltaTime);
+            // Angle on Z axis (XY plane)
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            // Move forward
-            m_Rb.linearVelocity = transform.forward * GetSpeed();
+            // If your projectile faces UP, subtract 90f
+            angle -= 90f;
+
+            // Z-only rotation
+            Quaternion lookRotation = Quaternion.Euler(0f, 0f, angle);
+
+            // Smooth rotate
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                lookRotation,
+                m_RotateSpeed * Time.deltaTime
+            );
+
+            // Move forward (2D)
+            m_Rb.linearVelocity = transform.up * GetSpeed();
         }
 
         public void AddForce(Vector2 force)

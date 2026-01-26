@@ -21,5 +21,9 @@ namespace LegionKnight
         {
             GetPlayerDamageBuff().AddAttackRateTemp(attackRate, m_Duration);
         }
+        public void AddAttackTemp(int atk)
+        {
+            GetPlayerDamageBuff().AddAttackTemp(atk, m_Duration);
+        }
     }
 }

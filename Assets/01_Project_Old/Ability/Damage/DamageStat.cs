@@ -120,11 +120,21 @@ namespace LegionKnight
         {
             m_AttackRate += attackRate;
         }
+        public void AddAttack(int attack)
+        {
+            m_Attack += attack;
+        }
         public IEnumerator AddAttackRateTemping(float attackRate, float duration)
         {
             m_AttackRate += attackRate;
             yield return new WaitForSeconds(duration);
             m_AttackRate -= attackRate;
+        }
+        public IEnumerator AddAttackTemping(int attack, float duration)
+        {
+            m_Attack += attack;
+            yield return new WaitForSeconds(duration);
+            m_Attack -= attack;
         }
         public void SetHealth(int health)
         {

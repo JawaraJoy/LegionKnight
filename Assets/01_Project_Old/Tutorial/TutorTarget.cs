@@ -25,7 +25,7 @@ namespace LegionKnight
         }
         private void OnDestroy()
         {
-            GameManager.Instance.TutorialManager.RemoveTarget(this);
+            //GameManager.Instance.TutorialManager.RemoveTarget(this);
         }
     }
 }

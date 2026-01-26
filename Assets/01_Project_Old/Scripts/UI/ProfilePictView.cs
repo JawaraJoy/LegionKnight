@@ -77,26 +77,24 @@ namespace LegionKnight
             {
                 m_ProfileIcon.sprite = icon.Icon;
             }
-            bool hasAnim = frame.IconAnimationClip != null;
-            m_Animator.enabled = hasAnim;
 
-            if (hasAnim)
+            if (frame != null)
             {
-                m_NewAnimatedFrameClip = frame.IconAnimationClip;
-
-                // "Frame" MUST be the original clip name in Animator
-                m_OverrideController["Frame"] = m_NewAnimatedFrameClip;
-
-                m_Animator.Play("Frame", 0, 0f);
-            }
-            else
-            {
-                
-                if (frame != null)
+                if (frame.IconAnimationClip == null)
                 {
                     m_ProfileBackground.sprite = frame.Icon;
                 }
+                else
+                {
+                    m_NewAnimatedFrameClip = frame.IconAnimationClip;
+
+                    // "Frame" MUST be the original clip name in Animator
+                    m_OverrideController["Frame"] = m_NewAnimatedFrameClip;
+
+                    m_Animator.Play("Frame", 0, 0f);
+                }
             }
+            
             m_NoticeButton.NoticeCheck();
         }
     }
