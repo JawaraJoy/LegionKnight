@@ -17,7 +17,8 @@ namespace LegionKnight
 
         public void LoadAllData()
         {
-            m_CloudSaveManager.LoadAllData();
+            //m_CloudSaveManager.LoadAllData();
+            m_CloudSaveManager.LoadAllDataWithExpiry();
         }
         public void SaveData(string key, object val, UnityAction callback = null)
         {

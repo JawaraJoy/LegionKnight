@@ -32,10 +32,10 @@ namespace LegionKnight
             m_LevelNameText.text = m_LevelDefnition.LevelName;
             bool isUnlocked = GameManager.Instance.IsLevelUnlocked(m_LevelDefnition);
             bool isCompleted = GameManager.Instance.IsLevelCompleted(m_LevelDefnition);
-
-            m_LockImage.SetActive(!isUnlocked);
-            m_CompleteImage.SetActive(isCompleted);
-            m_StartButton.interactable = isUnlocked;
+            bool devMode = GameSetting.Instance.DeveloperMode;
+            m_LockImage.SetActive(!isUnlocked || !devMode);
+            m_CompleteImage.SetActive(isCompleted || devMode);
+            m_StartButton.interactable = isUnlocked || devMode;
 
             if (m_LevelRewardView == null) return;
             if (isCompleted)

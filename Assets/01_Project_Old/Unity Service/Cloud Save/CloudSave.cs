@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Services.CloudSave;
 using Unity.Services.CloudSave.Models;
-using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -86,7 +86,7 @@ namespace LegionKnight
                 Debug.LogError($"Failed to load data for key: {key}. Exception: {ex.Message}");
             }
         }
-
+        [Obsolete("Use LoadAllDataWithExpiry instead to handle data expiration.")]
         public async void LoadAllData()
         {
             if (!m_UseCloudSave)
@@ -116,7 +116,6 @@ namespace LegionKnight
                         m_PlayerData.Add(key, value);
                     }
                 }
-
                 OnDataLoadedInvoke();
             }
             catch (Exception ex)
@@ -206,6 +205,165 @@ namespace LegionKnight
         {
             Debug.Log("Data loaded successfully");
             m_OnDataLoaded?.Invoke();
+        }
+        private bool IsExpired(long lastUpdateUnix, long ttlSeconds, long serverNow)
+        {
+            if (ttlSeconds <= 0)
+                return false;
+
+            return serverNow - lastUpdateUnix >= ttlSeconds;
+        }
+        private bool TryProcessExpiry(string key, long lastUpdateUnix, long ttlSeconds, long serverNow)
+        {
+            if (!IsExpired(lastUpdateUnix, ttlSeconds, serverNow))
+                return false;
+
+            // Expired → delete data
+            CloudSaveService.Instance.Data.Player.DeleteAsync(key, new Unity.Services.CloudSave.Models.Data.Player.DeleteOptions());
+            m_PlayerData.Remove(key);
+
+            Debug.Log($"Cloud data expired: {key}");
+            return true;
+        }
+        private long GetServerTimeUnix()
+        {
+            return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        }
+        public async void SaveData<T>(string key, T value, long ttlSeconds = 0, UnityAction callback = null)
+        {
+            if (!m_UseCloudSave)
+                return;
+
+            try
+            {
+                var wrapped = new CloudValue<T>
+                {
+                    value = value,
+                    lastUpdateUnix = GetServerTimeUnix(),
+                    ttlSeconds = ttlSeconds
+                };
+
+                m_PlayerData[key] = wrapped;
+
+                await CloudSaveService.Instance.Data.Player.SaveAsync(
+                    new Dictionary<string, object> { { key, wrapped } }
+                );
+
+                callback?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"SaveData failed for {key}: {ex.Message}");
+            }
+        }
+        public async void LoadDataWithExpiry(string key, UnityAction<bool> callback = null)
+        {
+            if (!m_UseCloudSave)
+                return;
+
+            try
+            {
+                var keys = new HashSet<string> { key };
+                var result = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
+
+                if (!result.TryGetValue(key, out var item))
+                {
+                    callback?.Invoke(false);
+                    return;
+                }
+
+                var raw = item.Value.GetAs<Dictionary<string, object>>();
+
+                long lastUpdate = Convert.ToInt64(raw["lastUpdateUnix"]);
+                long ttl = Convert.ToInt64(raw["ttlSeconds"]);
+                long now = GetServerTimeUnix();
+
+                if (TryProcessExpiry(key, lastUpdate, ttl, now))
+                {
+                    callback?.Invoke(false);
+                    return;
+                }
+
+                m_PlayerData[key] = item;
+                callback?.Invoke(true);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"LoadDataWithExpiry failed for {key}: {ex.Message}");
+            }
+        }
+        public T GetDataValue<T>(string key)
+        {
+            if (!m_PlayerData.TryGetValue(key, out var obj))
+                return default;
+
+            if (obj is Item item)
+            {
+                var wrapped = item.Value.GetAs<CloudValue<T>>();
+                return wrapped.value;
+            }
+
+            return default;
+        }
+        public async void LoadAllDataWithExpiry()
+        {
+            if (!m_UseCloudSave)
+            {
+                Debug.LogWarning("Cloud Save is disabled. Data will not be loaded.");
+                return;
+            }
+
+            try
+            {
+                var playerData = await CloudSaveService.Instance.Data.Player.LoadAllAsync();
+                long serverNow = GetServerTimeUnix();
+
+                m_PlayerData.Clear();
+
+                foreach (var pair in playerData)
+                {
+                    string key = pair.Key;
+                    Item item = pair.Value;
+
+                    // Try to read wrapped format
+                    try
+                    {
+                        var raw = item.Value.GetAs<Dictionary<string, object>>();
+
+                        if (!raw.ContainsKey("lastUpdateUnix") || !raw.ContainsKey("ttlSeconds"))
+                        {
+                            // Legacy data → keep as-is
+                            m_PlayerData[key] = item;
+                            continue;
+                        }
+
+                        long lastUpdate = Convert.ToInt64(raw["lastUpdateUnix"]);
+                        long ttl = Convert.ToInt64(raw["ttlSeconds"]);
+
+                        if (IsExpired(lastUpdate, ttl, serverNow))
+                        {
+                            // Expired → delete from cloud
+                            await CloudSaveService.Instance.Data.Player.DeleteAsync(key);
+                            Debug.Log($"Expired cloud data deleted: {key}");
+                            continue;
+                        }
+
+                        // Valid → cache
+                        m_PlayerData[key] = item;
+                    }
+                    catch
+                    {
+                        // Non-wrapped / unknown data → keep
+                        m_PlayerData[key] = item;
+                    }
+                }
+
+                OnDataLoadedInvoke();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"LoadAllDataWithExpiry failed: {ex.Message}");
+            }
         }
     }
 }

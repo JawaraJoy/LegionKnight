@@ -41,6 +41,12 @@ namespace LegionKnight
 
         private void InitInternal()
         {
+            bool devMode = GameSetting.Instance.DeveloperMode;
+            if (devMode)
+            {
+                m_OnLevelReachedTrue?.Invoke();
+            }
+            return;
             m_OnLevelReached?.Invoke(IsLevelReached());
 
             if (IsLevelReached())

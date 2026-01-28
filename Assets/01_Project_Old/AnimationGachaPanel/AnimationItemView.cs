@@ -25,7 +25,7 @@ namespace LegionKnight
                 }
                 if (reward.Definition is CurrencyDefinition currency)
                 {
-                    m_Icon.sprite = currency.Icon;
+                    m_Icon.sprite = currency.BigIcon;
                 }
                 if (reward.Definition is StandbyPlatformDefinition standbyPlatform)
                 {

@@ -53,6 +53,10 @@ namespace LegionKnight
                 {
                     m_GachaFiltered.Add(gachaReward);
                 }
+                if (gachaReward.Definition is  CurrencyDefinition)
+                {
+                    m_GachaFiltered.Add(gachaReward);
+                }
             }
             
             if (m_GachaFiltered.Count > 0)

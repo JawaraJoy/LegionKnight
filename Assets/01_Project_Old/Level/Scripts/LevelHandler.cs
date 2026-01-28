@@ -81,7 +81,8 @@ namespace LegionKnight
 
         public void StartLevel()
         {
-            if (m_Unlocked)
+            bool devmode = GameSetting.Instance.DeveloperMode;
+            if (m_Unlocked || devmode)
             {
                 m_LevelDefinition.StartLevel();
                 OnLevelStart?.Invoke(m_LevelDefinition.BosDefinition);

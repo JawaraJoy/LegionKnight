@@ -14,12 +14,15 @@ namespace LegionKnight
         private string m_Label;
         [SerializeField]
         private Sprite m_Icon;
+        [SerializeField]
+        private Sprite m_BigIcon;
         [SerializeField, TextArea]
         private string m_Description;
         [SerializeField]
         private CustomVariable<float>[] m_CustomVariables;
         public string Id => m_Id;
         public Sprite Icon => m_Icon;
+        public Sprite BigIcon => m_BigIcon;
         public string Description => m_Description;
 
         public string Label => m_Label;

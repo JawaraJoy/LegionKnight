@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class BadgeManager : BadgeHandler
+    public partial class BadgeManager : BadgeHandler
     {
         
     }

@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public class BadgeHandler : MonoBehaviour
+    public partial class BadgeHandler : MonoBehaviour
     {
         [SerializeField]
         private BadgeContent[] m_Badges;
@@ -14,11 +14,6 @@ namespace LegionKnight
         private UnityEvent<BadgeContent> m_OnBadgeCurrentUpgradeLevelChanged;
         [SerializeField]
         private UnityEvent<LootField[]> m_OnRewardClaimed;
-
-        public void AddAdditionalBadges(BadgeContent[] additionalBadges)
-        {
-            m_Badges = m_Badges.Concat(additionalBadges).ToArray();
-        }
 
         private BadgeContent GetBadgeContent(BadgeDefinition badge)
         {

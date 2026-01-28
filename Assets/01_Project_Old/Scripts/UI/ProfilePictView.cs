@@ -83,9 +83,11 @@ namespace LegionKnight
                 if (frame.IconAnimationClip == null)
                 {
                     m_ProfileBackground.sprite = frame.Icon;
+                    m_Animator.enabled = false;
                 }
                 else
                 {
+                    m_Animator.enabled = true;
                     m_NewAnimatedFrameClip = frame.IconAnimationClip;
 
                     // "Frame" MUST be the original clip name in Animator
