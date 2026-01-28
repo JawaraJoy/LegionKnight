@@ -1,6 +1,8 @@
+using Rush;
 using System.Collections;
 using Unity.Services.CloudSave.Models;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -55,10 +57,37 @@ namespace LegionKnight
 
         private IEnumerator CharcterDuplicated(CharacterDefinition character)
         {
-            yield return new WaitForSeconds(1.5f);
+            Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
+            for (int i = 0; i < 6; i++)
+            {
+                m_OnDuplicateCharacterShow.Invoke();
+                CharacterShow(character);
+                yield return new WaitForSeconds(1.5f);
+
+                m_OnDuplicaterCharacterHide.Invoke();
+                DuplicateShow(character);
+                yield return new WaitForSeconds(1.5f);
+            }
+
+        }
+        [SerializeField]
+        private UnityEvent m_OnDuplicateCharacterShow;
+        [SerializeField]
+        private UnityEvent m_OnDuplicaterCharacterHide;
+        private void CharacterShow(CharacterDefinition character)
+        {
+            m_Icon.sprite = character.SmallIcon;
+            m_Amount.text = "";
+            string charName = character.Label;
+            if (gameObject.TryGetComponent(out TextView text1))
+            {
+                text1.SetText(charName);
+            }
+        }
+        private void DuplicateShow(CharacterDefinition character)
+        {
             m_Icon.sprite = character.ShardConvert.CurrencyDefinition.Icon;
             m_Amount.text = character.ShardConvert.Amount.ToString();
-            Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
             string itemName = character.ShardConvert.CurrencyDefinition.Label;
             if (gameObject.TryGetComponent(out TextView text))
             {
