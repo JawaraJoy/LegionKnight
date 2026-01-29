@@ -10,7 +10,7 @@ namespace LegionKnight
         private string m_Id;
         [SerializeField]
         private string m_Label;
-        [SerializeField]
+        [SerializeField, TextArea]
         private string m_Description;
         [SerializeField]
         private ProductItem m_MainProduct;
@@ -106,6 +106,10 @@ namespace LegionKnight
             else if (m_Object is EnergyDefinition ene)
             {
                 Player.Instance.AddEnergy(ene, m_Amount);
+            }
+            else if (m_Object is CustomImageDefinition img)
+            {
+                Player.Instance.CustomProfile.SetOwned(img, true);
             }
         }
 

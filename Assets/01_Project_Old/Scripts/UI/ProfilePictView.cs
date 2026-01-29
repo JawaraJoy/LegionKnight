@@ -15,6 +15,8 @@ namespace LegionKnight
         private Image m_ProfileBackground;
         [SerializeField]
         private Animator m_Animator;
+        [SerializeField]
+        private SpineUI m_SpineUI;
         [SerializeField, MMReadOnly]
         private AnimationClip m_NewAnimatedFrameClip;
         [SerializeField, MMReadOnly]

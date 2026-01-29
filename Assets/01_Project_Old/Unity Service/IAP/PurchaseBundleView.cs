@@ -20,6 +20,8 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_PriceText;
         [SerializeField]
+        private TextMeshProUGUI m_DescriptionText;
+        [SerializeField]
         private ItemView m_MainItemView;
         [SerializeField]
         private ItemView m_BonusItemView;
@@ -59,6 +61,7 @@ namespace LegionKnight
             
             ClearItemView();
             m_LabelText.text = m_ProductDefinition.Label;
+            m_DescriptionText.text = m_ProductDefinition.Description;
             if (GetAdditionalProductInternal().Count > 0)
             {
                 SpawnAddionalItemView();
