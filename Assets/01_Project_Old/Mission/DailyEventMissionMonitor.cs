@@ -4,6 +4,8 @@ namespace LegionKnight
 {
     public class DailyEventMissionMonitor : MissionMonitor
     {
+        private bool isInitiated = false;
+
         protected override MissionController GetControllerInternal()
         {
             if (m_Controller == null)
@@ -22,6 +24,14 @@ namespace LegionKnight
             */
 
             return m_Controller;
+        }
+
+        protected override void InitInternal(MissionController controller)
+        {
+            if(isInitiated)
+                base.InitInternal(controller);
+            else
+                isInitiated = true;
         }
     }
 }

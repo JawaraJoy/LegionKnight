@@ -37,8 +37,6 @@ namespace LegionKnight
             int savedPower = 0;
             int totalPoint = 0;
 
-            Debug.Log("xxxINITxxx");
-
             foreach (var mission in m_Tasks)
             {
                 Debug.Log(mission.Definition.Label);

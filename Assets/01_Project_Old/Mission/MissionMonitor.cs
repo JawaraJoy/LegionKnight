@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -26,7 +27,6 @@ namespace LegionKnight
         private TaskThresholdView[] m_TaskThresholdViews;
 
         protected MissionController m_Controller;
-
 
         protected abstract MissionController GetControllerInternal();
 
@@ -69,7 +69,7 @@ namespace LegionKnight
             InitInternal(controller);
         }
 
-        private void InitInternal(MissionController controller)
+        protected virtual void InitInternal(MissionController controller)
         {
             if (!gameObject.activeInHierarchy) return;
 
@@ -78,8 +78,6 @@ namespace LegionKnight
 
             foreach (var task in controller.Task)
             {
-                Debug.Log(task.Definition.Label + " -- " + !HasMissionView(task.Definition));
-
                 if (!HasMissionView(task.Definition))
                 {
                     if (!enabled)return;
