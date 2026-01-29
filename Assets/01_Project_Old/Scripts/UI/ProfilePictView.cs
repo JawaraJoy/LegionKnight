@@ -15,8 +15,6 @@ namespace LegionKnight
         private Image m_ProfileBackground;
         [SerializeField]
         private Animator m_Animator;
-        [SerializeField]
-        private SpineUI m_SpineUI;
         [SerializeField, MMReadOnly]
         private AnimationClip m_NewAnimatedFrameClip;
         [SerializeField, MMReadOnly]
@@ -77,7 +75,7 @@ namespace LegionKnight
             CustomImageDefinition frame = GetCustomProfile().UsedFrame;
             if (icon != null)
             {
-                m_ProfileIcon.sprite = icon.Icon;
+                m_ProfileBackground.sprite = icon.Icon;
             }
 
             if (frame != null)
@@ -93,12 +91,17 @@ namespace LegionKnight
                     m_NewAnimatedFrameClip = frame.IconAnimationClip;
 
                     // "Frame" MUST be the original clip name in Animator
-                    m_OverrideController["Frame"] = m_NewAnimatedFrameClip;
+                    m_OverrideController["Kill Joy Frame Clip"] = m_NewAnimatedFrameClip;
 
                     m_Animator.Play("Frame", 0, 0f);
                 }
             }
-            
+            if (icon != null)
+            {
+                
+            }
+
+
             m_NoticeButton.NoticeCheck();
         }
     }
