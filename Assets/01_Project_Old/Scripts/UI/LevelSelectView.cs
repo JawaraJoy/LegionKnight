@@ -33,7 +33,8 @@ namespace LegionKnight
             bool isUnlocked = GameManager.Instance.IsLevelUnlocked(m_LevelDefnition);
             bool isCompleted = GameManager.Instance.IsLevelCompleted(m_LevelDefnition);
             bool devMode = GameSetting.Instance.DeveloperMode;
-            m_LockImage.SetActive(!isUnlocked || !devMode);
+            bool isLocked = !isUnlocked && !devMode;
+            m_LockImage.SetActive(isLocked);
             m_CompleteImage.SetActive(isCompleted || devMode);
             m_StartButton.interactable = isUnlocked || devMode;
 

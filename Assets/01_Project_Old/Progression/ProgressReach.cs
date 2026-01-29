@@ -45,8 +45,8 @@ namespace LegionKnight
             if (devMode)
             {
                 m_OnLevelReachedTrue?.Invoke();
+                return;
             }
-            return;
             m_OnLevelReached?.Invoke(IsLevelReached());
 
             if (IsLevelReached())

@@ -61,7 +61,10 @@ namespace LegionKnight
             
             ClearItemView();
             m_LabelText.text = m_ProductDefinition.Label;
-            m_DescriptionText.text = m_ProductDefinition.Description;
+            if (m_DescriptionText != null)
+            {
+                m_DescriptionText.text = m_ProductDefinition.Description;
+            }    
             if (GetAdditionalProductInternal().Count > 0)
             {
                 SpawnAddionalItemView();
