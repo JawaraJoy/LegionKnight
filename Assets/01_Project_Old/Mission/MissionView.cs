@@ -20,6 +20,8 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_PowerText;
         [SerializeField]
+        private Image m_IconImage;
+        [SerializeField]
         private Slider m_ProgressSlider;
         
         [SerializeField]
@@ -54,7 +56,7 @@ namespace LegionKnight
             m_Definition = defi;
             TaskStatus status = GetControllerInternal().GetTaskStatus(defi);
             string desc = defi.Description;
-            
+            m_IconImage.sprite = defi.Icon;
             Debug.Log("xx-" + status);
             string progress = $"{status.CurrentScore}/{defi.TargetScore}";
             float progressValue = (float)status.CurrentScore / defi.TargetScore;

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "Task", menuName = "Legion Knight/Mission/Task", order = 1)]
-    public class TaskDefinition : ScriptableObject
+    public class TaskDefinition : ScriptableObject, IHasIcon
     {
         [SerializeField]
         private string m_Id;
@@ -13,6 +13,8 @@ namespace LegionKnight
         private string m_Label;
         [SerializeField, TextArea]
         private string m_Description;
+        [SerializeField]
+        private Sprite m_Icon;
         [SerializeField]
         private TaskState m_InitialState = TaskState.Locked;
         [SerializeField]
@@ -34,6 +36,8 @@ namespace LegionKnight
         public TimerDefinition ResetTime => m_ResetTime;
         public LootDefinition Rewards => m_Rewards;
         public MissionCategory MissionCategory => m_MissionCategory;
+
+        public Sprite Icon => m_Icon;
 
         public void AddDailyScore(int score)
         {
