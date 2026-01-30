@@ -16,14 +16,14 @@ namespace LegionKnight
         [SerializeField]
         private Sprite m_Icon;
         [SerializeField]
-        private AnimationClip m_IconAnimationClips;
+        private RuntimeAnimatorController m_runtimeAnim;
         [SerializeField]
         private CustomImageType m_Type;
         public string Id => m_Id;
         public string Label => m_Label;
         public string Description => m_Description;
         public Sprite Icon => m_Icon;
-        public AnimationClip IconAnimationClip => m_IconAnimationClips;
+        public RuntimeAnimatorController runtimeAnim => m_runtimeAnim;
         public CustomImageType Type => m_Type;
 
         public void SetOwned(bool owned)

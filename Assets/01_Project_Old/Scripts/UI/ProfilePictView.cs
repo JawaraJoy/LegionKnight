@@ -15,10 +15,6 @@ namespace LegionKnight
         private Image m_ProfileBackground;
         [SerializeField]
         private Animator m_Animator;
-        [SerializeField, MMReadOnly]
-        private AnimationClip m_NewAnimatedFrameClip;
-        [SerializeField, MMReadOnly]
-        private AnimatorOverrideController m_OverrideController;
         private CustomProfile m_Profile;
         [SerializeField]
         private ProfileViewNoticeButton m_NoticeButton;
@@ -37,15 +33,6 @@ namespace LegionKnight
         private void Awake()
         {
             Player.Instance.CustomProfile.AddProfilePictView(this);
-            var baseController = m_Animator.runtimeAnimatorController;
-
-            if (baseController is AnimatorOverrideController aoc)
-            {
-                baseController = aoc.runtimeAnimatorController;
-            }
-
-            m_OverrideController = new AnimatorOverrideController(baseController);
-            m_Animator.runtimeAnimatorController = m_OverrideController;
         }
         private void OnDestroy()
         {
@@ -75,12 +62,22 @@ namespace LegionKnight
             CustomImageDefinition frame = GetCustomProfile().UsedFrame;
             if (icon != null)
             {
-                m_ProfileBackground.sprite = icon.Icon;
+                if (icon.runtimeAnim == null)
+                {
+                    m_ProfileBackground.sprite = icon.Icon;
+                    m_Animator.enabled = false;
+                }
+                else
+                {
+                    m_Animator.enabled = true;
+                    m_Animator.runtimeAnimatorController = icon.runtimeAnim;
+                    m_Animator.Play("Frame", 0, 0f);
+                }
             }
 
             if (frame != null)
             {
-                if (frame.IconAnimationClip == null)
+                if (frame.runtimeAnim == null)
                 {
                     m_ProfileBackground.sprite = frame.Icon;
                     m_Animator.enabled = false;
@@ -88,17 +85,9 @@ namespace LegionKnight
                 else
                 {
                     m_Animator.enabled = true;
-                    m_NewAnimatedFrameClip = frame.IconAnimationClip;
-
-                    // "Frame" MUST be the original clip name in Animator
-                    m_OverrideController["Kill Joy Frame Clip"] = m_NewAnimatedFrameClip;
-
+                    m_Animator.runtimeAnimatorController = frame.runtimeAnim;
                     m_Animator.Play("Frame", 0, 0f);
                 }
-            }
-            if (icon != null)
-            {
-                
             }
 
 

@@ -34,9 +34,7 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnSelected;
         [SerializeField, MMReadOnly]
-        private AnimationClip m_NewAnimatedFrameClip;
-        [SerializeField, MMReadOnly]
-        private AnimatorOverrideController m_OverrideController;
+        private RuntimeAnimatorController m_runtimeAnim;
 
         private PlayerCustomProfile GetCustomProfile()
         {
@@ -45,18 +43,6 @@ namespace LegionKnight
                 m_Profile = Player.Instance.CustomProfile;
             }
             return m_Profile;
-        }
-        private void Awake()
-        {
-            var baseController = m_Animator.runtimeAnimatorController;
-
-            if (baseController is AnimatorOverrideController aoc)
-            {
-                baseController = aoc.runtimeAnimatorController;
-            }
-
-            m_OverrideController = new AnimatorOverrideController(baseController);
-            m_Animator.runtimeAnimatorController = m_OverrideController;
         }
         private void Start()
         {
@@ -78,15 +64,14 @@ namespace LegionKnight
         private void RefreshInternal()
         {
             m_Icon.sprite = m_Definition.Icon;
-            bool hasAnim = m_Definition.IconAnimationClip != null;
+            bool hasAnim = m_Definition.runtimeAnim != null;
             m_Animator.enabled = hasAnim;
 
             if (hasAnim)
             {
-                m_NewAnimatedFrameClip = m_Definition.IconAnimationClip;
+                m_runtimeAnim = m_Definition.runtimeAnim;
 
-                // "Frame" MUST be the original clip name in Animator
-                m_OverrideController["Frame"] = m_NewAnimatedFrameClip;
+                m_Animator.runtimeAnimatorController = m_runtimeAnim;
 
                 m_Animator.Play("Frame", 0, 0f);
             }
