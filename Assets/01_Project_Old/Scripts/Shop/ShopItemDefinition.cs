@@ -12,6 +12,8 @@ namespace LegionKnight
         private string m_ItemName;
         [SerializeField]
         private string m_ContainerName;
+        [SerializeField, TextArea]
+        private string m_Description;
         [SerializeField]
         private string m_TabName;
         [SerializeField]
@@ -44,6 +46,7 @@ namespace LegionKnight
         public string Id => m_Id;
         public string ItemName => m_ItemName;
         public string ContainerName => m_ContainerName;
+        public string Description => m_Description;
         public string TabName => m_TabName;
         public string BuyButtonText => m_BuyButtonText;
         public Sprite Icon => m_Icon;

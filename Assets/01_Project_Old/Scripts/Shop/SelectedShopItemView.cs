@@ -14,6 +14,8 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_ItemAmountText;
         [SerializeField]
+        private TextMeshProUGUI m_DescriptionText;
+        [SerializeField]
         private TextMeshProUGUI m_BonusText;
         [SerializeField]
         private TextMeshProUGUI m_SpendCrestText;
@@ -29,6 +31,10 @@ namespace LegionKnight
             m_Definition = definition;
             m_ItemNameText.text = definition.ItemName;
             m_MainIcon.sprite = definition.Icon;
+            if (m_DescriptionText != null)
+            {
+                m_DescriptionText.text = definition.Description;
+            }
             bool hasBonus = definition.BonusAmount > 0 && GameManager.Instance.GetShopItemControl(definition).IsBonusAvaible;
             m_BonusText.gameObject.SetActive(hasBonus);
             m_BonusText.text = $"Bonus +{definition.BonusAmount}";
