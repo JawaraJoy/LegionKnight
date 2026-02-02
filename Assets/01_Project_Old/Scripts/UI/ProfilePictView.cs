@@ -64,7 +64,7 @@ namespace LegionKnight
             {
                 if (icon.runtimeAnim == null)
                 {
-                    m_ProfileBackground.sprite = icon.Icon;
+                    m_ProfileIcon.sprite = icon.Icon;
                     m_Animator.enabled = false;
                 }
                 else

@@ -1,10 +1,9 @@
+using MoreMountains.Tools;
 using Rush;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
@@ -25,6 +24,7 @@ namespace LegionKnight
 
         private readonly List<ImageView> m_SpawnedImageViews = new();
 
+        [SerializeField, MMReadOnly]
         private CustomImageType m_CurrentSelectedType = CustomImageType.Icon;
 
         private PlayerCustomProfile m_CustomProfile;

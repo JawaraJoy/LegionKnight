@@ -26,7 +26,8 @@ namespace LegionKnight
             {
                 if (m_BossSpawningMinion == null)
                 {
-                    if (BosEnemy.BossSpine.CurrentSpineObject.TryGetComponent(out SpawnMinionAbility ability))
+                    SpawnMinionAbility ability = BosEnemy.BossSpine.GetComponentInChildren<SpawnMinionAbility>();
+                    if (ability)
                     {
                         m_BossSpawningMinion = ability;
                     }

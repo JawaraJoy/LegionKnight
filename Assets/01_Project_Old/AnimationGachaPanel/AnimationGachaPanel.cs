@@ -29,8 +29,6 @@ namespace LegionKnight
         private int m_GachaIndex = 0;
         [SerializeField, MMReadOnly]
         private List<GachaReward> m_GachaPulled = new List<GachaReward>();
-        [SerializeField, MMReadOnly]
-        private List<GachaReward> m_GachaFiltered = new List<GachaReward>();
         [SerializeField]
         private UnityEvent<List<GachaReward>> m_OnPreviewDone;
         protected override void HideInternal()
@@ -46,22 +44,10 @@ namespace LegionKnight
             m_GachaIndex = 0;
             m_GachaPulled.Clear();
             m_GachaPulled = new List<GachaReward>(gacharRewards);    
-            m_GachaFiltered.Clear();
-            foreach (GachaReward gachaReward in gacharRewards)
-            {
-                if (gachaReward.Definition is CharacterDefinition || gachaReward.Definition is StandbyPlatformDefinition)
-                {
-                    m_GachaFiltered.Add(gachaReward);
-                }
-                if (gachaReward.Definition is  CurrencyDefinition)
-                {
-                    m_GachaFiltered.Add(gachaReward);
-                }
-            }
             
-            if (m_GachaFiltered.Count > 0)
+            if (m_GachaPulled.Count > 0)
             {
-                GachaReward gachaReward = m_GachaFiltered[m_GachaIndex];
+                GachaReward gachaReward = m_GachaPulled[m_GachaIndex];
                 ShowPull(gachaReward);
             }
             else
@@ -72,35 +58,37 @@ namespace LegionKnight
         public void ShowNextPull()
         {
             m_GachaIndex++;
-            if (m_GachaIndex >= m_GachaFiltered.Count)
+            if (m_GachaIndex >= m_GachaPulled.Count)
             {
                 HideInternal();
                 return;
             }
-            GachaReward so = m_GachaFiltered[m_GachaIndex];
+            GachaReward so = m_GachaPulled[m_GachaIndex];
             ShowPull(so);
         }
 
         private Coroutine m_PlayCoroutine;
         private void ShowPull(GachaReward gachaReward)
         {
+            
             if (m_PlayCoroutine != null)
             {
                 StopCoroutine(m_PlayCoroutine);
                 m_PlayCoroutine = null;
             }
-
+            
             if (gachaReward.Definition is CharacterDefinition character)
             {
+                ShowInternal();
                 m_PlayCoroutine = StartCoroutine(PlayGachaEffect(gachaReward, character));
             }
             else
             {
+                ShowInternal();
                 m_AnimationItemView.Init(gachaReward);
                 m_AnimationItemView.Show();
                 m_SpineVFX.Hide();
             }
-            ShowInternal();
         }
         [SerializeField]
         private float m_RevealDelay = 3f;
