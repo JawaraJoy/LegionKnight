@@ -39,6 +39,7 @@ namespace LegionKnight
 
         public Sprite Icon => m_Icon;
 
+        // sorry for the function name is wrong, this should be AddScore
         public void AddDailyScore(int score)
         {
             Debug.Log(":::" + name + " - " + score);

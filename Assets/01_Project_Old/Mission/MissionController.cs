@@ -22,6 +22,8 @@ namespace LegionKnight
         private TaskStatus[] m_Tasks;
         [SerializeField]
         private UnityEvent<MissionController> m_OnControllerUpdate;
+        [SerializeField]
+        private UnityEvent<LootField[]> m_OnMissionClaim;
         
         public string BehaviourName => m_BehaviourName;
         public TaskStatus[] Task => m_Tasks;
@@ -46,6 +48,8 @@ namespace LegionKnight
                 mission.OnClaim.AddListener(() => {
                     AddTaskPowerInternal(mission.Definition.TaskPower);
                 });
+                mission.OnClaim.AddListener(()=> ClaimReward(mission.Definition.Rewards.LootFields));
+
                 totalPoint += mission.Definition.TaskPower;
 
                 if (mission.CurrentState == TaskState.Claimed)
@@ -89,7 +93,7 @@ namespace LegionKnight
 
                     SetTaskPowerInternal(0);
                     m_ResetTime.StartTimer();
-                    GameManager.Instance.DailyRewardManager?.ForceReset();
+                    GameManager.Instance.DailyRewardManager.ForceReset();
                 }
             }
         }
@@ -102,7 +106,7 @@ namespace LegionKnight
             {
                 //Debug.Log(task.Definition.Label);
 
-                if (task.Definition == defi)
+                if (task.Definition.Id == defi.Id)
                 {
                     return task;
                 }
@@ -160,6 +164,12 @@ namespace LegionKnight
             }
 
             return res;
+        }
+        private void ClaimReward(LootField[] rewards)
+        {
+            if (rewards.Length == 0) return;
+            m_OnMissionClaim?.Invoke(rewards);
+
         }
     }
 

@@ -8,8 +8,8 @@ namespace LegionKnight
 
         public void Init()
         {
-            eventMissionManager = GameObject.FindFirstObjectByType<EventMissionManager>();
-            if(eventMissionManager)
+            eventMissionManager = EventMissionManager.Instance;
+            if (eventMissionManager)
                 eventMissionManager.Init();
         }
     }

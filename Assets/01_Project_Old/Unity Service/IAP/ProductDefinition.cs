@@ -111,6 +111,10 @@ namespace LegionKnight
             {
                 Player.Instance.CustomProfile.SetOwned(img, true);
             }
+            else if (m_Object is BadgeDefinition badge)
+            {
+                Player.Instance.BadgeManager.SetCurrentUpgradeLevel(badge, m_Amount);
+            }
         }
 
         public string GetLabel()
@@ -139,6 +143,14 @@ namespace LegionKnight
             {
                 return ene.Label;
             }
+            else if (m_Object is CustomImageDefinition img)
+            {
+                return img.Label;
+            }
+            else if (m_Object is BadgeDefinition badge)
+            {
+                return badge.Label;
+            }
             return "";
         }
         private Sprite GetIconInternal()
@@ -158,6 +170,14 @@ namespace LegionKnight
             else if (m_Object is EnergyDefinition ene)
             {
                 return ene.Icon;
+            }
+            else if (m_Object is CustomImageDefinition img)
+            {
+                return img.Icon;
+            }
+            else if (m_Object is BadgeDefinition badge)
+            {
+                return badge.Upgrade[0].Icon;
             }
             return null;
         }

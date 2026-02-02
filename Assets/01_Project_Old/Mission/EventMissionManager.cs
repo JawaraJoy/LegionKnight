@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class EventMissionManager : MonoBehaviour
+    public class EventMissionManager : Singleton<EventMissionManager>
     {
         [SerializeField]
         private DailyEventManager m_DailyEventMissionManager;
@@ -12,20 +12,14 @@ namespace LegionKnight
         private WeeklyEventManager m_WeeklyEventMissionManager;
         public WeeklyEventManager WeeklyEventMissionManager => m_WeeklyEventMissionManager;
 
-        public static EventMissionManager Instance {get; private set;}
 
         public void Init()
         {
-            if(!Instance)
-            {
-                Instance = this;
+            if (m_DailyEventMissionManager)
+                m_DailyEventMissionManager.InitController();
 
-                if(m_DailyEventMissionManager)
-                    m_DailyEventMissionManager.InitController();
-
-                if(m_WeeklyEventMissionManager)
-                    m_WeeklyEventMissionManager.InitController();
-            }
+            if (m_WeeklyEventMissionManager)
+                m_WeeklyEventMissionManager.InitController();
         }
     }
 }
