@@ -5,6 +5,17 @@ namespace LegionKnight
     public class TenjinAgent : MonoBehaviour
     {
         private TenjinManager tenjinManager;
+        private TenjinManager TenjinManager
+        {
+            get
+            {
+                if (tenjinManager == null)
+                {
+                    tenjinManager = TenjinManager.Instance;
+                }
+                return tenjinManager;
+            }
+        }
 
         public void Init()
         {

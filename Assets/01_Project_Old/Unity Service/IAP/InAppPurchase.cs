@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Purchasing;
-using UnityEngine.Purchasing.Extension;
 
 namespace LegionKnight
 {
@@ -70,6 +69,8 @@ namespace LegionKnight
         [SerializeField]
         private SellProduct[] m_SellProducts;
 
+        [SerializeField]
+        private UnityEvent<SellProduct> m_OnPurchaseStarted = new();
         [SerializeField]
         private UnityEvent<SellProduct> m_OnPurchaseComplete = new();
         [SerializeField]

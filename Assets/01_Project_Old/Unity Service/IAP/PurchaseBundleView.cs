@@ -23,6 +23,10 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_PriceText;
         [SerializeField]
+        private TextMeshProUGUI m_OriginalPriceText;
+        [SerializeField]
+        private TextMeshProUGUI m_DiscountText;
+        [SerializeField]
         private TextMeshProUGUI m_DescriptionText;
         [SerializeField]
         private ItemView m_MainItemView;
@@ -48,31 +52,32 @@ namespace LegionKnight
 
         public void OnProductFecth(Product product)
         {
-            decimal originalPrice = m_ProductDefinition.OriginalPrice;
+            decimal originalPrice = m_ProductDefinition.OriginalPriceUsd;
             decimal discountedPrice = product.metadata.localizedPrice;
+
             bool isDiscounted = discountedPrice < originalPrice;
-            if (isDiscounted)
-            {
-                m_PriceText.text = $"<s>{originalPrice},-</s> {discountedPrice},-";
-                return;
-            }
-            int discountPercent = Mathf.RoundToInt((float)((originalPrice - discountedPrice) / originalPrice * 100m);
-            string priceText = product.metadata.localizedPriceString;
+
             string currencyCode = product.metadata.isoCurrencyCode;
-            m_PriceText.text = $"{currencyCode}, {priceText},-";
-            priceText.text = product.metadata.localizedPriceString;
 
             if (isDiscounted)
             {
-                originalPriceText.text =
-                    $"<s>{FormatPrice(original, product.metadata.isoCurrencyCode)}</s>";
+                int discountPercent = Mathf.RoundToInt((float)((originalPrice - discountedPrice) / originalPrice * 100m));
 
-                discountText.text = $"-{discountPercent}%";
+                // Discounted price (use store localized string!)
+                m_PriceText.text = product.metadata.localizedPriceString;
+
+                // Original price (strikethrough)
+                m_OriginalPriceText.text = $"<s>{FormatPrice(originalPrice, currencyCode)}</s>";
+
+                m_DiscountText.text = $"-{discountPercent}%";
             }
             else
             {
-                originalPriceText.text = "";
-                discountText.text = "";
+                // Normal price
+                m_PriceText.text = product.metadata.localizedPriceString;
+
+                m_OriginalPriceText.text = "";
+                m_DiscountText.text = "";
             }
         }
 

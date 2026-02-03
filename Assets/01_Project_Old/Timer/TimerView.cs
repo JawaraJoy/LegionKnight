@@ -32,6 +32,10 @@ namespace LegionKnight
             base.ShowInternal();
             AdjustTimerView();
         }
+        private void OnEnable()
+        {
+            AdjustTimerView();
+        }
         private void OnTimeTriggerInvoke()
         {
             m_OnTimeTrigger?.Invoke();
