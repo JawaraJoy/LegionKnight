@@ -8,6 +8,8 @@ namespace LegionKnight
     public class MinionDefinition : ScriptableObject, IAbilityOwner
     {
         [SerializeField]
+        private string m_Id = "minion_001";
+        [SerializeField]
         private string m_Label = "Minion";
         [SerializeField]
         private int m_StartLevel = 0;
@@ -24,7 +26,7 @@ namespace LegionKnight
         private int m_RewardKilled;
         [SerializeField]
         private Currency m_ItemRewardKilled;
-
+        public string Id => m_Id;
         public string Label => m_Label;
         public Sprite Looks => m_Looks;
         public AbilityDefinition AbilityDefinition => m_AbilityDefinition;

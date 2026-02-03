@@ -47,7 +47,7 @@ namespace LegionKnight
         {
             foreach (var unit in m_MinionUnits)
             {
-                if (unit.Definition == def) return unit;
+                if (unit.Definition.Id == def.Id) return unit;
             }
             return null;
         }
@@ -102,7 +102,7 @@ namespace LegionKnight
         }
         private void CheckEnemy()
         {
-            // is enemy exist if there is 1 enemy on the list
+            //enemy is exist, if there is 1 enemy on the list
 
             m_IsEnemyExist = m_EnemyList.Count > 0;
             if (m_IsEnemyExist)

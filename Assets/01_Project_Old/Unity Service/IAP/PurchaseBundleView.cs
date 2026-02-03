@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Purchasing;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
+using static UnityEngine.UI.Image;
 
 namespace LegionKnight
 {
@@ -45,9 +48,41 @@ namespace LegionKnight
 
         public void OnProductFecth(Product product)
         {
+            decimal originalPrice = m_ProductDefinition.OriginalPrice;
+            decimal discountedPrice = product.metadata.localizedPrice;
+            bool isDiscounted = discountedPrice < originalPrice;
+            if (isDiscounted)
+            {
+                m_PriceText.text = $"<s>{originalPrice},-</s> {discountedPrice},-";
+                return;
+            }
+            int discountPercent = Mathf.RoundToInt((float)((originalPrice - discountedPrice) / originalPrice * 100m);
             string priceText = product.metadata.localizedPriceString;
             string currencyCode = product.metadata.isoCurrencyCode;
             m_PriceText.text = $"{currencyCode}, {priceText},-";
+            priceText.text = product.metadata.localizedPriceString;
+
+            if (isDiscounted)
+            {
+                originalPriceText.text =
+                    $"<s>{FormatPrice(original, product.metadata.isoCurrencyCode)}</s>";
+
+                discountText.text = $"-{discountPercent}%";
+            }
+            else
+            {
+                originalPriceText.text = "";
+                discountText.text = "";
+            }
+        }
+
+        string FormatPrice(decimal price, string isoCurrency)
+        {
+            var culture = CultureInfo
+                .GetCultures(CultureTypes.SpecificCultures)
+                .First(c => new RegionInfo(c.LCID).ISOCurrencySymbol == isoCurrency);
+
+            return string.Format(culture, "{0:C}", price);
         }
 
         public void Init()
