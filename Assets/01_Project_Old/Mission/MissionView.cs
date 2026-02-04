@@ -34,6 +34,8 @@ namespace LegionKnight
         [SerializeField]
         private GameObject m_OnClaimedContent;
         [SerializeField]
+        private LootMonitor m_LootMonitor;
+        [SerializeField]
         private Button m_ClaimButton;
         private TaskDefinition m_Definition;
         public TaskDefinition Definition => m_Definition;
