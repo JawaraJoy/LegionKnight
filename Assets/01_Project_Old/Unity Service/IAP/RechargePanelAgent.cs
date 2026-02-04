@@ -8,6 +8,12 @@ namespace LegionKnight
         {
             CanvasManager.Instance.ShowRechargePanel();
         }
+        public void ShowTab(string tabName)
+        {
+            CanvasManager.Instance.ShowRechargePanel();
+            RechargePanel panel = CanvasManager.Instance.GetPanel<RechargePanel>();
+            panel.ShowBinding(tabName);
+        }
     }
     public partial class CanvasManager
     {
