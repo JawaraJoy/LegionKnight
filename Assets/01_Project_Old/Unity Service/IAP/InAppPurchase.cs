@@ -127,7 +127,7 @@ namespace LegionKnight
             m_OnPurchaseFailed?.Invoke(sellProduct);
 
             //--Tenjin Records
-            TenjinManager.Instance.SendEventToPurchaseFailed(reason.reason);
+            TenjinManager.Instance.SendEventToPurchaseFailed(reason.reason, sellProduct);
         }
         public void SetIsAvailable(string id, bool isAvailable)
         {

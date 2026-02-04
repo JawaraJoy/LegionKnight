@@ -1,4 +1,3 @@
-using MoreMountains.Tools;
 using Rush;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +13,9 @@ namespace LegionKnight
         [SerializeField]
         private Image m_ProfileBackground;
         [SerializeField]
-        private Animator m_Animator;
+        private Animator m_AnimatorIcon;
+        [SerializeField]
+        private Animator m_AnimatorFrame;
         private CustomProfile m_Profile;
         [SerializeField]
         private ProfileViewNoticeButton m_NoticeButton;
@@ -65,13 +66,13 @@ namespace LegionKnight
                 if (icon.runtimeAnim == null)
                 {
                     m_ProfileIcon.sprite = icon.Icon;
-                    m_Animator.enabled = false;
+                    m_AnimatorIcon.enabled = false;
                 }
                 else
                 {
-                    m_Animator.enabled = true;
-                    m_Animator.runtimeAnimatorController = icon.runtimeAnim;
-                    m_Animator.Play("Frame", 0, 0f);
+                    m_AnimatorIcon.enabled = true;
+                    m_AnimatorIcon.runtimeAnimatorController = icon.runtimeAnim;
+                    m_AnimatorIcon.Play("Frame", 0, 0f);
                 }
             }
 
@@ -80,13 +81,13 @@ namespace LegionKnight
                 if (frame.runtimeAnim == null)
                 {
                     m_ProfileBackground.sprite = frame.Icon;
-                    m_Animator.enabled = false;
+                    m_AnimatorFrame.enabled = false;
                 }
                 else
                 {
-                    m_Animator.enabled = true;
-                    m_Animator.runtimeAnimatorController = frame.runtimeAnim;
-                    m_Animator.Play("Frame", 0, 0f);
+                    m_AnimatorFrame.enabled = true;
+                    m_AnimatorFrame.runtimeAnimatorController = frame.runtimeAnim;
+                    m_AnimatorFrame.Play("Frame", 0, 0f);
                 }
             }
 

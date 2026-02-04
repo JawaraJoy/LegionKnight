@@ -5,17 +5,6 @@ namespace LegionKnight
     public class TenjinAgent : MonoBehaviour
     {
         private TenjinManager tenjinManager;
-        private TenjinManager TenjinManager
-        {
-            get
-            {
-                if (tenjinManager == null)
-                {
-                    tenjinManager = TenjinManager.Instance;
-                }
-                return tenjinManager;
-            }
-        }
 
         public void Init()
         {
@@ -57,6 +46,22 @@ namespace LegionKnight
             }
         }
 
+        public void SendEventToAcquiredCharacter(CharacterDefinition defi)
+        {
+            if(defi != null)
+            {
+                string heroName = defi.name.Replace(" ", "_");
+
+                //--TenjinRecord
+                if(TenjinManager.Instance && PlayerPrefs.GetInt("Record_FirstHero_" + heroName, 0) == 0)
+                {
+                    TenjinManager.Instance.SendEvent("event_hero_acquired_" + heroName);
+                    PlayerPrefs.SetInt("Record_FirstHero_" + heroName, 1);
+                    PlayerPrefs.Save();
+                }
+            }
+        }
+
         public void SendEventToUnlockMode(string mode)
         {
             if(TenjinManager.Instance && PlayerPrefs.GetInt("Record_UnlockMode_" + mode, 0) == 0)
@@ -72,6 +77,11 @@ namespace LegionKnight
             if (TenjinManager.Instance && TenjinManager.productIdCode.ContainsKey(product.Definition.Id))
             {
                 TenjinManager.Instance.SendEvent("event_purchase_started", TenjinManager.productIdCode[product.Definition.Id].ToString());
+
+                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                {
+                    TenjinManager.Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_started");
+                }
             }
         }
 
@@ -80,6 +90,11 @@ namespace LegionKnight
             if (TenjinManager.Instance && TenjinManager.productIdCode.ContainsKey(product.Definition.Id))
             {
                 TenjinManager.Instance.SendEvent("event_purchase_success", TenjinManager.productIdCode[product.Definition.Id].ToString());
+
+                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                {
+                    TenjinManager.Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_success");
+                }
             }
         }
 
@@ -99,6 +114,5 @@ namespace LegionKnight
             if (TenjinManager.Instance)
                 TenjinManager.Instance.SendEvent("event_gacha_pull", isMultiDraw ? "1" : "0");
         }
-
     }
 }

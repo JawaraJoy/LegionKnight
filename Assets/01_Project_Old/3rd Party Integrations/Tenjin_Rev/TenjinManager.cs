@@ -38,7 +38,11 @@ namespace LegionKnight
             ["diamond_480"] = 14,
             ["diamond_1040"] = 15,
             ["diamond_2240"] = 16,
-            ["diamond_99999"] = 17
+            ["diamond_99999"] = 17,
+            ["killjoy_launch_starter_bundle"] = 18,
+            ["killjoy_premium_profile_bundle"] = 19,
+            ["killjoy_total_value_pack"] = 20,
+            ["killjoy_breakthrough_pack"] = 21,
         };
 
         public static Dictionary<PurchaseFailureReason, int> failedReasonCode = new Dictionary<PurchaseFailureReason, int>()
@@ -267,14 +271,24 @@ namespace LegionKnight
             if (productIdCode.ContainsKey(product.Definition.Id))
             {
                 Instance.SendEvent("event_purchase_started", productIdCode[product.Definition.Id].ToString());
+
+                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                {
+                    Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_started");
+                }
             }
         }
 
-        public void SendEventToPurchaseFailed(PurchaseFailureReason reason)
+        public void SendEventToPurchaseFailed(PurchaseFailureReason reason, SellProduct product)
         {
             if (failedReasonCode.ContainsKey(reason))
             {
                 Instance.SendEvent("event_purchase_failed", failedReasonCode[reason].ToString());
+
+                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                {
+                    Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_Failed");
+                }
             }
 
             if (currencyCheat)
@@ -288,6 +302,11 @@ namespace LegionKnight
             if (productIdCode.ContainsKey(product.Definition.Id))
             {
                 Instance.SendEvent("event_purchase_success", productIdCode[product.Definition.Id].ToString());
+
+                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                {
+                    Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_success");
+                }
             }
         }
 
@@ -329,7 +348,7 @@ namespace LegionKnight
         {
             if(task)
             {
-                string eventName = "event_" + (task.MissionCategory == MissionCategory.Daily ? "daily" : "weekly") + "_mission_completed_" + task.Id;
+                string eventName = "event_" + (task.MissionCategory == MissionCategory.Daily ? "daily" : "weekly") + "_mission_completed_" + task.name.Replace(" ", "_");
 
                 Instance.SendEvent(eventName);    
             }
