@@ -29,7 +29,7 @@ namespace LegionKnight
             }
             else
             {
-                UnityService.Instance.SaveData(m_Definition.Id, m_IsAvailable);
+                UnityService.Instance.SaveData(m_Definition.Id + "a", m_IsAvailable);
             }
             if (UnityService.Instance.HasData(m_Definition.Id + "b"))
             {

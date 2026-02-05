@@ -7,7 +7,6 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Purchasing;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
-using static UnityEngine.UI.Image;
 
 namespace LegionKnight
 {

@@ -77,12 +77,12 @@ namespace LegionKnight
             }
             if (UnityService.Instance.HasData(m_Definition.Id + "sfdused"))
             {
-                m_SingleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "sfdUsed"));
+                m_SingleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "sfdused"));
             }
 
-            if (UnityService.Instance.HasData(m_Definition.Id + "mfdUsed"))
+            if (UnityService.Instance.HasData(m_Definition.Id + "mfdused"))
             {
-                m_MultipleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "mfdUsed"));
+                m_MultipleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "mfdused"));
             }
             if (UnityService.Instance.HasData(USEFIRSTDRAWKEY))
             {
@@ -166,7 +166,7 @@ namespace LegionKnight
             int finalCost = GetFinalCostInternal(MultiDrawInternal);
             m_MultipleDrawDiscount.SetFirstDrawUsed(true);
             GameManager.Instance.StartCoroutine(PerformDrawCoroutine(MultiDrawInternal, finalCost));
-            UnityService.Instance.SaveData(m_Definition.Id + "mfdUsed", m_MultipleDrawDiscount.FirstDrawUse);
+            UnityService.Instance.SaveData(m_Definition.Id + "mfdused", m_MultipleDrawDiscount.FirstDrawUse);
         }
 
         private IEnumerator PerformDrawCoroutine(int drawCount, int cost)
