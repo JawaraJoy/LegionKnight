@@ -55,7 +55,7 @@ namespace LegionKnight
 
         private IEnumerator SettingUpRateNote(BannerDefinition defi)
         {
-            List<GachaReward> gr = new(defi.GachaRewards);
+            List<GachaReward> gr = new(defi.NormalRewards);
             m_SpawnedItemsCount = m_SpawnedItems.Count;
             m_GachaItemsCount = gr.Count;
             bool morethanSpawned = m_GachaItemsCount > m_SpawnedItemsCount;

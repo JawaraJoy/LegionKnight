@@ -36,6 +36,12 @@ namespace LegionKnight
         {
             GachaBanner gachaBanner = GameManager.Instance.GetSelectedBanner();
             m_OnInitPanel?.Invoke(gachaBanner);
+            GachaManagerAgent[] gachaManagerAgents = GetComponentsInChildren<GachaManagerAgent>(true);
+            foreach (var agent in gachaManagerAgents)
+            {
+                agent.RefreshMultiDrawButton();
+                agent.RefreshSingleDrawButton();
+            }
         }
     }
 }

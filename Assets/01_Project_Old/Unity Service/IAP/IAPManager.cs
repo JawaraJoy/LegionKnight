@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Purchasing;
-using UnityEngine.Purchasing.Extension;
 
 namespace LegionKnight
 {

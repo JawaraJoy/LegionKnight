@@ -25,7 +25,7 @@ namespace LegionKnight
         
         public void SetPromoText(GachaBanner banner)
         {
-            string text = banner.PromoText;
+            string text = banner.Definition.PromoText;
             GetBannerPanel().SetPromoText(text);
         }
     }

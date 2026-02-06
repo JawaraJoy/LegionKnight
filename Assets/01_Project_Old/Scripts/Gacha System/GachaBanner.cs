@@ -1,258 +1,167 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Playables;
 
 namespace LegionKnight
 {
     [System.Serializable]
-    public partial class GachaBanner
+    public class GachaBanner
     {
-        [SerializeField]
-        private int m_TotalDraws = 0;
-        [SerializeField]
-        private int m_SmallPityCount = 0;
+        [SerializeField] private BannerDefinition m_Definition;
+        [SerializeField] private DrawDiscount m_SingleDiscount;
+        [SerializeField] private DrawDiscount m_MultiDiscount;
 
-        //public PlayableDirector timeline;
+        private int m_TotalDraws;
+        private int m_SmallPity;
+        private bool m_FirstDrawUsed;
 
-        [SerializeField]
-        private BannerDefinition m_Definition;
-        [SerializeField]
-        private bool m_SkipAnimation = false;
-        [SerializeField]
-        private DrawDiscount m_SingleDrawDiscount;
-        [SerializeField]
-        private DrawDiscount m_MultipleDrawDiscount;
-        [SerializeField]
-        private UnityEvent<List<GachaReward>> m_OnDrawResultSuccess = new();
-        [SerializeField]
-        private UnityEvent<CurrencyDefinition> m_OnDrawResultFail = new();
-        public string PromoText => m_Definition.PromoText;
-        private int MultiDrawInternal => m_Definition.MultiDraw;
-        public int MultiDraw => MultiDrawInternal;
-        private int GuaranteedDrawInternal => m_Definition.GuaranteedDraw;
-        private int SmallPityInternal => m_Definition.SmallPity;
-        private List<GachaReward> MainRewardInternal => m_Definition.MainRewards;
-        private List<GachaReward> SmallPityRewardInternal => m_Definition.SmallPityRewards;
-        private List<GachaReward> GachaRewardsInternal => m_Definition.GachaRewards;
+        private CloudSave Cloud => UnityService.Instance.CloudSave;
+
+        private string TotalKey => $"{m_Definition.Id}_total";
+        private string SmallKey => $"{m_Definition.Id}_small";
+        private string FirstKey => $"{m_Definition.Id}_first";
+
         public BannerDefinition Definition => m_Definition;
+
+        public float GetDrawCountRate()
+        {
+            return (float)m_TotalDraws / m_Definition.GuaranteedDraw;
+        }
         public int TotalDraws => m_TotalDraws;
-        public bool SkipAnimation => m_SkipAnimation;
-        public Sprite VisualBanner => m_Definition.VisualBanner;
-        public Sprite SmallVisualBanner => m_Definition.SmallVisualBanner;
-
-        public DrawDiscount SingleDrawDiscount => m_SingleDrawDiscount;
-        public DrawDiscount MultipleDrawDiscount => m_MultipleDrawDiscount;
-
-        private bool m_UsedFirstDraw = false;
-        private string USEFIRSTDRAWKEY => $"{m_Definition.Id}isfirstdraw";
-        private void SetUsedFirstDraw(bool isFirstDraw)
-        {
-            m_UsedFirstDraw = isFirstDraw;
-            UnityService.Instance.SaveData(USEFIRSTDRAWKEY, m_UsedFirstDraw);
-        }
-        public void SetSmallPityCount(int count)
-        {
-            m_SmallPityCount = count;
-        }
 
         public void Init()
         {
-            if (UnityService.Instance.HasData(m_Definition.Id + "totaldraws"))
+            if (Cloud.HasData(TotalKey))
+                m_TotalDraws = Cloud.GetDataValue<int>(TotalKey);
+
+            if (Cloud.HasData(SmallKey))
+                m_SmallPity = Cloud.GetDataValue<int>(SmallKey);
+
+            if (Cloud.HasData(FirstKey))
+                m_FirstDrawUsed = Cloud.GetDataValue<bool>(FirstKey);
+
+            LoadDiscount(m_SingleDiscount);
+            LoadDiscount(m_MultiDiscount);
+        }
+
+        public void Draw(int count, List<GachaReward> results)
+        {
+            for (int i = 0; i < count; i++)
             {
-                m_TotalDraws = UnityService.Instance.GetData<int>(m_Definition.Id + "totaldraws");
+                var reward = RollOnce(i == 0);
+                results.Add(reward);
             }
-            else
+
+            SaveState();
+        }
+
+        private GachaReward RollOnce(bool firstIndex)
+        {
+            m_TotalDraws++;
+            m_SmallPity++;
+
+            if (!m_FirstDrawUsed && firstIndex && m_Definition.FirstDrawReward != null)
+            {
+                m_FirstDrawUsed = true;
+                return m_Definition.FirstDrawReward;
+            }
+
+            if (m_TotalDraws >= m_Definition.GuaranteedDraw)
             {
                 m_TotalDraws = 0;
-            }
-            if (UnityService.Instance.HasData(m_Definition.Id + "smallpityCount"))
-            {
-                m_SmallPityCount = UnityService.Instance.GetData<int>(m_Definition.Id + "smallpityCount");
-            }
-            else
-            {
-                m_SmallPityCount = 0;
-            }
-            if (UnityService.Instance.HasData(m_Definition.Id + "sfdused"))
-            {
-                m_SingleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "sfdused"));
+                return RollWithSoftPity(m_Definition.MainRewards);
             }
 
-            if (UnityService.Instance.HasData(m_Definition.Id + "mfdused"))
+            if (m_SmallPity >= m_Definition.SmallPity)
             {
-                m_MultipleDrawDiscount.SetFirstDrawUsed(UnityService.Instance.GetData<bool>(m_Definition.Id + "mfdused"));
+                m_SmallPity = 0;
+                return RollFrom(m_Definition.SmallPityRewards);
             }
-            if (UnityService.Instance.HasData(USEFIRSTDRAWKEY))
-            {
-                bool firstDraw = UnityService.Instance.GetData<bool>(USEFIRSTDRAWKEY);
-                SetUsedFirstDraw(firstDraw);
-            }
-        }
-        public float GetDrawCountRate()
-        {
-            return (float)m_TotalDraws / (float)GuaranteedDrawInternal;
-        }
-        private GachaCurrencyCost GetSelectedGachaCurrencyCostInternal(int drawAmount)
-        {
-            int mainCost = m_Definition.MainCurrencyToDraw.Amount * drawAmount;
-            int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(m_Definition.MainCurrencyToDraw.Definition);
-            bool alternatif = playerCurrencyAmount < mainCost;
-            GachaCurrencyCost cost = alternatif ?
-                m_Definition.AlternatifCurrencyToDraw :
-                m_Definition.MainCurrencyToDraw;
-            GachaCurrencyCost final = new GachaCurrencyCost(cost.Definition, cost.Amount * drawAmount);
-            return final;
-        }
-        public GachaCurrencyCost GetSelectedGachaCurrencyCost(int drawAmount)
-        {
-            GachaCurrencyCost cost = GetSelectedGachaCurrencyCostInternal(drawAmount);
-            return cost;
-        }
-        public GachaCurrencyCost GetFinalCurrencyCost(int drawAmount)
-        {
-            CurrencyDefinition defi = GetSelectedGachaCurrencyCostInternal(drawAmount).Definition;
-            int finalCost = GetFinalCostInternal(drawAmount);
-            return new GachaCurrencyCost(defi, finalCost);
-        }
-        public int GetFinalSingleDrawCost()
-        {
-            return GetFinalCostInternal(1);
-        }
-        public int GetFinalMultiDrawCost()
-        {
-            return GetFinalCostInternal(MultiDrawInternal);
-        }
-        private int GetFinalCostInternal(int drawCount)
-        {
-            int cost = GetSelectedGachaCurrencyCostInternal(drawCount).Amount;
-            bool used = m_SingleDrawDiscount.Used;
-            bool firstDrawUse = m_SingleDrawDiscount.FirstDrawUse;
-            float discount = m_SingleDrawDiscount.PriceRate;
-            float firstDrawDiscount = m_SingleDrawDiscount.PriceRateFirstDraw;
-            if (drawCount > 1)
-            {
-                used = m_MultipleDrawDiscount.Used;
-                firstDrawUse = m_MultipleDrawDiscount.FirstDrawUse;
-                discount = m_MultipleDrawDiscount.PriceRate;
-                firstDrawDiscount = m_MultipleDrawDiscount.PriceRateFirstDraw;
 
-            }
-            if (used && firstDrawUse)
-            {
-                cost = Mathf.CeilToInt(cost * discount * firstDrawDiscount);
-            }
-            else if (used)
-            {
-                cost = Mathf.CeilToInt(cost * discount);
-            }
-            else if (firstDrawUse)
-            {
-                cost = Mathf.CeilToInt(cost * firstDrawDiscount);
-            }
-            return cost;
-        }
-        public void PerformingSingleDraw()
-        {
-            int finalCost = GetFinalCostInternal(1);
-            m_SingleDrawDiscount.SetFirstDrawUsed(true);
-            GameManager.Instance.StartCoroutine(PerformDrawCoroutine(1, finalCost));
-            UnityService.Instance.SaveData(m_Definition.Id + "sfdused", m_SingleDrawDiscount.FirstDrawUse);
+            return RollFrom(m_Definition.NormalRewards);
         }
 
-        public void PerformingMultiDraw()
+        private GachaReward RollFrom(IReadOnlyList<GachaReward> pool)
         {
-            int finalCost = GetFinalCostInternal(MultiDrawInternal);
-            m_MultipleDrawDiscount.SetFirstDrawUsed(true);
-            GameManager.Instance.StartCoroutine(PerformDrawCoroutine(MultiDrawInternal, finalCost));
-            UnityService.Instance.SaveData(m_Definition.Id + "mfdused", m_MultipleDrawDiscount.FirstDrawUse);
+            float total = 0f;
+            foreach (var r in pool)
+                total += r.Weight;
+
+            float roll = Random.value * total;
+            float acc = 0f;
+
+            foreach (var r in pool)
+            {
+                acc += r.Weight;
+                if (roll <= acc)
+                    return r;
+            }
+
+            return pool[^1];
         }
 
-        private IEnumerator PerformDrawCoroutine(int drawCount, int cost)
+        private GachaReward RollWithSoftPity(IReadOnlyList<GachaReward> pool)
         {
-            CurrencyDefinition defi = GetSelectedGachaCurrencyCostInternal(drawCount).Definition;
-            int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(defi);
-            if (playerCurrencyAmount < cost)
+            float multiplier = 1f;
+
+            if (m_Definition.EnableSoftPity && m_TotalDraws >= m_Definition.SoftPityStart)
             {
-                m_OnDrawResultFail?.Invoke(defi);
-                yield break;
+                int excess = m_TotalDraws - m_Definition.SoftPityStart + 1;
+                multiplier += excess * m_Definition.SoftPityMultiplier * 0.01f;
             }
 
-            Player.Instance.AddCurrencyAmount(defi, -cost);
-            List<GachaReward> results = new();
-            string allRewards = "";
-            for (int i = 0; i < drawCount; i++)
+            float total = 0f;
+            foreach (var r in pool)
+                total += r.Weight * multiplier;
+
+            float roll = Random.value * total;
+            float acc = 0f;
+
+            foreach (var r in pool)
             {
-                m_TotalDraws++;
-                m_SmallPityCount++;
-                GachaReward result = CalculateDrawResult();
-                if (m_UsedFirstDraw == false)
-                {
-                    if (m_Definition.FirstDrawReward != null)
-                    {
-                        result = m_Definition.FirstDrawReward;
-                    }
-                    SetUsedFirstDraw(true);
-                }
-                results.Add(result);
+                acc += r.Weight * multiplier;
+                if (roll <= acc)
+                    return r;
             }
 
-            m_OnDrawResultSuccess?.Invoke(results);
-
-            //--Tenjin Record
-            TenjinManager.Instance.SendEventToGachaPullType(results);
-
-            foreach (GachaReward re in results)
-            {
-                allRewards += re.Definition.name;
-                //re.ApplyRewardToPlayer();
-            }
-            
-            if (!m_SkipAnimation)
-            {
-                //timeline.Play();
-                //yield return new WaitUntil(() => timeline.state != PlayState.Playing);
-                yield return new WaitForSeconds(1f);
-            }
-
-            UnityService.Instance.SaveData(m_Definition.Id + "totaldraws", m_TotalDraws);
-            UnityService.Instance.SaveData(m_Definition.Id + "smallpityCount", m_SmallPityCount);
-            Debug.Log($"Gacha Reward {allRewards}");
+            return pool[^1];
         }
 
-        private GachaReward CalculateDrawResult()
+        private void SaveState()
         {
-            if (m_TotalDraws >= GuaranteedDrawInternal)
-            {
-                m_TotalDraws = 0;
-                int random = Random.Range(0, MainRewardInternal.Count);
-                return MainRewardInternal[random];
-            }
+            long ttl = m_Definition.IsSeasonal
+                ? m_Definition.SeasonDurationSeconds
+                : 0;
 
-            if (m_SmallPityCount >= SmallPityInternal)
-            {
-                m_SmallPityCount = 0;
-                int random = Random.Range(0, SmallPityRewardInternal.Count);
-                return SmallPityRewardInternal[random];
-            }
+            Cloud.SaveData(TotalKey, m_TotalDraws, ttl);
+            Cloud.SaveData(SmallKey, m_SmallPity, ttl);
+            Cloud.SaveData(FirstKey, m_FirstDrawUsed, ttl);
 
-            // Normalize drop rates
-            float totalDropRate = 0f;
-            foreach (var reward in GachaRewardsInternal)
-                totalDropRate += reward.DropRate;
+            SaveDiscount(m_SingleDiscount);
+            SaveDiscount(m_MultiDiscount);
+        }
 
-            float roll = Random.value * totalDropRate;
-            float cumulative = 0f;
+        private void SaveDiscount(DrawDiscount discount)
+        {
+            if (discount == null || !discount.DiscountEnabled)
+                return;
 
-            foreach (var reward in GachaRewardsInternal)
-            {
-                cumulative += reward.DropRate;
-                if (roll < cumulative)
-                    return reward;
-            }
-            // Fallback (should not happen if rates are set up correctly)
-            return GachaRewardsInternal[^1];
+            long ttl = m_Definition.IsSeasonal
+                ? m_Definition.SeasonDurationSeconds
+                : 0;
+
+            Cloud.SaveData($"{m_Definition.Id}_discount_{discount.Id}",
+                discount.FirstDrawConsumed,
+                ttl);
+        }
+
+        private void LoadDiscount(DrawDiscount discount)
+        {
+            if (discount == null)
+                return;
+
+            string key = $"{m_Definition.Id}_discount_{discount.Id}";
+            if (Cloud.HasData(key))
+                discount.ConsumeFirstDraw();
         }
     }
 }

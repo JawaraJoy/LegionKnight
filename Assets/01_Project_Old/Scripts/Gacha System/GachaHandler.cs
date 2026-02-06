@@ -4,105 +4,90 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public partial class GachaHandler : MonoBehaviour
+    public class GachaHandler : MonoBehaviour
     {
-        [SerializeField]
-        private List<GachaBanner> m_Banners = new();
-        [SerializeField]
-        private UnityEvent<GachaBanner> m_OnPerformDraw = new();
-        [SerializeField]
-        private UnityEvent<GachaBanner> m_OnBannerSelected = new();
-        [SerializeField]
-        private UnityEvent<GachaCurrencyCost> m_OnPerformDrawCost = new();
+        [SerializeField] private List<GachaBanner> m_Banners = new();
+        [SerializeField] private UnityEvent<List<GachaReward>> m_OnDrawResult;
+        [SerializeField] private UnityEvent<string> m_OnDrawFailed;
+        [SerializeField] private UnityEvent m_OnPerformSingleDraw;
+        [SerializeField] private UnityEvent m_OnPerformMultiDraw;
 
-        private GachaBanner m_SelectedBanner;
-        [SerializeField]
-        private UnityEvent<GachaBanner> m_OnStart = new();
-        [SerializeField]
-        private UnityEvent<Currency> m_OnConvertToStarCountChanged = new();
-
-        [SerializeField]
-        private Currency m_StarConvertCount;
+        private GachaBanner m_Selected;
+        private bool m_IsDrawing;
 
         public void Init()
         {
-            SelectBanner(m_Banners[0].Definition);
-            foreach (var banner in m_Banners)
+            if (m_Banners.Count == 0)
             {
-                banner.Init();
+                Debug.LogError("No gacha banners assigned");
+                return;
             }
-            OnStartInvoke();
-        }
-        private void Start()
-        {
-            SelectBanner(m_Banners[0].Definition);
-            //OnStartInvoke();
-        }
-        public void AddStarConvertCount(int amount)
-        {
-            m_StarConvertCount.AddAmount(amount);
-            OnConvertToStarCountChangedInvoke(m_StarConvertCount);
-            Player.Instance.AddCurrencyAmount(m_StarConvertCount.CurrencyDefinition, amount);
-        }
-        private void OnConvertToStarCountChangedInvoke(Currency currency)
-        {
-            m_StarConvertCount = currency;
-            m_OnConvertToStarCountChanged?.Invoke(currency);
-        }
-        private void OnStartInvoke()
-        {
-            if (m_SelectedBanner == null) return;
-            m_OnStart?.Invoke(m_SelectedBanner);
-        }
-        private GachaBanner GetGachaBannerInternal(BannerDefinition definition)
-        {
-            GachaBanner match = m_Banners.Find(x => x.Definition == definition);
-            return match;
-        }
-        public void SelectBanner(BannerDefinition definition)
-        {
-            SelectBannerInternal(definition);
-        }
-        public void SelectBannerInternal(BannerDefinition definition)
-        {
-            m_SelectedBanner = GetGachaBannerInternal(definition);
-            OnBannerSelected(m_SelectedBanner);
 
-        }
-        public void PerformingSingleDraw()
-        {
-            m_StarConvertCount.SetAmount(0);
-            m_SelectedBanner.PerformingSingleDraw();
-            OnPerformDrawInvoke(m_SelectedBanner);
-            OnPerformDrawCost(m_SelectedBanner.GetFinalCurrencyCost(1));
-            OnStartInvoke();
+            foreach (var banner in m_Banners)
+                banner.Init();
+
+            m_Selected = m_Banners[0];
         }
 
-        public void PerformingMultiDraw()
+        public void PerformSingleDraw()
         {
-            m_StarConvertCount.SetAmount(0);
-            m_SelectedBanner.PerformingMultiDraw();
-            OnPerformDrawInvoke(m_SelectedBanner);
-            OnPerformDrawCost(m_SelectedBanner.GetFinalCurrencyCost(m_SelectedBanner.MultiDraw));
-            OnStartInvoke();
+            PerformDraw(1);
+            m_OnPerformSingleDraw?.Invoke();
         }
 
-        private void OnPerformDrawInvoke(GachaBanner banner)
+        public void PerformMultiDraw()
         {
-            m_OnPerformDraw?.Invoke(banner);
+            PerformDraw(m_Selected.Definition.MultiDraw);
+            m_OnPerformMultiDraw?.Invoke();
         }
-        private void OnBannerSelected(GachaBanner banner)
-        {
-            m_OnBannerSelected?.Invoke(banner);
-        }
-        private void OnPerformDrawCost(GachaCurrencyCost cost)
-        {
-            m_OnPerformDrawCost?.Invoke(cost);
-        }
-
         public GachaBanner GetSelectedBanner()
         {
-            return m_SelectedBanner;
+            return m_Selected;
+        }
+
+        private void PerformDraw(int count)
+        {
+            if (m_IsDrawing || m_Selected == null)
+                return;
+
+            var cost = ResolveCost(count);
+            CurrencyDefinition currencyDefinition = cost.Definition;
+            int costAmount = cost.Amount;
+            int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(currencyDefinition);
+
+            if (playerCurrencyAmount < cost.Amount)
+            {
+                m_OnDrawFailed?.Invoke("Not enough currency");
+                return;
+            }
+
+            Player.Instance.AddCurrencyAmount(cost.Definition, -cost.Amount);
+
+            m_IsDrawing = true;
+
+            List<GachaReward> results = new();
+            m_Selected.Draw(count, results);
+
+            foreach (var r in results)
+                r.Apply();
+
+            m_OnDrawResult?.Invoke(results);
+
+            m_IsDrawing = false;
+        }
+
+        private GachaCurrencyCost ResolveCost(int count)
+        {
+            var main = m_Selected.Definition.MainCurrency;
+            int total = main.Amount * count;
+
+            if (Player.Instance.GetCurrencyAmount(main.Definition) < total)
+            {
+                var alt = m_Selected.Definition.AlternativeCurrency;
+                return new GachaCurrencyCost(alt.Definition, alt.Amount * count);
+            }
+
+            return new GachaCurrencyCost(main.Definition, total);
         }
     }
 }

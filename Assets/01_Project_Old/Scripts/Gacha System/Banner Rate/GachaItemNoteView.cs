@@ -27,8 +27,8 @@ namespace LegionKnight
             {
                 itemName = des.Label;
             }
-            string rate = item.DropRate * 100 + "%";
-            string note = item.Description;
+            string rate = item.Weight * 100 + "%";
+            string note = item.Definition is IDescriptable desc ? desc.Description : "";
             string amount = item.Amount.ToString();
 
             m_ItemNameAndAmountText.text = $"{itemName} x{amount}";

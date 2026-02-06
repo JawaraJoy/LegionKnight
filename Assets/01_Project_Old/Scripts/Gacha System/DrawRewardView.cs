@@ -33,7 +33,7 @@ namespace LegionKnight
     {
         public void SetMainDrawRewardIcon(GachaBanner banner)
         {
-            GetBannerPanel().SetMainDrawRewardIcon(banner.SmallVisualBanner);
+            GetBannerPanel().SetMainDrawRewardIcon(banner.Definition.SmallVisualBanner);
         }
     }
 }

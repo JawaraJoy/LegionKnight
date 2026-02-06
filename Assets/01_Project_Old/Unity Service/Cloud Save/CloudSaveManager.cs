@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using Unity.Services.CloudSave;
+
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,6 +13,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private CloudSaveManager m_CloudSaveManager;
+        public CloudSaveManager CloudSave => m_CloudSaveManager;
 
         public void LoadAllData()
         {

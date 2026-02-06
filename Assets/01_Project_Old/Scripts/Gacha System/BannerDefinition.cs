@@ -4,138 +4,66 @@ using UnityEngine;
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "New Banner", menuName = "Legion Knight/Banner")]
-    public partial class BannerDefinition : ScriptableObject, IDescriptable
+    public class BannerDefinition : ScriptableObject
     {
-        [SerializeField]
-        private string m_Id;
-        [SerializeField]
-        private string m_Label;
-        [SerializeField]
-        private string m_Description;
-        [SerializeField]
-        private Sprite m_VisualBanner;
-        [SerializeField]
-        private Sprite m_SmallVisualBanner;
-        [SerializeField, TextArea]
-        private string m_PromoText;
-        [SerializeField]
-        private int m_GuaranteedDraw = 120;
-        [SerializeField]
-        private int m_SmallPity = 10;
-        [SerializeField]
-        private int m_MultiDraw = 10;
-        
-        [SerializeField]
-        private GachaCurrencyCost m_MainCurrencyToDraw;
-        [SerializeField]
-        private GachaCurrencyCost m_AlternatifCurrencyToDraw;
-        [SerializeField]
-        private GachaReward m_FirstDrawReward;
-        
-        [SerializeField]
-        private List<GachaReward> m_MainRewards = new();
-        [SerializeField]
-        private List<GachaReward> m_SmallPityRewards = new();
-        [SerializeField]
-        private List<GachaReward> m_GachaRewards = new();
+        [Header("Identity")]
+        [SerializeField] private string m_Id;
+        [SerializeField] private string m_Label;
+        [SerializeField, TextArea] private string m_Description;
+
+        [Header("Visual")]
+        [SerializeField] private Sprite m_VisualBanner;
+        [SerializeField] private Sprite m_SmallVisualBanner;
+        [SerializeField, TextArea] private string m_PromoText;
+
+        [Header("Draw Rules")]
+        [SerializeField] private int m_MultiDraw = 10;
+        [SerializeField] private int m_SmallPity = 10;
+        [SerializeField] private int m_GuaranteedDraw = 120;
+
+        [Header("Soft Pity")]
+        [SerializeField] private bool m_EnableSoftPity;
+        [SerializeField] private int m_SoftPityStart = 80;
+        [SerializeField] private float m_SoftPityMultiplier = 1.5f;
+
+        [Header("Seasonal")]
+        [SerializeField] private bool m_IsSeasonal;
+        [SerializeField] private long m_SeasonDurationSeconds;
+
+        [Header("Currency")]
+        [SerializeField] private GachaCurrencyCost m_MainCurrency;
+        [SerializeField] private GachaCurrencyCost m_AlternativeCurrency;
+
+        [Header("Rewards")]
+        [SerializeField] private GachaReward m_FirstDrawReward;
+        [SerializeField] private List<GachaReward> m_MainRewards = new();
+        [SerializeField] private List<GachaReward> m_SmallPityRewards = new();
+        [SerializeField] private List<GachaReward> m_NormalRewards = new();
+
+        public string Id => m_Id;
         public string Label => m_Label;
         public string Description => m_Description;
-        public int MultiDraw => m_MultiDraw;
-        public int GuaranteedDraw => m_GuaranteedDraw;
-        public int SmallPity => m_SmallPity;
-        public List<GachaReward> MainRewards => m_MainRewards;
-        public List<GachaReward> SmallPityRewards => m_SmallPityRewards;
-        public GachaCurrencyCost MainCurrencyToDraw => m_MainCurrencyToDraw;
-        public GachaCurrencyCost AlternatifCurrencyToDraw => m_AlternatifCurrencyToDraw;
         public string PromoText => m_PromoText;
-        public List<GachaReward> GachaRewards => m_GachaRewards;
+
+        public int MultiDraw => m_MultiDraw;
+        public int SmallPity => m_SmallPity;
+        public int GuaranteedDraw => m_GuaranteedDraw;
+
+        public bool EnableSoftPity => m_EnableSoftPity;
+        public int SoftPityStart => m_SoftPityStart;
+        public float SoftPityMultiplier => m_SoftPityMultiplier;
         public Sprite VisualBanner => m_VisualBanner;
         public Sprite SmallVisualBanner => m_SmallVisualBanner;
-        public string Id => m_Id;
+
+        public bool IsSeasonal => m_IsSeasonal;
+        public long SeasonDurationSeconds => m_SeasonDurationSeconds;
+
+        public GachaCurrencyCost MainCurrency => m_MainCurrency;
+        public GachaCurrencyCost AlternativeCurrency => m_AlternativeCurrency;
+
         public GachaReward FirstDrawReward => m_FirstDrawReward;
-    }
-    [System.Serializable]
-    public partial class GachaReward
-    {
-        [SerializeField]
-        private ScriptableObject m_Definition;
-        [SerializeField, TextArea]
-        private string m_Description;
-        [SerializeField]
-        private int m_Amount;
-        [SerializeField, Range(0f, 1f)]
-        private float m_DropRate;
-        public string Description => m_Description;
-        public ScriptableObject Definition => m_Definition;
-        public float DropRate => m_DropRate;
-        public int Amount => m_Amount;
-
-        public GachaReward(ScriptableObject definition, int amount, float dropRate)
-        {
-            m_Definition = definition;
-            m_Amount = amount;
-            m_DropRate = dropRate;
-        }
-        public void ApplyRewardToPlayer()
-        {
-            if (m_Definition is CurrencyDefinition currency)
-            {
-                Player.Instance.AddCurrencyAmount(currency, m_Amount);
-                Debug.Log($"Add Currency {currency.name}, {m_Amount}");
-            }
-            if (m_Definition is CharacterDefinition character)
-            {
-                if (Player.Instance.GetCharacterUnit(character).Owned)
-                {
-                    GameManager.Instance.AddStarConvertCount(3);
-                }
-                else
-                {
-                    Player.Instance.SetOwned(character, true);
-                }
-                Debug.Log($"Character owned {character.name}");
-            }
-        }
-    }
-    [System.Serializable]
-    public partial class GachaCurrencyCost
-    {
-        [SerializeField]
-        private CurrencyDefinition m_Definition;
-        [SerializeField]
-        private int m_Amount;
-        public CurrencyDefinition Definition => m_Definition;
-        public int Amount => m_Amount;
-
-        public GachaCurrencyCost(CurrencyDefinition definition, int amount)
-        {
-            m_Definition = definition;
-            m_Amount = amount;
-        }
-    }
-
-    [System.Serializable]
-    public partial class DrawDiscount
-    {
-        [SerializeField]
-        private bool m_Used;
-        [SerializeField]
-        private bool m_FirstDrawUse;
-        [SerializeField, Range(0f, 1f)]
-        private float m_PriceRate = 1f;
-        [SerializeField, Range(0f, 1f)]
-        private float m_PriceRateFirstDraw = 1f;
-        public bool Used => m_Used;
-        public bool FirstDrawUse => m_FirstDrawUse;
-        public float PriceRate => m_PriceRate;
-        public float PriceRateFirstDraw => m_PriceRateFirstDraw;
-        public void SetUsed(bool set)
-        {
-            m_Used = set;
-        }
-        public void SetFirstDrawUsed(bool set)
-        {
-            m_FirstDrawUse = set;
-        }
+        public IReadOnlyList<GachaReward> MainRewards => m_MainRewards;
+        public IReadOnlyList<GachaReward> SmallPityRewards => m_SmallPityRewards;
+        public IReadOnlyList<GachaReward> NormalRewards => m_NormalRewards;
     }
 }

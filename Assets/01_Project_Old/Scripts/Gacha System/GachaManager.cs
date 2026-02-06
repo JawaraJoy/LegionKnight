@@ -19,21 +19,21 @@ namespace LegionKnight
         }
         public void SelectBanner(BannerDefinition definition)
         {
-            m_GachanBanner.SelectBanner(definition);
+            //m_GachanBanner.SelectBanner(definition);
 
         }
         public void PerformingSingleDraw()
         {
-            m_GachanBanner.PerformingSingleDraw();
+            //m_GachanBanner.PerformingSingleDraw();
         }
 
         public void PerformingMultiDraw()
         {
-            m_GachanBanner.PerformingMultiDraw();
+            //m_GachanBanner.PerformingMultiDraw();
         }
         public void AddStarConvertCount(int amount)
         {
-            m_GachanBanner.AddStarConvertCount(amount);
+            //m_GachanBanner.AddStarConvertCount(amount);
         }
         public GachaBanner GetSelectedBanner()
         {
