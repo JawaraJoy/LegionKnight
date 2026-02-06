@@ -51,43 +51,76 @@ namespace LegionKnight
 
         public void OnProductFecth(Product product)
         {
-            decimal originalPrice = m_ProductDefinition.OriginalPriceUsd;
+            decimal originalPrice = product.metadata.localizedPrice * m_ProductDefinition.MultipleToOri;
             decimal discountedPrice = product.metadata.localizedPrice;
+            string samplePriceString = product.metadata.localizedPriceString;
 
-            bool isDiscounted = discountedPrice < originalPrice;
+            //bool isDiscounted = discountedPrice < originalPrice;
 
             string currencyCode = product.metadata.isoCurrencyCode;
 
-            if (isDiscounted)
-            {
-                int discountPercent = Mathf.RoundToInt((float)((originalPrice - discountedPrice) / originalPrice * 100m));
+            int discountPercent = Mathf.RoundToInt((float)((originalPrice - discountedPrice) / originalPrice * 100m));
 
-                // Discounted price (use store localized string!)
-                m_PriceText.text = product.metadata.localizedPriceString;
+            // Discounted price (use store localized string!)
+            m_PriceText.text = product.metadata.localizedPriceString;
 
-                // Original price (strikethrough)
-                m_OriginalPriceText.text = $"<s>{FormatPrice(originalPrice, currencyCode)}</s>";
+            // Original price (strikethrough)
+            m_OriginalPriceText.text = $"<s>{FormatLikeStore(originalPrice, currencyCode)}</s>";
 
-                m_DiscountText.text = $"-{discountPercent}%";
-            }
-            else
-            {
-                // Normal price
-                m_PriceText.text = product.metadata.localizedPriceString;
+            m_DiscountText.text = $"-{discountPercent}%";
 
-                m_OriginalPriceText.text = "";
-                m_DiscountText.text = "";
-            }
+            
         }
 
-        string FormatPrice(decimal price, string isoCurrency)
+        string FormatLikeStore(decimal value, string currencyCode)
         {
             var culture = CultureInfo
                 .GetCultures(CultureTypes.SpecificCultures)
-                .First(c => new RegionInfo(c.LCID).ISOCurrencySymbol == isoCurrency);
+                .FirstOrDefault(c =>
+                {
+                    try
+                    {
+                        return new RegionInfo(c.LCID).ISOCurrencySymbol == currencyCode;
+                    }
+                    catch { return false; }
+                });
 
-            return string.Format(culture, "{0:C}", price);
+            if (culture == null)
+                return value.ToString("F0");
+
+            var nfi = (NumberFormatInfo)culture.NumberFormat.Clone();
+
+            // 🔥 HARD OVERRIDE for store-like formatting
+            nfi.CurrencyDecimalDigits = IsZeroDecimalCurrency(currencyCode) ? 0 : 2;
+
+            return value.ToString("C", nfi);
         }
+
+
+        int GetDecimalCount(string priceString)
+        {
+            if (priceString.Contains(".") || priceString.Contains(","))
+            {
+                char separator = priceString.Contains(".") ? '.' : ',';
+                return priceString.Split(separator).Last().Length;
+            }
+            return 0;
+        }
+
+        bool IsZeroDecimalCurrency(string iso)
+        {
+            switch (iso)
+            {
+                case "IDR":
+                case "JPY":
+                case "KRW":
+                case "VND":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
 
         public void Init()
         {
