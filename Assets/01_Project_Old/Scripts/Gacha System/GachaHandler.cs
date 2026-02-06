@@ -27,7 +27,6 @@ namespace LegionKnight
         public GachaCurrencyCost LastDrawCost => m_LastDrawCost;
 
         private GachaBanner m_Selected;
-        private bool m_IsDrawing;
 
         
         public void Init()
@@ -78,7 +77,7 @@ namespace LegionKnight
 
         private void PerformDraw(int count)
         {
-            if (m_IsDrawing || m_Selected == null)
+            if (m_Selected == null)
                 return;
 
             var cost = ResolveCost(count);
@@ -95,7 +94,7 @@ namespace LegionKnight
 
             Player.Instance.AddCurrencyAmount(cost.Definition, -costAmount);
 
-            m_IsDrawing = true;
+            
 
             List<GachaReward> results = new();
             m_Selected.Draw(count, results);
@@ -105,7 +104,7 @@ namespace LegionKnight
 
             m_OnDrawResult?.Invoke(results);
 
-            m_IsDrawing = false;
+            
             InitAgentButton();
         }
 
