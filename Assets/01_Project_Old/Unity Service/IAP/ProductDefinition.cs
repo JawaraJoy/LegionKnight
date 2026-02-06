@@ -13,7 +13,7 @@ namespace LegionKnight
         [SerializeField, TextArea]
         private string m_Description;
         [SerializeField]
-        private int m_OriginalPriceCentsUsd;
+        private int m_MultiplyPrice;
         [SerializeField]
         private ProductItem m_MainProduct;
         [SerializeField]
@@ -24,7 +24,7 @@ namespace LegionKnight
         public string Id => m_Id;
         public string Label => m_Label;
         public string Description => m_Description;
-        public decimal OriginalPriceUsd => m_OriginalPriceCentsUsd / 100m;
+        public decimal MultiplePrice => m_MultiplyPrice / 100m;
         public ProductItem MainProduct => m_MainProduct;
         public ProductItem[] AdditionalProducts => m_AdditionalProducts;
         public ProductItem BonusProduct => m_BonusProduct;

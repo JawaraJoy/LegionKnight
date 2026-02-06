@@ -51,7 +51,7 @@ namespace LegionKnight
 
         public void OnProductFecth(Product product)
         {
-            decimal originalPrice = m_ProductDefinition.OriginalPriceUsd;
+            decimal originalPrice = product.metadata.localizedPrice * m_ProductDefinition.MultiplePrice;
             decimal discountedPrice = product.metadata.localizedPrice;
 
             bool isDiscounted = discountedPrice < originalPrice;
@@ -64,9 +64,8 @@ namespace LegionKnight
 
                 // Discounted price (use store localized string!)
                 m_PriceText.text = product.metadata.localizedPriceString;
-
                 // Original price (strikethrough)
-                m_OriginalPriceText.text = $"<s>{FormatPrice(originalPrice, currencyCode)}</s>";
+                m_OriginalPriceText.text = $"<s>{originalPrice} {currencyCode}</s>";
 
                 m_DiscountText.text = $"-{discountPercent}%";
             }
@@ -80,13 +79,41 @@ namespace LegionKnight
             }
         }
 
-        string FormatPrice(decimal price, string isoCurrency)
+        string FormatLikeStore(decimal value, string currencyCode, string sample)
         {
             var culture = CultureInfo
                 .GetCultures(CultureTypes.SpecificCultures)
-                .First(c => new RegionInfo(c.LCID).ISOCurrencySymbol == isoCurrency);
+                .FirstOrDefault(c =>
+                {
+                    try
+                    {
+                        return new RegionInfo(c.LCID).ISOCurrencySymbol == currencyCode;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                });
 
-            return string.Format(culture, "{0:C}", price);
+            if (culture == null)
+                return value.ToString("F0");
+
+            int decimals = GetDecimalCount(sample);
+
+            NumberFormatInfo nfi = (NumberFormatInfo)culture.NumberFormat.Clone();
+            nfi.CurrencyDecimalDigits = decimals;
+
+            return value.ToString("C", nfi);
+        }
+
+        int GetDecimalCount(string priceString)
+        {
+            if (priceString.Contains(".") || priceString.Contains(","))
+            {
+                char separator = priceString.Contains(".") ? '.' : ',';
+                return priceString.Split(separator).Last().Length;
+            }
+            return 0;
         }
 
         public void Init()
