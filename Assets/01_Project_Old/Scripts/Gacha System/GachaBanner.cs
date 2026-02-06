@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
@@ -26,7 +26,79 @@ namespace LegionKnight
         {
             return (float)m_TotalDraws / m_Definition.GuaranteedDraw;
         }
+        private void ConsumeDiscountIfNeeded(int drawCount)
+        {
+            DrawDiscount discount = drawCount > 1
+                ? m_MultiDiscount
+                : m_SingleDiscount;
+
+            if (discount == null)
+                return;
+
+            if (!discount.DiscountEnabled)
+                return;
+
+            if (!discount.FirstDrawConsumed)
+            {
+                discount.ConsumeFirstDraw();
+            }
+        }
         public int TotalDraws => m_TotalDraws;
+        public int GetBaseCostForCurrency(CurrencyDefinition currency, int drawCount)
+        {
+            GachaCurrencyCost baseCost;
+
+            if (Definition.MainCurrency.Definition == currency)
+                baseCost = Definition.MainCurrency;
+            else if (Definition.AlternativeCurrency.Definition == currency)
+                baseCost = Definition.AlternativeCurrency;
+            else
+            {
+                Debug.LogError($"Currency {currency.name} not supported by banner {Definition.Label}");
+                return int.MaxValue;
+            }
+
+            return baseCost.Amount * drawCount;
+        }
+        private int GetFinalCostForCurrency(CurrencyDefinition currency, int drawCount)
+        {
+            // ❌ MAIN currency TIDAK kena discount
+            if (Definition.MainCurrency.Definition == currency)
+            {
+                return Definition.MainCurrency.Amount * drawCount;
+            }
+
+            // ✅ HANYA alternative currency
+            if (Definition.AlternativeCurrency.Definition != currency)
+            {
+                Debug.LogError($"Currency {currency.name} not supported by banner {Definition.Label}");
+                return int.MaxValue;
+            }
+
+            int cost = Definition.AlternativeCurrency.Amount * drawCount;
+
+            DrawDiscount discount = drawCount > 1
+                ? m_MultiDiscount
+                : m_SingleDiscount;
+
+            if (discount == null || !discount.DiscountEnabled)
+                return cost;
+
+            float rate = discount.PriceRate;
+
+            // ✅ FIRST DRAW untuk SINGLE ATAU MULTI
+            if (!discount.FirstDrawConsumed)
+            {
+                rate *= discount.FirstDrawRate;
+            }
+
+            return Mathf.CeilToInt(cost * rate);
+        }
+        public GachaCurrencyCost GetFinalCurrencyCost(CurrencyDefinition currency, int drawCount)
+        {
+            int finalCost = GetFinalCostForCurrency(currency, drawCount);
+            return new GachaCurrencyCost(currency, finalCost);
+        }
 
         public void Init()
         {
@@ -50,6 +122,8 @@ namespace LegionKnight
                 var reward = RollOnce(i == 0);
                 results.Add(reward);
             }
+
+            ConsumeDiscountIfNeeded(count);
 
             SaveState();
         }

@@ -5,37 +5,17 @@ namespace LegionKnight
 {
     public partial class SingleDrawButtonView : DrawButtonView
     {
-        private GachaHandler m_GachaHandler;
-
-        
-        public void Init(GachaHandler handler)
+        public void PerFormSingleDraw()
         {
-            m_GachaHandler = handler;
-
-            m_DrawButton.onClick.RemoveAllListeners();
-            m_DrawButton.onClick.AddListener(OnClick);
-        }
-
-
-        private void OnClick()
-        {
-            if (m_GachaHandler == null)
-            {
-                Debug.LogWarning("GachaHandler not set on SingleDrawButtonView");
-                return;
-            }
-
-            m_GachaHandler.PerformSingleDraw();
-            
+            GachaHandler.PerformSingleDraw();
         }
     }
     public partial class BannerPanel
     {
-        public void SetSingleDrawButton(GachaHandler handler, GachaCurrencyCost cost)
+        public void SetSingleDrawButton(GachaCurrencyCost finalCost,int originalAmount)
         {
             var view = GetBinding<SingleDrawButtonView>();
-            view.SetButtonView(cost);   // existing UI method
-            view.Init(handler);
+            view.SetButtonView(finalCost, originalAmount);
         }
     }
     public partial class GachaManagerAgent
@@ -58,26 +38,17 @@ namespace LegionKnight
             if (banner == null)
                 return;
 
-            GachaCurrencyCost cost = ResolveSingleDrawCost(banner);
-            GetBannerPanel().SetSingleDrawButton(m_GachaHandler, cost);
-        }
-        private GachaCurrencyCost ResolveSingleDrawCost(GachaBanner banner)
-        {
-            var def = banner.Definition;
             int drawCount = 1;
 
-            var main = def.MainCurrency;
-            int totalMainCost = main.Amount * drawCount;
+            // Tentukan currency yang dipakai (main / alt)
+            var resolvedCost = ResolveCost(banner, drawCount);
 
-            if (Player.Instance.GetCurrencyAmount(main.Definition) < totalMainCost)
-            {
-                var alt = def.AlternativeCurrency;
-                return new GachaCurrencyCost(alt.Definition, alt.Amount * drawCount);
-            }
+            int originalAmount = banner.GetBaseCostForCurrency(
+                resolvedCost.Definition,
+                drawCount
+            );
 
-            return new GachaCurrencyCost(main.Definition, totalMainCost);
+            GetBannerPanel().SetSingleDrawButton(resolvedCost, originalAmount);
         }
-
-        
     }
 }

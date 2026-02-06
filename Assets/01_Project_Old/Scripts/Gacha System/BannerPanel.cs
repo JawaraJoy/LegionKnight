@@ -17,7 +17,17 @@ namespace LegionKnight
         private UnityEvent<GachaBanner> m_OnSetSelectedBanner = new();
         [SerializeField]
         private UnityEvent<GachaBanner> m_OnInitPanel = new();
-
+        [SerializeField]
+        private UnityEvent<CurrencyDefinition> m_OnNotEnoughCurrency = new();
+        [SerializeField]
+        private NotEnoughDrawCostView m_NotEnoughDrawCostView;
+        [SerializeField]
+        private GachaManagerAgent[] m_GachaManagerAgents;
+        public void OnNotEnoughtCurrencyInvoke(CurrencyDefinition definition)
+        {
+            m_OnNotEnoughCurrency?.Invoke(definition);
+            m_NotEnoughDrawCostView.SetShow(definition);
+        }
         protected override void ShowInternal()
         {
             base.ShowInternal();
@@ -36,12 +46,13 @@ namespace LegionKnight
         {
             GachaBanner gachaBanner = GameManager.Instance.GetSelectedBanner();
             m_OnInitPanel?.Invoke(gachaBanner);
-            GachaManagerAgent[] gachaManagerAgents = GetComponentsInChildren<GachaManagerAgent>(true);
-            foreach (var agent in gachaManagerAgents)
+            foreach (var agent in m_GachaManagerAgents)
             {
                 agent.RefreshMultiDrawButton();
                 agent.RefreshSingleDrawButton();
             }
         }
+
+        
     }
 }

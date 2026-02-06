@@ -4,19 +4,35 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
+    public enum LastDrawType
+    {
+        None,
+        Single,
+        Multi
+    }
     public class GachaHandler : MonoBehaviour
     {
         [SerializeField] private List<GachaBanner> m_Banners = new();
         [SerializeField] private UnityEvent<List<GachaReward>> m_OnDrawResult;
-        [SerializeField] private UnityEvent<string> m_OnDrawFailed;
+        [SerializeField] private UnityEvent<CurrencyDefinition> m_OnDrawFailed;
         [SerializeField] private UnityEvent m_OnPerformSingleDraw;
         [SerializeField] private UnityEvent m_OnPerformMultiDraw;
+
+        private List<GachaManagerAgent> m_GachaManagerAgents = new();
+
+        private LastDrawType m_LastDrawType = LastDrawType.None;
+        private GachaCurrencyCost m_LastDrawCost;
+
+        public LastDrawType LastDrawType => m_LastDrawType;
+        public GachaCurrencyCost LastDrawCost => m_LastDrawCost;
 
         private GachaBanner m_Selected;
         private bool m_IsDrawing;
 
+        
         public void Init()
         {
+            m_GachaManagerAgents = new List<GachaManagerAgent>(FindObjectsByType<GachaManagerAgent>(FindObjectsInactive.Include, FindObjectsSortMode.None));
             if (m_Banners.Count == 0)
             {
                 Debug.LogError("No gacha banners assigned");
@@ -27,17 +43,32 @@ namespace LegionKnight
                 banner.Init();
 
             m_Selected = m_Banners[0];
+            InitAgentButton();
+        }
+
+        private void InitAgentButton()
+        {
+            foreach (var agent in m_GachaManagerAgents)
+            {
+                agent.RefreshMultiDrawButton();
+                agent.RefreshSingleDrawButton();
+            }
         }
 
         public void PerformSingleDraw()
         {
             PerformDraw(1);
+            m_LastDrawType = LastDrawType.Single;
+            m_LastDrawCost = ResolveCost(1);
             m_OnPerformSingleDraw?.Invoke();
         }
 
         public void PerformMultiDraw()
         {
-            PerformDraw(m_Selected.Definition.MultiDraw);
+            int count = m_Selected.Definition.MultiDraw;
+            PerformDraw(count);
+            m_LastDrawType = LastDrawType.Multi;
+            m_LastDrawCost = ResolveCost(count);
             m_OnPerformMultiDraw?.Invoke();
         }
         public GachaBanner GetSelectedBanner()
@@ -57,11 +88,12 @@ namespace LegionKnight
 
             if (playerCurrencyAmount < cost.Amount)
             {
-                m_OnDrawFailed?.Invoke("Not enough currency");
+                m_OnDrawFailed?.Invoke(currencyDefinition);
+                CanvasManager.Instance.GetPanel<BannerPanel>().OnNotEnoughtCurrencyInvoke(currencyDefinition);
                 return;
             }
 
-            Player.Instance.AddCurrencyAmount(cost.Definition, -cost.Amount);
+            Player.Instance.AddCurrencyAmount(cost.Definition, -costAmount);
 
             m_IsDrawing = true;
 
@@ -74,6 +106,7 @@ namespace LegionKnight
             m_OnDrawResult?.Invoke(results);
 
             m_IsDrawing = false;
+            InitAgentButton();
         }
 
         private GachaCurrencyCost ResolveCost(int count)
