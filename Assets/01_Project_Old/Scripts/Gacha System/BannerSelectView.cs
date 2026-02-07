@@ -24,8 +24,8 @@ namespace LegionKnight
         }
         private void SelectBanner(BannerDefinition defi)
         {
-            GameManager.Instance.SelectBanner(defi);
-            
+            GameManager.Instance.GachaMananger.SelectBanner(defi);
+
         }
     }
 }

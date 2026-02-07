@@ -17,6 +17,7 @@ namespace LegionKnight
         [SerializeField] private UnityEvent<CurrencyDefinition> m_OnDrawFailed;
         [SerializeField] private UnityEvent m_OnPerformSingleDraw;
         [SerializeField] private UnityEvent m_OnPerformMultiDraw;
+        [SerializeField] private UnityEvent<int, int> m_OnDrawGuaraantedCount;
 
         private List<GachaManagerAgent> m_GachaManagerAgents = new();
 
@@ -28,7 +29,16 @@ namespace LegionKnight
 
         private GachaBanner m_Selected;
 
-        
+        private GachaBanner GetGachaBanner(BannerDefinition definition)
+        {
+            foreach (var banner in m_Banners)
+            {
+                if (banner.Definition.Id == definition.Id)
+                    return banner;
+            }
+            return null;
+        }
+
         public void Init()
         {
             m_GachaManagerAgents = new List<GachaManagerAgent>(FindObjectsByType<GachaManagerAgent>(FindObjectsInactive.Include, FindObjectsSortMode.None));
@@ -43,6 +53,7 @@ namespace LegionKnight
 
             m_Selected = m_Banners[0];
             InitAgentButton();
+            m_OnDrawGuaraantedCount?.Invoke(m_Selected.TotalDraws, m_Selected.Definition.GuaranteedDraw);
         }
 
         private void InitAgentButton()
@@ -75,6 +86,13 @@ namespace LegionKnight
             return m_Selected;
         }
 
+        public void SelectBanner(BannerDefinition banner)
+        {
+            m_Selected = GetGachaBanner(banner);
+            InitAgentButton();
+            m_OnDrawGuaraantedCount?.Invoke(m_Selected.TotalDraws, m_Selected.Definition.GuaranteedDraw);
+        }
+
         private void PerformDraw(int count)
         {
             if (m_Selected == null)
@@ -103,8 +121,8 @@ namespace LegionKnight
                 r.Apply();
 
             m_OnDrawResult?.Invoke(results);
+            m_OnDrawGuaraantedCount?.Invoke(m_Selected.TotalDraws, m_Selected.Definition.GuaranteedDraw);
 
-            
             InitAgentButton();
         }
 

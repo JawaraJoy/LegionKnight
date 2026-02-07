@@ -507,7 +507,7 @@ namespace Rush
     {
         [SerializeField] private TweenHandlerField m_TweenHandlerField;
 
-        private void Start()
+        private void Awake()
         {
             m_TweenHandlerField.Init();
         }

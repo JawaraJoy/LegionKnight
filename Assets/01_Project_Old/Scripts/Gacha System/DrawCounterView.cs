@@ -15,10 +15,9 @@ namespace LegionKnight
             if (!m_CounterSlide.enabled) return;
             m_CounterSlide.value = rate;
         }
-        public void SetCounterText(int counter)
+        public void SetCounterText(int currentDrawCount, int guaranteedDraw)
         {
-            int guaranteed = GameManager.Instance.GetSelectedBanner().Definition.GuaranteedDraw;
-            m_CounterText.text = $"{counter}/{guaranteed}";
+            m_CounterText.text = $"{currentDrawCount}/{guaranteedDraw}";
         }
     }
     public partial class BannerPanel
@@ -27,17 +26,13 @@ namespace LegionKnight
         {
             GetBinding<DrawCounterView>().SetCounterSlideValue(rate);
         }
-        public void SetCounterText(int counter)
-        {
-            GetBinding<DrawCounterView>().SetCounterText(counter);
-        }
     }
     public partial class GachaManagerAgent
     {
         public void SetCounterSlideValue(GachaBanner banner)
         {
             GetBannerPanel().SetCounterSlideValue(banner.GetDrawCountRate());
-            GetBannerPanel().SetCounterText(banner.TotalDraws);
+            
         }
     }
 }

@@ -70,14 +70,25 @@ namespace Rush
     [System.Serializable]
     public partial class AbilityPowerField
     {
+        [SerializeField] 
+        PowerPurpose m_Purpose = PowerPurpose.Damage;
         [SerializeField]
         private ScalingStat m_ScaleBy = ScalingStat.None;
         [SerializeField]
         private PowerField m_BaseAmount;
         [SerializeField]
         private PowerField m_ScaleByLevel;
+        public PowerPurpose Purpose => m_Purpose;
         public ScalingStat ScaleBy => m_ScaleBy;
         public PowerField BaseAmount => m_BaseAmount;
         public PowerField ScaleByLevel => m_ScaleByLevel;
+    }
+
+    public enum PowerPurpose
+    {
+        Damage,
+        Heal,
+        Shield,
+        StatModifier,
     }
 }
