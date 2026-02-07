@@ -25,7 +25,7 @@ namespace LegionKnight
             {
                 if (Player.Instance.GetCharacterUnit(character).Owned)
                 {
-                    GameManager.Instance.AddStarConvertCount(character.DuplicateStarReward);
+                    Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
                 }
                 else
                 {
@@ -35,11 +35,6 @@ namespace LegionKnight
         }
     }
 
-    public partial class CharacterDefinition : ScriptableObject
-    {
-        [SerializeField] private int m_DuplicateStarReward = 3;
-
-        public int DuplicateStarReward => m_DuplicateStarReward;
-    }
+    
 
 }
