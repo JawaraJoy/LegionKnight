@@ -137,7 +137,7 @@ namespace LegionKnight
         public void SetIsBonusAvailable(string id, bool isBonusAvailable)
         {
             SellProduct sellProduct = GetSellProduct(id);
-            sellProduct?.SetIsAvailable(isBonusAvailable);
+            sellProduct?.SetIsBonusAvailable(isBonusAvailable);
         }
         public bool IsProductAvailable(string id)
         {

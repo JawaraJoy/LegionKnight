@@ -9,7 +9,7 @@ namespace LegionKnight
         [SerializeField]
         private int m_PreWarmCount = 5;
         [SerializeField]
-        private FireMode m_FireMode;
+        private FireMode m_FireMode = FireMode.Instant;
         [SerializeField]
         private int m_FireCount = 5;
         [SerializeField]
