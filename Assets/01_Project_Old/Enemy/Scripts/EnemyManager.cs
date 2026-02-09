@@ -1,0 +1,46 @@
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+
+namespace LegionKnight
+{
+    public class EnemyManager : EnemyController
+    {
+        
+    }
+
+    public partial class GameManager
+    {
+        [SerializeField]
+        private EnemyManager m_EnemyManager;
+        public EnemyManager EnemyManager => m_EnemyManager;
+        public void AddEnemy(IEnemy enemy)
+        {
+            m_EnemyManager.AddEnemy(enemy);
+        }
+        public void RemoveEnemy(IEnemy enemy)
+        {
+            m_EnemyManager.RemoveEnemy(enemy);
+        }
+        public void SetSpawningSpot(Transform spot)
+        {
+            m_EnemyManager.SetSpawningSpot(spot);
+        }
+        public void SpawnMinion(MinionDefinition defi)
+        {
+            m_EnemyManager.SpawnMinion(defi);
+        }
+        public void SetCanSpawnUnit(MinionDefinition defi, bool set)
+        {
+            m_EnemyManager.SetCanSpawnUnit(defi, set);
+        }
+        public void SetCanSpawnEnemy(bool can)
+        {
+            m_EnemyManager.SetCanSpawnEnemy(can);
+        }
+        public void ResetAllToCantSpawn()
+        {
+            m_EnemyManager.ResetAllToCantSpawn();
+        }
+    }
+}

@@ -1,0 +1,92 @@
+using UnityEngine;
+
+namespace LegionKnight
+{
+    public partial class PlayerSkillContainer : SkillContainer
+    {
+        
+    }
+    public partial class GameplayPanel
+    {
+        public void SetFill(string skillName, float fill)
+        {
+            GetBinding<PlayerSkillContainer>().SetFill(skillName, fill);
+        }
+        public void ChargeAmount(string skillName, int amount)
+        {
+            GetBinding<PlayerSkillContainer>().ChargeAmount(skillName, amount);
+        }
+        public void Active(string skillName)
+        {
+            GetBinding<PlayerSkillContainer>().Active(skillName);
+        }
+        public void InitCharacterSkill(CharacterDefinition definition)
+        {
+            GetBinding<PlayerSkillContainer>().Init(definition);
+        }
+        public void ActivePlayerSkillViews(bool set)
+        {
+            PlayerSkillContainer view = GetBinding<PlayerSkillContainer>();
+            if (set)
+            {
+                view.Show();
+            }
+            else
+            {
+                view.Hide();
+            }    
+        }
+    }
+
+    public partial class CanvasManager
+    {
+        public void SetSkillViewFill(string skillName, float fill)
+        {
+            GameplayPanel panel = GetPanel<GameplayPanel>();
+            panel.SetFill(skillName, fill);
+        }
+        public void ChargeAmount(string skillName, int amount)
+        {
+            GameplayPanel panel = GetPanel<GameplayPanel>();
+            panel.ChargeAmount(skillName, amount);
+        }
+        public void Active(string skillName)
+        {
+            GameplayPanel panel = GetPanel<GameplayPanel>();
+            panel.Active(skillName);
+        }
+        public void InitCharacterSkill(CharacterDefinition definition)
+        {
+            GameplayPanel panel = GetPanel<GameplayPanel>();
+            panel.InitCharacterSkill(definition);
+        }
+        public void ActivePlayerSkillViews(bool set)
+        {
+            GameplayPanel panel = GetPanel<GameplayPanel>();
+            panel.ActivePlayerSkillViews(set);
+        }
+    }
+    public partial class GameplayPanelAgent
+    {
+        public void SetSkillViewFill(string skillName, float fill)
+        {
+            CanvasManager.Instance.SetSkillViewFill(skillName, fill);
+        }
+        public void ChargeAmount(string skillName, int amount)
+        {
+            CanvasManager.Instance.ChargeAmount(skillName, amount);
+        }
+        public void Active(string skillName)
+        {
+            CanvasManager.Instance.Active(skillName);
+        }
+        public void InitCharacterSkill(CharacterDefinition definition)
+        {
+            CanvasManager.Instance.InitCharacterSkill(definition);
+        }
+        public void ActivePlayerSkillViews(bool set)
+        {
+            CanvasManager.Instance.ActivePlayerSkillViews(set);
+        }
+    }
+}

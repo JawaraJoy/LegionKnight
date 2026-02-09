@@ -1,0 +1,89 @@
+using System.Threading.Tasks;
+using UnityEngine;
+
+namespace LegionKnight
+{
+    public partial class PlayerCurrencyControl : CurrenciesControl
+    {
+        public void InitPlayerCurrency()
+        {
+            foreach (Currency currency in m_Currencies)
+            {
+                if (UnityService.Instance.HasData(currency.Id))
+                {
+                    //UnityService.Instance.LoadData(currency.Id, () => OnCurrencyLoaded(currency));
+                    int amount = UnityService.Instance.GetData<int>(currency.Id);
+                    currency.SetAmount(amount);
+                }
+                else
+                {
+                    UnityService.Instance.SaveData(currency.Id, currency.Amount);
+                }
+            }
+        }
+
+        private void OnCurrencyLoaded(Currency current)
+        {
+            //object data = UnityService.Instance.GetData(current.Id);
+            int amount = UnityService.Instance.GetData<int>(current.Id);
+            current.SetAmount(amount);
+        }
+    }
+    public partial class Player
+    {
+        [SerializeField]
+        private PlayerCurrencyControl m_CurrencyControl;
+        public PlayerCurrencyControl CurrencyControl => m_CurrencyControl;
+        public void InitPlayerCurrency()
+        {
+            m_CurrencyControl.InitPlayerCurrency();
+        }
+        public bool HasCurrency(CurrencyDefinition definition, out Currency currency)
+        {
+            return m_CurrencyControl.HasCurrency(definition, out currency);
+        }
+        public int GetCurrencyAmount(CurrencyDefinition definition)
+        {
+            return m_CurrencyControl.GetCurrencyAmount(definition);
+        }
+        public void SetCurrencyAmount(CurrencyDefinition definition, int amount)
+        {
+            m_CurrencyControl.SetCurrencyAmount(definition, amount);
+            UnityService.Instance.SaveData(definition.Id, amount);
+        }
+        public void AddCurrencyAmount(CurrencyDefinition definition, int amount)
+        {
+            m_CurrencyControl.AddCurrencyAmount(definition, amount);
+            int currentAmount = m_CurrencyControl.GetCurrencyAmount(definition);
+
+            //--TaskUpdate - eventdailytask002
+            if(definition.Id == "coin")
+            {
+                TaskDefinition task = EventMissionManager.Instance.DailyEventMissionManager.GetTaskById("eventdailytask002");
+
+                if(task)
+                    task.AddDailyScore(amount);
+            }
+                
+
+            UnityService.Instance.SaveData(definition.Id, currentAmount);
+        }
+        public void RemoveCurrencyAmount(CurrencyDefinition definition, int amount)
+        {
+            m_CurrencyControl.RemoveCurrencyAmount(definition, amount);
+            int currentAmount = m_CurrencyControl.GetCurrencyAmount(definition);
+            UnityService.Instance.SaveData(definition.Id, currentAmount);
+        }
+    }
+    public partial class PlayerAgent
+    {
+        public void InitPlayerCurrency()
+        {
+            Player.Instance.InitPlayerCurrency();
+        }
+        public void AddPlayerCurrency(CurrencyInstanRewardDefinition reward)
+        {
+            Player.Instance.AddCurrencyAmount(reward.CurrencyDefinition, reward.Amount);
+        }
+    }
+}

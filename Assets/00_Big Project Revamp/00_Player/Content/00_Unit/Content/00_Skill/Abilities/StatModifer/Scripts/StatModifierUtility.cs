@@ -1,0 +1,37 @@
+using UnityEngine;
+
+namespace Rush
+{
+    [System.Serializable]
+    public static partial class StatModifierUtility
+    {
+        public static StatField GetFinalAddionalStat(StatInfluencerContext context, Unit unitTarget)
+        {
+            StatField ownerStat = unitTarget.Config.MainStats.GetFinalStat(unitTarget.Progression.Level);
+            AbilityPowerField EffectScore = context.AbilityContext.AbilityDeliver.Config.EffectCalculator;
+            StatField result = StatField.Zero;
+            PowerField finalScore = PowerField.GetFinalPower(EffectScore.BaseAmount, EffectScore.ScaleByLevel, context.Influencer.StackCount);
+
+            if (EffectScore.Purpose == PowerPurpose.StatModifier)
+            {
+                switch (EffectScore.ScaleBy)
+                {
+                    case ScalingStat.Health:
+                        result.SetHealth(ownerStat.Health * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                        break;
+                    case ScalingStat.Attack:
+                        result.SetAttack(ownerStat.Attack * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                        break;
+                    case ScalingStat.Defense:
+                        result.SetDefense(ownerStat.Defense * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                        break;
+                    default:
+                        Debug.LogWarning($"Unhandled ScalingStat: {EffectScore.ScaleBy}");
+                        break;
+                }
+            }
+            
+            return result;
+        }
+    }
+}
