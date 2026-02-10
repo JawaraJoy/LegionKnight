@@ -16,16 +16,22 @@ namespace Rush
         // taruh semua field yang diperlukan disini untuk mengontrol summon
         // misal lifetime, behavior, dll
         // compoenent ini di add ke unit yang di summon (1 game object dengan unit)
-        
+
         public void Init(Summoner summoner)
         {
             m_Summoner = summoner;
-            if (TryGetComponent<Unit>(out var unit))
-            {
-                m_Unit = unit;
-                m_RemainingLifeTime = m_Summoner.SummonConfig.SpawnDuration.Duration;
-            }
+
+            if (!TryGetComponent(out m_Unit))
+                return;
+
+            var durationConfig = m_Summoner.SummonConfig.SpawnDuration;
+
+            if (durationConfig.HasDuration)
+                m_RemainingLifeTime = durationConfig.Duration;
+            else
+                m_RemainingLifeTime = 0f;
         }
+
 
         private void OnEnable()
         {
@@ -38,16 +44,27 @@ namespace Rush
 
         public void Tick()
         {
-            bool hasDuration = m_Summoner.SummonConfig.SpawnDuration.HasDuration;
-            if (!hasDuration) return;
+            if (m_Summoner == null)
+                return;
+
+            var durationConfig = m_Summoner.SummonConfig.SpawnDuration;
+
+            if (!durationConfig.HasDuration)
+                return;
+
             m_RemainingLifeTime -= Time.deltaTime;
-            if (m_RemainingLifeTime < 0.0f)
+
+            if (m_RemainingLifeTime <= 0f)
             {
                 DeSpawn();
             }
         }
+
         private void DeSpawn()
         {
+            if (m_Unit == null || m_Summoner == null)
+                return;
+
             m_Summoner.ReturnToPool(m_Unit);
         }
     }

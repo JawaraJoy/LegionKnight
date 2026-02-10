@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LegionKnight;
 using MoreMountains.Tools;
 using UnityEngine;
 
@@ -21,86 +22,291 @@ namespace Rush
         private UnitConfig m_SummonedConfig;
 
         [SerializeField, MMReadOnly]
-        private int m_PendingSpawnLeft;
-        [SerializeField, MMReadOnly]
         private float m_FireTimer;
-        [SerializeField, MMReadOnly]
-        private int m_BurstLeft;
+
         [SerializeField, MMReadOnly]
         private float m_BurstTimer;
+
+        [SerializeField, MMReadOnly]
+        private int m_BurstRemaining;
+
         [SerializeField, MMReadOnly]
         private bool m_IsSpawning;
-        [SerializeField, MMReadOnly]
-        private Vector3 m_SummonOrigin;
-        [SerializeField, MMReadOnly]
-        private List<Vector3> m_SpawnPositions;
-        [SerializeField, MMReadOnly]
-        private int m_SpawnIndex;
 
         [SerializeField, MMReadOnly]
-        private int m_TotalToSpawn;
+        private bool m_LoopForward = true;
 
-        // burst
         [SerializeField, MMReadOnly]
-        private float m_BurstCooldownTimer;
+        private int m_CurrentIndex;
+
+        [SerializeField, MMReadOnly]
+        private int m_TotalJobs;
+
+        [SerializeField, MMReadOnly]
+        private int m_ExecutedJobs;
+
+        [SerializeField, MMReadOnly]
+        private Queue<SummonJob> m_SummonJobs = new();
+
+        [SerializeField, MMReadOnly]
+        private List<SummonJob> m_LoopJobs = new();
 
         private void OnEnable()
         {
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
         }
+
         private void OnDisable()
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
+
         public override void Init(AbilityConfig config, SkillContext context)
         {
             base.Init(config, context);
-            if (m_Config is SummonAbilityConfig summonConfig)
+
+            if (config is SummonAbilityConfig summonConfig)
             {
                 m_SummonConfig = summonConfig;
-                m_SummonedConfig = m_SummonConfig.UnitToSpawn;
+                m_SummonedConfig = summonConfig.UnitToSpawn;
                 PreWarm();
             }
-            
         }
+
         public override void Activate()
         {
             Summon();
             base.Activate();
         }
+
         private void Summon()
         {
-            if (m_SummonConfig == null) return;
-            if (m_SummonConfig.UnitToSpawn == null) return;
-            if (m_SummonConfig.SpawnShape == null) return;
+            if (m_SummonConfig == null ||
+                m_SummonConfig.SpawnShape == null ||
+                m_SummonConfig.UnitToSpawn == null ||
+                m_SummonConfig.SpawnSetup == null)
+                return;
 
-            Unit owner = m_AbilityContext.SkillContext.ModuleContext.UnitOwner;
-            if (owner == null) return;
+            var setup = m_SummonConfig.SpawnSetup;
 
-            // total spawn diambil dari setup FireCount
-            m_TotalToSpawn = Mathf.Max(1, m_SummonConfig.SpawnSetup.FireCount);
+            m_SummonJobs.Clear();
+            m_LoopJobs.Clear();
 
-            // reset state
-            m_IsSpawning = true;
-            m_SpawnIndex = 0;
-
+            m_IsSpawning = false;
             m_FireTimer = 0f;
+            m_BurstTimer = 0f;
+            m_CurrentIndex = 0;
+            m_LoopForward = true;
+            m_ExecutedJobs = 0;
+            m_TotalJobs = 0;
 
-            m_BurstLeft = Mathf.Max(1, m_SummonConfig.SpawnSetup.BurstCount);
-            m_BurstCooldownTimer = 0f;
+            List<Targetable> targets = GetTargetsInternal();
+            if (targets == null || targets.Count == 0)
+                return;
 
-            // kalau Instant, spawn semua sekarang
-            if (m_SummonConfig.SpawnSetup.FireMode == FireMode.Instant)
+            int perTargetCount = Mathf.Max(1, setup.BurstCount);
+
+            foreach (var target in targets)
             {
-                for (int i = 0; i < m_TotalToSpawn; i++)
+                Transform origin = target.transform;
+
+                for (int i = 0; i < perTargetCount; i++)
                 {
-                    SpawnOne(owner, i, m_TotalToSpawn);
+                    SummonJob job = new SummonJob
+                    {
+                        Origin = origin,
+                        SlotIndex = i,
+                        SlotCount = perTargetCount
+                    };
+
+                    m_SummonJobs.Enqueue(job);
+                    m_LoopJobs.Add(job);
                 }
+            }
+
+            m_TotalJobs = m_SummonJobs.Count;
+            if (m_TotalJobs == 0)
+                return;
+
+            m_IsSpawning = true;
+            m_BurstRemaining = Mathf.Max(1, setup.BurstCount);
+
+            if (setup.FireMode == FireMode.Instant)
+            {
+                while (m_SummonJobs.Count > 0)
+                {
+                    SpawnJob(m_SummonJobs.Dequeue());
+                }
+
                 m_IsSpawning = false;
             }
         }
 
+        public void Tick()
+        {
+            if (!m_IsSpawning || m_SummonConfig == null)
+                return;
 
+            var setup = m_SummonConfig.SpawnSetup;
+
+            switch (setup.FireMode)
+            {
+                case FireMode.Interval:
+                    HandleInterval(setup);
+                    break;
+
+                case FireMode.Burst:
+                    HandleBurst(setup);
+                    break;
+
+                case FireMode.Loop:
+                    HandleLoop(setup);
+                    break;
+
+                case FireMode.PingPong:
+                    HandlePingPong(setup);
+                    break;
+
+                case FireMode.Random:
+                    HandleRandom(setup);
+                    break;
+            }
+        }
+
+        private void HandleInterval(SpawnSetupField setup)
+        {
+            if (m_SummonJobs.Count == 0)
+            {
+                m_IsSpawning = false;
+                return;
+            }
+
+            m_FireTimer -= Time.deltaTime;
+
+            if (m_FireTimer <= 0f)
+            {
+                SpawnJob(m_SummonJobs.Dequeue());
+                m_FireTimer = Mathf.Max(0.01f, setup.FireInterval);
+            }
+        }
+
+        private void HandleBurst(SpawnSetupField setup)
+        {
+            if (m_SummonJobs.Count == 0)
+            {
+                m_IsSpawning = false;
+                return;
+            }
+
+            if (m_BurstRemaining > 0)
+            {
+                SpawnJob(m_SummonJobs.Dequeue());
+                m_BurstRemaining--;
+            }
+            else
+            {
+                m_BurstTimer -= Time.deltaTime;
+
+                if (m_BurstTimer <= 0f)
+                {
+                    m_BurstRemaining = Mathf.Max(1, setup.BurstCount);
+                    m_BurstTimer = Mathf.Max(0.01f, setup.BurstInterval);
+                }
+            }
+        }
+
+        private void HandleLoop(SpawnSetupField setup)
+        {
+            if (m_LoopJobs.Count == 0)
+                return;
+
+            m_FireTimer -= Time.deltaTime;
+
+            if (m_FireTimer <= 0f)
+            {
+                SpawnJob(m_LoopJobs[m_CurrentIndex]);
+
+                m_CurrentIndex++;
+                if (m_CurrentIndex >= m_LoopJobs.Count)
+                    m_CurrentIndex = 0;
+
+                m_FireTimer = Mathf.Max(0.01f, setup.FireInterval);
+            }
+        }
+
+        private void HandlePingPong(SpawnSetupField setup)
+        {
+            if (m_LoopJobs.Count == 0)
+                return;
+
+            m_FireTimer -= Time.deltaTime;
+
+            if (m_FireTimer <= 0f)
+            {
+                SpawnJob(m_LoopJobs[m_CurrentIndex]);
+
+                if (m_LoopForward)
+                {
+                    m_CurrentIndex++;
+                    if (m_CurrentIndex >= m_LoopJobs.Count - 1)
+                        m_LoopForward = false;
+                }
+                else
+                {
+                    m_CurrentIndex--;
+                    if (m_CurrentIndex <= 0)
+                        m_LoopForward = true;
+                }
+
+                m_FireTimer = Mathf.Max(0.01f, setup.FireInterval);
+            }
+        }
+
+        private void HandleRandom(SpawnSetupField setup)
+        {
+            if (m_LoopJobs.Count == 0)
+                return;
+
+            m_FireTimer -= Time.deltaTime;
+
+            if (m_FireTimer <= 0f)
+            {
+                int randomIndex = Random.Range(0, m_LoopJobs.Count);
+                SpawnJob(m_LoopJobs[randomIndex]);
+
+                m_FireTimer = Mathf.Max(0.01f, setup.FireInterval);
+            }
+        }
+
+        private void SpawnJob(SummonJob job)
+        {
+            if (job.Origin == null)
+                return;
+
+            m_SummonConfig.SpawnShape.GetSpawnTransform(
+                job.Origin,
+                job.SlotIndex,
+                job.SlotCount,
+                out Vector3 pos,
+                out Quaternion rot);
+
+            Unit unit = GetFromPool();
+            unit.transform.SetPositionAndRotation(pos, rot);
+
+            var controller = unit.GetComponent<SummonControler>();
+            if (controller == null)
+                controller = unit.gameObject.AddComponent<SummonControler>();
+
+            controller.Init(this);
+
+            if (!m_ActiveSummonedUnits.Contains(unit))
+                m_ActiveSummonedUnits.Add(unit);
+
+            m_ExecutedJobs++;
+
+            if (m_ExecutedJobs >= m_TotalJobs)
+                m_IsSpawning = false;
+        }
 
         private void PreWarm()
         {
@@ -111,37 +317,29 @@ namespace Rush
 
             for (int i = 0; i < count; i++)
             {
-                Unit unit = CreateNew(m_SummonConfig.UnitToSpawn);
-                ReturnToPoolInternal(unit);
+                Unit unit = Instantiate(m_SummonConfig.UnitToSpawn.UnitPrefab, m_VfxSpawnPost);
+                unit.gameObject.SetActive(false);
+                unit.Init(m_SummonConfig.UnitToSpawn);
+                m_SummonedUnitPool.Enqueue(unit);
             }
         }
+
         private Unit GetFromPool()
         {
             Unit unit;
 
             if (m_SummonedUnitPool.Count > 0)
-            {
                 unit = m_SummonedUnitPool.Dequeue();
-            }
             else
-            {
-                unit = CreateNew(m_SummonedConfig);
-            }
+                unit = Instantiate(m_SummonedConfig.UnitPrefab, m_VfxSpawnPost);
 
             unit.transform.SetParent(null);
             unit.gameObject.SetActive(true);
-            //unit.Init(m_SummonedConfig);
 
             return unit;
         }
-        private Unit CreateNew(UnitConfig unitConfig)
-        {
-            Unit unit = Instantiate(unitConfig.UnitPrefab, m_VfxSpawnPost);
-            unit.gameObject.SetActive(false);
-            unit.Init(unitConfig);
-            return unit;
-        }
-        private void ReturnToPoolInternal(Unit unit)
+
+        public void ReturnToPool(Unit unit)
         {
             if (unit == null)
                 return;
@@ -149,115 +347,8 @@ namespace Rush
             unit.gameObject.SetActive(false);
             unit.transform.SetParent(m_VfxSpawnPost);
 
-            if (m_ActiveSummonedUnits.Contains(unit))
-            {
-                m_ActiveSummonedUnits.Remove(unit);
-            }
-
+            m_ActiveSummonedUnits.Remove(unit);
             m_SummonedUnitPool.Enqueue(unit);
         }
-        public void ReturnToPool(Unit unit)
-        {
-            ReturnToPoolInternal(unit);
-        }
-
-        public void Tick()
-        {
-            ProcessSummonTick();
-        }
-
-        private void ProcessSummonTick()
-        {
-            if (!m_IsSpawning) return;
-            if (m_SpawnIndex >= m_TotalToSpawn)
-            {
-                m_IsSpawning = false;
-                return;
-            }
-
-            Unit owner = m_AbilityContext.SkillContext.ModuleContext.UnitOwner;
-            if (owner == null)
-            {
-                m_IsSpawning = false;
-                return;
-            }
-
-            var setup = m_SummonConfig.SpawnSetup;
-
-            switch (setup.FireMode)
-            {
-                case FireMode.Interval:
-                    m_FireTimer -= Time.deltaTime;
-                    if (m_FireTimer <= 0f)
-                    {
-                        SpawnOne(owner, m_SpawnIndex, m_TotalToSpawn);
-                        m_SpawnIndex++;
-                        m_FireTimer = Mathf.Max(0.01f, setup.FireInterval);
-                    }
-                    break;
-
-                case FireMode.Burst:
-                    // spawn burst cepat (1 per tick) lalu cooldown burst interval
-                    if (m_BurstLeft > 0)
-                    {
-                        SpawnOne(owner, m_SpawnIndex, m_TotalToSpawn);
-                        m_SpawnIndex++;
-                        m_BurstLeft--;
-                    }
-                    else
-                    {
-                        m_BurstCooldownTimer -= Time.deltaTime;
-                        if (m_BurstCooldownTimer <= 0f)
-                        {
-                            m_BurstLeft = Mathf.Max(1, setup.BurstCount);
-                            m_BurstCooldownTimer = Mathf.Max(0.01f, setup.BurstInterval);
-                        }
-                    }
-                    break;
-            }
-        }
-
-        private void SpawnOne(Unit owner, int index, int totalCount)
-        {
-            // tentukan origin transform berdasarkan target mode
-            Transform origin = ResolveOriginTransform(owner);
-
-            // gunakan shape config untuk posisi & rotasi
-            m_SummonConfig.SpawnShape.GetSpawnTransform(origin, index, totalCount, out Vector3 pos, out Quaternion rot);
-
-            Unit unit = GetFromPool();
-            unit.transform.SetPositionAndRotation(pos, rot);
-
-            // attach controller
-            var controller = unit.GetComponent<SummonControler>();
-            if (controller == null)
-                controller = unit.gameObject.AddComponent<SummonControler>();
-
-            controller.Init(this); // sesuai versi kamu (Tick via UpdateBank ada di controller)
-
-            if (!m_ActiveSummonedUnits.Contains(unit))
-                m_ActiveSummonedUnits.Add(unit);
-        }
-        private Transform ResolveOriginTransform(Unit owner)
-        {
-            switch (m_SummonConfig.SummonTargetMode)
-            {
-                case SummonTargetMode.AroundCasterPosition:
-                    return owner.transform;
-
-                case SummonTargetMode.AroundTargetPosition:
-                    // kalau kamu punya target locked dari AbilityContext / SkillActivator, taruh di sini
-                    return transform;
-
-                case SummonTargetMode.AroundPointedPosition:
-                    // kalau ada aim point transform, taruh di sini
-                    return transform;
-
-                default:
-                    return owner.transform;
-            }
-        }
-
     }
-
 }

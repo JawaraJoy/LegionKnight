@@ -12,13 +12,15 @@ namespace Rush
     [DisallowMultipleComponent]
     public class Projectile : Bindable, IUpdater, IProjectile, IAbility
     {
+        
         public enum LocalAxis
         {
             X,
             Y,
             Z
         }
-
+        [SerializeField, MMReadOnly]
+        private ProjectileConfig m_Config;
         [SerializeField, MMReadOnly]
         private bool m_CanMove = true;
         [SerializeField, MMReadOnly]
@@ -86,7 +88,6 @@ namespace Rush
         private AbilityContext m_AbilityContext;
         public AbilityContext AbilityContext => m_AbilityContext;
         public bool Initialized => m_AbilityContext.Initialized;
-
         private void Awake()
         {
             CacheMoveDirection();
@@ -305,13 +306,14 @@ namespace Rush
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
-        public void Init(AbilityContext context)
+        public void Init(AbilityContext context, ProjectileConfig config)
         {
             m_AbilityContext = context;
             AbilityDeliver deliver = context.AbilityDeliver;
             if (deliver is Shoter shoter)
             {
                 m_Shoter = shoter;
+                m_Config = config;
             }
             ShotAbilityConfig shotConfig = m_Shoter.ShotAbilityConfig;
             m_TargetingMode = shotConfig.ProjectileTargetingMode;

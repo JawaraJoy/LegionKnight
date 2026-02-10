@@ -1,7 +1,7 @@
-using Rush;
+
 using UnityEngine;
 
-namespace LegionKnight
+namespace Rush
 {
     [System.Serializable]
     public class SpawnSetupField
