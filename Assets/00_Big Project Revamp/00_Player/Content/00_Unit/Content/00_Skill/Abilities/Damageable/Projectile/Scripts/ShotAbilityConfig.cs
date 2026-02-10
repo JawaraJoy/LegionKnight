@@ -64,13 +64,5 @@ namespace Rush
         Facing = 1,
         Homing = 2,
     }
-    public enum FireMode
-    {
-        Instant,     // semua keluar sekaligus
-        Burst,       // keluar per kelompok
-        Gatling,     // satu-satu cepat (interval tetap)
-        Loop,        // arah muter 0→N→0
-        PingPong,    // arah bolak-balik
-        Random       // arah random tiap shot
-    }
+    
 }

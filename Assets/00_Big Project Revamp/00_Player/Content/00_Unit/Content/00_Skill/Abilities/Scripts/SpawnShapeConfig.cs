@@ -11,4 +11,13 @@ namespace Rush
         /// </summary>
         public abstract void GetSpawnTransform(Transform origin, int index, int totalCount, out Vector3 position, out Quaternion rotation);
     }
+    public enum FireMode
+    {
+        Instant,     // semua keluar sekaligus
+        Burst,       // keluar per kelompok
+        Interval,     // satu-satu cepat (Gutling)
+        Loop,        // arah muter 0→N→0
+        PingPong,    // arah bolak-balik
+        Random       // arah random tiap shot
+    }
 }

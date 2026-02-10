@@ -75,9 +75,11 @@ namespace Rush
         {
             if (m_StopAllTicks) return;
             if (m_StopUpdateTicks) return;
-            bool IsAny = m_UpdateActionTick.Count > 0;
-            if (!IsAny) return;
-            foreach (var tick in m_UpdateActionTick.Values)
+            if (m_UpdateActionTick.Count == 0) return;
+
+            var ticks = new List<IUpdater>(m_UpdateActionTick.Values);
+
+            foreach (var tick in ticks)
             {
                 if (tick.IsActive)
                 {

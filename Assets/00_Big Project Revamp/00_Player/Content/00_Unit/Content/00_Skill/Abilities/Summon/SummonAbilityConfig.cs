@@ -36,8 +36,14 @@ namespace Rush
         [SerializeField]
         private bool m_HasDuration;
         [SerializeField]
-        private int m_Duration;
+        private float m_Duration;
         public bool HasDuration => m_HasDuration;
-        public int Duration => m_Duration;
+        public float Duration => m_Duration;
+
+        public SpawnDuration(bool hasDuration, float duration)
+        {
+            m_HasDuration = hasDuration;
+            m_Duration = duration;
+        }
     }
 }
