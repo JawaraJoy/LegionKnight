@@ -2,13 +2,9 @@ using UnityEngine;
 
 namespace Rush
 {
-    public enum PlatformAbilityTriggerState
+    public enum PlatformAbilityTriggerDirection
     {
-        None = 0,
-        OnBad = 1,
-        OnGood = 2,
-        OnGreat = 3,
-        OnPerfect = 4,
-        OnFire = 5,
+        Left = 0,
+        Right = 1,
     }
 }

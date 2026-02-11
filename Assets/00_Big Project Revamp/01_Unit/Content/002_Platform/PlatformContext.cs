@@ -6,10 +6,15 @@ namespace Rush
     public class PlatformContext
     {
         [SerializeField]
-        private Platform m_Platform;
+        private Platform2D m_Platform;
         [SerializeField]
         private Unit m_OwnerUnit;
-        public Platform Platform => m_Platform;
+        public Platform2D Platform => m_Platform;
         public Unit OwnerUnitId => m_OwnerUnit;
+        public PlatformContext(Platform2D platform, Unit ownerUnit)
+        {
+            m_Platform = platform;
+            m_OwnerUnit = ownerUnit;
+        }
     }
 }

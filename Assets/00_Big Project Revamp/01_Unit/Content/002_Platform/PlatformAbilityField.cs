@@ -6,15 +6,15 @@ namespace Rush
     public class PlatformAbilityField
     {
         [SerializeField]
-        private PlatformAbilityTriggerState m_TriggerState = PlatformAbilityTriggerState.OnBad;
+        private SkillActivatorConfig[] m_OnNormalTouchAbilities;
         [SerializeField]
-        private SkillActivatorConfig m_SkillToActive;
-        public PlatformAbilityTriggerState TriggerState => m_TriggerState;
-        public SkillActivatorConfig SkillToActive => m_SkillToActive;
+        private SkillActivatorConfig[] m_OnPerfectTouchAbilities;
+        public SkillActivatorConfig[] OnNormalTouchAbilities => m_OnNormalTouchAbilities;
+        public SkillActivatorConfig[] OnPerfectTouchAbilities => m_OnPerfectTouchAbilities;
 
         public void Activate(Skill skillOwner)
         {
-
+            
         }
     }
 }

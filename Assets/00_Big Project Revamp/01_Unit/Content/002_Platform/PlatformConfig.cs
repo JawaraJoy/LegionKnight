@@ -7,20 +7,30 @@ namespace Rush
     public class PlatformConfig : Configuration, IHasIcon
     {
         [SerializeField]
-        private Platform m_PlatformPrefab;
+        private Platform2D m_PlatformPrefab;
+        [SerializeField]
+        private int m_PrewarmCount = 5;
         [SerializeField]
         private Sprite m_Icon;
         [SerializeField, Range(0.01f, 1f)]
         private float m_ChanceToSpawn = 1f;
-        [SerializeField, Range(0.1f, 1f)]
-        private float m_PerfectOffsite = 0.3f;
         [SerializeField]
-        private PlatformAbilityField[] m_AbilitySets;
+        private float m_Width = 3f;
+        [SerializeField, Range(0.1f, 1f)]
+        private float m_PerfectTouchRange = 0.3f;
+        [SerializeField]
+        private float m_Speed = 5f;
+        [SerializeField]
+        private PlatformAbilityField m_AbilityOnLeftTouch;
+        [SerializeField]
+        private PlatformAbilityField m_AbilityOnRightTouch;
         public float ChanceToSpawn => m_ChanceToSpawn;
-        public float PerfectOffsite => m_PerfectOffsite;
-        public PlatformAbilityField[] AbilitySets => m_AbilitySets;
+        public float PerfectTouchRange => m_PerfectTouchRange;
+        public PlatformAbilityField AbilityOnLeftTouch => m_AbilityOnLeftTouch;
+        public PlatformAbilityField AbilityOnRightTouch => m_AbilityOnRightTouch;
         public Sprite Icon => m_Icon;
-        public Platform PlatformPrefab => m_PlatformPrefab;
-        //public float ChanceToSpawn => m_ChanceToSpawn;
+        public float Speed => m_Speed;
+        public int PrewarmCount => m_PrewarmCount;
+        public Platform2D PlatformPrefab => m_PlatformPrefab;
     }
 }
