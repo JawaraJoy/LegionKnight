@@ -15,11 +15,13 @@ namespace Rush
         [SerializeField, Range(0.01f, 1f)]
         private float m_ChanceToSpawn = 1f;
         [SerializeField]
-        private float m_Width = 3f;
+        private float m_WidthRate = 3f;
         [SerializeField, Range(0.1f, 1f)]
         private float m_PerfectTouchRange = 0.3f;
         [SerializeField]
         private float m_Speed = 5f;
+        [SerializeField]
+        private PlatformDamageField m_OnFailDamage;
         [SerializeField]
         private PlatformAbilityField m_AbilityOnLeftTouch;
         [SerializeField]
@@ -32,5 +34,7 @@ namespace Rush
         public float Speed => m_Speed;
         public int PrewarmCount => m_PrewarmCount;
         public Platform2D PlatformPrefab => m_PlatformPrefab;
+        public float WidthRate => m_WidthRate;
+        public PlatformDamageField OnFailDamage => m_OnFailDamage;
     }
 }

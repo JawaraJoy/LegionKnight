@@ -23,6 +23,6 @@ namespace Rush
             m_Config = config;
             m_OnInit?.Invoke(this);
         }
-        
+        partial void InitPartial(UnitConfig config);
     }
 }

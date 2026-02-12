@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public enum PlatformAbilityTriggerDirection
+    public enum PlatformDirection
     {
         Left = 0,
         Right = 1,

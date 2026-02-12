@@ -44,6 +44,8 @@ namespace Rush
         [SerializeField]
         private UnityEvent<BattleContext> m_OnDeath;
         [SerializeField]
+        private UnityEvent<int> m_OnSimpleHit;
+        [SerializeField]
         private UnityEvent<int> m_OnStartReborn;
         private const int m_MinimumDefendReduction = 0;
         [SerializeField, MMReadOnly]
@@ -105,6 +107,10 @@ namespace Rush
                 }
             }
         }
+        public virtual void SimpleTakeDamage(int effectiveDamage)
+        {
+
+        }
         public void TakeDamage(Attacker attacker)
         {
             TakeDamageInternal(attacker);
@@ -150,6 +156,7 @@ namespace Rush
             }
             OnDamageTaken(context);
         }
+
 
         public void Heal(Healer healer)
         {
