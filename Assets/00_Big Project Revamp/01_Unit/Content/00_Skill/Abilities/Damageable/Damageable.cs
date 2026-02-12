@@ -44,7 +44,9 @@ namespace Rush
         [SerializeField]
         private UnityEvent<BattleContext> m_OnDeath;
         [SerializeField]
-        private UnityEvent<int> m_OnSimpleHit;
+        private UnityEvent<GameObject> m_OnSimpleHit;
+        [SerializeField]
+        private UnityEvent<int> m_On
         [SerializeField]
         private UnityEvent<int> m_OnStartReborn;
         private const int m_MinimumDefendReduction = 0;
