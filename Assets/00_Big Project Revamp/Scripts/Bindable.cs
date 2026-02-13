@@ -8,32 +8,19 @@ namespace Rush
         protected MonoBehaviour[] m_Binds;
         private T GetBindInternal<T>() where T : MonoBehaviour
         {
-            T found = null;
             foreach (MonoBehaviour t in m_Binds)
             {
-                if (t.TryGetComponent(out T find))
+                if (t.TryGetComponent(out T result))
                 {
-                    found = find;
-                }
-                else
-                {
-                    Debug.LogError($"No Bind with Type of {find.GetType()}");
+                    return result;
                 }
             }
-            return found;
+            return null;
         }
         public bool HasBind<T>(out T found) where T : MonoBehaviour
         {
-            bool isFound = GetBindInternal<T>();
-            if (isFound)
-            {
-                found = GetBindInternal<T>();
-            }
-            else
-            {
-                found = null;
-            }
-            return isFound;
+            found = GetBindInternal<T>();
+            return found != null;
         }
     }
 }

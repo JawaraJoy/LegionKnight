@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,22 +18,23 @@ namespace Rush
         [SerializeField]
         private List<PlatformConfig> m_WaitingListPlatformConfigs = new();
         [SerializeField, MMReadOnly]
-        private Platform2D m_CurrentNewDisplayedPlatformConfig;
+        private Platform2D m_CurrentNewDisplayedPlatform;
         [SerializeField, MMReadOnly]
         private Platform2D m_CurrentLastDisplayedPlatform;
-
-        [SerializeField, MMReadOnly]
-        private List<Platform2D> m_ActivePlatforms = new();
         [SerializeField, MMReadOnly]
         private Queue<Platform2D> m_StackedPlatforms = new();
 
+        [SerializeField]
+        private TouchDownCheckField m_TouchDownCheckField;
+
         private readonly Dictionary<string, Queue<Platform2D>> m_Pools = new Dictionary<string, Queue<Platform2D>>();
 
+        public TouchDownCheckField TouchDownCheckField => m_TouchDownCheckField;
         public PlatformHandlerConfig Config => m_Config;
 
         // aku mau tiap platform yang diactivekan dihitung
         [SerializeField, MMReadOnly]
-        private int m_TotalPlayedPlatforms;
+        private int m_CurrentStackedPlatformsCount;
         [SerializeField]
         private float m_MinGlobalSpeedRate = 1.0f;
         [SerializeField, MMReadOnly]
@@ -46,36 +48,55 @@ namespace Rush
         public float MinGlobalSpeedRate => m_MinGlobalSpeedRate;
         public float MaxGlobalSpeedRate => m_MaxGlobalSpeedRate;
         public float GlobalPerfectTouchRange => m_GlobalPerfectTouchRange;
-        public int TotalPlayedPlatforms => m_TotalPlayedPlatforms;
+        public int TotalPlayedPlatforms => m_CurrentStackedPlatformsCount;
         public void Prepare(PlatformHandlerConfig config)
         {
-            m_TotalPlayedPlatforms = 0;
+            m_CurrentStackedPlatformsCount = 0;
             ClearPreparedPlatformConfigsInternal();
             ClearWaitingListPlatformConfigInternal();
             m_Config = config;
             // 
             AddPreparedPlatformsConfigInternal(config.InitialPlatformConfigs, gameObject);
             m_LastContactPoint = m_PlatformSpawnSpot.position;
-            SetGlobalSpeedRate(config.MaxGlobalSpeedRate);
+            SetMaxGlobalSpeedRateInternal(config.MaxGlobalSpeedRate);
+            SetMinGlobalSpeedRateInternal(config.MinGlobalSpeedRate);
             SetGlobalPerfectTouchRange(config.GlobalPerfectTouchRange);
 
             InputToWaitingListByRandom();
         }
         private void AddTotalPlayedPlatform(int add)
         {
-            m_TotalPlayedPlatforms += add;
+            m_CurrentStackedPlatformsCount += add;
         }
         public void SetLastContactPoint(Vector2 point)
         {
             m_LastContactPoint = point;
         }
-        private void SetGlobalSpeedRate(float value)
+        private void SetMaxGlobalSpeedRateInternal(float value)
         {
             m_MaxGlobalSpeedRate = value;
+            ClampSpeedRate();
+        }
+        private void SetMinGlobalSpeedRateInternal(float value)
+        {
+            m_MinGlobalSpeedRate = value;
+            ClampSpeedRate();
         }
         private void SetGlobalPerfectTouchRange(float value)
         {
             m_GlobalPerfectTouchRange = value;
+        }
+        private void AddGlobalSpeedRateInternal(float value)
+        {
+            m_MinGlobalSpeedRate += value;
+            m_MaxGlobalSpeedRate += value;
+            ClampSpeedRate();
+        }
+
+        private void ClampSpeedRate()
+        {
+            m_MinGlobalSpeedRate = Mathf.Min(m_MinGlobalSpeedRate, m_Config.SpeedRateLimit);
+            m_MaxGlobalSpeedRate = Mathf.Min(m_MaxGlobalSpeedRate, m_Config.SpeedRateLimit);
         }
 
         private PlatformConfig GetPreparedPlatformConfig(string id)
@@ -108,7 +129,7 @@ namespace Rush
         {
             for (int i = 0; i < configs.Length; i++)
             {
-                AddPreparedPlatformConfigInternal((PlatformConfig)configs[i], ownerObject);
+                AddPreparedPlatformConfigInternal(configs[i], ownerObject);
             }
         }
         
@@ -177,7 +198,8 @@ namespace Rush
         public void Play()
         {
             m_IsPaused = false;
-            PerformNextPlatformFromWaitingList();
+            if (m_Config == null) return;
+            SpawnNextPlatformFromWaitingList(m_Config.InitialSpawnDelay);
             //InputToWaitingListByRandom();
         }
         public void Pause()
@@ -206,16 +228,24 @@ namespace Rush
             return isFull;
         }
 
-        private void PerformNextPlatformFromWaitingList()
+        private void SpawnNextPlatformFromWaitingList(float delay)
         {
             if (m_WaitingListPlatformConfigs.Count == 0)
                 return;
 
+            StartCoroutine(SpawningNextPlatformFromWaitingList(delay));
+        }
+        private IEnumerator SpawningNextPlatformFromWaitingList(float delay)
+        {
+            yield return new WaitForSeconds(delay);
             PlatformConfig nextPlatform = m_WaitingListPlatformConfigs[0];
             Platform2D platform = GetFromPool(nextPlatform);
             platform.StartMove(PlatformUtility.GetStartingSpawnHorizontalPosition(m_Config.SpawnHorizontalDistanceFromPost, m_LastContactPoint));
             RemoveWaitingListPlatformConfigsInternal(nextPlatform);
+
+            AddGlobalSpeedRateInternal(m_Config.SpeedRateGrowthDificulityEachStack);
         }
+
         private void PreWarm(PlatformConfig config, GameObject ownerObject)
         {
             string id = config.BaseInfo.Id;
@@ -227,21 +257,21 @@ namespace Rush
 
             for (int i = 0; i < config.PrewarmCount; i++)
             {
-                Platform2D platform = CreateNewPlatform(config);
-                platform.Init(config, ownerObject);
-                platform.gameObject.SetActive(false);
+                Platform2D platform = CreateNewPlatform(config, ownerObject);
                 m_Pools[id].Enqueue(platform);
             }
         }
 
 
-        private Platform2D CreateNewPlatform(PlatformConfig config)
+        private Platform2D CreateNewPlatform(PlatformConfig config, GameObject ownerObject)
         {
             Platform2D newPlatform = Instantiate(config.PlatformPrefab, transform);
+            newPlatform.Init(config, ownerObject);
+            newPlatform.gameObject.SetActive(false);
             return newPlatform;
         }
 
-        private Platform2D GetFromPool(PlatformConfig config)
+        private Platform2D GetFromPool(PlatformConfig config, GameObject ownerObject = null)
         {
             if (!m_Pools.ContainsKey(config.BaseInfo.Id))
             {
@@ -258,21 +288,27 @@ namespace Rush
             }
             else
             {
-                platform = CreateNewPlatform(config);
+                
+                if (ownerObject != null)
+                {
+                    platform = CreateNewPlatform(config, ownerObject);
+                }
+                else
+                {
+                    platform = CreateNewPlatform(config, gameObject);
+                }
             }
 
             platform.gameObject.SetActive(true);
-
-            // Set CurrentNewPlayedPlatform
-            // Set CurrentLastPlayedPlatform from the bottom of stacked platform
+            m_CurrentNewDisplayedPlatform = platform;
 
             platform.OnReachDestination.RemoveAllListeners();
             platform.OnReachDestination.AddListener(() => HandlePlatformReached(platform));
-
+            
             return platform;
         }
 
-        private void ReturnToPool(Platform2D platform)
+        private void ReturnToPoolInternal(Platform2D platform)
         {
             string id = platform.Config.BaseInfo.Id;
 
@@ -283,9 +319,11 @@ namespace Rush
 
             platform.gameObject.SetActive(false);
 
-            m_ActivePlatforms.Remove(platform);
-
             m_Pools[id].Enqueue(platform);
+        }
+        public void ReturnToPool(Platform2D platform)
+        {
+            ReturnToPoolInternal(platform);
         }
 
         private void HandlePlatformReached(Platform2D platform)
@@ -296,9 +334,12 @@ namespace Rush
 
             m_StackedPlatforms.Enqueue(platform);
 
+            // platform paling atas (baru masuk)
+            m_CurrentNewDisplayedPlatform = platform;
+
             LimitStackSize();
 
-            PerformNextPlatformFromWaitingList();
+            SpawnNextPlatformFromWaitingList(m_Config.NextSpawnDelay);
         }
         private void LimitStackSize()
         {
@@ -308,9 +349,19 @@ namespace Rush
             {
                 Platform2D bottomPlatform = m_StackedPlatforms.Dequeue();
 
-                ReturnToPool(bottomPlatform);
+                ReturnToPoolInternal(bottomPlatform);
             }
+            UpdateDisplayedPlatformReferences();
         }
+        private void UpdateDisplayedPlatformReferences()
+        {
+            if (m_StackedPlatforms.Count == 0)
+            {
+                m_CurrentLastDisplayedPlatform = null;
+                return;
+            }
 
+            m_CurrentLastDisplayedPlatform = m_StackedPlatforms.Peek();
+        }
     }
 }

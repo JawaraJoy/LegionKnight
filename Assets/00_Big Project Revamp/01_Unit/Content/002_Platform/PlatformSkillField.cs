@@ -11,10 +11,5 @@ namespace Rush
         private SkillActivatorConfig[] m_OnPerfectTouchAbilities;
         public SkillActivatorConfig[] OnNormalTouchSkill => m_OnNormalTouchAbilities;
         public SkillActivatorConfig[] OnPerfectTouchSkill => m_OnPerfectTouchAbilities;
-
-        public void Activate(Skill skillOwner)
-        {
-            
-        }
     }
 }

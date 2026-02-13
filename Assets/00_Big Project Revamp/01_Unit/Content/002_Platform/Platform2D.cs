@@ -1,4 +1,5 @@
 ﻿using MoreMountains.Tools;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -34,16 +35,38 @@ namespace Rush
         public PlatformContext Context => m_Context;
         public Transform TouchDownSpot => m_TouchDownSpot;
         public Transform Pivot => m_Pivot;
-        public TouchDownCheckField TouchDown => m_TouchDownCheck;
+        public TouchDownCheckField TouchDownCheck => m_TouchDownCheck;
 
         public bool IsActive => gameObject.activeInHierarchy;
+
+        private void OnEnable()
+        {
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+
+        private void OnDisable()
+        {
+            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+        }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
             LayerMask failLayer = RushGameManager.Instance.PlatformManager.Config.FailLayer;
-            if (collision.gameObject.TryGetComponent(out Damageable damageable))
+            if (CommonUtility.LayerConfirmation(failLayer, collision.gameObject.layer))
             {
-                damageable.TakeDamage(m_Config.FailDamage);
+                if (collision.gameObject.TryGetComponent(out Damageable damageable))
+                {
+                    foreach (ContactPoint2D contact in collision.contacts)
+                    {
+                        // kalau normalnya mengarah ke kiri atau kanan → berarti tabrakan samping
+                        if (Mathf.Abs(contact.normal.x) > 0.5f)
+                        {
+                            damageable.TakeDamage(m_Config.FailDamage);
+                            RushGameManager.Instance.PlatformManager.ReturnToPool(this);
+                            break;
+                        }
+                    }
+                }
             }
         }
         public void Init(PlatformConfig config, GameObject ownerObject)
@@ -95,7 +118,7 @@ namespace Rush
         private void RefreshInternal()
         {
             if (m_Config == null) return;
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            
             SetIsPausedInternal(false);
 
             float minSpeedRate = RushGameManager.Instance.PlatformManager.MinGlobalSpeedRate;
@@ -166,7 +189,7 @@ namespace Rush
         private void OnReachDestinationInvoke()
         {
             StopMove();
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            
             m_OnReachDestination?.Invoke();
         }
     }

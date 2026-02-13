@@ -146,10 +146,7 @@ namespace Rush
                 AddHealthInternal(-effectiveDamage);
                 SetCurrentDamageTakeInternal(effectiveDamage);
 
-                if (m_Health <= 0)
-                {
-                    OnHealthDepleted(context);
-                }
+                
             }
             OnDamageTaken(context);
         }
@@ -164,8 +161,6 @@ namespace Rush
         }
         private void OnHealthDepleted(BattleContext context)
         {
-            m_OnDeath?.Invoke(context); // Targetable will set IsAlive = false here
-
             if (m_RemainingReborn > 0)
             {
                 AddRemaininRebornCountInternal(-1);
@@ -208,14 +203,18 @@ namespace Rush
         private void OnDamageTaken(BattleContext context)
         {
             m_OnDamageTaken?.Invoke(context);
-            OnDeathInvoke(context);
+            
             if (context.Attacker is Attacker attacker)
             {
                 Unit unitAttacker = attacker.AbilityContext.SkillContext.ModuleContext.UnitOwner;
                 AbilityUltility.OnCombatReceivedForceActivates(unitAttacker, SkillTriggerState.OnDamageDealed);
                 AbilityUltility.OnCombatReceivedForceActivates(this, SkillTriggerState.OnDamageTaken);
             }
-            
+            OnDeathInvoke(context);
+            if (m_Health <= 0)
+            {
+                OnHealthDepleted(context);
+            }
         }
         private void OnDeathInvoke(BattleContext context)
         {
