@@ -8,24 +8,24 @@ namespace Rush
     public class SilenceEffectConfig : StatusEffectConfig
     {
         [SerializeField]
-        private SkillActivatorConfig[] m_SpecificSkillsToSilence;
+        private SkillConfig[] m_SpecificSkillsToSilence;
         [SerializeField]
         private SkillCategoryConfig[] m_CategoriesSkillToSilence;
         public override void ApplyEffect(Unit unitTarget)
         {
-            if (unitTarget.HasBind(out Skill skill))
+            if (unitTarget.HasBind(out SkillController skill))
             {
                 SilenceBySpecific(true, skill);
                 SilenceByCategory(true, skill);
             }
         }
 
-        private void SilenceBySpecific(bool silence, Skill skill)
+        private void SilenceBySpecific(bool silence, SkillController skill)
         {
             if (m_SpecificSkillsToSilence.Length <= 0) return;
-            foreach (SkillActivatorConfig config in m_SpecificSkillsToSilence)
+            foreach (SkillConfig config in m_SpecificSkillsToSilence)
             {
-                if (skill.HasSkillActivator(config, out SkillActivator activator))
+                if (skill.HasSkillActivator(config, out Skill activator))
                 {
                     if (silence)
                     {
@@ -38,10 +38,10 @@ namespace Rush
                 }
             }
         }
-        private void SilenceByCategory(bool silence, Skill skill)
+        private void SilenceByCategory(bool silence, SkillController skill)
         {
-            List<SkillActivator> activators = new List<SkillActivator>(skill.GetSkillsByMultiCategory(m_CategoriesSkillToSilence));
-            foreach(SkillActivator activator in activators)
+            List<Skill> activators = new List<Skill>(skill.GetSkillsByMultiCategory(m_CategoriesSkillToSilence));
+            foreach(Skill activator in activators)
             {
                 if (silence)
                 {
@@ -56,14 +56,14 @@ namespace Rush
 
         public override void DoneEffect(Unit unit)
         {
-            if (unit.HasBind(out Skill skill))
+            if (unit.HasBind(out SkillController skill))
             {
                 SilenceBySpecific(true, skill);
                 SilenceByCategory(true, skill);
             }
         }
     }
-    public partial class SkillActivator
+    public partial class Skill
     {
 
         [SerializeField, MMReadOnly]

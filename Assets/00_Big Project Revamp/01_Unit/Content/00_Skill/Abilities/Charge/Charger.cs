@@ -61,10 +61,10 @@ namespace Rush
                 if (target.HasBind(out Unit unit))
                 {
                     m_OnChargeAmount?.Invoke(m_ChargeAmount);
-                    if (unit.HasBind(out Skill skill))
+                    if (unit.HasBind(out SkillController skill))
                     {
-                        SkillActivator[] skills = skill.SkillActivators.ToArray();
-                        foreach (SkillActivator skillActivator in skills)
+                        Skill[] skills = skill.SkillActivators.ToArray();
+                        foreach (Skill skillActivator in skills)
                         {
                             if (skillActivator.SkillConfig.Category == m_ChargeConfig.SkillCategoryToCharge)
                             {

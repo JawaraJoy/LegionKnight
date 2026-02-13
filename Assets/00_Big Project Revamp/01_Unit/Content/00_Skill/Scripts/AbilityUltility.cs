@@ -323,9 +323,9 @@ namespace Rush
         {
             if (bindable.HasBind(out Unit unitTaken))
             {
-                if (unitTaken.HasBind(out Skill skill))
+                if (unitTaken.HasBind(out SkillController skill))
                 {
-                    List<SkillActivator> activators = new(skill.SkillActivators);
+                    List<Skill> activators = new(skill.SkillActivators);
                     foreach (var activator in activators)
                     {
                         SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;
@@ -339,9 +339,9 @@ namespace Rush
         }
         public static void OnCombatReceivedForceActivates(Unit unit, SkillTriggerState filterState)
         {
-            if (unit.HasBind(out Skill skill))
+            if (unit.HasBind(out SkillController skill))
             {
-                List<SkillActivator> activators = new(skill.SkillActivators);
+                List<Skill> activators = new(skill.SkillActivators);
                 foreach (var activator in activators)
                 {
                     SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;

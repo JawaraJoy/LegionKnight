@@ -6,10 +6,10 @@ namespace Rush
     public class PlatformSkillField
     {
         [SerializeField]
-        private SkillActivatorConfig[] m_OnNormalTouchAbilities;
+        private SkillConfig[] m_OnNormalTouchAbilities;
         [SerializeField]
-        private SkillActivatorConfig[] m_OnPerfectTouchAbilities;
-        public SkillActivatorConfig[] OnNormalTouchSkill => m_OnNormalTouchAbilities;
-        public SkillActivatorConfig[] OnPerfectTouchSkill => m_OnPerfectTouchAbilities;
+        private SkillConfig[] m_OnPerfectTouchAbilities;
+        public SkillConfig[] OnNormalTouchSkill => m_OnNormalTouchAbilities;
+        public SkillConfig[] OnPerfectTouchSkill => m_OnPerfectTouchAbilities;
     }
 }

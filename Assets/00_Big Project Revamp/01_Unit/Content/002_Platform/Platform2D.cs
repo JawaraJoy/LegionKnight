@@ -61,7 +61,7 @@ namespace Rush
                         // kalau normalnya mengarah ke kiri atau kanan → berarti tabrakan samping
                         if (Mathf.Abs(contact.normal.x) > 0.5f)
                         {
-                            damageable.TakeDamage(m_Config.FailDamage);
+                            damageable.TakeDamage(m_Config);
                             RushGameManager.Instance.PlatformManager.ReturnToPool(this);
                             break;
                         }
@@ -75,12 +75,12 @@ namespace Rush
             m_Context = new PlatformContext(this, ownerObject);
             if (ownerObject.TryGetComponent(out Unit unit))
             {
-                if (unit.HasBind(out Skill skill))
+                if (unit.HasBind(out SkillController skill))
                 {
-                    SkillActivatorConfig[] skillConfigsOnLeftNormal = m_Config.SkillOnLeftTouch.OnNormalTouchSkill;
-                    SkillActivatorConfig[] skillConfigsOnRightNormal = m_Config.SkillOnRightTouch.OnNormalTouchSkill;
-                    SkillActivatorConfig[] skillConfigsOnLeftPerfect = m_Config.SkillOnLeftTouch.OnPerfectTouchSkill;
-                    SkillActivatorConfig[] skillConfigsOnRightPerfect = m_Config.SkillOnRightTouch.OnPerfectTouchSkill;
+                    SkillConfig[] skillConfigsOnLeftNormal = m_Config.SkillOnLeftTouch.OnNormalTouchSkill;
+                    SkillConfig[] skillConfigsOnRightNormal = m_Config.SkillOnRightTouch.OnNormalTouchSkill;
+                    SkillConfig[] skillConfigsOnLeftPerfect = m_Config.SkillOnLeftTouch.OnPerfectTouchSkill;
+                    SkillConfig[] skillConfigsOnRightPerfect = m_Config.SkillOnRightTouch.OnPerfectTouchSkill;
 
                     skill.AddNewSkills(skillConfigsOnLeftNormal);
                     skill.AddNewSkills(skillConfigsOnRightNormal);

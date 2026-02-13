@@ -8,7 +8,7 @@ namespace Rush
         public override void Init(AbilityConfig config, SkillContext context)
         {
             base.Init(config, context);
-            SkillActivator skillActivator = m_AbilityContext.SkillContext.Activator;
+            Skill skillActivator = m_AbilityContext.SkillContext.Activator;
             SkillTriggerState triggerState = skillActivator.SkillConfig.Activation.TriggerState;
             if (triggerState == SkillTriggerState.OnDeclareAttack)
             {

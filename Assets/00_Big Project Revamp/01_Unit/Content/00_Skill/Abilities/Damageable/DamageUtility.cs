@@ -7,25 +7,38 @@ namespace Rush
         private const int m_MinimumDefendReduction = 0;
         public static int DamageFormulaRPG(IAttacker attacker, IDamageable damageable)
         {
-            int baseDamage = attacker.Damage;
-            float damageBaseMaxHp = damageable.MaxHealth * attacker.DamageBasedTargetMaxHP;
+            int baseDamage = attacker.AttackerField.Damage;
+            float damageBaseMaxHp = damageable.MaxHealth * attacker.AttackerField.DamageBasedTargetMaxHP;
             int damageBaseMaxHpRounded = Mathf.RoundToInt(damageBaseMaxHp);
             baseDamage += damageBaseMaxHpRounded;
 
-            int def = Mathf.RoundToInt(damageable.Defense);
-            int comparedDef = Mathf.Clamp(baseDamage + def, m_MinimumDefendReduction, int.MaxValue);
-            int calculatedDamage = Mathf.RoundToInt(baseDamage * baseDamage / (comparedDef));
-
-            if (calculatedDamage < 1)
+            int reducedDamage;
+            int finalDamage = 0;
+            switch (attacker.AttackerField.Type)
             {
-                calculatedDamage = 1;
-            }
+                case DamageType.CompareWithDefense:
+                    //Compare with Defend
+                    int def = Mathf.RoundToInt(damageable.Defense);
+                    int comparedDef = Mathf.Clamp(baseDamage + def, m_MinimumDefendReduction, int.MaxValue);
+                    int calculatedDamage = Mathf.RoundToInt(baseDamage * baseDamage / (comparedDef));
 
-            if (attacker.IsTrueDamage)
-            {
-                calculatedDamage = baseDamage;
+                    reducedDamage = Mathf.RoundToInt(calculatedDamage * damageable.DamageReductionRate);
+
+                    finalDamage = calculatedDamage - reducedDamage;
+                    break;
+                case DamageType.TrueDamage:
+                    reducedDamage = Mathf.RoundToInt(baseDamage * damageable.DamageReductionRate);
+                    finalDamage = baseDamage - reducedDamage;
+                    break;
+                case DamageType.FatalDamage:
+                    finalDamage = damageable.MaxHealth;
+                    break;
             }
-            int finalDamage = calculatedDamage - Mathf.RoundToInt(calculatedDamage * damageable.DamageReductionRate);
+            
+            if (finalDamage < 1)
+            {
+                finalDamage = 1;
+            }
             return finalDamage;
         }
     }

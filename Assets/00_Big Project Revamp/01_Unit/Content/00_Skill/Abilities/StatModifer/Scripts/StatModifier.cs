@@ -69,7 +69,7 @@ namespace Rush
         }
         private static void OnSkillDeliveredInvoke(AbilityContext senderContext, Bindable bindableTarget)
         {
-            SkillActivator senderActivator = senderContext.SkillContext.Activator;
+            Skill senderActivator = senderContext.SkillContext.Activator;
             Unit unit = null;
             if (bindableTarget.HasBind(out Unit targetUnit))
             {

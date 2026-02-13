@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Rush
 {
     [CreateAssetMenu(fileName = "Skill", menuName = "Rush/Combat/Skill", order = 1)]
-    public partial class SkillActivatorConfig : Configuration
+    public partial class SkillConfig : Configuration
     {
         // Passive/Ultimate/BasicAttack, dll
         [SerializeField]
@@ -18,7 +18,7 @@ namespace Rush
         private CastingField m_Casting;
         
         [SerializeField]
-        private SkillActivator m_ActivatorPrefab;
+        private Skill m_ActivatorPrefab;
         [SerializeField]
         private ProgressField m_LevelSet;
         [SerializeField]
@@ -26,7 +26,7 @@ namespace Rush
         public SkillCategoryConfig Category => m_Category;
         public ActivationTriggerField Activation => m_Activation;
         public Sprite Icon => m_Icon;
-        public SkillActivator ActivatorPrefab => m_ActivatorPrefab;
+        public Skill ActivatorPrefab => m_ActivatorPrefab;
         public ProgressField LevelSet => m_LevelSet;
         public CastingField Casting => m_Casting;
         public AbilityConfig[] AbilitySets => m_AbilitySets;

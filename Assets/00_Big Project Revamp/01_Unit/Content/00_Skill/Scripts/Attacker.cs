@@ -7,16 +7,7 @@ namespace Rush
     public partial class Attacker : MonoBehaviour, IAttacker
     {
         [SerializeField]
-        private int m_Damage = 10;
-        [SerializeField]
-        private float m_DamageBasedTargetMaxHP = 0f;
-        [SerializeField]
-        private bool m_IsTrueDamage = false;
-        [SerializeField]
-        private bool m_IsFatalDamage = false;
-        public int Damage => m_Damage;
-        public bool IsTrueDamage => m_IsTrueDamage;
-        public bool IsFatalDamage => m_IsFatalDamage;
+        private AttackerField m_AttackerField;
         [SerializeField]
         private UnityEvent<AbilityContext> m_OnAttackStart;
         public UnityEvent<AbilityContext> OnAttackStart => m_OnAttackStart;
@@ -25,30 +16,23 @@ namespace Rush
         public UnityEvent<AbilityContext> OnAttackDone => m_OnAttackDone;
         private AbilityContext m_AbilityContext;
         public AbilityContext AbilityContext => m_AbilityContext;
-
-        public float DamageBasedTargetMaxHP => m_DamageBasedTargetMaxHP;
-
-        public void SetIsTrueDamage(bool isTrueDamage)
-        {
-            m_IsTrueDamage = isTrueDamage;
-        }
-        public void SetIsFatalDamage(bool isFatalDamage)
-        {
-            m_IsFatalDamage = isFatalDamage;
-        }
+        public AttackerField AttackerField => m_AttackerField;
         
         public void Init(AbilityContext context)
         {
             m_AbilityContext = context;
-            float damage = AbilityUltility.GetFinalEffectAmount(m_AbilityContext);
+            
             AbilityConfig config = context.AbilityDeliver.Config;
             if (config is DamageAbilityConfig damageConfig)
             {
-                m_DamageBasedTargetMaxHP = damageConfig.DamageBasedTargetMaxHP;
-                m_IsFatalDamage = damageConfig.IsFatalDamage;
-                m_IsTrueDamage = damageConfig.IsTrueDamage;
+                float damage = AbilityUltility.GetFinalEffectAmount(m_AbilityContext);
+                float damageBaseTargetMaxHP = damageConfig.DamageBasedTargetMaxHP;
+                bool isFatalDamage = damageConfig.IsFatalDamage;
+                bool isTrueDamage = damageConfig.IsTrueDamage;
+                int damageRounded = Mathf.RoundToInt(damage);
+                m_AttackerField = new AttackerField(damageRounded, damageBaseTargetMaxHP, isTrueDamage, isFatalDamage);
             }
-            m_Damage = Mathf.RoundToInt(damage);
+            
         }
         private void OnAttackStartInvoke()
         {

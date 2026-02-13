@@ -31,7 +31,7 @@ namespace Rush
         [SerializeField]
         private int m_MaxStackedPlatforms = 15;
         [SerializeField]
-        private SkillActivatorConfig[] m_GlobalSkillForPlayerOnTouchDown;
+        private SkillConfig[] m_GlobalSkillForPlayerOnTouchDown;
         public PlatformConfig[] InitialPlatformConfigs => m_InitialPlatformConfigs;
         public int MaxStackedPlatforms => m_MaxStackedPlatforms;
         public float MaxGlobalSpeedRate => m_MaxGlobalSpeedRate;
@@ -42,7 +42,7 @@ namespace Rush
         public float GlobalPerfectTouchRange => m_GlobalPerfectTouchRange;
         public float SpawnHorizontalDistanceFromPost => m_SpawnHorizontalDistanceFromPost;
         public float OffSiteReachHorizontalPost => m_OffSiteReachHorizontalPost;
-        public SkillActivatorConfig[] GlobalSkillForPlayerOnTouchDown => m_GlobalSkillForPlayerOnTouchDown;
+        public SkillConfig[] GlobalSkillForPlayerOnTouchDown => m_GlobalSkillForPlayerOnTouchDown;
         public LayerMask FailLayer => m_FailLayer;
         public float SpeedRateLimit => m_SpeedRateLimit;
     }

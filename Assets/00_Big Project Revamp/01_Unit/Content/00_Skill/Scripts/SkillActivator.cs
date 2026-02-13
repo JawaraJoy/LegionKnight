@@ -13,11 +13,11 @@ namespace Rush
         Cooldown,
         Silenced
     }
-    public partial class SkillActivator : Bindable, IUpdater
+    public partial class Skill : Bindable, IUpdater
     {
         [Header("Config")]
         [SerializeField]
-        private SkillActivatorConfig m_SkillConfig;
+        private SkillConfig m_SkillConfig;
         [SerializeField]
         private ProgressField m_Progression;
         [SerializeField]
@@ -51,7 +51,7 @@ namespace Rush
         [SerializeField]
         private UnityEvent<Unit> m_OnAbilityDelivered;
         public ProgressField Progression => m_Progression;
-        public SkillActivatorConfig SkillConfig => m_SkillConfig;
+        public SkillConfig SkillConfig => m_SkillConfig;
         public SkillContext Context => m_Context;
         public IReadOnlyList<AbilityDeliver> Delivers => m_Delivers;
         public UnityEvent<Unit> OnAbilityDeliverd => m_OnAbilityDelivered;
@@ -105,7 +105,7 @@ namespace Rush
 
         #region Init
 
-        public virtual void Init(SkillActivatorConfig skillConfig, ModuleContext ownerContext)
+        public virtual void Init(SkillConfig skillConfig, ModuleContext ownerContext)
         {
             m_SkillConfig = skillConfig;
             m_Context = new SkillContext(this, ownerContext);
