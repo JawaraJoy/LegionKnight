@@ -46,6 +46,7 @@ namespace Rush
         public float MinGlobalSpeedRate => m_MinGlobalSpeedRate;
         public float MaxGlobalSpeedRate => m_MaxGlobalSpeedRate;
         public float GlobalPerfectTouchRange => m_GlobalPerfectTouchRange;
+        public int TotalPlayedPlatforms => m_TotalPlayedPlatforms;
         public void Prepare(PlatformHandlerConfig config)
         {
             m_TotalPlayedPlatforms = 0;
@@ -130,7 +131,7 @@ namespace Rush
         {
             for (int i = 0; i < configs.Length; i++)
             {
-                AddWaitingListPlatformConfigInternal((PlatformConfig)configs[i]);
+                AddWaitingListPlatformConfigInternal(configs[i]);
             }
         }
         private void AddWaitingListPlatformConfigInternal(PlatformConfig config)

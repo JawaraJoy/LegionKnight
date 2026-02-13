@@ -4,8 +4,9 @@ namespace Rush
 {
     public interface IAttacker 
     {
-        int GetFinalDamage(Damageable damageable);
-        bool FatalDamage { get; }
-        bool TrueDamage { get; }
+        int Damage { get; }
+        bool IsTrueDamage { get; }
+        bool IsFatalDamage { get; }
+        float DamageBasedTargetMaxHP { get; }
     }
 }

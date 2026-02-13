@@ -43,14 +43,28 @@ namespace Rush
             LayerMask failLayer = RushGameManager.Instance.PlatformManager.Config.FailLayer;
             if (collision.gameObject.TryGetComponent(out Damageable damageable))
             {
-                damageable.TakeDamage
+                damageable.TakeDamage(m_Config.FailDamage);
             }
         }
         public void Init(PlatformConfig config, GameObject ownerObject)
         {
             m_Config = config;
             m_Context = new PlatformContext(this, ownerObject);
+            if (ownerObject.TryGetComponent(out Unit unit))
+            {
+                if (unit.HasBind(out Skill skill))
+                {
+                    SkillActivatorConfig[] skillConfigsOnLeftNormal = m_Config.SkillOnLeftTouch.OnNormalTouchSkill;
+                    SkillActivatorConfig[] skillConfigsOnRightNormal = m_Config.SkillOnRightTouch.OnNormalTouchSkill;
+                    SkillActivatorConfig[] skillConfigsOnLeftPerfect = m_Config.SkillOnLeftTouch.OnPerfectTouchSkill;
+                    SkillActivatorConfig[] skillConfigsOnRightPerfect = m_Config.SkillOnRightTouch.OnPerfectTouchSkill;
 
+                    skill.AddNewSkills(skillConfigsOnLeftNormal);
+                    skill.AddNewSkills(skillConfigsOnRightNormal);
+                    skill.AddNewSkills(skillConfigsOnLeftPerfect);
+                    skill.AddNewSkills(skillConfigsOnRightPerfect);
+                }
+            }
             RefreshInternal();
         }
         private bool IsReachedDestination()

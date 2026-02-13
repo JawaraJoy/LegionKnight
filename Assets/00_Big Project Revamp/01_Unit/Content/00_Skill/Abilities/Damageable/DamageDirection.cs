@@ -11,14 +11,17 @@ namespace Rush
         private UnityEvent m_OnLeft = new();
         public void OnDirection(BattleContext context)
         {
-            Vector2 attackerDirection = context.Attacker.transform.position;
-            if (IsContactFromRight(attackerDirection))
+            if (context.Attacker is Attacker attacker)
             {
-                m_OnLeft.Invoke();
-            }
-            else
-            {
-                m_OnRight.Invoke();
+                Vector2 attackerDirection = attacker.transform.position;
+                if (IsContactFromRight(attackerDirection))
+                {
+                    m_OnLeft.Invoke();
+                }
+                else
+                {
+                    m_OnRight.Invoke();
+                }
             }
         }
 

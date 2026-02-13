@@ -35,7 +35,7 @@ namespace Rush
     public enum TargetingDistributeMode
     {
         None = 0,
-        Facing = 1,
+        Straight = 1,
         Homing = 2,
     }
     

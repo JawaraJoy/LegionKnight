@@ -22,7 +22,13 @@ namespace Rush
         {
             m_Config = config;
             m_OnInit?.Invoke(this);
+            foreach (MonoBehaviour bind in m_Binds)
+            {
+                if (bind is IUnitExtension extention)
+                {
+                    extention.Init(this);
+                }
+            }
         }
-        partial void InitPartial(UnitConfig config);
     }
 }

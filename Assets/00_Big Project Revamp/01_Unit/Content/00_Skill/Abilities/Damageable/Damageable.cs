@@ -1,12 +1,11 @@
 ﻿using MoreMountains.Tools;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Damageable : Bindable
+    public class Damageable : Bindable, IDamageable
     {
         [SerializeField, Tooltip("How many times this unit can reborn after death")]
         private int m_RebornCount = 0;
@@ -46,7 +45,7 @@ namespace Rush
         [SerializeField]
         private UnityEvent<GameObject> m_OnSimpleHit;
         [SerializeField]
-        private UnityEvent<int> m_On
+        private UnityEvent<int> m_OnSimpleDamageTaken;
         [SerializeField]
         private UnityEvent<int> m_OnStartReborn;
         private const int m_MinimumDefendReduction = 0;
@@ -109,18 +108,14 @@ namespace Rush
                 }
             }
         }
-        public virtual void SimpleTakeDamage(int effectiveDamage)
-        {
-
-        }
-        public void TakeDamage(Attacker attacker)
+        public void TakeDamage(IAttacker attacker)
         {
             TakeDamageInternal(attacker);
         }
-        protected virtual void TakeDamageInternal(Attacker attacker)
+        protected virtual void TakeDamageInternal(IAttacker attacker)
         {
             BattleContext context = new BattleContext(attacker, this);
-            int effectiveDamage = context.DamageFormulaRPG();
+            int effectiveDamage = DamageUtility.DamageFormulaRPG(attacker, this);
             if (m_IsInvicible) return;
             OnHitInvoke(context);
             // block damage if barrier exist
@@ -162,10 +157,10 @@ namespace Rush
 
         public void Heal(Healer healer)
         {
-            HealerContext context = new HealerContext(healer, this);
+            HealerContext context = new(healer, this);
             AddHealthInternal(healer.HealAmount);
             m_OnHealed?.Invoke(context);
-            AbilityUltility.OnSkillDeliveredInvoke(healer.AbilityContext, this);
+            OnSkillDeliveredInvoke(m_AbilityContext, this);
         }
         private void OnHealthDepleted(BattleContext context)
         {
@@ -187,16 +182,40 @@ namespace Rush
         {
             m_OnHit?.Invoke(context);
             // attacker ability delivered here
-            AbilityUltility.OnSkillDeliveredInvoke(context.Attacker.AbilityContext, this);
+            OnSkillDeliveredInvoke(m_AbilityContext, this);
             AbilityUltility.OnCombatReceivedForceActivates(this, SkillTriggerState.OnHit);
+        }
+        private static void OnSkillDeliveredInvoke(AbilityContext senderContext, Bindable bindableTarget)
+        {
+            SkillActivator senderActivator = senderContext.SkillContext.Activator;
+            Unit unit = null;
+            if (bindableTarget.HasBind(out Unit targetUnit))
+            {
+                unit = targetUnit;
+            }
+            if (bindableTarget is Unit unitItSelf)
+            {
+                unit = unitItSelf;
+            }
+            if (unit == null)
+            {
+                Debug.LogError($"{nameof(OnSkillDeliveredInvoke)} cant found Unit component");
+                return;
+            }
+            senderActivator.OnAbilityDeliverd?.Invoke(unit);
+            AbilityUltility.ApplyStatusEffect(senderContext, unit);
         }
         private void OnDamageTaken(BattleContext context)
         {
             m_OnDamageTaken?.Invoke(context);
             OnDeathInvoke(context);
-            Unit unitAttacker = context.Attacker.AbilityContext.SkillContext.ModuleContext.UnitOwner;
-            AbilityUltility.OnCombatReceivedForceActivates(unitAttacker, SkillTriggerState.OnDamageDealed);
-            AbilityUltility.OnCombatReceivedForceActivates(this, SkillTriggerState.OnDamageTaken);
+            if (context.Attacker is Attacker attacker)
+            {
+                Unit unitAttacker = attacker.AbilityContext.SkillContext.ModuleContext.UnitOwner;
+                AbilityUltility.OnCombatReceivedForceActivates(unitAttacker, SkillTriggerState.OnDamageDealed);
+                AbilityUltility.OnCombatReceivedForceActivates(this, SkillTriggerState.OnDamageTaken);
+            }
+            
         }
         private void OnDeathInvoke(BattleContext context)
         {

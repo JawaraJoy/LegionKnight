@@ -65,7 +65,27 @@ namespace Rush
                     m_Influencers.Add(spawnedInfluencer);
                 }
             }
-            AbilityUltility.OnSkillDeliveredInvoke(abilityContext, m_ModuleContext.UnitOwner);
+            OnSkillDeliveredInvoke(abilityContext, m_ModuleContext.UnitOwner);
+        }
+        private static void OnSkillDeliveredInvoke(AbilityContext senderContext, Bindable bindableTarget)
+        {
+            SkillActivator senderActivator = senderContext.SkillContext.Activator;
+            Unit unit = null;
+            if (bindableTarget.HasBind(out Unit targetUnit))
+            {
+                unit = targetUnit;
+            }
+            if (bindableTarget is Unit unitItSelf)
+            {
+                unit = unitItSelf;
+            }
+            if (unit == null)
+            {
+                Debug.LogError($"{nameof(OnSkillDeliveredInvoke)} cant found Unit component");
+                return;
+            }
+            senderActivator.OnAbilityDeliverd?.Invoke(unit);
+            AbilityUltility.ApplyStatusEffect(senderContext, unit);
         }
         public StatField GetFinalStat(StatField unitStat)
         {

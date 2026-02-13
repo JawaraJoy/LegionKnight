@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public class Skill : MonoBehaviour
+    public class Skill : MonoBehaviour, IUnitExtension
     {
         [SerializeField]
         private Transform m_SkillSpawnPost;
@@ -16,7 +16,7 @@ namespace Rush
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
-            PrepareActivators();
+            PrepareSkillsInternal();
         }
 
         private SkillActivator GetSkillActivatorInternal(string id)
@@ -66,6 +66,7 @@ namespace Rush
                 activator.Progression.SetLevel(level);
             }
         }
+        
         public void AddSkillCategoryLevel(SkillCategoryConfig category, int level)
         {
             List<SkillActivator> activators = GetSkillsByCategoryInternal(category);
@@ -100,7 +101,7 @@ namespace Rush
             }
             return hasSkillActivator;
         }
-        private void PrepareActivators()
+        private void PrepareSkillsInternal()
         {
             if (!m_ModuleContext.Initialized) return;
             SkillActivatorConfig[] skills = m_ModuleContext.UnitOwner.Config.Skills;
@@ -108,10 +109,21 @@ namespace Rush
             for (int i = 0; i < skills.Length; i++)
             {
                 var skillConfig = skills[i];
-                PreparActivator(skillConfig);
+                AddNewSkillInternal(skillConfig);
             }
         }
-        private void PreparActivator(SkillActivatorConfig config)
+        public void AddNewSkills(SkillActivatorConfig[] configs)
+        {
+            foreach (SkillActivatorConfig config in configs)
+            {
+                AddNewSkillInternal(config);
+            }
+        }
+        public void AddNewSkill(SkillActivatorConfig config)
+        {
+            AddNewSkillInternal(config);
+        }
+        private void AddNewSkillInternal(SkillActivatorConfig config)
         {
             if (HasSkillActivatorInternal(config.BaseInfo.Id, out SkillActivator activator))
             {

@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Rush
 {
     [CreateAssetMenu(fileName = "PlatformHandler", menuName = "Rush/Handler/PlatformHandler")]
-    public class PlatformHandlerConfig : Configuration, IUnit
+    public class PlatformHandlerConfig : Configuration
     {
         [SerializeField]
         private PlatformConfig[] m_InitialPlatformConfigs;

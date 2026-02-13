@@ -21,20 +21,20 @@ namespace Rush
         [SerializeField]
         private float m_Speed = 5f;
         [SerializeField]
-        private PlatformDamageField m_OnFailDamage;
+        private PlatformDamageField m_FailDamage;
         [SerializeField]
-        private PlatformAbilityField m_AbilityOnLeftTouch;
+        private PlatformSkillField m_SkillOnLeftTouch;
         [SerializeField]
-        private PlatformAbilityField m_AbilityOnRightTouch;
+        private PlatformSkillField m_SkillOnRightTouch;
         public float ChanceToSpawn => m_ChanceToSpawn;
         public float PerfectTouchRange => m_PerfectTouchRange;
-        public PlatformAbilityField AbilityOnLeftTouch => m_AbilityOnLeftTouch;
-        public PlatformAbilityField AbilityOnRightTouch => m_AbilityOnRightTouch;
+        public PlatformSkillField SkillOnLeftTouch => m_SkillOnLeftTouch;
+        public PlatformSkillField SkillOnRightTouch => m_SkillOnRightTouch;
         public Sprite Icon => m_Icon;
         public float Speed => m_Speed;
         public int PrewarmCount => m_PrewarmCount;
         public Platform2D PlatformPrefab => m_PlatformPrefab;
         public float WidthRate => m_WidthRate;
-        public PlatformDamageField OnFailDamage => m_OnFailDamage;
+        public PlatformDamageField FailDamage => m_FailDamage;
     }
 }
