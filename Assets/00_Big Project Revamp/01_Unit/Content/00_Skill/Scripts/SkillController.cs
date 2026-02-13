@@ -11,17 +11,17 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private ModuleContext m_ModuleContext;
         [SerializeField, MMReadOnly]
-        private List<Skill> m_SkillActivators = new();
-        public IReadOnlyList<Skill> SkillActivators => m_SkillActivators;
+        private List<Skill> m_Skills = new();
+        public IReadOnlyList<Skill> Skills => m_Skills;
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
-            PrepareSkillsInternal(m_ModuleContext.UnitOwner.Config.Skills);
+            AddNewSkillsInternal(m_ModuleContext.UnitOwner.Config.Skills);
         }
 
         private Skill GetSkillActivatorInternal(string id)
         {
-            return m_SkillActivators.Find(x => x.Context.Activator.SkillConfig.BaseInfo.Id == id);
+            return m_Skills.Find(x => x.Context.Skill.SkillConfig.BaseInfo.Id == id);
         }
         public Skill GetSkillActivator(SkillConfig config)
         {
@@ -30,11 +30,11 @@ namespace Rush
         private IReadOnlyList<Skill> GetSkillsByCategoryInternal(SkillCategoryConfig category)
         {
             List<Skill> findCategories = new List<Skill>();
-            foreach (Skill activator in m_SkillActivators) 
+            foreach (Skill skill in m_Skills) 
             { 
-                if (activator.SkillConfig.Category == category)
+                if (skill.SkillConfig.Category == category)
                 {
-                    findCategories.Add(activator);
+                    findCategories.Add(skill);
                 }
             }
             return findCategories;
@@ -42,7 +42,7 @@ namespace Rush
         private IReadOnlyList<Skill> GetSkillsByMultiCategoryInternal(SkillCategoryConfig[] skillCategories)
         {
             List<Skill> findCategories = new List<Skill>();
-            foreach (Skill activator in m_SkillActivators)
+            foreach (Skill skill in m_Skills)
             {
                 foreach (SkillCategoryConfig skillCategory in skillCategories)
                 {
@@ -57,25 +57,25 @@ namespace Rush
         }
         public void SetSkillCategoryLevel(SkillCategoryConfig category, int level)
         {
-            IReadOnlyList<Skill> activators = GetSkillsByCategoryInternal(category);
-            foreach(Skill activator in activators)
+            IReadOnlyList<Skill> skills = GetSkillsByCategoryInternal(category);
+            foreach(Skill skill in skills)
             {
-                activator.Progression.SetLevel(level);
+                skill.Progression.SetLevel(level);
             }
         }
         
         public void AddSkillCategoryLevel(SkillCategoryConfig category, int level)
         {
-            IReadOnlyList<Skill> activators = GetSkillsByCategoryInternal(category);
-            foreach (Skill activator in activators)
+            IReadOnlyList<Skill> skills = GetSkillsByCategoryInternal(category);
+            foreach (Skill skill in skills)
             {
-                activator.Progression.AddLevel(level);
+                skill.Progression.AddLevel(level);
             }
         }
         private bool HasSkillActivatorInternal(string id, out Skill skill)
         {
-            bool hasSkillActivator = GetSkillActivatorInternal(id) != null;
-            if (hasSkillActivator) 
+            bool hasSkill = GetSkillActivatorInternal(id) != null;
+            if (hasSkill) 
             { 
                 skill = GetSkillActivatorInternal(id);
             }
@@ -83,12 +83,12 @@ namespace Rush
             {
                 skill = null;
             }
-            return hasSkillActivator;
+            return hasSkill;
         }
         public bool HasSkillActivator(SkillConfig config, out Skill skill)
         {
-            bool hasSkillActivator = GetSkillActivatorInternal(config.BaseInfo.Id) != null;
-            if (hasSkillActivator)
+            bool hasSkill = GetSkillActivatorInternal(config.BaseInfo.Id) != null;
+            if (hasSkill)
             {
                 skill = GetSkillActivatorInternal(config.BaseInfo.Id);
             }
@@ -96,24 +96,18 @@ namespace Rush
             {
                 skill = null;
             }
-            return hasSkillActivator;
+            return hasSkill;
         }
-        private void PrepareSkillsInternal(SkillConfig[] configs)
-        {
-            if (!m_ModuleContext.Initialized) return;
-            
-            for (int i = 0; i < configs.Length; i++)
-            {
-                var skillConfig = configs[i];
-                AddNewSkillInternal(skillConfig);
-            }
-        }
-        public void AddNewSkills(SkillConfig[] configs)
+        private void AddNewSkillsInternal(SkillConfig[] configs)
         {
             foreach (SkillConfig config in configs)
             {
                 AddNewSkillInternal(config);
             }
+        }
+        public void AddNewSkills(SkillConfig[] configs)
+        {
+            AddNewSkillsInternal(configs);
         }
         public void AddNewSkill(SkillConfig config)
         {
@@ -121,6 +115,8 @@ namespace Rush
         }
         private void AddNewSkillInternal(SkillConfig config)
         {
+            if (!m_ModuleContext.Initialized) return;
+
             if (HasSkillActivatorInternal(config.BaseInfo.Id, out Skill skill))
             {
                 skill.Init(config, m_ModuleContext);
@@ -136,14 +132,14 @@ namespace Rush
         {
             if (GetSkillActivatorInternal(skill.SkillConfig.BaseInfo.Id) == null)
             {
-                m_SkillActivators.Add(skill);
+                m_Skills.Add(skill);
             }
         }
         private void UnregisterSkillInternal(Skill skill)
         {
             if (GetSkillActivatorInternal(skill.SkillConfig.BaseInfo.Id) != null)
             {
-                m_SkillActivators.Remove(skill);
+                m_Skills.Remove(skill);
             }
         }
     }

@@ -245,7 +245,7 @@ namespace Rush
             int ownerLevel = ownerObject.Progression.Level;
             StatField ownerStats = ownerObject.Config.MainStats.GetFinalStat(ownerLevel);
 
-            int skillLevel = context.SkillContext.Activator.Progression.Level;
+            int skillLevel = context.SkillContext.Skill.Progression.Level;
             PowerField baseEffe = config.EffectCalculator.BaseAmount;
             PowerField scaleEffe = config.EffectCalculator.ScaleByLevel;
             PowerField finalEffect = PowerField.GetFinalPower(baseEffe, scaleEffe, skillLevel);
@@ -325,7 +325,7 @@ namespace Rush
             {
                 if (unitTaken.HasBind(out SkillController skill))
                 {
-                    List<Skill> activators = new(skill.SkillActivators);
+                    List<Skill> activators = new(skill.Skills);
                     foreach (var activator in activators)
                     {
                         SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;
@@ -341,7 +341,7 @@ namespace Rush
         {
             if (unit.HasBind(out SkillController skill))
             {
-                List<Skill> activators = new(skill.SkillActivators);
+                List<Skill> activators = new(skill.Skills);
                 foreach (var activator in activators)
                 {
                     SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;

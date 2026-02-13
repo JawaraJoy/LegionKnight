@@ -11,7 +11,7 @@ namespace Rush
         private Skill m_Activator;
         [SerializeField, MMReadOnly]
         private ModuleContext m_ModuleContext;
-        public Skill Activator => m_Activator;
+        public Skill Skill => m_Activator;
         public ModuleContext ModuleContext => m_ModuleContext;
         public bool Initialized => m_ModuleContext.Initialized && m_Activator != null;
         public SkillContext(Skill activator, ModuleContext moduleContext)

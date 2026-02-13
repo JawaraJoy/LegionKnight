@@ -61,7 +61,7 @@ namespace Rush
                 m_Config = config;
             }
 
-            int skillLevel = m_Context.AbilityContext.SkillContext.Activator.Progression.Level;
+            int skillLevel = m_Context.AbilityContext.SkillContext.Skill.Progression.Level;
             m_TotalDuration = m_Config.FinalDurationByLevel(skillLevel);
             SetStackInternal(m_Config.GetStartingStack());
 
@@ -155,7 +155,7 @@ namespace Rush
         }
         private void StartTimer()
         {
-            int level = m_Context.AbilityContext.SkillContext.Activator.Progression.Level;
+            int level = m_Context.AbilityContext.SkillContext.Skill.Progression.Level;
             m_TotalDuration = m_Config.FinalDurationByLevel(level);
             m_RemainingDuration = m_TotalDuration;
         }
