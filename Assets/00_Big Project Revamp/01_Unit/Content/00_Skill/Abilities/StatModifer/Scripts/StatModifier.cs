@@ -84,7 +84,7 @@ namespace Rush
                 Debug.LogError($"{nameof(OnSkillDeliveredInvoke)} cant found Unit component");
                 return;
             }
-            senderActivator.OnAbilityDeliverd?.Invoke(unit);
+            senderActivator.OnAbilityDelivered?.Invoke(unit);
             AbilityUltility.ApplyStatusEffect(senderContext, unit);
         }
         public StatField GetFinalStat(StatField unitStat)

@@ -1,18 +1,25 @@
-﻿using MoreMountains.Tools;
+
+using LegionKnight;
+using MoreMountains.Tools;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Damageable : Bindable, IDamageable
+    public interface IDamageable
+    {
+        DamageableField DamageableField { get; }
+    }
+
+    public class DamageableField
     {
         [SerializeField, Tooltip("How many times this unit can reborn after death")]
         private int m_RebornCount = 0;
 
         [SerializeField, MMReadOnly]
         private int m_RemainingReborn;
-        
+
         [SerializeField]
         private int m_MaxHealth = 100;
         [SerializeField]
@@ -31,9 +38,11 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private int m_TotalDamageTaken;
         [SerializeField, MMReadOnly]
-        private bool m_IsInvicible = false;
+        private bool m_IsImmortal = false;
         [SerializeField]
-        private UnityEvent m_OnRestart;
+        private UnityEvent<int> m_OnRebornStart;
+        [SerializeField]
+        private UnityEvent m_OnRebornDone;
         [SerializeField]
         private UnityEvent<HealerContext> m_OnHealed;
         [SerializeField]
@@ -42,12 +51,7 @@ namespace Rush
         private UnityEvent<BattleContext> m_OnDamageTaken;
         [SerializeField]
         private UnityEvent<BattleContext> m_OnDeath;
-        [SerializeField]
-        private UnityEvent<GameObject> m_OnSimpleHit;
-        [SerializeField]
-        private UnityEvent<int> m_OnSimpleDamageTaken;
-        [SerializeField]
-        private UnityEvent<int> m_OnStartReborn;
+        
         private const int m_MinimumDefendReduction = 0;
         [SerializeField, MMReadOnly]
         private AbilityContext m_AbilityContext;
@@ -69,13 +73,18 @@ namespace Rush
                 return currentRate;
             }
         }
-        public bool IsInvicible => m_IsInvicible;
+        public bool IsInvicible => m_IsImmortal;
         public AbilityContext AbilityContext => m_AbilityContext;
 
         public void Init(AbilityContext context)
         {
             m_AbilityContext = context;
-            m_RebornCount = context.SkillContext.ModuleContext.UnitOwner.Config.RebornCount;
+            UnitConfig unitConfig = context.SkillContext.ModuleContext.UnitOwner.Config;
+            if (unitConfig == null) return;
+            
+            m_Shield = 0;
+            m_Barrier = 0;
+            m_RebornCount = unitConfig.RebornCount;
             m_RemainingReborn = m_RebornCount;
             ReborInternal(1f);
         }
@@ -89,34 +98,41 @@ namespace Rush
             {
                 Unit ownerObject = m_AbilityContext.SkillContext.ModuleContext.UnitOwner;
                 int ownerLevel = ownerObject.Progression.Level;
-                float healthFinal = Mathf.Max(0f, ownerObject.Config.MainStats.GetFinalStat(ownerLevel).Health);
+                float healthFinal = Mathf.Max(0f, ownerObject.Config.MainStats.GetFinalStat(ownerLevel).Health * healthRate);
                 float defenseFinal = Mathf.Max(0f, ownerObject.Config.MainStats.GetFinalStat(ownerLevel).Defense);
-                m_MaxHealth = Mathf.RoundToInt(healthFinal);
-                m_Health = Mathf.RoundToInt(healthFinal * healthRate);
-                m_Defense = Mathf.RoundToInt(defenseFinal);
 
-                m_OnRestart?.Invoke();
+
+                SetMaxHealthInternal(Mathf.RoundToInt(healthFinal), true);
+                SetDefenseInternal(Mathf.RoundToInt(defenseFinal));
+
+                m_OnRebornDone?.Invoke();
+
+                ImmortalForWhileInternal(2f);
             }
         }
-        private void OnTriggerEnter2D(Collider2D collision)
+        public void OnTriggerEnter2D(Collider2D collision, Targetable targetable)
         {
             if (collision.TryGetComponent(out Attacker attacker))
             {
-                if (AbilityUltility.IsTargetAllowedByTargetObject(m_AbilityContext.AbilityDeliver, GetComponent<Targetable>()))
+                if (AbilityUltility.IsTargetAllowedByTargetObject(m_AbilityContext.AbilityDeliver, targetable))
                 {
-                    TakeDamageInternal(attacker);
+                    if (targetable.TryGetComponent(out IDamageable damageable))
+                    {
+                        TakeDamageInternal(attacker, damageable);
+                    }
+                    
                 }
             }
         }
-        public void TakeDamage(IAttacker attacker)
+        public void TakeDamage(IAttacker attacker, IDamageable damageable)
         {
-            TakeDamageInternal(attacker);
+            TakeDamageInternal(attacker, damageable);
         }
-        protected virtual void TakeDamageInternal(IAttacker attacker)
+        protected virtual void TakeDamageInternal(IAttacker attacker, IDamageable damageable)
         {
-            BattleContext context = new BattleContext(attacker, this);
-            int effectiveDamage = DamageUtility.DamageFormulaRPG(attacker, this);
-            if (m_IsInvicible) return;
+            BattleContext context = new BattleContext(attacker, damageable);
+            int effectiveDamage = DamageUtility.DamageFormulaRPG(attacker, damageable);
+            if (m_IsImmortal) return;
             OnHitInvoke(context);
             // block damage if barrier exist
             if (m_Barrier > 0)
@@ -146,30 +162,33 @@ namespace Rush
                 AddHealthInternal(-effectiveDamage);
                 SetCurrentDamageTakeInternal(effectiveDamage);
 
-                
+
             }
             OnDamageTaken(context);
         }
 
 
-        public void Heal(Healer healer)
+        public void Heal(Healer healer, IDamageable damageable)
         {
-            HealerContext context = new(healer, this);
+            HealerContext context = new(healer, damageable);
             AddHealthInternal(healer.HealAmount);
             m_OnHealed?.Invoke(context);
-            OnSkillDeliveredInvoke(m_AbilityContext, this);
+            if (context.Damageable is Bindable bindable)
+            {
+                AbilityUltility.OnSkillDeliveredInvoke(m_AbilityContext, bindable, SkillTriggerState.OnHealed);
+            }
         }
-        private void OnHealthDepleted(BattleContext context)
+        private void OnHealthDepleted()
         {
             if (m_RemainingReborn > 0)
             {
-                AddRemaininRebornCountInternal(-1);
-                StartCoroutine(RebornDelayRoutine(1f)); // optional delay
+                AddRemaininRebornCountInternal(-1)
+                RushGameManager.Instance.StartCoroutine(RebornDelayRoutine(1f)); // optional delay
             }
         }
         private IEnumerator RebornDelayRoutine(float delay)
         {
-            m_OnStartReborn?.Invoke(m_RemainingReborn);
+            m_OnRebornStart?.Invoke(m_RemainingReborn);
             yield return new WaitForSeconds(delay);
             ReborInternal(1f);
         }
@@ -177,44 +196,30 @@ namespace Rush
         {
             m_OnHit?.Invoke(context);
             // attacker ability delivered here
-            OnSkillDeliveredInvoke(m_AbilityContext, this);
-            AbilityUltility.OnCombatReceivedForceActivates(this, SkillTriggerState.OnHit);
+            if (context.Damageable is Bindable damageable)
+            {
+                AbilityUltility.OnSkillDeliveredInvoke(m_AbilityContext, damageable, SkillTriggerState.OnHit);
+            }
+            
         }
-        private static void OnSkillDeliveredInvoke(AbilityContext senderContext, Bindable bindableTarget)
-        {
-            Skill senderActivator = senderContext.SkillContext.Skill;
-            Unit unit = null;
-            if (bindableTarget.HasBind(out Unit targetUnit))
-            {
-                unit = targetUnit;
-            }
-            if (bindableTarget is Unit unitItSelf)
-            {
-                unit = unitItSelf;
-            }
-            if (unit == null)
-            {
-                Debug.LogError($"{nameof(OnSkillDeliveredInvoke)} cant found Unit component");
-                return;
-            }
-            senderActivator.OnAbilityDeliverd?.Invoke(unit);
-            AbilityUltility.ApplyStatusEffect(senderContext, unit);
-        }
+        
         private void OnDamageTaken(BattleContext context)
         {
             m_OnDamageTaken?.Invoke(context);
-            
-            if (context.Attacker is Attacker attacker)
+
+            if (context.Attacker is Bindable attacker)
             {
-                Unit unitAttacker = attacker.AbilityContext.SkillContext.ModuleContext.UnitOwner;
-                AbilityUltility.OnCombatReceivedForceActivates(unitAttacker, SkillTriggerState.OnDamageDealed);
-                AbilityUltility.OnCombatReceivedForceActivates(this, SkillTriggerState.OnDamageTaken);
+                AbilityUltility.OnSkillDeliveredInvoke(m_AbilityContext, attacker, SkillTriggerState.OnDamageDealed);
             }
-            OnDeathInvoke(context);
+            if (context.Damageable is Bindable damageable)
+            {
+                AbilityUltility.OnSkillDeliveredInvoke(m_AbilityContext, damageable, SkillTriggerState.OnDamageTaken);
+            }
             if (m_Health <= 0)
             {
-                OnHealthDepleted(context);
+                OnHealthDepleted();
             }
+            OnDeathInvoke(context);
         }
         private void OnDeathInvoke(BattleContext context)
         {
@@ -257,9 +262,52 @@ namespace Rush
         {
             m_RemainingReborn += count;
         }
-        public void SetInvicible(bool inv)
+        protected virtual void AddMaxHealthInternal(int amount, bool restoreCurrent)
         {
-            m_IsInvicible = inv;
+            m_MaxHealth += amount;
+            if (restoreCurrent)
+            {
+                AddHealthInternal(amount);
+            }
+        }
+        protected virtual void SetCurrentHealthInternal(int amount)
+        {
+            m_Health = amount;
+            if (m_Health > m_MaxHealth)
+            {
+                m_Health = m_MaxHealth;
+            }
+        }
+        protected virtual void SetMaxHealthInternal(int amount, bool restoreCurrent)
+        {
+            m_MaxHealth = amount;
+            if (restoreCurrent)
+            {
+                SetCurrentHealthInternal(amount);
+            }
+        }
+        protected virtual void SetDefenseInternal(int amount)
+        {
+            m_Defense = amount;
+        }
+        public void SetImmortal(bool inv)
+        {
+            SetImmortalInternal(inv);
+        }
+        protected virtual void SetImmortalInternal(bool inv)
+        {
+            m_IsImmortal = inv;
+        }
+        private void ImmortalForWhileInternal(float duration)
+        {
+            RushGameManager.Instance.StartCoroutine(ImmortalingForWhile(duration));
+        }
+        private IEnumerator ImmortalingForWhile(float duration)
+        {
+            SetImmortalInternal(true);
+            yield return new WaitForSeconds(duration);
+            SetImmortalInternal(false);
+
         }
     }
 }

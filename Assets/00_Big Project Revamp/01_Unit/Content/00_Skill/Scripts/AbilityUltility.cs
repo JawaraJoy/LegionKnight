@@ -319,11 +319,11 @@ namespace Rush
                     targets.RemoveAt(i);
             }
         }
-        public static void OnCombatReceivedForceActivates(Bindable bindable, SkillTriggerState filterState)
+        private static void OnCombatReceivedForceActivates(Bindable bindable, SkillTriggerState filterState)
         {
-            if (bindable.HasBind(out Unit unitTaken))
+            if (bindable is Unit unit)
             {
-                if (unitTaken.HasBind(out SkillController skill))
+                if (unit.HasBind(out SkillController skill))
                 {
                     List<Skill> activators = new(skill.Skills);
                     foreach (var activator in activators)
@@ -334,25 +334,51 @@ namespace Rush
                             activator.ForceActivateAll();
                         }
                     }
+                    
                 }
+                
             }
-        }
-        public static void OnCombatReceivedForceActivates(Unit unit, SkillTriggerState filterState)
-        {
-            if (unit.HasBind(out SkillController skill))
+            else
             {
-                List<Skill> activators = new(skill.Skills);
-                foreach (var activator in activators)
+                if (bindable.HasBind(out Unit unitOwner))
                 {
-                    SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;
-                    if (state == filterState)
+                    if (unitOwner.HasBind(out SkillController unitSkill))
                     {
-                        activator.ForceActivateAll();
+                        List<Skill> activators = new(unitSkill.Skills);
+                        foreach (var activator in activators)
+                        {
+                            SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;
+                            if (state == filterState)
+                            {
+                                activator.ForceActivateAll();
+                            }
+                        }
                     }
                 }
             }
         }
-        public static void ApplyStatusEffect(AbilityContext senderContext, Unit targetUnit)
+        public static void OnSkillDeliveredInvoke(AbilityContext senderContext, Bindable bindableTarget, SkillTriggerState triggerState)
+        {
+            Skill senderActivator = senderContext.SkillContext.Skill;
+            Unit unit = null;
+            if (bindableTarget.HasBind(out Unit targetUnit))
+            {
+                unit = targetUnit;
+            }
+            if (bindableTarget is Unit unitItSelf)
+            {
+                unit = unitItSelf;
+            }
+            if (unit == null)
+            {
+                Debug.LogError($"{nameof(OnSkillDeliveredInvoke)} cant found Unit component");
+                return;
+            }
+            senderActivator.OnAbilityDelivered?.Invoke(unit);
+            OnCombatReceivedForceActivates(bindableTarget, triggerState);
+            ApplyStatusEffect(senderContext, unit);
+        }
+        private static void ApplyStatusEffect(AbilityContext senderContext, Unit targetUnit)
         {
             AbilityConfig abilityConfig = senderContext.AbilityDeliver.Config;
             StatusEffectConfig[] statusEffects = abilityConfig.StatusEffectOnDelivered;

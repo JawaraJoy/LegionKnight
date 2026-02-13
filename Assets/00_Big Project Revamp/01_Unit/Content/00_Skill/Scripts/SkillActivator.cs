@@ -54,7 +54,7 @@ namespace Rush
         public SkillConfig SkillConfig => m_SkillConfig;
         public SkillContext Context => m_Context;
         public IReadOnlyList<AbilityDeliver> Delivers => m_Delivers;
-        public UnityEvent<Unit> OnAbilityDeliverd => m_OnAbilityDelivered;
+        public UnityEvent<Unit> OnAbilityDelivered => m_OnAbilityDelivered;
 
         public bool IsActive => gameObject.activeInHierarchy;
 

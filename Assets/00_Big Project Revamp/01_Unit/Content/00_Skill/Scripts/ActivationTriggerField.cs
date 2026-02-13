@@ -28,7 +28,8 @@ namespace Rush
         OnDeclareAttack = 3,
         OnDamageDealed = 4,
         OnDamageTaken = 5,
-        OnNormalTouch = 6,
-        OnPerfectTouch = 7,
+        OnHealed = 6,
+        OnNormalTouch = 7,
+        OnPerfectTouch = 8,
     }
 }
