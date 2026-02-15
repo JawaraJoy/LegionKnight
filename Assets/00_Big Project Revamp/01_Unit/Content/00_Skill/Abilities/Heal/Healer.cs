@@ -59,7 +59,7 @@ namespace Rush
 
                 if (target.HasBind(out Damageable damageable))
                 {
-                    damageable.Heal(this);
+                    damageable.DamageableField.Heal(this, damageable);
                     m_OnHealAmount?.Invoke(m_HealAmount);
                 }
 

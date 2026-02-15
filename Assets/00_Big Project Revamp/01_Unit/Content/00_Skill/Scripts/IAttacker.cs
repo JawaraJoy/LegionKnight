@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public interface IAttacker 
+    public interface IAttacker : IHasAbilityContext
     {
         AttackerField AttackerField { get; }
     }

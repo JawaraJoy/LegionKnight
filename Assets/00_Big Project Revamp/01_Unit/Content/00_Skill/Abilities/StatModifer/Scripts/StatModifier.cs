@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Rush
 {
     [System.Serializable]
-    public partial class StatModifier : MonoBehaviour
+    public partial class StatModifier : MonoBehaviour, IUnitExtension
     {
         [SerializeField]
         private Transform m_InfluencerPost;
@@ -65,6 +65,7 @@ namespace Rush
                     m_Influencers.Add(spawnedInfluencer);
                 }
             }
+            //AbilityUltility.OnSkillDeliveredInvoke(abilityContext, SkillTriggerState.OnHit);
             OnSkillDeliveredInvoke(abilityContext, m_ModuleContext.UnitOwner);
         }
         private static void OnSkillDeliveredInvoke(AbilityContext senderContext, Bindable bindableTarget)

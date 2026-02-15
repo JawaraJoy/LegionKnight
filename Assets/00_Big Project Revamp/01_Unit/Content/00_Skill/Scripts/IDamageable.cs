@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public interface IDamageable
+    public interface IDamageable : IHasAbilityContext
     {
         DamageableField DamageableField { get; }
     }
@@ -82,17 +82,16 @@ namespace Rush
             UnitConfig unitConfig = context.SkillContext.ModuleContext.UnitOwner.Config;
             if (unitConfig == null) return;
             
-            m_Shield = 0;
-            m_Barrier = 0;
+            
             m_RebornCount = unitConfig.RebornCount;
             m_RemainingReborn = m_RebornCount;
-            ReborInternal(1f);
+            ReborInternal(1f); // always reborn in 100% health
         }
-        public void Reborn(float healthRate) // change to rebornContext if too many argument in the future
+        public void Reborn(float healthRate, int fixedShield = 0, int barrier = 0, float immortalDuration = 0f) // change to rebornContext if too many argument in the future
         {
             ReborInternal(healthRate);
         }
-        private void ReborInternal(float healthRate)
+        private void ReborInternal(float healthRate, int fixedShield = 0, int barrier = 0, float immortalDuration = 0f)
         {
             if (m_AbilityContext != null)
             {
@@ -104,10 +103,11 @@ namespace Rush
 
                 SetMaxHealthInternal(Mathf.RoundToInt(healthFinal), true);
                 SetDefenseInternal(Mathf.RoundToInt(defenseFinal));
-
+                m_Shield = 0;
+                m_Barrier = 0;
                 m_OnRebornDone?.Invoke();
 
-                ImmortalForWhileInternal(2f);
+                ImmortalForWhileInternal(immortalDuration);
             }
         }
         public void OnTriggerEnter2D(Collider2D collision, Targetable targetable)
@@ -132,12 +132,12 @@ namespace Rush
         {
             BattleContext context = new BattleContext(attacker, damageable);
             int effectiveDamage = DamageUtility.DamageFormulaRPG(attacker, damageable);
-            if (m_IsImmortal) return;
             OnHitInvoke(context);
+            if (m_IsImmortal) return;
             // block damage if barrier exist
             if (m_Barrier > 0)
             {
-                AddBarrierInternal(-1);
+                AddBarrierInternal(-1, 0f);
                 return;
             }
             // Apply remaining damage to Shield
@@ -148,7 +148,7 @@ namespace Rush
                 if (m_Shield < 0)
                 {
                     effectiveDamage = -previousShield;
-                    m_Shield = 0;
+                    SetShieldInternal(0, 0f);
                 }
                 else
                 {
@@ -161,8 +161,6 @@ namespace Rush
                 AddTotalDamageTakeInternal(effectiveDamage);
                 AddHealthInternal(-effectiveDamage);
                 SetCurrentDamageTakeInternal(effectiveDamage);
-
-
             }
             OnDamageTaken(context);
         }
@@ -182,7 +180,7 @@ namespace Rush
         {
             if (m_RemainingReborn > 0)
             {
-                AddRemaininRebornCountInternal(-1)
+                AddRemaininRebornCountInternal(-1);
                 RushGameManager.Instance.StartCoroutine(RebornDelayRoutine(1f)); // optional delay
             }
         }
@@ -196,11 +194,8 @@ namespace Rush
         {
             m_OnHit?.Invoke(context);
             // attacker ability delivered here
-            if (context.Damageable is Bindable damageable)
-            {
-                AbilityUltility.OnSkillDeliveredInvoke(m_AbilityContext, damageable, SkillTriggerState.OnHit);
-            }
-            
+            AbilityUltility.OnSkillDeliveredInvoke(context.Attacker, SkillTriggerState.OnHit);
+            AbilityUltility.OnSkillReceivedInvoke(context.Damageable, SkillTriggerState.OnGetHit);
         }
         
         private void OnDamageTaken(BattleContext context)
@@ -209,11 +204,11 @@ namespace Rush
 
             if (context.Attacker is Bindable attacker)
             {
-                AbilityUltility.OnSkillDeliveredInvoke(m_AbilityContext, attacker, SkillTriggerState.OnDamageDealed);
+                AbilityUltility.OnSkillDeliveredInvoke(m_AbilityContext, SkillTriggerState.OnDamageDealed);
             }
             if (context.Damageable is Bindable damageable)
             {
-                AbilityUltility.OnSkillDeliveredInvoke(m_AbilityContext, damageable, SkillTriggerState.OnDamageTaken);
+                AbilityUltility.OnSkillDeliveredInvoke(m_AbilityContext, SkillTriggerState.OnDamageTaken);
             }
             if (m_Health <= 0)
             {
@@ -249,11 +244,47 @@ namespace Rush
             m_Shield += amount;
             m_Shield = Mathf.Max(0, m_Shield);
         }
-        protected virtual void AddBarrierInternal(int amount)
+        protected virtual void AddBarrierInternal(int amount, float duration)
+        {
+            RushGameManager.Instance.StartCoroutine(AddingBarrierInternal(amount, duration));
+        }
+        protected virtual IEnumerator AddingBarrierInternal(int amount, float duration)
         {
             m_Barrier += amount;
+            if (duration >= 0)
+            {
+                yield return new WaitForSeconds(duration);
+                if (amount > 0)
+                {
+                    if (m_Barrier >= amount)
+                    {
+                        m_Barrier -= amount;
+                    }
+                }
+            }
             m_Barrier = Mathf.Max(0, m_Barrier);
         }
+        protected virtual void SetBarrierInternal(int amount, float duration)
+        {
+            RushGameManager.Instance.StartCoroutine(SettingBarrierInternal(amount, duration));
+        }
+        protected virtual IEnumerator SettingBarrierInternal(int amount, float duration)
+        {
+            m_Barrier = amount;
+            if (duration >= 0)
+            {
+                yield return new WaitForSeconds(duration);
+                if (amount > 0)
+                {
+                    if (m_Barrier >= amount)
+                    {
+                        m_Barrier -= amount;
+                    }
+                }
+            }
+            m_Barrier = Mathf.Max(0, m_Barrier);
+        }
+
         protected virtual void AddDamageReductionRateInternal(float rate)
         {
             m_DamageReductionRate += rate;
@@ -290,14 +321,36 @@ namespace Rush
         {
             m_Defense = amount;
         }
-        public void SetImmortal(bool inv)
+        protected virtual void SetShieldInternal(int amount, float duration)
         {
-            SetImmortalInternal(inv);
+            RushGameManager.Instance.StartCoroutine(SettingShieldInternal(amount, duration));
+        }
+        protected virtual IEnumerator SettingShieldInternal(int amount, float duration)
+        {
+            m_Shield = amount;
+            if (duration >= 0)
+            {
+                yield return new WaitForSeconds(duration);
+                if (amount > 0)
+                {
+                    if (m_Shield >= amount)
+                    {
+                        m_Shield -= amount;
+                    }
+                }
+            }
+            m_Shield = Mathf.Max(0, m_Shield);
+        }
+        public void SetImmortal(bool imo)
+        {
+            SetImmortalInternal(imo);
         }
         protected virtual void SetImmortalInternal(bool inv)
         {
             m_IsImmortal = inv;
         }
+        
+        
         private void ImmortalForWhileInternal(float duration)
         {
             RushGameManager.Instance.StartCoroutine(ImmortalingForWhile(duration));

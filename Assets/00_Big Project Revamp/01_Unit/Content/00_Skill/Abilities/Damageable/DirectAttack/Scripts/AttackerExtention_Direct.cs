@@ -22,7 +22,7 @@ namespace Rush
             yield return new WaitForSeconds(delay);
             if (target.HasBind(out Damageable damageable))
             {
-                damageable.TakeDamage(this);
+                damageable.DamageableField.TakeDamage(this, damageable);
                 DirectDamageAbilityConfig config;
                 if (m_AbilityContext.AbilityDeliver.Config is DirectDamageAbilityConfig directConfig)
                 {
@@ -51,7 +51,7 @@ namespace Rush
                     if (!config.CanTargetDeathUnit && !t.IsAlive) continue;
 
                     if (t.HasBind(out Damageable dmg))
-                        dmg.TakeDamage(this);
+                        dmg.DamageableField.TakeDamage(this, dmg);
                 }
             }
             else
@@ -68,7 +68,7 @@ namespace Rush
                     if (!config.CanTargetDeathUnit && !t.IsAlive) continue;
 
                     if (t.HasBind(out Damageable dmg))
-                        dmg.TakeDamage(this);
+                        dmg.DamageableField.TakeDamage(this, dmg);
                 }
             }
         }

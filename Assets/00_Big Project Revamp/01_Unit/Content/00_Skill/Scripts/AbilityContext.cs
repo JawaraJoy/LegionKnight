@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Rush
 {
     [System.Serializable]
-    public partial class AbilityContext
+    public partial class AbilityContext : IAbilityContext
     {
         [SerializeField, MMReadOnly]
         private SkillContext m_SkillContext;

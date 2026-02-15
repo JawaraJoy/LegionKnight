@@ -22,14 +22,15 @@ namespace Rush
 
     public enum SkillTriggerState
     {
-        OnCooldownDone = 0,
-        OnChargeFull = 1,
-        OnHit = 2,
-        OnDeclareAttack = 3,
-        OnDamageDealed = 4,
-        OnDamageTaken = 5,
-        OnHealed = 6,
-        OnNormalTouch = 7,
-        OnPerfectTouch = 8,
+        OnCooldownDone,
+        OnChargeFull,
+        OnHit,
+        OnGetHit,
+        OnDeclareAttack,
+        OnDamageDealed,
+        OnDamageTaken,
+        OnHealed,
+        OnNormalTouch,
+        OnPerfectTouch,
     }
 }

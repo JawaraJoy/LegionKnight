@@ -33,11 +33,11 @@ namespace Rush
             }
         }
 
-        public void SetIsInvicible(bool isInvicible)
+        public void SetImmortal(bool isInvicible)
         {
             if (DamageableInternal != null)
             {
-                DamageableInternal.SetInvicible(isInvicible);
+                DamageableInternal.DamageableField.SetImmortal(isInvicible);
             }
             else
             {

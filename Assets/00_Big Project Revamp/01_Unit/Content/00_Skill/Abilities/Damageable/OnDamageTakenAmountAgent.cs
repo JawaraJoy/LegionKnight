@@ -12,7 +12,7 @@ namespace LegionKnight
         public void OnDamageTakenInvoke(BattleContext context)
         {
             if (context.Damageable == null) return;
-            m_OnDamageTaken?.Invoke(context.Damageable.CurrentDamageTaken);
+            m_OnDamageTaken?.Invoke(context.Damageable.DamageableField.CurrentDamageTaken);
         }
     }
 }

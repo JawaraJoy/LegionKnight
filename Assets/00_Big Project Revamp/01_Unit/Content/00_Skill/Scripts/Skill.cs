@@ -112,14 +112,6 @@ namespace Rush
 
             m_OnInit?.Invoke(m_Context);
 
-            if (m_SkillConfig.Activation.TriggerState == SkillTriggerState.OnHit)
-            {
-                if (ownerContext.UnitOwner.HasBind(out Damageable damageable))
-                {
-                    damageable.OnHit.RemoveAllListeners();
-                    damageable.OnHit.AddListener(_ => TryActivate());
-                }
-            }
             ChangeState(m_SkillConfig.InitializeState);
             SpawnDelivers();
         }

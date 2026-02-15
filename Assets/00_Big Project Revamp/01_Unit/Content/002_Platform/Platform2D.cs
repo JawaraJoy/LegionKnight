@@ -49,7 +49,7 @@ namespace Rush
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
+        /*private void OnCollisionEnter2D(Collision2D collision)
         {
             LayerMask failLayer = RushGameManager.Instance.PlatformManager.Config.FailLayer;
             if (CommonUtility.LayerConfirmation(failLayer, collision.gameObject.layer))
@@ -61,14 +61,14 @@ namespace Rush
                         // kalau normalnya mengarah ke kiri atau kanan → berarti tabrakan samping
                         if (Mathf.Abs(contact.normal.x) > 0.5f)
                         {
-                            damageable.TakeDamage(m_Config);
+                            damageable.DamageableField.TakeDamage(m_Config, damageable);
                             RushGameManager.Instance.PlatformManager.ReturnToPool(this);
                             break;
                         }
                     }
                 }
             }
-        }
+        }*/
         public void Init(PlatformConfig config, GameObject ownerObject)
         {
             m_Config = config;
