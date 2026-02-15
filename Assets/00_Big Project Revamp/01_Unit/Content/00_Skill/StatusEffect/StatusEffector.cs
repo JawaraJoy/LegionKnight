@@ -25,7 +25,7 @@ namespace Rush
         private float m_RemainingDuration;
         public bool IsActive => gameObject.activeInHierarchy;
 
-        public void ApplyEffect(StatusEffectConfig effectConfig, AbilityContext context, Unit target)
+        public void ApplyEffect(StatusEffectConfig effectConfig, IAbilityContext context, Unit target)
         {
             m_Config = effectConfig;
             m_UnitTarget = target;

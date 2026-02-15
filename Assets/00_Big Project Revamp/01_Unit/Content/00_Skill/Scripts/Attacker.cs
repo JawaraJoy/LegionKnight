@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public partial class Attacker : MonoBehaviour, IAttacker
+    public partial class Attacker : MonoBehaviour, IAttacker, IHasAbilityContext
     {
         [SerializeField]
         private AttackerField m_AttackerField;

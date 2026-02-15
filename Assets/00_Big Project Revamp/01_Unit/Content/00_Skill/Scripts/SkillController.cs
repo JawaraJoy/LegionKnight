@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public class SkillController : MonoBehaviour, IUnitExtension
+    public class SkillController : MonoBehaviour, IUnitExtension, IHasSkills
     {
         [SerializeField]
         private Transform m_SkillSpawnPost;
@@ -16,7 +16,7 @@ namespace Rush
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
-            AddNewSkillsInternal(m_ModuleContext.UnitOwner.Config.Skills);
+            AddNewSkillsInternal(m_ModuleContext.Unit.Config.Skills);
         }
 
         private Skill GetSkillActivatorInternal(string id)

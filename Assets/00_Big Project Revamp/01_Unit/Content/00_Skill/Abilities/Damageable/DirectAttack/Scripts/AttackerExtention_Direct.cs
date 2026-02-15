@@ -20,9 +20,9 @@ namespace Rush
         private IEnumerator DirectAttacking(Targetable target, float delay)
         {
             yield return new WaitForSeconds(delay);
-            if (target.HasBind(out Damageable damageable))
+            if (target.HasBind(out IDamageable damageable))
             {
-                damageable.DamageableField.TakeDamage(this, damageable);
+                damageable.TakeDamage(this);
                 DirectDamageAbilityConfig config;
                 if (m_AbilityContext.AbilityDeliver.Config is DirectDamageAbilityConfig directConfig)
                 {
@@ -50,8 +50,8 @@ namespace Rush
                     if (!hits[i].TryGetComponent(out Targetable t)) continue;
                     if (!config.CanTargetDeathUnit && !t.IsAlive) continue;
 
-                    if (t.HasBind(out Damageable dmg))
-                        dmg.DamageableField.TakeDamage(this, dmg);
+                    if (t.HasBind(out IDamageable dmg))
+                        dmg.TakeDamage(this);
                 }
             }
             else
@@ -67,8 +67,8 @@ namespace Rush
                     if (!hits[i].TryGetComponent(out Targetable t)) continue;
                     if (!config.CanTargetDeathUnit && !t.IsAlive) continue;
 
-                    if (t.HasBind(out Damageable dmg))
-                        dmg.DamageableField.TakeDamage(this, dmg);
+                    if (t.HasBind(out IDamageable dmg))
+                        dmg.TakeDamage(this);
                 }
             }
         }

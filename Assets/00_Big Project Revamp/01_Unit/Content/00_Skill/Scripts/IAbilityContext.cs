@@ -6,5 +6,6 @@ namespace Rush
     {
         SkillContext SkillContext { get; }
         AbilityDeliver AbilityDeliver { get; }
+        bool Initialized { get; }
     }
 }

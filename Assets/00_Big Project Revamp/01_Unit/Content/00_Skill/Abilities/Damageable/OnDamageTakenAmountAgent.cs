@@ -9,10 +9,10 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<int> m_OnDamageTaken;
 
-        public void OnDamageTakenInvoke(BattleContext context)
+        public void OnDamageTakenInvoke(CombatContext context)
         {
             if (context.Damageable == null) return;
-            m_OnDamageTaken?.Invoke(context.Damageable.DamageableField.CurrentDamageTaken);
+            m_OnDamageTaken?.Invoke(context.Damageable.CurrentDamageTaken);
         }
     }
 }

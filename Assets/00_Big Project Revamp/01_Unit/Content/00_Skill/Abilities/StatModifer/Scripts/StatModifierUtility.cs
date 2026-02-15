@@ -16,13 +16,13 @@ namespace Rush
             {
                 switch (EffectScore.ScaleBy)
                 {
-                    case ScalingStat.Health:
+                    case ScalingWithStat.Health:
                         result.SetHealth(ownerStat.Health * finalScore.MultiplierAmount + finalScore.InitialAmount);
                         break;
-                    case ScalingStat.Attack:
+                    case ScalingWithStat.Attack:
                         result.SetAttack(ownerStat.Attack * finalScore.MultiplierAmount + finalScore.InitialAmount);
                         break;
-                    case ScalingStat.Defense:
+                    case ScalingWithStat.Defense:
                         result.SetDefense(ownerStat.Defense * finalScore.MultiplierAmount + finalScore.InitialAmount);
                         break;
                     default:

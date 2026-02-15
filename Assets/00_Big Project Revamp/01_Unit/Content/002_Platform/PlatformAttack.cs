@@ -8,5 +8,8 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private AttackerField m_AttackerField;
         public AttackerField AttackerField => m_AttackerField;
+
+        public AbilityContext AbilityContext => throw new System.NotImplementedException();
+
     }
 }

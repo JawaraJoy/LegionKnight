@@ -6,7 +6,7 @@ namespace Rush
     {
         [SerializeField]
         protected MonoBehaviour[] m_Binds;
-        private T GetBindInternal<T>() where T : MonoBehaviour
+        private T GetBindInternal<T>()
         {
             foreach (MonoBehaviour bind in m_Binds)
             {
@@ -15,9 +15,9 @@ namespace Rush
                     return result;
                 }
             }
-            return null;
+            return default;
         }
-        public bool HasBind<T>(out T found) where T : MonoBehaviour
+        public bool HasBind<T>(out T found)
         {
             found = GetBindInternal<T>();
             return found != null;
@@ -26,6 +26,6 @@ namespace Rush
 
     public interface IBindable
     {
-        public bool HasBind<T>(out T found) where T : MonoBehaviour;
+        public bool HasBind<T>(out T found);
     }
 }

@@ -30,7 +30,7 @@ namespace Rush
             }
             return hasEffector;
         }
-        public void ApplyEffector(StatusEffectConfig config, AbilityContext context, Unit unitTarget)
+        public void ApplyEffector(StatusEffectConfig config, IAbilityContext context, Unit unitTarget)
         {
             StatusEffector existed = GetEffectorInternal(config);
             if (existed == null)

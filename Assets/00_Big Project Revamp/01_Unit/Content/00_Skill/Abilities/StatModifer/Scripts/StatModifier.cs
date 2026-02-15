@@ -65,35 +65,15 @@ namespace Rush
                     m_Influencers.Add(spawnedInfluencer);
                 }
             }
-            //AbilityUltility.OnSkillDeliveredInvoke(abilityContext, SkillTriggerState.OnHit);
-            OnSkillDeliveredInvoke(abilityContext, m_ModuleContext.UnitOwner);
-        }
-        private static void OnSkillDeliveredInvoke(AbilityContext senderContext, Bindable bindableTarget)
-        {
-            Skill senderActivator = senderContext.SkillContext.Skill;
-            Unit unit = null;
-            if (bindableTarget.HasBind(out Unit targetUnit))
-            {
-                unit = targetUnit;
-            }
-            if (bindableTarget is Unit unitItSelf)
-            {
-                unit = unitItSelf;
-            }
-            if (unit == null)
-            {
-                Debug.LogError($"{nameof(OnSkillDeliveredInvoke)} cant found Unit component");
-                return;
-            }
-            senderActivator.OnAbilityDelivered?.Invoke(unit);
-            AbilityUltility.ApplyStatusEffect(senderContext, unit);
+            AbilityUltility.OnAbilityDeliveredInvoke(abilityContext, m_ModuleContext.Unit);
+            //OnSkillDeliveredInvoke(abilityContext, m_ModuleContext.UnitOwner);
         }
         public StatField GetFinalStat(StatField unitStat)
         {
             StatField finalAdditionalStat = StatField.Zero;
             foreach (StatInfluencer influencer in m_Influencers)
             {
-                StatField additionalInfluencerStat = StatModifierUtility.GetFinalAddionalStat(influencer.Context, m_ModuleContext.UnitOwner);
+                StatField additionalInfluencerStat = StatModifierUtility.GetFinalAddionalStat(influencer.Context, m_ModuleContext.Unit);
                 if (influencer.IsActive)
                 {
                     switch (influencer.Config.ModifierType)

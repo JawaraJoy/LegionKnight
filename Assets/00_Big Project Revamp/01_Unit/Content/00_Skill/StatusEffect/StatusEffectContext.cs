@@ -6,13 +6,13 @@ namespace Rush
     public class StatusEffectContext
     {
         [SerializeField]
-        private AbilityContext m_AbilityContext;
+        private IAbilityContext m_AbilityContext;
         [SerializeField]
         private StatusEffector m_StatusEffector;
-        public AbilityContext AbilityContext => m_AbilityContext;
+        public IAbilityContext AbilityContext => m_AbilityContext;
         public StatusEffector StatusEffector => m_StatusEffector;
         public bool IsInitialed => m_AbilityContext.Initialized && m_StatusEffector != null;
-        public StatusEffectContext(AbilityContext abilityContext, StatusEffector effector)
+        public StatusEffectContext(IAbilityContext abilityContext, StatusEffector effector)
         {
             m_AbilityContext = abilityContext;
             m_StatusEffector = effector;

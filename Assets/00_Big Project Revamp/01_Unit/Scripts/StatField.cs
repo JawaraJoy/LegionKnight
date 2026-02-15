@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Rush
 {
     [System.Serializable]
-    public partial class StatField
+    public partial class StatField : IHasStat
     {
         [SerializeField]
         private float m_Health;
@@ -11,9 +11,9 @@ namespace Rush
         private float m_Attack;
         [SerializeField]
         private float m_Defense;
-        public float Health => m_Health;
-        public float Attack => m_Attack;
-        public float Defense => m_Defense;
+        public int Health => Mathf.RoundToInt(m_Health);
+        public int Attack => Mathf.RoundToInt(m_Attack);
+        public int Defense => Mathf.RoundToInt(m_Defense);
 
         public static StatField Zero
         {
@@ -109,13 +109,5 @@ namespace Rush
             StatField finalStats = baseStats + finalFlatStats + finalRateStats;
             return finalStats;
         }
-    }
-
-    public enum ScalingStat
-    {
-        None = 0,
-        Health = 1,
-        Attack = 2,
-        Defense = 3,
     }
 }

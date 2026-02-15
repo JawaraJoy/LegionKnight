@@ -146,7 +146,7 @@ namespace Rush
         }
         private static Unit GetOwnerUnit(AbilityDeliver deliver)
         {
-            return deliver.AbilityContext.SkillContext.ModuleContext.UnitOwner;
+            return deliver.AbilityContext.SkillContext.ModuleContext.Unit;
         }
 
         private static Unit GetTargetUnit(Targetable targetable)
@@ -221,13 +221,13 @@ namespace Rush
         private static int GetHealth(Targetable target)
         {
             Damageable dmg = GetDamageable(target);
-            return dmg != null ? dmg.DamageableField.Health : int.MaxValue;
+            return dmg != null ? dmg.Health : int.MaxValue;
         }
 
         private static float GetHealthRate(Targetable target)
         {
             Damageable dmg = GetDamageable(target);
-            return dmg != null ? dmg.DamageableField.CurrentHealthRate : float.MaxValue;
+            return dmg != null ? dmg.HealthRate : float.MaxValue;
         }
         private static void Shuffle<T>(List<T> list)
         {
@@ -241,7 +241,7 @@ namespace Rush
         {
             AbilityConfig config = context.AbilityDeliver.Config;
 
-            Unit ownerObject = context.SkillContext.ModuleContext.UnitOwner;
+            Unit ownerObject = context.SkillContext.ModuleContext.Unit;
             int ownerLevel = ownerObject.Progression.Level;
             StatField ownerStats = ownerObject.Config.MainStats.GetFinalStat(ownerLevel);
 
@@ -251,16 +251,16 @@ namespace Rush
             PowerField finalEffect = PowerField.GetFinalPower(baseEffe, scaleEffe, skillLevel);
             float finalScaleAmount = finalEffect.InitialAmount + finalEffect.InitialAmount * finalEffect.MultiplierAmount;
 
-            ScalingStat scalingStat = config.EffectCalculator.ScaleBy;
+            ScalingWithStat scalingStat = config.EffectCalculator.ScaleBy;
             switch (scalingStat)
             {
-                case ScalingStat.Attack:
+                case ScalingWithStat.Attack:
                     finalScaleAmount = ownerStats.Attack * finalEffect.MultiplierAmount + finalEffect.InitialAmount;
                     break;
-                case ScalingStat.Health:
+                case ScalingWithStat.Health:
                     finalScaleAmount = ownerStats.Health * finalEffect.MultiplierAmount + finalEffect.InitialAmount;
                     break;
-                case ScalingStat.Defense:
+                case ScalingWithStat.Defense:
                     finalScaleAmount = ownerStats.Defense * finalEffect.MultiplierAmount + finalEffect.InitialAmount;
                     break;
 
@@ -319,65 +319,45 @@ namespace Rush
                     targets.RemoveAt(i);
             }
         }
-        private static void OnCombatReceivedForceActivates(GameObject module, SkillTriggerState filterState)
+        public static void OnSkillEventActivates(IHasSkills skillOwner, SkillTriggerState filterState)
         {
-            if (module.TryGetComponent(out SkillController controller))
+            List<Skill> activators = new(skillOwner.Skills);
+            foreach (var activator in activators)
             {
-                List<Skill> activators = new(controller.Skills);
-                foreach (var activator in activators)
+                SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;
+                if (state == filterState)
                 {
-                    SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;
-                    if (state == filterState)
-                    {
-                        activator.ForceActivateAll();
-                    }
+                    activator.ForceActivateAll();
                 }
             }
-            
 
         }
-        public static void OnSkillDeliveredInvoke(IHasAbilityContext senderContext, SkillTriggerState triggerState)
+        public static void OnAbilityDeliveredInvoke(IAbilityContext abilityOwner, Unit unitReceiver)
         {
-            Skill senderActivator = senderContext.SkillContext.Skill;
-            Unit unit = senderActivator.Context.ModuleContext.UnitOwner;
+            Unit unitDeliver = abilityOwner.SkillContext.ModuleContext.Unit;
             
-            if (unit == null)
+            if (unitDeliver == null)
             {
-                Debug.LogError($"{nameof(OnSkillDeliveredInvoke)} cant found Unit component");
+                Debug.LogError($"{nameof(OnAbilityDeliveredInvoke)} cant found Unit component");
                 return;
             }
-            senderActivator.OnAbilityDelivered?.Invoke(unit);
-            OnCombatReceivedForceActivates(senderActivator.Context.ModuleContext.Module, triggerState);
-            ApplyStatusEffect(senderContext, unit);
+            abilityOwner.SkillContext.Skill.OnAbilityDelivered?.Invoke(unitDeliver);
+            ApplyStatusEffect(abilityOwner, unitReceiver);
         }
-        public static void OnSkillReceivedInvoke(AbilityContext receiverContext, SkillTriggerState triggerState)
-        {
-            Skill receiverSkill = receiverContext.SkillContext.Skill;
-            Unit unit = receiverSkill.Context.ModuleContext.UnitOwner;
-
-            if (unit == null)
-            {
-                Debug.LogError($"{nameof(OnSkillReceivedInvoke)} cant found Unit component");
-                return;
-            }
-            receiverSkill.OnAbilityDelivered?.Invoke(unit);
-            OnCombatReceivedForceActivates(receiverSkill.Context.ModuleContext.Module, triggerState);
-            ApplyStatusEffect(receiverContext, unit);
-        }
-        private static void ApplyStatusEffect(AbilityContext senderContext, Unit targetUnit)
+       
+        private static void ApplyStatusEffect(IAbilityContext senderContext, Unit unitTarget)
         {
             AbilityConfig abilityConfig = senderContext.AbilityDeliver.Config;
             StatusEffectConfig[] statusEffects = abilityConfig.StatusEffectOnDelivered;
             
             if (statusEffects.Length <= 0) return;
-            if (targetUnit.HasBind(out StatusEffectController controller))
+            if (unitTarget.HasBind(out StatusEffectController controller))
             {
                 foreach (var effect in statusEffects)
                 {
-                    controller.ApplyEffector(effect, senderContext, targetUnit);
+                    controller.ApplyEffector(effect, senderContext, unitTarget);
                 }
             }
-            
         }
     }
 }

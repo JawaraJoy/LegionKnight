@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Healer : MonoBehaviour
+    public class Healer : MonoBehaviour, IHealer, IHasAbilityContext
     {
         [SerializeField]
         private int m_HealAmount = 0;
@@ -57,9 +57,9 @@ namespace Rush
                 if (target == null || !target.IsAlive)
                     break;
 
-                if (target.HasBind(out Damageable damageable))
+                if (target.HasBind(out IDamageable damageable))
                 {
-                    damageable.DamageableField.Heal(this, damageable);
+                    damageable.Heal(this);
                     m_OnHealAmount?.Invoke(m_HealAmount);
                 }
 

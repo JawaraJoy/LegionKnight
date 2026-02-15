@@ -9,7 +9,7 @@ namespace Rush
         private UnityEvent m_OnRight = new();
         [SerializeField]
         private UnityEvent m_OnLeft = new();
-        public void OnDirection(BattleContext context)
+        public void OnDirection(CombatContext context)
         {
             if (context.Attacker is Attacker attacker)
             {

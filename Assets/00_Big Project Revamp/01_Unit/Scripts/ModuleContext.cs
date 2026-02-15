@@ -4,18 +4,18 @@ using UnityEngine;
 namespace Rush
 {
     [System.Serializable]
-    public partial class ModuleContext
+    public partial class ModuleContext : IHasUnit
     {
         [SerializeField, MMReadOnly]
-        private Unit m_UnitOwner;
+        private Unit m_Unit;
         [SerializeField, MMReadOnly]
         private GameObject m_Module;
         public GameObject Module => m_Module;
-        public Unit UnitOwner => m_UnitOwner;
-        public bool Initialized => m_UnitOwner != null && m_Module != null;
+        public Unit Unit => m_Unit;
+        public bool Initialized => m_Unit != null && m_Module != null;
         public ModuleContext(Unit unitOwner, GameObject module)
         {
-            m_UnitOwner = unitOwner;
+            m_Unit = unitOwner;
             m_Module = module;
         }
     }
