@@ -20,6 +20,8 @@ namespace Rush
         private UnityEvent<AbilityContext> m_OnHealDone;
         public UnityEvent<AbilityContext> OnHealDone => m_OnHealDone;
 
+        public bool Initialized => m_AbilityContext.Initialized;
+
         private HealAbilityConfig m_HealConfig;
         public void Init(AbilityContext context)
         {

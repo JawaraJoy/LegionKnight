@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Rush
 {
     [CreateAssetMenu(fileName = "Platform", menuName = "Rush/Unit/Platform", order = 1)]
-    public class PlatformConfig : Configuration, IHasIcon, IAttacker
+    public class PlatformConfig : Configuration, IHasIcon, IHasAttacker
     {
         [SerializeField]
         private Platform2D m_PlatformPrefab;

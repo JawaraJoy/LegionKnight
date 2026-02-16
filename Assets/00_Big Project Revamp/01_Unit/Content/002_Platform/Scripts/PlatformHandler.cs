@@ -49,6 +49,7 @@ namespace Rush
         public float MaxGlobalSpeedRate => m_MaxGlobalSpeedRate;
         public float GlobalPerfectTouchRange => m_GlobalPerfectTouchRange;
         public int TotalPlayedPlatforms => m_CurrentStackedPlatformsCount;
+
         public void Prepare(PlatformHandlerConfig config)
         {
             m_CurrentStackedPlatformsCount = 0;

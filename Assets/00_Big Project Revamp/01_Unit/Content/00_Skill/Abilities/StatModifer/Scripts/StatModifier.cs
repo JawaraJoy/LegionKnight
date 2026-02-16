@@ -13,6 +13,9 @@ namespace Rush
         private List<StatInfluencer> m_Influencers = new List<StatInfluencer>();
         public Transform InfluencerPost => m_InfluencerPost;
         public List<StatInfluencer> StatInfluencers => m_Influencers;
+
+        public IModuleContext ModuleContext => m_ModuleContext;
+
         private ModuleContext m_ModuleContext;
 
         public void Init(Unit unit)

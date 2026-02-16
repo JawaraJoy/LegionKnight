@@ -6,14 +6,8 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public enum SkillActivationState
-    {
-        Idle,
-        Casting,
-        Cooldown,
-        Silenced
-    }
-    public partial class Skill : Bindable, IUpdater
+    
+    public partial class Skill : Bindable, IUpdater, IHasSkillContext
     {
         [Header("Config")]
         [SerializeField]

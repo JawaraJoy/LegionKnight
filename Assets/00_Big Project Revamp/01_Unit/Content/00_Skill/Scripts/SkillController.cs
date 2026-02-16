@@ -13,6 +13,9 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private List<Skill> m_Skills = new();
         public IReadOnlyList<Skill> Skills => m_Skills;
+
+        public IModuleContext ModuleContext => m_ModuleContext;
+
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);

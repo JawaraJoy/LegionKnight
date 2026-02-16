@@ -49,45 +49,12 @@ namespace Rush
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
-        /*private void OnCollisionEnter2D(Collision2D collision)
-        {
-            LayerMask failLayer = RushGameManager.Instance.PlatformManager.Config.FailLayer;
-            if (CommonUtility.LayerConfirmation(failLayer, collision.gameObject.layer))
-            {
-                if (collision.gameObject.TryGetComponent(out Damageable damageable))
-                {
-                    foreach (ContactPoint2D contact in collision.contacts)
-                    {
-                        // kalau normalnya mengarah ke kiri atau kanan → berarti tabrakan samping
-                        if (Mathf.Abs(contact.normal.x) > 0.5f)
-                        {
-                            damageable.DamageableField.TakeDamage(m_Config, damageable);
-                            RushGameManager.Instance.PlatformManager.ReturnToPool(this);
-                            break;
-                        }
-                    }
-                }
-            }
-        }*/
+        
         public void Init(PlatformConfig config, GameObject ownerObject)
         {
             m_Config = config;
             m_Context = new PlatformContext(this, ownerObject);
-            if (ownerObject.TryGetComponent(out Unit unit))
-            {
-                if (unit.HasBind(out SkillController skill))
-                {
-                    SkillConfig[] skillConfigsOnLeftNormal = m_Config.SkillOnLeftTouch.OnNormalTouchSkill;
-                    SkillConfig[] skillConfigsOnRightNormal = m_Config.SkillOnRightTouch.OnNormalTouchSkill;
-                    SkillConfig[] skillConfigsOnLeftPerfect = m_Config.SkillOnLeftTouch.OnPerfectTouchSkill;
-                    SkillConfig[] skillConfigsOnRightPerfect = m_Config.SkillOnRightTouch.OnPerfectTouchSkill;
-
-                    skill.AddNewSkills(skillConfigsOnLeftNormal);
-                    skill.AddNewSkills(skillConfigsOnRightNormal);
-                    skill.AddNewSkills(skillConfigsOnLeftPerfect);
-                    skill.AddNewSkills(skillConfigsOnRightPerfect);
-                }
-            }
+            
             RefreshInternal();
         }
         private bool IsReachedDestination()

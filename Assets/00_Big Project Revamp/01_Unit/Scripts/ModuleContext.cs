@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Rush
 {
     [System.Serializable]
-    public partial class ModuleContext : IHasUnit
+    public partial class ModuleContext : IModuleContext
     {
         [SerializeField, MMReadOnly]
         private Unit m_Unit;

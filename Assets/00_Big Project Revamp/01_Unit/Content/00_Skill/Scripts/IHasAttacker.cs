@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public interface IAttacker
+    public interface IHasAttacker
     {
         AttackerField AttackerField { get; }
     }

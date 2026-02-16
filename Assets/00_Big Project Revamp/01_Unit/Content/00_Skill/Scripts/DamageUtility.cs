@@ -5,7 +5,7 @@ namespace Rush
     public static class DamageUtility
     {
         private const int m_MinimumDefendReduction = 0;
-        public static int DamageFormulaRPG(IAttacker attacker, IDamageable damageable)
+        public static int DamageFormulaRPG(IHasAttacker attacker, IDamageable damageable)
         {
             int baseDamage = Mathf.RoundToInt(attacker.AttackerField.Attack);
             float damageBaseMaxHp = damageable.MaxHealth * attacker.AttackerField.DamageBasedTargetMaxHP;

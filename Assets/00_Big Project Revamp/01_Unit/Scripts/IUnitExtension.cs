@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace Rush
 {
-    public partial interface IUnitExtension
+    public partial interface IUnitExtension : IHasModuleContext
     {
-        void Init(Unit unitOwner);
+        void Init(Unit unit);
     }
 }

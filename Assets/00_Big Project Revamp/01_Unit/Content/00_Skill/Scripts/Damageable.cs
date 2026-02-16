@@ -67,9 +67,12 @@ namespace Rush
         }
         public bool IsImmortal => m_IsImmortal;
 
+        private ModuleContext m_ModuleContext;
+        public IModuleContext ModuleContext => m_ModuleContext;
+
         public void Init(Unit unitOwner)
         {
-
+            m_ModuleContext = new ModuleContext(unitOwner, gameObject);
             m_RebornCount = 0;
             m_RemainingReborn = 0;
             ReborInternal(1f); // always reborn in 100% health
@@ -99,7 +102,7 @@ namespace Rush
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.TryGetComponent(out IAttacker attacker))
+            if (collision.TryGetComponent(out IHasAttacker attacker))
             {
                 if (attacker is IHasAbilityContext attackerContext)
                 {
@@ -116,11 +119,11 @@ namespace Rush
                 
             }
         }
-        public void TakeDamage(IAttacker attacker)
+        public void TakeDamage(IHasAttacker attacker)
         {
             TakeDamageInternal(attacker);
         }
-        protected virtual void TakeDamageInternal(IAttacker attacker)
+        protected virtual void TakeDamageInternal(IHasAttacker attacker)
         {
             CombatContext combatContext = new CombatContext(attacker, this);
             int effectiveDamage = DamageUtility.DamageFormulaRPG(attacker, this);

@@ -5,18 +5,18 @@ using UnityEngine;
 namespace Rush
 {
     [System.Serializable]
-    public partial class SkillContext
+    public partial class SkillContext : ISkillContext
     {
         [SerializeField]
-        private Skill m_Activator;
+        private Skill m_Skill;
         [SerializeField, MMReadOnly]
         private ModuleContext m_ModuleContext;
-        public Skill Skill => m_Activator;
-        public ModuleContext ModuleContext => m_ModuleContext;
-        public bool Initialized => m_ModuleContext.Initialized && m_Activator != null;
-        public SkillContext(Skill activator, ModuleContext moduleContext)
+        public Skill Skill => m_Skill;
+        public IModuleContext ModuleContext => m_ModuleContext;
+        public bool Initialized => m_ModuleContext.Initialized && m_Skill != null;
+        public SkillContext(Skill skill, ModuleContext moduleContext)
         {
-            m_Activator = activator;
+            m_Skill = skill;
             m_ModuleContext = moduleContext;
         }
     }

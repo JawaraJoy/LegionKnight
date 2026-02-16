@@ -11,7 +11,7 @@ namespace Rush
         int TotalDamageTaken { get; }
         int RemainingReborn {  get; }
         bool IsImmortal { get; }
-        void TakeDamage(IAttacker attacker);
+        void TakeDamage(IHasAttacker attacker);
         void Heal(IHealer healer);
     }
 }
