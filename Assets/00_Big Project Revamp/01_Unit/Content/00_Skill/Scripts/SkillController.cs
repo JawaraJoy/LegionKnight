@@ -24,7 +24,7 @@ namespace Rush
 
         private Skill GetSkillActivatorInternal(string id)
         {
-            return m_Skills.Find(x => x.Context.Skill.SkillConfig.BaseInfo.Id == id);
+            return m_Skills.Find(x => x.SkillContext.Skill.SkillConfig.BaseInfo.Id == id);
         }
         public Skill GetSkillActivator(SkillConfig config)
         {
@@ -88,7 +88,7 @@ namespace Rush
             }
             return hasSkill;
         }
-        public bool HasSkillActivator(SkillConfig config, out Skill skill)
+        public bool HasSkill(SkillConfig config, out Skill skill)
         {
             bool hasSkill = GetSkillActivatorInternal(config.BaseInfo.Id) != null;
             if (hasSkill)

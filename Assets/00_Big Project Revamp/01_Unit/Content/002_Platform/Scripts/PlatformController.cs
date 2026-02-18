@@ -30,9 +30,9 @@ namespace Rush
             return m_SkillController.GetSkillsByMultiCategory(skillCategories);
         }
 
-        public bool HasSkillActivator(SkillConfig config, out Skill skill)
+        public bool HasSkill(SkillConfig config, out Skill skill)
         {
-            return m_SkillController.HasSkillActivator(config, out skill);
+            return m_SkillController.HasSkill(config, out skill);
         }
 
         public void Init(Unit unitOwner)
@@ -48,11 +48,8 @@ namespace Rush
                 m_SkillController = skillController;
                 foreach(PlatformConfig config in m_PlatformConfigs)
                 {
-                    RushGameManager.Instance.PlatformManager.AddPreparedPlatformConfig(config, m_ModuleContext.Unit.gameObject);
-                    m_SkillController.AddNewSkills(config.SkillOnLeftTouch.OnNormalTouchSkill);
-                    m_SkillController.AddNewSkills(config.SkillOnLeftTouch.OnPerfectTouchSkill);
-                    m_SkillController.AddNewSkills(config.SkillOnRightTouch.OnNormalTouchSkill);
-                    m_SkillController.AddNewSkills(config.SkillOnRightTouch.OnPerfectTouchSkill);
+                    RushGameManager.Instance.PlatformManager.AddPreparedPlatformConfig(config, this);
+                    
                     
                 }
             }

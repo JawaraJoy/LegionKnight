@@ -5,7 +5,7 @@ namespace Rush
     [System.Serializable]
     public static partial class StatModifierUtility
     {
-        public static StatField GetFinalAddionalStat(StatInfluencerContext context, Unit unitTarget)
+        public static StatField GetFinalAddionalStat(StatModifierContext context, Unit unitTarget)
         {
             StatField ownerStat = unitTarget.Config.MainStats.GetFinalStat(unitTarget.Progression.Level);
             AbilityPowerField EffectScore = context.AbilityContext.AbilityDeliver.Config.EffectCalculator;

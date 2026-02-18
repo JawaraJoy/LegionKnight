@@ -10,7 +10,7 @@ namespace Rush
         private int m_HealAmount = 0;
         public int HealAmount => m_HealAmount;
         private AbilityContext m_AbilityContext;
-        public AbilityContext AbilityContext => m_AbilityContext;
+        public IAbilityContext AbilityContext => m_AbilityContext;
         [SerializeField]
         private UnityEvent<AbilityContext> m_OnHealStart;
         [SerializeField]
@@ -23,10 +23,10 @@ namespace Rush
         public bool Initialized => m_AbilityContext.Initialized;
 
         private HealAbilityConfig m_HealConfig;
-        public void Init(AbilityContext context)
+        public void Init(IAbilityContext context)
         {
-            m_AbilityContext = context;
-            m_HealAmount = Mathf.RoundToInt(AbilityUltility.GetFinalEffectAmount(context));
+            m_AbilityContext = new AbilityContext(context.AbilityDeliver, context.SkillContext);
+            m_HealAmount = Mathf.RoundToInt(AbilityUltility.GetFinalPowerAmount(m_AbilityContext));
             if (m_AbilityContext.AbilityDeliver.Config is HealAbilityConfig healConfig)
             {
                 m_HealConfig = healConfig;
@@ -59,7 +59,7 @@ namespace Rush
                 if (target == null || !target.IsAlive)
                     break;
 
-                if (target.HasBind(out IDamageable damageable))
+                if (target.ModuleContext.Unit.HasBind(out IDamageable damageable))
                 {
                     damageable.Heal(this);
                     m_OnHealAmount?.Invoke(m_HealAmount);

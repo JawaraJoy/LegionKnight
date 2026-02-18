@@ -25,7 +25,7 @@ namespace Rush
             if (m_SpecificSkillsToSilence.Length <= 0) return;
             foreach (SkillConfig config in m_SpecificSkillsToSilence)
             {
-                if (skill.HasSkillActivator(config, out Skill activator))
+                if (skill.HasSkill(config, out Skill activator))
                 {
                     if (silence)
                     {

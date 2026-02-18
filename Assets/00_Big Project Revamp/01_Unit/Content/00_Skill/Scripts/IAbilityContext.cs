@@ -4,7 +4,7 @@ namespace Rush
 {
     public interface IAbilityContext
     {
-        SkillContext SkillContext { get; }
+        ISkillContext SkillContext { get; }
         AbilityDeliver AbilityDeliver { get; }
         bool Initialized { get; }
     }

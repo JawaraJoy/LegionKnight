@@ -12,12 +12,12 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private int m_OnStayPerfectCount;
         [SerializeField]
-        private UnityEvent<PlatformContext> m_OnNormalTouchDown;
+        private UnityEvent<ISkillContext> m_OnNormalTouchDown;
         [SerializeField]
-        private UnityEvent<PlatformContext> m_OnPerfectTouchDown;
+        private UnityEvent<ISkillContext> m_OnPerfectTouchDown;
         public bool IsStayPerfect => m_OnStayPerfect;
         public int StayPerfectCount => m_OnStayPerfectCount;
-        private void SetIsStayPerfectInternal(bool value, PlatformContext context)
+        private void SetIsStayPerfectInternal(bool value, ISkillContext context)
         {
             m_OnStayPerfect = value;
             if (value)
@@ -31,7 +31,7 @@ namespace Rush
                 OnNormalTouchDownInvoke(context);
             }
         }
-        public void SetIsStayPerfect(bool value, PlatformContext context)
+        public void SetIsStayPerfect(bool value, ISkillContext context)
         {
             SetIsStayPerfectInternal(value, context);
         }
@@ -43,11 +43,11 @@ namespace Rush
         {
             m_OnStayPerfectCount = value;
         }
-        private void OnNormalTouchDownInvoke(PlatformContext context)
+        private void OnNormalTouchDownInvoke(ISkillContext context)
         {
             m_OnNormalTouchDown?.Invoke(context);
         }
-        private void OnPerfectTouchDownInvoke(PlatformContext context)
+        private void OnPerfectTouchDownInvoke(ISkillContext context)
         {
             m_OnPerfectTouchDown?.Invoke(context);
         }

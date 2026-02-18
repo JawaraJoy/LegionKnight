@@ -26,9 +26,10 @@ namespace Rush
         public SpawnShapeConfig SpawnShape => m_SpawnShape;
 
 
-        protected override float GetDamage(AbilityContext context)
+        protected override int GetDamage(AbilityContext context)
         {
-            return AbilityUltility.GetFinalEffectAmount(context);
+            float damage = AbilityUltility.GetFinalPowerAmount(context);
+            return Mathf.RoundToInt(damage);
         }
     }
 

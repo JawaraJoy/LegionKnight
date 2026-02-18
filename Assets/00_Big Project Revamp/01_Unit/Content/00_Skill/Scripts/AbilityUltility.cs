@@ -32,9 +32,9 @@ namespace Rush
                 _ => new List<Targetable>()
             };
         }
-        private static Damageable GetDamageable(Targetable targetable)
+        private static IDamageable GetDamageable(Targetable targetable)
         {
-            if (targetable.HasBind(out Damageable damageable))
+            if (targetable.ModuleContext.Unit.HasBind(out IDamageable damageable))
             {
                 return damageable;
             }
@@ -154,7 +154,7 @@ namespace Rush
             if (targetable == null)
                 return null;
 
-            if (targetable.HasBind(out Unit unit))
+            if (targetable.ModuleContext.Unit.HasBind(out Unit unit))
                 return unit;
 
             return null;
@@ -220,13 +220,13 @@ namespace Rush
         }
         private static int GetHealth(Targetable target)
         {
-            Damageable dmg = GetDamageable(target);
+            IDamageable dmg = GetDamageable(target);
             return dmg != null ? dmg.Health : int.MaxValue;
         }
 
         private static float GetHealthRate(Targetable target)
         {
-            Damageable dmg = GetDamageable(target);
+            IDamageable dmg = GetDamageable(target);
             return dmg != null ? dmg.HealthRate : float.MaxValue;
         }
         private static void Shuffle<T>(List<T> list)
@@ -237,7 +237,7 @@ namespace Rush
                 (list[i], list[j]) = (list[j], list[i]);
             }
         }
-        public static float GetFinalEffectAmount(AbilityContext context)
+        public static float GetFinalPowerAmount(AbilityContext context)
         {
             AbilityConfig config = context.AbilityDeliver.Config;
 

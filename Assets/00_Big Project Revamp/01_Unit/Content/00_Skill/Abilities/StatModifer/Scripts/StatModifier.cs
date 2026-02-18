@@ -1,96 +1,210 @@
-using LegionKnight;
-using System.Collections.Generic;
+﻿using MoreMountains.Tools;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
-    [System.Serializable]
-    public partial class StatModifier : MonoBehaviour, IUnitExtension
+    public partial class StatModifier : MonoBehaviour, IUpdater
     {
+        [SerializeField, MMReadOnly]
+        private float m_TotalDuration = 0f;
+        [SerializeField, MMReadOnly]
+        private float m_RemainingDuration = 1f;
+        [SerializeField, MMReadOnly]
+        private float m_TotalStackUpdateDuration = 10f;
+        [SerializeField, MMReadOnly]
+        private float m_RemainingStackUpdateDuration = 0f;
+        [SerializeField, MMReadOnly]
+        private int m_StackCount = 0;
+        [SerializeField, MMReadOnly]
+        private StatModifierContext m_Context;
         [SerializeField]
-        private Transform m_InfluencerPost;
+        private UnityEvent<StatModifierContext> m_OnActive;
         [SerializeField]
-        private List<StatInfluencer> m_Influencers = new List<StatInfluencer>();
-        public Transform InfluencerPost => m_InfluencerPost;
-        public List<StatInfluencer> StatInfluencers => m_Influencers;
+        private UnityEvent<StatModifierContext> m_OnDeactive;
+        [SerializeField]
+        private UnityEvent<int> m_OnStackChange;
+        [SerializeField]
+        private UnityEvent<float> m_OnDurationUpdate;
+        [SerializeField]
+        private UnityEvent m_OnDurationEnd;
+        [SerializeField]
+        private UnityEvent m_OnStackEmpty;
+        [SerializeField]
+        private UnityEvent m_OnStackExceedMax;
+        public float RemainingDuration => m_RemainingDuration;
+        private float TotalStackUpdateDurationInternal
+        {
+            get
+            {
+                return Mathf.Clamp(m_TotalStackUpdateDuration, 0f, m_TotalDuration);
+            }
+        }
+        public int StackCount => m_StackCount;
+        public StatModifierContext Context => m_Context;
+        public bool IsActive => gameObject.activeInHierarchy;
 
-        public IModuleContext ModuleContext => m_ModuleContext;
 
-        private ModuleContext m_ModuleContext;
+        [SerializeField, MMReadOnly]
+        private StatModifierConfig m_Config;
+        public StatModifierConfig Config => m_Config;
+        public void Activate(AbilityContext context)
+        {
+            ClearListeners();
+            gameObject.SetActive(true);
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
 
-        public void Init(Unit unit)
-        {
-            if (!m_ModuleContext.Initialized)
+            m_Context = new StatModifierContext(context, this);
+            AbilityConfig abilityConfig = context.AbilityDeliver.Config;
+            if (abilityConfig is StatModifierConfig config)
             {
-                m_ModuleContext = new ModuleContext(unit, gameObject);
+                m_Config = config;
+            }
+
+            int skillLevel = m_Context.AbilityContext.SkillContext.Skill.Progression.Level;
+            m_TotalDuration = m_Config.FinalDurationByLevel(skillLevel);
+            SetStackInternal(m_Config.GetStartingStack());
+
+            switch (m_Config.HowToRemove)
+            {
+                case HowStatRemoved.None:
+                    break;
+                case HowStatRemoved.RemoveOnDurationEnd:
+                    m_OnDurationEnd.AddListener(OnDeactiveInvoke);
+                    break;
+                case HowStatRemoved.RemoveOnStackZero:
+                    m_OnStackEmpty.AddListener(OnDeactiveInvoke);
+                    break;
+                case HowStatRemoved.RemoveOnStackExceedMax:
+                    m_OnStackExceedMax.AddListener(OnDeactiveInvoke);
+                    break;
+            }
+            StartTimer();
+            m_RemainingStackUpdateDuration = TotalStackUpdateDurationInternal;
+            m_OnActive?.Invoke(m_Context);
+        }
+        public void UpdateStack()
+        {
+            switch (m_Config.HowStackUpdate)
+            {
+                case HowStackUpdate.Addictive:
+                    AddStackInternal(m_Config.UpdatePerStackCount);
+                    break;
+                case HowStackUpdate.Subtractive:
+                    AddStackInternal(-m_Config.UpdatePerStackCount);
+                    break;
             }
         }
-        private StatInfluencer GetStatInfluencerInternal(AbilityConfig config)
+
+        private void OnDeactiveInvoke()
         {
-            return m_Influencers.Find(x => x.Context.AbilityContext.AbilityDeliver.Config.BaseInfo.Id == config.BaseInfo.Id);
+            ClearListeners();
+
+            m_OnDeactive?.Invoke(m_Context);
+            gameObject.SetActive(false);
+            m_StackCount = 0;
+            m_RemainingDuration = 0;
+            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
-        private bool HasStatInfluencer(AbilityContext abilityContext, out StatInfluencer influencer)
+        private void SetStackInternal(int stack)
         {
-            AbilityConfig config = abilityContext.AbilityDeliver.Config;
-            bool hasStatInfluencer = GetStatInfluencerInternal(config) != null;
-            if (hasStatInfluencer)
-            {
-                influencer = GetStatInfluencerInternal(config);
-            }
-            else
-            {
-                influencer = null;
-            }
-            return hasStatInfluencer;
+            m_StackCount = stack;
+            OnStackUpdateInvoke();
         }
-        public void AddModifier(AbilityContext abilityContext)
+        private void AddStackInternal(int add)
         {
-            if (HasStatInfluencer(abilityContext, out StatInfluencer found))
-            {
-                
-                if (found.IsActive)
-                {
-                    found.UpdateStack();
-                }
-                else
-                {
-                    found.Activate(abilityContext);
-                }
-            }
-            else
-            {
-                
-                if (abilityContext.AbilityDeliver is IStatInfluencer influencer)
-                {
-                    StatInfluencer prefab = influencer.InfluencerConfig.StatInfluencerPrefab;
-                    StatInfluencer spawnedInfluencer = Component.Instantiate(prefab, m_InfluencerPost, false);
-                    spawnedInfluencer.Activate(abilityContext);
-                    m_Influencers.Add(spawnedInfluencer);
-                }
-            }
-            AbilityUltility.OnAbilityDeliveredInvoke(abilityContext, m_ModuleContext.Unit);
-            //OnSkillDeliveredInvoke(abilityContext, m_ModuleContext.UnitOwner);
+            m_StackCount += add;
+            OnStackUpdateInvoke();
         }
-        public StatField GetFinalStat(StatField unitStat)
+        private void OnStackUpdateInvoke()
         {
-            StatField finalAdditionalStat = StatField.Zero;
-            foreach (StatInfluencer influencer in m_Influencers)
+            m_OnStackChange?.Invoke(m_StackCount);
+            m_RemainingStackUpdateDuration = TotalStackUpdateDurationInternal;
+            if (m_Config.ResetDurationOnStackUpdate)
             {
-                StatField additionalInfluencerStat = StatModifierUtility.GetFinalAddionalStat(influencer.Context, m_ModuleContext.Unit);
-                if (influencer.IsActive)
+                StartTimer();
+            }
+            if (m_Config.HowToRemove == HowStatRemoved.RemoveOnStackExceedMax)
+            {
+                if (m_StackCount > m_Config.MaxStackCount)
                 {
-                    switch (influencer.Config.ModifierType)
-                    {
-                        case ModifierType.Buff:
-                            finalAdditionalStat += additionalInfluencerStat;
-                            break;
-                        case ModifierType.Debuff:
-                            finalAdditionalStat -= additionalInfluencerStat;
-                            break;
-                    }
+                    m_OnStackExceedMax?.Invoke();
                 }
             }
-            return unitStat + finalAdditionalStat;
+            if (m_Config.HowToRemove == HowStatRemoved.RemoveOnStackZero)
+            {
+                if (m_StackCount <= 0)
+                {
+                    m_OnStackEmpty?.Invoke();
+                }
+            }
+        }
+        private void ClearListeners()
+        {
+            m_OnDurationEnd.RemoveAllListeners();
+            m_OnStackEmpty.RemoveAllListeners();
+            m_OnStackExceedMax.RemoveAllListeners();
+        }
+
+        /// <summary>
+        /// Initializes or resets the timer back to initial duration.
+        /// </summary>
+        public void ResetTimer()
+        {
+            m_RemainingDuration = m_TotalDuration;
+        }
+        private void StartTimer()
+        {
+            int level = m_Context.AbilityContext.SkillContext.Skill.Progression.Level;
+            m_TotalDuration = m_Config.FinalDurationByLevel(level);
+            m_RemainingDuration = m_TotalDuration;
+        }
+        /// <summary>
+        /// Ticks the timer. Call this every frame (Update or custom tick system).
+        /// </summary>
+        public void Tick()
+        {
+            m_RemainingDuration -= Time.deltaTime;
+            float normalized = m_TotalDuration > 0f ? m_RemainingDuration / m_TotalDuration : 0f;
+            m_OnDurationUpdate?.Invoke(normalized);
+
+            if (m_RemainingDuration <= 0f)
+            {
+                m_RemainingDuration = 0f;
+                m_OnDurationEnd?.Invoke();
+            }
+            if (m_Config.UseStackDuration) 
+            {
+                TickStackDuration();
+            }
+        }
+
+        private void TickStackDuration()
+        {
+            if (!gameObject.activeInHierarchy) return;
+            m_RemainingStackUpdateDuration -= Time.deltaTime;
+
+            if (m_RemainingStackUpdateDuration <= 0f)
+            {
+                AddStackInternal(-m_Config.UpdatePerStackCount);
+                m_RemainingStackUpdateDuration = TotalStackUpdateDurationInternal;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the timer has finished.
+        /// </summary>
+        public bool IsFinished()
+        {
+            return m_RemainingDuration <= 0f;
+        }
+
+        /// <summary>
+        /// Returns remaining time in seconds.
+        /// </summary>
+        public float GetRemainingDuration()
+        {
+            return m_RemainingDuration;
         }
     }
 }

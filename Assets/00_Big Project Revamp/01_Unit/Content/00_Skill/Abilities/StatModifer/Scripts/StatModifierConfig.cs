@@ -2,11 +2,11 @@
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Stat Influencer", menuName = "Rush/Combat/Ability/Stat Influencer", order = 1)]
-    public class StatInfluencerConfig : AbilityConfig
+    [CreateAssetMenu(fileName = "Stat Modifier", menuName = "Rush/Combat/Ability/Stat Modifier", order = 1)]
+    public class StatModifierConfig : AbilityConfig
     {
         [SerializeField]
-        private StatInfluencer m_StatInfluencerPrefab;
+        private StatModifier m_StatModifierPrefab;
         [SerializeField]
         private ModifierType m_ModifierType = ModifierType.Buff;
         
@@ -29,7 +29,7 @@ namespace Rush
         [SerializeField]
         private HowStatRemoved m_HowToRemove = HowStatRemoved.RemoveOnDurationEnd;
         public ModifierType ModifierType => m_ModifierType;
-        public StatInfluencer StatInfluencerPrefab => m_StatInfluencerPrefab;
+        public StatModifier StatModifierPrefab => m_StatModifierPrefab;
         public bool UseStackDuration => m_UseStackDuration;
         public float Duration => m_Duration;
         public float StackDurationUpdate => m_StackDurationUpdate;

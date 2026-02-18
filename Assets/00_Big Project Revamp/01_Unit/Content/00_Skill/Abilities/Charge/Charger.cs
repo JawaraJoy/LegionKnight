@@ -25,7 +25,7 @@ namespace Rush
         public void Init(AbilityContext context)
         {
             m_AbilityContext = context;
-            m_ChargeAmount = Mathf.RoundToInt(AbilityUltility.GetFinalEffectAmount(context));
+            m_ChargeAmount = Mathf.RoundToInt(AbilityUltility.GetFinalPowerAmount(context));
             if (m_AbilityContext.AbilityDeliver.Config is ChargeAbilityConfig ChargeConfig)
             {
                 m_ChargeConfig = ChargeConfig;
@@ -58,21 +58,20 @@ namespace Rush
                 if (target == null || !target.IsAlive)
                     break;
 
-                if (target.HasBind(out Unit unit))
+                Unit unit = target.ModuleContext.Unit;
+                if (unit == null) break;
+
+                m_OnChargeAmount?.Invoke(m_ChargeAmount);
+                if (unit.HasBind(out SkillController skill))
                 {
-                    m_OnChargeAmount?.Invoke(m_ChargeAmount);
-                    if (unit.HasBind(out SkillController skill))
+                    Skill[] skills = skill.Skills.ToArray();
+                    foreach (Skill skillActivator in skills)
                     {
-                        Skill[] skills = skill.Skills.ToArray();
-                        foreach (Skill skillActivator in skills)
+                        if (skillActivator.SkillConfig.Category == m_ChargeConfig.SkillCategoryToCharge)
                         {
-                            if (skillActivator.SkillConfig.Category == m_ChargeConfig.SkillCategoryToCharge)
-                            {
-                                skillActivator.AddCharge(m_ChargeAmount);
-                            }
+                            skillActivator.AddCharge(m_ChargeAmount);
                         }
                     }
-                    
                 }
 
                 if (i < m_ChargeConfig.ChargeTickCount - 1 && m_ChargeConfig.ChargeTickInterval > 0f)

@@ -18,7 +18,7 @@ namespace Rush
         }
         public static bool IsPerfectLanding(TouchDownCheck touchDown, Platform2D platform, float perfectRangeGlobal)
         {
-            float perfectRangePlatform = platform.Config.PerfectTouchRange;
+            float perfectRangePlatform = platform.PlatformConfig.PerfectTouchRange;
             float perfectRangeTouchDown = touchDown.PerfectTouchRange;
 
             float finalPerfectRange = perfectRangePlatform + perfectRangeTouchDown + perfectRangeGlobal;

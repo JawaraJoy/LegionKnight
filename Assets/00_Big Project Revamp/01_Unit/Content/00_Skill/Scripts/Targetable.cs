@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Targetable : Bindable
+    public class Targetable : MonoBehaviour, IUnitExtension
     {
         [SerializeField, MMReadOnly]
         private bool m_IsAlive = true;
@@ -14,6 +14,10 @@ namespace Rush
         private UnityEvent<AbilityContext> m_OnNotified;
         public bool IsTargeted => m_IsTargeted;
         public bool IsAlive => m_IsAlive;
+
+        private ModuleContext m_ModuleContext;
+        public IModuleContext ModuleContext => m_ModuleContext;
+
         public void SetTargeted(bool targeted)
         {
             m_IsTargeted = targeted;
@@ -41,5 +45,9 @@ namespace Rush
             subject.rotation = Quaternion.Euler(0f, 0f, angle);
         }
 
+        public void Init(Unit unit)
+        {
+            m_ModuleContext = new ModuleContext(unit, gameObject);
+        }
     }
 }

@@ -13,6 +13,6 @@ namespace Rush
         public bool IsTrueDamage => m_IsTrueDamage;
         public bool IsFatalDamage => m_IsFatalDamage;
         public float DamageBasedTargetMaxHP => m_DamageBasedTargetMaxHP;
-        protected abstract float GetDamage(AbilityContext context);
+        protected abstract int GetDamage(AbilityContext context);
     }
 }

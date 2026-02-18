@@ -3,17 +3,17 @@ using UnityEngine;
 
 namespace Rush
 {
-    public partial class DirectStatInfluencer : AbilityDeliver, IStatInfluencer
+    public partial class StatModifierDeliver : AbilityDeliver, IStatModifierDeliver
     {
         [SerializeField, MMReadOnly]
-        private StatInfluencerConfig m_InfluencerConfig;
-        public StatInfluencerConfig InfluencerConfig
+        private StatModifierConfig m_InfluencerConfig;
+        public StatModifierConfig ModifierConfig
         {
             get
             {
                 if (m_InfluencerConfig == null)
                 {
-                    if (m_Config is StatInfluencerConfig influencerConfig)
+                    if (m_Config is StatModifierConfig influencerConfig)
                     {
                         m_InfluencerConfig = influencerConfig;
                     }
@@ -29,9 +29,9 @@ namespace Rush
         {
             foreach (var target in GetTargetsInternal())
             {
-                if (target.HasBind(out StatModifier statModifier))
+                if (target.ModuleContext.Unit.HasBind(out StatController statController))
                 {
-                    statModifier.AddModifier(m_AbilityContext);
+                    statController.AddModifier(m_AbilityContext);
                 }
             }
             base.Activate();

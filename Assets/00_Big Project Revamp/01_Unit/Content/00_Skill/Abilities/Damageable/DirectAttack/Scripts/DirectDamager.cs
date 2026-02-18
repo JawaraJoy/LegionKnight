@@ -143,7 +143,7 @@ namespace Rush
                 return;
             }
 
-            if (!target.HasBind(out Damageable damageable))
+            if (!target.ModuleContext.Unit.HasBind(out Damageable damageable))
             {
                 ReturnToPool(attacker);
                 return;

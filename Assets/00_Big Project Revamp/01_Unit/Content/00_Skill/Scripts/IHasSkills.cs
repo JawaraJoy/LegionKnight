@@ -8,7 +8,7 @@ namespace Rush
         IReadOnlyList<Skill> Skills {  get; }
         Skill GetSkillActivator(SkillConfig config);
         IReadOnlyList<Skill> GetSkillsByMultiCategory(SkillCategoryConfig[] skillCategories);
-        bool HasSkillActivator(SkillConfig config, out Skill skill);
+        bool HasSkill(SkillConfig config, out Skill skill);
         /*        void SetSkillCategoryLevel(SkillCategoryConfig category, int level);
                 void AddSkillCategoryLevel(SkillCategoryConfig category, int level);
 

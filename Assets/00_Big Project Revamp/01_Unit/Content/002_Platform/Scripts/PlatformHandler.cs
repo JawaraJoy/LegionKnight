@@ -56,8 +56,13 @@ namespace Rush
             ClearPreparedPlatformConfigsInternal();
             ClearWaitingListPlatformConfigInternal();
             m_Config = config;
-            // 
-            AddPreparedPlatformsConfigInternal(config.InitialPlatformConfigs, gameObject);
+
+            // platform asli dari sini saya anggap punya player
+            Unit unitPlayer = RushPlayer.Instance.Unit;
+            if (unitPlayer.HasBind(out PlatformController controller))
+            {
+                AddPreparedPlatformsConfigInternal(config.InitialPlatformConfigs, controller);
+            }
             m_LastContactPoint = m_PlatformSpawnSpot.position;
             SetMaxGlobalSpeedRateInternal(config.MaxGlobalSpeedRate);
             SetMinGlobalSpeedRateInternal(config.MinGlobalSpeedRate);
@@ -126,20 +131,20 @@ namespace Rush
         {
             return GetWaitingListPlatformConfigInternal(config.BaseInfo.Id) != null;
         }
-        private void AddPreparedPlatformsConfigInternal(PlatformConfig[] configs, GameObject ownerObject)
+        private void AddPreparedPlatformsConfigInternal(PlatformConfig[] configs, PlatformController controller)
         {
             for (int i = 0; i < configs.Length; i++)
             {
-                AddPreparedPlatformConfigInternal(configs[i], ownerObject);
+                AddPreparedPlatformConfigInternal(configs[i], controller);
             }
         }
         
-        private void AddPreparedPlatformConfigInternal(PlatformConfig config, GameObject ownerObject)
+        private void AddPreparedPlatformConfigInternal(PlatformConfig config, PlatformController controller)
         {
             if (!HasPreparedPlatformConfig(config))
             {
                 m_PreparedPlatformConfigs.Add(config);
-                PreWarm(config, ownerObject);
+                PreWarm(config, controller);
             }
         }
         private void RemovePreparedPlatformConfigInternal(PlatformConfig config)
@@ -182,9 +187,9 @@ namespace Rush
         {
             m_WaitingListPlatformConfigs.Clear();
         }
-        public void AddPreparedPlatformConfig(PlatformConfig config, GameObject ownerObject)
+        public void AddPreparedPlatformConfig(PlatformConfig config, PlatformController controller)
         {
-            AddPreparedPlatformConfigInternal(config, ownerObject);
+            AddPreparedPlatformConfigInternal(config, controller);
             
         }
         public void RemovePreparedPlatformConfig(PlatformConfig config)
@@ -247,7 +252,7 @@ namespace Rush
             AddGlobalSpeedRateInternal(m_Config.SpeedRateGrowthDificulityEachStack);
         }
 
-        private void PreWarm(PlatformConfig config, GameObject ownerObject)
+        private void PreWarm(PlatformConfig config, PlatformController controller)
         {
             string id = config.BaseInfo.Id;
 
@@ -258,21 +263,25 @@ namespace Rush
 
             for (int i = 0; i < config.PrewarmCount; i++)
             {
-                Platform2D platform = CreateNewPlatform(config, ownerObject);
+                Platform2D platform = CreateNewPlatform(config, controller);
                 m_Pools[id].Enqueue(platform);
             }
         }
 
 
-        private Platform2D CreateNewPlatform(PlatformConfig config, GameObject ownerObject)
+        private Platform2D CreateNewPlatform(PlatformConfig config, PlatformController controller = null)
         {
             Platform2D newPlatform = Instantiate(config.PlatformPrefab, transform);
-            newPlatform.Init(config, ownerObject);
+            if (controller != null)
+            {
+                newPlatform.Init(config, controller.ModuleContext);
+            }
+            
             newPlatform.gameObject.SetActive(false);
             return newPlatform;
         }
 
-        private Platform2D GetFromPool(PlatformConfig config, GameObject ownerObject = null)
+        private Platform2D GetFromPool(PlatformConfig config)
         {
             if (!m_Pools.ContainsKey(config.BaseInfo.Id))
             {
@@ -289,15 +298,7 @@ namespace Rush
             }
             else
             {
-                
-                if (ownerObject != null)
-                {
-                    platform = CreateNewPlatform(config, ownerObject);
-                }
-                else
-                {
-                    platform = CreateNewPlatform(config, gameObject);
-                }
+                platform = CreateNewPlatform(config);
             }
 
             platform.gameObject.SetActive(true);
@@ -311,7 +312,7 @@ namespace Rush
 
         private void ReturnToPoolInternal(Platform2D platform)
         {
-            string id = platform.Config.BaseInfo.Id;
+            string id = platform.PlatformConfig.BaseInfo.Id;
 
             if (!m_Pools.ContainsKey(id))
             {

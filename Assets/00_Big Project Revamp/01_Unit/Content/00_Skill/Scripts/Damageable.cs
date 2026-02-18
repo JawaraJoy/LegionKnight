@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Damageable : Bindable, IUnitExtension, IDamageable
+    public class Damageable : MonoBehaviour, IUnitExtension, IDamageable
     {
         [SerializeField, Tooltip("How many times this unit can reborn after death")]
         private int m_RebornCount = 0;
@@ -83,22 +83,19 @@ namespace Rush
         }
         private void ReborInternal(float healthRate, int fixedShield = 0, int barrier = 0, float immortalDuration = 0f)
         {
-            if (HasBind(out Unit unit))
-            {
-                int ownerLevel = unit.Progression.Level;
-                float healthFinal = Mathf.Max(0f, unit.Config.MainStats.GetFinalStat(ownerLevel).Health * healthRate);
-                float defenseFinal = Mathf.Max(0f, unit.Config.MainStats.GetFinalStat(ownerLevel).Defense);
+            Unit unit = m_ModuleContext.Unit;
+            int ownerLevel = unit.Progression.Level;
+            float healthFinal = Mathf.Max(0f, unit.Config.MainStats.GetFinalStat(ownerLevel).Health * healthRate);
+            float defenseFinal = Mathf.Max(0f, unit.Config.MainStats.GetFinalStat(ownerLevel).Defense);
 
 
-                SetMaxHealthInternal(Mathf.RoundToInt(healthFinal), true);
-                SetDefenseInternal(Mathf.RoundToInt(defenseFinal));
-                m_Shield = fixedShield;
-                m_Barrier = barrier;
-                m_OnRebornDone?.Invoke();
+            SetMaxHealthInternal(Mathf.RoundToInt(healthFinal), true);
+            SetDefenseInternal(Mathf.RoundToInt(defenseFinal));
+            m_Shield = fixedShield;
+            m_Barrier = barrier;
+            m_OnRebornDone?.Invoke();
 
-                ImmortalForWhileInternal(immortalDuration);
-            }
-            
+            ImmortalForWhileInternal(immortalDuration);
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -107,16 +104,14 @@ namespace Rush
                 if (attacker is IHasAbilityContext attackerContext)
                 {
                     AbilityDeliver abilityDeliver = attackerContext.AbilityContext.AbilityDeliver;
-                    if (HasBind(out Targetable targetable))
+                    if (m_ModuleContext.Unit.HasBind(out Targetable targetable))
                     {
                         if (AbilityUltility.IsTargetAllowedByTargetObject(abilityDeliver, targetable))
                         {
                             TakeDamageInternal(attacker);
                         }
                     }
-                    
                 }
-                
             }
         }
         public void TakeDamage(IHasAttacker attacker)
@@ -166,20 +161,18 @@ namespace Rush
             AddHealthInternal(healer.HealAmount);
             if (healer is IHasAbilityContext context)
             {
-                if (HasBind(out Unit targetHeal))
+                Unit targetHeal = m_ModuleContext.Unit;
+                if (targetHeal == null) return;
+                AbilityUltility.OnAbilityDeliveredInvoke(context.AbilityContext, targetHeal);
+                GameObject healerModule = context.AbilityContext.SkillContext.ModuleContext.Module;
+                if (healerModule.TryGetComponent(out IHasSkills healerSkill))
                 {
-                    AbilityUltility.OnAbilityDeliveredInvoke(context.AbilityContext, targetHeal);
-                    GameObject healerModule = context.AbilityContext.SkillContext.ModuleContext.Module;
-                    if (healerModule.TryGetComponent(out IHasSkills healerSkill))
-                    {
-                        AbilityUltility.OnSkillEventActivates(healerSkill, SkillTriggerState.OnHealing);
-                    }
-                    if (targetHeal.HasBind(out IHasSkills healedSkills))
-                    {
-                        AbilityUltility.OnSkillEventActivates(healedSkills, SkillTriggerState.OnHealed);
-                    }
+                    AbilityUltility.OnSkillEventActivates(healerSkill, SkillTriggerState.OnHealing);
                 }
-                
+                if (targetHeal.HasBind(out IHasSkills healedSkills))
+                {
+                    AbilityUltility.OnSkillEventActivates(healedSkills, SkillTriggerState.OnHealed);
+                }
             }
             m_OnHealed?.Invoke(new HealerContext(healer, this));
             
@@ -205,26 +198,21 @@ namespace Rush
             // attacker ability delivered here
             if (combat.Attacker is IHasAbilityContext hitter)
             {
-                if (HasBind(out Unit unitTaker))
-                {
-                    AbilityUltility.OnAbilityDeliveredInvoke(hitter.AbilityContext, unitTaker);
-
-                    GameObject hitterModule = hitter.AbilityContext.SkillContext.ModuleContext.Module;
-                    if (hitterModule.TryGetComponent(out IHasSkills hitterSkill))
-                    {
-                        AbilityUltility.OnSkillEventActivates(hitterSkill, SkillTriggerState.OnHit);
-                    }
-                    
-                    if (unitTaker.HasBind(out IHasSkills hasSkill))
-                    {
-                        AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnGetHit);
-                    }
-                    
-                }
-                Unit unitHitter = hitter.AbilityContext.SkillContext.ModuleContext.Unit;
+                Unit unitTaker = m_ModuleContext.Unit;
                 
+                AbilityUltility.OnAbilityDeliveredInvoke(hitter.AbilityContext, unitTaker);
+
+                GameObject hitterModule = hitter.AbilityContext.SkillContext.ModuleContext.Module;
+                if (hitterModule.TryGetComponent(out IHasSkills hitterSkill))
+                {
+                    AbilityUltility.OnSkillEventActivates(hitterSkill, SkillTriggerState.OnHit);
+                }
+
+                if (unitTaker.HasBind(out IHasSkills hasSkill))
+                {
+                    AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnGetHit);
+                }
             }
-            
         }
 
         private void OnDamageTaken(CombatContext combat)
@@ -232,18 +220,20 @@ namespace Rush
             m_OnDamageTaken?.Invoke(combat);
             if (combat.Attacker is IHasAbilityContext hitter)
             {
-                if (HasBind(out Unit unitTaker))
+                Unit unitTaker = m_ModuleContext.Unit;
+                if (unitTaker == null)
                 {
-                    GameObject damagerModule = hitter.AbilityContext.SkillContext.ModuleContext.Module;
-                    if (damagerModule.TryGetComponent(out IHasSkills damagerSkill))
-                    {
-                        AbilityUltility.OnSkillEventActivates(damagerSkill, SkillTriggerState.OnDamageDealed);
-                    }
+                    return;
+                }
+                GameObject damagerModule = hitter.AbilityContext.SkillContext.ModuleContext.Module;
+                if (damagerModule.TryGetComponent(out IHasSkills damagerSkill))
+                {
+                    AbilityUltility.OnSkillEventActivates(damagerSkill, SkillTriggerState.OnDamageDealed);
+                }
 
-                    if (unitTaker.HasBind(out IHasSkills hasSkill))
-                    {
-                        AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnDamageTaken);
-                    }
+                if (unitTaker.HasBind(out IHasSkills hasSkill))
+                {
+                    AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnDamageTaken);
                 }
             }
             

@@ -1,5 +1,4 @@
 using MoreMountains.Tools;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,7 +6,7 @@ using UnityEngine.Events;
 namespace Rush
 {
     
-    public partial class Skill : Bindable, IUpdater, IHasSkillContext
+    public partial class Skill : Bindable, IUpdater, ISkill
     {
         [Header("Config")]
         [SerializeField]
@@ -19,7 +18,7 @@ namespace Rush
 
         [Header("Runtime")]
         [SerializeField, MMReadOnly]
-        private SkillContext m_Context;
+        private SkillContext m_SkillContext;
         [SerializeField, MMReadOnly]
         private List<AbilityDeliver> m_Delivers = new();
 
@@ -46,7 +45,7 @@ namespace Rush
         private UnityEvent<Unit> m_OnAbilityDelivered;
         public ProgressField Progression => m_Progression;
         public SkillConfig SkillConfig => m_SkillConfig;
-        public SkillContext Context => m_Context;
+        public SkillContext SkillContext => m_SkillContext;
         public IReadOnlyList<AbilityDeliver> Delivers => m_Delivers;
         public UnityEvent<Unit> OnAbilityDelivered => m_OnAbilityDelivered;
 
@@ -81,7 +80,10 @@ namespace Rush
             abilityDeliver = GetAbilityDeliverInternal(id);
             return abilityDeliver != null;
         }
-
+        public bool HasAbility(string id, out AbilityDeliver abilityDeliver)
+        {
+            return HasAbilityInternal(id, out abilityDeliver);
+        }
 
         #region Unity Lifecycle
 
@@ -99,12 +101,12 @@ namespace Rush
 
         #region Init
 
-        public virtual void Init(SkillConfig skillConfig, ModuleContext ownerContext)
+        public virtual void Init(SkillConfig skillConfig, IModuleContext ownerContext)
         {
             m_SkillConfig = skillConfig;
-            m_Context = new SkillContext(this, ownerContext);
+            m_SkillContext = new SkillContext(this, ownerContext);
 
-            m_OnInit?.Invoke(m_Context);
+            m_OnInit?.Invoke(m_SkillContext);
 
             ChangeState(m_SkillConfig.InitializeState);
             SpawnDelivers();
@@ -326,13 +328,13 @@ namespace Rush
                 ActivateInternal(deliver);
             }
 
-            m_OnActivates?.Invoke(m_Context);
+            m_OnActivates?.Invoke(m_SkillContext);
         }
         public void ForceActivate(AbilityConfig config)
         {
             if (m_State == SkillActivationState.Silenced)
                 return;
-            if (HasAbilityInternal(config.BaseInfo.Id, out  var ability))
+            if (HasAbilityInternal(config.BaseInfo.Id, out var ability))
             {
                 ActivateInternal(ability);
             }
@@ -359,7 +361,7 @@ namespace Rush
             {
                 AbilityDeliver deliver = Instantiate(ability.DeliverPrefab, m_DeliverSpawnPost, false);
 
-                deliver.Init(ability, m_Context);
+                deliver.Init(ability, m_SkillContext);
                 m_Delivers.Add(deliver);
             }
         }

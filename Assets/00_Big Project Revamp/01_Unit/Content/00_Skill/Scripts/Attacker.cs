@@ -15,19 +15,19 @@ namespace Rush
         private UnityEvent<AbilityContext> m_OnAttackDone;
         public UnityEvent<AbilityContext> OnAttackDone => m_OnAttackDone;
         private AbilityContext m_AbilityContext;
-        public AbilityContext AbilityContext => m_AbilityContext;
+        public IAbilityContext AbilityContext => m_AbilityContext;
         public AttackerField AttackerField => m_AttackerField;
 
         public bool Initialized => m_AbilityContext.Initialized;
 
-        public void Init(AbilityContext context)
+        public void Init(IAbilityContext context)
         {
-            m_AbilityContext = context;
+            m_AbilityContext = new AbilityContext(context.AbilityDeliver, context.SkillContext);
             
             AbilityConfig config = context.AbilityDeliver.Config;
             if (config is DamageAbilityConfig damageConfig)
             {
-                float damage = AbilityUltility.GetFinalEffectAmount(m_AbilityContext);
+                float damage = AbilityUltility.GetFinalPowerAmount(m_AbilityContext);
                 float damageBaseTargetMaxHP = damageConfig.DamageBasedTargetMaxHP;
                 bool isFatalDamage = damageConfig.IsFatalDamage;
                 bool isTrueDamage = damageConfig.IsTrueDamage;

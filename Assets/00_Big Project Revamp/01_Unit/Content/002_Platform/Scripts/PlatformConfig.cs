@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Rush
 {
     [CreateAssetMenu(fileName = "Platform", menuName = "Rush/Unit/Platform", order = 1)]
-    public class PlatformConfig : Configuration, IHasIcon, IHasAttacker
+    public class PlatformConfig : Configuration, IHasIcon
     {
         [SerializeField]
         private Platform2D m_PlatformPrefab;
@@ -21,13 +21,14 @@ namespace Rush
         [SerializeField]
         private float m_Speed = 5f;
         [SerializeField]
-        private AttackerField m_AttackerField;
+        private SkillConfig m_SkillOnCollide;
         [SerializeField]
         private PlatformSkillField m_SkillOnLeftTouch;
         [SerializeField]
         private PlatformSkillField m_SkillOnRightTouch;
         public float ChanceToSpawn => m_ChanceToSpawn;
         public float PerfectTouchRange => m_PerfectTouchRange;
+        public SkillConfig SkillOnCollide => m_SkillOnCollide;
         public PlatformSkillField SkillOnLeftTouch => m_SkillOnLeftTouch;
         public PlatformSkillField SkillOnRightTouch => m_SkillOnRightTouch;
         public Sprite Icon => m_Icon;
@@ -35,6 +36,5 @@ namespace Rush
         public int PrewarmCount => m_PrewarmCount;
         public Platform2D PlatformPrefab => m_PlatformPrefab;
         public float WidthRate => m_WidthRate;
-        public AttackerField AttackerField => m_AttackerField;
     }
 }

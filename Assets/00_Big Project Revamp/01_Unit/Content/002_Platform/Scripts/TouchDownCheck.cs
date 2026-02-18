@@ -16,8 +16,8 @@ namespace Rush
             if (collision.TryGetComponent(out Platform2D platform))
             {
                 bool isPerfectLanding = PlatformUtility.IsPerfectLanding(this, platform, RushGameManager.Instance.PlatformManager.GlobalPerfectTouchRange);
-                m_TouchDown.SetIsStayPerfect(isPerfectLanding, platform.Context);
-                RushGameManager.Instance.PlatformManager.TouchDownCheckField.SetIsStayPerfect(isPerfectLanding, platform.Context);
+                m_TouchDown.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
+                RushGameManager.Instance.PlatformManager.TouchDownCheckField.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
                 Vector2 contactPoint = platform.TouchDownSpot.position;
                 RushGameManager.Instance.PlatformManager.SetLastContactPoint(contactPoint);
             }
