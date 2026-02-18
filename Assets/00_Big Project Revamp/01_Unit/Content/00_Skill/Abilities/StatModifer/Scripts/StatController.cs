@@ -27,11 +27,11 @@ namespace Rush
         }
         private StatModifier GetStatInfluencerInternal(AbilityConfig config)
         {
-            return m_Modifiers.Find(x => x.Context.AbilityContext.AbilityDeliver.Config.BaseInfo.Id == config.BaseInfo.Id);
+            return m_Modifiers.Find(x => x.Context.AbilityContext.AbilityDeliver.AbilityConfig.BaseInfo.Id == config.BaseInfo.Id);
         }
         private bool HasStatInfluencer(AbilityContext abilityContext, out StatModifier modifier)
         {
-            AbilityConfig config = abilityContext.AbilityDeliver.Config;
+            AbilityConfig config = abilityContext.AbilityDeliver.AbilityConfig;
             bool hasStatInfluencer = GetStatInfluencerInternal(config) != null;
             if (hasStatInfluencer)
             {

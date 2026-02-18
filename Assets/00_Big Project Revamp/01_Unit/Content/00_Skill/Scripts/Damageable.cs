@@ -6,8 +6,10 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Damageable : MonoBehaviour, IUnitExtension, IDamageable
+    public class Damageable : MonoBehaviour, IUnitExtension, IDamageable, ITargetable
     {
+        [SerializeField]
+        private bool m_IsTargeted;
         [SerializeField, Tooltip("How many times this unit can reborn after death")]
         private int m_RebornCount = 0;
 
@@ -70,6 +72,11 @@ namespace Rush
         private ModuleContext m_ModuleContext;
         public IModuleContext ModuleContext => m_ModuleContext;
 
+        public bool IsTargeted => m_IsTargeted;
+
+        public bool IsAlive => m_Health <= 0;
+        public Transform TargetTransform => gameObject.transform;
+
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
@@ -103,14 +110,18 @@ namespace Rush
             {
                 if (attacker is IHasAbilityContext attackerContext)
                 {
-                    AbilityDeliver abilityDeliver = attackerContext.AbilityContext.AbilityDeliver;
-                    if (m_ModuleContext.Unit.HasBind(out Targetable targetable))
+                    IAbilityDeliver abilityDeliver = attackerContext.AbilityContext.AbilityDeliver;
+                    if (m_ModuleContext.Unit.HasBind(out ITargetable targetable))
                     {
                         if (AbilityUltility.IsTargetAllowedByTargetObject(abilityDeliver, targetable))
                         {
                             TakeDamageInternal(attacker);
                         }
                     }
+                }
+                else
+                {
+                    TakeDamageInternal(attacker);
                 }
             }
         }
@@ -422,17 +433,28 @@ namespace Rush
 
         public void SetDefense(int defense)
         {
-            throw new System.NotImplementedException();
+            SetDefenseInternal(defense);
         }
 
         public void AddDefense(int defense)
         {
-            throw new System.NotImplementedException();
+            AddDefenseInternal(defense);
         }
 
         public void MultiplyDefense(int defense)
         {
             throw new System.NotImplementedException();
         }
+
+        public void Notify(AbilityContext context)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetTargeted(bool targeted)
+        {
+            m_IsTargeted = targeted;
+        }
+        
     }
 }

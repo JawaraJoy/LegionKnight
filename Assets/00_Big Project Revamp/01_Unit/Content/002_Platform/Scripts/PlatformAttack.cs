@@ -1,35 +1,53 @@
 using MoreMountains.Tools;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rush
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class PlatformAttack : MonoBehaviour, IHasAttacker, IHasAbilityContext
+    public class PlatformAttack : MonoBehaviour, IHasAttacker
     {
         [SerializeField]
         private Platform2D m_MainPlatform;
         [SerializeField, MMReadOnly]
+        private List<PlatformAttackField> m_AttackFields = new();
+        [SerializeField, MMReadOnly]
         private AttackerField m_AttackerField;
         public AttackerField AttackerField => m_AttackerField;
-        private AbilityContext m_AbilityContext;
-        public IAbilityContext AbilityContext => m_AbilityContext;
 
-        public bool Initialized => m_AbilityContext.Initialized;
-
-        public void Init(IAbilityContext abilityContext)
+        public void Init(IAbilityDeliver[] abilityDelivers)
         {
-            m_AbilityContext = new AbilityContext(abilityContext.AbilityDeliver, abilityContext.SkillContext);
-            AbilityConfig damageConfig = m_AbilityContext.AbilityDeliver.Config;
-            if (damageConfig is DamageAbilityConfig damageAbilityConfig) 
+            int finalAttack = 0;
+            float finalDamageBaseTargetMaxHp = 0f;
+            m_AttackFields.Clear();
+            foreach (var deliver in abilityDelivers)
             {
-                float attack = AbilityUltility.GetFinalPowerAmount(m_AbilityContext);
-                int roundedAttack = Mathf.RoundToInt(attack);
-                float damageBasedTargetMaxHp = damageAbilityConfig.DamageBasedTargetMaxHP;
-                bool isTrueDamage = damageAbilityConfig.IsTrueDamage;
-                bool isFatalDamage = damageAbilityConfig.IsFatalDamage;
+                AbilityConfig damageConfig = deliver.AbilityConfig;
+                if (damageConfig is DamageAbilityConfig damageAbilityConfig)
+                {
+                    float attack = AbilityUltility.GetFinalPowerAmount(deliver.AbilityContext);
+                    int roundedAttack = Mathf.RoundToInt(attack);
+                    float damageBasedTargetMaxHp = damageAbilityConfig.DamageBasedTargetMaxHP;
+                    DamageType damageType = damageAbilityConfig.DamageType;
 
-                m_AttackerField = new(roundedAttack, damageBasedTargetMaxHp, isTrueDamage, isFatalDamage);
+                    PlatformAttackField attackField = new(roundedAttack, damageBasedTargetMaxHp, damageType);
+                    attackField.Init(deliver.AbilityContext);
+                    if (GetAttackField(deliver.AbilityContext) == null)
+                    {
+                        m_AttackFields.Add(attackField);
+                    }
+                    finalAttack += roundedAttack;
+                    finalDamageBaseTargetMaxHp += damageBasedTargetMaxHp;
+
+                }
             }
+            m_AttackerField = new(finalAttack, finalDamageBaseTargetMaxHp, DamageType.TrueDamage);
+        }
+
+        private PlatformAttackField GetAttackField(IAbilityContext abilityContext)
+        {
+            string abilityId = abilityContext.AbilityDeliver.AbilityConfig.BaseInfo.Id;
+            return m_AttackFields.Find(x => x.AbilityContext.AbilityDeliver.AbilityConfig.BaseInfo.Id == abilityId);
         }
     }
 }

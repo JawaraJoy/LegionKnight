@@ -19,20 +19,20 @@ namespace Rush
             }
             return m_GameConfig.PhysicsMode;
         }
-        private static List<Targetable> GetTargetables(AbilityContext context)
+        private static List<ITargetable> GetTargetables(AbilityContext context)
         {
 
-            AbilityDeliver deliver = context.AbilityDeliver;
+            IAbilityDeliver deliver = context.AbilityDeliver;
 
 
             return GetPhysicsModeInternal() switch
             {
                 PhysicsMode.Physics2D => GetTargetables2DInternal(deliver),
                 PhysicsMode.Physics3D => GetTargetables3DInternal(deliver),
-                _ => new List<Targetable>()
+                _ => new List<ITargetable>()
             };
         }
-        private static IDamageable GetDamageable(Targetable targetable)
+        private static IDamageable GetDamageable(ITargetable targetable)
         {
             if (targetable.ModuleContext.Unit.HasBind(out IDamageable damageable))
             {
@@ -43,12 +43,12 @@ namespace Rush
                 return null;
             }
         }
-        private static List<Targetable> GetTargetables2DInternal(AbilityDeliver deliver)
+        private static List<ITargetable> GetTargetables2DInternal(IAbilityDeliver deliver)
         {
-            AbilityConfig deliverConfig = deliver.Config;
-            Vector3 deliverPost = deliver.transform.position;
+            AbilityConfig deliverConfig = deliver.AbilityConfig;
+            Vector3 deliverPost = deliver.DeliverTransform.position;
 
-            List<Targetable> result = new();
+            List<ITargetable> result = new();
 
             ContactFilter2D filter = new()
             {
@@ -61,7 +61,7 @@ namespace Rush
 
             for (int i = 0; i < count; i++)
             {
-                if (m_ColliderBuffer2D[i].TryGetComponent(out Targetable target))
+                if (m_ColliderBuffer2D[i].TryGetComponent(out ITargetable target))
                 {
                     if (!(target.IsAlive || deliverConfig.CanTargetDeathUnit))
                         continue;
@@ -75,17 +75,17 @@ namespace Rush
             return result;
         }
 
-        private static List<Targetable> GetTargetables3DInternal(AbilityDeliver deliver)
+        private static List<ITargetable> GetTargetables3DInternal(IAbilityDeliver deliver)
         {
-            AbilityConfig deliverConfig = deliver.Config;
-            Vector3 deliverPost = deliver.transform.position;
+            AbilityConfig deliverConfig = deliver.AbilityConfig;
+            Vector3 deliverPost = deliver.DeliverTransform.position;
 
-            List<Targetable> result = new();
+            List<ITargetable> result = new();
             int count = Physics.OverlapSphereNonAlloc(deliverPost, deliverConfig.Range, m_ColliderBuffer3D, deliverConfig.TargetFilter);
 
             for (int i = 0; i < count; i++)
             {
-                if (m_ColliderBuffer3D[i].TryGetComponent(out Targetable target))
+                if (m_ColliderBuffer3D[i].TryGetComponent(out ITargetable target))
                 {
                     if (!(target.IsAlive || deliverConfig.CanTargetDeathUnit))
                         continue;
@@ -98,16 +98,16 @@ namespace Rush
             }
             return result;
         }
-        public static bool IsTargetAllowedByTargetObject(AbilityDeliver deliver, Targetable targetable)
+        public static bool IsTargetAllowedByTargetObject(IAbilityDeliver deliver, ITargetable targetable)
         {
             return IsTargetAllowedByTargetObjectInternal(deliver, targetable);
         }
-        private static bool IsTargetAllowedByTargetObjectInternal(AbilityDeliver deliver, Targetable targetable)
+        private static bool IsTargetAllowedByTargetObjectInternal(IAbilityDeliver deliver, ITargetable targetable)
         {
             if (deliver == null || targetable == null)
                 return false;
 
-            AbilityConfig config = deliver.Config;
+            AbilityConfig config = deliver.AbilityConfig;
             if (config == null)
                 return false;
 
@@ -144,12 +144,12 @@ namespace Rush
                     return false;
             }
         }
-        private static Unit GetOwnerUnit(AbilityDeliver deliver)
+        private static Unit GetOwnerUnit(IAbilityDeliver deliver)
         {
             return deliver.AbilityContext.SkillContext.ModuleContext.Unit;
         }
 
-        private static Unit GetTargetUnit(Targetable targetable)
+        private static Unit GetTargetUnit(ITargetable targetable)
         {
             if (targetable == null)
                 return null;
@@ -159,33 +159,33 @@ namespace Rush
 
             return null;
         }
-        public static List<Targetable> ApplyTargetPriority(AbilityContext context)
+        public static List<ITargetable> ApplyTargetPriority(AbilityContext context)
         {
-            AbilityDeliver deliver = context.AbilityDeliver;
-            List<Targetable> candidates = GetTargetables(context);
+            IAbilityDeliver deliver = context.AbilityDeliver;
+            List<ITargetable> candidates = GetTargetables(context);
             if (candidates == null || candidates.Count == 0)
                 return candidates;
 
             ApplyContextFilters(deliver, candidates);
 
-            AbilityConfig config = deliver.Config;
+            AbilityConfig config = deliver.AbilityConfig;
             TargetPriority priority = config.TargetPriority;
             int maxCount = Mathf.Max(1, config.MaxTargetCount);
 
-            Vector3 origin = deliver.transform.position;
+            Vector3 origin = deliver.DeliverTransform.position;
 
             switch (priority)
             {
                 case TargetPriority.Nearest:
                     candidates.Sort((a, b) =>
-                        (a.transform.position - origin).sqrMagnitude
-                        .CompareTo((b.transform.position - origin).sqrMagnitude));
+                        (a.TargetTransform.position - origin).sqrMagnitude
+                        .CompareTo((b.TargetTransform.position - origin).sqrMagnitude));
                     break;
 
                 case TargetPriority.Farthest:
                     candidates.Sort((a, b) =>
-                        (b.transform.position - origin).sqrMagnitude
-                        .CompareTo((a.transform.position - origin).sqrMagnitude));
+                        (b.TargetTransform.position - origin).sqrMagnitude
+                        .CompareTo((a.TargetTransform.position - origin).sqrMagnitude));
                     break;
 
                 case TargetPriority.Random:
@@ -218,13 +218,13 @@ namespace Rush
 
             return candidates;
         }
-        private static int GetHealth(Targetable target)
+        private static int GetHealth(ITargetable target)
         {
             IDamageable dmg = GetDamageable(target);
             return dmg != null ? dmg.Health : int.MaxValue;
         }
 
-        private static float GetHealthRate(Targetable target)
+        private static float GetHealthRate(ITargetable target)
         {
             IDamageable dmg = GetDamageable(target);
             return dmg != null ? dmg.HealthRate : float.MaxValue;
@@ -237,21 +237,21 @@ namespace Rush
                 (list[i], list[j]) = (list[j], list[i]);
             }
         }
-        public static float GetFinalPowerAmount(AbilityContext context)
+        public static float GetFinalPowerAmount(IAbilityContext context)
         {
-            AbilityConfig config = context.AbilityDeliver.Config;
+            AbilityConfig config = context.AbilityDeliver.AbilityConfig;
 
             Unit ownerObject = context.SkillContext.ModuleContext.Unit;
             int ownerLevel = ownerObject.Progression.Level;
             StatField ownerStats = ownerObject.Config.MainStats.GetFinalStat(ownerLevel);
 
             int skillLevel = context.SkillContext.Skill.Progression.Level;
-            PowerField baseEffe = config.EffectCalculator.BaseAmount;
-            PowerField scaleEffe = config.EffectCalculator.ScaleByLevel;
+            PowerField baseEffe = config.Power.BaseAmount;
+            PowerField scaleEffe = config.Power.ScaleByLevel;
             PowerField finalEffect = PowerField.GetFinalPower(baseEffe, scaleEffe, skillLevel);
             float finalScaleAmount = finalEffect.InitialAmount + finalEffect.InitialAmount * finalEffect.MultiplierAmount;
 
-            ScalingWithStat scalingStat = config.EffectCalculator.ScaleBy;
+            ScalingWithStat scalingStat = config.Power.ScaleBy;
             switch (scalingStat)
             {
                 case ScalingWithStat.Attack:
@@ -268,49 +268,49 @@ namespace Rush
 
             return finalScaleAmount;
         }
-        private static void ApplyContextFilters(AbilityDeliver deliver, List<Targetable> candidates)
+        private static void ApplyContextFilters(IAbilityDeliver deliver, List<ITargetable> candidates)
         {
-            AbilityConfig config = deliver.Config;
+            AbilityConfig config = deliver.AbilityConfig;
 
             if (config.UseForwardCone)
-                FilterByCone(deliver.transform, config.ConeAngle, candidates);
+                FilterByCone(deliver.DeliverTransform, config.ConeAngle, candidates);
 
             if (config.RequireLineOfSight)
-                FilterByLineOfSight(deliver.transform.position, candidates);
+                FilterByLineOfSight(deliver.DeliverTransform.position, candidates);
         }
-        private static void FilterByCone(Transform origin, float coneAngle, List<Targetable> targets)
+        private static void FilterByCone(Transform origin, float coneAngle, List<ITargetable> targets)
         {
             Vector3 forward = origin.forward;
             float cosLimit = Mathf.Cos(coneAngle * 0.5f * Mathf.Deg2Rad);
 
             for (int i = targets.Count - 1; i >= 0; i--)
             {
-                Vector3 dir = (targets[i].transform.position - origin.position).normalized;
+                Vector3 dir = (targets[i].TargetTransform.position - origin.position).normalized;
                 float dot = Vector3.Dot(forward, dir);
 
                 if (dot < cosLimit)
                     targets.RemoveAt(i);
             }
         }
-        private static void FilterByLineOfSight(Vector3 origin, List<Targetable> targets)
+        private static void FilterByLineOfSight(Vector3 origin, List<ITargetable> targets)
         {
             PhysicsMode mode = GetPhysicsModeInternal();
 
             for (int i = targets.Count - 1; i >= 0; i--)
             {
-                Vector3 targetPos = targets[i].transform.position;
+                Vector3 targetPos = targets[i].TargetTransform.position;
                 bool blocked;
 
                 if (mode == PhysicsMode.Physics2D)
                 {
                     RaycastHit2D hit = Physics2D.Linecast(origin, targetPos);
                     blocked = hit.collider != null &&
-                              !hit.collider.TryGetComponent<Targetable>(out _);
+                              !hit.collider.TryGetComponent<ITargetable>(out _);
                 }
                 else
                 {
                     if (Physics.Linecast(origin, targetPos, out RaycastHit hit))
-                        blocked = !hit.collider.TryGetComponent<Targetable>(out _);
+                        blocked = !hit.collider.TryGetComponent<ITargetable>(out _);
                     else
                         blocked = false;
                 }
@@ -347,7 +347,7 @@ namespace Rush
        
         private static void ApplyStatusEffect(IAbilityContext senderContext, Unit unitTarget)
         {
-            AbilityConfig abilityConfig = senderContext.AbilityDeliver.Config;
+            AbilityConfig abilityConfig = senderContext.AbilityDeliver.AbilityConfig;
             StatusEffectConfig[] statusEffects = abilityConfig.StatusEffectOnDelivered;
             
             if (statusEffects.Length <= 0) return;
@@ -358,6 +358,17 @@ namespace Rush
                     controller.ApplyEffector(effect, senderContext, unitTarget);
                 }
             }
+        }
+        public static void LookAtFirstTarget2D(Transform subject, ITargetable targetable)
+        {
+            if (targetable == null)
+                return;
+
+            Vector2 direction = targetable.TargetTransform.position - subject.position;
+
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            subject.rotation = Quaternion.Euler(0f, 0f, angle);
         }
     }
 }

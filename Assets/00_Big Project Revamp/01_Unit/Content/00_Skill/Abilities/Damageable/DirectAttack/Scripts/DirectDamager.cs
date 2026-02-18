@@ -19,10 +19,10 @@ namespace Rush
         [SerializeField, MMReadOnly, Tooltip("Cached shot ability configuration used by this shooter.")]
         private DirectDamageAbilityConfig m_DirectDamageAbilityConfig;
 
-        public override void Init(AbilityConfig config, SkillContext context)
+        public override void Init(AbilityConfig config, ISkillContext context)
         {
             base.Init(config, context);
-            if (m_Config is DirectDamageAbilityConfig directDamageAbilityConfig)
+            if (m_AbilityConfig is DirectDamageAbilityConfig directDamageAbilityConfig)
             {
                 m_DirectDamageAbilityConfig = directDamageAbilityConfig;
                 m_Purpose = AbilityPurpose.Damaging;
@@ -32,14 +32,14 @@ namespace Rush
         }
         public override void Activate()
         {
-            List<Targetable> targets = new(GetTargetsInternal());
+            List<ITargetable> targets = new(GetTargetsInternal());
 
             StopAllCoroutines();
             StartCoroutine(AttackRoutine(targets));
 
             base.Activate();
         }
-        private IEnumerator AttackRoutine(List<Targetable> targets)
+        private IEnumerator AttackRoutine(List<ITargetable> targets)
         {
             var setup = m_DirectDamageAbilityConfig.SpawningSetup;
 
@@ -112,7 +112,7 @@ namespace Rush
                     return shotIndex;
             }
         }
-        private Targetable ResolveTarget(int shotIndex, List<Targetable> targets)
+        private ITargetable ResolveTarget(int shotIndex, List<ITargetable> targets)
         {
             if (targets == null || targets.Count == 0)
                 return null;
@@ -132,11 +132,11 @@ namespace Rush
                     return targets[shotIndex % targets.Count];
             }
         }
-        private void SpawnSingle(int index, int totalCount, List<Targetable> targets)
+        private void SpawnSingle(int index, int totalCount, List<ITargetable> targets)
         {
             Attacker attacker = GetFromPool();
 
-            Targetable target = ResolveTarget(index, targets);
+            ITargetable target = ResolveTarget(index, targets);
             if (target == null)
             {
                 ReturnToPool(attacker);
@@ -150,7 +150,7 @@ namespace Rush
             }
 
             // posisi attacker (kalau ada VFX)
-            attacker.transform.position = target.transform.position;
+            attacker.transform.position = target.TargetTransform.position;
 
             // trigger attack
             attacker.DirectAttack(target, m_DirectDamageAbilityConfig.AttackDelay);
@@ -176,7 +176,7 @@ namespace Rush
         /// </summary>
         private Attacker CreateNewAttacker()
         {
-            Attacker attacker = Instantiate(m_AttackerPrefab, m_VfxSpawnPost);
+            Attacker attacker = Instantiate(m_AttackerPrefab, m_DeliverTransform);
             attacker.gameObject.SetActive(false);
             attacker.OnAttackDone.AddListener((context) => ReturnToPool(attacker));
             return attacker;
@@ -213,7 +213,7 @@ namespace Rush
 
             //projectile.OnDespawned();
             attacker.gameObject.SetActive(false);
-            attacker.transform.SetParent(m_VfxSpawnPost);
+            attacker.transform.SetParent(m_DeliverTransform);
 
             if (m_ActiveAttacker.Contains(attacker))
             {

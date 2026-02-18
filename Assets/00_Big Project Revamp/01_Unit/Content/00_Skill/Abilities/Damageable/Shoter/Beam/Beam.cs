@@ -26,7 +26,7 @@ namespace Rush
             m_Line.enabled = false;
         }
 
-        public override void Shot(Targetable targetable)
+        public override void Shot(ITargetable targetable)
         {
             base.Shot(targetable);
 
@@ -104,7 +104,7 @@ namespace Rush
 
             foreach (var hit in hits)
             {
-                if (!hit.collider.TryGetComponent(out Targetable target))
+                if (!hit.collider.TryGetComponent(out ITargetable target))
                     continue;
 
                 if (!AbilityUltility.IsTargetAllowedByTargetObject(

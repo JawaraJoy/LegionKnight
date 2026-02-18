@@ -27,7 +27,7 @@ namespace Rush
         {
             m_AbilityContext = new AbilityContext(context.AbilityDeliver, context.SkillContext);
             m_HealAmount = Mathf.RoundToInt(AbilityUltility.GetFinalPowerAmount(m_AbilityContext));
-            if (m_AbilityContext.AbilityDeliver.Config is HealAbilityConfig healConfig)
+            if (m_AbilityContext.AbilityDeliver.AbilityConfig is HealAbilityConfig healConfig)
             {
                 m_HealConfig = healConfig;
             }
@@ -36,7 +36,7 @@ namespace Rush
         /// <summary>
         /// Perform direct heal to target after delay.
         /// </summary>
-        public void Heal(Targetable target, float delay)
+        public void Heal(ITargetable target, float delay)
         {
             m_OnHealStart?.Invoke(m_AbilityContext);
             StopAllCoroutines();
@@ -44,7 +44,7 @@ namespace Rush
             
         }
 
-        private IEnumerator Healing(Targetable target, float delay)
+        private IEnumerator Healing(ITargetable target, float delay)
         {
             if (m_HealConfig == null)
             {

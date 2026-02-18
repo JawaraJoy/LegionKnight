@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class AvatarSpine : View
+    public class AvatarSpine : View, IUnitExtension
     {
         [SerializeField, MMReadOnly]
         private UnitConfig m_Config;
@@ -15,13 +15,11 @@ namespace Rush
         [SerializeField]
         private SkeletonAnimation m_SkeletonAnimation;
 
-        [SerializeField]
-        private AvatarContext m_AvatarContext;
 
         [SerializeField]
         private ClipEventField[] m_Events;
         [SerializeField]
-        private UnityEvent<AvatarContext> m_OnInitialized;
+        private UnityEvent<ModuleContext> m_OnInitialized;
         [SerializeField]
         private UnityEvent<AnimationClipConfig> m_OnClipStart = new();
 
@@ -32,6 +30,8 @@ namespace Rush
 
         public UnitConfig Config => m_Config;
         public SkeletonAnimation SkeletonAnimation => m_SkeletonAnimation;
+        private ModuleContext m_ModuleContext;
+        public IModuleContext ModuleContext => m_ModuleContext;
 
         #region Unity
 
@@ -90,8 +90,8 @@ namespace Rush
             m_Config = unit.Config;
             m_SkeletonAnimation.skeletonDataAsset = unit.Config.SkeletonDataAsset;
             m_SkeletonAnimation.Initialize(true);
-            m_AvatarContext = new AvatarContext(unit, this);
-            m_OnInitialized?.Invoke(m_AvatarContext);
+            m_ModuleContext = new ModuleContext(unit, gameObject);
+            m_OnInitialized?.Invoke(m_ModuleContext);
         }
 
         public void FlipX(bool left)

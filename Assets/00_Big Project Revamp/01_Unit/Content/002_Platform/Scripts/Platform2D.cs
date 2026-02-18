@@ -1,4 +1,6 @@
 ﻿using MoreMountains.Tools;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,6 +11,8 @@ namespace Rush
     {
         [SerializeField, MMReadOnly]
         private PlatformConfig m_PlatformConfig;
+        [SerializeField, MMReadOnly]
+        private List<PlatformAbilityDeliverField> m_PlatformAbilities = new();
         [SerializeField]
         private PlatformAttack m_PlatformAttack;
         [SerializeField]
@@ -39,7 +43,7 @@ namespace Rush
         public UnityEvent OnReachDestination => m_OnReachDestination;
         public PlatformConfig PlatformConfig => m_PlatformConfig;
         public SkillContext SkillContext => m_SkillContext;
-        public SkillConfig SkillConfig => m_PlatformConfig.SkillOnCollide;
+        public SkillConfig SkillConfig => m_PlatformConfig;
         public Transform TouchDownSpot => m_TouchDownSpot;
         public Transform Pivot => m_Pivot;
         public TouchDownCheckField TouchDownCheck => m_TouchDownCheck;
@@ -64,36 +68,39 @@ namespace Rush
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
-        public void Init(PlatformConfig config, IModuleContext moduleContext)
+        public void Init(SkillConfig config, IModuleContext moduleContext)
         {
-            m_PlatformConfig = config;
+            if (config is PlatformConfig platformConfig)
+            {
+                m_PlatformConfig = platformConfig;
+            }
+            else
+            {
+                return;
+            }
+            
             m_SkillContext = new SkillContext(this, moduleContext);
             GameObject module = m_SkillContext.ModuleContext.Module;
             if (module.TryGetComponent(out SkillController skillController))
             {
-                skillController.AddNewSkill(config.SkillOnCollide);
-
-                skillController.AddNewSkills(config.SkillOnLeftTouch.OnNormalTouchSkill);
-                skillController.AddNewSkills(config.SkillOnLeftTouch.OnPerfectTouchSkill);
-                skillController.AddNewSkills(config.SkillOnRightTouch.OnNormalTouchSkill);
-                skillController.AddNewSkills(config.SkillOnRightTouch.OnPerfectTouchSkill);
-
-                if (skillController.HasSkill(config.SkillOnCollide, out Skill mainSkill))
-                {
-                    if (mainSkill.Delivers.Count > 0) 
-                    {
-                        string deliverId = mainSkill.Delivers[0].Config.BaseInfo.Id;
-                        if (mainSkill.HasAbility(deliverId, out AbilityDeliver ability))
-                        {
-                            AbilityContext abilityContext = new (ability, m_SkillContext);
-                            m_PlatformAttack.Init(abilityContext);
-                        }
-                    }
-                    
-                }
+                skillController.AddNewSkill(config);
+                Skill platformSkill = skillController.GetSkillActivator(m_PlatformConfig);
+                SetDelivers(platformSkill.Delivers.ToArray());
             }
             RefreshInternal();
             
+        }
+        private void SetDelivers(AbilityDeliver[] delivers)
+        {
+            m_PlatformAbilities.Clear();
+            foreach (var deliver in delivers)
+            {
+                PlatformAbilityDeliverField platformAbilityDeliver = new PlatformAbilityDeliverField();
+                platformAbilityDeliver.Init(deliver.AbilityConfig, m_SkillContext);
+                m_PlatformAbilities.Add(platformAbilityDeliver);
+                
+            }
+            m_PlatformAttack.Init(m_PlatformAbilities.ToArray());
         }
         private bool IsReachedDestination()
         {
@@ -178,7 +185,7 @@ namespace Rush
                 return;
             }
 
-            Vector3 move = Vector3.right * m_FinalSpeed * Time.deltaTime;
+            Vector3 move = m_FinalSpeed * Time.deltaTime * Vector3.right;
             transform.Translate(move);
         }
 
@@ -201,6 +208,11 @@ namespace Rush
         public void ForceActivateAll()
         {
             m_SkillContext.Skill.ForceActivateAll();
+        }
+
+        public void ForceActivate(AbilityConfig config)
+        {
+            m_SkillContext.Skill.ForceActivate(config);
         }
     }
 }

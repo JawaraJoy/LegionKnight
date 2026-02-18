@@ -12,19 +12,19 @@ namespace Rush
         /// <summary>
         /// Perform direct attack to target and immediately return to pool.
         /// </summary>
-        public void DirectAttack(Targetable target, float delay)
+        public void DirectAttack(ITargetable target, float delay)
         {
             OnAttackStartInvoke();
             StartCoroutine(DirectAttacking(target, delay));
         }
-        private IEnumerator DirectAttacking(Targetable target, float delay)
+        private IEnumerator DirectAttacking(ITargetable target, float delay)
         {
             yield return new WaitForSeconds(delay);
             if (target.ModuleContext.Unit.HasBind(out IDamageable damageable))
             {
                 damageable.TakeDamage(this);
                 DirectDamageAbilityConfig config;
-                if (m_AbilityContext.AbilityDeliver.Config is DirectDamageAbilityConfig directConfig)
+                if (m_AbilityContext.AbilityDeliver.AbilityConfig is DirectDamageAbilityConfig directConfig)
                 {
                     config = directConfig;
                     ExplodeDirectAttack(target, config);
@@ -34,20 +34,20 @@ namespace Rush
         }
 
         // Can be Simpled
-        public void ExplodeDirectAttack(Targetable target, DirectDamageAbilityConfig config)
+        public void ExplodeDirectAttack(ITargetable target, DirectDamageAbilityConfig config)
         {
             PhysicsMode mode = RushGameManager.Instance.GameConfig.PhysicsMode;
             if (mode == PhysicsMode.Physics2D)
             {
                 Collider2D[] hits = Physics2D.OverlapCircleAll(
-                    target.transform.position,
+                    target.TargetTransform.position,
                     config.ExplodeSetup.ExplosionRadius,
                     config.TargetFilter
                 );
 
                 for (int i = 0; i < hits.Length; i++)
                 {
-                    if (!hits[i].TryGetComponent(out Targetable t)) continue;
+                    if (!hits[i].TryGetComponent(out ITargetable t)) continue;
                     if (!config.CanTargetDeathUnit && !t.IsAlive) continue;
 
                     if (t.ModuleContext.Unit.HasBind(out IDamageable dmg))
@@ -57,14 +57,14 @@ namespace Rush
             else
             {
                 Collider[] hits = Physics.OverlapSphere(
-                    target.transform.position,
+                    target.TargetTransform.position,
                     config.ExplodeSetup.ExplosionRadius,
                     config.TargetFilter
                 );
 
                 for (int i = 0; i < hits.Length; i++)
                 {
-                    if (!hits[i].TryGetComponent(out Targetable t)) continue;
+                    if (!hits[i].TryGetComponent(out ITargetable t)) continue;
                     if (!config.CanTargetDeathUnit && !t.IsAlive) continue;
 
                     if (t.ModuleContext.Unit.HasBind(out IDamageable dmg))

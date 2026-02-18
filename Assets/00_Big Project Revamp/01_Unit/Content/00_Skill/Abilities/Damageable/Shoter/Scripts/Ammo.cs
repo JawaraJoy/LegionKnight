@@ -23,7 +23,7 @@ namespace Rush
         private float m_TraveledDistance;
 
         protected Shooter m_Shooter;
-        protected Targetable m_Targetable;
+        protected ITargetable m_Targetable;
         protected AbilityContext m_AbilityContext;
 
         public AmmoConfig Config => m_Config;
@@ -54,7 +54,7 @@ namespace Rush
             CacheMoveDirection();
         }
 
-        public virtual void Shot(Targetable targetable)
+        public virtual void Shot(ITargetable targetable)
         {
             m_Targetable = targetable;
             m_CanMove = true;
@@ -171,7 +171,7 @@ namespace Rush
             if (m_Shooter == null)
                 return;
 
-            Targetable newTarget = m_Shooter.GetNewTargetForAmmo();
+            ITargetable newTarget = m_Shooter.GetNewTargetForAmmo();
             if (newTarget != null)
             {
                 m_Targetable = newTarget;
@@ -183,7 +183,7 @@ namespace Rush
             if (m_Targetable == null || !m_CanMove)
                 return;
 
-            Vector3 dir = m_Targetable.transform.position - transform.position;
+            Vector3 dir = m_Targetable.TargetTransform.position - transform.position;
             if (dir.sqrMagnitude <= 0.0001f)
                 return;
 
@@ -199,9 +199,9 @@ namespace Rush
             transform.rotation = Quaternion.Euler(0f, 0f, newAngle);
         }
 
-        private void FacingAtFirstTarget2D(Targetable targetable)
+        private void FacingAtFirstTarget2D(ITargetable targetable)
         {
-            Targetable.LookAtFirstTarget2D(transform, targetable);
+            AbilityUltility.LookAtFirstTarget2D(transform, targetable);
         }
     }
 }

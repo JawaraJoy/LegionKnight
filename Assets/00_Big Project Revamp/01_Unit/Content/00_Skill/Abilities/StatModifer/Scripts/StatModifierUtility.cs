@@ -8,7 +8,7 @@ namespace Rush
         public static StatField GetFinalAddionalStat(StatModifierContext context, Unit unitTarget)
         {
             StatField ownerStat = unitTarget.Config.MainStats.GetFinalStat(unitTarget.Progression.Level);
-            AbilityPowerField EffectScore = context.AbilityContext.AbilityDeliver.Config.EffectCalculator;
+            AbilityPowerField EffectScore = context.AbilityContext.AbilityDeliver.AbilityConfig.Power;
             StatField result = StatField.Zero;
             PowerField finalScore = PowerField.GetFinalPower(EffectScore.BaseAmount, EffectScore.ScaleByLevel, context.Influencer.StackCount);
 

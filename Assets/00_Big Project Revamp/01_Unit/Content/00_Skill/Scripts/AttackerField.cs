@@ -6,26 +6,19 @@ namespace Rush
     public class AttackerField : IHasAttack
     {
         [SerializeField]
-        private int m_Attack;
+        protected int m_Attack;
         [SerializeField]
-        private float m_DamageBasedTargetMaxHP;
+        protected float m_DamageBasedTargetMaxHP;
         [SerializeField]
-        private DamageType m_Type = DamageType.CompareWithDefense;
-        [SerializeField]
-        private bool m_IsTrueDamage = false;
-        [SerializeField]
-        private bool m_IsFatalDamage = false;
+        protected DamageType m_Type = DamageType.CompareWithDefense;
         public int Attack => m_Attack;
         public DamageType Type => m_Type;
-        public bool IsTrueDamage => m_IsTrueDamage;
-        public bool IsFatalDamage => m_IsFatalDamage;
         public float DamageBasedTargetMaxHP => m_DamageBasedTargetMaxHP;
-        public AttackerField(int attack, float damageBasedTargetMaxHP, bool isTrueDamage, bool fatalDamage)
+        public AttackerField(int attack, float damageBasedTargetMaxHP, DamageType damageType)
         {
             m_Attack = attack;
             m_DamageBasedTargetMaxHP = damageBasedTargetMaxHP;
-            m_IsTrueDamage = isTrueDamage;
-            m_IsFatalDamage = fatalDamage;
+            m_Type = damageType;
         }
     }
     

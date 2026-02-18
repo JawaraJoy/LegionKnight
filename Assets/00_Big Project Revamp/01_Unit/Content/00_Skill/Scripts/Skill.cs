@@ -38,7 +38,7 @@ namespace Rush
         private UnityEvent m_OnCastingFail;
 
         [SerializeField]
-        private UnityEvent<AbilityContext> m_OnActivateIndividu;
+        private UnityEvent<IAbilityContext> m_OnActivateIndividu;
         [SerializeField]
         private UnityEvent<SkillContext> m_OnActivates;
         [SerializeField]
@@ -72,7 +72,7 @@ namespace Rush
         private int m_MaxInterruptCount;
         private AbilityDeliver GetAbilityDeliverInternal(string id)
         {
-            return m_Delivers.Find(x => x.Config.BaseInfo.Id == id);
+            return m_Delivers.Find(x => x.AbilityConfig.BaseInfo.Id == id);
         }
 
         private bool HasAbilityInternal(string id, out AbilityDeliver abilityDeliver)

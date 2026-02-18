@@ -55,7 +55,7 @@ namespace Rush
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
 
             m_Context = new StatModifierContext(context, this);
-            AbilityConfig abilityConfig = context.AbilityDeliver.Config;
+            AbilityConfig abilityConfig = context.AbilityDeliver.AbilityConfig;
             if (abilityConfig is StatModifierConfig config)
             {
                 m_Config = config;

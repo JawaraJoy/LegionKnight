@@ -47,7 +47,7 @@ namespace Rush
         public float InitialDelay => m_InitialDelay;
         public float Range => m_Range;
         public int MaxTargetCount => m_MaxTargetCount;
-        public AbilityPowerField EffectCalculator => m_Power;
+        public AbilityPowerField Power => m_Power;
         public bool UseForwardCone => m_UseForwardCone;
         public float ConeAngle => m_ConeAngle;
         public bool RequireLineOfSight => m_RequireLineOfSight;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public partial class DirectCharge : AbilityDeliver
+    public partial class DirectAbilityCharge : AbilityDeliver
     {
         [SerializeField]
         private Charger m_ChargePrefab;
@@ -22,11 +22,11 @@ namespace Rush
         private DirectChargeAbilityConfig m_ChargeConfig;
         public DirectChargeAbilityConfig ChargeConfig => m_ChargeConfig;
 
-        public override void Init(AbilityConfig config, SkillContext context)
+        public override void Init(AbilityConfig config, ISkillContext context)
         {
             base.Init(config, context);
 
-            if (m_Config is DirectChargeAbilityConfig chargeConfig)
+            if (m_AbilityConfig is DirectChargeAbilityConfig chargeConfig)
             {
                 m_ChargeConfig = chargeConfig;
                 m_Purpose = AbilityPurpose.Charging;
@@ -37,7 +37,7 @@ namespace Rush
 
         public override void Activate()
         {
-            List<Targetable> targets = new(GetTargetsInternal());
+            List<ITargetable> targets = new(GetTargetsInternal());
 
             StopAllCoroutines();
             StartCoroutine(ChargeRoutine(targets));
@@ -45,7 +45,7 @@ namespace Rush
             base.Activate();
         }
 
-        private IEnumerator ChargeRoutine(List<Targetable> targets)
+        private IEnumerator ChargeRoutine(List<ITargetable> targets)
         {
             var setup = m_ChargeConfig.SpawningSetup;
 
@@ -116,7 +116,7 @@ namespace Rush
             }
         }
 
-        private Targetable ResolveTarget(int shotIndex, List<Targetable> targets)
+        private ITargetable ResolveTarget(int shotIndex, List<ITargetable> targets)
         {
             if (targets == null || targets.Count == 0)
                 return null;
@@ -136,18 +136,18 @@ namespace Rush
             }
         }
 
-        private void SpawnSingle(int index, int totalCount, List<Targetable> targets)
+        private void SpawnSingle(int index, int totalCount, List<ITargetable> targets)
         {
             Charger charger = GetFromPool();
 
-            Targetable target = ResolveTarget(index, targets);
+            ITargetable target = ResolveTarget(index, targets);
             if (target == null)
             {
                 ReturnToPool(charger);
                 return;
             }
 
-            charger.transform.position = target.transform.position;
+            charger.transform.position = target.TargetTransform.position;
 
             charger.Charge(target, m_ChargeConfig.InitialDelay);
 
@@ -170,7 +170,7 @@ namespace Rush
 
         private Charger CreateNewHealer()
         {
-            Charger charger = Instantiate(m_ChargePrefab, m_VfxSpawnPost);
+            Charger charger = Instantiate(m_ChargePrefab, m_DeliverTransform);
             charger.gameObject.SetActive(false);
             charger.OnHealDone.AddListener((ctx) => ReturnToPool(charger));
             return charger;
@@ -197,7 +197,7 @@ namespace Rush
                 return;
 
             charger.gameObject.SetActive(false);
-            charger.transform.SetParent(m_VfxSpawnPost);
+            charger.transform.SetParent(m_DeliverTransform);
 
             m_ActiveCharger.Remove(charger);
             m_HealerPool.Enqueue(charger);

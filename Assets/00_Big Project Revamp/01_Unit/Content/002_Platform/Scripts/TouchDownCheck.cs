@@ -15,11 +15,16 @@ namespace Rush
         {
             if (collision.TryGetComponent(out Platform2D platform))
             {
-                bool isPerfectLanding = PlatformUtility.IsPerfectLanding(this, platform, RushGameManager.Instance.PlatformManager.GlobalPerfectTouchRange);
+                PlatformManager platformManager = RushGameManager.Instance.PlatformManager;
+                float globalPerfectTouchRate = platformManager.GlobalPerfectTouchRange;
+                bool isPerfectLanding = PlatformUtility.IsPerfectLanding(this, platform, globalPerfectTouchRate);
                 m_TouchDown.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
-                RushGameManager.Instance.PlatformManager.TouchDownCheckField.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
                 Vector2 contactPoint = platform.TouchDownSpot.position;
-                RushGameManager.Instance.PlatformManager.SetLastContactPoint(contactPoint);
+
+                platform.TouchDownCheck.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
+
+                platformManager.TouchDownCheckField.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
+                platformManager.SetLastContactPoint(contactPoint);
             }
         }
         public void SetPerfectTouchRange(float value)

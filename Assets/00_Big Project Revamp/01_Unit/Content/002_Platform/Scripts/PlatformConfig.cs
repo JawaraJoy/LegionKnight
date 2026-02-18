@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Rush
 {
     [CreateAssetMenu(fileName = "Platform", menuName = "Rush/Unit/Platform", order = 1)]
-    public class PlatformConfig : Configuration, IHasIcon
+    public class PlatformConfig : SkillConfig, IHasIcon
     {
         [SerializeField]
         private Platform2D m_PlatformPrefab;
@@ -20,18 +20,8 @@ namespace Rush
         private float m_PerfectTouchRange = 0.3f;
         [SerializeField]
         private float m_Speed = 5f;
-        [SerializeField]
-        private SkillConfig m_SkillOnCollide;
-        [SerializeField]
-        private PlatformSkillField m_SkillOnLeftTouch;
-        [SerializeField]
-        private PlatformSkillField m_SkillOnRightTouch;
         public float ChanceToSpawn => m_ChanceToSpawn;
         public float PerfectTouchRange => m_PerfectTouchRange;
-        public SkillConfig SkillOnCollide => m_SkillOnCollide;
-        public PlatformSkillField SkillOnLeftTouch => m_SkillOnLeftTouch;
-        public PlatformSkillField SkillOnRightTouch => m_SkillOnRightTouch;
-        public Sprite Icon => m_Icon;
         public float Speed => m_Speed;
         public int PrewarmCount => m_PrewarmCount;
         public Platform2D PlatformPrefab => m_PlatformPrefab;

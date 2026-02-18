@@ -24,15 +24,13 @@ namespace Rush
         {
             m_AbilityContext = new AbilityContext(context.AbilityDeliver, context.SkillContext);
             
-            AbilityConfig config = context.AbilityDeliver.Config;
+            AbilityConfig config = context.AbilityDeliver.AbilityConfig;
             if (config is DamageAbilityConfig damageConfig)
             {
                 float damage = AbilityUltility.GetFinalPowerAmount(m_AbilityContext);
                 float damageBaseTargetMaxHP = damageConfig.DamageBasedTargetMaxHP;
-                bool isFatalDamage = damageConfig.IsFatalDamage;
-                bool isTrueDamage = damageConfig.IsTrueDamage;
                 int damageRounded = Mathf.RoundToInt(damage);
-                m_AttackerField = new AttackerField(damageRounded, damageBaseTargetMaxHP, isTrueDamage, isFatalDamage);
+                m_AttackerField = new AttackerField(damageRounded, damageBaseTargetMaxHP, damageConfig.DamageType);
             }
             
         }

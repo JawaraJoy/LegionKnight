@@ -13,7 +13,7 @@ namespace Rush
             {
                 if (m_InfluencerConfig == null)
                 {
-                    if (m_Config is StatModifierConfig influencerConfig)
+                    if (m_AbilityConfig is StatModifierConfig influencerConfig)
                     {
                         m_InfluencerConfig = influencerConfig;
                     }

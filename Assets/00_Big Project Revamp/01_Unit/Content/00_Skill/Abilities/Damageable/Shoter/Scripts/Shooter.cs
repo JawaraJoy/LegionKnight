@@ -29,7 +29,7 @@ namespace Rush
 
         public bool Initialized => m_AbilityContext.Initialized;
 
-        public override void Init(AbilityConfig config, SkillContext context)
+        public override void Init(AbilityConfig config, ISkillContext context)
         {
             base.Init(config, context);
 
@@ -44,7 +44,7 @@ namespace Rush
 
         public override void Activate()
         {
-            List<Targetable> targets = new(GetTargetsInternal());
+            List<ITargetable> targets = new(GetTargetsInternal());
 
             StopAllCoroutines();
             StartCoroutine(AttackRoutine(targets));
@@ -52,7 +52,7 @@ namespace Rush
             base.Activate();
         }
 
-        private IEnumerator AttackRoutine(List<Targetable> targets)
+        private IEnumerator AttackRoutine(List<ITargetable> targets)
         {
             var setup = m_ShooterAbilityConfig.SpawningSetup;
 
@@ -126,21 +126,21 @@ namespace Rush
             }
         }
 
-        protected virtual void SpawnSingle(int index, int totalCount, List<Targetable> targets)
+        protected virtual void SpawnSingle(int index, int totalCount, List<ITargetable> targets)
         {
             Ammo ammo = GetFromPool();
 
-            m_VfxSpawnPost.GetPositionAndRotation(out Vector3 pos, out Quaternion rot);
+            m_DeliverTransform.GetPositionAndRotation(out Vector3 pos, out Quaternion rot);
 
             SpawnShapeConfig shape = m_ShooterAbilityConfig.SpawnShape;
             if (shape != null)
             {
-                shape.GetSpawnTransform(m_VfxSpawnPost, index, totalCount, out pos, out rot);
+                shape.GetSpawnTransform(m_DeliverTransform, index, totalCount, out pos, out rot);
             }
 
             ammo.transform.SetPositionAndRotation(pos, rot);
 
-            Targetable target = ResolveTarget(index, targets);
+            ITargetable target = ResolveTarget(index, targets);
             FaceSpawnToTarget(target);
 
             ammo.Shot(target);
@@ -149,7 +149,7 @@ namespace Rush
                 m_ActiveProjectiles.Add(ammo);
         }
 
-        private Targetable ResolveTarget(int shotIndex, List<Targetable> targets)
+        private ITargetable ResolveTarget(int shotIndex, List<ITargetable> targets)
         {
             if (targets == null || targets.Count == 0)
                 return null;
@@ -168,21 +168,21 @@ namespace Rush
             }
         }
 
-        public Targetable GetNewTargetForAmmo()
+        public ITargetable GetNewTargetForAmmo()
         {
-            List<Targetable> targets = new(GetTargetsInternal());
+            List<ITargetable> targets = new(GetTargetsInternal());
             if (targets == null || targets.Count == 0)
                 return null;
 
             return targets[0];
         }
 
-        private void FaceSpawnToTarget(Targetable targetable)
+        private void FaceSpawnToTarget(ITargetable targetable)
         {
             if (!m_ShooterAbilityConfig.ShoterLookAtTargetOnActivate)
                 return;
 
-            Targetable.LookAtFirstTarget2D(m_VfxSpawnPost, targetable);
+            AbilityUltility.LookAtFirstTarget2D(m_DeliverTransform, targetable);
         }
 
         private void PreWarm()
@@ -201,7 +201,7 @@ namespace Rush
 
         private Ammo CreateNewAmmo()
         {
-            Ammo ammo = Instantiate(m_AmmoConfig.AmmoPrefab, m_VfxSpawnPost);
+            Ammo ammo = Instantiate(m_AmmoConfig.AmmoPrefab, m_DeliverTransform);
             ammo.gameObject.SetActive(false);
             ammo.Init(m_AbilityContext, m_AmmoConfig);
             return ammo;
@@ -226,7 +226,7 @@ namespace Rush
                 return;
 
             ammo.gameObject.SetActive(false);
-            ammo.transform.SetParent(m_VfxSpawnPost);
+            ammo.transform.SetParent(m_DeliverTransform);
 
             m_ActiveProjectiles.Remove(ammo);
             m_ProjectilePool.Enqueue(ammo);

@@ -61,7 +61,7 @@ namespace Rush
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
-        public override void Init(AbilityConfig config, SkillContext context)
+        public override void Init(AbilityConfig config, ISkillContext context)
         {
             base.Init(config, context);
 
@@ -100,7 +100,7 @@ namespace Rush
             m_ExecutedJobs = 0;
             m_TotalJobs = 0;
 
-            List<Targetable> targets = GetTargetsInternal();
+            List<ITargetable> targets = GetTargetsInternal();
             if (targets == null || targets.Count == 0)
                 return;
 
@@ -108,7 +108,7 @@ namespace Rush
 
             foreach (var target in targets)
             {
-                Transform origin = target.transform;
+                Transform origin = target.TargetTransform;
 
                 for (int i = 0; i < perTargetCount; i++)
                 {
@@ -317,7 +317,7 @@ namespace Rush
 
             for (int i = 0; i < count; i++)
             {
-                Unit unit = Instantiate(m_SummonConfig.UnitToSpawn.UnitPrefab, m_VfxSpawnPost);
+                Unit unit = Instantiate(m_SummonConfig.UnitToSpawn.UnitPrefab, m_DeliverTransform);
                 unit.gameObject.SetActive(false);
                 unit.Init(m_SummonConfig.UnitToSpawn);
                 m_SummonedUnitPool.Enqueue(unit);
@@ -331,7 +331,7 @@ namespace Rush
             if (m_SummonedUnitPool.Count > 0)
                 unit = m_SummonedUnitPool.Dequeue();
             else
-                unit = Instantiate(m_SummonedConfig.UnitPrefab, m_VfxSpawnPost);
+                unit = Instantiate(m_SummonedConfig.UnitPrefab, m_DeliverTransform);
 
             unit.transform.SetParent(null);
             unit.gameObject.SetActive(true);
@@ -345,7 +345,7 @@ namespace Rush
                 return;
 
             unit.gameObject.SetActive(false);
-            unit.transform.SetParent(m_VfxSpawnPost);
+            unit.transform.SetParent(m_DeliverTransform);
 
             m_ActiveSummonedUnits.Remove(unit);
             m_SummonedUnitPool.Enqueue(unit);

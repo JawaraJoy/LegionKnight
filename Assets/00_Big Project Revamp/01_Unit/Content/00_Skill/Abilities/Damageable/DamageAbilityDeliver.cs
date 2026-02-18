@@ -5,7 +5,7 @@ namespace Rush
 {
     public partial class DamageAbilityDeliver : AbilityDeliver
     {
-        public override void Init(AbilityConfig config, SkillContext context)
+        public override void Init(AbilityConfig config, ISkillContext context)
         {
             base.Init(config, context);
             ISkill skill = m_AbilityContext.SkillContext.Skill;

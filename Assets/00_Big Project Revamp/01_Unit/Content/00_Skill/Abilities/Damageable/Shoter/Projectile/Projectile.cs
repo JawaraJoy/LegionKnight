@@ -91,7 +91,7 @@ namespace Rush
             if (m_ProjectileConfig == null)
                 return;
 
-            AbilityConfig abilityConfig = m_AbilityContext.AbilityDeliver.Config;
+            AbilityConfig abilityConfig = m_AbilityContext.AbilityDeliver.AbilityConfig;
             float radius = m_ProjectileConfig.ExplodeSetup.ExplosionRadius;
 
             if (RushGameManager.Instance.GameConfig.PhysicsMode == PhysicsMode.Physics2D)
@@ -104,7 +104,7 @@ namespace Rush
 
                 foreach (var hit in hits)
                 {
-                    if (!hit.TryGetComponent(out Targetable target))
+                    if (!hit.TryGetComponent(out ITargetable target))
                         continue;
 
                     if (!abilityConfig.CanTargetDeathUnit && !target.IsAlive)
@@ -128,7 +128,7 @@ namespace Rush
 
                 foreach (var hit in hits)
                 {
-                    if (!hit.TryGetComponent(out Targetable target))
+                    if (!hit.TryGetComponent(out ITargetable target))
                         continue;
 
                     if (!abilityConfig.CanTargetDeathUnit && !target.IsAlive)

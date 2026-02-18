@@ -5,35 +5,35 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public abstract partial class AbilityDeliver : MonoBehaviour
+    public abstract partial class AbilityDeliver : MonoBehaviour, IAbilityDeliver
     {
         [SerializeField]
-        protected AbilityConfig m_Config;
+        protected AbilityConfig m_AbilityConfig;
         [SerializeField, MMReadOnly]
         protected AbilityContext m_AbilityContext;
         [SerializeField]
-        protected Transform m_VfxSpawnPost;
+        protected Transform m_DeliverTransform;
         [SerializeField, MMReadOnly]
         protected AbilityPurpose m_Purpose;
         [SerializeField]
         private UnityEvent<AbilityContext> m_OnInit;
         [SerializeField]
         protected UnityEvent<AbilityContext> m_OnActivate;
-        public AbilityConfig Config => m_Config;
-        public AbilityContext AbilityContext => m_AbilityContext;
-        public Transform VfxSpawnPost => m_VfxSpawnPost;
+        public AbilityConfig AbilityConfig => m_AbilityConfig;
+        public IAbilityContext AbilityContext => m_AbilityContext;
+        public Transform DeliverTransform => m_DeliverTransform;
         public AbilityPurpose Purpose => m_Purpose;
         
         
-        protected List<Targetable> GetTargetsInternal()
+        protected List<ITargetable> GetTargetsInternal()
         {
-            List<Targetable> damageables = new(AbilityUltility.ApplyTargetPriority(m_AbilityContext));
+            List<ITargetable> damageables = new(AbilityUltility.ApplyTargetPriority(m_AbilityContext));
             return damageables;
         }
-        public virtual void Init(AbilityConfig config, SkillContext context)
+        public virtual void Init(AbilityConfig config, ISkillContext context)
         {
             m_AbilityContext = new AbilityContext(this, context);
-            m_Config = config;
+            m_AbilityConfig = config;
             m_OnInit?.Invoke(m_AbilityContext);
         }
         protected void SetPurposeInternal(AbilityPurpose purpose)

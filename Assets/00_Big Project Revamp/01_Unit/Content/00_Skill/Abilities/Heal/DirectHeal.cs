@@ -22,11 +22,11 @@ namespace Rush
         private DirectHealAbilityConfig m_HealConfig;
         public DirectHealAbilityConfig HealConfig => m_HealConfig;
 
-        public override void Init(AbilityConfig config, SkillContext context)
+        public override void Init(AbilityConfig config, ISkillContext context)
         {
             base.Init(config, context);
 
-            if (m_Config is DirectHealAbilityConfig healConfig)
+            if (m_AbilityConfig is DirectHealAbilityConfig healConfig)
             {
                 m_HealConfig = healConfig;
                 m_Purpose = AbilityPurpose.Healing;
@@ -37,7 +37,7 @@ namespace Rush
 
         public override void Activate()
         {
-            List<Targetable> targets = new(GetTargetsInternal());
+            List<ITargetable> targets = new(GetTargetsInternal());
 
             StopAllCoroutines();
             StartCoroutine(HealRoutine(targets));
@@ -45,7 +45,7 @@ namespace Rush
             base.Activate();
         }
 
-        private IEnumerator HealRoutine(List<Targetable> targets)
+        private IEnumerator HealRoutine(List<ITargetable> targets)
         {
             var setup = m_HealConfig.SpawningSetup;
 
@@ -116,7 +116,7 @@ namespace Rush
             }
         }
 
-        private Targetable ResolveTarget(int shotIndex, List<Targetable> targets)
+        private ITargetable ResolveTarget(int shotIndex, List<ITargetable> targets)
         {
             if (targets == null || targets.Count == 0)
                 return null;
@@ -136,18 +136,18 @@ namespace Rush
             }
         }
 
-        private void SpawnSingle(int index, int totalCount, List<Targetable> targets)
+        private void SpawnSingle(int index, int totalCount, List<ITargetable> targets)
         {
             Healer healer = GetFromPool();
 
-            Targetable target = ResolveTarget(index, targets);
+            ITargetable target = ResolveTarget(index, targets);
             if (target == null)
             {
                 ReturnToPool(healer);
                 return;
             }
 
-            healer.transform.position = target.transform.position;
+            healer.transform.position = target.TargetTransform.position;
 
             healer.Heal(target, m_HealConfig.InitialDelay);
 
@@ -170,7 +170,7 @@ namespace Rush
 
         private Healer CreateNewHealer()
         {
-            Healer healer = Instantiate(m_HealerPrefab, m_VfxSpawnPost);
+            Healer healer = Instantiate(m_HealerPrefab, m_DeliverTransform);
             healer.gameObject.SetActive(false);
             healer.OnHealDone.AddListener((ctx) => ReturnToPool(healer));
             return healer;
@@ -197,7 +197,7 @@ namespace Rush
                 return;
 
             healer.gameObject.SetActive(false);
-            healer.transform.SetParent(m_VfxSpawnPost);
+            healer.transform.SetParent(m_DeliverTransform);
 
             m_ActiveHealer.Remove(healer);
             m_HealerPool.Enqueue(healer);

@@ -26,7 +26,7 @@ namespace Rush
         {
             m_AbilityContext = context;
             m_ChargeAmount = Mathf.RoundToInt(AbilityUltility.GetFinalPowerAmount(context));
-            if (m_AbilityContext.AbilityDeliver.Config is ChargeAbilityConfig ChargeConfig)
+            if (m_AbilityContext.AbilityDeliver.AbilityConfig is ChargeAbilityConfig ChargeConfig)
             {
                 m_ChargeConfig = ChargeConfig;
             }
@@ -35,7 +35,7 @@ namespace Rush
         /// <summary>
         /// Perform direct heal to target after delay.
         /// </summary>
-        public void Charge(Targetable target, float delay)
+        public void Charge(ITargetable target, float delay)
         {
             m_OnHealStart?.Invoke(m_AbilityContext);
             StopAllCoroutines();
@@ -43,7 +43,7 @@ namespace Rush
             
         }
 
-        private IEnumerator Charging(Targetable target, float delay)
+        private IEnumerator Charging(ITargetable target, float delay)
         {
             if (m_ChargeConfig == null)
             {

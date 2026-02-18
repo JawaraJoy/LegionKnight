@@ -18,7 +18,7 @@ namespace Rush
         private float m_AttackDelay = 0f;
         public float AttackDelay => m_AttackDelay;
         public TargetDistributeMode TargetDistributeMode => m_TargetDistributeMode;
-        protected override int GetDamage(AbilityContext context)
+        protected override int GetDamageInternal(IAbilityContext context)
         {
             float damage = AbilityUltility.GetFinalPowerAmount(context);
             return Mathf.RoundToInt(damage);
