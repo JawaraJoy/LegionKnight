@@ -86,6 +86,21 @@ namespace Rush
 
             return startPos;
         }
+        public static List<SkillConfig> GetPlatformSkillConfigs(PlatformConfig config)
+        {
+            List<SkillConfig> skillConfigs = new List<SkillConfig>();
+            SkillConfig[] leftNormal = config.LeftSkillField.OnNormalTouchSkill;
+            SkillConfig[] leftPerfect = config.LeftSkillField.OnPerfectTouchSkill;
+            SkillConfig[] rightNormal = config.RightSkillField.OnNormalTouchSkill;
+            SkillConfig[] rightPerfect = config.RightSkillField.OnPerfectTouchSkill;
+            SkillConfig normalAttack = config;
 
+            skillConfigs.AddRange(leftNormal);
+            skillConfigs.AddRange(leftPerfect);
+            skillConfigs.AddRange(rightNormal);
+            skillConfigs.AddRange(rightPerfect);
+            skillConfigs.Add(normalAttack);
+            return skillConfigs;
+        }
     }
 }

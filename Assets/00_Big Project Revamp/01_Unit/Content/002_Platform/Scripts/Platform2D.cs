@@ -73,20 +73,31 @@ namespace Rush
             if (config is PlatformConfig platformConfig)
             {
                 m_PlatformConfig = platformConfig;
+
+                m_SkillContext = new SkillContext(this, moduleContext);
+                GameObject module = m_SkillContext.ModuleContext.Module;
+                if (module.TryGetComponent(out SkillController skillController))
+                {
+                    SkillConfig[] skillConfigs = PlatformUtility.GetPlatformSkillConfigs(m_PlatformConfig).ToArray();
+                    skillController.AddNewSkills(skillConfigs);
+
+                    Skill platformSkill = skillController.GetSkillActivator(m_PlatformConfig);
+                    SetDelivers(platformSkill.Delivers.ToArray());
+
+                    if (platformSkill.HasAbility(platformSkill.SkillConfig.AbilitySets[0].BaseInfo.Id, out AbilityDeliver abilityDeliver))
+                    {
+                        m_PlatformAttack.Init(abilityDeliver.AbilityContext);
+                    }
+                    
+                }
+                
             }
             else
             {
                 return;
             }
             
-            m_SkillContext = new SkillContext(this, moduleContext);
-            GameObject module = m_SkillContext.ModuleContext.Module;
-            if (module.TryGetComponent(out SkillController skillController))
-            {
-                skillController.AddNewSkill(config);
-                Skill platformSkill = skillController.GetSkillActivator(m_PlatformConfig);
-                SetDelivers(platformSkill.Delivers.ToArray());
-            }
+            
             RefreshInternal();
             
         }
@@ -98,9 +109,8 @@ namespace Rush
                 PlatformAbilityDeliverField platformAbilityDeliver = new PlatformAbilityDeliverField();
                 platformAbilityDeliver.Init(deliver.AbilityConfig, m_SkillContext);
                 m_PlatformAbilities.Add(platformAbilityDeliver);
-                
             }
-            m_PlatformAttack.Init(m_PlatformAbilities.ToArray());
+            
         }
         private bool IsReachedDestination()
         {

@@ -20,11 +20,17 @@ namespace Rush
         private float m_PerfectTouchRange = 0.3f;
         [SerializeField]
         private float m_Speed = 5f;
+        [SerializeField]
+        private PlatformSkillField m_LeftSkillField;
+        [SerializeField]
+        private PlatformSkillField m_RightSkillField;
         public float ChanceToSpawn => m_ChanceToSpawn;
         public float PerfectTouchRange => m_PerfectTouchRange;
         public float Speed => m_Speed;
         public int PrewarmCount => m_PrewarmCount;
         public Platform2D PlatformPrefab => m_PlatformPrefab;
         public float WidthRate => m_WidthRate;
+        public PlatformSkillField LeftSkillField => m_LeftSkillField;
+        public PlatformSkillField RightSkillField => m_RightSkillField;
     }
 }

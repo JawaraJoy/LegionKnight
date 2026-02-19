@@ -237,7 +237,23 @@ namespace Rush
                 (list[i], list[j]) = (list[j], list[i]);
             }
         }
-        public static float GetFinalPowerAmount(IAbilityContext context)
+        public static AttackerField GetAttacker(IAbilityContext context)
+        {
+            float attackPower = GetFinalPowerAmountInternal(context);
+            int roundAttackPower = Mathf.RoundToInt(attackPower);
+            float damageBaseTargetMaxHp = 0;
+            DamageType damageType = DamageType.CompareWithDefense;
+            AbilityConfig abilityConfig = context.AbilityDeliver.AbilityConfig;
+            if (abilityConfig is DamageAbilityConfig damageAbilityConfig)
+            {
+                damageBaseTargetMaxHp = damageAbilityConfig.DamageBasedTargetMaxHP;
+                damageType = damageAbilityConfig.DamageType;
+            }
+            AttackerField attackerField = new AttackerField(roundAttackPower, damageBaseTargetMaxHp, damageType);
+            return attackerField;
+        }
+
+        private static float GetFinalPowerAmountInternal(IAbilityContext context)
         {
             AbilityConfig config = context.AbilityDeliver.AbilityConfig;
 
@@ -267,6 +283,10 @@ namespace Rush
             }
 
             return finalScaleAmount;
+        }
+        public static float GetFinalPowerAmount(IAbilityContext context)
+        {
+            return GetFinalPowerAmountInternal(context);
         }
         private static void ApplyContextFilters(IAbilityDeliver deliver, List<ITargetable> candidates)
         {

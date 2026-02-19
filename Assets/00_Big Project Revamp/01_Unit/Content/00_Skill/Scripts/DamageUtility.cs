@@ -5,16 +5,16 @@ namespace Rush
     public static class DamageUtility
     {
         private const int m_MinimumDefendReduction = 0;
-        public static int DamageFormulaRPG(IHasAttacker attacker, IDamageable damageable)
+        public static int DamageFormulaRPG(AttackerField attacker, IDamageable damageable)
         {
-            int baseDamage = Mathf.RoundToInt(attacker.AttackerField.Attack);
-            float damageBaseMaxHp = damageable.MaxHealth * attacker.AttackerField.DamageBasedTargetMaxHP;
+            int baseDamage = Mathf.RoundToInt(attacker.Attack);
+            float damageBaseMaxHp = damageable.MaxHealth * attacker.DamageBasedTargetMaxHP;
             int damageBaseMaxHpRounded = Mathf.RoundToInt(damageBaseMaxHp);
             baseDamage += damageBaseMaxHpRounded;
 
             int reducedDamage;
             int finalDamage = 0;
-            switch (attacker.AttackerField.Type)
+            switch (attacker.Type)
             {
                 case DamageType.CompareWithDefense:
                     //Compare with Defend

@@ -42,11 +42,11 @@ namespace Rush
         [SerializeField]
         private UnityEvent<HealerContext> m_OnHealed;
         [SerializeField]
-        private UnityEvent<CombatContext> m_OnHit;
+        private UnityEvent<IAbilityContext> m_OnHit;
         [SerializeField]
-        private UnityEvent<CombatContext> m_OnDamageTaken;
+        private UnityEvent<IAbilityContext> m_OnDamageTaken;
         [SerializeField]
-        private UnityEvent<CombatContext> m_OnDeath;
+        private UnityEvent<IAbilityContext> m_OnDeath;
 
         private const int m_MinimumDefendReduction = 0;
         public int RemainingReborn => m_RemainingReborn;
@@ -58,7 +58,6 @@ namespace Rush
         public float DamageReductionRate => m_DamageReductionRate;
         public int CurrentDamageTaken => m_CurrentDamageTaken;
         public int TotalDamageTaken => m_TotalDamageTaken;
-        public UnityEvent<CombatContext> OnHit => m_OnHit;
         public float HealthRate
         {
             get
@@ -108,32 +107,29 @@ namespace Rush
         {
             if (collision.TryGetComponent(out IHasAttacker attacker))
             {
-                if (attacker is IHasAbilityContext attackerContext)
+                IAbilityDeliver abilityDeliver = attacker.AbilityContext.AbilityDeliver;
+                if (AbilityUltility.IsTargetAllowedByTargetObject(abilityDeliver, this))
                 {
-                    IAbilityDeliver abilityDeliver = attackerContext.AbilityContext.AbilityDeliver;
-                    if (m_ModuleContext.Unit.HasBind(out ITargetable targetable))
-                    {
-                        if (AbilityUltility.IsTargetAllowedByTargetObject(abilityDeliver, targetable))
-                        {
-                            TakeDamageInternal(attacker);
-                        }
-                    }
+                    TakeDamageInternal(attacker.AbilityContext);
                 }
-                else
+            }
+            if (collision.TryGetComponent(out IHealer healer))
+            {
+                IAbilityDeliver abilityDeliver = healer.AbilityContext.AbilityDeliver;
+                if (AbilityUltility.IsTargetAllowedByTargetObject(abilityDeliver, this))
                 {
-                    TakeDamageInternal(attacker);
+                    HealInternal(healer);
                 }
             }
         }
         public void TakeDamage(IHasAttacker attacker)
         {
-            TakeDamageInternal(attacker);
+            TakeDamageInternal(attacker.AbilityContext);
         }
-        protected virtual void TakeDamageInternal(IHasAttacker attacker)
+        protected virtual void TakeDamageInternal(IAbilityContext attackerContext)
         {
-            CombatContext combatContext = new CombatContext(attacker, this);
-            int effectiveDamage = DamageUtility.DamageFormulaRPG(attacker, this);
-            OnHitInvoke(combatContext);
+            int effectiveDamage = DamageUtility.DamageFormulaRPG(AbilityUltility.GetAttacker(attackerContext), this);
+            OnHitInvoke(attackerContext);
             if (m_IsImmortal) return;
             // block damage if barrier exist
             if (m_Barrier > 0)
@@ -163,31 +159,31 @@ namespace Rush
                 AddHealthInternal(-effectiveDamage);
                 SetCurrentDamageTakeInternal(effectiveDamage);
             }
-            OnDamageTaken(combatContext);
+            OnDamageTaken(attackerContext);
         }
+
 
 
         public void Heal(IHealer healer)
         {
+            HealInternal(healer);
+        }
+        private void HealInternal(IHealer healer)
+        {
             AddHealthInternal(healer.HealAmount);
-            if (healer is IHasAbilityContext context)
+            Unit targetHeal = m_ModuleContext.Unit;
+            if (targetHeal == null) return;
+            AbilityUltility.OnAbilityDeliveredInvoke(healer.AbilityContext, targetHeal);
+            GameObject healerModule = healer.AbilityContext.SkillContext.ModuleContext.Module;
+            if (healerModule.TryGetComponent(out IHasSkills healerSkill))
             {
-                Unit targetHeal = m_ModuleContext.Unit;
-                if (targetHeal == null) return;
-                AbilityUltility.OnAbilityDeliveredInvoke(context.AbilityContext, targetHeal);
-                GameObject healerModule = context.AbilityContext.SkillContext.ModuleContext.Module;
-                if (healerModule.TryGetComponent(out IHasSkills healerSkill))
-                {
-                    AbilityUltility.OnSkillEventActivates(healerSkill, SkillTriggerState.OnHealing);
-                }
-                if (targetHeal.HasBind(out IHasSkills healedSkills))
-                {
-                    AbilityUltility.OnSkillEventActivates(healedSkills, SkillTriggerState.OnHealed);
-                }
+                AbilityUltility.OnSkillEventActivates(healerSkill, SkillTriggerState.OnHealing);
+            }
+            if (targetHeal.HasBind(out IHasSkills healedSkills))
+            {
+                AbilityUltility.OnSkillEventActivates(healedSkills, SkillTriggerState.OnHealed);
             }
             m_OnHealed?.Invoke(new HealerContext(healer, this));
-            
-            
         }
         private void OnHealthDepleted()
         {
@@ -203,58 +199,51 @@ namespace Rush
             yield return new WaitForSeconds(delay);
             ReborInternal(1f);
         }
-        private void OnHitInvoke(CombatContext combat)
+        private void OnHitInvoke(IAbilityContext context)
         {
-            m_OnHit?.Invoke(combat);
-            // attacker ability delivered here
-            if (combat.Attacker is IHasAbilityContext hitter)
+            m_OnHit?.Invoke(context);
+            Unit unitTaker = m_ModuleContext.Unit;
+
+            AbilityUltility.OnAbilityDeliveredInvoke(context, unitTaker);
+
+            GameObject hitterModule = context.SkillContext.ModuleContext.Module;
+            if (hitterModule.TryGetComponent(out IHasSkills hitterSkill))
             {
-                Unit unitTaker = m_ModuleContext.Unit;
-                
-                AbilityUltility.OnAbilityDeliveredInvoke(hitter.AbilityContext, unitTaker);
+                AbilityUltility.OnSkillEventActivates(hitterSkill, SkillTriggerState.OnHit);
+            }
 
-                GameObject hitterModule = hitter.AbilityContext.SkillContext.ModuleContext.Module;
-                if (hitterModule.TryGetComponent(out IHasSkills hitterSkill))
-                {
-                    AbilityUltility.OnSkillEventActivates(hitterSkill, SkillTriggerState.OnHit);
-                }
-
-                if (unitTaker.HasBind(out IHasSkills hasSkill))
-                {
-                    AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnGetHit);
-                }
+            if (unitTaker.HasBind(out IHasSkills hasSkill))
+            {
+                AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnGetHit);
             }
         }
 
-        private void OnDamageTaken(CombatContext combat)
+        private void OnDamageTaken(IAbilityContext context)
         {
-            m_OnDamageTaken?.Invoke(combat);
-            if (combat.Attacker is IHasAbilityContext hitter)
+            m_OnDamageTaken?.Invoke(context);
+            Unit unitTaker = m_ModuleContext.Unit;
+            if (unitTaker == null)
             {
-                Unit unitTaker = m_ModuleContext.Unit;
-                if (unitTaker == null)
-                {
-                    return;
-                }
-                GameObject damagerModule = hitter.AbilityContext.SkillContext.ModuleContext.Module;
-                if (damagerModule.TryGetComponent(out IHasSkills damagerSkill))
-                {
-                    AbilityUltility.OnSkillEventActivates(damagerSkill, SkillTriggerState.OnDamageDealed);
-                }
-
-                if (unitTaker.HasBind(out IHasSkills hasSkill))
-                {
-                    AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnDamageTaken);
-                }
+                return;
             }
-            
+            GameObject damagerModule = context.SkillContext.ModuleContext.Module;
+            if (damagerModule.TryGetComponent(out IHasSkills damagerSkill))
+            {
+                AbilityUltility.OnSkillEventActivates(damagerSkill, SkillTriggerState.OnDamageDealed);
+            }
+
+            if (unitTaker.HasBind(out IHasSkills hasSkill))
+            {
+                AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnDamageTaken);
+            }
+
             if (m_Health <= 0)
             {
                 OnHealthDepleted();
             }
-            OnDeathInvoke(combat);
+            OnDeathInvoke(context);
         }
-        private void OnDeathInvoke(CombatContext context)
+        private void OnDeathInvoke(IAbilityContext context)
         {
             m_OnDeath?.Invoke(context);
         }
@@ -339,7 +328,7 @@ namespace Rush
                 AddHealthInternal(amount);
             }
         }
-        protected virtual void SetCurrentHealthInternal(int amount)
+        protected virtual void SetHealthInternal(int amount)
         {
             m_Health = amount;
             if (m_Health > m_MaxHealth)
@@ -352,12 +341,16 @@ namespace Rush
             m_MaxHealth = amount;
             if (restoreCurrent)
             {
-                SetCurrentHealthInternal(amount);
+                SetHealthInternal(amount);
             }
         }
         protected virtual void SetDefenseInternal(int amount)
         {
             m_Defense = amount;
+        }
+        protected virtual void MultiplyDefenseInternal(float val)
+        {
+            m_Defense = Mathf.RoundToInt(m_Defense * val);
         }
         protected virtual void SetShieldInternal(int amount, float duration)
         {
@@ -403,12 +396,12 @@ namespace Rush
 
         public void SetHealth(int val)
         {
-            throw new System.NotImplementedException();
+            SetHealthInternal(val);
         }
 
         public void SetMaxHealth(int val, bool withCurrentHealth)
         {
-            throw new System.NotImplementedException();
+            SetMaxHealthInternal(val, withCurrentHealth);
         }
 
         public void AddHealth(int val)
@@ -418,12 +411,25 @@ namespace Rush
 
         public void AddMaxHealth(int val, bool withCurrentHealth)
         {
-            throw new System.NotImplementedException();
+            AddMaxHealthInternal(val, withCurrentHealth);
+        }
+
+        protected virtual void MultiplyHealthInternal(float val)
+        {
+            m_Health = Mathf.RoundToInt(m_Health * val);
+        }
+        protected virtual void MultiplyMaxHealthInternal(float val, bool withCurrentHealth)
+        {
+            m_MaxHealth = Mathf.RoundToInt(m_MaxHealth * val);
+            if (withCurrentHealth)
+            {
+                MultiplyHealthInternal(val);
+            }
         }
 
         public void MultiplyHealth(int val)
         {
-            throw new System.NotImplementedException();
+            MultiplyHealthInternal(val);
         }
 
         public void MultiplyMaxHealth(int val, bool withCurrentHealth)
@@ -443,12 +449,12 @@ namespace Rush
 
         public void MultiplyDefense(int defense)
         {
-            throw new System.NotImplementedException();
+            MultiplyDefenseInternal(defense);
         }
 
         public void Notify(AbilityContext context)
         {
-            throw new System.NotImplementedException();
+            TakeDamageInternal(context);
         }
 
         public void SetTargeted(bool targeted)

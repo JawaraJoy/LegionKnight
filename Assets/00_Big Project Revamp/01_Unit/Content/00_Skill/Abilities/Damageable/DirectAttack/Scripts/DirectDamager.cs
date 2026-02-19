@@ -124,13 +124,17 @@ namespace Rush
                 case TargetDistributeMode.SameTarget:
                     return targets[0];
 
-                case TargetDistributeMode.RandomPerProjectile:
+                case TargetDistributeMode.RandomPerLaunch:
                     return targets[Random.Range(0, targets.Count)];
 
                 case TargetDistributeMode.SplitTargets:
                 default:
                     return targets[shotIndex % targets.Count];
             }
+        }
+        private void DirectAttack(ITargetable targetable)
+        {
+
         }
         private void SpawnSingle(int index, int totalCount, List<ITargetable> targets)
         {

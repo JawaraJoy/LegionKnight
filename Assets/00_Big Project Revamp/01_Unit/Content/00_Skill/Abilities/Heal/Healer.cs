@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Healer : MonoBehaviour, IHealer, IHasAbilityContext
+    public class Healer : MonoBehaviour, IHealer
     {
         [SerializeField]
         private int m_HealAmount = 0;

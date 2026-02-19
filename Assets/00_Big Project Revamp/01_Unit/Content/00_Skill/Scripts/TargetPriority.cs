@@ -24,7 +24,7 @@ namespace Rush
     {
         SameTarget,
         SplitTargets,
-        RandomPerProjectile
+        RandomPerLaunch
     }
     public enum AbilityPurpose
     {

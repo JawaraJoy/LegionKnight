@@ -159,7 +159,7 @@ namespace Rush
                 case TargetDistributeMode.SameTarget:
                     return targets[0];
 
-                case TargetDistributeMode.RandomPerProjectile:
+                case TargetDistributeMode.RandomPerLaunch:
                     return targets[Random.Range(0, targets.Count)];
 
                 case TargetDistributeMode.SplitTargets:
