@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Rush;
 
 namespace LegionKnight
 {
@@ -22,19 +23,19 @@ namespace LegionKnight
             InitInternal();
         }
 
-        private PlatformSelectView GetSelectView(StandbyPlatformDefinition defi)
+        private PlatformSelectView GetSelectView(PlatformConfig platformConfig)
         {
-            PlatformSelectView view = m_SpawnedPlatformSelectionViews.Find(x => x.PlatformDefi == defi);
+            PlatformSelectView view = m_SpawnedPlatformSelectionViews.Find(x => x.PlatformConfig == platformConfig);
             return view;
         }
         private void InitInternal()
         {
-            PlatformUnit[] units = Player.Instance.GetPlatformUnits();
+            PlatformUnit[] units = Player.Instance.PlatformDeck.GetPlatformUnits();
             foreach (PlatformUnit unit in units)
             {
-                if (GetSelectView(unit.StanbyPlatform) != null)
+                if (GetSelectView(unit.PlatformConfig) != null)
                 {
-                    GetSelectView(unit.StanbyPlatform).Init(unit);
+                    GetSelectView(unit.PlatformConfig).Init(unit);
                 }
                 else
                 {
@@ -67,10 +68,9 @@ namespace LegionKnight
         {
             SpawnPlatformSelectInternal(unit);
         }
-        public void ShowRarity(int rarityIndex)
+        public void ShowRarity(RarityConfig rarityConfig)
         {
-            Rarity rarity = (Rarity)rarityIndex;
-            ShowRarity(rarity);
+            ShowRarityInternal(rarityConfig);
         }
 
         public void ShowAllPlatforms()
@@ -96,21 +96,21 @@ namespace LegionKnight
             }
         }
 
-        private void ShowRarity(Rarity rarity)
+        private void ShowRarityInternal(RarityConfig rarityConfig)
         {
             foreach (PlatformSelectView platformSelectView in m_SpawnedPlatformSelectionViews)
             {
                 platformSelectView.Hide();
             }
-            PlatformSelectView[] views = GetPlatformSelectViews(rarity);
+            PlatformSelectView[] views = GetPlatformSelectViews(rarityConfig);
             foreach (PlatformSelectView characterSelectView in views)
             {
                 characterSelectView.Show();
             }
         }
-        private PlatformSelectView[] GetPlatformSelectViews(Rarity rarity)
+        private PlatformSelectView[] GetPlatformSelectViews(RarityConfig rarityConfig)
         {
-            return m_SpawnedPlatformSelectionViews.FindAll(x => x.PlatformDefi.Rarity == rarity).ToArray();
+            return m_SpawnedPlatformSelectionViews.FindAll(x => x.PlatformConfig.CollectibleField.RarityConfig.BaseInfo.Id == rarityConfig.BaseInfo.Id).ToArray();
         }
     }
 }

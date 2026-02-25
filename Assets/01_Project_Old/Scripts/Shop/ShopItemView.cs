@@ -38,7 +38,7 @@ namespace LegionKnight
         private UnityEvent<ShopItemDefinition> m_OnBought = new();
         private ShopItemControl GetShopItemControl()
         {
-            var shopContainer = GameManager.Instance.GetShopItemControl(m_Definition);
+            var shopContainer = GameManager.Instance.ShopManager.GetShopContainer(m_Definition.ContainerName).GetShopItemControl(m_Definition);
             if (shopContainer == null)
             {
                 Debug.LogError($"ShopItemControl not found for {m_Definition.name} in {m_Definition.TabName}");
@@ -65,7 +65,7 @@ namespace LegionKnight
         private IEnumerator WaitForBonusToApply()
         {
             //GameManager.Instance.SetBonusAvaible(m_Definition, false);
-            bool isBonusAvaible = GameManager.Instance.GetShopItemControl(m_Definition).IsBonusAvaible;
+            bool isBonusAvaible = GameManager.Instance.ShopManager.GetShopContainer(m_Definition.ContainerName).GetShopItemControl(m_Definition).IsBonusAvaible;
             yield return new WaitUntil(() => !isBonusAvaible);
             InitInternal();
         }
@@ -82,14 +82,14 @@ namespace LegionKnight
             SetAvaibleInternal(GetShopItemControl().IsAvailable);
             SetBonusAvaibleInternal(GetShopItemControl().IsBonusAvaible);
 
-            m_ItemNameText.text = m_Definition.ItemName;
-            m_MainImage.sprite = m_Definition.Icon;
+            m_ItemNameText.text = m_Definition.BaseInfo.Name;
+            m_MainImage.sprite = m_Definition.CollectibleField.Icon;
             if (m_BonusSignContent != null)
             {
                 m_BonusSignContent.SetActive(m_IsBonusAvaible);
             }
             m_NotAvaibleContent.SetActive(!m_IsAvaible);
-            m_CurrencyView.SetView(new Currency(m_Definition.Currency, m_Definition.Price));
+            m_CurrencyView.SetView(new Currency(m_Definition.ItemCost, m_Definition.Price));
             m_BonusText.text = m_Definition.BonusDescription;
             m_SelectButton.interactable = m_IsAvaible;
             m_ItemAmountText.gameObject.SetActive(m_Definition.Amount > 1);

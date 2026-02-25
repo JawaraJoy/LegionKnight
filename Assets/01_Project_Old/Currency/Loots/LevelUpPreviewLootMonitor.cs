@@ -1,3 +1,4 @@
+using Rush;
 using System.Linq;
 using UnityEngine;
 
@@ -5,7 +6,7 @@ namespace LegionKnight
 {
     public class LevelUpPreviewLootMonitor : PreviewLootMonitor
     {
-        public void ShowRewardLevelUp(LootDefinition lootDefinition)
+        public void ShowRewardLevelUp(LootChestDefinition lootDefinition)
         {
             ClearAllLootViews();
             AddLootsViewInternal(lootDefinition.LootFields.ToList());
@@ -22,7 +23,7 @@ namespace LegionKnight
         {
             return GetBindingInternal<LevelUpPreviewLootMonitor>();
         }
-        public void ShowRewardLevelUp(LootDefinition lootDefinition)
+        public void ShowRewardLevelUp(LootChestDefinition lootDefinition)
         {
             LevelUpPreviewLootMonitor lootMonitor = GetUpPreviewLootMonitor();
             if (lootMonitor != null)

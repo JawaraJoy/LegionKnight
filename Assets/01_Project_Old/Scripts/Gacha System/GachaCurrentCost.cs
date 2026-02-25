@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -5,15 +6,15 @@ namespace LegionKnight
     [System.Serializable]
     public class GachaCurrencyCost
     {
-        [SerializeField] private CurrencyDefinition m_Definition;
+        [SerializeField] private ItemConfig m_ItemConfig;
         [SerializeField] private int m_Amount;
 
-        public CurrencyDefinition Definition => m_Definition;
+        public ItemConfig ItemConfig => m_ItemConfig;
         public int Amount => m_Amount;
 
-        public GachaCurrencyCost(CurrencyDefinition definition, int amount)
+        public GachaCurrencyCost(ItemConfig definition, int amount)
         {
-            m_Definition = definition;
+            m_ItemConfig = definition;
             m_Amount = amount;
         }
     }

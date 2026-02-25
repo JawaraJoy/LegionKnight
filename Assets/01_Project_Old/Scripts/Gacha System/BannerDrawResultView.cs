@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,7 +29,7 @@ namespace LegionKnight
         {
             GetBinding<BannerDrawResultView>().SetGachaCost(cost);
         }
-        public virtual void ShowResults(List<object> results)
+        public virtual void ShowResults(List<CollectibleConfig> results)
         {
             GetBinding<BannerDrawResultView>().ShowResults(results);
         }
@@ -40,10 +41,10 @@ namespace LegionKnight
         {
             GetBannerPanel().SetGachaCost(cost);
         }
-        public virtual void ShowResults(List<GachaReward> results)
+        public virtual void ShowResults(List<GachaRewardConfig> results)
         {
-            List<object> rewards = new();
-            foreach (GachaReward r in results)
+            List<CollectibleConfig> rewards = new();
+            foreach (GachaRewardConfig r in results)
             {
                 rewards.Add(r);
             }

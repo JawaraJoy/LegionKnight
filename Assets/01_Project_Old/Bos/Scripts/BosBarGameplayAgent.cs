@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -34,12 +35,12 @@ namespace LegionKnight
                 gameplayPanel.HideCastingBar();
             }
         }
-        public void SetBosName(BosDefinition defi)
+        public void SetBosName(BossUnitConfig bossConfig)
         {
             var gameplayPanel = GetGameplayPanel();
             if (gameplayPanel != null)
             {
-                gameplayPanel.SetBosName(defi);
+                gameplayPanel.SetBosName(bossConfig);
             }
         }
         public void SetHealth(float rate)

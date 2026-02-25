@@ -1,6 +1,5 @@
 using Rush;
 using System.Collections;
-using Unity.Services.CloudSave.Models;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,64 +7,61 @@ namespace LegionKnight
 {
     public partial class DrawItemView : ItemView
     {
-        protected override void InitInternal(object defi)
+        protected override void InitInternal(CollectibleConfig collectibleConfig)
         {
-            base.InitInternal(defi);
-            if (defi is GachaReward reward)
+            base.InitInternal(collectibleConfig);
+            if (collectibleConfig is GachaRewardConfig reward)
             {
-                ScriptableObject d = reward.Definition;
+                CollectibleConfig itemGachaConfig = reward.GachaItemConfig;
                 m_Amount.text = reward.Amount.ToString();
-                CurrencyApplier(d, reward.Amount);
-                CharacterApplier(d);
-                PlatformApplier(d, reward.Amount);
+                CurrencyApplier(itemGachaConfig, reward.Amount);
+                CharacterApplier(itemGachaConfig);
+                PlatformApplier(itemGachaConfig, reward.Amount);
 
-                if (d is IDescriptable descriptable)
+                string itemName = itemGachaConfig.BaseInfo.Name;
+                if (gameObject.TryGetComponent(out TextView text))
                 {
-                    string itemName = descriptable.Label;
-                    if (gameObject.TryGetComponent(out TextView text))
-                    {
-                        text.SetText(itemName);
-                    }
+                    text.SetText(itemName);
                 }
             }
         }
 
-        private void CurrencyApplier(ScriptableObject defi, int amount)
+        private void CurrencyApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            if (defi is CurrencyDefinition currency)
+            if (collectibleConfig is ItemConfig itemConfig)
             {
-                m_Icon.sprite = currency.Icon;
-                Player.Instance.AddCurrencyAmount(currency, amount);
+                m_Icon.sprite = itemConfig.CollectibleField.Icon;
+                Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
             }
         }
-        private void CharacterApplier(ScriptableObject defi)
+        private void CharacterApplier(ScriptableObject collectibleConfig)
         {
-            if (defi is CharacterDefinition character)
+            if (collectibleConfig is HeroUnitConfig heroConfig)
             {
-                m_Icon.sprite = character.SmallIcon;
-                bool owned = Player.Instance.GetCharacterUnit(character).Owned;
+                m_Icon.sprite = heroConfig.CollectibleField.Icon;
+                bool owned = Player.Instance.HeroDeck.GetHeroUnit(heroConfig).Owned;
                 if (owned)
                 {
-                    StartCoroutine(CharcterDuplicated(character));
+                    StartCoroutine(CharcterDuplicated(heroConfig));
                 }
                 else
                 {
-                    Player.Instance.SetOwned(character, true);
+                    Player.Instance.HeroDeck.SetOwned(heroConfig, true);
                 }
             }
         }
 
-        private IEnumerator CharcterDuplicated(CharacterDefinition character)
+        private IEnumerator CharcterDuplicated(HeroUnitConfig heroConfig)
         {
-            Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
+            Player.Instance.CurrencyControl.AddCurrencyAmount(heroConfig.ItemDuplicateConverter.ItemConfig, heroConfig.ItemDuplicateConverter.Amount);
             for (int i = 0; i < 6; i++)
             {
                 m_OnDuplicateCharacterShow.Invoke();
-                CharacterShow(character);
+                CharacterShow(heroConfig);
                 yield return new WaitForSeconds(1.5f);
 
                 m_OnDuplicaterCharacterHide.Invoke();
-                DuplicateShow(character);
+                DuplicateShow(heroConfig);
                 yield return new WaitForSeconds(1.5f);
             }
 
@@ -74,32 +70,32 @@ namespace LegionKnight
         private UnityEvent m_OnDuplicateCharacterShow;
         [SerializeField]
         private UnityEvent m_OnDuplicaterCharacterHide;
-        private void CharacterShow(CharacterDefinition character)
+        private void CharacterShow(HeroUnitConfig heroConfig)
         {
-            m_Icon.sprite = character.SmallIcon;
+            m_Icon.sprite = heroConfig.CollectibleField.Icon;
             m_Amount.text = "";
-            string charName = character.Label;
-            if (gameObject.TryGetComponent(out TextView text1))
+            string charName = heroConfig.BaseInfo.Name;
+            if (gameObject.TryGetComponent(out TextView textView))
             {
-                text1.SetText(charName);
+                textView.SetText(charName);
             }
         }
-        private void DuplicateShow(CharacterDefinition character)
+        private void DuplicateShow(HeroUnitConfig heroConfig)
         {
-            m_Icon.sprite = character.ShardConvert.CurrencyDefinition.Icon;
-            m_Amount.text = character.ShardConvert.Amount.ToString();
-            string itemName = character.ShardConvert.CurrencyDefinition.Label;
+            m_Icon.sprite = heroConfig.ItemDuplicateConverter.ItemConfig.CollectibleField.Icon;
+            m_Amount.text = heroConfig.ItemDuplicateConverter.Amount.ToString();
+            string itemName = heroConfig.ItemDuplicateConverter.ItemConfig.BaseInfo.Name;
             if (gameObject.TryGetComponent(out TextView text))
             {
                 text.SetText(itemName);
             }
         }
-        private void PlatformApplier(ScriptableObject defi, int amount)
+        private void PlatformApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            if (defi is StandbyPlatformDefinition platform)
+            if (collectibleConfig is PlatformConfig platformConfig)
             {
-                m_Icon.sprite = platform.Icon;
-                Player.Instance.AddPlatformAmount(platform, amount);
+                m_Icon.sprite = platformConfig.CollectibleField.Icon;
+                Player.Instance.PlatformDeck.AddPlatformAmount(platformConfig, amount);
             }
         }
     }

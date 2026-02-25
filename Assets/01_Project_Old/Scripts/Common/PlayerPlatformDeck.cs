@@ -11,45 +11,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private PlayerPlatformDeck m_PlayerPlatformDeck;
-        public PlayerPlatformDeck GetPlayerPlatformDeck()
-        {
-            return m_PlayerPlatformDeck;
-        }
-        public PlatformUnit GetPlatformOwned(StandbyPlatformDefinition platform)
-        {
-            return m_PlayerPlatformDeck.GetPlatformOwned(platform);
-        }
-        public PlatformUnit[] GetPlatformUnits()
-        {
-            return m_PlayerPlatformDeck.GetPlatformUnits();
-        }
-        public bool IsPlatformOwned(StandbyPlatformDefinition platform)
-        {
-            return m_PlayerPlatformDeck.IsPlatformOwned(platform);
-        }
-        public StandbyPlatformDefinition GetUsedStanbyPlatform()
-        {
-            return m_PlayerPlatformDeck.GetUsedStanbyPlatform();
-        }
-        public void AddPlatformAmount(StandbyPlatformDefinition platform, int add)
-        {
-            m_PlayerPlatformDeck.AddPlatformAmount(platform, add);
-        }
-        public void SelectStandbyPlatform(StandbyPlatformDefinition platform)
-        {
-            m_PlayerPlatformDeck.SelectStandbyPlatform(platform);
-        }
-        public void SetUsedStanbyPlatform()
-        {
-            m_PlayerPlatformDeck.SetUsedStandbyPlatform();
-        }
-        public void AddPlayerStandbyPlatform()
-        {
-           m_PlayerPlatformDeck.AddPlayerStandbyPlatform();
-        }
-        public void SetPlatformUnitIsEquiped(StandbyPlatformDefinition defi, bool isEquiped)
-        {
-           m_PlayerPlatformDeck.SetIsEquiped(defi, isEquiped);
-        }
+        public PlayerPlatformDeck PlatformDeck => m_PlayerPlatformDeck;
+
     }
 }

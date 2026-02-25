@@ -39,7 +39,7 @@ namespace LegionKnight
         {
 
             m_Cost = cost;
-            m_DrawIcon.sprite = cost.Definition.Icon;
+            m_DrawIcon.sprite = cost.ItemConfig.CollectibleField.Icon;
             bool isDiscounted = originalAmount > cost.Amount;
             m_OriginalAmountContent.SetActive(isDiscounted);
 

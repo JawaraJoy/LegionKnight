@@ -8,8 +8,8 @@ namespace Rush
     }
     public partial class RushPlayer
     {
-        [SerializeField]
+        /*[SerializeField]
         private PlayerRigidbodyModifier m_RigidbodyModifier;
-        public PlayerRigidbodyModifier RigidbodyModifier => m_RigidbodyModifier;
+        public PlayerRigidbodyModifier RigidbodyModifier => m_RigidbodyModifier;*/
     }
 }

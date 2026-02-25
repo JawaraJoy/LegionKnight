@@ -12,7 +12,7 @@ namespace LegionKnight
         {
             m_Definition = definition;
             ShowInternal();
-            m_Icon.sprite = m_Definition.Currency.Icon;
+            m_Icon.sprite = m_Definition.ItemCost.CollectibleField.Icon;
         }
     }
 

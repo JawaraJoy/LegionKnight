@@ -44,7 +44,7 @@ namespace LegionKnight
             var resolvedCost = ResolveCost(banner, drawCount);
 
             int originalAmount = banner.GetBaseCostForCurrency(
-                resolvedCost.Definition,
+                resolvedCost.ItemConfig,
                 drawCount
             );
 

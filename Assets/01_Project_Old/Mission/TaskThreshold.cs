@@ -1,6 +1,7 @@
 using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
+using Rush;
 
 namespace LegionKnight
 {

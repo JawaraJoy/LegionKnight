@@ -13,9 +13,9 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_DescriptionText;
 
-        private BadgeDefinition m_Definition;
+        private BadgeConfig m_Definition;
 
-        public void Init(BadgeDefinition defi)
+        public void Init(BadgeConfig defi)
         {
             m_Definition = defi;
             if (Player.Instance.BadgeManager.HasBadge(defi, out var content))
@@ -31,8 +31,8 @@ namespace LegionKnight
                 else
                 {
                     m_Icon.sprite = defi.Upgrade[0].Icon;
-                    m_NameText.text = defi.Label;
-                    m_DescriptionText.text = defi.Description;
+                    m_NameText.text = defi.BaseInfo.Name;
+                    m_DescriptionText.text = defi.BaseInfo.Description;
                 }
                 m_Icon.color = isUnlocked ? Color.white : Color.gray;
                 

@@ -98,6 +98,10 @@ namespace Rush
             m_MaxGlobalSpeedRate += value;
             ClampSpeedRate();
         }
+        public void AddGlobalSpeedRate(float value)
+        {
+            AddGlobalSpeedRateInternal(value);
+        }
 
         private void ClampSpeedRate()
         {
@@ -211,6 +215,10 @@ namespace Rush
         public void Pause()
         {
             m_IsPaused = true;
+        }
+        public void Resume()
+        {
+            m_IsPaused = false;
         }
 
         private void InputToWaitingListByRandom()

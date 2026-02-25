@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace LegionKnight
             {
                 if (m_LootStorageManager == null)
                 {
-                    m_LootStorageManager = GameManager.Instance.GetLootStorageManager();
+                    m_LootStorageManager = GameManager.Instance.LootStorageManager;
                 }
                 return m_LootStorageManager;
             }

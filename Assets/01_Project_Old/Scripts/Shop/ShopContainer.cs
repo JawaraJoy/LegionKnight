@@ -20,7 +20,7 @@ namespace LegionKnight
 
         public void Init()
         {
-            int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(m_CurrencyUsed.CurrencyDefinition);
+            int playerCurrencyAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_CurrencyUsed.ItemConfig);
             m_CurrencyUsed.SetAmount(playerCurrencyAmount);
             foreach (var tab in m_ShopContainerTabs)
             {
@@ -51,7 +51,7 @@ namespace LegionKnight
         {
             return GetShopItemControlInternal(defi);
         }
-        public ShopItemControl GetShopItemControlInternal(ShopItemDefinition defi)
+        private ShopItemControl GetShopItemControlInternal(ShopItemDefinition defi)
         {
             var tab = GetShopContainerTabInternal(defi.TabName);
             if (tab == null)

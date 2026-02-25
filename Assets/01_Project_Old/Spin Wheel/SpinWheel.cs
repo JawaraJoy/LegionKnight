@@ -86,7 +86,7 @@ namespace LegionKnight
         }
         private void AddSpinDraw(int amount)
         {
-            Player.Instance.AddCurrencyAmount(m_SpinDraw.CurrencyDefinition, amount);
+            Player.Instance.CurrencyControl.AddCurrencyAmount(m_SpinDraw.ItemConfig, amount);
         }
         public bool CanClaim()
         {

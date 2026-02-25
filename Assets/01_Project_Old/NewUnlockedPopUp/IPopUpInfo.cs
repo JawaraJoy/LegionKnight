@@ -1,14 +1,14 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
 {
     public interface IPopUpInfo 
     {
-        Sprite Icon { get; }
         string Info { get; }
     }
 
-    public partial class CustomImageDefinition : IPopUpInfo
+    public partial class CustomImageDefinition
     {
         [SerializeField, TextArea]
         private string m_InfoUnlock;

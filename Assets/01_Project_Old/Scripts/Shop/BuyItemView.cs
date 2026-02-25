@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections;
 using UnityEngine;
 
@@ -5,15 +6,15 @@ namespace LegionKnight
 {
     public partial class BuyItemView : ItemView
     {
-        protected override void InitInternal(object defi)
+        protected override void InitInternal(CollectibleConfig collectibleConfig)
         {
-            base.InitInternal(defi);
-            if (defi is ShopItemDefinition shopItem)
+            base.InitInternal(collectibleConfig);
+            if (collectibleConfig is ShopItemDefinition shopItem)
             {
-                Object d = shopItem.ItemBonus;
+                CollectibleConfig d = shopItem.ItemBonus;
                 int bonusAmount = shopItem.BonusAmount;
                 int totalAmount;
-                if (bonusAmount > 0 && GameManager.Instance.GetShopItemControl(shopItem).IsBonusAvaible)
+                if (bonusAmount > 0 && GameManager.Instance.ShopManager.GetShopContainer(shopItem.ContainerName).GetShopItemControl(shopItem).IsBonusAvaible)
                 {
                     totalAmount = shopItem.Amount + bonusAmount;
                 }
@@ -24,7 +25,7 @@ namespace LegionKnight
                 }
                 m_Amount.text = $"{totalAmount}";
 
-                GameManager.Instance.SetBonusAvaible(shopItem, false);
+                GameManager.Instance.ShopManager.GetShopContainer(shopItem.ContainerName).GetShopItemControl(shopItem).SetAvailable(false);
                 CurrencyApplier(d, totalAmount);
                 CharacterApplier(d);
                 PlatformApplier(d, totalAmount);
@@ -32,50 +33,52 @@ namespace LegionKnight
             }
         }
 
-        private void CurrencyApplier(Object defi, int amount)
+        private void CurrencyApplier(CollectibleConfig defi, int amount)
         {
-            if (defi is CurrencyDefinition currency)
+            if (defi is ItemConfig currency)
             {
-                m_Icon.sprite = currency.Icon;
-                Player.Instance.AddCurrencyAmount(currency, amount);
+                m_Icon.sprite = currency.CollectibleField.Icon;
+                Player.Instance.CurrencyControl.AddCurrencyAmount(currency, amount);
             }
         }
-        private void CharacterApplier(Object defi)
+        private void CharacterApplier(CollectibleConfig defi)
         {
-            if (defi is CharacterDefinition character)
+            if (defi is HeroUnitConfig character)
             {
-                m_Icon.sprite = character.SmallIcon;
-                bool owned = Player.Instance.GetCharacterUnit(character).Owned;
+                m_Icon.sprite = character.CollectibleField.Icon;
+                bool owned = Player.Instance.HeroDeck.GetHeroUnit(character).Owned;
                 if (owned)
                 {
                     StartCoroutine(CharcterDuplicated(character));
                 }
                 else
                 {
-                    Player.Instance.SetOwned(character, true);
+                    Player.Instance.HeroDeck.SetOwned(character, true);
                 }
             }
         }
-        private IEnumerator CharcterDuplicated(CharacterDefinition character)
+        private IEnumerator CharcterDuplicated(HeroUnitConfig heroConfig)
         {
             yield return new WaitForSeconds(1.5f);
-            m_Icon.sprite = character.ShardConvert.CurrencyDefinition.Icon;
-            m_Amount.text = character.ShardConvert.Amount.ToString();
-            Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
+            m_Icon.sprite = heroConfig.ItemDuplicateConverter.ItemConfig.CollectibleField.Icon;
+            m_Amount.text = heroConfig.ItemDuplicateConverter.Amount.ToString();
+            ItemConfig itemConfig = heroConfig.ItemDuplicateConverter.ItemConfig;
+            int amount = heroConfig.ItemDuplicateConverter.Amount;
+            Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
         }
-        private void PlatformApplier(Object defi, int amount)
+        private void PlatformApplier(CollectibleConfig config, int amount)
         {
-            if (defi is StandbyPlatformDefinition platform)
+            if (config is PlatformConfig platformConfig)
             {
-                m_Icon.sprite = platform.Icon;
-                Player.Instance.AddPlatformAmount(platform, amount);
+                m_Icon.sprite = platformConfig.CollectibleField.Icon;
+                Player.Instance.PlatformDeck.AddPlatformAmount(platformConfig, amount);
             }
         }
-        private void EnergyApplier(Object defi, int amount)
+        private void EnergyApplier(CollectibleConfig config, int amount)
         {
-            if (defi is EnergyDefinition energy)
+            if (config is EnergyConfig energy)
             {
-                m_Icon.sprite = energy.Icon;
+                m_Icon.sprite = energy.CollectibleField.Icon;
                 Player.Instance.AddEnergy(energy, amount);
             }
         }

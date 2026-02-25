@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,15 +27,15 @@ namespace LegionKnight
             }
         }
         
-        private CurrencyView GetCurrencyView(CurrencyDefinition definition)
+        private CurrencyView GetCurrencyView(ItemConfig itemConfig)
         {
-            CurrencyView match = m_CurrencieViews.Find(x => x.CurrencyDefinition == definition);
+            CurrencyView match = m_CurrencieViews.Find(x => x.ItemConfig == itemConfig);
             return match;
         }
 
         public void SetCurrencyView(Currency currency)
         {
-            GetCurrencyView(currency.CurrencyDefinition).SetAmount(currency.Amount);
+            GetCurrencyView(currency.ItemConfig).SetAmount(currency.Amount);
         }
     }
 }

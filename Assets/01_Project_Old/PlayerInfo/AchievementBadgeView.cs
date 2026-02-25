@@ -25,16 +25,16 @@ namespace LegionKnight
             return m_BadgeManager;
         }
 
-        private BadgeView GetBadgeView(BadgeDefinition defi)
+        private BadgeView GetBadgeView(BadgeConfig defi)
         {
             return m_BadgeViews.Find(b => b.Definition == defi);
         }
-        private bool HasBadgeView(BadgeDefinition defi, out BadgeView view)
+        private bool HasBadgeView(BadgeConfig defi, out BadgeView view)
         {
             view = GetBadgeView(defi);
             return view != null;
         }
-        private IEnumerator SpawningBadge(BadgeDefinition defi)
+        private IEnumerator SpawningBadge(BadgeConfig defi)
         {
             var handle = m_BadgeAsset.InstantiateAsync(m_BadgeContainer);
             yield return handle;
@@ -58,7 +58,7 @@ namespace LegionKnight
         {
             for (int i = 0; i < contents.Length; i++)
             {
-                BadgeDefinition defi = contents[i].Definition;
+                BadgeConfig defi = contents[i].Config;
                 if (HasBadgeView(defi, out var view))
                 {
                     view.Init(defi);

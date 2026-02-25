@@ -57,7 +57,7 @@ namespace LegionKnight
             int difficulty = defi.TaskPower;
             TaskState state = status.CurrentState;
 
-            LootDefinition loot = defi.Rewards;
+            LootChestDefinition loot = defi.Rewards;
             if (loot != null && m_LootMonitor != null)
             {
                 m_LootMonitor.AddLootsView(loot.LootFields.ToList());

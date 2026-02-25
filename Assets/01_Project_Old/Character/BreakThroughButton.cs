@@ -1,4 +1,5 @@
 using NaughtyAttributes;
+using Rush;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,18 +17,18 @@ namespace LegionKnight
         [SerializeField]
         private Button m_QuickAccessButton;
 
-        private CharacterUnit m_CharacterUnit;
+        private HeroUnit m_HeroUnit;
         [SerializeField, ReadOnly]
         private Currency m_CurrencyUsed;
         [SerializeField, ReadOnly]
         private Currency m_CurrencyUsedCoin;
-        public CharacterUnit CharacterUnit => m_CharacterUnit;
+        public HeroUnit HeroUnit => m_HeroUnit;
         public Currency CurrencyUsed => m_CurrencyUsed;
 
         [SerializeField]
         private BreakThroughView m_UpgradeView;
 
-        private CharacterDefinition m_CharacterDefinition;
+        private HeroUnitConfig m_HeroConfig;
 
         private void OnEnable()
         {
@@ -39,32 +40,32 @@ namespace LegionKnight
         }
         public void Refresh()
         {
-            if (m_CharacterDefinition == null)
+            if (m_HeroConfig == null)
             {
-                m_CharacterDefinition = Player.Instance.SelectedCharacter;
+                m_HeroConfig = Player.Instance.HeroDeck.SelectedHero;
             }
-            Init(m_CharacterDefinition);
+            Init(m_HeroConfig);
         }
-        public void Init(CharacterDefinition defi)
+        public void Init(HeroUnitConfig heroConfig)
         {
-            m_CharacterDefinition = defi;
-            CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
-            m_CharacterUnit = unit;
+            m_HeroConfig = heroConfig;
+            HeroUnit unit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
+            m_HeroUnit = unit;
 
-            CurrencyDefinition breakShardDefi = unit.GetBreakCost().CurrencyDefinition;
-            int breakShardAmount = unit.GetBreakCost().Amount;
+            ItemConfig breakItemConfig = heroConfig.BreakThroughFormulaConfig.ShardConfig;
+            int breakItemAmount = heroConfig.BreakThroughFormulaConfig.GetShardAmountToBreak(unit.Star);
 
-            CurrencyDefinition breakCoinDefi = unit.GetBreakCoinCost().CurrencyDefinition;
-            int breakCoinAmount = unit.GetBreakCoinCost().Amount;
+            ItemConfig breakSecondItemConfig = heroConfig.BreakThroughFormulaConfig.CoinConfig;
+            int breakSecondItemAmount = heroConfig.BreakThroughFormulaConfig.GetCoinAmountToBreak(unit.Star);
 
-            Currency breakShardCurrency = new(breakShardDefi, breakShardAmount);
-            Currency breakCoinCurrency = new(breakCoinDefi, breakCoinAmount);
+            Currency breakShardCurrency = new(breakItemConfig, breakItemAmount);
+            Currency breakCoinCurrency = new(breakSecondItemConfig, breakSecondItemAmount);
 
-            bool isTimeToBreak = unit.CanBreak();
+            bool isTimeToBreak = heroConfig.BreakThroughFormulaConfig.CanBreak(unit.Star, unit.Star);
             bool isMaxStar = unit.Star >= unit.MaxStar;
-            bool enoughShard = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount;
-            bool enoughCoin = Player.Instance.GetCurrencyAmount(breakCoinDefi) >= breakCoinAmount;
-            bool isEnoughCurrency = enoughShard && enoughCoin;
+            bool enoughItem = Player.Instance.CurrencyControl.GetCurrencyAmount(breakItemConfig) >= breakItemAmount;
+            bool enoughSecondItem = Player.Instance.CurrencyControl.GetCurrencyAmount(breakSecondItemConfig) >= breakSecondItemAmount;
+            bool isEnoughCurrency = enoughItem && enoughSecondItem;
 
             bool canBreak = isEnoughCurrency && isTimeToBreak && !isMaxStar;
 
@@ -82,7 +83,7 @@ namespace LegionKnight
         private void ShowUpgradeView()
         {
             m_UpgradeView.Show();
-            m_UpgradeView.Init(m_CharacterUnit);
+            m_UpgradeView.Init(m_HeroUnit);
         }
     }
 }

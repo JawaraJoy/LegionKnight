@@ -1,5 +1,5 @@
 using MoreMountains.Tools;
-using Newtonsoft.Json;
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -14,26 +14,26 @@ namespace LegionKnight
         private UnityEvent<PlatformUnit> m_OnPlatformEquiped;
 
         [SerializeField, MMReadOnly]
-        private StandbyPlatformDefinition m_Selected;
-        public void SetSelected(StandbyPlatformDefinition select)
+        private PlatformConfig m_SelectedPlatformConfig;
+        public void SetSelected(PlatformConfig platformConfig)
         {
-            m_Selected = select;
+            m_SelectedPlatformConfig = platformConfig;
         }
         public void Equip()
         {
-            PlatformUnit unit = Player.Instance.GetPlatformOwned(m_Selected);
-            Player.Instance.SetPlatformUnitIsEquiped(m_Selected, true);
+            PlatformUnit unit = Player.Instance.PlatformDeck.GetPlatformOwned(m_SelectedPlatformConfig);
+            Player.Instance.PlatformDeck.SetIsEquiped(m_SelectedPlatformConfig, true);
             m_OnPlatformEquiped.Invoke(unit);
-            m_EquipedIcon.sprite = m_Selected.Icon;
+            m_EquipedIcon.sprite = m_SelectedPlatformConfig.CollectibleField.Icon;
         }
         public void Init()
         {
-            StandbyPlatformDefinition equiped = Player.Instance.GetUsedStanbyPlatform();
-            bool isOwned = Player.Instance.IsPlatformOwned(equiped);
+            PlatformConfig equiped = Player.Instance.PlatformDeck.GetUsedStanbyPlatform();
+            bool isOwned = Player.Instance.PlatformDeck.IsPlatformOwned(equiped);
             if (isOwned)
             {
                 ShowInternal();
-                m_EquipedIcon.sprite = equiped.Icon;
+                m_EquipedIcon.sprite = equiped.CollectibleField.Icon;
             }
             else
             {

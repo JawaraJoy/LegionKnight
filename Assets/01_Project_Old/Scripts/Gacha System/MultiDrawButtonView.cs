@@ -36,7 +36,7 @@ namespace LegionKnight
             var resolvedCost = ResolveCost(banner, drawCount);
 
             int originalAmount = banner.GetBaseCostForCurrency(
-                resolvedCost.Definition,
+                resolvedCost.ItemConfig,
                 drawCount
             );
 
@@ -45,15 +45,15 @@ namespace LegionKnight
         private GachaCurrencyCost ResolveCost(GachaBanner banner, int drawCount)
         {
             var main = banner.Definition.MainCurrency;
-            int mainCost = banner.GetFinalCurrencyCost(main.Definition, drawCount).Amount;
+            int mainCost = banner.GetFinalCurrencyCost(main.ItemConfig, drawCount).Amount;
 
-            if (Player.Instance.GetCurrencyAmount(main.Definition) >= mainCost)
-                return new GachaCurrencyCost(main.Definition, mainCost);
+            if (Player.Instance.CurrencyControl.GetCurrencyAmount(main.ItemConfig) >= mainCost)
+                return new GachaCurrencyCost(main.ItemConfig, mainCost);
 
             var alt = banner.Definition.AlternativeCurrency;
-            int altCost = banner.GetFinalCurrencyCost(alt.Definition, drawCount).Amount;
+            int altCost = banner.GetFinalCurrencyCost(alt.ItemConfig, drawCount).Amount;
 
-            return new GachaCurrencyCost(alt.Definition, altCost);
+            return new GachaCurrencyCost(alt.ItemConfig, altCost);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace LegionKnight
             {
                 shopView.Hide();
             }
-            GameManager.Instance.SelectShop(uniqueName);
+            GameManager.Instance.ShopManager.SelectShop(uniqueName);
             GetShopViewInternal(uniqueName).Show();
         }
         public void ShowShop(string uniqueName)

@@ -12,7 +12,7 @@ namespace LegionKnight
 
         public void AdjustCurrency()
         {
-            int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(m_CurrencyDefinition);
+            int playerCurrencyAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_ItemConfig);
             m_AmountText.text = playerCurrencyAmount.ToString();
         }
     }

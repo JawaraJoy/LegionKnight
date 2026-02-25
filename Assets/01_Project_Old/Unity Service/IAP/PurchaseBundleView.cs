@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -132,10 +133,10 @@ namespace LegionKnight
             m_ProductDefinition = defi;
             
             ClearItemView();
-            m_LabelText.text = m_ProductDefinition.Label;
+            m_LabelText.text = m_ProductDefinition.BaseInfo.Name;
             if (m_DescriptionText != null)
             {
-                m_DescriptionText.text = m_ProductDefinition.Description;
+                m_DescriptionText.text = m_ProductDefinition.BaseInfo.Description;
             }    
             if (GetAdditionalProductInternal().Count > 0)
             {
@@ -144,8 +145,8 @@ namespace LegionKnight
             m_MainItemView.Init(GetMainProductInternal());
             m_BonusItemView.Init(GetBonusProductInternal());
 
-            bool available = UnityService.Instance.IsProductAvailable(m_ProductDefinition.Id);
-            bool hasBonus = UnityService.Instance.IsBonusAvailable(m_ProductDefinition.Id);
+            bool available = UnityService.Instance.IsProductAvailable(m_ProductDefinition.BaseInfo.Id);
+            bool hasBonus = UnityService.Instance.IsBonusAvailable(m_ProductDefinition.BaseInfo.Id);
 
             if (hasBonus)
             {
@@ -165,8 +166,8 @@ namespace LegionKnight
         }
         private void SetAvailableInternal(bool set)
         {
-            UnityService.Instance.SetIsAvailablePurchase(m_ProductDefinition.Id, set);
-            bool available = UnityService.Instance.IsProductAvailable(m_ProductDefinition.Id);
+            UnityService.Instance.SetIsAvailablePurchase(m_ProductDefinition.BaseInfo.Id, set);
+            bool available = UnityService.Instance.IsProductAvailable(m_ProductDefinition.BaseInfo.Id);
             if (m_NotAvailableView != null)
             {
                 m_NotAvailableView.SetActive(!available);
@@ -177,7 +178,7 @@ namespace LegionKnight
 
         private async void SpawnAddionalItemView()
         {
-            List<ProductItem> productItems = GetAdditionalProductInternal();
+            List<ProductItemConfig> productItems = GetAdditionalProductInternal();
             foreach (var item in productItems)
             {
                 var handle = m_ItemViewPrefab.InstantiateAsync(m_ItemViewSpawn);
@@ -209,21 +210,21 @@ namespace LegionKnight
             m_SpawnedAdditionalItemViews.Clear();
         }
 
-        private List<ProductItem> GetProductItemsInternal()
+        private List<ProductItemConfig> GetProductItemsInternal()
         {
-            bool hasBonus = UnityService.Instance.IsBonusAvailable(m_ProductDefinition.Id);
+            bool hasBonus = UnityService.Instance.IsBonusAvailable(m_ProductDefinition.BaseInfo.Id);
             return m_ProductDefinition.GetAllProduct(hasBonus);
         }
 
-        private List<ProductItem> GetAdditionalProductInternal()
+        private List<ProductItemConfig> GetAdditionalProductInternal()
         {
             return m_ProductDefinition.GetAdditionalProduct();
         }
-        private ProductItem GetMainProductInternal()
+        private ProductItemConfig GetMainProductInternal()
         {
             return m_ProductDefinition.MainProduct;
         }
-        private ProductItem GetBonusProductInternal()
+        private ProductItemConfig GetBonusProductInternal()
         {
             return m_ProductDefinition.BonusProduct;
         }

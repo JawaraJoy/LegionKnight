@@ -5,7 +5,7 @@ namespace LegionKnight
 {
     public class BadgeView : UIView
     {
-        private BadgeDefinition m_Definition;
+        private BadgeConfig m_Definition;
 
         [SerializeField]
         private Image m_Icon;
@@ -16,7 +16,7 @@ namespace LegionKnight
 
         private BadgeInfoPanel m_InfoPanel;
         private LootedPanel m_LootedPanel;
-        public BadgeDefinition Definition => m_Definition;
+        public BadgeConfig Definition => m_Definition;
 
         private BadgeManager m_BadgeManager;
         private BadgeManager GetBadgeManager()
@@ -51,12 +51,12 @@ namespace LegionKnight
             }
             return m_InfoPanel;
         }
-        public void Init(BadgeDefinition defi)
+        public void Init(BadgeConfig defi)
         {
             InitInternal(defi);
         }
 
-        private void InitInternal(BadgeDefinition defi)
+        private void InitInternal(BadgeConfig defi)
         {
             m_Definition = defi;
             if (GetBadgeManager().HasBadge(defi, out BadgeContent content))

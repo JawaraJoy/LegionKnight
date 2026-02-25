@@ -48,7 +48,7 @@ namespace Rush
                 m_SkillController = skillController;
                 foreach(PlatformConfig config in m_PlatformConfigs)
                 {
-                    RushGameManager.Instance.PlatformManager.AddPreparedPlatformConfig(config, this);
+                    RushGameManager.Instance.StageManager.PlatformHandler.AddPreparedPlatformConfig(config, this);
                     
                     
                 }

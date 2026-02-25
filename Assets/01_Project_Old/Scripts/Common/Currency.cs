@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,7 +8,7 @@ namespace LegionKnight
     public partial class Currency 
     {
         [SerializeField]
-        private CurrencyDefinition m_CurrencyDefinition;
+        private ItemConfig m_ItemConfig;
         [SerializeField]
         private int m_Amount;
         [SerializeField]
@@ -16,9 +17,8 @@ namespace LegionKnight
         private UnityEvent<Currency> m_OnCurrencyChanged = new();
         [SerializeField]
         private UnityEvent<int> m_OnCurrencyAmountGet = new();
-        public CurrencyDefinition CurrencyDefinition => m_CurrencyDefinition;
+        public ItemConfig ItemConfig => m_ItemConfig;
         public int Amount => m_Amount;
-        public string Id => m_CurrencyDefinition.Id;
 
         public void Init()
         {
@@ -42,9 +42,9 @@ namespace LegionKnight
             m_Amount -= remove;
             OnCurrencyAmountChangedInvoke(m_Amount);
         }
-        public Currency(CurrencyDefinition currencyDefinition, int amount)
+        public Currency(ItemConfig itemConfig, int amount)
         {
-            m_CurrencyDefinition = currencyDefinition;
+            m_ItemConfig = itemConfig;
             m_Amount = amount;
         }
         private void OnCurrencyAmountChangedInvoke(int amount)

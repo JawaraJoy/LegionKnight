@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -6,7 +7,7 @@ namespace LegionKnight
     {
         public static string CharacterPanelId = "Character";
     }
-    public partial class CharacterPanel : PanelView
+    public partial class HeroPanel : PanelView
     {
         public override string UniqueId => PanelId.CharacterPanelId;
 
@@ -35,10 +36,10 @@ namespace LegionKnight
                 m_CharacterSelectionView.HideAll();
             }
         }
-        public void ShowRarity(int rarityIndex)
+        public void ShowRarity(RarityConfig rarityConfig)
         { 
-            m_CharacterSelectionView.ShowRarity(rarityIndex);
-            m_PlatformSelectionView.ShowRarity(rarityIndex);
+            m_CharacterSelectionView.ShowRarity(rarityConfig);
+            m_PlatformSelectionView.ShowRarity(rarityConfig);
             Adjust();
         }
         public void ShowAll()

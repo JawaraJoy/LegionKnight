@@ -1,4 +1,5 @@
 using NaughtyAttributes;
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,10 +17,10 @@ namespace LegionKnight
         [SerializeField]
         private Button m_QuickAccessButton;
 
-        private CharacterUnit m_CharacterUnit;
+        private HeroUnit m_CharacterUnit;
         [SerializeField, ReadOnly]
         private Currency m_CurrencyUsed;
-        public CharacterUnit CharacterUnit => m_CharacterUnit;
+        public HeroUnit CharacterUnit => m_CharacterUnit;
         public Currency CurrencyUsed => m_CurrencyUsed;
 
         [SerializeField]
@@ -29,9 +30,9 @@ namespace LegionKnight
         private TextMeshProUGUI m_UpgradeButtonText;
 
         [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnInit = new();
+        private UnityEvent<HeroUnitConfig> m_OnInit = new();
 
-        private CharacterDefinition m_CharacterUsed;
+        private HeroUnitConfig m_HeroUsed;
         private void OnEnable()
         {
             //m_CharacterUsed = Player.Instance.UsedCharacter;
@@ -44,25 +45,25 @@ namespace LegionKnight
 
         public void Refresh()
         {
-            if (m_CharacterUsed == null)
+            if (m_HeroUsed == null)
             {
-                m_CharacterUsed = Player.Instance.SelectedCharacter;
+                m_HeroUsed = Player.Instance.HeroDeck.SelectedHero;
             }
-            InitInternal(m_CharacterUsed);
+            InitInternal(m_HeroUsed);
         }
-        private void InitInternal(CharacterDefinition defi)
+        private void InitInternal(HeroUnitConfig heroConfig)
         {
-            m_CharacterUsed = defi;
-            CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
+            m_HeroUsed = heroConfig;
+            HeroUnit unit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
             m_CharacterUnit = unit;
 
-            CurrencyDefinition levelUpCurDefi = unit.ShardDefinition;
-            int levelUpCurAmount = unit.CurrentMaxExp;
+            ItemConfig levelUpItemRequirment = unit.LevelFormulaDefinition.ItemRequirmentConfig;
+            int levelUpCurAmount = unit.LevelFormulaDefinition.GetCurrentMaxExperience(unit.Level);
 
-            Currency levelUpCurrency = new(levelUpCurDefi, levelUpCurAmount);
+            Currency levelUpCurrency = new(levelUpItemRequirment, levelUpCurAmount);
 
-            bool isMaxLevel = unit.Level >= unit.MaxLevel;
-            bool canLevelUp = Player.Instance.GetCurrencyAmount(levelUpCurDefi) >= levelUpCurAmount && !isMaxLevel;
+            bool isMaxLevel = unit.Level >= unit.LevelFormulaDefinition.MaxLevel;
+            bool canLevelUp = Player.Instance.CurrencyControl.GetCurrencyAmount(levelUpItemRequirment) >= levelUpCurAmount && !isMaxLevel;
 
             m_CurrencyUsed = levelUpCurrency;
 
@@ -85,11 +86,11 @@ namespace LegionKnight
                 m_UpgradeButtonText.text = "Max Level";
             }
             m_QuickAccessButton.gameObject.SetActive(!canLevelUp);
-            m_OnInit?.Invoke(defi);
+            m_OnInit?.Invoke(heroConfig);
         }
-        public void Init(CharacterDefinition defi)
+        public void Init(HeroUnitConfig heroConfig)
         {
-            InitInternal(defi);
+            InitInternal(heroConfig);
         }
 
         private void ShowUpgradeView()

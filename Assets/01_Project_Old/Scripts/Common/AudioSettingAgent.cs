@@ -23,17 +23,17 @@ namespace LegionKnight
         }
         private void SetVolumeInternal(float volume)
         {
-            GameSetting.Instance.SetVolume(m_ParameterName, volume);
+            GameSetting.Instance.AudioSetting.SetVolume(m_ParameterName, volume);
         }
 
         public void SetIsMute(bool enable)
         {
-            GameSetting.Instance.SetIsMute(m_ParameterName, enable);
+            GameSetting.Instance.AudioSetting.SetIsMute(m_ParameterName, enable);
         }
         private void OnEnableInvoke()
         {
-            float volume = GameSetting.Instance.GetVolume(m_ParameterName);
-            bool unMuted = !GameSetting.Instance.GetIsMuted(m_ParameterName);
+            float volume = GameSetting.Instance.AudioSetting.GetVolume(m_ParameterName);
+            bool unMuted = !GameSetting.Instance.AudioSetting.GetIsMuted(m_ParameterName);
 
             m_OnEnableVolume?.Invoke(volume);
             m_OnEnableMuted?.Invoke(unMuted);

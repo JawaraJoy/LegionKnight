@@ -22,7 +22,7 @@ namespace LegionKnight
         private const string DailyRewardKeyInternal = "dailyreward";
         public static string DailyRewardKey => DailyRewardKeyInternal;
 
-        private DailyRewardData GetDailyRewardDataInternal(LootDefinition loot)
+        private DailyRewardData GetDailyRewardDataInternal(LootChestDefinition loot)
         {
             foreach (var reward in m_Rewards)
             {
@@ -36,7 +36,7 @@ namespace LegionKnight
             return null;
         }
 
-        public DailyRewardData GetDailyRewardData(LootDefinition loot)
+        public DailyRewardData GetDailyRewardData(LootChestDefinition loot)
         {
             return GetDailyRewardDataInternal(loot);
         }
@@ -132,12 +132,12 @@ namespace LegionKnight
         [SerializeField]
         private DailyRewardState m_State = DailyRewardState.OFF;
         [SerializeField]
-        private LootDefinition m_Reward;
+        private LootChestDefinition m_Reward;
 
         public DailyRewardState State { get => m_State; set => m_State = value; }
-        public LootDefinition Reward => m_Reward;
+        public LootChestDefinition Reward => m_Reward;
 
-        public DailyRewardData(DailyRewardState state, LootDefinition reward)
+        public DailyRewardData(DailyRewardState state, LootChestDefinition reward)
         {
             m_State = state;
             m_Reward = reward;

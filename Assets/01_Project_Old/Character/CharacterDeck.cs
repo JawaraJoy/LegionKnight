@@ -2,114 +2,102 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Rush;
 
 namespace LegionKnight
 {
     public partial class CharacterDeck : MonoBehaviour
     {
         [SerializeField]
-        private CharacterDefinition m_DefaultCharacter;
+        private HeroUnitConfig m_DefaultHeroConfig;
         [SerializeField]
-        private CharacterDefinition m_UsedCharacter;
+        private HeroUnitConfig m_UsedHeroConfig;
         [SerializeField]
-        private CharacterDefinition m_SelectedCharacter;
+        private HeroUnitConfig m_SelectedHeroConfig;
         [SerializeField]
-        private List<CharacterUnit> m_CharacterUnits = new();
+        private List<HeroUnit> m_HeroUnits = new();
         [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnInitialized = new();
+        private UnityEvent<HeroUnitConfig> m_OnInitialized = new();
         [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnCharacterUsed = new();
+        private UnityEvent<HeroUnitConfig> m_OnCharacterUsed = new();
         [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnSelectedCharacter = new();
+        private UnityEvent<HeroUnitConfig> m_OnSelectedCharacter = new();
         [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnCharacterLevelUp = new();
+        private UnityEvent<HeroUnitConfig> m_OnCharacterLevelUp = new();
         [SerializeField]
         private UnityEvent<int> m_OnCharacterLevelUpAmount = new();
         [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnCharacterStarUp = new();
+        private UnityEvent<HeroUnitConfig> m_OnCharacterStarUp = new();
         [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnCharacterOwned = new();
+        private UnityEvent<HeroUnitConfig> m_OnCharacterOwned = new();
         [SerializeField]
         private UnityEvent<int> m_OnCharacterOwnedAmount = new();
 
-        public UnityEvent<CharacterDefinition> OnCharacterLevelUp => m_OnCharacterLevelUp;
-        public UnityEvent<CharacterDefinition> OnCharacterStarUp => m_OnCharacterStarUp;
-        public UnityEvent<CharacterDefinition> OnCharacterOwned => m_OnCharacterOwned;
+        public UnityEvent<HeroUnitConfig> OnCharacterLevelUp => m_OnCharacterLevelUp;
+        public UnityEvent<HeroUnitConfig> OnCharacterStarUp => m_OnCharacterStarUp;
+        public UnityEvent<HeroUnitConfig> OnCharacterOwned => m_OnCharacterOwned;
         public UnityEvent<int> OnCharacterOwnedAmount => m_OnCharacterOwnedAmount;
         public UnityEvent<int> OnCharacterLevelUpAmount => m_OnCharacterLevelUpAmount;
-        public UnityEvent<CharacterDefinition> OnInitialized => m_OnInitialized;
-        public UnityEvent<CharacterDefinition> OnCharacterUsed => m_OnCharacterUsed;
-        public UnityEvent<CharacterDefinition> OnSelectedCharacter => m_OnSelectedCharacter;
+        public UnityEvent<HeroUnitConfig> OnInitialized => m_OnInitialized;
+        public UnityEvent<HeroUnitConfig> OnCharacterUsed => m_OnCharacterUsed;
+        public UnityEvent<HeroUnitConfig> OnSelectedCharacter => m_OnSelectedCharacter;
 
-        public CharacterDefinition DefaultCharacter => m_DefaultCharacter;
-        public List<CharacterUnit> CharacterUnits => m_CharacterUnits;
-        public CharacterDefinition UsedCharacter => m_UsedCharacter;
-        public CharacterDefinition SelectedCharacter => m_SelectedCharacter;
-
-        private void Start()
+        public HeroUnitConfig DefaultHero => m_DefaultHeroConfig;
+        public List<HeroUnit> HeroUnits => m_HeroUnits;
+        public HeroUnitConfig UsedHero => m_UsedHeroConfig;
+        public HeroUnitConfig SelectedHero => m_SelectedHeroConfig;
+        private HeroUnit GetHeroUnitInternal(HeroUnitConfig config)
         {
-            foreach (CharacterUnit unit in m_CharacterUnits)
-            {
-                //unit.Init();
-                unit.Definition.InitAsOwner();
-            }
-        }
-        public StandbyPlatformDefinition GetHeroStandbyPlatform()
-        {
-            return GetCharacterUnitInternal(m_UsedCharacter).UniquePlatform;
-        }
-        private CharacterUnit GetCharacterUnitInternal(CharacterDefinition definition)
-        {
-            CharacterUnit match = m_CharacterUnits.Find(x => x.Definition == definition);
+            HeroUnit match = m_HeroUnits.Find(x => x.HeroConfig == config);
             return match;
         }
-        private CharacterUnit GetCharacterUnitInternal(string id)
+        private HeroUnit GetHeroUnitInternal(string id)
         {
-            CharacterUnit match = m_CharacterUnits.Find(x => x.Definition.Id == id);
+            HeroUnit match = m_HeroUnits.Find(x => x.HeroConfig.BaseInfo.Id == id);
             return match;
         }
-        public CharacterUnit GetCharacterUnit(CharacterDefinition definition)
+        public HeroUnit GetHeroUnit(HeroUnitConfig config)
         {
-            return GetCharacterUnitInternal(definition);
+            return GetHeroUnitInternal(config);
         }
 
         public void Init()
         {
             if (UnityService.Instance.HasData("usedcharacter"))
             {
-                m_UsedCharacter = GetCharacterUnitInternal(UnityService.Instance.GetData<string>("usedcharacter")).Definition;
-                m_SelectedCharacter = m_UsedCharacter;
+                m_UsedHeroConfig = GetHeroUnitInternal(UnityService.Instance.GetData<string>("usedcharacter")).HeroConfig;
+                m_SelectedHeroConfig = m_UsedHeroConfig;
             }
             else
             {
-                m_UsedCharacter = m_DefaultCharacter;
-                UnityService.Instance.SaveData("usedcharacter", m_UsedCharacter.Id);
+                m_UsedHeroConfig = m_DefaultHeroConfig;
+                UnityService.Instance.SaveData("usedcharacter", m_UsedHeroConfig.BaseInfo.Id);
             }
             OnInitializedInvoke();
         }
         private void OnInitializedInvoke()
         {
-            m_OnInitialized?.Invoke(m_UsedCharacter);
-            foreach(CharacterUnit unit in m_CharacterUnits)
+            m_OnInitialized?.Invoke(m_UsedHeroConfig);
+            foreach(HeroUnit unit in m_HeroUnits)
             {
                 unit.Init();
                 //unit.Definition.InitAsOwner();
             }
         }
-        public void SetOwned(CharacterDefinition defi, bool set)
+        public void SetOwned(HeroUnitConfig config, bool set)
         {
-            GetCharacterUnitInternal(defi).SetOwned(set);
+            GetHeroUnitInternal(config).SetOwned(set);
             if (set)
             {
-                OnCharacterOwnedInvoke(defi);
+                OnHeroOwnedInvoke(config);
             }
         }
 
-        private void OnCharacterOwnedInvoke(CharacterDefinition defi)
+        private void OnHeroOwnedInvoke(HeroUnitConfig config)
         {
-            m_OnCharacterOwned?.Invoke(defi);
+            m_OnCharacterOwned?.Invoke(config);
             int ownedAmount = 0;
-            foreach (CharacterUnit unit in m_CharacterUnits)
+            foreach (HeroUnit unit in m_HeroUnits)
             {
                 if (unit.Owned)
                 {
@@ -121,43 +109,32 @@ namespace LegionKnight
 
         public void SetUsedCharacter()
         {
-            m_UsedCharacter = m_SelectedCharacter;
-            GetCharacterUnitInternal(m_UsedCharacter).SetIsUsed(true);
-            foreach (CharacterUnit unit in m_CharacterUnits)
+            m_UsedHeroConfig = m_SelectedHeroConfig;
+            GetHeroUnitInternal(m_UsedHeroConfig).SetIsUsed(true);
+            foreach (HeroUnit unit in m_HeroUnits)
             {
-                if (unit.Definition != m_UsedCharacter)
+                if (unit.HeroConfig != m_UsedHeroConfig)
                 {
                     unit.SetIsUsed(false);
                 }
             }
-            UnityService.Instance.SaveData("usedcharacter", m_UsedCharacter.Id);
+            UnityService.Instance.SaveData("usedcharacter", m_UsedHeroConfig.BaseInfo.Id);
             OnCharacterUsedInvoke();
         }
-        public void SetSelectedCharacter(CharacterDefinition defi)
+        public void SetSelectedCharacter(HeroUnitConfig config)
         {
-            m_SelectedCharacter = defi;
+            m_SelectedHeroConfig = config;
             OnSelectedCharacterInvoke();
         }
         private void OnCharacterUsedInvoke()
         {
-            m_OnCharacterUsed?.Invoke(m_UsedCharacter);
+            m_OnCharacterUsed?.Invoke(m_UsedHeroConfig);
         }
         private void OnSelectedCharacterInvoke()
         {
-            m_OnSelectedCharacter?.Invoke(m_SelectedCharacter);
-            CanvasManager.Instance.SetCharacterSelected(m_SelectedCharacter);
+            m_OnSelectedCharacter?.Invoke(m_SelectedHeroConfig);
+            CanvasManager.Instance.SetHeroSelected(m_SelectedHeroConfig);
         }
-        public void AddExp(CharacterDefinition defi, int exp)
-        {
-            GetCharacterUnitInternal(defi).AddExp(exp);
-        }
-        public int GetLevel(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Level;
-        public int GetExp(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Exp;
-        public int GetStar(CharacterDefinition defi) => GetCharacterUnitInternal(defi).Star;
-        public int GetCurrentMaxExp(CharacterDefinition defi) => GetCharacterUnitInternal(defi).CurrentMaxExp;
-        public CurrencyDefinition GetShardCurrency(CharacterDefinition defi)
-        {
-            return GetCharacterUnitInternal(defi).ShardDefinition;
-        }
+        
     }
 }

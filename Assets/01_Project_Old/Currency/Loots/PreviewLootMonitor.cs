@@ -9,7 +9,7 @@ namespace LegionKnight
         {
             if (m_LootStorage == null)
             {
-                m_LootStorage = GameManager.Instance.GetLootStorageManager();
+                m_LootStorage = GameManager.Instance.LootStorageManager;
             }
             return m_LootStorage;
         }

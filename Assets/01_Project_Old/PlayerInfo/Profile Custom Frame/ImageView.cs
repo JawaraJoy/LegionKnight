@@ -63,7 +63,7 @@ namespace LegionKnight
         }
         private void RefreshInternal()
         {
-            m_Icon.sprite = m_Definition.Icon;
+            m_Icon.sprite = m_Definition.CollectibleField.Icon;
             bool hasAnim = m_Definition.runtimeAnim != null;
             m_Animator.enabled = hasAnim;
 

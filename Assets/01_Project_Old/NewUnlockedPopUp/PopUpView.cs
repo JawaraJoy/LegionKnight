@@ -1,3 +1,4 @@
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,10 +14,10 @@ namespace LegionKnight
 
         public void ShowPopUp(ScriptableObject so)
         {
-            if (so is IPopUpInfo popUp)
+            if (so is CollectibleConfig popUp)
             {
-                m_TextPopUp.text = popUp.Info;
-                m_Icon.sprite = popUp.Icon;
+                m_TextPopUp.text = popUp.BaseInfo.Description;
+                m_Icon.sprite = popUp.CollectibleField.Icon;
             }
             ShowInternal();
         }

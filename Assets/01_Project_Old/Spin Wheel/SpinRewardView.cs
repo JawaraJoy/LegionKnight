@@ -1,3 +1,4 @@
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -40,10 +41,10 @@ namespace LegionKnight
         {
             m_FrameBack.color = m_Definition.FrameColor;
             LootField firstLoot = m_Definition.Rewards.LootFields[0];
-            CurrencyApplier(firstLoot.Item, firstLoot.Amount);
-            CharacterApplier(firstLoot.Item);
-            StandbyPlatformApplier(firstLoot.Item, firstLoot.Amount);
-            EnergyApplier(firstLoot.Item, firstLoot.Amount);
+            CurrencyApplier(firstLoot.ItemLoot, firstLoot.Amount);
+            CharacterApplier(firstLoot.ItemLoot);
+            StandbyPlatformApplier(firstLoot.ItemLoot, firstLoot.Amount);
+            EnergyApplier(firstLoot.ItemLoot, firstLoot.Amount);
         }
         protected override void ShowInternal()
         {
@@ -81,30 +82,30 @@ namespace LegionKnight
         }
         private void CurrencyApplier(ScriptableObject defi, int amount)
         {
-            if (defi is CurrencyDefinition currency)
+            if (defi is ItemConfig currency)
             {
-                InitInternal(currency.Icon, amount);
+                InitInternal(currency.CollectibleField.Icon, amount);
             }
         }
         private void CharacterApplier(ScriptableObject defi)
         {
-            if (defi is CharacterDefinition character)
+            if (defi is HeroUnitConfig character)
             {
-                InitInternal(character.SmallIcon, 0);
+                InitInternal(character.CollectibleField.Icon, 0);
             }
         }
         private void StandbyPlatformApplier(ScriptableObject defi, int amount)
         {
-            if (defi is StandbyPlatformDefinition platform)
+            if (defi is PlatformConfig platform)
             {
-                InitInternal(platform.Icon, amount);
+                InitInternal(platform.CollectibleField.Icon, amount);
             }
         }
         private void EnergyApplier(ScriptableObject defi, int amount)
         {
-            if (defi is EnergyDefinition energy)
+            if (defi is EnergyConfig energy)
             {
-                InitInternal(energy.Icon, amount);
+                InitInternal(energy.CollectibleField.Icon, amount);
             }
         }
     }

@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace LegionKnight
         public virtual void ShowResults(SellProduct product)
         {
             bool isBonusAvailable = product.IsBonusAvailable;
-            List<object> items = new (product.GetAllProductItems(isBonusAvailable));
+            List<CollectibleConfig> items = new (product.GetAllProductItems(isBonusAvailable));
             ShowResultsInternal(items);
         }
         private void OnEnable()

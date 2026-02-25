@@ -16,7 +16,7 @@ namespace LegionKnight
         protected override void OnShowInvoke()
         {
             base.OnShowInvoke();
-            Player.Instance.SetPause(true);
+            //Player.Instance.SetPause(true);
             m_Showed = true;
             UnityService.Instance.SaveData(m_StartGameKey, true);
         }
@@ -24,7 +24,7 @@ namespace LegionKnight
         {
             base.OnHideInvoke();
             //GameTimeScale.SetTimeScale(1);
-            Player.Instance.SetPause(false);
+            //Player.Instance.SetPause(false);
         }
 
         protected override void ShowInternal()
@@ -36,8 +36,8 @@ namespace LegionKnight
             }
             if (m_Showed)
             {
-                Player.Instance.SetPause(false);
-                GameManager.Instance.Play();
+                //Player.Instance.SetPause(false);
+                //GameManager.Instance.Play();
             }
             else
             {

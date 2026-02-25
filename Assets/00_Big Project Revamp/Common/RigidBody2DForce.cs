@@ -59,7 +59,6 @@ namespace Rush
         private IEnumerator StopForcing()
         {
             yield return new WaitForSeconds(m_StopForceDelay);
-            GameManager.Instance.ApplyPotOfLife();
             m_Rb.AddForce(Vector2.zero, ForceMode2D.Impulse);
         }
     }

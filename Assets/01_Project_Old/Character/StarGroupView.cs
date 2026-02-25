@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -7,11 +8,11 @@ namespace LegionKnight
         [SerializeField]
         private StarView[] m_StarViews;
 
-        public void Init(CharacterDefinition definition)
+        public void Init(HeroUnitConfig heroConfig)
         {
-            CharacterUnit characterUnit = Player.Instance.GetCharacterUnit(definition);
-            int maxStar = characterUnit.MaxStar;
-            int openedStar = characterUnit.Star;
+            HeroUnit heroUnit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
+            int maxStar = heroUnit.MaxStar;
+            int openedStar = heroUnit.Star;
 
             foreach (StarView starView in m_StarViews)
             {

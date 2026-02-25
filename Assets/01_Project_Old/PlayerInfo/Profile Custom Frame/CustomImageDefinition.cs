@@ -1,28 +1,16 @@
 using Spine.Unity;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Rush;
 
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "Custom Image", menuName = "Legion Knight/Custom Image")]
-    public partial class CustomImageDefinition : ScriptableObject, IDescriptable
+    public partial class CustomImageDefinition : CollectibleConfig
     {
-        [SerializeField]
-        private string m_Id;
-        [SerializeField]
-        private string m_Label;
-        [SerializeField, TextArea]
-        private string m_Description;
-        [SerializeField]
-        private Sprite m_Icon;
         [SerializeField]
         private RuntimeAnimatorController m_runtimeAnim;
         [SerializeField]
         private CustomImageType m_Type;
-        public string Id => m_Id;
-        public string Label => m_Label;
-        public string Description => m_Description;
-        public Sprite Icon => m_Icon;
         public RuntimeAnimatorController runtimeAnim => m_runtimeAnim;
         public CustomImageType Type => m_Type;
 

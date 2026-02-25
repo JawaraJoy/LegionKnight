@@ -11,7 +11,7 @@ namespace Rush
         [SerializeField]
         private bool m_IsTargeted;
         [SerializeField, Tooltip("How many times this unit can reborn after death")]
-        private int m_RebornCount = 0;
+        private int m_MaxReborn = 0;
 
         [SerializeField, MMReadOnly]
         private int m_RemainingReborn;
@@ -47,6 +47,7 @@ namespace Rush
         private UnityEvent<IAbilityContext> m_OnDamageTaken;
         [SerializeField]
         private UnityEvent<IAbilityContext> m_OnDeath;
+        public UnityEvent<IAbilityContext> OnDeath => m_OnDeath;
 
         private const int m_MinimumDefendReduction = 0;
         public int RemainingReborn => m_RemainingReborn;
@@ -73,14 +74,14 @@ namespace Rush
 
         public bool IsTargeted => m_IsTargeted;
 
-        public bool IsAlive => m_Health <= 0;
+        public bool IsAlive => m_Health >= 0;
         public Transform TargetTransform => gameObject.transform;
 
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
-            m_RebornCount = 0;
-            m_RemainingReborn = 0;
+            m_MaxReborn = unitOwner.Config.RebornCount;
+            m_RemainingReborn = m_MaxReborn;
             ReborInternal(1f); // always reborn in 100% health
         }
         public void Reborn(float healthRate, int fixedShield = 0, int barrier = 0, float immortalDuration = 0f) // change to rebornContext if too many argument in the future
@@ -185,13 +186,18 @@ namespace Rush
             }
             m_OnHealed?.Invoke(new HealerContext(healer, this));
         }
-        private void OnHealthDepleted()
+        private void OnHealthDepleted(IAbilityContext context)
         {
+            // Masih punya reborn? -> reborn saja, JANGAN OnDeath
             if (m_RemainingReborn > 0)
             {
                 AddRemaininRebornCountInternal(-1);
-                RushGameManager.Instance.StartCoroutine(RebornDelayRoutine(1f)); // optional delay
+                RushGameManager.Instance.StartCoroutine(RebornDelayRoutine(1f));
+                return;
             }
+
+            // Reborn habis -> baru benar-benar mati
+            OnDeathInvoke(context);
         }
         private IEnumerator RebornDelayRoutine(float delay)
         {
@@ -239,7 +245,7 @@ namespace Rush
 
             if (m_Health <= 0)
             {
-                OnHealthDepleted();
+                OnHealthDepleted(context);
             }
             OnDeathInvoke(context);
         }

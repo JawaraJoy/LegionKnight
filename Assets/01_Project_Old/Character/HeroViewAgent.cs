@@ -1,13 +1,14 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
 {
     public class HeroViewAgent : MonoBehaviour
     {
-        public void OnCharacterLevelUpCharacterView(CharacterDefinition defi)
+        public void OnCharacterLevelUpCharacterView(HeroUnitConfig heroConfig)
         {
-            CharacterPanel cp = CanvasManager.Instance.GetPanel<CharacterPanel>();
-            cp.SetCharacterSelected(defi);
+            HeroPanel cp = CanvasManager.Instance.GetPanel<HeroPanel>();
+            cp.SetHeroSelected(heroConfig);
         }
     }
 }

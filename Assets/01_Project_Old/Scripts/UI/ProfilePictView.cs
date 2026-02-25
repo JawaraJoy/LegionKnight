@@ -65,7 +65,7 @@ namespace LegionKnight
             {
                 if (icon.runtimeAnim == null)
                 {
-                    m_ProfileIcon.sprite = icon.Icon;
+                    m_ProfileIcon.sprite = icon.CollectibleField.Icon;
                     m_AnimatorIcon.enabled = false;
                 }
                 else
@@ -80,7 +80,7 @@ namespace LegionKnight
             {
                 if (frame.runtimeAnim == null)
                 {
-                    m_ProfileBackground.sprite = frame.Icon;
+                    m_ProfileBackground.sprite = frame.CollectibleField.Icon;
                     m_AnimatorFrame.enabled = false;
                 }
                 else

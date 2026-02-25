@@ -1,36 +1,31 @@
 using MoreMountains.Tools;
-using Spine.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
+using Rush;
 
 namespace LegionKnight
 {
     public class AnimationGachaPanel : PanelView
     {
         [SerializeField]
-        private SpineAnimDefinition m_PlayGachaCommon;
+        private AnimationClipConfig m_PlaySummonAnimationClip;
         [SerializeField]
-        private SpineAnimDefinition m_PlayGachaRare;
+        private AvatarSpineUI m_SpineVFX;
         [SerializeField]
-        private SpineAnimDefinition m_PlayGachaEpic;
-        [SerializeField]
-        private SpineUI m_SpineVFX;
-        [SerializeField]
-        private SpineUI m_CharacterSpineUI;
+        private AvatarSpineUI m_CharacterSpineUI;
         [SerializeField]
         private AnimationItemView m_AnimationItemView;
-        public SpineUI SpineVFX => m_SpineVFX;
+        public AvatarSpineUI SpineVFX => m_SpineVFX;
         public AnimationItemView AnimationItemView => m_AnimationItemView;
 
         [SerializeField, MMReadOnly]
         private int m_GachaIndex = 0;
         [SerializeField, MMReadOnly]
-        private List<GachaReward> m_GachaPulled = new List<GachaReward>();
+        private List<GachaRewardConfig> m_GachaPulled = new List<GachaRewardConfig>();
         [SerializeField]
-        private UnityEvent<List<GachaReward>> m_OnPreviewDone;
+        private UnityEvent<List<GachaRewardConfig>> m_OnPreviewDone;
         protected override void HideInternal()
         {
             base.HideInternal();
@@ -39,15 +34,15 @@ namespace LegionKnight
             m_AnimationItemView.Hide();
             m_SpineVFX.Hide();
         }
-        public void SpawnGacha(List<GachaReward> gacharRewards)
+        public void SpawnGacha(List<GachaRewardConfig> gacharRewards)
         {
             m_GachaIndex = 0;
             m_GachaPulled.Clear();
-            m_GachaPulled = new List<GachaReward>(gacharRewards);    
+            m_GachaPulled = new List<GachaRewardConfig>(gacharRewards);    
             
             if (m_GachaPulled.Count > 0)
             {
-                GachaReward gachaReward = m_GachaPulled[m_GachaIndex];
+                GachaRewardConfig gachaReward = m_GachaPulled[m_GachaIndex];
                 ShowPull(gachaReward);
             }
             else
@@ -63,12 +58,12 @@ namespace LegionKnight
                 HideInternal();
                 return;
             }
-            GachaReward so = m_GachaPulled[m_GachaIndex];
+            GachaRewardConfig so = m_GachaPulled[m_GachaIndex];
             ShowPull(so);
         }
 
         private Coroutine m_PlayCoroutine;
-        private void ShowPull(GachaReward gachaReward)
+        private void ShowPull(GachaRewardConfig gachaReward)
         {
             
             if (m_PlayCoroutine != null)
@@ -77,10 +72,10 @@ namespace LegionKnight
                 m_PlayCoroutine = null;
             }
             
-            if (gachaReward.Definition is CharacterDefinition character)
+            if (gachaReward.GachaItemConfig is HeroUnitConfig heroConfig)
             {
                 ShowInternal();
-                m_PlayCoroutine = StartCoroutine(PlayGachaEffect(gachaReward, character));
+                m_PlayCoroutine = StartCoroutine(PlayGachaEffect(gachaReward, heroConfig));
             }
             else
             {
@@ -92,28 +87,15 @@ namespace LegionKnight
         }
         [SerializeField]
         private float m_RevealDelay = 3f;
-        private IEnumerator PlayGachaEffect(GachaReward reward, CharacterDefinition character)
+        private IEnumerator PlayGachaEffect(GachaRewardConfig reward, HeroUnitConfig heroConfig)
         {
             m_AnimationItemView.Init(reward);
             m_AnimationItemView.Hide();
             m_CharacterSpineUI.Hide();
             m_SpineVFX.Show();
-            switch (character.Rarity)
-            {
-                case Rarity.Common:
-                    m_SpineVFX.Play(m_PlayGachaCommon);
-                    break;
-                case Rarity.Rare:
-                    m_SpineVFX.Play(m_PlayGachaRare);
-                    break;
-                case Rarity.Epic:
-                    m_SpineVFX.Play(m_PlayGachaEpic);
-                    break;
-                default:
-                    Debug.LogError($"Out of context {typeof(Rarity)}");
-                    break;
-            }
-            m_CharacterSpineUI.SetSkeletonDataAsset(character);
+            m_SpineVFX.PlayClip(m_PlaySummonAnimationClip);
+            m_SpineVFX.SetColor(heroConfig.CollectibleField.RarityConfig.Color);
+            m_CharacterSpineUI.SetSkeletonDataAsset(heroConfig.SkeletonDataAsset);
             yield return new WaitForSeconds(m_RevealDelay);
             m_CharacterSpineUI.Show();
         }

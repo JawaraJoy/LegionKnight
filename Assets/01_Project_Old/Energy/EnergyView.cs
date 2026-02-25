@@ -14,8 +14,8 @@ namespace LegionKnight
         private Slider m_Slider;
 
         [SerializeField]
-        private EnergyDefinition m_Definition;
-        public EnergyDefinition Definition => m_Definition;
+        private EnergyConfig m_Definition;
+        public EnergyConfig Definition => m_Definition;
         protected override void ShowInternal()
         {
             base.ShowInternal();
@@ -28,9 +28,9 @@ namespace LegionKnight
         }
         public void SetEnergyInternal(Energy energy)
         {
-            m_EnergyIcon.sprite = energy.Definition.Icon;
+            m_EnergyIcon.sprite = energy.Config.CollectibleField.Icon;
             int currentAmount = energy.Amount;
-            int maxAmount = energy.Definition.MaxAmount;
+            int maxAmount = energy.Config.MaxAmount;
             m_EnergyAmountText.text = $"{currentAmount}/{maxAmount}";
             float rateVal = (float)currentAmount / (float)maxAmount;
             m_Slider.value = rateVal;

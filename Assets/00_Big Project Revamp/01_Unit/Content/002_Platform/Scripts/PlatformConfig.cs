@@ -4,14 +4,12 @@ using UnityEngine;
 namespace Rush
 {
     [CreateAssetMenu(fileName = "Platform", menuName = "Rush/Unit/Platform", order = 1)]
-    public class PlatformConfig : SkillConfig, IHasIcon
+    public class PlatformConfig : SkillConfig
     {
         [SerializeField]
         private Platform2D m_PlatformPrefab;
         [SerializeField]
         private int m_PrewarmCount = 5;
-        [SerializeField]
-        private Sprite m_Icon;
         [SerializeField, Range(0.01f, 1f)]
         private float m_ChanceToSpawn = 1f;
         [SerializeField]

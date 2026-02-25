@@ -1,8 +1,9 @@
-using System.Collections.Generic;
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Rush;
 
 namespace LegionKnight
 {
@@ -22,12 +23,12 @@ namespace LegionKnight
         private UnityEvent<int> m_OnChargeAmount;
         public string SkillName => m_SkillName;
 
-        private SkillDefinition m_SkillDefinition;
-        public void Init(SkillDefinition skillDefinition)
+        private SkillConfig m_SkillConfig;
+        public void Init(SkillConfig skillConfig)
         {
-            m_SkillDefinition = skillDefinition;
-            m_SkillName = m_SkillDefinition.SkillName;
-            m_Icon.sprite = m_SkillDefinition.Icon;
+            m_SkillConfig = skillConfig;
+            m_SkillName = m_SkillConfig.BaseInfo.Name;
+            m_Icon.sprite = m_SkillConfig.CollectibleField.Icon;
             m_SkilNameText.text = m_SkillName;
         }
         public void SetFill(float fill)

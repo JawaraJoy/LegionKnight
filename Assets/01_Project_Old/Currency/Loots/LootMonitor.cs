@@ -1,10 +1,10 @@
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using static Spine.Unity.Examples.SpineboyFootplanter;
 
 namespace LegionKnight
 {
@@ -23,28 +23,21 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnDoubledStart;
         [SerializeField]
-        private UnityEvent<ScriptableObject> m_OnLootDefiUpdate;
+        private UnityEvent<CollectibleConfig> m_OnLootDefiUpdate;
 
         public List<LootItemView> SpawnedLoots => m_SpawnedLoots;
 
-        public LootItemView GetLootItemView(LootField definition)
+        public LootItemView GetLootItemView(LootField loot)
         {
-            return GetLootViewInternal(definition);
+            return GetLootViewInternal(loot);
         }
-        private LootItemView GetLootViewInternal(LootField definition)
+        private LootItemView GetLootViewInternal(LootField loot)
         {
-            foreach (LootItemView loot in m_SpawnedLoots)
+            foreach (LootItemView lootView in m_SpawnedLoots)
             {
-                if (loot.Definition is LootField lootField)
+                if (lootView.LootField.ItemLoot.BaseInfo.Id == loot.ItemLoot.BaseInfo.Id)
                 {
-                    if (lootField.Item is IDescriptable descriptable && definition.Item is IDescriptable descriptable2)
-                    {
-                        if (descriptable.Id == descriptable2.Id)
-                        {
-                            return loot;
-                        }
-                    }
-                    
+                    return lootView;
                 }
             }
             return null;
@@ -64,7 +57,7 @@ namespace LegionKnight
             yield return new WaitUntil(() => m_IsShow);
             for (int i = 0; i < loots.Count; i++)
             {   
-                Debug.Log($"Loot {i}: {loots[i].Item.name}, IsUnique: {loots[i].IsUnique}");
+                Debug.Log($"Loot {i}: {loots[i].ItemLoot.BaseInfo.Name}, IsUnique: {loots[i].ItemLoot.CollectibleField.IsUnique}");
                 yield return StartCoroutine(AddingLootView(loots[i]));
                 bool alreadySpawned = GetLootViewInternal(loots[i]) != null;
                 yield return new WaitUntil(() => alreadySpawned);
@@ -72,10 +65,10 @@ namespace LegionKnight
         }
         private IEnumerator AddingLootView(LootField loot)
         {
-            Debug.Log($"Adding loot view: {loot.Item.name} x{loot.Amount}");
+            Debug.Log($"Adding loot view: {loot.ItemLoot.BaseInfo.Name} x{loot.Amount}");
             
             bool has = GetLootViewInternal(loot) != null;
-            bool unique = loot.IsUnique;
+            bool unique = loot.ItemLoot.CollectibleField.IsUnique;
             Debug.Log($"Has loot view: {has}");
             if (has)
             {
@@ -94,6 +87,7 @@ namespace LegionKnight
                 yield return StartCoroutine(SpawningLootView(loot));
             }
             yield return new WaitForEndOfFrame();
+            OnLootUpdate(loot.ItemLoot);
         }
         public void DoubledCountDownLootAmount()
         {
@@ -101,11 +95,10 @@ namespace LegionKnight
             Debug.Log($"Doubling loot amounts for all spawned loots");
             foreach (var lootView in m_SpawnedLoots)
             {
-                if (lootView.Definition is LootField lootField)
+                if (lootView.LootField.ItemLoot is ItemConfig)
                 {
-                    int add = lootField.Amount;
+                    int add = lootView.LootField.Amount;
                     lootView.AddAmountWithCountDown(add);
-                    Debug.Log($"Counting up loot view: {lootField.Item.name} by {add}");
                 }
                 else
                 {
@@ -126,7 +119,7 @@ namespace LegionKnight
                 m_SpawnedLoots.Remove(view);
                 Addressables.ReleaseInstance(view.gameObject);
                 m_OnLootUdate?.Invoke(loot);
-                Debug.Log($"Removed loot view: {loot.Item.name}");
+                Debug.Log($"Removed loot view: {loot.ItemLoot.BaseInfo.Name}");
             }
         }
 
@@ -138,13 +131,13 @@ namespace LegionKnight
                 view.SetAmount(loot.Amount);
                 m_OnLootUdate?.Invoke(loot);
                 
-                Debug.Log($"Updated loot view: {loot.Item.name} x{loot.Amount}");
+                Debug.Log($"Updated loot view: {loot.ItemLoot.BaseInfo.Name} x{loot.Amount}");
             }
         }
 
-        private void OnLootUpdate(ScriptableObject defi)
+        private void OnLootUpdate(CollectibleConfig config)
         {
-            m_OnLootDefiUpdate?.Invoke(defi);
+            m_OnLootDefiUpdate?.Invoke(config);
         }
 
         private IEnumerator SpawningLootView(LootField loot)

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -6,26 +6,26 @@ namespace LegionKnight
     public class AppsFlyerEventManager : Singleton<AppsFlyerEventManager>
     {
         [SerializeField]
-        private EnergyDefinition m_Energy;
+        private EnergyConfig m_Energy;
         [SerializeField]
-        private CurrencyDefinition m_Coin;
+        private ItemConfig m_Coin;
         [SerializeField]
-        private CurrencyDefinition m_Diamond;
+        private ItemConfig m_Diamond;
         [SerializeField]
-        private CurrencyDefinition m_Tickets;
+        private ItemConfig m_Tickets;
         [SerializeField]
-        private CurrencyDefinition m_Shards;
+        private ItemConfig m_Shards;
         [SerializeField]
-        private CurrencyDefinition m_Exp;
+        private ItemConfig m_Exp;
         [SerializeField]
-        private CurrencyDefinition m_Score;
+        private ItemConfig m_Score;
 
-        public CurrencyDefinition Coin => m_Coin;
-        public CurrencyDefinition Diamond => m_Diamond;
-        public CurrencyDefinition Tickets => m_Tickets;
-        public CurrencyDefinition Shards => m_Shards;
-        public CurrencyDefinition Exp => m_Exp;
-        public CurrencyDefinition Score => m_Score;
+        public ItemConfig Coin => m_Coin;
+        public ItemConfig Diamond => m_Diamond;
+        public ItemConfig Tickets => m_Tickets;
+        public ItemConfig Shards => m_Shards;
+        public ItemConfig Exp => m_Exp;
+        public ItemConfig Score => m_Score;
         /*private void Start()
         {
             AppsFlyerEvents.Start();

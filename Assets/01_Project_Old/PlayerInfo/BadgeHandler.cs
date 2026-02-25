@@ -1,4 +1,4 @@
-using System.Linq;
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,11 +15,11 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<LootField[]> m_OnRewardClaimed;
 
-        private BadgeContent GetBadgeContent(BadgeDefinition badge)
+        private BadgeContent GetBadgeContent(BadgeConfig badge)
         {
             foreach (var badgeContent in m_Badges)
             {
-                if (badgeContent.Definition == badge)
+                if (badgeContent.Config == badge)
                 {
                     return badgeContent;
                 }
@@ -30,12 +30,12 @@ namespace LegionKnight
         {
             return m_Badges;
         }
-        private bool HasBadgeInternal(BadgeDefinition defi, out BadgeContent content)
+        private bool HasBadgeInternal(BadgeConfig defi, out BadgeContent content)
         {
             content = GetBadgeContent(defi);
             return content != null;
         }
-        public bool HasBadge(BadgeDefinition defi, out BadgeContent content)
+        public bool HasBadge(BadgeConfig defi, out BadgeContent content)
         {
             return HasBadgeInternal(defi, out content);
         }
@@ -46,7 +46,7 @@ namespace LegionKnight
                 badgeContent.Init();
             }
         }
-        public void SetCurrentUpgradeLevel(BadgeDefinition defi, int level)
+        public void SetCurrentUpgradeLevel(BadgeConfig defi, int level)
         {
             if (HasBadge(defi, out var content))
             {
@@ -54,7 +54,7 @@ namespace LegionKnight
                 m_OnBadgeCurrentUpgradeLevelChanged?.Invoke(content);
             }
         }
-        public void ClaimReward(BadgeDefinition defi)
+        public void ClaimReward(BadgeConfig defi)
         {
             if (HasBadge(defi, out var content))
             {
@@ -65,7 +65,7 @@ namespace LegionKnight
         private static LootField[] RewardOnUnlockInternal(BadgeContent content)
         {
             int currentLevel = content.CurrentUpgradeLevel;
-            return content.Definition.Upgrade[currentLevel].RewardOnUnlock;
+            return content.Config.Upgrade[currentLevel].RewardOnUnlock;
         }
         public static LootField[] RewardOnUnlock(BadgeContent defi)
         {
@@ -76,7 +76,7 @@ namespace LegionKnight
     public partial class BadgeContent
     {
         [SerializeField]
-        private BadgeDefinition m_Definition;
+        private BadgeConfig m_Config;
         [SerializeField]
         private bool m_IsUnlocked = false;
         [SerializeField]
@@ -86,14 +86,14 @@ namespace LegionKnight
 
         [SerializeField]
         private int m_UnlclaimedReward = 0;
-        public BadgeDefinition Definition => m_Definition;
+        public BadgeConfig Config => m_Config;
         public bool IsUnlocked => m_IsUnlocked;
         public int UnClaimedReward => m_UnlclaimedReward;
         public int CurrentUpgradeLevel => m_CurrentUpgradeLevel;
 
-        private string KEY_IS_UNLOCKED => "isunlocked" + m_Definition.Id;
-        private string KEY_UNCLAIMEDREWARD => "unclaimedreward" + m_Definition.Id;
-        private string KEY_CURRENT_UPGRADE_LEVEL => "currentupgradelevel" + m_Definition.Id;
+        private string KEY_IS_UNLOCKED => "isunlocked" + m_Config.BaseInfo.Id;
+        private string KEY_UNCLAIMEDREWARD => "unclaimedreward" + m_Config.BaseInfo.Id;
+        private string KEY_CURRENT_UPGRADE_LEVEL => "currentupgradelevel" + m_Config.BaseInfo.Id;
 
         private AchievementNotifPanel m_NotifPanel;
         private AchievementNotifPanel GetNotifPanel()
@@ -129,9 +129,9 @@ namespace LegionKnight
         }
         private void OnValidate()
         {
-            if (m_CurrentUpgradeLevel > m_Definition.Upgrade.Length - 1)
+            if (m_CurrentUpgradeLevel > m_Config.Upgrade.Length - 1)
             {
-                m_CurrentUpgradeLevel = m_Definition.Upgrade.Length - 1;
+                m_CurrentUpgradeLevel = m_Config.Upgrade.Length - 1;
             }
             UnityService.Instance.SaveData(KEY_CURRENT_UPGRADE_LEVEL, m_CurrentUpgradeLevel);
         }
@@ -148,9 +148,9 @@ namespace LegionKnight
                 OnValidate();
             }
         }
-        public BadgeContent(BadgeDefinition badge)
+        public BadgeContent(BadgeConfig badge)
         {
-            m_Definition = badge;
+            m_Config = badge;
             m_IsUnlocked = false;
             m_CurrentUpgradeLevel = 0;
             m_UnlclaimedReward = 0;
@@ -184,7 +184,7 @@ namespace LegionKnight
                     loot.DirectTakeLoot();
                 }
                 RemoveUnClaimedRewardInternal(1);
-                bool hasMaxLevel = m_CurrentUpgradeLevel >= m_Definition.Upgrade.Length - 1;
+                bool hasMaxLevel = m_CurrentUpgradeLevel >= m_Config.Upgrade.Length - 1;
                 if (!hasMaxLevel)
                 {
                     if (m_IsUnlocked)

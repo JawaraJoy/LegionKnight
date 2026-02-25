@@ -9,14 +9,9 @@ namespace LegionKnight
     {
         [SerializeField, MMReadOnly]
         private string m_PlayerName;
-        [SerializeField]
-        private CharacterDefinition m_CharacterDefinition;
 
-        public CharacterDefinition CharacterDefinition => m_CharacterDefinition;
         [SerializeField]
         private UnityEvent m_OnStart = new();
-        [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnSetCharacterDefinition = new();
 
         [SerializeField, MMReadOnly]
         private bool m_CanUseResurrectionAds = true;
@@ -44,11 +39,6 @@ namespace LegionKnight
             
             OnStartInvoke();
         }
-        public void SetCharacterDefinition(CharacterDefinition definition)
-        {
-            m_CharacterDefinition = definition;
-            OnSetCharacterDefinitionInvoke(definition);
-        }
         private void OnStartInvoke()
         {
             m_OnStart?.Invoke();
@@ -75,15 +65,6 @@ namespace LegionKnight
         public void RemoveOnStart(UnityAction action)
         {
             m_OnStart.RemoveListener(action);
-        }
-        private void OnSetCharacterDefinitionInvoke(CharacterDefinition definition)
-        {
-            m_OnSetCharacterDefinition?.Invoke(definition);
-
-        }
-        public Stat GetFinalStat(int star, int level)
-        {
-            return m_CharacterDefinition.FinalStat(star, level);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
+using Rush;
 
 namespace LegionKnight
 {
@@ -46,7 +47,7 @@ namespace LegionKnight
         private CameraPostSet m_CurrentPostSet;
         private void Start()
         {
-            m_CinemachineCamera.Target.TrackingTarget = Player.Instance.transform;
+            m_CinemachineCamera.Target.TrackingTarget = RushPlayer.Instance.transform;
         }
         private CameraPostSet GetCameraPostSet(string nam)
         {

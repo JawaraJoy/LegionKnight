@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Rush;
+using System.Collections;
 using UnityEngine;
 
 namespace LegionKnight
@@ -33,11 +34,11 @@ namespace LegionKnight
         {
             m_PadDefinition = paddefi;
 
-            if (defi is CharacterDefinition charDef)
-                m_Renderer.sprite = charDef.Icon;
+            if (defi is HeroUnitConfig heroConfig)
+                m_Renderer.sprite = heroConfig.CollectibleField.Icon;
 
-            if (defi is CurrencyDefinition itemDef)
-                m_Renderer.sprite = itemDef.Icon;
+            if (defi is ItemConfig itemConfig)
+                m_Renderer.sprite = itemConfig.CollectibleField.Icon;
 
             // Prepare movement values
             flySpeed = TargetPad.Definition.FlySpeed;

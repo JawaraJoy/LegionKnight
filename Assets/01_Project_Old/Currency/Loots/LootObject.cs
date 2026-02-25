@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -6,7 +7,7 @@ namespace LegionKnight
     public class LootObject : MonoBehaviour
     {
         [SerializeField]
-        private LootDefinition m_LootDefinition;
+        private LootChestDefinition m_LootDefinition;
 
         [SerializeField]
         private UnityEvent<LootField[]> m_OnLooted;

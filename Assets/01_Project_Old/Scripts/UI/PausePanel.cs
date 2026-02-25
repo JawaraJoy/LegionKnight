@@ -26,7 +26,7 @@ namespace LegionKnight
 
         public void DeathCoroutineEnable(bool set)
         {
-            DeathCoroutine.SetIsEnable(set);
+            //DeathCoroutine.SetIsEnable(set);
         }
     }
 }

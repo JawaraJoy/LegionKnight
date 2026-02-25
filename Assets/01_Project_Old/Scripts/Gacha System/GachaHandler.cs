@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,8 +14,8 @@ namespace LegionKnight
     public class GachaHandler : MonoBehaviour
     {
         [SerializeField] private List<GachaBanner> m_Banners = new();
-        [SerializeField] private UnityEvent<List<GachaReward>> m_OnDrawResult;
-        [SerializeField] private UnityEvent<CurrencyDefinition> m_OnDrawFailed;
+        [SerializeField] private UnityEvent<List<GachaRewardConfig>> m_OnDrawResult;
+        [SerializeField] private UnityEvent<ItemConfig> m_OnDrawFailed;
         [SerializeField] private UnityEvent m_OnPerformSingleDraw;
         [SerializeField] private UnityEvent m_OnPerformMultiDraw;
         [SerializeField] private UnityEvent<int, int> m_OnDrawGuaraantedCount;
@@ -99,9 +100,9 @@ namespace LegionKnight
                 return;
 
             var cost = ResolveCost(count);
-            CurrencyDefinition currencyDefinition = cost.Definition;
+            ItemConfig currencyDefinition = cost.ItemConfig;
             int costAmount = cost.Amount;
-            int playerCurrencyAmount = Player.Instance.GetCurrencyAmount(currencyDefinition);
+            int playerCurrencyAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(currencyDefinition);
 
             if (playerCurrencyAmount < cost.Amount)
             {
@@ -110,11 +111,11 @@ namespace LegionKnight
                 return;
             }
 
-            Player.Instance.AddCurrencyAmount(cost.Definition, -costAmount);
+            Player.Instance.CurrencyControl.AddCurrencyAmount(cost.ItemConfig, -costAmount);
 
             
 
-            List<GachaReward> results = new();
+            List<GachaRewardConfig> results = new();
             m_Selected.Draw(count, results);
 
             foreach (var r in results)
@@ -131,13 +132,13 @@ namespace LegionKnight
             var main = m_Selected.Definition.MainCurrency;
             int total = main.Amount * count;
 
-            if (Player.Instance.GetCurrencyAmount(main.Definition) < total)
+            if (Player.Instance.CurrencyControl.GetCurrencyAmount(main.ItemConfig) < total)
             {
                 var alt = m_Selected.Definition.AlternativeCurrency;
-                return new GachaCurrencyCost(alt.Definition, alt.Amount * count);
+                return new GachaCurrencyCost(alt.ItemConfig, alt.Amount * count);
             }
 
-            return new GachaCurrencyCost(main.Definition, total);
+            return new GachaCurrencyCost(main.ItemConfig, total);
         }
     }
 }

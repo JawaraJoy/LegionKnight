@@ -2,13 +2,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Rush;
 
 namespace LegionKnight
 {
     public partial class PlatformSelectView : UIView
     {
         [SerializeField]
-        private StandbyPlatformDefinition m_PlatformDefi;
+        private PlatformConfig m_PlatformConfig;
         [SerializeField]
         private Image m_UnitIcon;
         [SerializeField]
@@ -22,31 +23,31 @@ namespace LegionKnight
         [SerializeField]
         private Button m_SelectButton;
         [SerializeField]
-        private UnityEvent<StandbyPlatformDefinition> m_OnPlatformSelected = new();
-        public StandbyPlatformDefinition PlatformDefi => m_PlatformDefi;
+        private UnityEvent<PlatformConfig> m_OnPlatformSelected = new();
+        public PlatformConfig PlatformConfig => m_PlatformConfig;
         private void SelectPlatformInternal()
         {
-            Player.Instance.SelectStandbyPlatform(m_PlatformDefi);
+            Player.Instance.PlatformDeck.SelectStandbyPlatform(m_PlatformConfig);
             OnCharacterSelectedInvoke();
         }
         public void SelectPlatform()
         {
             SelectPlatformInternal();
         }
-        private void InitInternal()
+        private void RefreshInternal()
         {
-            PlatformUnit platform = Player.Instance.GetPlatformOwned(m_PlatformDefi);
+            PlatformUnit platform = Player.Instance.PlatformDeck.GetPlatformOwned(m_PlatformConfig);
             InitInternal(platform);
         }
         private void InitInternal(PlatformUnit unit)
         {
             unit.Init();
-            m_PlatformDefi = unit.StanbyPlatform;
+            m_PlatformConfig = unit.PlatformConfig;
             m_LockIcon.SetActive(!unit.IsOwned);
             m_SelectButton.interactable = unit.IsOwned;
-            m_UnitIcon.sprite = m_PlatformDefi.Icon;
+            m_UnitIcon.sprite = m_PlatformConfig.CollectibleField.Icon;
             m_AmountText.text = unit.Amount.ToString();
-            m_RarityColor.color = unit.StanbyPlatform.RarityColor;
+            m_RarityColor.color = unit.PlatformConfig.CollectibleField.RarityConfig.Color;
 
             m_EquipedSign.gameObject.SetActive(unit.IsEquiped);
 
@@ -58,7 +59,7 @@ namespace LegionKnight
 
         public void RefreshEquiped()
         {
-            PlatformUnit platform = Player.Instance.GetPlatformOwned(m_PlatformDefi);
+            PlatformUnit platform = Player.Instance.PlatformDeck.GetPlatformOwned(m_PlatformConfig);
             m_EquipedSign.gameObject.SetActive(platform.IsEquiped);
         }
         public void Init(PlatformUnit unit)
@@ -68,7 +69,7 @@ namespace LegionKnight
 
         private void OnCharacterSelectedInvoke()
         {
-            m_OnPlatformSelected?.Invoke(m_PlatformDefi);
+            m_OnPlatformSelected?.Invoke(m_PlatformConfig);
         }
     }
 }

@@ -3,11 +3,9 @@ using UnityEngine;
 namespace Rush
 {
     [CreateAssetMenu(fileName = "Skill", menuName = "Rush/Combat/Skill", order = 1)]
-    public partial class SkillConfig : Configuration
+    public partial class SkillConfig : CollectibleConfig
     {
         // Passive/Ultimate/BasicAttack, dll
-        [SerializeField]
-        private Sprite m_Icon;
         [SerializeField]
         private SkillCategoryConfig m_Category;
         [SerializeField]
@@ -25,7 +23,6 @@ namespace Rush
         private AbilityConfig[] m_AbilitySets;
         public SkillCategoryConfig Category => m_Category;
         public ActivationTriggerField Activation => m_Activation;
-        public Sprite Icon => m_Icon;
         public Skill ActivatorPrefab => m_ActivatorPrefab;
         public ProgressField LevelSet => m_LevelSet;
         public CastingField Casting => m_Casting;

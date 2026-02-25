@@ -16,20 +16,20 @@ namespace LegionKnight
 
         public void ShowNotif(BadgeContent badge)
         {
-            if (badge == null || badge.Definition == null)
+            if (badge == null || badge.Config == null)
             {
                 return;
             }
             ShowInternal();
             int level = badge.CurrentUpgradeLevel;
-            m_Icon.sprite = badge.Definition.Upgrade[level].Icon;
+            m_Icon.sprite = badge.Config.Upgrade[level].Icon;
 
-            string desc = $"Achievement [<color=yellow>{badge.Definition.Upgrade[level].Label}</color>]";
+            string desc = $"Achievement [<color=yellow>{badge.Config.Upgrade[level].Label}</color>]";
             m_Desc.text = desc;
             m_Note.text = "Go to Profile to claim the Reward!!";
 
             //--Tenjin Record
-            TenjinManager.Instance.SendEventToUnlockAchievement(badge.Definition);
+            TenjinManager.Instance.SendEventToUnlockAchievement(badge.Config);
             
             StartCoroutine(HideAfterDelay(5f));
         }

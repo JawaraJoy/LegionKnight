@@ -1,4 +1,5 @@
 using UnityEngine;
+using Rush;
 
 namespace LegionKnight
 {
@@ -14,9 +15,9 @@ namespace LegionKnight
             m_CastingBar.SetCastingName(castingName);
             
         }
-        public void SetBosName(BosDefinition defi)
+        public void SetBosName(BossUnitConfig bosConfig)
         {
-            m_BosHealthBar.SetBosName(defi);
+            m_BosHealthBar.SetBosName(bosConfig);
         }
         public void SetHealth(float rate)
         {
@@ -79,12 +80,12 @@ namespace LegionKnight
                 bosBar.HideCastingBar();
             }
         }
-        public void SetBosName(BosDefinition defi)
+        public void SetBosName(BossUnitConfig bosConfig)
         {
             var bosBar = GetBosBar();
             if (bosBar != null)
             {
-                bosBar.SetBosName(defi);
+                bosBar.SetBosName(bosConfig);
             }
         }
         public void SetHealth(float rate)

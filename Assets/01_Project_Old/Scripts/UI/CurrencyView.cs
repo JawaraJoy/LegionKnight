@@ -2,18 +2,19 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Rush;
 
 namespace LegionKnight
 {
     public partial class CurrencyView : UIView
     {
         [SerializeField]
-        protected CurrencyDefinition m_CurrencyDefinition;
+        protected ItemConfig m_ItemConfig;
         [SerializeField]
         private Image m_Icon;
         [SerializeField]
         protected TextMeshProUGUI m_AmountText;
-        public CurrencyDefinition CurrencyDefinition => m_CurrencyDefinition;
+        public ItemConfig ItemConfig => m_ItemConfig;
 
         [SerializeField]
         private bool m_UseAbbreviation = true;
@@ -23,23 +24,23 @@ namespace LegionKnight
         private UnityEvent<int> m_OnSetAmountInvoke = new();
         public void Init()
         {
-            if (m_CurrencyDefinition == null)
+            if (m_ItemConfig == null)
             {
                 Debug.LogError("Currency is null");
                 return;
             }
-            m_Icon.sprite = m_CurrencyDefinition.Icon;
-            SetAmountInternal(Player.Instance.GetCurrencyAmount(m_CurrencyDefinition));
+            m_Icon.sprite = m_ItemConfig.CollectibleField.Icon;
+            SetAmountInternal(Player.Instance.CurrencyControl.GetCurrencyAmount(m_ItemConfig));
         }
         protected virtual void SetViewInternal(Currency currency)
         {
-            if (currency.CurrencyDefinition == null)
+            if (currency.ItemConfig == null)
             {
                 Debug.LogError("Currency is null");
                 return;
             }
-            m_CurrencyDefinition = currency.CurrencyDefinition;
-            m_Icon.sprite = currency.CurrencyDefinition.Icon;
+            m_ItemConfig = currency.ItemConfig;
+            m_Icon.sprite = currency.ItemConfig.CollectibleField.Icon;
             m_AmountText.text = FormatAmountText(currency.Amount);
             m_OnSetViewInvoke?.Invoke(currency);
             m_OnSetAmountInvoke?.Invoke(currency.Amount);
@@ -54,7 +55,7 @@ namespace LegionKnight
         }
         protected void SetAmountInternal(int amount)
         {
-            if (m_CurrencyDefinition == null)
+            if (m_ItemConfig == null)
             {
                 Debug.LogError("Currency is null");
                 return;

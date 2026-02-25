@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,18 +37,18 @@ namespace LegionKnight
         public List<LootField> MirrorLoots => m_MirrorLoots;
 
         private bool m_IsTransferring = false;
-        private LootField GetLootedInternal(ScriptableObject item)
+        private LootField GetLootedInternal(CollectibleConfig collectibleConfig)
         {
-            LootField loot = m_Looteds.Find(x => x.Item == item);
+            LootField loot = m_Looteds.Find(x => x.ItemLoot == collectibleConfig);
             if (loot == null)
             {
                 return null;
             }
             return loot;
         }
-        private bool HasLootedInternal(ScriptableObject item)
+        private bool HasLootedInternal(CollectibleConfig collectibleConfig)
         {
-            LootField loot = GetLootedInternal(item);
+            LootField loot = GetLootedInternal(collectibleConfig);
             return loot != null;
         }
         public void TakeLooteds()
@@ -58,16 +59,12 @@ namespace LegionKnight
             }
             foreach (var loot in m_Looteds)
             {
-                if (loot.Item is ScriptableObject item)
-                {
-                    
-                    int amount = loot.Amount;
-                    LootField.CurrencyApplier(item, amount);
-                    LootField.CharacterApplier(item);
-                    LootField.StandbyPlatformApplier(item, amount);
-                    LootField.EnergyApplier(item, amount);
-                    LootField.RandomApplier(item);
-                }
+                int amount = loot.Amount;
+                LootField.CurrencyApplier(loot.ItemLoot, amount);
+                LootField.CharacterApplier(loot.ItemLoot);
+                LootField.StandbyPlatformApplier(loot.ItemLoot, amount);
+                LootField.EnergyApplier(loot.ItemLoot, amount);
+                LootField.RandomApplier(loot.ItemLoot);
             }
             m_OnTakeLoots?.Invoke(m_Looteds);
             ClearLootsInternal();
@@ -78,15 +75,12 @@ namespace LegionKnight
             {
                 return;
             }
-            if (loot.Item is ScriptableObject item)
-            {
-                int amount = loot.Amount;
-                LootField.CurrencyApplier(item, amount);
-                LootField.StandbyPlatformApplier(item, amount);
-                LootField.EnergyApplier(item, amount);
-                LootField.CharacterApplier(item);
-                LootField.RandomApplier(item);
-            }
+            int amount = loot.Amount;
+            LootField.CurrencyApplier(loot.ItemLoot, amount);
+            LootField.StandbyPlatformApplier(loot.ItemLoot, amount);
+            LootField.EnergyApplier(loot.ItemLoot, amount);
+            LootField.CharacterApplier(loot.ItemLoot);
+            LootField.RandomApplier(loot.ItemLoot);
             m_OnDirectTakeLoot?.Invoke(loot);
         }
         public void AddLoots(LootField[] loots)
@@ -99,29 +93,28 @@ namespace LegionKnight
 
         private void AddLootInternal(LootField loot)
         {
-            LootField newLoot = new (loot.Item, loot.IsUnique, loot.Amount, loot.Chance);
-            if (HasLootedInternal(newLoot.Item))
+            if (HasLootedInternal(loot.ItemLoot))
             {
-                if (newLoot.IsUnique)
+                if (loot.ItemLoot.CollectibleField.IsUnique)
                 {
-                    m_Looteds.Add(newLoot);
-                    m_OnAddNewLoot?.Invoke(newLoot);
+                    m_Looteds.Add(loot);
+                    m_OnAddNewLoot?.Invoke(loot);
                 }
                 else
                 {
-                    newLoot = GetLootedInternal(newLoot.Item);
-                    newLoot.AddAmount(loot.Amount);
-                    Debug.Log($"Updated Loot: {newLoot.Item.name} x{newLoot.Amount}");
-                    m_OnLootAmountUpdate?.Invoke(newLoot);
+                    loot = GetLootedInternal(loot.ItemLoot);
+                    loot.AddAmount(loot.Amount);
+                    Debug.Log($"Updated Loot: {loot.ItemLoot.name} x{loot.Amount}");
+                    m_OnLootAmountUpdate?.Invoke(loot);
                 }    
             }
             else
             {
-                m_Looteds.Add(newLoot);
-                m_OnAddNewLoot?.Invoke(newLoot);
+                m_Looteds.Add(loot);
+                m_OnAddNewLoot?.Invoke(loot);
             }
-            m_OnLootUpdate?.Invoke(newLoot);
-            DirectTakeLoot(newLoot);
+            m_OnLootUpdate?.Invoke(loot);
+            DirectTakeLoot(loot);
         }
         public void AddLoot(LootField loot)
         {
@@ -133,11 +126,11 @@ namespace LegionKnight
         }
         private void RemoveLootInternal(LootField loot)
         {
-            if (HasLootedInternal(loot.Item))
+            if (HasLootedInternal(loot.ItemLoot))
             {
-                LootField existingLoot = GetLootedInternal(loot.Item);
+                LootField existingLoot = GetLootedInternal(loot.ItemLoot);
                 m_Looteds.Remove(existingLoot);
-                Debug.Log($"Removed Loot: {existingLoot.Item.name}");
+                Debug.Log($"Removed Loot: {existingLoot.ItemLoot.BaseInfo.Name}");
                 m_OnRemoveLoot?.Invoke(existingLoot);
             }
         }
@@ -172,20 +165,11 @@ namespace LegionKnight
 
                 for (int i = 0; i < count; i++)
                 {
-                    // Kurangi 1 dari mirror loot asli
                     mirrorLoot.AddAmount(-1);
                     m_OnMirrorLootUpdate?.Invoke(mirrorLoot);
 
-                    // Transfer 1 amount
-                    LootField oneLoot = new LootField(
-                        mirrorLoot.Item,
-                        mirrorLoot.IsUnique,
-                        1,
-                        mirrorLoot.Chance
-                    );
-
+                    LootField oneLoot = new(mirrorLoot.ItemLoot, mirrorLoot.Amount, mirrorLoot.Chance);
                     AddLootInternal(oneLoot);
-
                     yield return new WaitForSeconds(0.1f);
                 }
             }

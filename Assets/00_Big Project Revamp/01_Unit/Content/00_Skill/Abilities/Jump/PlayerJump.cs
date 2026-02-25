@@ -1,8 +1,9 @@
+using LegionKnight;
 using UnityEngine;
 
 namespace Rush
 {
-    public class PlayerJump : Jump
+    public class PlayerJump : CharacterJump
     {
         
     }

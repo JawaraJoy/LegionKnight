@@ -1,84 +1,135 @@
+using Rush;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public class LootItemView : ItemView
+    public class LootItemView : UIView
     {
-        protected override void InitInternal(object defi)
+        [SerializeField]
+        private LootField m_LootField;
+        [SerializeField]
+        private Image m_Icon;
+        [SerializeField]
+        private TextMeshProUGUI m_ItemNameText;
+        [SerializeField]
+        private TextMeshProUGUI m_ItemAmountText;
+        [SerializeField]
+        private UnityEvent<int> m_OnAmountChanged = new();
+        [SerializeField]
+        private UnityEvent m_OnAmountCountChanged = new();
+        public LootField LootField => m_LootField;
+
+        public void Init(LootField lootField)
         {
-            base.InitInternal(defi);
-            if (defi is LootField lootField)
-            {
-                ScriptableObject itemDef = lootField.Item;
-                int amount = lootField.Amount;
-                CurrencyApplier(itemDef, amount);
-                CharacterApplier(itemDef);
-                StandbyPlatformApplier(itemDef, amount);
-                EnergyApplier(itemDef, amount);
-                SetAmountInternal(amount);
+            InitInternal(lootField);
+        }
+        protected virtual void InitInternal(LootField lootField)
+        {
+            m_LootField = lootField;
 
-                if (itemDef is IDescriptable descriptable)
-                {
-                    string itemName = descriptable.Label;
-                    if (gameObject.TryGetComponent(out TextView text))
-                    {
-                        text.SetText(itemName);
-                    }
-                }
-                Debug.Log($"[Loot] is seted up");
-            }
-
+            CollectibleConfig itemLoot = lootField.ItemLoot;
+            int amount = lootField.Amount;
+            CurrencyApplier(itemLoot, amount);
+            CharacterApplier(itemLoot);
+            StandbyPlatformApplier(itemLoot, amount);
+            EnergyApplier(itemLoot, amount);
+            SetAmountInternal(amount);
+            SetNameInternal(itemLoot.BaseInfo.Name);
+            Debug.Log($"[Loot] is seted up");
+        }
+        private void SetNameInternal(string name)
+        {
+            m_ItemNameText.text = name;
+        }
+        private void SetAmountInternal(int amount)
+        {
+            m_ItemAmountText.text = amount.ToString();
+        }
+        public void SetAmount(int amount)
+        {
+            SetAmountInternal(amount);
         }
 
-        private void CurrencyApplier(ScriptableObject defi, int amount)
+        private void CurrencyApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            if (defi is CurrencyDefinition currency)
+            if (collectibleConfig is ItemConfig itemConfig)
             {
-                m_Icon.sprite = currency.Icon;
-                //Player.Instance.AddCurrencyAmount(currency, amount);
+                m_Icon.sprite = itemConfig.CollectibleField.Icon;
+                Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
             }
         }
-        private void CharacterApplier(ScriptableObject defi)
+        private void CharacterApplier(CollectibleConfig collectibleConfig)
         {
-            if (defi is CharacterDefinition character)
+            if (collectibleConfig is HeroUnitConfig heroConfig)
             {
-                m_Icon.sprite = character.SmallIcon;
-                bool owned = Player.Instance.GetCharacterUnit(character).Owned;
+                m_Icon.sprite = heroConfig.CollectibleField.Icon;
+                bool owned = Player.Instance.HeroDeck.GetHeroUnit(heroConfig).Owned;
                 if (owned)
                 {
-                    StartCoroutine(CharcterDuplicated(character));
+                    StartCoroutine(CharcterDuplicated(heroConfig));
                 }
             }
         }
 
-        private IEnumerator CharcterDuplicated(CharacterDefinition character)
+        private IEnumerator CharcterDuplicated(HeroUnitConfig heroConfig)
         {
             yield return new WaitForSeconds(1.5f);
-            m_Icon.sprite = character.ShardConvert.CurrencyDefinition.Icon;
-            m_Amount.text = character.ShardConvert.Amount.ToString();
-            string itemName = character.ShardConvert.CurrencyDefinition.Label;
+            m_Icon.sprite = heroConfig.ItemDuplicateConverter.ItemConfig.CollectibleField.Icon;
+            m_ItemAmountText.text = heroConfig.ItemDuplicateConverter.Amount.ToString();
+            string itemName = heroConfig.ItemDuplicateConverter.ItemConfig.BaseInfo.Name;
             if (gameObject.TryGetComponent(out TextView text))
             {
                 text.SetText(itemName);
             }
             //Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
         }
-        private void StandbyPlatformApplier(ScriptableObject defi, int amount)
+        private void StandbyPlatformApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            if (defi is StandbyPlatformDefinition platform)
+            if (collectibleConfig is PlatformConfig platformConfig)
             {
-                m_Icon.sprite = platform.Icon;
-                m_Amount.text = amount.ToString();
+                m_Icon.sprite = platformConfig.CollectibleField.Icon;
+                m_ItemAmountText.text = amount.ToString();
             }
         }
-        private void EnergyApplier(ScriptableObject defi, int amount)
+        private void EnergyApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            if (defi is EnergyDefinition energy)
+            if (collectibleConfig is EnergyConfig energy)
             {
-                m_Icon.sprite = energy.Icon;
+                m_Icon.sprite = energy.CollectibleField.Icon;
+            }
+        }
+        public void AddAmountWithCountDown(int addCount)
+        {
+            StartCoroutine(AddCountDown(addCount));
+        }
+        int m_AmountTriggerCount = 0;
+        private IEnumerator AddCountDown(int addCount)
+        {
+            int start = m_LootField.Amount;
+            int target = m_LootField.Amount + addCount;
+            int amountPseudo = m_LootField.Amount;
+            for (int i = start; i < target; i++)
+            {
+
+                amountPseudo = i + 1;
+                m_OnAmountChanged?.Invoke(amountPseudo);
+
+                m_AmountTriggerCount++;
+                if (m_AmountTriggerCount >= 5)
+                {
+                    m_OnAmountCountChanged?.Invoke();
+                    m_AmountTriggerCount = 0;
+                }
+                if (m_ItemAmountText != null)
+                {
+                    SetAmountInternal(amountPseudo);
+                }
+                Debug.Log($"Counting up loot amount: {amountPseudo}");
+                yield return new WaitForSeconds(0.05f);
             }
         }
     }

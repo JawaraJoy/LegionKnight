@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public partial class Configuration : ScriptableObject
+    public abstract partial class Configuration : ScriptableObject
     {
         [SerializeField]
         protected BaseInfo m_BaseInfo;

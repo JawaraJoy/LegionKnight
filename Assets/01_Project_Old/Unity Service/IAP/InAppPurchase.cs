@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,7 +10,7 @@ namespace LegionKnight
     public partial class SellProduct
     {
         [SerializeField]
-        private ProductDefinition m_Definition;
+        private ProductDefinition m_Config;
         [SerializeField]
         private bool m_IsAvailable;
         [SerializeField]
@@ -18,26 +19,26 @@ namespace LegionKnight
         private string m_Message;
 
         public string Message => m_Message;
-        public ProductDefinition Definition => m_Definition;
+        public ProductDefinition Config => m_Config;
         public bool Available => m_IsAvailable;
         public bool IsBonusAvailable => m_IsBonusAvailable;
         public void Init()
         {
-            if (UnityService.Instance.HasData(m_Definition.Id + "a"))
+            if (UnityService.Instance.HasData(m_Config.BaseInfo.Id + "a"))
             {
-                m_IsAvailable = UnityService.Instance.GetData<bool>(m_Definition.Id);
+                m_IsAvailable = UnityService.Instance.GetData<bool>(m_Config.BaseInfo.Id);
             }
             else
             {
-                UnityService.Instance.SaveData(m_Definition.Id + "a", m_IsAvailable);
+                UnityService.Instance.SaveData(m_Config.BaseInfo.Id + "a", m_IsAvailable);
             }
-            if (UnityService.Instance.HasData(m_Definition.Id + "b"))
+            if (UnityService.Instance.HasData(m_Config.BaseInfo.Id + "b"))
             {
-                m_IsBonusAvailable = UnityService.Instance.GetData<bool>(m_Definition.Id + "b");
+                m_IsBonusAvailable = UnityService.Instance.GetData<bool>(m_Config.BaseInfo.Id + "b");
             }
             else
             {
-                UnityService.Instance.SaveData(m_Definition.Id + "b", m_IsBonusAvailable);
+                UnityService.Instance.SaveData(m_Config.BaseInfo.Id + "b", m_IsBonusAvailable);
             }
         }
         public void SetMessage(string message)
@@ -47,21 +48,21 @@ namespace LegionKnight
         public void AddProductToPlayer()
         {
             if (!m_IsAvailable) return;
-            m_Definition.AddAllProductToPlayer(m_IsBonusAvailable);
+            m_Config.AddAllProductToPlayer(m_IsBonusAvailable);
         }
         public void SetIsAvailable(bool isAvailable)
         {
             m_IsAvailable = isAvailable;
-            UnityService.Instance.SaveData(m_Definition.Id + "a", m_IsAvailable);
+            UnityService.Instance.SaveData(m_Config.BaseInfo.Id + "a", m_IsAvailable);
         }
         public void SetIsBonusAvailable(bool isBonusAvailable)
         {
             m_IsBonusAvailable = isBonusAvailable;
-            UnityService.Instance.SaveData(m_Definition.Id + "b", m_IsBonusAvailable);
+            UnityService.Instance.SaveData(m_Config.BaseInfo.Id + "b", m_IsBonusAvailable);
         }
-        public List<ProductItem> GetAllProductItems(bool hasBonus)
+        public List<ProductItemConfig> GetAllProductItems(bool hasBonus)
         {
-            return m_Definition.GetAllProduct(hasBonus);
+            return m_Config.GetAllProduct(hasBonus);
         }
     }
     public partial class InAppPurchase : MonoBehaviour
@@ -103,7 +104,7 @@ namespace LegionKnight
         {
             foreach (var product in m_SellProducts)
             {
-                if (product.Definition.Id == id)
+                if (product.Config.BaseInfo.Id == id)
                 {
                     return product;
                 }

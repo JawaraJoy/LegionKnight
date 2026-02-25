@@ -73,7 +73,7 @@ namespace LegionKnight
             SpinWheelManager manager = GetSpinWheelManagerInternal();
             ShowClaimedDailyReward(manager.SelectedReward.Rewards);
         }
-        private void ShowClaimedDailyReward(LootDefinition loot)
+        private void ShowClaimedDailyReward(LootChestDefinition loot)
         {
             m_LootMonitor.ClearAllLootViews();
             m_LootMonitor.AddLootsView(loot.LootFields.ToList());

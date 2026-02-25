@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,21 +7,21 @@ namespace LegionKnight
     public class Loots : MonoBehaviour
     {
         [SerializeField]
-        private LootDefinition m_Definition;
+        private LootChestDefinition m_Definition;
         [SerializeField]
         private UnityEvent<LootField> m_OnTakeLoot;
         [SerializeField]
         private UnityEvent<LootField[]> m_OnTakeRandomLoots;
 
         [SerializeField]
-        private UnityEvent<ScriptableObject> m_OnLootTake;
+        private UnityEvent<CollectibleConfig> m_OnLootTake;
 
 
-        public void SetDefinition(LootDefinition definition)
+        public void SetDefinition(LootChestDefinition definition)
         {
             SetDefinitionInternal(definition);
         }
-        protected void SetDefinitionInternal(LootDefinition definition)
+        protected void SetDefinitionInternal(LootChestDefinition definition)
         {
             m_Definition = definition;
         }
@@ -31,7 +31,7 @@ namespace LegionKnight
             if (loot != null)
             {
                 m_OnTakeLoot?.Invoke(loot);
-                m_OnLootTake?.Invoke(loot.Item);
+                m_OnLootTake?.Invoke(loot.ItemLoot);
             }
         }
         public void TakeLoots()
@@ -44,7 +44,7 @@ namespace LegionKnight
             foreach (var loot in loots)
             {
                 m_OnTakeLoot?.Invoke(loot);
-                m_OnLootTake?.Invoke(loot.Item);
+                m_OnLootTake?.Invoke(loot.ItemLoot);
             }
         }
     }

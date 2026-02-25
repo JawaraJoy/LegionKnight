@@ -60,7 +60,7 @@ namespace LegionKnight
                 CanvasManager.Instance.GetPanel<GameOverPanel>().Show();
             }
 
-            Player.Instance.SetPause(true);
+            //Player.Instance.SetPause(true);
         }
         private void Ressurection()
         {
@@ -76,7 +76,7 @@ namespace LegionKnight
                 panel.Show();
             }
             yield return new WaitForSeconds(1);
-            GameManager.Instance.RessurectionPlayer();
+            //GameManager.Instance.RessurectionPlayer();
             Player.Instance.SetCanUseResurrectionAds(false);
         }
         protected override void OnHideInvoke()
@@ -84,7 +84,7 @@ namespace LegionKnight
             base.OnHideInvoke();
             GameTimeScale.SetTimeScale(1);
 
-            Player.Instance.SetPause(false);
+            //Player.Instance.SetPause(false);
         }
         private void WatchAds()
         {
@@ -98,12 +98,12 @@ namespace LegionKnight
 
         private void PayCoin()
         {
-            int playerCoinAmount = Player.Instance.GetCurrencyAmount(m_CoinToPay.CurrencyDefinition);
+            int playerCoinAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_CoinToPay.ItemConfig);
             if (playerCoinAmount >= m_CoinToPay.Amount)
             {
                 Ressurection();
                 HideInternal();
-                Player.Instance.AddCurrencyAmount(m_CoinToPay.CurrencyDefinition, m_CoinToPay.Amount);
+                Player.Instance.CurrencyControl.AddCurrencyAmount(m_CoinToPay.ItemConfig, m_CoinToPay.Amount);
             }
             else
             {

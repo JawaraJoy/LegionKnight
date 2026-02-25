@@ -10,7 +10,7 @@ namespace LegionKnight
         private TextMeshProUGUI m_ReasonText;
         public void SetShow(SellProduct product)
         {
-            m_Definition = product.Definition;
+            m_Definition = product.Config;
             m_ReasonText.text = product.Message;
             ShowInternal();
         }

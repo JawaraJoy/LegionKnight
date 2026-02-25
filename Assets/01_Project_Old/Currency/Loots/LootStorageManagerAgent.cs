@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -18,19 +19,19 @@ namespace LegionKnight
         }
         public void TakeLoots()
         {
-            GameManager.Instance.TakeLooteds();
+            GameManager.Instance.LootStorageManager.TakeLooteds();
         }
         public void AddLoots(LootField[] loots)
         {
-            GameManager.Instance.AddLoots(loots);
+            GameManager.Instance.LootStorageManager.AddLoots(loots);
         }
         public void AddLoot(LootField loot)
         {
-            GameManager.Instance.AddLoot(loot);
+            GameManager.Instance.LootStorageManager.AddLoot(loot);
         }
         public void ClearLoots()
         {
-            GameManager.Instance.ClearLoots();
+            GameManager.Instance.LootStorageManager.ClearLoots();
         }
 
         public void ShowLoots(LootField[] loots)

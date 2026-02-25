@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class NagaAnimator : ModelView
+    public partial class NagaAnimator : View
     {
         [SerializeField]
         private Animator m_Anim;

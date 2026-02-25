@@ -1,9 +1,10 @@
-using NaughtyAttributes;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Rush;
 
 namespace LegionKnight
 {
@@ -13,7 +14,7 @@ namespace LegionKnight
         private AssetReferenceGameObject m_CharacterSelectViewAsset;
 
         [SerializeField]
-        private List<CharacterSelectView> m_SpawnedCharacterSelectView = new();
+        private List<HeroSelectView> m_SpawnedCharacterSelectView = new();
 
         [SerializeField]
         private Transform m_SpawnContainer;
@@ -21,42 +22,42 @@ namespace LegionKnight
         protected override void OnShowInvoke()
         {
             base.OnShowInvoke();
-            m_SpawnedCharacterSelectView = new List<CharacterSelectView>(m_SpawnContainer.GetComponentsInChildren<CharacterSelectView>(true));
-            List<CharacterUnit> characterDecks = Player.Instance.CharacterUnits;
-            foreach (CharacterUnit unit in characterDecks)
+            m_SpawnedCharacterSelectView = new List<HeroSelectView>(m_SpawnContainer.GetComponentsInChildren<HeroSelectView>(true));
+            List<HeroUnit> characterDecks = Player.Instance.HeroDeck.HeroUnits;
+            foreach (HeroUnit unit in characterDecks)
             {
-                if (GetSelectView(unit.Definition) == null)
+                if (GetSelectView(unit.HeroConfig) == null)
                 {
                     SpawnCharacterSelectView(unit);
                 }
                 else
                 {
-                    GetSelectView(unit.Definition).Init(unit);
+                    GetSelectView(unit.HeroConfig).Init(unit);
                 }
             }        
         }
 
-        private CharacterSelectView GetSelectView(CharacterDefinition defi)
+        private HeroSelectView GetSelectView(HeroUnitConfig heroConfig)
         {
-            CharacterSelectView view = m_SpawnedCharacterSelectView.Find(x => x.Definition == defi);
+            HeroSelectView view = m_SpawnedCharacterSelectView.Find(x => x.HeroConfig == heroConfig);
             if (view == null)
             {
                 return null;
             }
             return view;
         }
-        private void SpawnCharacterSelectView(CharacterUnit unit)
+        private void SpawnCharacterSelectView(HeroUnit unit)
         {
             StartCoroutine(SpawningCharacterSelectView(unit));
         }
-        private IEnumerator SpawningCharacterSelectView(CharacterUnit unit)
+        private IEnumerator SpawningCharacterSelectView(HeroUnit unit)
         {
             AsyncOperationHandle<GameObject> handle = m_CharacterSelectViewAsset.InstantiateAsync(m_SpawnContainer, false);
             yield return handle;
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 GameObject result = handle.Result;
-                if (result.TryGetComponent(out CharacterSelectView view))
+                if (result.TryGetComponent(out HeroSelectView view))
                 {
                     view.Init(unit);
                     m_SpawnedCharacterSelectView.Add(view);
@@ -64,45 +65,44 @@ namespace LegionKnight
             }
         }
 
-        private CharacterSelectView[] GetCharacterSelectViews(Rarity rarity)
+        private HeroSelectView[] GetCharacterSelectViews(RarityConfig rarityConfig)
         {
-            return m_SpawnedCharacterSelectView.FindAll(x => x.Definition.Rarity == rarity).ToArray();
+            return m_SpawnedCharacterSelectView.FindAll(x => x.HeroConfig.CollectibleField.RarityConfig == rarityConfig).ToArray();
         }
 
-        public void ShowRarity(int rarityIndex)
+        public void ShowRarity(RarityConfig rarityConfig)
         {
-            Rarity rarity = (Rarity)rarityIndex;
-            ShowRarity(rarity);
+            ShowRarityInternal(rarityConfig);
         }
-        private void ShowRarity(Rarity rarity)
+        private void ShowRarityInternal(RarityConfig rarity)
         {
-            foreach (CharacterSelectView characterSelectView in m_SpawnedCharacterSelectView)
+            foreach (HeroSelectView characterSelectView in m_SpawnedCharacterSelectView)
             {
                 characterSelectView.Hide();
             }
-            CharacterSelectView[] view = GetCharacterSelectViews(rarity);
-            foreach (CharacterSelectView characterSelectView in view)
+            HeroSelectView[] view = GetCharacterSelectViews(rarity);
+            foreach (HeroSelectView characterSelectView in view)
             {
                 characterSelectView.Show();
             }
         }
         public void ShowAll()
         {
-            foreach (CharacterSelectView characterSelectView in m_SpawnedCharacterSelectView)
+            foreach (HeroSelectView characterSelectView in m_SpawnedCharacterSelectView)
             {
                 characterSelectView.Show();
             }
         }
         public void HideAll()
         {
-            foreach (CharacterSelectView characterSelectView in m_SpawnedCharacterSelectView)
+            foreach (HeroSelectView characterSelectView in m_SpawnedCharacterSelectView)
             {
                 characterSelectView.Hide();
             }
         }
         public void Init()
         {
-            foreach (CharacterSelectView view in m_SpawnedCharacterSelectView)
+            foreach (HeroSelectView view in m_SpawnedCharacterSelectView)
             {
                 view.Init();
             }

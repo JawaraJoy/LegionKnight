@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -29,13 +30,11 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnBreakUnavailable = new();
 
-        public void Init(CharacterDefinition definition)
+        public void Init(HeroUnitConfig heroConfig)
         {
-            CharacterUnit characterUnit = Player.Instance.GetCharacterUnit(definition);
-            //CurrencyDefinition breakShardDefi = characterUnit.GetBreakCost().CurrencyDefinition;
-            //int breakShardAmount = characterUnit.GetBreakCost().Amount;
+            HeroUnit characterUnit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
 
-            bool isTimeToBreak = characterUnit.CanBreak();
+            bool isTimeToBreak = heroConfig.BreakThroughFormulaConfig.CanBreak(characterUnit.Star, characterUnit.Level);
             bool isMaxStar = characterUnit.Star >= characterUnit.MaxStar;
             bool hasBreak = isTimeToBreak && !isMaxStar;
             //bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && 
@@ -43,7 +42,7 @@ namespace LegionKnight
             if (hasBreak)
             {
                 m_OnBreakAvaiable.Invoke();
-                m_BreakButton.Init(definition);
+                m_BreakButton.Init(heroConfig);
                 m_BreakButton.Show();
                 m_UpgradeButton.Hide();
                 m_UpgradeView.Hide();
@@ -52,16 +51,16 @@ namespace LegionKnight
             else
             {
                 m_OnBreakUnavailable.Invoke();
-                m_UpgradeButton.Init(definition);
+                m_UpgradeButton.Init(heroConfig);
                 m_UpgradeButton.Show();
                 m_BreakButton.Hide();
                 m_BreakView.Hide();
                 m_LevelView.SetNextValue(characterUnit.Level + 1);
             }
 
-            bool isMaxLevel = characterUnit.Level >= characterUnit.MaxLevel;
-            Stat finalStat = characterUnit.FinalStat();
-            Stat nextFinalStat = characterUnit.NextFinalStat();
+            bool isMaxLevel = characterUnit.Level >= heroConfig.Progression.MaxLevel;
+            StatField finalStat = characterUnit.FinalStat();
+            StatField nextFinalStat = characterUnit.NextFinalStat();
             if (isMaxLevel)
             {
                 nextFinalStat = finalStat; // If max level, next stat is same as final stat

@@ -4,19 +4,19 @@ namespace LegionKnight
 {
     public class CharacterPanelAgent : MonoBehaviour
     {
-        private CharacterPanel m_CharacterPanel;
+        private HeroPanel m_CharacterPanel;
 
-        private CharacterPanel GetCharacterPanel()
+        private HeroPanel GetCharacterPanel()
         {
             if (m_CharacterPanel == null)
             {
-                m_CharacterPanel = CanvasManager.Instance.GetPanel<CharacterPanel>();
+                m_CharacterPanel = CanvasManager.Instance.GetPanel<HeroPanel>();
             }
             return m_CharacterPanel;
         }
         public void Refresh()
         {
-            CharacterPanel panel = GetCharacterPanel();
+            HeroPanel panel = GetCharacterPanel();
             HeroView heroView = panel.GetBinding<HeroView>();
             heroView.Refresh();
         }

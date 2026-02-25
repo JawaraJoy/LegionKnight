@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,17 +17,17 @@ namespace LegionKnight
                 currency.Init();
             }
         }
-        private Currency GetCurrency(CurrencyDefinition definition)
+        private Currency GetCurrency(ItemConfig config)
         {
-            Currency match = m_Currencies.Find(x => x.CurrencyDefinition == definition);
+            Currency match = m_Currencies.Find(x => x.ItemConfig == config);
             return match;
         }
-        public bool HasCurrency(CurrencyDefinition definition, out Currency currency)
+        public bool HasCurrency(ItemConfig config, out Currency currency)
         {
-            bool has = GetCurrency(definition) != null;
+            bool has = GetCurrency(config) != null;
             if (has)
             {
-                currency = GetCurrency(definition);
+                currency = GetCurrency(config);
             }
             else
             {
@@ -34,21 +35,21 @@ namespace LegionKnight
             }
             return has;
         }
-        public int GetCurrencyAmount(CurrencyDefinition definition)
+        public int GetCurrencyAmount(ItemConfig itemConfig)
         {
-            return GetCurrency(definition).Amount;
+            return GetCurrency(itemConfig).Amount;
         }
-        public void SetCurrencyAmount(CurrencyDefinition definition, int amount)
+        public void SetCurrencyAmount(ItemConfig itemConfig, int amount)
         {
-            GetCurrency(definition).SetAmount(amount);
+            GetCurrency(itemConfig).SetAmount(amount);
         }
-        public void AddCurrencyAmount(CurrencyDefinition definition, int amount)
+        public void AddCurrencyAmount(ItemConfig itemConfig, int amount)
         {
-            GetCurrency(definition).AddAmount(amount);
+            GetCurrency(itemConfig).AddAmount(amount);
         }
-        public void RemoveCurrencyAmount(CurrencyDefinition definition, int amount)
+        public void RemoveCurrencyAmount(ItemConfig itemConfig, int amount)
         {
-            GetCurrency(definition).RemoveAmount(amount);
+            GetCurrency(itemConfig).RemoveAmount(amount);
         }
     }
 }

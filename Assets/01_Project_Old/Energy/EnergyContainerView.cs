@@ -7,28 +7,28 @@ namespace LegionKnight
         [SerializeField]
         private EnergyView[] m_EnergyViews;
 
-        private EnergyView GetEnergyView(EnergyDefinition defi)
+        private EnergyView GetEnergyView(EnergyConfig config)
         {
             EnergyView view = null;
             foreach(EnergyView energyView in m_EnergyViews)
             {
-                if (energyView.Definition == defi)
+                if (energyView.Definition == config)
                 {
                     view = energyView;
                 }
             }
             if (view == null)
             {
-                Debug.LogError($"No Energy View is found with {defi.Label} on the array");
+                Debug.LogError($"No Energy View is found with {config.BaseInfo.Name} on the array");
             }
             return view;
         }
 
         public void SetEnergyView(Energy energy)
         {
-            if (GetEnergyView(energy.Definition) != null)
+            if (GetEnergyView(energy.Config) != null)
             {
-                GetEnergyView(energy.Definition).SetEnergy(energy);
+                GetEnergyView(energy.Config).SetEnergy(energy);
             }
         }
     }

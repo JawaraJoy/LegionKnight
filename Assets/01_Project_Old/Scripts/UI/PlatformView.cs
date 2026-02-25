@@ -1,3 +1,4 @@
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,47 +15,47 @@ namespace LegionKnight
         [SerializeField]
         private Image m_PlatformBigIcon;
         [SerializeField]
-        private UnityEvent<StandbyPlatformDefinition> m_OnPlatformSelected = new();
+        private UnityEvent<PlatformConfig> m_OnPlatformSelected = new();
         private void Start()
         {
             InitInternal();
         }
         private void InitInternal()
         {
-            m_PlatformBigIcon.sprite = Player.Instance.GetUsedStanbyPlatform().BigIcon;
-            m_PlatformNameText.text = Player.Instance.GetUsedStanbyPlatform().Label;
-            m_PlatformDescriptionText.text = Player.Instance.GetUsedStanbyPlatform().Description;
-            OnPlatformSelectedInvoke(Player.Instance.GetUsedStanbyPlatform());
+            m_PlatformBigIcon.sprite = Player.Instance.PlatformDeck.GetUsedStanbyPlatform().CollectibleField.SplashImage;
+            m_PlatformNameText.text = Player.Instance.PlatformDeck.GetUsedStanbyPlatform().BaseInfo.Name;
+            m_PlatformDescriptionText.text = Player.Instance.PlatformDeck.GetUsedStanbyPlatform().BaseInfo.Description;
+            OnPlatformSelectedInvoke(Player.Instance.PlatformDeck.GetUsedStanbyPlatform());
         }
-        public void SetPlatformSelected(StandbyPlatformDefinition platform)
+        public void SetPlatformSelected(PlatformConfig platformConfig)
         {
-            m_PlatformBigIcon.sprite = platform.BigIcon;
-            m_PlatformNameText.text = platform.Label;
-            m_PlatformDescriptionText.text = platform.Description;
-            OnPlatformSelectedInvoke(platform);
+            m_PlatformBigIcon.sprite = platformConfig.CollectibleField.SplashImage;
+            m_PlatformNameText.text = platformConfig.BaseInfo.Name;
+            m_PlatformDescriptionText.text = platformConfig.BaseInfo.Description;
+            OnPlatformSelectedInvoke(platformConfig);
         }
-        private void OnPlatformSelectedInvoke(StandbyPlatformDefinition platform)
+        private void OnPlatformSelectedInvoke(PlatformConfig platformConfig)
         {
-            m_OnPlatformSelected?.Invoke(platform);
+            m_OnPlatformSelected?.Invoke(platformConfig);
         }
     }
-    public partial class CharacterPanel
+    public partial class HeroPanel
     {
         private PlatformView GetPlatformView()
         {
             return GetBinding<PlatformView>();
         }
 
-        public void SetPlatformSelected(StandbyPlatformDefinition platform)
+        public void SetPlatformSelected(PlatformConfig platformConfig)
         {
-            GetPlatformView().SetPlatformSelected(platform);
+            GetPlatformView().SetPlatformSelected(platformConfig);
         }
     }
     public partial class CanvasManager
     {
-        public void SetPlatformSelected(StandbyPlatformDefinition platform)
+        public void SetPlatformSelected(PlatformConfig platformConfig)
         {
-            GetPanelInternal<CharacterPanel>().SetPlatformSelected(platform);
+            GetPanelInternal<HeroPanel>().SetPlatformSelected(platformConfig);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace LegionKnight
             }
             return m_Panel;
         }
-        public void SpawnGacha(List<GachaReward> gacharRewards)
+        public void SpawnGacha(List<GachaRewardConfig> gacharRewards)
         {
             GetPanel().SpawnGacha(gacharRewards);
         }

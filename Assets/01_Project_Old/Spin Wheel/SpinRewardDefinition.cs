@@ -10,10 +10,10 @@ namespace LegionKnight
         [SerializeField]
         private Color m_FrameColor = Color.white;
         [SerializeField]
-        private LootDefinition m_Rewards;
+        private LootChestDefinition m_Rewards;
         public string Id => m_Id;
         public Color FrameColor => m_FrameColor;
-        public LootDefinition Rewards => m_Rewards;
+        public LootChestDefinition Rewards => m_Rewards;
 
         
 

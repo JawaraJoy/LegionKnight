@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -10,11 +11,11 @@ namespace LegionKnight
         }
         public void JumpPress()
         {
-            Player.Instance.JumpPress();
+            RushPlayer.Instance.Jump.JumpPress();
         }
         public void JumpUnPress()
         {
-            Player.Instance.JumpUnPress();
+            RushPlayer.Instance.Jump.JumpUnPress();
         }
     }
 }

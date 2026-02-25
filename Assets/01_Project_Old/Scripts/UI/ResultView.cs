@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,11 +20,11 @@ namespace LegionKnight
 
         [SerializeField]
         private UnityEvent m_OnShowRewardDone = new();
-        public virtual void ShowResults(List<object> results)
+        public virtual void ShowResults(List<CollectibleConfig> results)
         {
             ShowResultsInternal(results);
         }
-        protected virtual void ShowResultsInternal(List<object> results)
+        protected virtual void ShowResultsInternal(List<CollectibleConfig> results)
         {
             foreach (ItemView item in m_SpawnedItemViews)
             {
@@ -32,7 +33,7 @@ namespace LegionKnight
             m_SpawnedItemViews.Clear();
             StartCoroutine(ShowingResult(results));
         }
-        protected virtual IEnumerator ShowingResult(List<object> results)
+        protected virtual IEnumerator ShowingResult(List<CollectibleConfig> results)
         {
             ShowInternal();
             for (int i = 0; i < results.Count; i++)
@@ -43,7 +44,7 @@ namespace LegionKnight
             yield return new WaitForSeconds(0.1f);
             OnShowRewardDoneInvoke();
         }
-        protected virtual IEnumerator SpawningItemView(object defi)
+        protected virtual IEnumerator SpawningItemView(CollectibleConfig config)
         {
             AsyncOperationHandle<GameObject> handle = m_ItemViewAsset.InstantiateAsync(m_SpawnPost, false);
             yield return handle;
@@ -52,7 +53,7 @@ namespace LegionKnight
                 GameObject result = handle.Result;
                 if (result.TryGetComponent(out ItemView view))
                 {
-                    view.Init(defi);
+                    view.Init(config);
                     view.Show();
                     m_SpawnedItemViews.Add(view);
                 }

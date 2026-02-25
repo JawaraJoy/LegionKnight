@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -17,21 +18,19 @@ namespace LegionKnight
         public ShopItemDefinition ShopItem => m_ShopItem;
         public bool IsAvailable => m_IsAvailable;
         public bool IsBonusAvaible => m_IsBonusAvaible;
-        public Sprite Icon => m_ShopItem.Icon;
+        public Sprite Icon => m_ShopItem.CollectibleField.Icon;
         public int Price => m_ShopItem.Price;
-        public CurrencyDefinition Currency => m_ShopItem.Currency;
+        public ItemConfig Currency => m_ShopItem.ItemCost;
         public int Amount => m_ShopItem.Amount;
         public int BonusAmount => m_ShopItem.BonusAmount;
         public int ShopingPointReward => m_ShopItem.SpendRewardAmount;
         public Object ItemToBuy => m_ShopItem.ItemToBuy;
         public Object ItemBonus => m_ShopItem.ItemBonus;
 
-        private string IdInternal => m_ShopItem.Id;
+        private string IdInternal => m_ShopItem.BaseInfo.Id;
 
         public void InitInternal()
         {
-            //UnityService.Instance.LoadData(IdInternal + "a");
-            //UnityService.Instance.LoadData(IdInternal + "b");
             if (UnityService.Instance.HasData(IdInternal + "a"))
             {
                 m_IsAvailable = IsAvaibleInternal();

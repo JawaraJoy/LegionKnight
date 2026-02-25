@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,9 +8,7 @@ namespace LegionKnight
     {
         public virtual void ShowResults(ShopItemDefinition result)
         {
-            ShowResultsInternal(new List<object> {result });
+            ShowResultsInternal(new List<CollectibleConfig> {result });
         }
-
-
     }
 }

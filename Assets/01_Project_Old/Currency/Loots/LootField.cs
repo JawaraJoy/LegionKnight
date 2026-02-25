@@ -1,116 +1,108 @@
+using LegionKnight;
 using UnityEngine;
-using UnityEngine.Events;
 
-namespace LegionKnight
+namespace Rush
 {
     [System.Serializable]
     public class LootField
     {
         [SerializeField]
-        private ScriptableObject m_Item;
-        [SerializeField]
-        private bool m_IsUnique;
+        private CollectibleConfig m_CollectibleConfig;
         [SerializeField]
         private int m_Amount;
         [SerializeField, Range(0f, 1f)]
         private float m_Chance;
 
-        public ScriptableObject Item => m_Item;
-        public bool IsUnique => m_IsUnique;
+        public CollectibleConfig ItemLoot => m_CollectibleConfig;
         public int Amount => m_Amount;
         public float Chance => m_Chance;
 
-        public LootField(ScriptableObject item, bool isUnique, int amount, float chance)
+        public LootField(CollectibleConfig config, int amount, float chance)
         {
-            m_Item = item;
-            m_IsUnique = isUnique;
+            m_CollectibleConfig = config;
             m_Amount = amount;
             m_Chance = chance;
         }
-
-        public void SetAmount(int amount)
+        public void DirectTakeLoot()
         {
-            m_Amount = amount;
+            CurrencyApplierInternal(m_CollectibleConfig, m_Amount);
+            StandbyPlatformApplierInternal(m_CollectibleConfig, m_Amount);
+            EnergyApplierInternal(m_CollectibleConfig, m_Amount);
+            CharacterApplierInternal(m_CollectibleConfig);
+            RandomApplierInternal(m_CollectibleConfig);
         }
         public void AddAmount(int amount)
         {
             m_Amount += amount;
         }
-
-        public void DirectTakeLoot()
+        private static void RandomApplierInternal(CollectibleConfig collectibleConfig)
         {
-            CurrencyApplierInternal(m_Item, m_Amount);
-            StandbyPlatformApplierInternal(m_Item, m_Amount);
-            EnergyApplierInternal(m_Item, m_Amount);
-            CharacterApplierInternal(m_Item);
-            RandomApplierInternal(m_Item);
-        }
-        private static void RandomApplierInternal(ScriptableObject defi)
-        {
-            if (defi is LootDefinition loot)
+            if (collectibleConfig is LootChestDefinition loot)
             {
                 var loots = loot.GetRandomLoots();
-                foreach(LootField field in loots)
+                foreach (LootField config in loots)
                 {
-                    field.DirectTakeLoot();
+                    config.DirectTakeLoot();
                 }
             }
         }
-        private static void CurrencyApplierInternal(ScriptableObject defi, int amount)
+        private static void CurrencyApplierInternal(CollectibleConfig collectibleConfig, int amount)
         {
-            if (defi is CurrencyDefinition currency)
+            if (collectibleConfig is ItemConfig itemConfig)
             {
-                Player.Instance.AddCurrencyAmount(currency, amount);
+                Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
             }
         }
-        private static void CharacterApplierInternal(ScriptableObject defi)
+        private static void CharacterApplierInternal(CollectibleConfig collectibleConfig)
         {
-            if (defi is CharacterDefinition character)
+            if (collectibleConfig is HeroUnitConfig heroConfig)
             {
-                bool owned = Player.Instance.GetCharacterUnit(character).Owned;
+                bool owned = Player.Instance.HeroDeck.GetHeroUnit(heroConfig).Owned;
                 if (owned)
                 {
-                    Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
+                    ItemConfig itemConverter = heroConfig.ItemDuplicateConverter.ItemConfig;
+                    int amountConverter = heroConfig.ItemDuplicateConverter.Amount;
+                    Player.Instance.CurrencyControl.AddCurrencyAmount(itemConverter, amountConverter);
                 }
                 else
                 {
-                    Player.Instance.SetOwned(character, true);
+                    Player.Instance.HeroDeck.SetOwned(heroConfig, true);
                 }
             }
         }
-        private static void StandbyPlatformApplierInternal(ScriptableObject defi, int amount)
+        private static void StandbyPlatformApplierInternal(CollectibleConfig collectibleConfig, int amount)
         {
-            if (defi is StandbyPlatformDefinition platform)
+            if (collectibleConfig is PlatformConfig platform)
             {
-                Player.Instance.AddPlatformAmount(platform, amount);
+                Player.Instance.PlatformDeck.AddPlatformAmount(platform, amount);
             }
         }
-        private static void EnergyApplierInternal(ScriptableObject defi, int amount)
+        private static void EnergyApplierInternal(CollectibleConfig collectibleConfig, int amount)
         {
-            if (defi is EnergyDefinition energy)
+            if (collectibleConfig is EnergyConfig energy)
             {
                 Player.Instance.AddEnergy(energy, amount);
             }
         }
-        public static void CurrencyApplier(ScriptableObject defi, int amount)
+        public static void CurrencyApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            CurrencyApplierInternal(defi, amount);
+            CurrencyApplierInternal(collectibleConfig, amount);
         }
-        public static void CharacterApplier(ScriptableObject defi)
+        public static void CharacterApplier(CollectibleConfig collectibleConfig)
         {
-            CharacterApplierInternal(defi);
+            CharacterApplierInternal(collectibleConfig);
         }
-        public static void StandbyPlatformApplier(ScriptableObject defi, int amount)
+        public static void StandbyPlatformApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            StandbyPlatformApplierInternal(defi, amount);
+            StandbyPlatformApplierInternal(collectibleConfig, amount);
         }
-        public static void EnergyApplier(ScriptableObject defi, int amount)
+        public static void EnergyApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            EnergyApplierInternal(defi, amount);
+            EnergyApplierInternal(collectibleConfig, amount);
         }
-        public static void RandomApplier(ScriptableObject defi)
+        public static void RandomApplier(CollectibleConfig collectibleConfig)
         {
-            RandomApplierInternal(defi);
+            RandomApplierInternal(collectibleConfig);
         }
     }
 }

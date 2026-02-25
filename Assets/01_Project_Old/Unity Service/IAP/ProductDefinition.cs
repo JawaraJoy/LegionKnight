@@ -1,66 +1,42 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "New Product", menuName = "Legion Knight/IAP/Product", order = 1)]
-    public partial class ProductDefinition : ScriptableObject
+    public partial class ProductDefinition : CollectibleConfig
     {
-        [SerializeField]
-        private string m_Id;
-        [SerializeField]
-        private string m_Label;
-        [SerializeField, TextArea]
-        private string m_Description;
         [SerializeField]
         private int m_MultipleToOriginal;
         [SerializeField]
-        private ProductItem m_MainProduct;
+        private ProductItemConfig m_MainProduct;
         [SerializeField]
-        private ProductItem[] m_AdditionalProducts;
+        private ProductItemConfig[] m_AdditionalProducts;
         [SerializeField]
-        private ProductItem m_BonusProduct;
-
-        public string Id => m_Id;
-        public string Label => m_Label;
-        public string Description => m_Description;
+        private ProductItemConfig m_BonusProduct;
         public decimal MultipleToOri => m_MultipleToOriginal;
-        public ProductItem MainProduct => m_MainProduct;
-        public ProductItem[] AdditionalProducts => m_AdditionalProducts;
-        public ProductItem BonusProduct => m_BonusProduct;
+        public ProductItemConfig MainProduct => m_MainProduct;
+        public ProductItemConfig[] AdditionalProducts => m_AdditionalProducts;
+        public ProductItemConfig BonusProduct => m_BonusProduct;
 
-        public List<ProductItem> GetAllProduct(bool hasBonus)
+        public List<ProductItemConfig> GetAllProduct(bool hasBonus)
         {
             return GetAllProductsInternal(hasBonus);
         }
 
-        public string GetMainLabel()
-        {
-            return m_MainProduct.GetLabel();
-        }
-        public string GetBonusLabel()
-        {
-            return m_BonusProduct.GetLabel();
-        }
-        public Sprite GetMainIcon()
-        {
-            return m_MainProduct.GetIcon();
-        }
-        public Sprite GetBonusIcon()
-        {
-            return m_BonusProduct.GetIcon();
-        }
-        public List<ProductItem> GetAdditionalProduct()
+        
+        public List<ProductItemConfig> GetAdditionalProduct()
         {
             return GetAdditionalProductInternal();
         }
-        private List<ProductItem> GetAdditionalProductInternal()
+        private List<ProductItemConfig> GetAdditionalProductInternal()
         {
-            return new List<ProductItem>(m_AdditionalProducts);
+            return new List<ProductItemConfig>(m_AdditionalProducts);
         }
-        private List<ProductItem> GetAllProductsInternal(bool hasBonus)
+        private List<ProductItemConfig> GetAllProductsInternal(bool hasBonus)
         {
-            List<ProductItem> allProducts = new()
+            List<ProductItemConfig> allProducts = new()
             {
                 m_MainProduct
             };
@@ -81,108 +57,5 @@ namespace LegionKnight
         }
     }
 
-    [System.Serializable]
-    public partial class ProductItem
-    {
-        [SerializeField]
-        ScriptableObject m_Object;
-        [SerializeField]
-        private int m_Amount;
-
-        public ScriptableObject Object => m_Object;
-        public int Amount => m_Amount;
-
-        public void AddProductToPlayer()
-        {
-            if (m_Object is CurrencyDefinition currency)
-            {
-                Player.Instance.AddCurrencyAmount(currency, m_Amount);
-            }
-            else if (m_Object is CharacterDefinition character)
-            {
-                Player.Instance.SetOwned(character, true);
-            }
-            else if (m_Object is StandbyPlatformDefinition plat)
-            {
-                Player.Instance.AddPlatformAmount(plat, m_Amount);
-            }
-            else if (m_Object is EnergyDefinition ene)
-            {
-                Player.Instance.AddEnergy(ene, m_Amount);
-            }
-            else if (m_Object is CustomImageDefinition img)
-            {
-                Player.Instance.CustomProfile.SetOwned(img, true);
-            }
-            else if (m_Object is BadgeDefinition badge)
-            {
-                Player.Instance.BadgeManager.SetCurrentUpgradeLevel(badge, m_Amount);
-            }
-        }
-
-        public string GetLabel()
-        {
-            return GetLabelInternal();
-        }
-        public Sprite GetIcon()
-        {
-            return GetIconInternal();
-        }
-        private string GetLabelInternal()
-        {
-            if (m_Object is CurrencyDefinition currency)
-            {
-                return currency.Id;
-            }
-            else if (m_Object is CharacterDefinition character)
-            {
-                return character.Label;
-            }
-            else if (m_Object is StandbyPlatformDefinition plat)
-            {
-                return plat.Label;
-            }
-            else if (m_Object is EnergyDefinition ene)
-            {
-                return ene.Label;
-            }
-            else if (m_Object is CustomImageDefinition img)
-            {
-                return img.Label;
-            }
-            else if (m_Object is BadgeDefinition badge)
-            {
-                return badge.Label;
-            }
-            return "";
-        }
-        private Sprite GetIconInternal()
-        {
-            if (m_Object is CurrencyDefinition currency)
-            {
-                return currency.Icon;
-            }
-            else if (m_Object is CharacterDefinition character)
-            {
-                return character.Icon;
-            }
-            else if (m_Object is StandbyPlatformDefinition plat)
-            {
-                return plat.Icon;
-            }
-            else if (m_Object is EnergyDefinition ene)
-            {
-                return ene.Icon;
-            }
-            else if (m_Object is CustomImageDefinition img)
-            {
-                return img.Icon;
-            }
-            else if (m_Object is BadgeDefinition badge)
-            {
-                return badge.Upgrade[0].Icon;
-            }
-            return null;
-        }
-    }
+    
 }

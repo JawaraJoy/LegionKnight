@@ -35,10 +35,10 @@ namespace LegionKnight
         [SerializeField] private GachaCurrencyCost m_AlternativeCurrency;
 
         [Header("Rewards")]
-        [SerializeField] private GachaReward m_FirstDrawReward;
-        [SerializeField] private List<GachaReward> m_MainRewards = new();
-        [SerializeField] private List<GachaReward> m_SmallPityRewards = new();
-        [SerializeField] private List<GachaReward> m_NormalRewards = new();
+        [SerializeField] private GachaRewardConfig m_FirstDrawReward;
+        [SerializeField] private List<GachaRewardConfig> m_MainRewards = new();
+        [SerializeField] private List<GachaRewardConfig> m_SmallPityRewards = new();
+        [SerializeField] private List<GachaRewardConfig> m_NormalRewards = new();
 
         public string Id => m_Id;
         public string Label => m_Label;
@@ -61,9 +61,9 @@ namespace LegionKnight
         public GachaCurrencyCost MainCurrency => m_MainCurrency;
         public GachaCurrencyCost AlternativeCurrency => m_AlternativeCurrency;
 
-        public GachaReward FirstDrawReward => m_FirstDrawReward;
-        public IReadOnlyList<GachaReward> MainRewards => m_MainRewards;
-        public IReadOnlyList<GachaReward> SmallPityRewards => m_SmallPityRewards;
-        public IReadOnlyList<GachaReward> NormalRewards => m_NormalRewards;
+        public GachaRewardConfig FirstDrawReward => m_FirstDrawReward;
+        public IReadOnlyList<GachaRewardConfig> MainRewards => m_MainRewards;
+        public IReadOnlyList<GachaRewardConfig> SmallPityRewards => m_SmallPityRewards;
+        public IReadOnlyList<GachaRewardConfig> NormalRewards => m_NormalRewards;
     }
 }

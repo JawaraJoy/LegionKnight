@@ -16,26 +16,15 @@ namespace LegionKnight
         [SerializeField]
         private SceneConfig m_HomeScene;
         [SerializeField]
-        private LevelDefinition m_CurrenLevel;
+        private StageConfig m_CurrenStage;
         [SerializeField]
         private Image m_NextLevelImage;
         [SerializeField]
         private TextMeshProUGUI m_CompleteText;
 
-        [SerializeField]
-        private UnityEvent<CharacterReward> m_OnSetLevelDefinition = new();
         protected override void ShowInternal()
         {
-            if (!GameManager.Instance.IsInfiniteLevel)
-            {
-                GameManager.Instance.SetLevelOver(true);
-                SetLevelDefinition(GameManager.Instance.LevelDefinition);
-                GameManager.Instance.SetLevelUnlocked(GameManager.Instance.LevelDefinition.NextLevel, true);
-                GameManager.Instance.SetLevelCompleted(GameManager.Instance.LevelDefinition, true);
-                UnityAction open = new (base.ShowInternal);
-                StartCoroutine(DelayOpen(3f, open));
-                Player.Instance.SetPause(true);
-            }
+            
         }
         private IEnumerator DelayOpen(float delay, UnityAction action)
         {
@@ -46,38 +35,18 @@ namespace LegionKnight
         public override void Hide()
         {
             base.Hide();
-            Player.Instance.SetPause(false);
         }
 
-        public void SetLevelDefinition(LevelDefinition defi)
+        public void SetLevelDefinition(StageConfig stageConfig)
         {
-            m_CurrenLevel = defi;
-            m_NextLevelImage.sprite = m_CurrenLevel.NextLevel.LevelImage;
-
-            if (m_CurrenLevel == m_CurrenLevel.NextLevel)
-            {
-                if (GameManager.Instance.IsLevelUnlocked(m_CurrenLevel.NextLevel))
-                {
-                    m_CompleteText.text = "The Next Level already Uncloked";
-                }
-                m_CompleteText.text = "Every Level Is Cleared";
-            }
-            else
-            {
-                m_CompleteText.text = "New Level is Unlocked";
-            }
-
-            bool isComplete = GameManager.Instance.IsLevelCompleted(m_CurrenLevel);
-            CharacterReward reward = isComplete ? m_CurrenLevel.RepeatReward : m_CurrenLevel.FirstReward;
-            m_OnSetLevelDefinition.Invoke(reward);
+            
         }
 
         public void StartNextLevel()
         {
-            if (m_CurrenLevel != null)
+            if (m_CurrenStage != null)
             {
-                m_CurrenLevel.NextLevel.StartLevel();
-                GameManager.Instance.StoreLevelScore();
+                
             }
             else
             {
@@ -88,10 +57,9 @@ namespace LegionKnight
 
         public void PlayAgain()
         {
-            if (m_CurrenLevel != null)
+            if (m_CurrenStage != null)
             {
-                m_CurrenLevel.StartLevel();
-                GameManager.Instance.StoreLevelScore();
+                
             }
             else
             {
@@ -103,7 +71,6 @@ namespace LegionKnight
         {
             GameManager.Instance.SceneController.LoadSceneConfig(m_HomeScene);
             HideInternal();
-            GameManager.Instance.StoreLevelScore();
         }
     }
 }

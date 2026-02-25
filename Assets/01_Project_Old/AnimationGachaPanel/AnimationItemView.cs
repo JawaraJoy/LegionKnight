@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using Rush;
 
 namespace LegionKnight
 {
@@ -8,45 +9,30 @@ namespace LegionKnight
     {
         [SerializeField]
         private TextMeshProUGUI m_ItemName;
-        [SerializeField, Obsolete]
-        private CharacterDefinition m_Exceptable;
-        protected override void OnDefinitionSetInvoke(object defi)
+        protected override void OnDefinitionSetInvoke(CollectibleConfig collectibleConfig)
         {
-            base.OnDefinitionSetInvoke(defi);
+            base.OnDefinitionSetInvoke(collectibleConfig);
             m_Amount.gameObject.SetActive(false);
             m_ItemName.gameObject.SetActive(true);
-            if (defi is GachaReward reward)
+            if (collectibleConfig is GachaRewardConfig reward)
             {
-                if (reward.Definition is IDescriptable descriptable)
+                string itemName = reward.GachaItemConfig.BaseInfo.Name;
+                string amountText = reward.Amount.ToString();
+                m_ItemName.text = $"{itemName}[x{amountText}]";
+
+                
+                if (reward.GachaItemConfig is HeroUnitConfig heroConfig)
                 {
-                    m_ItemName.text = descriptable.Label;
-                    string amountText = reward.Amount.ToString();
-                    m_ItemName.text = $"{descriptable.Label}[{amountText}]";
-                }
-                if (reward.Definition is CurrencyDefinition currency)
-                {
-                    m_Icon.sprite = currency.BigIcon;
-                }
-                if (reward.Definition is StandbyPlatformDefinition standbyPlatform)
-                {
-                    m_Icon.sprite = standbyPlatform.BigIcon;
-                }
-                if (reward.Definition is CharacterDefinition character)
-                {
-                    m_Icon.sprite = character.LargeIcon;
-                    m_ItemName.text = GetHeroNameTextFormat(character);
-                }
-                if (reward.Definition == m_Exceptable)
-                {
-                    m_ItemName.gameObject.SetActive(false);
+                    m_Icon.sprite = heroConfig.CollectibleField.SplashImage;
+                    m_ItemName.text = GetHeroNameTextFormat(heroConfig);
                 }
             }
             
         }
-        private string GetHeroNameTextFormat(CharacterDefinition defi)
+        private string GetHeroNameTextFormat(HeroUnitConfig heroConfig)
         {
-            string hex = ColorUtility.ToHtmlStringRGB(defi.ColorRarity);
-            return $"{defi.Label} [<color=#{hex}>{defi.Rarity}</color>]"; // Format: "{Rarity} {HeroName}"
+            string hex = ColorUtility.ToHtmlStringRGB(heroConfig.CollectibleField.RarityConfig.Color);
+            return $"{heroConfig.BaseInfo.Name} [<color=#{hex}>{heroConfig.CollectibleField.RarityConfig.BaseInfo.Name}</color>]"; // Format: "{Rarity} {HeroName}"
         }
     }
 }

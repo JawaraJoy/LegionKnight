@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using Rush;
 
 namespace LegionKnight
 {
@@ -18,15 +19,15 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<GachaBanner> m_OnInitPanel = new();
         [SerializeField]
-        private UnityEvent<CurrencyDefinition> m_OnNotEnoughCurrency = new();
+        private UnityEvent<ItemConfig> m_OnNotEnoughCurrency = new();
         [SerializeField]
         private NotEnoughDrawCostView m_NotEnoughDrawCostView;
         [SerializeField]
         private GachaManagerAgent[] m_GachaManagerAgents;
-        public void OnNotEnoughtCurrencyInvoke(CurrencyDefinition definition)
+        public void OnNotEnoughtCurrencyInvoke(ItemConfig itemConfig)
         {
-            m_OnNotEnoughCurrency?.Invoke(definition);
-            m_NotEnoughDrawCostView.SetShow(definition);
+            m_OnNotEnoughCurrency?.Invoke(itemConfig);
+            m_NotEnoughDrawCostView.SetShow(itemConfig);
         }
         protected override void ShowInternal()
         {

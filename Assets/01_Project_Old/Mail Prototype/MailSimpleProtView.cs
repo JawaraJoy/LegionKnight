@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.UI;
+using Rush;
 
 namespace LegionKnight.Prototype
 {
@@ -57,7 +57,7 @@ namespace LegionKnight.Prototype
         {
             foreach (var item in m_MailItems)
             {
-                if (item.Definition == loot)
+                if (item.LootField == loot)
                 {
                     return item;
                 }

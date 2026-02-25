@@ -15,7 +15,7 @@ namespace Rush
         {
             if (collision.TryGetComponent(out Platform2D platform))
             {
-                PlatformManager platformManager = RushGameManager.Instance.PlatformManager;
+                PlatformHandler platformManager = RushGameManager.Instance.StageManager.PlatformHandler;
                 float globalPerfectTouchRate = platformManager.GlobalPerfectTouchRange;
                 bool isPerfectLanding = PlatformUtility.IsPerfectLanding(this, platform, globalPerfectTouchRate);
                 m_TouchDown.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);

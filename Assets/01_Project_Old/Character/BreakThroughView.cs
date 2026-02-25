@@ -1,3 +1,4 @@
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,7 @@ namespace LegionKnight
         [SerializeField]
         private CurrencyView m_CoinOwned;
 
-        private CharacterUnit m_CharacterUnit;
+        private HeroUnit m_HeroUnit;
 
         [SerializeField]
         private Button m_UpgradeButton;
@@ -40,9 +41,9 @@ namespace LegionKnight
         {
             m_UpgradeButton.onClick.RemoveListener(UpgradeHero);
         }
-        public void Init(CharacterUnit unit)
+        public void Init(HeroUnit unit)
         {
-            m_CharacterUnit = unit;
+            m_HeroUnit = unit;
 
 
             InitInternal();
@@ -51,15 +52,15 @@ namespace LegionKnight
         private void UpgradeHero()
         {
             if (!m_IsUpgradeAvailable) return;
-            m_CharacterUnit.AddStar(1);
+            m_HeroUnit.AddStar(1);
 
-            int ownShardAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeShard.CurrencyDefinition);
-            int ownCoinAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeCoin.CurrencyDefinition);
+            int ownShardAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_UsedUpgradeShard.ItemConfig);
+            int ownCoinAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_UsedUpgradeCoin.ItemConfig);
             int ressShardOwned = ownShardAmount - m_UsedUpgradeShard.Amount;
             int ressCoinOwned = ownCoinAmount - m_UsedUpgradeCoin.Amount;
 
-            Player.Instance.SetCurrencyAmount(m_UsedUpgradeShard.CurrencyDefinition, ressShardOwned);
-            Player.Instance.SetCurrencyAmount(m_UsedUpgradeCoin.CurrencyDefinition, ressCoinOwned);
+            Player.Instance.CurrencyControl.SetCurrencyAmount(m_UsedUpgradeShard.ItemConfig, ressShardOwned);
+            Player.Instance.CurrencyControl.SetCurrencyAmount(m_UsedUpgradeCoin.ItemConfig, ressCoinOwned);
 
             InitInternal();
             HideInternal();
@@ -72,18 +73,18 @@ namespace LegionKnight
         private void InitInternal()
         {
 
-            CurrencyDefinition breakShardDefi = m_CharacterUnit.GetBreakCost().CurrencyDefinition;
-            int breakShardAmount = m_CharacterUnit.GetBreakCost().Amount;
-            CurrencyDefinition breakCoinDefi = m_CharacterUnit.GetBreakCoinCost().CurrencyDefinition;
-            int breakCoinAmount = m_CharacterUnit.GetBreakCoinCost().Amount;
+            ItemConfig breakShardDefi = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.ShardConfig;
+            int breakShardAmount = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.GetShardAmountToBreak(m_HeroUnit.Star);
+            ItemConfig breakCoinDefi = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.CoinConfig;
+            int breakCoinAmount = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.GetCoinAmountToBreak(m_HeroUnit.Star);
 
             Currency breakShardCurrency = new(breakShardDefi, breakShardAmount);
             Currency breakCoinCurrency = new(breakCoinDefi, breakCoinAmount);
 
-            bool isTimeToBreak = m_CharacterUnit.CanBreak();
-            bool isMaxStar = m_CharacterUnit.Star >= m_CharacterUnit.MaxStar;
-            bool enoughShard = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount;
-            bool enoughCoin = Player.Instance.GetCurrencyAmount(breakCoinDefi) >= breakCoinAmount;
+            bool isTimeToBreak = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.CanBreak(m_HeroUnit.Star, m_HeroUnit.Level);
+            bool isMaxStar = m_HeroUnit.Star >= m_HeroUnit.MaxStar;
+            bool enoughShard = Player.Instance.CurrencyControl.GetCurrencyAmount(breakShardDefi) >= breakShardAmount;
+            bool enoughCoin = Player.Instance.CurrencyControl.GetCurrencyAmount(breakCoinDefi) >= breakCoinAmount;
             bool isEnoughCurrency = enoughShard && enoughCoin;
             bool canBreak = isEnoughCurrency && isTimeToBreak && !isMaxStar;
 
@@ -94,10 +95,10 @@ namespace LegionKnight
             m_UpgradeButton.interactable = canBreak;
             m_QuickAccessButton.gameObject.SetActive(!isEnoughCurrency);
 
-            int ownerShardAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeShard.CurrencyDefinition);
-            int ownerCoinAmount = Player.Instance.GetCurrencyAmount(m_UsedUpgradeCoin.CurrencyDefinition);
-            Currency ownedCurrency = new(m_UsedUpgradeShard.CurrencyDefinition, ownerShardAmount);
-            Currency ownedCoin = new(m_UsedUpgradeCoin.CurrencyDefinition, ownerCoinAmount);
+            int ownerShardAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_UsedUpgradeShard.ItemConfig);
+            int ownerCoinAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_UsedUpgradeCoin.ItemConfig);
+            Currency ownedCurrency = new(m_UsedUpgradeShard.ItemConfig, ownerShardAmount);
+            Currency ownedCoin = new(m_UsedUpgradeCoin.ItemConfig, ownerCoinAmount);
 
             m_ShardNeed.SetView(m_UsedUpgradeShard);
             m_CoinNeed.SetView(m_UsedUpgradeCoin);
@@ -109,8 +110,8 @@ namespace LegionKnight
             m_UpgradeButton.interactable = m_IsUpgradeAvailable;
 
             m_ShardNameText.text = $"Owned:";
-            m_ShardNeed.SetView(new Currency(m_UsedUpgradeShard.CurrencyDefinition, m_UsedUpgradeShard.Amount));
-            m_CoinNeed.SetView(new Currency(m_UsedUpgradeCoin.CurrencyDefinition, m_UsedUpgradeCoin.Amount));
+            m_ShardNeed.SetView(new Currency(m_UsedUpgradeShard.ItemConfig, m_UsedUpgradeShard.Amount));
+            m_CoinNeed.SetView(new Currency(m_UsedUpgradeCoin.ItemConfig, m_UsedUpgradeCoin.Amount));
         }
 
         protected override void ShowInternal()

@@ -1,3 +1,4 @@
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,11 +13,11 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_UseText;
 
-        private CharacterUnit m_CharacterUnit;
-        public void Init(CharacterDefinition defi)
+        private HeroUnit m_HeroUnit;
+        public void Init(HeroUnitConfig heroConfig)
         {
-            CharacterUnit unit = Player.Instance.GetCharacterUnit(defi);
-            m_CharacterUnit = unit;
+            HeroUnit unit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
+            m_HeroUnit = unit;
             bool isCharacterUsed = unit.IsUsed;
             m_UseButton.interactable = !isCharacterUsed;
 
@@ -24,8 +25,8 @@ namespace LegionKnight
         }
         public void Init()
         {
-            if (m_CharacterUnit == null) return;
-            bool isCharacterUsed = m_CharacterUnit.IsUsed;
+            if (m_HeroUnit == null) return;
+            bool isCharacterUsed = m_HeroUnit.IsUsed;
             m_UseButton.interactable = !isCharacterUsed;
             m_UseText.text = isCharacterUsed ? "Used" : "Use";
         }

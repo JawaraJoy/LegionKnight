@@ -1,11 +1,11 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
+using Rush;
 
 namespace LegionKnight
 {
-    public partial class CharacterJump : MonoBehaviour
+    public partial class CharacterJump : Bindable
     {
         [SerializeField]
         private bool m_CanJump;
@@ -112,7 +112,7 @@ namespace LegionKnight
             m_Rb.gravityScale = 0f; // Disable gravity while flying
             m_Rb.bodyType = RigidbodyType2D.Kinematic; // Set to kinematic to prevent physics interactions
             yield return new WaitForSeconds(0.5f); // Wait for the fly duration
-            GameManager.Instance.AddSpeedPlatformRate(m_PlatformSpeedUpOnFly);
+            RushGameManager.Instance.StageManager.PlatformHandler.AddGlobalSpeedRate(m_PlatformSpeedUpOnFly);
         }
 
         private void Fly()
@@ -132,7 +132,7 @@ namespace LegionKnight
                 // add score each 0.5 seconds while flying
                 if (m_CurrentFlyTime % 0.5f < Time.deltaTime)
                 {
-                    GameManager.Instance.AddScoreAmount(2);
+                    //GameManager.Instance.AddScoreAmount(2);
                     m_OnFlyGetScore?.Invoke();
                 }
             }
@@ -149,16 +149,17 @@ namespace LegionKnight
             m_Rb.linearVelocity = Vector2.zero; // Optionally stop movement
             m_CurrentFlyTime = 0f; // Reset fly timer
             m_Rb.bodyType = RigidbodyType2D.Dynamic; // Set back to dynamic for normal physics interactions
-            GameManager.Instance.SetLevelOver(true);
+            RushGameManager.Instance.StageManager.PlatformHandler.Pause();
             StartCoroutine(StopFlying()); // Start coroutine to stop flying
         }
 
         private IEnumerator StopFlying()
         {
             yield return new WaitForSeconds(0.25f); // Wait for the fly duration
-            GameManager.Instance.AddSpeedPlatformRate(-m_PlatformSpeedUpOnFly);
-            GameManager.Instance.SetLevelOver(false);
-            GameManager.Instance.SpawnPlatform();
+            RushGameManager.Instance.StageManager.PlatformHandler.AddGlobalSpeedRate(-m_PlatformSpeedUpOnFly);
+            RushGameManager.Instance.StageManager.PlatformHandler.Resume();
+            //GameManager.Instance.SetLevelOver(false); // mortal the player
+            //GameManager.Instance.SpawnPlatform();
             OnStopFlyInvoke();
         }
 
@@ -216,7 +217,6 @@ namespace LegionKnight
 
         private void ClampJumpDistance()
         {
-            //Vector2 currentPost = new Vector2(m_Rb.position.x, m_Rb.position.y);
             float jumpDistance = Vector2.Distance(m_StartingJumpPost, m_Rb.position);
             if (jumpDistance > m_MaxJumpDistance)
             {
@@ -232,7 +232,6 @@ namespace LegionKnight
             Debug.Log("Jump");
             if (!m_IsGrounded || !m_CanJump) return;
             m_Rb.linearVelocity = new Vector2(m_Rb.linearVelocity.x, m_JumpForce);
-            //m_Rb.AddForceY(m_JumpForce, ForceMode2D.Force);
             OnStartJumpInvoke();
         }
         public void JumpUnPress()

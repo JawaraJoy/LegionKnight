@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -5,7 +6,7 @@ namespace LegionKnight
     public class CutScenePanelAgent : MonoBehaviour
     {
         [SerializeField]
-        private SpineAnimDefinition m_Definition;
+        private AnimationClipConfig m_Config;
         private CutScenePanel GetPanel()
         {
             return CanvasManager.Instance.GetPanel<CutScenePanel>();
@@ -14,19 +15,19 @@ namespace LegionKnight
         public void PlayUI()
         {
             GetPanel().Show();
-            SpineUI spineUI = GetPanel().GetBinding<SpineUI>();
-            spineUI.Play(m_Definition);
+            AvatarSpineUI spineUI = GetPanel().GetBinding<AvatarSpineUI>();
+            spineUI.PlayClip(m_Config);
         }
 
         public void Pause()
         {
-            SpineUI spineUI = GetPanel().GetBinding<SpineUI>();
-            spineUI.PauseUI(m_Definition);
+            AvatarSpineUI spineUI = GetPanel().GetBinding<AvatarSpineUI>();
+            spineUI.Pause();
         }
         public void Resume()
         {
-            SpineUI spineUI = GetPanel().GetBinding<SpineUI>();
-            spineUI.ResumeUI(m_Definition);
+            AvatarSpineUI spineUI = GetPanel().GetBinding<AvatarSpineUI>();
+            spineUI.Resume();
         }
     }
 }

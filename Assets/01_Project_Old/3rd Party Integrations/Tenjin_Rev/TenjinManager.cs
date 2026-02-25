@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using Unity.Services.LevelPlay;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace LegionKnight
         
         private bool progressionComplete = false;
 
-        [SerializeField] private CurrencyDefinition currencyCheat;
+        [SerializeField] private ItemConfig currencyCheat;
 
         public static TenjinManager Instance { get; private set; }
 
@@ -58,13 +59,6 @@ namespace LegionKnight
             [PurchaseFailureReason.StoreNotConnected] = 8,
             [PurchaseFailureReason.PurchaseMissing] = 9,
             [PurchaseFailureReason.Unknown] = 10
-        };
-
-        public static Dictionary<Rarity, int> rarityCode = new Dictionary<Rarity, int>()
-        {
-            [Rarity.Common] = 0,
-            [Rarity.Rare] = 1,
-            [Rarity.Epic] = 2
         };
 
         public void Init()
@@ -239,11 +233,11 @@ namespace LegionKnight
             Instance.SendEvent("event_breakthrough_unlocked", tier.ToString());
         }
 
-        public void SendEventToUnlockAchievement(BadgeDefinition badge)
+        public void SendEventToUnlockAchievement(BadgeConfig badge)
         {
             if(badge)
             {
-                string achievementId = badge.Id;
+                string achievementId = badge.BaseInfo.Id;
 
                 //--TenjinRecord
                 if(PlayerPrefs.GetInt("Record_UnlockAchievement_" + achievementId, 0) == 0)
@@ -255,10 +249,10 @@ namespace LegionKnight
             }
         }
 
-        public void SendEventToHeroLevelUp(CharacterDefinition defi, int level)
+        public void SendEventToHeroLevelUp(HeroUnitConfig heroConfig, int level)
         {
-            if(defi != null)
-                Instance.SendEvent("event_hero_level_up_" + defi.Id, level.ToString());
+            if(heroConfig != null)
+                Instance.SendEvent("event_hero_level_up_" + heroConfig.BaseInfo.Id, level.ToString());
         }
 
         public void SendEventToReEnergy()
@@ -268,13 +262,13 @@ namespace LegionKnight
 
         public void SendEventToPurchaseStart(SellProduct product)
         {
-            if (productIdCode.ContainsKey(product.Definition.Id))
+            if (productIdCode.ContainsKey(product.Config.BaseInfo.Id))
             {
-                Instance.SendEvent("event_purchase_started", productIdCode[product.Definition.Id].ToString());
+                Instance.SendEvent("event_purchase_started", productIdCode[product.Config.BaseInfo.Id].ToString());
 
-                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
                 {
-                    Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_started");
+                    Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_started");
                 }
             }
         }
@@ -285,9 +279,9 @@ namespace LegionKnight
             {
                 Instance.SendEvent("event_purchase_failed", failedReasonCode[reason].ToString());
 
-                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
                 {
-                    Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_Failed");
+                    Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_Failed");
                 }
             }
 
@@ -299,13 +293,13 @@ namespace LegionKnight
 
         public void SendEventToPurchaseSuccess(SellProduct product)
         {
-            if (productIdCode.ContainsKey(product.Definition.Id))
+            if (productIdCode.ContainsKey(product.Config.BaseInfo.Id))
             {
-                Instance.SendEvent("event_purchase_success", productIdCode[product.Definition.Id].ToString());
+                Instance.SendEvent("event_purchase_success", productIdCode[product.Config.BaseInfo.Id].ToString());
 
-                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
                 {
-                    Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_success");
+                    Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_success");
                 }
             }
         }
@@ -315,22 +309,11 @@ namespace LegionKnight
             Instance.SendEvent("event_gacha_pull", isMultiDraw ? "1" : "0");
         }
 
-        public void SendEventToGachaPullType(List<GachaReward> gachaRewards)
+        public void SendEventToGachaPullType(List<GachaRewardConfig> gachaRewards)
         {
-            foreach (var item in gachaRewards)
+            foreach (var gachaReward in gachaRewards)
             {
-                Rarity rarity = Rarity.Common;
-
-                if (item.Definition is CharacterDefinition character)
-                {
-                    rarity = character.Rarity;
-                }
-                else if (item.Definition is StandbyPlatformDefinition platform)
-                {
-                    rarity = platform.Rarity;
-                }
-
-                Instance.SendEvent("event_gacha_pulltype", rarityCode[rarity].ToString());
+                Instance.SendEvent("event_gacha_pulltype", gachaReward.GachaItemConfig.CollectibleField.RarityConfig.BaseInfo.Name);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Rush;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LegionKnight
@@ -44,13 +45,13 @@ namespace LegionKnight
             }
         }
         public int TotalDraws => m_TotalDraws;
-        public int GetBaseCostForCurrency(CurrencyDefinition currency, int drawCount)
+        public int GetBaseCostForCurrency(ItemConfig currency, int drawCount)
         {
             GachaCurrencyCost baseCost;
 
-            if (Definition.MainCurrency.Definition == currency)
+            if (Definition.MainCurrency.ItemConfig == currency)
                 baseCost = Definition.MainCurrency;
-            else if (Definition.AlternativeCurrency.Definition == currency)
+            else if (Definition.AlternativeCurrency.ItemConfig == currency)
                 baseCost = Definition.AlternativeCurrency;
             else
             {
@@ -60,16 +61,16 @@ namespace LegionKnight
 
             return baseCost.Amount * drawCount;
         }
-        private int GetFinalCostForCurrency(CurrencyDefinition currency, int drawCount)
+        private int GetFinalCostForCurrency(ItemConfig currency, int drawCount)
         {
             // ❌ MAIN currency TIDAK kena discount
-            if (Definition.MainCurrency.Definition == currency)
+            if (Definition.MainCurrency.ItemConfig == currency)
             {
                 return Definition.MainCurrency.Amount * drawCount;
             }
 
             // ✅ HANYA alternative currency
-            if (Definition.AlternativeCurrency.Definition != currency)
+            if (Definition.AlternativeCurrency.ItemConfig != currency)
             {
                 Debug.LogError($"Currency {currency.name} not supported by banner {Definition.Label}");
                 return int.MaxValue;
@@ -94,7 +95,7 @@ namespace LegionKnight
 
             return Mathf.CeilToInt(cost * rate);
         }
-        public GachaCurrencyCost GetFinalCurrencyCost(CurrencyDefinition currency, int drawCount)
+        public GachaCurrencyCost GetFinalCurrencyCost(ItemConfig currency, int drawCount)
         {
             int finalCost = GetFinalCostForCurrency(currency, drawCount);
             return new GachaCurrencyCost(currency, finalCost);
@@ -115,7 +116,7 @@ namespace LegionKnight
             LoadDiscount(m_MultiDiscount);
         }
 
-        public void Draw(int count, List<GachaReward> results)
+        public void Draw(int count, List<GachaRewardConfig> results)
         {
             for (int i = 0; i < count; i++)
             {
@@ -128,7 +129,7 @@ namespace LegionKnight
             SaveState();
         }
 
-        private GachaReward RollOnce(bool firstIndex)
+        private GachaRewardConfig RollOnce(bool firstIndex)
         {
             m_TotalDraws++;
             m_SmallPity++;
@@ -154,7 +155,7 @@ namespace LegionKnight
             return RollFrom(m_Definition.NormalRewards);
         }
 
-        private GachaReward RollFrom(IReadOnlyList<GachaReward> pool)
+        private GachaRewardConfig RollFrom(IReadOnlyList<GachaRewardConfig> pool)
         {
             float total = 0f;
             foreach (var r in pool)
@@ -173,7 +174,7 @@ namespace LegionKnight
             return pool[^1];
         }
 
-        private GachaReward RollWithSoftPity(IReadOnlyList<GachaReward> pool)
+        private GachaRewardConfig RollWithSoftPity(IReadOnlyList<GachaRewardConfig> pool)
         {
             float multiplier = 1f;
 

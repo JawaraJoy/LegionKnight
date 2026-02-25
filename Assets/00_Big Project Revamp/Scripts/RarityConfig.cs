@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    [System.Serializable]
+    [CreateAssetMenu(fileName = "Rarity", menuName = "Rush/Rarity")]
     public partial class RarityConfig : Configuration
     {
         [SerializeField]

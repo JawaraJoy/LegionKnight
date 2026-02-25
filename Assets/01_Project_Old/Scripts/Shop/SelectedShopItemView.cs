@@ -29,13 +29,13 @@ namespace LegionKnight
         {
             //UnityService.Instance.LoadRewardedAd();
             m_Definition = definition;
-            m_ItemNameText.text = definition.ItemName;
-            m_MainIcon.sprite = definition.Icon;
+            m_ItemNameText.text = definition.BaseInfo.Name;
+            m_MainIcon.sprite = definition.CollectibleField.Icon;
             if (m_DescriptionText != null)
             {
-                m_DescriptionText.text = definition.Description;
+                m_DescriptionText.text = definition.BaseInfo.Description;
             }
-            bool hasBonus = definition.BonusAmount > 0 && GameManager.Instance.GetShopItemControl(definition).IsBonusAvaible;
+            bool hasBonus = definition.BonusAmount > 0 && GameManager.Instance.ShopManager.GetShopContainer(definition.ContainerName).GetShopItemControl(definition).IsBonusAvaible;
             m_BonusText.gameObject.SetActive(hasBonus);
             m_BonusText.text = $"Bonus +{definition.BonusAmount}";
             m_ItemAmountText.text = $"x{m_Definition.Amount}";

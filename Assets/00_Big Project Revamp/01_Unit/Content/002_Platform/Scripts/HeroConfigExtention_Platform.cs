@@ -2,8 +2,7 @@ using UnityEngine;
 
 namespace Rush
 { 
-    public class HeroConfigExtention_Platform { }
-    public partial class HeroConfig : IHasPlatform
+    public partial class HeroUnitConfig : IHasPlatform
     {
         [SerializeField]
         private PlatformConfig[] m_UniquePlatforms;

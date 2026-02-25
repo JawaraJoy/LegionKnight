@@ -1,3 +1,4 @@
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,11 +14,11 @@ namespace LegionKnight
         [SerializeField]
         private Image m_Fill;
 
-        public void SetBosName(BosDefinition defi)
+        public void SetBosName(BossUnitConfig bosConfig)
         {
             if (m_BosName != null)
             {
-                m_BosName.text = defi.Label;
+                m_BosName.text = bosConfig.BaseInfo.Name;
             }
             else
             {

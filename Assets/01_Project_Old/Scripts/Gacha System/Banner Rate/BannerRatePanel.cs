@@ -23,7 +23,7 @@ namespace LegionKnight
         [SerializeField, MMReadOnly]
         private int m_GachaItemsCount = 0;
 
-        private GachaItemNoteView GetSpawnedItem(GachaReward reward)
+        private GachaItemNoteView GetSpawnedItem(GachaRewardConfig reward)
         {
             GachaItemNoteView r = m_SpawnedItems.Find(x => x.Item == reward);
             if (r == null)
@@ -55,7 +55,7 @@ namespace LegionKnight
 
         private IEnumerator SettingUpRateNote(BannerDefinition defi)
         {
-            List<GachaReward> gr = new(defi.NormalRewards);
+            List<GachaRewardConfig> gr = new(defi.NormalRewards);
             m_SpawnedItemsCount = m_SpawnedItems.Count;
             m_GachaItemsCount = gr.Count;
             bool morethanSpawned = m_GachaItemsCount > m_SpawnedItemsCount;

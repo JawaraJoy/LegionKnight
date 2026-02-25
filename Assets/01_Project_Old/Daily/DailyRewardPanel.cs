@@ -38,7 +38,7 @@ namespace LegionKnight
             TimerDefinition defi = DailyRewardInternal.Timer;
             m_RestTimerText.text = defi.GetRemainingTimeToReset();
         }
-        public void ShowClaimedDailyReward(LootDefinition loot)
+        public void ShowClaimedDailyReward(LootChestDefinition loot)
         {
             m_PreviewLootMonitor.ClearAllLootViews();
             m_PreviewLootMonitor.AddLootsView(loot.LootFields.ToList());

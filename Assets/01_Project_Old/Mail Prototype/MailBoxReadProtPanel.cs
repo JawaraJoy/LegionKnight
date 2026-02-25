@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -100,7 +101,7 @@ namespace LegionKnight.Prototype
         {
             foreach (var item in m_MailItems)
             {
-                if (item.Definition == loot)
+                if (item.LootField == loot)
                 {
                     return item;
                 }

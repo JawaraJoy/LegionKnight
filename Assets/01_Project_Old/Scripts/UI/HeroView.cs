@@ -1,3 +1,4 @@
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,30 +19,22 @@ namespace LegionKnight
         [SerializeField]
         private Image m_HeroUniquePlatformIcon;
         [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnInit = new();
+        private UnityEvent<HeroUnitConfig> m_OnInit = new();
         [SerializeField]
-        private UnityEvent<CharacterDefinition> m_OnCharacterSelected = new();
+        private UnityEvent<HeroUnitConfig> m_OnHeroSelected = new();
         [SerializeField]
         private GameObject m_UniquePlatformContent;
-        private void OnEnable()
-        {
-            //Player.Instance.OnHeroLevelUp.AddListener(OnInitInvoke);
-        }
-        private void OnDisable()
-        {
-            //Player.Instance.OnHeroLevelUp.RemoveListener(OnInitInvoke);
-        }
         private void Start()
         {
             InitInternal();
         }
         public void Refresh()
         {
-            InitInternalSelected();
+            RefreshInternal();
         }
-        private void InitInternalSelected()
+        private void RefreshInternal()
         {
-            CharacterDefinition selected = Player.Instance.SelectedCharacter;
+            HeroUnitConfig selected = Player.Instance.HeroDeck.SelectedHero;
             if (selected == null) return;
             SetCharacterSelectedInternal(selected);
             OnInitInvoke(selected);
@@ -50,71 +43,70 @@ namespace LegionKnight
         private void InitInternal()
         {
             
-            if (Player.Instance.UsedCharacter == null) return;
-            CharacterDefinition usedCharacter = Player.Instance.UsedCharacter;
-            SetCharacterSelectedInternal(usedCharacter);
-            OnInitInvoke(usedCharacter);
+            if (Player.Instance.HeroDeck.SelectedHero == null) return;
+            HeroUnitConfig usedHero = Player.Instance.HeroDeck.UsedHero;
+            SetCharacterSelectedInternal(usedHero);
+            OnInitInvoke(usedHero);
             
         }
 
-        private string GetHeroNameTextFormat(CharacterDefinition defi)
+        private string GetHeroNameTextFormat(HeroUnitConfig config)
         {
-            string hex = ColorUtility.ToHtmlStringRGB(defi.ColorRarity);
-            return $"{defi.Label} [<color=#{hex}>{defi.Rarity}</color>]"; // Format: "{Rarity} {HeroName}"
+            string hex = ColorUtility.ToHtmlStringRGB(config.CollectibleField.RarityConfig.Color);
+            return $"{config.BaseInfo.Name} [<color=#{hex}>{config.CollectibleField.RarityConfig.BaseInfo.Name}</color>]"; // Format: "{Rarity} {HeroName}"
         }
-        public void SetCharacterSelectedInternal(CharacterDefinition defi)
+        public void SetCharacterSelectedInternal(HeroUnitConfig heroConfig)
         {
-            m_HeroBigIcon.sprite = defi.Icon;
-            string heroName = defi.Label;
-            string rarity = defi.Rarity.ToString();
-            m_HeroNameText.text = GetHeroNameTextFormat(defi);
-            m_HeroSkillIcon.sprite = defi.Passives[0].Icon;
-            m_TypeIcon.sprite = defi.TypeIcon;
+            m_HeroBigIcon.sprite = heroConfig.CollectibleField.Icon;
+            string heroName = heroConfig.BaseInfo.Name;
+            string rarity = heroConfig.CollectibleField.RarityConfig.BaseInfo.Name.ToString();
+            m_HeroNameText.text = GetHeroNameTextFormat(heroConfig);
+            m_HeroSkillIcon.sprite = heroConfig.Skills[0].CollectibleField.Icon;
 
-            m_UniquePlatformContent.SetActive(defi.UniquePlatform != null);
+            m_UniquePlatformContent.SetActive(heroConfig.UniquePlatforms[0] != null);
 
-            if (defi.UniquePlatform != null)
+            if (heroConfig.UniquePlatforms[0] != null)
             {
-                m_HeroUniquePlatformIcon.sprite = defi.UniquePlatform.Icon;
+                m_HeroUniquePlatformIcon.sprite = heroConfig.UniquePlatforms[0].CollectibleField.Icon;
             }
             
-            OnCharacterSelectedInvoke(defi);
+            OnCharacterSelectedInvoke(heroConfig);
         }
-        public void SetCharacterSelected(CharacterDefinition defi)
+        public void SetCharacterSelected(HeroUnitConfig heroConfig)
         {
-            SetCharacterSelectedInternal(defi);
+            SetCharacterSelectedInternal(heroConfig);
         }
-        private void OnCharacterSelectedInvoke(CharacterDefinition defi)
+        private void OnCharacterSelectedInvoke(HeroUnitConfig heroConfig)
         {
-            m_OnCharacterSelected?.Invoke(defi);
+            m_OnHeroSelected?.Invoke(heroConfig);
         }
-        private void OnInitInvoke(CharacterDefinition defi)
+        private void OnInitInvoke(HeroUnitConfig config)
         {
-            if (defi == null) return;
-            m_OnInit?.Invoke(defi);
+            if (config == null) return;
+            m_OnInit?.Invoke(config);
         }
     }
-    public partial class CharacterPanel
+    public partial class HeroPanel
     {
         private HeroView GetHeroView()
         {
             return GetBinding<HeroView>();
         }
 
-        public void SetCharacterSelected(CharacterDefinition defi)
+        public void SetHeroSelected(HeroUnitConfig config)
         {
-            GetHeroView().SetCharacterSelected(defi);
+            GetHeroView().SetCharacterSelected(config);
         }
     }
     public partial class CanvasManager
     {
-        private CharacterPanel GetCharacterPanel()
+        private HeroPanel GetHeroPanel()
         {
-            return GetPanel<CharacterPanel>();
+            return GetPanel<HeroPanel>();
         }
-        public void SetCharacterSelected(CharacterDefinition defi)
+        public void SetHeroSelected(HeroUnitConfig defi)
         {
-            GetCharacterPanel().SetCharacterSelected(defi);
+            GetHeroPanel().SetHeroSelected(defi);
         }
     }
 }

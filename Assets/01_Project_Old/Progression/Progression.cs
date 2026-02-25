@@ -125,7 +125,7 @@ namespace LegionKnight
                 LevelUpPanel levelUpPanel = CanvasManager.Instance.GetPanel<LevelUpPanel>();
                 CanvasManager.Instance.ShowLevelUpPanel();
                 m_LevelUpTriggered = false;
-                LootDefinition lootDef = m_ExpTable[m_Level - 1].RewardLevelReached;
+                LootChestDefinition lootDef = m_ExpTable[m_Level - 1].RewardLevelReached;
                 if (lootDef != null)
                 {
                     levelUpPanel.ShowRewardLevelUp(lootDef);

@@ -9,11 +9,11 @@ namespace LegionKnight
         [SerializeField]
         private Image m_IconImage;
         [SerializeField]
-        private LootDefinition m_Reward;
+        private LootChestDefinition m_Reward;
         [SerializeField]
         private Button m_ClaimButton;
         [SerializeField]
-        private UnityEvent<LootDefinition> m_OnClaimed;
+        private UnityEvent<LootChestDefinition> m_OnClaimed;
         [SerializeField]
         private GameObject m_OffContent;
         [SerializeField]
@@ -33,7 +33,7 @@ namespace LegionKnight
         {
             
             ShowInternal();
-            Sprite icon = m_Reward.MainIconReward;
+            Sprite icon = m_Reward.CollectibleField.Icon;
             DailyRewardState state = GameManager.Instance.DailyRewardManager.GetDailyRewardData(m_Reward).State;
             m_IconImage.sprite = icon;
 

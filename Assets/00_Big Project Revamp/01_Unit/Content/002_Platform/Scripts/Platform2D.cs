@@ -11,8 +11,6 @@ namespace Rush
     {
         [SerializeField, MMReadOnly]
         private PlatformConfig m_PlatformConfig;
-        [SerializeField, MMReadOnly]
-        private List<PlatformAbilityDeliverField> m_PlatformAbilities = new();
         [SerializeField]
         private PlatformAttack m_PlatformAttack;
         [SerializeField]
@@ -82,35 +80,19 @@ namespace Rush
                     skillController.AddNewSkills(skillConfigs);
 
                     Skill platformSkill = skillController.GetSkillActivator(m_PlatformConfig);
-                    SetDelivers(platformSkill.Delivers.ToArray());
 
                     if (platformSkill.HasAbility(platformSkill.SkillConfig.AbilitySets[0].BaseInfo.Id, out AbilityDeliver abilityDeliver))
                     {
                         m_PlatformAttack.Init(abilityDeliver.AbilityContext);
                     }
-                    
                 }
-                
             }
             else
             {
                 return;
             }
-            
-            
+
             RefreshInternal();
-            
-        }
-        private void SetDelivers(AbilityDeliver[] delivers)
-        {
-            m_PlatformAbilities.Clear();
-            foreach (var deliver in delivers)
-            {
-                PlatformAbilityDeliverField platformAbilityDeliver = new PlatformAbilityDeliverField();
-                platformAbilityDeliver.Init(deliver.AbilityConfig, m_SkillContext);
-                m_PlatformAbilities.Add(platformAbilityDeliver);
-            }
-            
         }
         private bool IsReachedDestination()
         {
@@ -143,17 +125,17 @@ namespace Rush
             
             SetIsPausedInternal(false);
 
-            float minSpeedRate = RushGameManager.Instance.PlatformManager.MinGlobalSpeedRate;
-            float maxSpeedRate = RushGameManager.Instance.PlatformManager.MaxGlobalSpeedRate;
+            float minSpeedRate = RushGameManager.Instance.StageManager.PlatformHandler.MinGlobalSpeedRate;
+            float maxSpeedRate = RushGameManager.Instance.StageManager.PlatformHandler.MaxGlobalSpeedRate;
             float randomSpeedRate = Random.Range(minSpeedRate, maxSpeedRate);
 
             m_FinalSpeed = m_PlatformConfig.Speed * randomSpeedRate;
 
             m_OffSiteReachHorizontalPost =
-                RushGameManager.Instance.PlatformManager.Config.OffSiteReachHorizontalPost;
+                RushGameManager.Instance.StageManager.PlatformHandler.Config.OffSiteReachHorizontalPost;
 
             Vector2 contactPoint =
-                RushGameManager.Instance.PlatformManager.LastContactPoint;
+                RushGameManager.Instance.StageManager.PlatformHandler.LastContactPoint;
 
             // Tentukan arah dari spawn ke contact point
             m_Direction = PlatformUtility.GetPlatformDirection(m_Pivot.position, contactPoint);
@@ -183,7 +165,7 @@ namespace Rush
 
         public void Tick()
         {
-            bool isPaused = RushGameManager.Instance.PlatformManager.IsPaused;
+            bool isPaused = RushGameManager.Instance.StageManager.PlatformHandler.IsPaused;
 
             if (isPaused || m_IsPaused)
                 return;

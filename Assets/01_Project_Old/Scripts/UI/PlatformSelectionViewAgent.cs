@@ -4,9 +4,9 @@ namespace LegionKnight
 {
     public class PlatformSelectionViewAgent : MonoBehaviour
     {
-        private CharacterPanel GetCharacterPanel()
+        private HeroPanel GetCharacterPanel()
         {
-            return CanvasManager.Instance.GetPanel<CharacterPanel>();
+            return CanvasManager.Instance.GetPanel<HeroPanel>();
         }
 
         private PlatformSelectionView GetPlatformSelectionView()

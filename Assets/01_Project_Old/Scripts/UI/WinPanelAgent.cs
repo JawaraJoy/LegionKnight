@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -6,7 +7,9 @@ namespace LegionKnight
     {
         public void OpenWinPanel()
         {
-            if (!GameManager.Instance.IsInfiniteLevel)
+            StageConfig stageConfig = RushGameManager.Instance.StageManager.UsedStageConfig;
+            bool Isfinite = stageConfig.StageMode == StageMode.Adventure;
+            if (Isfinite)
             {
                 WinPanel winPanel = CanvasManager.Instance.GetPanel<WinPanel>();
                 winPanel.Show();

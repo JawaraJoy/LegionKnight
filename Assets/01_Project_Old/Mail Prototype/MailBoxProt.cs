@@ -2,6 +2,7 @@ using MoreMountains.Tools;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using Rush;
 
 namespace LegionKnight.Prototype
 {

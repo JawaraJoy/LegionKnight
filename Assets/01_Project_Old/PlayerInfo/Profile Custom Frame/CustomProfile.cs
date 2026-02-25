@@ -64,7 +64,7 @@ namespace LegionKnight
         {
             foreach (var icon in m_Icons)
             {
-                if (icon.Definition.Id == defi.Id)
+                if (icon.Definition.BaseInfo.Id == defi.BaseInfo.Id)
                 {
                     return icon;
                 }
@@ -83,7 +83,7 @@ namespace LegionKnight
         {
             foreach (var icon in m_Icons)
             {
-                if (icon.Definition.Id == id)
+                if (icon.Definition.BaseInfo.Id == id)
                 {
                     return icon;
                 }
@@ -94,7 +94,7 @@ namespace LegionKnight
         {
             foreach (var frame in m_Frames)
             {
-                if (frame.Definition.Id == defi.Id)
+                if (frame.Definition.BaseInfo.Id == defi.BaseInfo.Id)
                 {
                     return frame;
                 }
@@ -105,7 +105,7 @@ namespace LegionKnight
         {
             foreach (var frame in m_Frames)
             {
-                if (frame.Definition.Id == id)
+                if (frame.Definition.BaseInfo.Id == id)
                 {
                     return frame;
                 }
@@ -265,14 +265,14 @@ namespace LegionKnight
                     if (HasFrameInternal(defi, out var frame))
                     {
                         m_SelectedFrame = frame.Definition;
-                        UnityService.Instance.SaveData(SELECTED_ICON_KEY, m_SelectedIcon.Id);
+                        UnityService.Instance.SaveData(SELECTED_ICON_KEY, m_SelectedIcon.BaseInfo.Id);
                     }
                     break;
                 case CustomImageType.Icon:
                     if (HasIconInternal(defi, out var icon))
                     {
                         m_SelectedIcon = icon.Definition;
-                        UnityService.Instance.SaveData(SELECTED_FRAME_KEY, m_SelectedFrame.Id);
+                        UnityService.Instance.SaveData(SELECTED_FRAME_KEY, m_SelectedFrame.BaseInfo.Id);
                     }
                     break;
             }
@@ -284,11 +284,11 @@ namespace LegionKnight
             {
                 case CustomImageType.Frame:
                     m_UsedFrame = m_SelectedFrame;
-                    UnityService.Instance.SaveData(USED_FRAME_KEY, m_UsedFrame.Id);
+                    UnityService.Instance.SaveData(USED_FRAME_KEY, m_UsedFrame.BaseInfo.Id);
                     break;
                 case CustomImageType.Icon:
                     m_UsedIcon = m_SelectedIcon;
-                    UnityService.Instance.SaveData(USED_ICON_KEY, m_UsedIcon.Id);
+                    UnityService.Instance.SaveData(USED_ICON_KEY, m_UsedIcon.BaseInfo.Id);
                     break;
             }
             
@@ -313,8 +313,8 @@ namespace LegionKnight
 
         public UnityEvent<ProductCondition> OnConditionChanged => m_OnConditionChanged;
 
-        private string OWNED_KEY => $"owned{m_Definition.Id}";
-        private string CONDITION_KEY => $"con{m_Definition.Id}";
+        private string OWNED_KEY => $"owned{m_Definition.BaseInfo.Id}";
+        private string CONDITION_KEY => $"con{m_Definition.BaseInfo.Id}";
 
         public void ChangeCondition(ProductCondition condition)
         {

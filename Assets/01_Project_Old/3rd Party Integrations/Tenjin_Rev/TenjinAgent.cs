@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -46,7 +47,7 @@ namespace LegionKnight
             }
         }
 
-        public void SendEventToAcquiredCharacter(CharacterDefinition defi)
+        public void SendEventToAcquiredCharacter(HeroUnitConfig defi)
         {
             if(defi != null)
             {
@@ -74,26 +75,26 @@ namespace LegionKnight
 
         public void SendEventToPurchaseStart(SellProduct product)
         {
-            if (TenjinManager.Instance && TenjinManager.productIdCode.ContainsKey(product.Definition.Id))
+            if (TenjinManager.Instance && TenjinManager.productIdCode.ContainsKey(product.Config.BaseInfo.Id))
             {
-                TenjinManager.Instance.SendEvent("event_purchase_started", TenjinManager.productIdCode[product.Definition.Id].ToString());
+                TenjinManager.Instance.SendEvent("event_purchase_started", TenjinManager.productIdCode[product.Config.BaseInfo.Id].ToString());
 
-                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
                 {
-                    TenjinManager.Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_started");
+                    TenjinManager.Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_started");
                 }
             }
         }
 
         public void SendEventToPurchaseSuccess(SellProduct product)
         {
-            if (TenjinManager.Instance && TenjinManager.productIdCode.ContainsKey(product.Definition.Id))
+            if (TenjinManager.Instance && TenjinManager.productIdCode.ContainsKey(product.Config.BaseInfo.Id))
             {
-                TenjinManager.Instance.SendEvent("event_purchase_success", TenjinManager.productIdCode[product.Definition.Id].ToString());
+                TenjinManager.Instance.SendEvent("event_purchase_success", TenjinManager.productIdCode[product.Config.BaseInfo.Id].ToString());
 
-                if(product.Definition.Id.IndexOf("killjoy") > -1)
+                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
                 {
-                    TenjinManager.Instance.SendEvent("event_purchase_" + product.Definition.name.Replace(" ", "_") + "_success");
+                    TenjinManager.Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_success");
                 }
             }
         }

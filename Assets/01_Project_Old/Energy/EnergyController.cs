@@ -38,26 +38,26 @@ namespace LegionKnight
         {
             PayInternal(m_PreviousCost, onCanPayListen, onCantPayListen);
         }
-        private Energy GetEnergyInternal(EnergyDefinition definition)
+        private Energy GetEnergyInternal(EnergyConfig definition)
         {
             foreach (var energy in m_Energies)
             {
-                if (energy.Definition == definition)
+                if (energy.Config == definition)
                 {
                     return energy;
                 }
             }
             return null;
         }
-        public Energy GetEnergy(EnergyDefinition definition)
+        public Energy GetEnergy(EnergyConfig definition)
         {
             return GetEnergyInternal(definition);
         }
-        public bool HasEnergy(EnergyDefinition definition)
+        public bool HasEnergy(EnergyConfig definition)
         {
             return GetEnergyInternal(definition) != null;
         }
-        public bool IsFull(EnergyDefinition definition)
+        public bool IsFull(EnergyConfig definition)
         {
             var energy = GetEnergyInternal(definition);
             if (energy == null)
@@ -74,7 +74,7 @@ namespace LegionKnight
                 energy.Initialize();
             }
         }
-        public void Add(EnergyDefinition definition, int amount)
+        public void Add(EnergyConfig definition, int amount)
         {
             var energy = GetEnergyInternal(definition);
             if (energy == null)
@@ -91,7 +91,7 @@ namespace LegionKnight
                 TenjinManager.Instance.SendEventToReEnergy();
             }
         }
-        public void Set(EnergyDefinition definition, int amount)
+        public void Set(EnergyConfig definition, int amount)
         {
             var energy = GetEnergyInternal(definition);
             if (energy == null)
@@ -134,7 +134,7 @@ namespace LegionKnight
             List<Energy> energyNeeds = new List<Energy>();
             foreach (var cost in energyCosts)
             {
-                Energy ownEnergy = GetEnergyInternal(cost.Definition);
+                Energy ownEnergy = GetEnergyInternal(cost.Config);
                 bool canPay = ownEnergy.CanPay(cost.Amount);
                 if (canPay)
                 {
@@ -143,7 +143,7 @@ namespace LegionKnight
                 else
                 {
                     int restAmount = cost.Amount - ownEnergy.Amount;
-                    Energy restEnergy = new Energy(cost.Definition, restAmount);
+                    Energy restEnergy = new Energy(cost.Config, restAmount);
                     energyNeeds.Add(restEnergy);
                 }
                 Debug.Log($"ammount canpay = {amountcanPay}/ energyCosts Lenght {energyCosts.Length}");
@@ -152,7 +152,7 @@ namespace LegionKnight
             {
                 foreach (var cost in energyCosts)
                 {
-                    Energy ownEnergy = GetEnergyInternal(cost.Definition);
+                    Energy ownEnergy = GetEnergyInternal(cost.Config);
                     ownEnergy.Pay(cost.Amount);
                 }
                 m_OnCanPay.Invoke(energyCosts);
@@ -175,7 +175,7 @@ namespace LegionKnight
     public class Energy
     {
         [SerializeField]
-        private EnergyDefinition m_Definition;
+        private EnergyConfig m_Config;
         [SerializeField]
         private TimerDefinition m_Timer;
         [SerializeField]
@@ -188,24 +188,24 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<Energy> m_OnInitialized;
 
-        public EnergyDefinition Definition => m_Definition;
+        public EnergyConfig Config => m_Config;
         public int Amount => m_Amount;
 
         private float m_CurrentTimeSpend;
 
-        public Energy(EnergyDefinition definition, int amount)
+        public Energy(EnergyConfig config, int amount)
         {
-            m_Definition = definition;
+            m_Config = config;
             m_Amount = amount;
         }
 
-        public bool IsFull => m_Amount >= m_Definition.MaxAmount;
+        public bool IsFull => m_Amount >= m_Config.MaxAmount;
 
         public void Initialize()
         {
-            if (UnityService.Instance.HasData(m_Definition.Id))
+            if (UnityService.Instance.HasData(m_Config.BaseInfo.Id))
             {
-                SetInternal(UnityService.Instance.GetData<int>(m_Definition.Id));
+                SetInternal(UnityService.Instance.GetData<int>(m_Config.BaseInfo.Id));
             }
             else
             {
@@ -224,7 +224,7 @@ namespace LegionKnight
         }
         private void ClampAmount()
         {
-            if (m_Definition.CanBreakMaxAmount)
+            if (m_Config.CanBreakMaxAmount)
             {
                 // If can break max amount, we don't clamp to max amount
                 if (m_Amount < 0)
@@ -237,23 +237,23 @@ namespace LegionKnight
             {
                 m_Amount = 0;
             }
-            else if (m_Amount > m_Definition.MaxAmount)
+            else if (m_Amount > m_Config.MaxAmount)
             {
-                m_Amount = m_Definition.MaxAmount;
+                m_Amount = m_Config.MaxAmount;
             }
         }
         public void Regening()
         {
-            if (!m_Definition.CanRegen) return;
-            int interval = m_Definition.RegenEverEverySeconds;
-            bool offsiteMax = m_Amount > m_Definition.MaxAmount;
+            if (!m_Config.CanRegen) return;
+            int interval = m_Config.RegenEverEverySeconds;
+            bool offsiteMax = m_Amount > m_Config.MaxAmount;
             //bool canRegen = !offsiteMax && underTimeSpend;
             if (!offsiteMax)
             {
                 m_CurrentTimeSpend += Time.deltaTime;
                 if (m_CurrentTimeSpend > interval)
                 {
-                    m_Timer.CheckTimer(ResetEnergy, () => AddInternal(m_Definition.RegenAmount));
+                    m_Timer.CheckTimer(ResetEnergy, () => AddInternal(m_Config.RegenAmount));
                     m_CurrentTimeSpend = 0f;
                 }
             }
@@ -263,21 +263,21 @@ namespace LegionKnight
             m_Amount += add;
             ClampAmount();
             m_OnAmountChanged?.Invoke(this);
-            UnityService.Instance.SaveData(m_Definition.Id, m_Amount);
+            UnityService.Instance.SaveData(m_Config.BaseInfo.Id, m_Amount);
         }
         private void SetInternal(int set)
         {
             m_Amount = set;
             ClampAmount();
             m_OnAmountChanged?.Invoke(this);
-            UnityService.Instance.SaveData(m_Definition.Id, m_Amount);
+            UnityService.Instance.SaveData(m_Config.BaseInfo.Id, m_Amount);
         }
         private void ResetEnergy()
         {
-            bool offsiteMax = m_Amount >= m_Definition.MaxAmount;
+            bool offsiteMax = m_Amount >= m_Config.MaxAmount;
             if (!offsiteMax)
             {
-                SetInternal(m_Definition.MaxAmount);
+                SetInternal(m_Config.MaxAmount);
             }
             m_Timer.StartTimer();
         }

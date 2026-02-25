@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -13,30 +14,29 @@ namespace LegionKnight
         [SerializeField]
         protected TextMeshProUGUI m_Amount;
         [SerializeField]
-        private UnityEvent<object> m_OnDefinitionSet = new();
+        private UnityEvent<CollectibleConfig> m_OnCollectibleConfigSet = new();
         [SerializeField]
         private UnityEvent<int> m_OnAmountChanged = new();
         [SerializeField]
         private UnityEvent m_OnAmountCountChanged = new();
         protected int m_AmountValue;
-        protected object m_Definition;
-        public object Definition => m_Definition;
+        protected CollectibleConfig m_CollectibleConfig;
+        public CollectibleConfig CollectibleConfig => m_CollectibleConfig;
         public int Amount => m_AmountValue;
-        public void Init(object defi)
+        public void Init(CollectibleConfig collectibleConfig)
         {
-            InitInternal(defi);
+            InitInternal(collectibleConfig);
         }
-        protected virtual void InitInternal(object defi)
+        protected virtual void InitInternal(CollectibleConfig collectibleConfig)
         {
-            m_Definition = defi;
-            OnDefinitionSetInvoke(defi);
+            m_CollectibleConfig = collectibleConfig;
+            OnDefinitionSetInvoke(collectibleConfig);
         }
 
         public void AddAmountWithCountDown(int addCount)
         {
             StartCoroutine(AddCountDown(addCount));
         }
-        int m_AmountTriggerChange = 10;
         int m_AmountTriggerCount = 0;
         private IEnumerator AddCountDown(int addCount)
         {
@@ -61,9 +61,9 @@ namespace LegionKnight
                 yield return new WaitForSeconds(0.05f);
             }
         }
-        protected virtual void OnDefinitionSetInvoke(object defi)
+        protected virtual void OnDefinitionSetInvoke(CollectibleConfig collectibleConfig)
         {
-            m_OnDefinitionSet?.Invoke(defi);
+            m_OnCollectibleConfigSet?.Invoke(collectibleConfig);
         }
         protected void SetAmountInternal(int amount)
         {

@@ -6,15 +6,15 @@ namespace LegionKnight
     {
         public void PlayBGM()
         {
-            GameSetting.Instance.PlayBGM();
+            GameSetting.Instance.AudioSetting.BGMPlayer.Play(true);
         }
         public void PlayBGM(AudioClip clip)
         {
-            GameSetting.Instance.PlayBGM(clip);
+            GameSetting.Instance.AudioSetting.BGMPlayer.Play(clip);
         }
         public void StopBGM()
         {
-            GameSetting.Instance.StopBGM();
+            GameSetting.Instance.AudioSetting.BGMPlayer.Stop();
         }
     }
 }

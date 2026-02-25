@@ -1,11 +1,10 @@
-using AppsFlyerSDK;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace LegionKnight
 {
     [CreateAssetMenu(fileName = "Task", menuName = "Legion Knight/Mission/Task", order = 1)]
-    public class TaskDefinition : ScriptableObject, IHasIcon
+    public class TaskDefinition : ScriptableObject
     {
         [SerializeField]
         private string m_Id;
@@ -26,7 +25,7 @@ namespace LegionKnight
         [SerializeField]
         private TimerDefinition m_ResetTime;
         [SerializeField]
-        private LootDefinition m_Rewards;
+        private LootChestDefinition m_Rewards;
         public string Id => m_Id;
         public string Label => m_Label;
         public string Description => m_Description;
@@ -34,7 +33,7 @@ namespace LegionKnight
         public int TargetScore => m_TargetScore;
         public int TaskPower => m_TaskPower;
         public TimerDefinition ResetTime => m_ResetTime;
-        public LootDefinition Rewards => m_Rewards;
+        public LootChestDefinition Rewards => m_Rewards;
         public MissionCategory MissionCategory => m_MissionCategory;
 
         public Sprite Icon => m_Icon;

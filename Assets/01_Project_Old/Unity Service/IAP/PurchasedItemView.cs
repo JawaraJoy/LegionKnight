@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -13,20 +14,20 @@ namespace LegionKnight
         private Transform m_ItemSpawn;
 
         private readonly List<ItemView> m_SpawnedItemView = new();
-        protected override void InitInternal(object defi)
+        protected override void InitInternal(CollectibleConfig collectibleConfig)
         {
-            base.InitInternal(defi);
-            if (defi is ProductDefinition product)
+            base.InitInternal(collectibleConfig);
+            if (collectibleConfig is ProductDefinition product)
             {
-                bool hasBonus = UnityService.Instance.IsBonusAvailable(product.Id);
-                List<ProductItem> allProducts = product.GetAllProduct(hasBonus);
+                bool hasBonus = UnityService.Instance.IsBonusAvailable(product.BaseInfo.Id);
+                List<ProductItemConfig> allProducts = product.GetAllProduct(hasBonus);
                 foreach (var item in allProducts)
                 {
                     SpawnItemView(item);
                 }
             }
         }
-        private void SpawnItemView(ProductItem item)
+        private void SpawnItemView(ProductItemConfig item)
         {
             ClearSpawnedItemView();
             Addressables.InstantiateAsync(m_ItemViewAsset, m_ItemSpawn).Completed += handle =>

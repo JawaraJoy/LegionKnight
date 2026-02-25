@@ -33,7 +33,7 @@ namespace LegionKnight
         }
         public void PlayAgain()
         {
-            GameManager.Instance.Play();
+            //GameManager.Instance.Play();
         }
         protected override void OnShowInvoke()
         {
@@ -44,13 +44,13 @@ namespace LegionKnight
         protected override void OnHideInvoke()
         {
             base.OnHideInvoke();
-            GameTimeScale.SetTimeScale(1);
-            Player.Instance.SetPause(false);
+            //GameTimeScale.SetTimeScale(1);
+            //Player.Instance.SetPause(false);
         }
 
         private void StoreLevelScoreInternal()
         {
-            GameManager.Instance.StoreLevelScore();
+            //GameManager.Instance.StoreLevelScore();
         }
 
         private void DoubleReward()
