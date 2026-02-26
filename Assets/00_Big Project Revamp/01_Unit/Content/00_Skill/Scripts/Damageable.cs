@@ -146,17 +146,16 @@ namespace Rush
             // Apply remaining damage to Shield
             if (effectiveDamage > 0f && m_Shield > 0)
             {
-                int previousShield = m_Shield;
-                AddShieldInternal(-effectiveDamage);
-                if (m_Shield < 0)
+                if (m_Shield <= effectiveDamage)
                 {
-                    effectiveDamage = -previousShield;
+                    effectiveDamage -= m_Shield;
                     SetShieldInternal(0, 0f);
                 }
                 else
                 {
                     effectiveDamage = 0;
                 }
+                AddShieldInternal(-effectiveDamage);
             }
             // Apply remaining damage to Health
             if (effectiveDamage > 0f)

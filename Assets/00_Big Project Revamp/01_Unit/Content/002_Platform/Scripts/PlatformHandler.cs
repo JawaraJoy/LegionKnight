@@ -234,7 +234,7 @@ namespace Rush
         }
         private bool IsWaitingListFull(out int possibleSlotCount)
         {
-            int maxSlot = m_Config.MaxStackedPlatforms;
+            int maxSlot = m_Config.MaxStackedPlatforms
             bool isFull = m_WaitingListPlatformConfigs.Count >= maxSlot;
             
             possibleSlotCount = 0;

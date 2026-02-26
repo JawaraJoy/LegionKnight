@@ -1,5 +1,6 @@
 using MoreMountains.Tools;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Rush
@@ -143,6 +144,24 @@ namespace Rush
             if (GetSkillActivatorInternal(skill.SkillConfig.BaseInfo.Id) != null)
             {
                 m_Skills.Remove(skill);
+            }
+        }
+        public void ForceActive(SkillConfig skillConfig)
+        {
+            if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skill))
+            {
+                skill.ForceActivateAll();
+            }
+        }
+        public void ForceActiveByCategory(SkillCategoryConfig categoryConfig)
+        {
+            Skill[] skills = GetSkillsByCategoryInternal(categoryConfig).ToArray();
+            if (skills.Length > 0)
+            {
+                foreach (Skill skill in skills)
+                {
+                    skill.ForceActivateAll();
+                }
             }
         }
     }

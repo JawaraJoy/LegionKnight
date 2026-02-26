@@ -11,5 +11,12 @@ namespace Rush
         private SkillConfig[] m_OnPerfectTouchAbilities;
         public SkillConfig[] OnNormalTouchSkill => m_OnNormalTouchAbilities;
         public SkillConfig[] OnPerfectTouchSkill => m_OnPerfectTouchAbilities;
+
+        public PlatformSkillField(SkillConfig[] onNormalTouchAbilities, SkillConfig[] onPerfectTouchAbilities)
+        {
+            m_OnNormalTouchAbilities = onNormalTouchAbilities;
+            m_OnPerfectTouchAbilities = onPerfectTouchAbilities;
+        }
+
     }
 }

@@ -43,7 +43,7 @@ namespace Rush
         public Transform Pivot => m_Pivot;
         public TouchDownCheckField TouchDownCheck => m_TouchDownCheck;
         public ProgressField Progression => m_Progression;
-
+        public PlatformDirection Direction => m_Direction;
         public bool IsActive => gameObject.activeInHierarchy;
 
         private bool m_ReachedDestination;
@@ -107,15 +107,19 @@ namespace Rush
         public void StartMove(Vector2 startPost)
         {
             if (m_PlatformConfig ==  null) return;
-            SetIsPausedInternal(true);
+            SetIsPausedInternal(false);
             transform.position = startPost;
             RefreshInternal();
 
             m_ReachedDestination = false;
         }
-        private void StopMove()
+        public void StopMove()
         {
-            SetIsPausedInternal(false);
+            StopMoveInternal();
+        }
+        private void StopMoveInternal()
+        {
+            SetIsPausedInternal(true);
         }
         private void RefreshInternal()
         {
@@ -175,8 +179,8 @@ namespace Rush
                 {
                     return;
                 }
-                OnReachDestinationInvoke();
-                m_ReachedDestination = true;
+                OnReachDestinationInvokeInternal();
+                
 
                 return;
             }
@@ -194,21 +198,27 @@ namespace Rush
             SetIsPausedInternal(isPaused);
         }
 
-        private void OnReachDestinationInvoke()
+        public void OnReachDestinationInvoke()
         {
-            StopMove();
+            OnReachDestinationInvokeInternal();
+        }
+
+        private void OnReachDestinationInvokeInternal()
+        {
+            StopMoveInternal();
             
             m_OnReachDestination?.Invoke();
+            m_ReachedDestination = true;
         }
 
         public void ForceActivateAll()
         {
-            m_SkillContext.Skill.ForceActivateAll();
+            
         }
 
         public void ForceActivate(AbilityConfig config)
         {
-            m_SkillContext.Skill.ForceActivate(config);
+            
         }
     }
 }
