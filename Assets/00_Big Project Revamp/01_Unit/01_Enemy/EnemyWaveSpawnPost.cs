@@ -22,7 +22,12 @@ namespace Rush
         private void OnEnable()
         {
             UpdateBank.Instance.RegisterLateUpdateTick(gameObject, this);
-            RushGameManager.Instance.StageManager.EnemyWaveHandler.SetEnemyWavePost(this);
+            EnemyWaveHandler waveHandler = RushGameManager.Instance.StageManager.EnemyWaveHandler;
+            if (waveHandler != null)
+            {
+               waveHandler.SetEnemyWavePost(this);
+            }
+            
         }
         private void OnDisable()
         {

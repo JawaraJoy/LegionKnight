@@ -7,8 +7,6 @@ namespace Rush
 {
     public class PlatformHandler : MonoBehaviour
     {
-        [SerializeField]
-        private Transform m_PlatformSpawnSpot;
         [SerializeField, MMReadOnly]
         private PlatformHandlerConfig m_Config;
         [SerializeField]
@@ -26,6 +24,8 @@ namespace Rush
 
         [SerializeField]
         private TouchDownCheckField m_TouchDownCheckField;
+        [SerializeField, MMReadOnly]
+        private bool m_IsSpawningNextPlatform = false; // Flag to prevent multiple spawn requests
 
         private readonly Dictionary<string, Queue<Platform2D>> m_Pools = new Dictionary<string, Queue<Platform2D>>();
 
@@ -52,6 +52,8 @@ namespace Rush
 
         public void Prepare(PlatformHandlerConfig config)
         {
+            if (config == null) return;
+            if (config == m_Config) return;
             m_CurrentStackedPlatformsCount = 0;
             ClearPreparedPlatformConfigsInternal();
             ClearWaitingListPlatformConfigInternal();
@@ -63,7 +65,7 @@ namespace Rush
             {
                 AddPreparedPlatformsConfigInternal(config.InitialPlatformConfigs, controller);
             }
-            m_LastContactPoint = m_PlatformSpawnSpot.position;
+            m_LastContactPoint = RushPlayer.Instance.PlatformSpawnPost.position;
             SetMaxGlobalSpeedRateInternal(config.MaxGlobalSpeedRate);
             SetMinGlobalSpeedRateInternal(config.MinGlobalSpeedRate);
             SetGlobalPerfectTouchRange(config.GlobalPerfectTouchRange);
@@ -209,8 +211,9 @@ namespace Rush
         {
             m_IsPaused = false;
             if (m_Config == null) return;
-            SpawnNextPlatformFromWaitingList(m_Config.InitialSpawnDelay);
+            
             //InputToWaitingListByRandom();
+            SpawnNextPlatformFromWaitingListInternal(m_Config.InitialSpawnDelay);
         }
         public void Pause()
         {
@@ -241,23 +244,33 @@ namespace Rush
             }
             return isFull;
         }
-
-        private void SpawnNextPlatformFromWaitingList(float delay)
+        public void SpawnNextPlatformFromWaitingList(float delay)
         {
-            if (m_WaitingListPlatformConfigs.Count == 0)
+            SpawnNextPlatformFromWaitingListInternal(delay);
+        }
+        private void SpawnNextPlatformFromWaitingListInternal(float delay)
+        {
+            if (m_WaitingListPlatformConfigs.Count == 0 || m_IsSpawningNextPlatform)
                 return;
+
+            m_IsSpawningNextPlatform = true; // Set flag to true to prevent multiple spawns
 
             StartCoroutine(SpawningNextPlatformFromWaitingList(delay));
         }
+
         private IEnumerator SpawningNextPlatformFromWaitingList(float delay)
         {
             yield return new WaitForSeconds(delay);
+
             PlatformConfig nextPlatform = m_WaitingListPlatformConfigs[0];
             Platform2D platform = GetFromPool(nextPlatform);
             platform.StartMove(PlatformUtility.GetStartingSpawnHorizontalPosition(m_Config.SpawnHorizontalDistanceFromPost, m_LastContactPoint));
             RemoveWaitingListPlatformConfigsInternal(nextPlatform);
 
             AddGlobalSpeedRateInternal(m_Config.SpeedRateGrowthDificulityEachStack);
+
+            // After the spawn is completed, reset the flag to allow the next spawn
+            m_IsSpawningNextPlatform = false;
         }
 
         private void PreWarm(PlatformConfig config, PlatformController controller)
@@ -282,7 +295,8 @@ namespace Rush
             Platform2D newPlatform = Instantiate(config.PlatformPrefab, transform);
             if (controller != null)
             {
-                newPlatform.Init(config, controller.ModuleContext);
+                newPlatform.IniPlatform(config);
+                newPlatform.Init(config.AttackSkill, controller.ModuleContext);
             }
             
             newPlatform.gameObject.SetActive(false);
@@ -340,7 +354,7 @@ namespace Rush
         {
             AddTotalPlayedPlatform(1);
 
-            m_LastContactPoint = platform.Pivot.position;
+            m_LastContactPoint = platform.TouchDownSpot.position;
 
             m_StackedPlatforms.Enqueue(platform);
 
@@ -349,7 +363,7 @@ namespace Rush
 
             LimitStackSize();
 
-            SpawnNextPlatformFromWaitingList(m_Config.NextSpawnDelay);
+            SpawnNextPlatformFromWaitingListInternal(m_Config.NextSpawnDelay);
         }
         private void LimitStackSize()
         {

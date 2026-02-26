@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Rush
 {
     [CreateAssetMenu(fileName = "Platform", menuName = "Rush/Unit/Platform", order = 1)]
-    public class PlatformConfig : SkillConfig
+    public class PlatformConfig : CollectibleConfig
     {
         [SerializeField]
         private Platform2D m_PlatformPrefab;
@@ -19,6 +19,8 @@ namespace Rush
         [SerializeField]
         private float m_Speed = 5f;
         [SerializeField]
+        private SkillConfig m_AttackSkill;
+        [SerializeField]
         private PlatformSkillField m_LeftSkillField;
         [SerializeField]
         private PlatformSkillField m_RightSkillField;
@@ -30,5 +32,6 @@ namespace Rush
         public float WidthRate => m_WidthRate;
         public PlatformSkillField LeftSkillField => m_LeftSkillField;
         public PlatformSkillField RightSkillField => m_RightSkillField;
+        public SkillConfig AttackSkill => m_AttackSkill;
     }
 }

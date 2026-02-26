@@ -2,13 +2,11 @@ using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "PlatformHandler", menuName = "Rush/Handler/PlatformHandler")]
+    [CreateAssetMenu(fileName = "PlatformHandler", menuName = "Rush/Level/PlatformHandler")]
     public class PlatformHandlerConfig : Configuration
     {
         [SerializeField]
         private PlatformConfig[] m_InitialPlatformConfigs;
-        [SerializeField]
-        private LayerMask m_FailLayer;
         [SerializeField]
         private float m_SpawnHorizontalDistanceFromPost = 15f;
         [SerializeField, Range(0f, 2f)]
@@ -43,7 +41,6 @@ namespace Rush
         public float SpawnHorizontalDistanceFromPost => m_SpawnHorizontalDistanceFromPost;
         public float OffSiteReachHorizontalPost => m_OffSiteReachHorizontalPost;
         public SkillConfig[] GlobalSkillForPlayerOnTouchDown => m_GlobalSkillForPlayerOnTouchDown;
-        public LayerMask FailLayer => m_FailLayer;
         public float SpeedRateLimit => m_SpeedRateLimit;
     }
 }

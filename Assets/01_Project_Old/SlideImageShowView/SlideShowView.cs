@@ -32,7 +32,7 @@ namespace LegionKnight
 
         private void ShowSlide(SlideShowHandler slide)
         {
-            if (!m_IsShow)
+            if (!IsShowInternal)
             {
                 ShowInternal();
             }

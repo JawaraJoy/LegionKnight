@@ -164,7 +164,7 @@ namespace Rush
             {
                 float overflow = m_RemainingCharge - m_SkillConfig.Activation.Charge;
 
-                if (m_SkillConfig.Activation.TriggerState == SkillTriggerState.OnChargeFull &&
+                if (m_SkillConfig.Activation.ForceActiveState == ForceActiveState.OnChargeFull &&
                     m_SkillConfig.Activation.AutoActiveOnReady)
                 {
                     TryActivateInternal();
@@ -304,7 +304,7 @@ namespace Rush
 
             ForceActivateAllInternal();
 
-            if (m_SkillConfig.Activation.TriggerState == SkillTriggerState.OnCooldownDone)
+            if (m_SkillConfig.Activation.ForceActiveState == ForceActiveState.OnCooldownDone)
             {
                 EnterCooldown();
             }

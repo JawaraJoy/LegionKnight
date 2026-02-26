@@ -8,13 +8,10 @@ namespace Rush
         [SerializeField]
         private PhysicsMode m_PhysicMode = PhysicsMode.Physics2D;
         [SerializeField]
-        private LayerMask m_PlayerLayer;
-        [SerializeField]
-        private LayerMask m_EnemyLayer;
+        private Vector3 m_StartPosition = Vector3.zero;
 
         public PhysicsMode PhysicsMode => m_PhysicMode;
-        public LayerMask PlayerLayer => m_PlayerLayer;
-        public LayerMask EnemyLayer => m_EnemyLayer;
+        public Vector3 StartPosition => m_StartPosition;
     }
     public enum PhysicsMode
     {

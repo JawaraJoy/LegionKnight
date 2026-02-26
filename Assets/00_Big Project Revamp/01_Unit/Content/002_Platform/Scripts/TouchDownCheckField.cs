@@ -12,6 +12,8 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private int m_OnStayPerfectCount;
         [SerializeField]
+        private UnityEvent<ISkillContext> m_OnTouchDown;
+        [SerializeField]
         private UnityEvent<ISkillContext> m_OnNormalTouchDown;
         [SerializeField]
         private UnityEvent<ISkillContext> m_OnPerfectTouchDown;
@@ -30,6 +32,7 @@ namespace Rush
                 SetStayPerfectCountInternal(0);
                 OnNormalTouchDownInvoke(context);
             }
+            m_OnTouchDown.Invoke(context);
         }
         public void SetIsStayPerfect(bool value, ISkillContext context)
         {
@@ -46,10 +49,12 @@ namespace Rush
         private void OnNormalTouchDownInvoke(ISkillContext context)
         {
             m_OnNormalTouchDown?.Invoke(context);
+            context.Skill?.ForceActivateAll();
         }
         private void OnPerfectTouchDownInvoke(ISkillContext context)
         {
             m_OnPerfectTouchDown?.Invoke(context);
+            context.Skill?.ForceActivateAll();
         }
     }
 }

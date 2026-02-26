@@ -29,7 +29,7 @@ namespace LegionKnight
         private IEnumerator DelayOpen(float delay, UnityAction action)
         {
             yield return new WaitForSeconds(delay);
-            if (m_IsShow) yield break;
+            if (IsShowInternal) yield break;
             action?.Invoke();
         }
         public override void Hide()

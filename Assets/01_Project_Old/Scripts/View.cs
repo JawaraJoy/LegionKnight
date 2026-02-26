@@ -17,9 +17,9 @@ namespace LegionKnight
         private UnityEvent m_OnShow = new();
         [SerializeField]
         private UnityEvent m_OnHide = new();
-        protected bool m_IsShow => m_Content.activeSelf;
+        protected bool IsShowInternal => m_Content.activeSelf;
         public GameObject Content => m_Content;
-        public bool IsShow => m_IsShow;
+        public bool IsShow => IsShowInternal;
         public UnityEvent OnShow => m_OnShow;
         public UnityEvent OnHide => m_OnHide;
         public virtual void Show()

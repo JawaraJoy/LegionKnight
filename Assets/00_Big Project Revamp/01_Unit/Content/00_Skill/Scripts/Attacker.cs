@@ -13,12 +13,16 @@ namespace Rush
         public UnityEvent<AbilityContext> OnAttackStart => m_OnAttackStart;
         [SerializeField]
         private UnityEvent<AbilityContext> m_OnAttackDone;
+        [SerializeField]
+        private UnityEvent<IDamageable> m_OnAttackDelivered;
         public UnityEvent<AbilityContext> OnAttackDone => m_OnAttackDone;
         private AbilityContext m_AbilityContext;
         public IAbilityContext AbilityContext => m_AbilityContext;
         public AttackerField AttackerField => m_AttackerField;
 
         public bool Initialized => m_AbilityContext.Initialized;
+
+        public UnityEvent<IDamageable> OnAttackDelivered => m_OnAttackDelivered;
 
         public void Init(IAbilityContext context)
         {

@@ -53,15 +53,15 @@ namespace LegionKnight
             m_HeroUnit = unit;
 
             ItemConfig breakItemConfig = heroConfig.BreakThroughFormulaConfig.ShardConfig;
-            int breakItemAmount = heroConfig.BreakThroughFormulaConfig.GetShardAmountToBreak(unit.Star);
+            int breakItemAmount = heroConfig.BreakThroughFormulaConfig.GetShardCostToBreak(unit.Star);
 
             ItemConfig breakSecondItemConfig = heroConfig.BreakThroughFormulaConfig.CoinConfig;
-            int breakSecondItemAmount = heroConfig.BreakThroughFormulaConfig.GetCoinAmountToBreak(unit.Star);
+            int breakSecondItemAmount = heroConfig.BreakThroughFormulaConfig.GetCoinCostToBreak(unit.Star);
 
             Currency breakShardCurrency = new(breakItemConfig, breakItemAmount);
             Currency breakCoinCurrency = new(breakSecondItemConfig, breakSecondItemAmount);
 
-            bool isTimeToBreak = heroConfig.BreakThroughFormulaConfig.CanBreak(unit.Star, unit.Star);
+            bool isTimeToBreak = heroConfig.BreakThroughFormulaConfig.CanBreakByLevel(unit.Star, unit.Star);
             bool isMaxStar = unit.Star >= unit.MaxStar;
             bool enoughItem = Player.Instance.CurrencyControl.GetCurrencyAmount(breakItemConfig) >= breakItemAmount;
             bool enoughSecondItem = Player.Instance.CurrencyControl.GetCurrencyAmount(breakSecondItemConfig) >= breakSecondItemAmount;

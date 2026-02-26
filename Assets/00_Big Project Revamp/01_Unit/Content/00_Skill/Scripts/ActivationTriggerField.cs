@@ -5,23 +5,25 @@ namespace Rush
     [System.Serializable]
     public class ActivationTriggerField
     {
+        [Tooltip("Ketika Mana Atau Charge kondisinya terpenuhi")]
         [SerializeField]
         private bool m_AutoActiveOnReady = false;
         [SerializeField]
-        private SkillTriggerState m_ReadyState = SkillTriggerState.OnChargeFull;
+        private ForceActiveState m_ForceActiveState = ForceActiveState.OnChargeFull;
         [SerializeField]
         private float m_Charge = 10f;
         [SerializeField]
         private float m_Cooldown = 10f;
 
         public bool AutoActiveOnReady => m_AutoActiveOnReady;
-        public SkillTriggerState TriggerState => m_ReadyState;
+        public ForceActiveState ForceActiveState => m_ForceActiveState;
         public float Charge => m_Charge;
         public float Cooldown => m_Cooldown;
     }
 
-    public enum SkillTriggerState
+    public enum ForceActiveState
     {
+        None = 0,
         OnCooldownDone,
         OnChargeFull,
         OnHit,

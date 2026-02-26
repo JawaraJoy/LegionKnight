@@ -109,10 +109,14 @@ namespace Rush
             if (collision.TryGetComponent(out IHasAttacker attacker))
             {
                 IAbilityDeliver abilityDeliver = attacker.AbilityContext.AbilityDeliver;
-                if (AbilityUltility.IsTargetAllowedByTargetObject(abilityDeliver, this))
+                bool isAllowed = AbilityUltility.IsTargetAllowedByTargetObject(abilityDeliver, this);
+                if (isAllowed)
                 {
                     TakeDamageInternal(attacker.AbilityContext);
+                    attacker.OnAttackDelivered.Invoke(this);
+                    Debug.Log($"Take Damage from {attacker.AbilityContext.AbilityDeliver.AbilityConfig.BaseInfo.Name}");
                 }
+                //Debug.Log($"Take Damage from {attacker.AbilityContext.AbilityDeliver.AbilityConfig.BaseInfo.Name}");
             }
             if (collision.TryGetComponent(out IHealer healer))
             {
@@ -122,6 +126,7 @@ namespace Rush
                     HealInternal(healer);
                 }
             }
+            //Debug.Log($"Take Damage from");
         }
         public void TakeDamage(IHasAttacker attacker)
         {
@@ -178,11 +183,11 @@ namespace Rush
             GameObject healerModule = healer.AbilityContext.SkillContext.ModuleContext.Module;
             if (healerModule.TryGetComponent(out IHasSkills healerSkill))
             {
-                AbilityUltility.OnSkillEventActivates(healerSkill, SkillTriggerState.OnHealing);
+                AbilityUltility.OnSkillEventActivates(healerSkill, ForceActiveState.OnHealing);
             }
             if (targetHeal.HasBind(out IHasSkills healedSkills))
             {
-                AbilityUltility.OnSkillEventActivates(healedSkills, SkillTriggerState.OnHealed);
+                AbilityUltility.OnSkillEventActivates(healedSkills, ForceActiveState.OnHealed);
             }
             m_OnHealed?.Invoke(new HealerContext(healer, this));
         }
@@ -215,12 +220,12 @@ namespace Rush
             GameObject hitterModule = context.SkillContext.ModuleContext.Module;
             if (hitterModule.TryGetComponent(out IHasSkills hitterSkill))
             {
-                AbilityUltility.OnSkillEventActivates(hitterSkill, SkillTriggerState.OnHit);
+                AbilityUltility.OnSkillEventActivates(hitterSkill, ForceActiveState.OnHit);
             }
 
             if (unitTaker.HasBind(out IHasSkills hasSkill))
             {
-                AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnGetHit);
+                AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnGetHit);
             }
         }
 
@@ -235,12 +240,12 @@ namespace Rush
             GameObject damagerModule = context.SkillContext.ModuleContext.Module;
             if (damagerModule.TryGetComponent(out IHasSkills damagerSkill))
             {
-                AbilityUltility.OnSkillEventActivates(damagerSkill, SkillTriggerState.OnDamageDealed);
+                AbilityUltility.OnSkillEventActivates(damagerSkill, ForceActiveState.OnDamageDealed);
             }
 
             if (unitTaker.HasBind(out IHasSkills hasSkill))
             {
-                AbilityUltility.OnSkillEventActivates(hasSkill, SkillTriggerState.OnDamageTaken);
+                AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnDamageTaken);
             }
 
             if (m_Health <= 0)

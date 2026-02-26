@@ -154,10 +154,7 @@ namespace Rush
             if (targetable == null)
                 return null;
 
-            if (targetable.ModuleContext.Unit.HasBind(out Unit unit))
-                return unit;
-
-            return null;
+            return targetable.ModuleContext.Unit;
         }
         public static List<ITargetable> ApplyTargetPriority(AbilityContext context)
         {
@@ -339,12 +336,12 @@ namespace Rush
                     targets.RemoveAt(i);
             }
         }
-        public static void OnSkillEventActivates(IHasSkills skillOwner, SkillTriggerState filterState)
+        public static void OnSkillEventActivates(IHasSkills skillOwner, ForceActiveState filterState)
         {
             List<Skill> activators = new(skillOwner.Skills);
             foreach (var activator in activators)
             {
-                SkillTriggerState state = activator.SkillConfig.Activation.TriggerState;
+                ForceActiveState state = activator.SkillConfig.Activation.ForceActiveState;
                 if (state == filterState)
                 {
                     activator.ForceActivateAll();

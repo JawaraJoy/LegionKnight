@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityEngine.Audio;
+using LegionKnight;
 
-namespace LegionKnight
+namespace Rush
 {
     public partial class AudioSetting : AudioHandler
     {

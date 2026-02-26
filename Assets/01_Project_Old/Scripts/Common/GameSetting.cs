@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LegionKnight
+namespace Rush
 {
 
     public partial class GameSetting : Singleton<GameSetting>

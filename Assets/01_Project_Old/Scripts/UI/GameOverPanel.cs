@@ -28,7 +28,7 @@ namespace LegionKnight
         }
         protected override void ShowInternal()
         {
-            if (m_IsShow) return;
+            if (IsShowInternal) return;
             base.ShowInternal();
         }
         public void PlayAgain()

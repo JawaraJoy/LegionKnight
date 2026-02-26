@@ -16,6 +16,8 @@ namespace Rush
         private UnityEvent<float> m_OnCurrentThresholdRateChanged;
         [SerializeField]
         private UnityEvent<Sprite> m_OnWaveIconChanged;
+        [SerializeField] private UnityEvent<EnemyWaveConfig> m_OnWaveSetCleared;
+        public UnityEvent<EnemyWaveConfig> OnWaveSetCleared => m_OnWaveSetCleared;
         private int m_CurrenWaveIndex = -1;
         private int m_CurrentThreshold = 0;
 
@@ -48,6 +50,14 @@ namespace Rush
             m_CurrentWaveIcon = waveIcon;
             m_OnWaveIconChanged?.Invoke(waveIcon);
         }
+        private bool IsLoopMode
+        {
+            get
+            {
+                var mode = StageManager.UsedStageConfig.StageMode;
+                return mode == StageMode.Classic || mode == StageMode.Collosal;
+            }
+        }
         private StageManager StageManager
         {
             get
@@ -58,6 +68,13 @@ namespace Rush
                 }
                 return m_StageManager;
             }
+        }
+        private void LoopBackToStart()
+        {
+            // reset progress for next cycle
+            SetCurrentThresholdInternal(0);
+            SetCurrentWaveIndexInternal(0);
+            SetWaveStateInternal(WaveState.Rest);
         }
         private MinionWaveField GetMinionWaveByIndexInternal(int waveIndex)
         {
@@ -195,6 +212,8 @@ namespace Rush
             if (bossUnit.Config is BossUnitConfig)
             {
                 m_BossUnitExisten = null;
+
+                m_OnWaveSetCleared?.Invoke(m_CurrentEnemyWave);
             }
         }
         /// <summary>
@@ -225,7 +244,6 @@ namespace Rush
                     SetCurrentWaveIcon(m_CurrentEnemyWave.BossWaveField.Icon);
                     break;
             }
-            UpdateState();
         }
         private void SetCurrentWaveIndexInternal(int waveIndex)
         {
@@ -246,8 +264,8 @@ namespace Rush
                 return;
             }
             m_CurrentThreshold += amount;
-            m_OnCurrentThresholdRateChanged?.Invoke(CurrentThresholdRateInternal);
             UpdateState();
+            m_OnCurrentThresholdRateChanged?.Invoke(CurrentThresholdRateInternal);
         }
         public void AddCurrentThreshold(int amount)
         {
@@ -274,13 +292,14 @@ namespace Rush
         }
         private void RestState(int currentMaxThreshold)
         { 
-            m_CurrentWaveIcon = m_CurrentEnemyWave.Icon;
+            SetCurrentWaveIcon(m_CurrentEnemyWave.Icon);
             if (m_CurrentThreshold >= currentMaxThreshold)
             {
                 int overFlow = m_CurrentThreshold - currentMaxThreshold;
                 SetCurrentWaveIndexInternal(0);
                 SetWaveStateInternal(WaveState.Minion);
                 m_CurrentThreshold = overFlow;
+                UpdateState();
             }
         }
         private void MinionState(int currentMaxThreshold)

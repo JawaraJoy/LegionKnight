@@ -74,14 +74,14 @@ namespace LegionKnight
         {
 
             ItemConfig breakShardDefi = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.ShardConfig;
-            int breakShardAmount = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.GetShardAmountToBreak(m_HeroUnit.Star);
+            int breakShardAmount = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.GetShardCostToBreak(m_HeroUnit.Star);
             ItemConfig breakCoinDefi = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.CoinConfig;
-            int breakCoinAmount = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.GetCoinAmountToBreak(m_HeroUnit.Star);
+            int breakCoinAmount = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.GetCoinCostToBreak(m_HeroUnit.Star);
 
             Currency breakShardCurrency = new(breakShardDefi, breakShardAmount);
             Currency breakCoinCurrency = new(breakCoinDefi, breakCoinAmount);
 
-            bool isTimeToBreak = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.CanBreak(m_HeroUnit.Star, m_HeroUnit.Level);
+            bool isTimeToBreak = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig.CanBreakByLevel(m_HeroUnit.Star, m_HeroUnit.Level);
             bool isMaxStar = m_HeroUnit.Star >= m_HeroUnit.MaxStar;
             bool enoughShard = Player.Instance.CurrencyControl.GetCurrencyAmount(breakShardDefi) >= breakShardAmount;
             bool enoughCoin = Player.Instance.CurrencyControl.GetCurrencyAmount(breakCoinDefi) >= breakCoinAmount;

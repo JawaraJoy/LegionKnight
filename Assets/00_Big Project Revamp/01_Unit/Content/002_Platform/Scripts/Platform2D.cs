@@ -1,7 +1,4 @@
 ﻿using MoreMountains.Tools;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -24,8 +21,8 @@ namespace Rush
         [SerializeField]
         private TouchDownCheckField m_TouchDownCheck;
         
-        [SerializeField]
-        private PlatformDirection m_Direction;
+        [SerializeField, MMReadOnly]
+        private PlatformDirection m_Direction = PlatformDirection.Left;
         [SerializeField, MMReadOnly]
         private SkillContext m_SkillContext;
         [SerializeField, MMReadOnly]
@@ -41,13 +38,15 @@ namespace Rush
         public UnityEvent OnReachDestination => m_OnReachDestination;
         public PlatformConfig PlatformConfig => m_PlatformConfig;
         public SkillContext SkillContext => m_SkillContext;
-        public SkillConfig SkillConfig => m_PlatformConfig;
+        public SkillConfig SkillConfig => m_PlatformConfig.AttackSkill;
         public Transform TouchDownSpot => m_TouchDownSpot;
         public Transform Pivot => m_Pivot;
         public TouchDownCheckField TouchDownCheck => m_TouchDownCheck;
         public ProgressField Progression => m_Progression;
 
         public bool IsActive => gameObject.activeInHierarchy;
+
+        private bool m_ReachedDestination;
 
         public UnityEvent<Unit> OnAbilityDelivered
         {
@@ -66,32 +65,29 @@ namespace Rush
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
+
+        // initialize first
+        public void IniPlatform(PlatformConfig platformConfig)
+        {
+            m_PlatformConfig = platformConfig;
+        }
+        // initialize second
         public void Init(SkillConfig config, IModuleContext moduleContext)
         {
-            if (config is PlatformConfig platformConfig)
+            if (m_PlatformConfig == null) return;
+            m_SkillContext = new SkillContext(this, moduleContext);
+            Unit unit = m_SkillContext.ModuleContext.Unit;
+            if (unit.HasBind(out SkillController skillController))
             {
-                m_PlatformConfig = platformConfig;
-
-                m_SkillContext = new SkillContext(this, moduleContext);
-                GameObject module = m_SkillContext.ModuleContext.Module;
-                if (module.TryGetComponent(out SkillController skillController))
+                SkillConfig[] skillConfigs = PlatformUtility.GetPlatformSkillConfigs(m_PlatformConfig).ToArray();
+                skillController.AddNewSkills(skillConfigs);
+                Debug.Log("Skill platform Added");
+                Skill attackSkill = skillController.GetSkillActivator(m_PlatformConfig.AttackSkill);
+                if (attackSkill.HasAbility(attackSkill.SkillConfig.AbilitySets[0].BaseInfo.Id, out AbilityDeliver abilityDeliver))
                 {
-                    SkillConfig[] skillConfigs = PlatformUtility.GetPlatformSkillConfigs(m_PlatformConfig).ToArray();
-                    skillController.AddNewSkills(skillConfigs);
-
-                    Skill platformSkill = skillController.GetSkillActivator(m_PlatformConfig);
-
-                    if (platformSkill.HasAbility(platformSkill.SkillConfig.AbilitySets[0].BaseInfo.Id, out AbilityDeliver abilityDeliver))
-                    {
-                        m_PlatformAttack.Init(abilityDeliver.AbilityContext);
-                    }
+                    m_PlatformAttack.Init(abilityDeliver.AbilityContext);
                 }
             }
-            else
-            {
-                return;
-            }
-
             RefreshInternal();
         }
         private bool IsReachedDestination()
@@ -114,6 +110,8 @@ namespace Rush
             SetIsPausedInternal(true);
             transform.position = startPost;
             RefreshInternal();
+
+            m_ReachedDestination = false;
         }
         private void StopMove()
         {
@@ -145,7 +143,7 @@ namespace Rush
                 case PlatformDirection.Left:
                     // Spawn di kanan → bergerak ke kiri
                     m_FinalDestination = new Vector2(
-                        contactPoint.x - m_OffSiteReachHorizontalPost,
+                        0 - m_OffSiteReachHorizontalPost,
                         m_Pivot.position.y);
 
                     m_FinalSpeed = -Mathf.Abs(m_FinalSpeed);
@@ -154,7 +152,7 @@ namespace Rush
                 case PlatformDirection.Right:
                     // Spawn di kiri → bergerak ke kanan
                     m_FinalDestination = new Vector2(
-                        contactPoint.x + m_OffSiteReachHorizontalPost,
+                        0 + m_OffSiteReachHorizontalPost,
                         m_Pivot.position.y);
 
                     m_FinalSpeed = Mathf.Abs(m_FinalSpeed);
@@ -173,7 +171,13 @@ namespace Rush
             if (IsReachedDestination())
             {
                 
+                if (m_ReachedDestination)
+                {
+                    return;
+                }
                 OnReachDestinationInvoke();
+                m_ReachedDestination = true;
+
                 return;
             }
 

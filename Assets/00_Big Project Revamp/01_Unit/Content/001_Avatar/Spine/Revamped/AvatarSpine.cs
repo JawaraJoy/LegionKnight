@@ -39,7 +39,7 @@ namespace Rush
 
         private void OnDestroy()
         {
-            var state = m_SkeletonAnimation?.AnimationState;
+            var state = m_SkeletonAnimation.AnimationState;
             if (state != null)
             {
                 state.Event -= OnSpineEvent;
@@ -98,7 +98,7 @@ namespace Rush
 
         public void FlipX(bool left)
         {
-            if (m_SkeletonAnimation?.Skeleton == null) return;
+            if (m_SkeletonAnimation.Skeleton == null) return;
 
             m_SkeletonAnimation.Skeleton.ScaleX = left ? -1 : 1;
         }
@@ -211,8 +211,6 @@ namespace Rush
 
             m_IsPaused = false;
         }
-
-
         private ClipEventField GetClipEventInternal(string eventName)
         {
             foreach (var e in m_Events)
@@ -227,7 +225,6 @@ namespace Rush
             }
             return null;
         }
-
         private bool HasSpineEventInternal(string eventName, out ClipEventField ev)
         {
             ev = GetClipEventInternal(eventName);

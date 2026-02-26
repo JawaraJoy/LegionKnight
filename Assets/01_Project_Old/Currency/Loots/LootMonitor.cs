@@ -54,7 +54,7 @@ namespace LegionKnight
         private IEnumerator AddingLootsView(List<LootField> loots)
         {
             yield return new WaitForEndOfFrame();
-            yield return new WaitUntil(() => m_IsShow);
+            yield return new WaitUntil(() => IsShowInternal);
             for (int i = 0; i < loots.Count; i++)
             {   
                 Debug.Log($"Loot {i}: {loots[i].ItemLoot.BaseInfo.Name}, IsUnique: {loots[i].ItemLoot.CollectibleField.IsUnique}");

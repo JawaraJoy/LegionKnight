@@ -35,6 +35,8 @@ namespace LegionKnight
     public partial class PlayerCamera : Singleton<PlayerCamera>
     {
         [SerializeField]
+        private Camera m_Camera;
+        [SerializeField]
         private CinemachineCamera m_CinemachineCamera;
         [SerializeField]
         private List<CameraPostSet> m_CameraPostSets = new();
@@ -45,6 +47,7 @@ namespace LegionKnight
         private UnityEvent<Vector3> m_OnSetOffsite = new();
 
         private CameraPostSet m_CurrentPostSet;
+        public Camera Camera => m_Camera;
         private void Start()
         {
             m_CinemachineCamera.Target.TrackingTarget = RushPlayer.Instance.transform;

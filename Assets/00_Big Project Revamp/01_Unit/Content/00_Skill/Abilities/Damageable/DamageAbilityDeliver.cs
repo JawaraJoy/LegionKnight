@@ -9,8 +9,8 @@ namespace Rush
         {
             base.Init(config, context);
             ISkill skill = m_AbilityContext.SkillContext.Skill;
-            SkillTriggerState triggerState = skill.SkillConfig.Activation.TriggerState;
-            if (triggerState == SkillTriggerState.OnDeclareAttack)
+            ForceActiveState triggerState = skill.SkillConfig.Activation.ForceActiveState;
+            if (triggerState == ForceActiveState.OnDeclareAttack)
             {
                 m_OnActivate.RemoveAllListeners();
                 

@@ -79,10 +79,7 @@ namespace Rush
 
             float direction = spawnOnRight ? 1f : -1f;
 
-            Vector2 startPos = new Vector2(
-                lastContactPoint.x + (horizontalDistance * direction),
-                lastContactPoint.y
-            );
+            Vector2 startPos = new (horizontalDistance * direction,lastContactPoint.y);
 
             return startPos;
         }
@@ -93,7 +90,7 @@ namespace Rush
             SkillConfig[] leftPerfect = config.LeftSkillField.OnPerfectTouchSkill;
             SkillConfig[] rightNormal = config.RightSkillField.OnNormalTouchSkill;
             SkillConfig[] rightPerfect = config.RightSkillField.OnPerfectTouchSkill;
-            SkillConfig normalAttack = config;
+            SkillConfig normalAttack = config.AttackSkill;
 
             skillConfigs.AddRange(leftNormal);
             skillConfigs.AddRange(leftPerfect);

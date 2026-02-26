@@ -1,3 +1,4 @@
+﻿using LegionKnight;
 using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,10 +7,12 @@ namespace Rush
 {
     public class StageHandler : MonoBehaviour
     {
-        [SerializeField, MMReadOnly]
+        [SerializeField]
         private StageConfig m_UsedStageConfig;
-        [SerializeField, MMReadOnly]
+        [SerializeField]
         private StageConfig m_SelectedStageConfig;
+        [SerializeField, MMReadOnly]
+        private VerticalLoopView m_VerticalLoopView;
         [SerializeField]
         private StageSelectionField[] m_StageSelections;
 
@@ -31,6 +34,17 @@ namespace Rush
         public StageConfig SelectedStageConfig => m_SelectedStageConfig;
         public StageSelectionField[] StageSelections => m_StageSelections;
 
+        [SerializeField, MMReadOnly]
+        private int m_CurrentWaveIndex = 0;
+        public int CurrentWaveIndex => m_CurrentWaveIndex;
+
+        public bool IsLastWaveIndex
+        {
+            get
+            {
+                return m_CurrentWaveIndex >= m_UsedStageConfig.EnemyWaveConfigs.Length - 1;
+            }
+        }
         private StageSelectionField GetStageSelection(StageConfig stageConfig)
         {
             foreach (var stage in m_StageSelections)
@@ -47,8 +61,9 @@ namespace Rush
             stageSelection = GetStageSelection(stageConfig);
             return stageSelection != null;
         }
-        public void Init()
+        public void Init(VerticalLoopView loopView)
         {
+            m_VerticalLoopView = loopView;
             foreach (var stage in m_StageSelections)
             {
                 stage.Init();
@@ -60,7 +75,75 @@ namespace Rush
             {
                 if (stageSelection.StageState == StageState.Locked) return;
                 m_SelectedStageConfig = stage;
+                m_PlatformHandler.Prepare(m_UsedStageConfig.PlatformHandlerConfig);
             }
+        }
+        private void StartCurrentWaveSet()
+        {
+            if (m_UsedStageConfig == null) return;
+            var waves = m_UsedStageConfig.EnemyWaveConfigs;
+            if (waves == null || waves.Length == 0) return;
+
+            if (m_CurrentWaveIndex < 0) m_CurrentWaveIndex = 0;
+            if (m_CurrentWaveIndex >= waves.Length) m_CurrentWaveIndex = waves.Length - 1;
+
+            m_EnemyWaveHandler.SetNewWave(m_UsedStageConfig.GetEnemyWaveByIndex(m_CurrentWaveIndex));
+        }
+
+        private bool IsLoopMode
+        {
+            get
+            {
+                return m_UsedStageConfig != null &&
+                       (m_UsedStageConfig.StageMode == StageMode.Classic ||
+                        m_UsedStageConfig.StageMode == StageMode.Collosal);
+            }
+        }
+
+        private void HandleWaveSetCleared(EnemyWaveConfig waveConfig)
+        {
+            m_CurrentWaveIndex++;
+
+            int len = m_UsedStageConfig.EnemyWaveConfigs.Length;
+            if (m_CurrentWaveIndex >= len)
+            {
+                if (IsLoopMode)
+                {
+                    m_CurrentWaveIndex = 0;      // ✅ loop balik
+                    StartCurrentWaveSet();
+                }
+                else
+                {
+                    m_OnStageCompleted?.Invoke(m_UsedStageConfig);
+                }
+                return;
+            }
+            m_EnemyWaveHandler.OnWaveSetCleared.Invoke(waveConfig);
+            StartCurrentWaveSet();
+        }
+        
+        public void PlayStage()
+        {
+            m_UsedStageConfig = m_SelectedStageConfig;
+
+            m_VerticalLoopView.Init(m_UsedStageConfig.VerticalBackgroundConfig);
+
+            // ✅ reset wave index dan start wave set pertama
+            m_CurrentWaveIndex = 0;
+            if (m_PlatformHandler != null)
+            {
+                m_PlatformHandler.Prepare(m_UsedStageConfig.PlatformHandlerConfig);
+                m_PlatformHandler.Play();
+            }
+            if (m_EnemyWaveHandler != null)
+            {
+                m_EnemyWaveHandler.OnWaveSetCleared.RemoveListener(HandleWaveSetCleared);
+                m_EnemyWaveHandler.OnWaveSetCleared.AddListener(HandleWaveSetCleared);
+
+                StartCurrentWaveSet();
+            }
+            // ✅ pastikan tidak double-subscribe
+            m_OnStageStart?.Invoke(m_UsedStageConfig);
         }
     }
 }

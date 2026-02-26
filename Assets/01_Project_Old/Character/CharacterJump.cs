@@ -1,11 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Rush;
 
 namespace LegionKnight
 {
-    public partial class CharacterJump : Bindable
+    public partial class CharacterJump : Bindable, IUpdater
     {
         [SerializeField]
         private bool m_CanJump;
@@ -49,11 +49,14 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent m_OnStopJump = new();
         [SerializeField]
+        private UnityEvent m_OnTouchGround = new();
+        [SerializeField]
         private UnityEvent m_OnFlyGetScore = new();
 
         [SerializeField]
         private Rigidbody2D m_Rb;
         private bool m_IsGrounded;
+        private bool m_WasGrounded;
 
 
         [SerializeField]
@@ -77,16 +80,20 @@ namespace LegionKnight
         private float m_JumpPressDuration;
 
         private float m_SaveFallSpeed;
+
+        public bool IsActive => m_Rb != null;
+
         private void Start()
         {
             m_GravityMod = new Vector2(0f, -Physics.gravity.y);
         }
-
-        private void Update()
+        private void OnEnable()
         {
-            CheckGrounded();
-            Fly();
-
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+        private void OnDisable()
+        {
+            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
         public void SetJumpForce(float set)
@@ -191,12 +198,27 @@ namespace LegionKnight
             m_UseHoldJump = set;
         }
 
-        void CheckGrounded()
+        private void CheckGrounded()
         {
-            m_IsGrounded = Physics2D.OverlapCircle(m_GroundCheck.position, m_GroundCheckRadius, m_GroundLayer);
+            m_WasGrounded = m_IsGrounded;
+
+            m_IsGrounded = Physics2D.OverlapCircle(
+                m_GroundCheck.position,
+                m_GroundCheckRadius,
+                m_GroundLayer
+            );
+
+            // 🔥 Landing Detection (Air -> Ground)
+            if (!m_WasGrounded && m_IsGrounded)
+            {
+                m_OnTouchGround?.Invoke();
+            }
+
             m_LinearVelocityY = m_Rb.linearVelocityY;
             OnLinearVelocityChangedInvoke(m_LinearVelocityY);
+
             ClampJumpDistance();
+
             if (m_IsGrounded)
             {
                 if (m_IsJumping)
@@ -204,7 +226,7 @@ namespace LegionKnight
                     m_OnStopJump?.Invoke();
                     m_IsJumping = false;
                 }
-                m_StartingJumpPost = m_Rb.position; // Reset starting position when grounded
+                m_StartingJumpPost = m_Rb.position;
             }
             else
             {
@@ -284,6 +306,12 @@ namespace LegionKnight
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(m_GroundCheck.position, m_GroundCheckRadius);
             }
+        }
+
+        public void Tick()
+        {
+            CheckGrounded();
+            Fly();
         }
     }
 }

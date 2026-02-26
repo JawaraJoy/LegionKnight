@@ -11,20 +11,19 @@ namespace Rush
         [SerializeField]
         private StageState m_StartingStageState = StageState.Locked;
         [SerializeField]
-        private SceneConfig m_SceneConfig;
-        [SerializeField]
         private Sprite m_SplashImage;
         [SerializeField]
-        private BackgroundSetField m_BackgroundSetField;
+        private VerticalBackgroundConfig m_VerticalBackgroundConfig;
         [SerializeField]
         private PlatformHandlerConfig m_PlatformHandlerConfig;
         [SerializeField]
         private EnemyWaveConfig[] m_EnemyWaveConfigs;
         public Sprite SplashImage => m_SplashImage;
-        public BackgroundSetField BackgroundSetField => m_BackgroundSetField;
+        public VerticalBackgroundConfig VerticalBackgroundConfig => m_VerticalBackgroundConfig;
         public StageMode StageMode => m_StageMode;
         public StageState StartingStageState => m_StartingStageState;  
         public EnemyWaveConfig[] EnemyWaveConfigs => m_EnemyWaveConfigs;
+        public PlatformHandlerConfig PlatformHandlerConfig => m_PlatformHandlerConfig;
 
         public EnemyWaveConfig GetEnemyWaveByIndex(int index)
         {
