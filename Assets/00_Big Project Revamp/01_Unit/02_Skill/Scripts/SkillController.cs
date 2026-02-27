@@ -124,6 +124,7 @@ namespace Rush
             if (HasSkillActivatorInternal(config.BaseInfo.Id, out Skill skill))
             {
                 //skill.Init(config, m_ModuleContext);
+                skill.Progression.AddLevel(1);
             }
             else
             {
@@ -148,9 +149,18 @@ namespace Rush
         }
         public void ForceActive(SkillConfig skillConfig)
         {
+
             if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skill))
             {
                 skill.ForceActivateAll();
+            }
+            else
+            {
+                AddNewSkillInternal(skillConfig);
+                if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skillAdded))
+                {
+                    skillAdded.ForceActivateAll();
+                }
             }
         }
         public void ForceActiveByCategory(SkillCategoryConfig categoryConfig)
@@ -162,6 +172,13 @@ namespace Rush
                 {
                     skill.ForceActivateAll();
                 }
+            }
+        }
+        public void ResetProgression()
+        {
+            foreach (Skill skill in m_Skills)
+            {
+                skill.Progression.SetLevel(1);
             }
         }
     }
