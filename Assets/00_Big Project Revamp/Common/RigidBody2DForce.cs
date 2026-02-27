@@ -14,52 +14,64 @@ namespace Rush
     }
     public class RigidBody2DForce : MonoBehaviour
     {
-        [SerializeField]
-        private ForceEffect[] m_ForceEffects;
+        [SerializeField] private ForceEffect[] m_ForceEffects;
+        [SerializeField] private Rigidbody2D m_Rb;
+        [SerializeField] private float m_StopForceDelay;
+        [SerializeField] private UnityEvent m_OnForced;
 
-        [SerializeField]
-        private Rigidbody2D m_Rb;
-        [SerializeField]
-        private float m_StopForceDelay;
-        [SerializeField]
-        private UnityEvent m_OnForced;
+        private Coroutine m_StopCoroutine;
+        private RigidbodyConstraints2D m_OriginalConstraints;
+
+        private void Awake()
+        {
+            m_OriginalConstraints = m_Rb.constraints;
+        }
+
         private void OnForcedInvoke()
         {
-            m_Rb.constraints &= ~RigidbodyConstraints2D.FreezePositionX; // Unfreeze X position to allow movement
-            m_Rb.freezeRotation = true; // Prevent rotation during death effect
-            //Player.Instance.Death();
+            m_Rb.constraints &= ~RigidbodyConstraints2D.FreezePositionX;
+            m_Rb.freezeRotation = true;
+
             StopForceInternal();
-            OnForcedInvoke();
+            m_OnForced?.Invoke();
         }
-        public void OnDeathInvoke()
-        {
-            OnForcedInvoke();
-        }
+
         private ForceEffect GetForceEffect(string forceName)
         {
-            ForceEffect match = new ();
             foreach (var f in m_ForceEffects)
             {
                 if (f.ForceName == forceName)
-                {
-                    match = f;
-                }
+                    return f;
             }
-            return match;
+
+            Debug.LogWarning($"ForceEffect '{forceName}' not found");
+            return default;
         }
+
         public void ApplyForce(string forceName)
         {
             Vector2 force = GetForceEffect(forceName).ForceDirection;
+
+            m_Rb.linearVelocity = Vector2.zero; // or velocity for older Unity
             m_Rb.AddForce(force, ForceMode2D.Impulse);
+
+            OnForcedInvoke();
         }
+
         private void StopForceInternal()
         {
-            StartCoroutine(StopForcing());
+            if (m_StopCoroutine != null)
+                StopCoroutine(m_StopCoroutine);
+
+            m_StopCoroutine = StartCoroutine(StopForcing());
         }
+
         private IEnumerator StopForcing()
         {
             yield return new WaitForSeconds(m_StopForceDelay);
-            m_Rb.AddForce(Vector2.zero, ForceMode2D.Impulse);
+
+            m_Rb.linearVelocity = Vector2.zero; // or velocity
+            m_Rb.constraints = m_OriginalConstraints;
         }
     }
 }

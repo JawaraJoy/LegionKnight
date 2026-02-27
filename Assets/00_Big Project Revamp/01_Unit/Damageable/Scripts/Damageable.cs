@@ -47,6 +47,8 @@ namespace Rush
         private UnityEvent<IAbilityContext> m_OnDamageTaken;
         [SerializeField]
         private UnityEvent<IAbilityContext> m_OnDeath;
+        [SerializeField]
+        private UnityEvent<Transform> m_OnDeathDirection;
         public UnityEvent<IAbilityContext> OnDeath => m_OnDeath;
 
         [SerializeField]
@@ -196,8 +198,6 @@ namespace Rush
             OnDamageTaken(attackerContext);
         }
 
-
-
         public void Heal(IHealer healer)
         {
             HealInternal(healer);
@@ -280,11 +280,12 @@ namespace Rush
             {
                 OnHealthDepleted(context);
             }
-            OnDeathInvoke(context);
+            //OnDeathInvoke(context);
         }
         private void OnDeathInvoke(IAbilityContext context)
         {
             m_OnDeath?.Invoke(context);
+            m_OnDeathDirection?.Invoke(context.AbilityDeliver.DeliverTransform);
         }
         protected virtual void SetCurrentDamageTakeInternal(int damage)
         {

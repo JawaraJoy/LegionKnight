@@ -61,6 +61,7 @@ namespace LegionKnight
         {
             m_StayFollow = set;
             OnSetStayFollowInvoke();
+            m_CinemachineCamera.enabled = set;
         }
         private void OnSetStayFollowInvoke()
         {
