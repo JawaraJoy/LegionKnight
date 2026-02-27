@@ -6,7 +6,7 @@ namespace Rush
     {
         float HealthRate { get; }
         void SetHealth(int val);
-        void SetMaxHealth(int val, bool withCurrentHealth);
+        void SetMaxHealth(int val);
         void AddHealth(int val);
         void AddMaxHealth(int val, bool withCurrentHealth);
         void MultiplyHealth(int val);

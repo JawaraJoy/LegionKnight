@@ -1,3 +1,4 @@
+using LegionKnight;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,6 +23,13 @@ namespace Rush
         {
             m_Config = config;
             m_OnInit?.Invoke(this);
+            m_Progression = m_Config.Progression;
+            /*if (m_Config is HeroUnitConfig heroConfig) 
+            {
+                int savedLevel = Player.Instance.HeroDeck.GetHeroUnit(heroConfig).Level;
+                m_Progression.SetLevel(savedLevel);
+            }*/
+            
             foreach (MonoBehaviour bind in m_Binds)
             {
                 if (bind is IUnitExtension extention)
