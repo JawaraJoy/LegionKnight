@@ -237,6 +237,7 @@ namespace Rush
             m_OnRebornStart?.Invoke(m_RemainingReborn);
             yield return new WaitForSeconds(delay);
             ReborInternal(1f);
+            Debug.Log("Reborned");
         }
         private void OnHitInvoke(IAbilityContext context)
         {

@@ -127,6 +127,7 @@ namespace Rush
             entry.TimeScale = clipConfig.SpeedRate;
 
             m_CurrentClip = clipConfig;
+            m_SkeletonAnimation.loop = clipConfig.Loop;
             m_OnClipStart?.Invoke(clipConfig);
 
             Debug.Log($"[Spine] Queue Animation: {animName}");
