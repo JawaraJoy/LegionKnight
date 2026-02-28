@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public partial class StatusEffectController : MonoBehaviour
+    public partial class StatusEffectController : MonoBehaviour, IUnitExtension
     {
         [SerializeField, MMReadOnly]
         private List<StatusEffector> m_Effectors = new();
@@ -13,6 +13,8 @@ namespace Rush
         private UnityEvent<StatusEffector> m_OnApplied;
         [SerializeField]
         private UnityEvent<StatusEffector> m_OnDone;
+        private ModuleContext m_ModuleContext;
+        public IModuleContext ModuleContext => m_ModuleContext;
         private StatusEffector GetEffectorInternal(StatusEffectConfig config)
         {
             return m_Effectors.Find(x => x.Config.BaseInfo.Id == config.BaseInfo.Id);
@@ -35,26 +37,34 @@ namespace Rush
             StatusEffector existed = GetEffectorInternal(config);
             if (existed == null)
             {
-                existed = SpawnEffector(config.EffectorPrefab);
+                existed = SpawnEffector(config);
             }
+            
             existed.gameObject.SetActive(true);
             existed.ApplyEffect(config, context, unitTarget);
             m_OnApplied?.Invoke(existed);
+            Debug.Log($"Applied by Controller {config.BaseInfo.Name} to {unitTarget.name}");
         }
-        public void CancelEffector(StatusEffectConfig config)
+        public void RemoveEffector(StatusEffectConfig config)
         {
             if (HasEffectorInternal(config, out StatusEffector effector))
             {
-                effector.CancelEffect();
+                effector.RemoveEffect();
                 m_OnDone?.Invoke(effector);
             }
         }
 
-        private StatusEffector SpawnEffector(StatusEffector prefab)
+        private StatusEffector SpawnEffector(StatusEffectConfig config)
         {
-            StatusEffector spawned = Instantiate(prefab, transform, false);
+            StatusEffector spawned = Instantiate(config.EffectorPrefab, transform, false);
+            spawned.Initialize(config);
             m_Effectors.Add(spawned);
             return spawned;
+        }
+
+        public void Init(Unit unit)
+        {
+            m_ModuleContext = new ModuleContext(unit, gameObject);
         }
     }
 }

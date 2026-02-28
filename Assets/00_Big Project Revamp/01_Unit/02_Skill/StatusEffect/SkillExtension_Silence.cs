@@ -23,6 +23,7 @@ namespace Rush
             }
 
             ChangeState(SkillActivationState.Silenced);
+            Debug.Log($"Skill {name} entered silence. Previous state: {m_PreSilenceState}");
         }
         public void ExitSilence()
         {

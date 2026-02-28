@@ -10,8 +10,6 @@ namespace Rush
     {
         [SerializeField]
         private bool m_IsTargeted;
-        [SerializeField, Tooltip("How many times this unit can reborn after death")]
-        private int m_MaxReborn = 0;
 
         [SerializeField, MMReadOnly]
         private int m_RemainingReborn;
@@ -58,6 +56,10 @@ namespace Rush
         [SerializeField]
         private UnityEvent<int> m_OnBarrierChanged;
         [SerializeField]
+        private UnityEvent<int> m_OnBarrierAdded;
+        [SerializeField]
+        private UnityEvent<int> m_OnBarrierRemoved;
+        [SerializeField]
         private UnityEvent<int> m_OnRebornChanged;
 
         private const int m_MinimumDefendReduction = 0;
@@ -91,8 +93,7 @@ namespace Rush
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
-            m_MaxReborn = unitOwner.Config.RebornCount;
-            SetRemainingRebornCountInternal(m_MaxReborn);
+            SetRemainingRebornCountInternal(unitOwner.Config.RebornCount);
             ReborInternal(1f); // always reborn in 100% health
         }
         public void RefreshDamageableStat(float healRate, bool currentHealthRefresh)
@@ -170,22 +171,18 @@ namespace Rush
             // block damage if barrier exist
             if (m_Barrier > 0)
             {
-                AddBarrierInternal(-1, 0f);
+                AddBarrierInternal(-1, true);
                 return;
             }
             // Apply remaining damage to Shield
-            if (effectiveDamage > 0f && m_Shield > 0)
+            if (effectiveDamage > 0 && m_Shield > 0)
             {
-                if (m_Shield <= effectiveDamage)
-                {
-                    effectiveDamage -= m_Shield;
-                    SetShieldInternal(0, 0f);
-                }
-                else
-                {
-                    effectiveDamage = 0;
-                }
-                AddShieldInternal(-effectiveDamage);
+                int absorbed = Mathf.Min(m_Shield, effectiveDamage);
+
+                m_Shield -= absorbed;
+                effectiveDamage -= absorbed;
+
+                m_OnShieldChanged?.Invoke(m_Shield, m_MaxHealth);
             }
             Debug.Log($"Effective Damage after shield: {effectiveDamage}");
             // Apply remaining damage to Health
@@ -224,7 +221,7 @@ namespace Rush
             // Masih punya reborn? -> reborn saja, JANGAN OnDeath
             if (m_RemainingReborn > 0)
             {
-                AddRemaininRebornCountInternal(-1);
+                AddRemaininRebornCountInternal(-1, true);
                 RushGameManager.Instance.StartCoroutine(RebornDelayRoutine(1f));
                 return;
             }
@@ -303,62 +300,62 @@ namespace Rush
             m_Health += amount;
             m_Health = Mathf.Clamp(m_Health, 0, m_MaxHealth);
             m_OnHealthChanged?.Invoke(m_Health, m_MaxHealth);
-
         }
         protected virtual void AddDefenseInternal(int amount)
         {
             m_Defense += amount;
             m_Defense = Mathf.Max(m_MinimumDefendReduction, m_Defense);
         }
-        protected virtual void AddShieldInternal(int amount)
+        public void AddShield(int amount, bool callAddRemoveEvent)
+        {
+            AddShieldInternal(amount, callAddRemoveEvent);
+        }
+        protected virtual void AddShieldInternal(int amount, bool callAddRemoveEvent)
         {
             m_Shield += amount;
             m_Shield = Mathf.Clamp(m_Shield, 0, m_MaxHealth);
+            
             m_OnShieldChanged?.Invoke(m_Shield, m_MaxHealth);
+            if (!callAddRemoveEvent) return;
+            // call add remove event
         }
-        protected virtual void AddBarrierInternal(int amount, float duration)
+
+        public void AddBarrier(int amount, bool callAddRemoveEvent)
         {
-            RushGameManager.Instance.StartCoroutine(AddingBarrierInternal(amount, duration));
+            AddBarrierInternal(amount, callAddRemoveEvent);
         }
-        protected virtual IEnumerator AddingBarrierInternal(int amount, float duration)
+        protected virtual void AddBarrierInternal(int amount, bool callAddRemoveEvent)
         {
             m_Barrier += amount;
-            if (duration >= 0)
-            {
-                yield return new WaitForSeconds(duration);
-                if (amount > 0)
-                {
-                    if (m_Barrier >= amount)
-                    {
-                        m_Barrier -= amount;
-                    }
-                }
-            }
             m_Barrier = Mathf.Max(0, m_Barrier);
+            
+            m_OnBarrierChanged?.Invoke(m_Barrier);
+            if (!callAddRemoveEvent) return;
+            if (amount > 0)
+            {
+                m_OnBarrierAdded?.Invoke(amount);
+            }
+            else if (amount < 0)
+            {
+                m_OnBarrierRemoved?.Invoke(amount);
+            }
+        }
+        public void AddDamageReductionRate(float rate)
+        {
+            AddDamageReductionRateInternal(rate);
         }
         protected virtual void SetBarrierPermanantInternal(int amount)
         {
             m_Barrier = amount;
         }
-        protected virtual void SetBarrierInternal(int amount, float duration)
+        
+        public void SetRemainingRebornCount(int count)
         {
-            RushGameManager.Instance.StartCoroutine(SettingBarrierInternal(amount, duration));
+            SetRemainingRebornCountInternal(count);
         }
-        protected virtual IEnumerator SettingBarrierInternal(int amount, float duration)
+        public void AddRemainingRebornCount(int count, bool callAddRemoveEvent)
         {
-            m_Barrier = amount;
-            if (duration >= 0)
-            {
-                yield return new WaitForSeconds(duration);
-                if (amount > 0)
-                {
-                    if (m_Barrier >= amount)
-                    {
-                        m_Barrier -= amount;
-                    }
-                }
-            }
-            m_Barrier = Mathf.Max(0, m_Barrier);
+            AddRemaininRebornCountInternal(count, callAddRemoveEvent);
         }
         private void SetRemainingRebornCountInternal(int count)
         {
@@ -368,11 +365,15 @@ namespace Rush
         protected virtual void AddDamageReductionRateInternal(float rate)
         {
             m_DamageReductionRate += rate;
+            m_DamageReductionRate = Mathf.Clamp01(m_DamageReductionRate);
         }
-        protected virtual void AddRemaininRebornCountInternal(int count)
+        protected virtual void AddRemaininRebornCountInternal(int count, bool callAddRemoveEvent)
         {
             m_RemainingReborn += count;
+            m_RemainingReborn = Mathf.Clamp(m_RemainingReborn, 0, int.MaxValue);
+            
             m_OnRebornChanged?.Invoke(m_RemainingReborn);
+            if (!callAddRemoveEvent) return;
         }
         protected virtual void AddMaxHealthInternal(int amount, bool restoreCurrent)
         {

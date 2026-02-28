@@ -17,6 +17,7 @@ namespace Rush
             {
                 SilenceBySpecific(true, skill);
                 SilenceByCategory(true, skill);
+                Debug.Log($"[effector]Apply silence to {unitTarget.name} with {m_SpecificSkillsToSilence.Length} specific skills and {m_CategoriesSkillToSilence.Length} categories");
             }
         }
 
@@ -47,6 +48,7 @@ namespace Rush
                 if (silence)
                 {
                     activator.EnterSilence();
+                    Debug.Log($"Silence {activator.SkillConfig.name} by category");
                 }
                 else
                 {
@@ -59,9 +61,14 @@ namespace Rush
         {
             if (unit.HasBind(out SkillController skill))
             {
-                SilenceBySpecific(true, skill);
-                SilenceByCategory(true, skill);
+                SilenceBySpecific(false, skill);
+                SilenceByCategory(false, skill);
             }
+        }
+
+        public override void OnStackRemoved(Unit unitTarget)
+        {
+            // No stack for silence, do nothing
         }
     }
     

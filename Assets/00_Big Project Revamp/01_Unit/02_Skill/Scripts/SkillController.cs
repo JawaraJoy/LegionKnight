@@ -45,15 +45,18 @@ namespace Rush
         }
         private IReadOnlyList<Skill> GetSkillsByMultiCategoryInternal(SkillCategoryConfig[] skillCategories)
         {
-            List<Skill> findCategories = new List<Skill>();
-            foreach (Skill skill in m_Skills)
+            HashSet<Skill> result = new HashSet<Skill>();
+
+            foreach (SkillCategoryConfig category in skillCategories)
             {
-                foreach (SkillCategoryConfig skillCategory in skillCategories)
+                var skills = GetSkillsByCategoryInternal(category);
+                foreach (var skill in skills)
                 {
-                    findCategories.AddRange(GetSkillsByCategoryInternal(skillCategory));
+                    result.Add(skill);
                 }
             }
-            return findCategories;
+
+            return result.ToList();
         }
         public IReadOnlyList<Skill> GetSkillsByMultiCategory(SkillCategoryConfig[] skillCategories)
         {
