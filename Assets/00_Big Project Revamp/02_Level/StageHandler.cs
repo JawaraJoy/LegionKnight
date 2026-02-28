@@ -27,9 +27,12 @@ namespace Rush
         [SerializeField]
         private UnityEvent<StageConfig> m_OnStageCompleted;
 
+        public UnityEvent<StageConfig> OnStageStart => m_OnStageStart;
+        public UnityEvent<StageConfig> OnStageOver => m_OnStageOver;
+        public UnityEvent<StageConfig> OnStageCompleted => m_OnStageCompleted;
         public EnemyWaveHandler EnemyWaveHandler => m_EnemyWaveHandler;
         public PlatformHandler PlatformHandler => m_PlatformHandler;
-        
+
         public StageConfig UsedStageConfig => m_UsedStageConfig;
         public StageConfig SelectedStageConfig => m_SelectedStageConfig;
         public StageSelectionField[] StageSelections => m_StageSelections;
@@ -121,7 +124,7 @@ namespace Rush
             m_EnemyWaveHandler.OnWaveSetCleared.Invoke(waveConfig);
             StartCurrentWaveSet();
         }
-        
+
         public void PlayStage()
         {
             m_UsedStageConfig = m_SelectedStageConfig;
@@ -144,6 +147,25 @@ namespace Rush
             }
             // ✅ pastikan tidak double-subscribe
             m_OnStageStart?.Invoke(m_UsedStageConfig);
+        }
+        public void Resume()
+        {
+            //m_EnemyWaveHandler?.Resume();
+            m_PlatformHandler.Resume();
+        }
+        public void Pause()
+        {
+            //m_EnemyWaveHandler?.Pause();
+            m_PlatformHandler.Pause();
+        }
+
+        private void OnStageOverInvokeInternal()
+        {
+            m_OnStageOver?.Invoke(m_UsedStageConfig);
+        }
+        private void OnStageCompletedInvokeInternal()
+        {
+            m_OnStageCompleted?.Invoke(m_UsedStageConfig);
         }
     }
 }

@@ -8,5 +8,13 @@ namespace Rush
         {
             RushGameManager.Instance.StageManager.PlayStage();
         }
+        public void Resume()
+        {
+            RushGameManager.Instance.StageManager.Resume();
+        }
+        public void Pause()
+        {
+            RushGameManager.Instance.StageManager.Pause();
+        }
     }
 }

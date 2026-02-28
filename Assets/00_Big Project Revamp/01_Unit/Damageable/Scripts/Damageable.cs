@@ -394,6 +394,10 @@ namespace Rush
         protected virtual void SetMaxHealthInternal(int amount)
         {
             m_MaxHealth = amount;
+            if (m_Health > m_MaxHealth)
+            {
+                m_Health = m_MaxHealth;
+            }
             m_OnHealthChanged?.Invoke(m_Health, m_MaxHealth);
         }
         protected virtual void SetDefenseInternal(int amount)

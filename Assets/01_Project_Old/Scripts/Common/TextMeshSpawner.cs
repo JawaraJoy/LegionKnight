@@ -28,10 +28,12 @@ namespace LegionKnight
             var textMesh = m_Spawned.GetTextMesh();
             if (textMesh == null) return;
             m_Spawned.GetTextMesh().fontSize = m_SizeText;
+            m_Spawned.UpdateText();
         }
         private Vector3 GetRadiusSpawnPosition()
         {
-            Vector3 randomPos = Random.insideUnitSphere * m_SprayRadius;
+            Vector3 spread = Random.insideUnitSphere * m_SprayRadius;
+            Vector3 randomPos = new Vector3(spread.x, spread.y, 0);
             randomPos.y = 0.5f; // Ensure the text spawns above the ground
             return transform.position + randomPos;
         }

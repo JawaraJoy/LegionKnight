@@ -136,7 +136,7 @@ namespace Rush
         private void OnStackUpdateInvoke()
         {
             m_OnStackChange?.Invoke(m_StackCount);
-            RefreshDamageStat(m_TargetController);
+            
             m_RemainingStackUpdateDuration = TotalStackUpdateDurationInternal;
             if (m_Config.ResetDurationOnStackUpdate)
             {
@@ -146,6 +146,7 @@ namespace Rush
             {
                 if (m_StackCount > m_Config.MaxStackCount)
                 {
+                    OnDeactiveInvoke();
                     m_OnStackExceedMax?.Invoke();
                 }
             }
@@ -153,9 +154,11 @@ namespace Rush
             {
                 if (m_StackCount <= 0)
                 {
+                    OnDeactiveInvoke();
                     m_OnStackEmpty?.Invoke();
                 }
             }
+            RefreshDamageStat(m_TargetController);
         }
         private void ClearListeners()
         {

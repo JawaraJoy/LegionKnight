@@ -17,6 +17,8 @@ namespace Rush
         private UnityEvent<ISkillContext> m_OnNormalTouchDown;
         [SerializeField]
         private UnityEvent<ISkillContext> m_OnPerfectTouchDown;
+        [SerializeField]
+        private UnityEvent<int> m_OnStayPerfectCountChange;
         public bool IsStayPerfect => m_IsStayPerfect;
         public int StayPerfectCount => m_StayPerfectCount;
         private void SetIsStayPerfectInternal(bool value, ISkillContext context)
@@ -54,6 +56,7 @@ namespace Rush
         private void OnPerfectTouchDownInvoke(ISkillContext context)
         {
             m_OnPerfectTouchDown?.Invoke(context);
+            m_OnStayPerfectCountChange?.Invoke(m_StayPerfectCount);
         }
 
         
