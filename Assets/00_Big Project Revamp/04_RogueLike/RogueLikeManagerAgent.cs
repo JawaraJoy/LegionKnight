@@ -1,11 +1,14 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
     public class RogueLikeManagerAgent : MonoBehaviour
     {
-        private RogueLikeManager m_Handler;
+        [SerializeField]
+        private UnityEvent<int> m_OnLevelUp;
 
+        private RogueLikeManager m_Handler;
         private RogueLikeManager Handler
         {
             get
@@ -17,7 +20,10 @@ namespace Rush
                 return m_Handler;
             }
         }
-
+        private void Start()
+        {
+            Handler.OnLevelUp.AddListener(OnLevelUpInvoke);
+        }
         public void AddExperience(int amount)
         {
             Handler.AddExperience(amount);
@@ -25,6 +31,10 @@ namespace Rush
         public void ResetProgress()
         {
             Handler.ResetProgress();
+        }
+        private void OnLevelUpInvoke(int level)
+        {
+            m_OnLevelUp.Invoke(level);
         }
     }
 }

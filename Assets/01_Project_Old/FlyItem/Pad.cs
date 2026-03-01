@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -8,25 +9,25 @@ namespace LegionKnight
         private PadDefinition m_Definition;
         public PadDefinition Definition => m_Definition;
 
-        private PadManager m_Manager;
+        private FlyCollectManager m_Manager;
 
-        private PadManager Manager
+        private FlyCollectManager Manager
         {
             get
             {
                 if (m_Manager == null)
                 {
-                    m_Manager = GameManager.Instance.PadManager;
+                    m_Manager = RushGameManager.Instance.FlyCollectManager;
                 }
                 return m_Manager;
             }
         }
 
-        private void Awake()
+        private void OnEnable()
         {
             Manager.RegisterPad(this);
         }
-        private void OnDestroy()
+        private void OnDisable()
         {
             Manager.UnregisterPad(this);
         }

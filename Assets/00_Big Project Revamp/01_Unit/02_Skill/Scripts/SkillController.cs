@@ -150,9 +150,19 @@ namespace Rush
                 m_Skills.Remove(skill);
             }
         }
+        public void ForceActives(SkillConfig[] skillConfigs)
+        {
+            foreach (SkillConfig config in skillConfigs)
+            {
+                ForceActiveInternal(config);
+            }
+        }
         public void ForceActive(SkillConfig skillConfig)
         {
-
+            ForceActiveInternal(skillConfig);
+        }
+        private void ForceActiveInternal(SkillConfig skillConfig)
+        {
             if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skill))
             {
                 skill.ForceActivateAll();

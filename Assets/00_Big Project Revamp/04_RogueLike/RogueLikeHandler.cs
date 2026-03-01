@@ -1,3 +1,4 @@
+using LegionKnight;
 using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
@@ -17,11 +18,27 @@ namespace Rush
         private UnityEvent<int, int> m_OnExperienceAdded;
         [SerializeField]
         private UnityEvent<int> m_OnLevelUp; // Event that triggers when the player levels up, passing the new level as an argument
+        [SerializeField]
+        private UnityEvent<CardConfig> m_OnCardSelected;
         public RogueLikeConfig Config => m_Config;
         public int CurrentExperience => m_CurrentExperience;
         public int CurrentLevel => m_CurrentLevel;
         public UnityEvent<int, int> OnExperienceAdded => m_OnExperienceAdded;
         public UnityEvent<int> OnLevelUp => m_OnLevelUp;
+        public UnityEvent<CardConfig> OnCardSelected => m_OnCardSelected;
+
+        private RogueLikeCardPanel m_CardPanel;
+        private RogueLikeCardPanel CardPanel
+        {
+            get
+            {
+                if (m_CardPanel == null)
+                {
+                    m_CardPanel = CanvasManager.Instance.GetPanel<RogueLikeCardPanel>();
+                }
+                return m_CardPanel;
+            }
+        }
         public void ResetProgress()
         {
             SetLevel(1);
@@ -54,6 +71,7 @@ namespace Rush
             AddLevel(1);
             m_OnLevelUp.Invoke(m_CurrentLevel);
             // Implement level-up logic here (e.g., increase stats, unlock skills, etc.)
+            CardPanel.ShowCards(m_Config.GetDifferenceCardRandom());
 
         }
         private void OnExperienceAddedInvoke(int amount)

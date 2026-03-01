@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,11 +53,11 @@ namespace LegionKnight
             }
             return null;
         }
-        public void SpawnFlyItem(ScriptableObject objek)
+        public void SpawnFlyItem(CollectibleConfig objek)
         {
             StartCoroutine(SpawningFlyItem(objek, m_TargetPad));
         }
-        private IEnumerator SpawningFlyItem(ScriptableObject objek, PadDefinition targetPad)
+        private IEnumerator SpawningFlyItem(CollectibleConfig objek, PadDefinition targetPad)
         {
             // Reuse inactive FlyItem if available
             if (AnyCountFlyItemExists() && !AnyActiveFlyItemExists())

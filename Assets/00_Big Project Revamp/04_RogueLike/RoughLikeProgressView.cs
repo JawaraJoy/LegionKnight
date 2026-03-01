@@ -27,8 +27,8 @@ namespace Rush
 
         private void Start()
         {
-            Handler.OnExperienceAdded.RemoveAllListeners();
-            Handler.OnLevelUp.RemoveAllListeners();
+            Handler.OnExperienceAdded.RemoveListener(SetFill);
+            Handler.OnLevelUp.RemoveListener(SetLevel);
 
             Handler.OnExperienceAdded.AddListener(SetFill);
             Handler.OnLevelUp.AddListener(SetLevel);

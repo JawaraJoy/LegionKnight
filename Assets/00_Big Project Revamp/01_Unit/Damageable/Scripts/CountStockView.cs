@@ -18,10 +18,13 @@ namespace Rush
         private float m_HideDelay = 0.5f;
         [SerializeField]
         private UnityEvent m_OnStartHiding;
-
+        private List<CounterPieceView> m_Spawneds = new List<CounterPieceView>();
         public void HideDelay()
         {
-            StartCoroutine(Hiding());
+            if (IsShowInternal)
+            {
+                RushGameManager.Instance.StartCoroutine(Hiding());
+            }   
         }
         private IEnumerator Hiding()
         {
@@ -30,7 +33,7 @@ namespace Rush
             HideInternal();
         }
 
-        private List<CounterPieceView> m_Spawneds = new List<CounterPieceView>();
+        
 
         private void Start()
         {

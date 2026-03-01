@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class FlyItem : MonoBehaviour
+    public class FlyItem : MonoBehaviour, IUpdater
     {
         [SerializeField] private SpriteRenderer m_Renderer;
         [SerializeField] private PadDefinition m_PadDefinition;
@@ -24,22 +24,26 @@ namespace LegionKnight
             {
                 if (m_Pad == null)
                 {
-                    m_Pad = GameManager.Instance.PadManager.GetPadByDefinition(m_PadDefinition);
+                    m_Pad = RushGameManager.Instance.FlyCollectManager.GetPadByDefinition(m_PadDefinition);
                 }
                 return m_Pad;
             }
         }
 
-        public void Init(ScriptableObject defi, PadDefinition paddefi)
+        public bool IsActive => gameObject.activeInHierarchy;
+
+        private void OnEnable()
+        {
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+        private void OnDisable()
+        {
+            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+        }
+        public void Init(CollectibleConfig defi, PadDefinition paddefi)
         {
             m_PadDefinition = paddefi;
-
-            if (defi is HeroUnitConfig heroConfig)
-                m_Renderer.sprite = heroConfig.CollectibleField.Icon;
-
-            if (defi is ItemConfig itemConfig)
-                m_Renderer.sprite = itemConfig.CollectibleField.Icon;
-
+            m_Renderer.sprite = defi.CollectibleField.Icon;
             // Prepare movement values
             flySpeed = TargetPad.Definition.FlySpeed;
             lerpT = 0f;
@@ -67,7 +71,7 @@ namespace LegionKnight
             if (target is RectTransform rect)
             {
                 Vector3 screenPos = RectTransformUtility.WorldToScreenPoint(null, rect.position);
-                Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+                Vector3 worldPos = PlayerCamera.Instance.Camera.ScreenToWorldPoint(screenPos);
                 worldPos.z = 0; // Ensure 2D plane
                 return worldPos;
             }
@@ -78,10 +82,8 @@ namespace LegionKnight
             return pos;
         }
 
-        // -------------------------
-        // UPDATE-BASED FLYING
-        // -------------------------
-        private void Update()
+
+        public void Tick()
         {
             if (!isFlying)
                 return;

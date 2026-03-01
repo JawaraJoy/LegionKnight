@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class PadHandler : MonoBehaviour
+    public class FlyCollecHandler : MonoBehaviour
     {
         [SerializeField, MMReadOnly]
         private List<Pad> m_Pads = new();

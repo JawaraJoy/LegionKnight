@@ -14,7 +14,10 @@ namespace Rush
 
         public void HideDelay()
         {
-            StartCoroutine(Hiding());
+            if (IsShowInternal)
+            {
+                RushGameManager.Instance.StartCoroutine(Hiding());
+            }
         }
         private IEnumerator Hiding()
         {

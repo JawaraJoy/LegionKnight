@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public class PadManager : PadHandler
+    public class PadManager : FlyCollecHandler
     {
         
     }
