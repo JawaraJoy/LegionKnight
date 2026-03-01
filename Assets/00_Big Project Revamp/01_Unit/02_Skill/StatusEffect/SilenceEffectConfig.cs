@@ -70,6 +70,11 @@ namespace Rush
         {
             // No stack for silence, do nothing
         }
+
+        public override void OnStackAdded(Unit unitTarget)
+        {
+            // No stack for silence, do nothing
+        }
     }
     
 }

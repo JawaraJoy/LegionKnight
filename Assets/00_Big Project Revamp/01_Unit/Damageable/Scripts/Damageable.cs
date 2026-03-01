@@ -33,6 +33,10 @@ namespace Rush
         private int m_TotalDamageTaken;
         [SerializeField, MMReadOnly]
         private bool m_IsImmortal = false;
+        [SerializeField, MMReadOnly]
+        private bool m_IsInvisible = false;
+
+        
         [SerializeField]
         private UnityEvent<int> m_OnRebornStart;
         [SerializeField]
@@ -61,6 +65,18 @@ namespace Rush
         private UnityEvent<int> m_OnBarrierRemoved;
         [SerializeField]
         private UnityEvent<int> m_OnRebornChanged;
+        [SerializeField]
+        private UnityEvent<int> m_OnRebornAdded;
+        [SerializeField]
+        private UnityEvent<int> m_OnRebornRemoved;
+        [SerializeField]
+        private UnityEvent<bool> m_OnImmortalChanged;
+        [SerializeField]
+        private UnityEvent<float> m_OnImmortalDurationSet;
+        [SerializeField]
+        private UnityEvent<bool> m_OnInvisibleChanged;
+        [SerializeField]
+        private UnityEvent<float> m_OnInvisibleDurationSet;
 
         private const int m_MinimumDefendReduction = 0;
         public int RemainingReborn => m_RemainingReborn;
@@ -81,13 +97,14 @@ namespace Rush
             }
         }
         public bool IsImmortal => m_IsImmortal;
+        public bool IsInvisible => m_IsInvisible;
 
         private ModuleContext m_ModuleContext;
         public IModuleContext ModuleContext => m_ModuleContext;
 
         public bool IsTargeted => m_IsTargeted;
 
-        public bool IsAlive => m_Health >= 0;
+        public bool IsAlive => m_Health > 0;
         public Transform TargetTransform => gameObject.transform;
 
         public void Init(Unit unitOwner)
@@ -120,19 +137,19 @@ namespace Rush
             }
             SetDefenseInternal(Mathf.RoundToInt(defenseFinal));
         }
-        public void Reborn(float healthRate, int fixedShield = 0, int barrier = 0, float immortalDuration = 0f) // change to rebornContext if too many argument in the future
+        public void Reborn(float healthRate, int fixedShield = 0, int barrier = 0, float InvisibilityDuration = 2f) // change to rebornContext if too many argument in the future
         {
-            ReborInternal(healthRate, fixedShield, barrier, immortalDuration);
+            ReborInternal(healthRate, fixedShield, barrier, InvisibilityDuration);
         }
-        private void ReborInternal(float healthRate, int fixedShield = 0, int barrier = 0, float immortalDuration = 0f)
+        private void ReborInternal(float healthRate, int fixedShield = 0, int barrier = 0, float InvisibilityDuration = 2f)
         {
+            InvisibleForWhileInternal(InvisibilityDuration);
+
             RefreshDamageableStatInternal(healthRate, true);
 
-            SetShieldPermanentInternal(fixedShield);
-            SetBarrierPermanantInternal(barrier);
+            SetShieldInternal(fixedShield);
+            SetBarrierInternal(barrier);
             m_OnRebornDone?.Invoke();
-
-            ImmortalForWhileInternal(immortalDuration);
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -162,37 +179,68 @@ namespace Rush
         {
             TakeDamageInternal(attacker.AbilityContext);
         }
-        protected virtual void TakeDamageInternal(IAbilityContext attackerContext)
+        protected virtual void TakeDamageInternal(IAbilityContext context)
         {
-            int effectiveDamage = DamageUtility.DamageFormulaRPG(AbilityUltility.GetAttacker(attackerContext), this);
-            Debug.Log($"Effective Damage: {effectiveDamage}");
-            OnHitInvoke(attackerContext);
-            if (m_IsImmortal) return;
-            // block damage if barrier exist
+            if (m_IsInvisible)
+                return;
+
+            AttackerField attacker = AbilityUltility.GetAttacker(context);
+
+            int rawDamage = DamageUtility.CalculateRawDamage(attacker, this);
+            int reducedDamage = DamageUtility.ApplyDamageReduction(rawDamage, m_DamageReductionRate);
+
+            OnHitInvoke(context);
+
+            int finalDamage = ApplyProtectionLayers(reducedDamage);
+
+            if (finalDamage > 0)
+            {
+                ApplyDamage(finalDamage);
+            }
+
+            OnDamageTaken(context);
+        }
+        private int ApplyProtectionLayers(int damage)
+        {
+            if (damage <= 0)
+                return 0;
+
+            // Barrier block 1 hit
             if (m_Barrier > 0)
             {
                 AddBarrierInternal(-1, true);
+                return 0;
+            }
+
+            // Shield absorb value
+            if (m_Shield > 0)
+            {
+                int absorbed = Mathf.Min(m_Shield, damage);
+                AddShieldInternal(-absorbed, true);
+                damage -= absorbed;
+            }
+
+            return damage;
+        }
+        protected virtual void ApplyDamage(int damage)
+        {
+            if (damage <= 0)
                 return;
-            }
-            // Apply remaining damage to Shield
-            if (effectiveDamage > 0 && m_Shield > 0)
-            {
-                int absorbed = Mathf.Min(m_Shield, effectiveDamage);
 
-                m_Shield -= absorbed;
-                effectiveDamage -= absorbed;
+            SetCurrentDamageTakeInternal(damage);
+            AddTotalDamageTakeInternal(damage);
 
-                m_OnShieldChanged?.Invoke(m_Shield, m_MaxHealth);
-            }
-            Debug.Log($"Effective Damage after shield: {effectiveDamage}");
-            // Apply remaining damage to Health
-            if (effectiveDamage > 0f)
+            m_Health -= damage;
+
+            // Immortal tidak boleh mati
+            if (m_IsImmortal && m_Health <= 0)
             {
-                AddTotalDamageTakeInternal(effectiveDamage);
-                AddHealthInternal(-effectiveDamage);
-                SetCurrentDamageTakeInternal(effectiveDamage);
+                m_Health = 1;
             }
-            OnDamageTaken(attackerContext);
+
+            m_Health = Mathf.Clamp(m_Health, 0, m_MaxHealth);
+
+            m_OnHealthChanged?.Invoke(m_Health, m_MaxHealth);
         }
 
         public void Heal(IHealer healer)
@@ -222,7 +270,10 @@ namespace Rush
             if (m_RemainingReborn > 0)
             {
                 AddRemaininRebornCountInternal(-1, true);
-                RushGameManager.Instance.StartCoroutine(RebornDelayRoutine(1f));
+                
+                //StartCoroutine(RebornDelayRoutine(1f));
+                ReborInternal(1f);
+                Debug.Log("Reborned");
                 return;
             }
 
@@ -231,10 +282,12 @@ namespace Rush
         }
         private IEnumerator RebornDelayRoutine(float delay)
         {
+            SetInvisibleInternal(true);
             m_OnRebornStart?.Invoke(m_RemainingReborn);
             yield return new WaitForSeconds(delay);
             ReborInternal(1f);
             Debug.Log("Reborned");
+            SetInvisibleInternal(false);
         }
         private void OnHitInvoke(IAbilityContext context)
         {
@@ -292,7 +345,7 @@ namespace Rush
         protected virtual void AddTotalDamageTakeInternal(int damage)
         {
             m_TotalDamageTaken += damage;
-            m_TotalDamageTaken = Mathf.Clamp(m_TotalDamageTaken, 0, m_MaxHealth);
+            m_TotalDamageTaken = Mathf.Max(0, m_TotalDamageTaken);
             Debug.Log($"Total Damage Taken: {m_TotalDamageTaken}, curren take {damage}");
         }
         protected virtual void AddHealthInternal(int amount)
@@ -344,9 +397,11 @@ namespace Rush
         {
             AddDamageReductionRateInternal(rate);
         }
-        protected virtual void SetBarrierPermanantInternal(int amount)
+        protected virtual void SetBarrierInternal(int amount)
         {
             m_Barrier = amount;
+            m_Barrier = Mathf.Max(0, m_Barrier);
+            m_OnBarrierChanged?.Invoke(m_Barrier);
         }
         
         public void SetRemainingRebornCount(int count)
@@ -374,6 +429,14 @@ namespace Rush
             
             m_OnRebornChanged?.Invoke(m_RemainingReborn);
             if (!callAddRemoveEvent) return;
+            if (count > 0)
+            {
+                m_OnRebornAdded?.Invoke(count);
+            }
+            else if (count < 0)
+            {
+                m_OnRebornRemoved?.Invoke(count);
+            }
         }
         protected virtual void AddMaxHealthInternal(int amount, bool restoreCurrent)
         {
@@ -411,32 +474,13 @@ namespace Rush
             m_Defense = Mathf.RoundToInt(m_Defense * val);
         }
 
-        protected virtual void SetShieldPermanentInternal(int amount)
+        protected virtual void SetShieldInternal(int amount)
         {
             m_Shield = amount;
             m_Shield = Mathf.Clamp(amount, 0, m_MaxHealth);
-        }
-        protected virtual void SetShieldInternal(int amount, float duration)
-        {
-            RushGameManager.Instance.StartCoroutine(SettingShieldInternal(amount, duration));
-        }
-        protected virtual IEnumerator SettingShieldInternal(int amount, float duration)
-        {
-            m_Shield = amount;
-            if (duration >= 0)
-            {
-                yield return new WaitForSeconds(duration);
-                if (amount > 0)
-                {
-                    if (m_Shield >= amount)
-                    {
-                        m_Shield -= amount;
-                    }
-                }
-            }
-            m_Shield = Mathf.Max(0, m_MaxHealth);
             m_OnShieldChanged?.Invoke(m_Shield, m_MaxHealth);
         }
+        
         public void SetImmortal(bool imo)
         {
             SetImmortalInternal(imo);
@@ -444,19 +488,40 @@ namespace Rush
         protected virtual void SetImmortalInternal(bool inv)
         {
             m_IsImmortal = inv;
+            m_OnImmortalChanged?.Invoke(m_IsImmortal);
         }
-
 
         private void ImmortalForWhileInternal(float duration)
         {
-            RushGameManager.Instance.StartCoroutine(ImmortalingForWhile(duration));
+            StartCoroutine(ImmortalingForWhile(duration));
+            m_OnImmortalDurationSet?.Invoke(duration);
         }
         private IEnumerator ImmortalingForWhile(float duration)
         {
             SetImmortalInternal(true);
             yield return new WaitForSeconds(duration);
             SetImmortalInternal(false);
+        }
 
+        private void InvisibleForWhileInternal(float duration)
+        {
+            StartCoroutine(InvisiblingForWhile(duration));
+            m_OnInvisibleDurationSet?.Invoke(duration);
+        }
+        private IEnumerator InvisiblingForWhile(float duration)
+        {
+            SetInvisibleInternal(true);
+            yield return new WaitForSeconds(duration);
+            SetInvisibleInternal(false);
+        }
+        public void SetInvisible(bool inv)
+        {
+            SetInvisibleInternal(inv);
+        }
+        protected virtual void SetInvisibleInternal(bool inv)
+        {
+            m_IsInvisible = inv;
+            m_OnInvisibleChanged?.Invoke(m_IsInvisible);
         }
 
         public void SetHealth(int val)
