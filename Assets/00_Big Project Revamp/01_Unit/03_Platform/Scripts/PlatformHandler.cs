@@ -223,13 +223,58 @@ namespace Rush
         {
             m_IsPaused = false;
         }
+        private bool HasAvailableInstance(PlatformConfig config)
+        {
+            if (!m_Pools.ContainsKey(config.BaseInfo.Id))
+                return false;
 
+            return m_Pools[config.BaseInfo.Id].Count > 0;
+        }
+        private PlatformConfig GetWeightedRandomAvailablePlatformConfig(List<PlatformConfig> configs)
+        {
+            List<PlatformConfig> availableConfigs = new();
+
+            foreach (var config in configs)
+            {
+                if (HasAvailableInstance(config))
+                {
+                    availableConfigs.Add(config);
+                }
+            }
+
+            if (availableConfigs.Count == 0)
+                return null;
+
+            int totalWeight = 0;
+            foreach (var config in availableConfigs)
+            {
+                totalWeight += Mathf.Max(1, config.PrewarmCount);
+            }
+
+            int randomValue = Random.Range(0, totalWeight);
+            int cumulative = 0;
+
+            foreach (var config in availableConfigs)
+            {
+                cumulative += Mathf.Max(1, config.PrewarmCount);
+
+                if (randomValue < cumulative)
+                    return config;
+            }
+
+            return availableConfigs[0];
+        }
         private void InputToWaitingListByRandom()
         {
-            if (!IsWaitingListFull(out int possibleSlotCount))
+            if (IsWaitingListFull(out _))
+                return;
+
+            foreach (var config in m_PreparedPlatformConfigs)
             {
-                List<PlatformConfig> waitingList = new(PlatformUtility.GetPlatformConfigWaitingListFromPreparationRandomly(m_PreparedPlatformConfigs.ToArray(), possibleSlotCount));
-                AddWaitingListPlatformConfigsInternal(waitingList.ToArray());
+                if (!HasWaitingListPlatformConfig(config))
+                {
+                    m_WaitingListPlatformConfigs.Add(config);
+                }
             }
         }
         private bool IsWaitingListFull(out int possibleSlotCount)
@@ -262,7 +307,14 @@ namespace Rush
         {
             yield return new WaitForSeconds(delay);
 
-            PlatformConfig nextPlatform = PlatformUtility.GetRandomPlatformConfig(m_PreparedPlatformConfigs);
+            PlatformConfig nextPlatform = PlatformUtility.GetRandomPlatformConfig(m_WaitingListPlatformConfigs, HasAvailableInstance);
+
+            if (nextPlatform == null)
+            {
+                Debug.LogWarning("No available platform in pool!");
+                m_IsSpawningNextPlatform = false;
+                yield break;
+            }
             Platform2D platform = GetFromPool(nextPlatform);
             platform.StartMove(PlatformUtility.GetStartingSpawnHorizontalPosition(m_Config.SpawnHorizontalDistanceFromPost, m_LastContactPoint));
             RemoveWaitingListPlatformConfigsInternal(nextPlatform);
@@ -314,14 +366,12 @@ namespace Rush
 
             Platform2D platform;
 
-            if (pool.Count > 0)
+            if (pool.Count == 0)
             {
-                platform = pool.Dequeue();
+                return null;
             }
-            else
-            {
-                platform = CreateNewPlatform(config);
-            }
+
+            platform = pool.Dequeue();
 
             platform.gameObject.SetActive(true);
             m_CurrentNewDisplayedPlatform = platform;

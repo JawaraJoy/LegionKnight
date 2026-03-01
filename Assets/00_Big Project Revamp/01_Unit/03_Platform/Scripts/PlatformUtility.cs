@@ -38,60 +38,43 @@ namespace Rush
             float baseSpeed = platformConfig.Speed;
             return baseSpeed * globalSpeedRate;
         }
-        public static List<PlatformConfig> GetPlatformConfigWaitingListFromPreparationRandomly(PlatformConfig[] preparationConfigs, int inputCount)
-        {
-            List<PlatformConfig> result = new ();
 
-            if (preparationConfigs == null || preparationConfigs.Length == 0 || inputCount <= 0)
-                return result;
-
-            // Hitung total weight
-            float totalWeight = 0f;
-            foreach (var config in preparationConfigs)
-            {
-                totalWeight += config.ChanceToSpawn;
-            }
-
-            for (int i = 0; i < inputCount; i++)
-            {
-                float randomValue = Random.Range(0f, totalWeight);
-                float cumulative = 0f;
-
-                foreach (var config in preparationConfigs)
-                {
-                    cumulative += config.ChanceToSpawn;
-
-                    if (randomValue <= cumulative)
-                    {
-                        result.Add(config);
-                        break;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public static PlatformConfig GetRandomPlatformConfig(List<PlatformConfig> configs)
+        public static PlatformConfig GetRandomPlatformConfig(List<PlatformConfig> configs, System.Func<PlatformConfig, bool> availabilityPredicate)
         {
             if (configs == null || configs.Count == 0)
                 return null;
 
-            float totalWeight = 0f;
-            foreach (var config in configs)
-                totalWeight += config.ChanceToSpawn;
-
-            float randomValue = Random.Range(0f, totalWeight);
-            float cumulative = 0f;
+            List<PlatformConfig> filtered = new();
 
             foreach (var config in configs)
             {
-                cumulative += config.ChanceToSpawn;
-                if (randomValue <= cumulative)
+                if (availabilityPredicate == null || availabilityPredicate.Invoke(config))
+                {
+                    filtered.Add(config);
+                }
+            }
+
+            if (filtered.Count == 0)
+                return null;
+
+            int totalWeight = 0;
+            foreach (var config in filtered)
+            {
+                totalWeight += Mathf.Max(1, config.PrewarmCount);
+            }
+
+            int randomValue = Random.Range(0, totalWeight);
+            int cumulative = 0;
+
+            foreach (var config in filtered)
+            {
+                cumulative += Mathf.Max(1, config.PrewarmCount);
+
+                if (randomValue < cumulative)
                     return config;
             }
 
-            return configs[0];
+            return filtered[0];
         }
         public static Vector2 GetStartingSpawnHorizontalPosition(float horizontalDistance, Vector2 lastContactPoint)
         {

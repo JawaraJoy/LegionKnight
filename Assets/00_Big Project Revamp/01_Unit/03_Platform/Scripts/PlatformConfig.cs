@@ -10,8 +10,6 @@ namespace Rush
         private Platform2D m_PlatformPrefab;
         [SerializeField]
         private int m_PrewarmCount = 5;
-        [SerializeField, Range(0.01f, 1f)]
-        private float m_ChanceToSpawn = 1f;
         [SerializeField]
         private float m_WidthRate = 3f;
         [SerializeField, Range(0.1f, 1f)]
@@ -24,7 +22,6 @@ namespace Rush
         private PlatformSkillField m_LeftSkillField;
         [SerializeField]
         private PlatformSkillField m_RightSkillField;
-        public float ChanceToSpawn => m_ChanceToSpawn;
         public float PerfectTouchRange => m_PerfectTouchRange;
         public float Speed => m_Speed;
         public int PrewarmCount => m_PrewarmCount;

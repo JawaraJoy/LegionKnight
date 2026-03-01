@@ -58,6 +58,8 @@ namespace Rush
         [SerializeField]
         private UnityEvent<int, int> m_OnShieldChanged;
         [SerializeField]
+        private UnityEvent<bool> m_OnShieldExisted;
+        [SerializeField]
         private UnityEvent<int> m_OnBarrierChanged;
         [SerializeField]
         private UnityEvent<int> m_OnBarrierAdded;
@@ -369,6 +371,7 @@ namespace Rush
             m_Shield = Mathf.Clamp(m_Shield, 0, m_MaxHealth);
             
             m_OnShieldChanged?.Invoke(m_Shield, m_MaxHealth);
+            m_OnShieldExisted?.Invoke(m_Shield > 0);
             if (!callAddRemoveEvent) return;
             // call add remove event
         }
@@ -479,6 +482,7 @@ namespace Rush
             m_Shield = amount;
             m_Shield = Mathf.Clamp(amount, 0, m_MaxHealth);
             m_OnShieldChanged?.Invoke(m_Shield, m_MaxHealth);
+            m_OnShieldExisted?.Invoke(m_Shield > 0);
         }
         
         public void SetImmortal(bool imo)
