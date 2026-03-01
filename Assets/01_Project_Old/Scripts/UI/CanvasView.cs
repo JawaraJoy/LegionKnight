@@ -11,12 +11,8 @@ namespace LegionKnight
         [SerializeField]
         private List<PanelView> m_Panels = new();
 
-        private bool m_IsBusy;
-
         [SerializeField]
         private TextMeshProUGUI m_GameVersionText;
-        [SerializeField]
-        private UnityEvent<bool> m_OnIsBusyUpdate = new();
         [SerializeField]
         private UnityEvent<PanelView> m_OnPanelShow = new();
         [SerializeField]
@@ -89,7 +85,6 @@ namespace LegionKnight
             if (HasPanel(uniqueId))
             {
                 GetPanelInternal(uniqueId).Show();
-                HandleIsBusy();
             }
         }
         protected virtual void HidePanelInternal(string uniqueId)
@@ -97,18 +92,7 @@ namespace LegionKnight
             if (HasPanel(uniqueId))
             {
                 GetPanelInternal(uniqueId).Hide();
-                HandleIsBusy();
             }
-        }
-
-        private void HandleIsBusy()
-        {
-            m_IsBusy = m_Panels.Any(x => x.IsBusyPanel && m_IsBusy);
-            OnIsBusyUpdateInvoke(m_IsBusy);
-        }
-        private void OnIsBusyUpdateInvoke(bool busy)
-        {
-            m_OnIsBusyUpdate?.Invoke(busy);
         }
         private void OnPanelShowInvoke(PanelView panel)
         {

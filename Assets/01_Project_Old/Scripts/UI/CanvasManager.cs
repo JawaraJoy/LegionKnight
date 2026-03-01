@@ -6,10 +6,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private MainCanvasView m_MainCanvas;
-        [SerializeField]
-        private ButtonJumpCanvas m_JumpCanvas;
         public MainCanvasView MainCanvas => m_MainCanvas;
-        public ButtonJumpCanvas JumpCanvas => m_JumpCanvas;
 
         protected T GetPanelInternal<T>() where T : PanelView
         {
@@ -55,15 +52,6 @@ namespace LegionKnight
         public virtual void HidePanel(string uniqueId)
         {
             HidePanelInternal(uniqueId);
-        }
-
-        public void ShowJumpCanvas()
-        {
-            m_JumpCanvas.Show();
-        }
-        public void HideJumpCanvas()
-        {
-            m_JumpCanvas.Hide();
         }
     }
 }

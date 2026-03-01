@@ -9,9 +9,6 @@ namespace LegionKnight
     }
     public partial class PanelView : UIView
     {
-        [SerializeField]
-        private bool m_IsBusyPanel;
-        public bool IsBusyPanel => m_IsBusyPanel;
 
         [SerializeField]
         protected List<UIView> m_Bindings = new();
