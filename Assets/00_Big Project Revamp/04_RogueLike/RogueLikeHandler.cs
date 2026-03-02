@@ -19,13 +19,13 @@ namespace Rush
         [SerializeField]
         private UnityEvent<int> m_OnLevelUp; // Event that triggers when the player levels up, passing the new level as an argument
         [SerializeField]
-        private UnityEvent<CardConfig> m_OnCardSelected;
+        private UnityEvent<CardConfig> m_OnCardCollected;
         public RogueLikeConfig Config => m_Config;
         public int CurrentExperience => m_CurrentExperience;
         public int CurrentLevel => m_CurrentLevel;
         public UnityEvent<int, int> OnExperienceAdded => m_OnExperienceAdded;
         public UnityEvent<int> OnLevelUp => m_OnLevelUp;
-        public UnityEvent<CardConfig> OnCardSelected => m_OnCardSelected;
+        public UnityEvent<CardConfig> OnCardCollected => m_OnCardCollected;
 
         private RogueLikeCardPanel m_CardPanel;
         private RogueLikeCardPanel CardPanel
@@ -71,12 +71,10 @@ namespace Rush
             AddLevel(1);
             m_OnLevelUp.Invoke(m_CurrentLevel);
             // Implement level-up logic here (e.g., increase stats, unlock skills, etc.)
-            CardPanel.ShowCards(m_Config.GetDifferenceCardRandom());
-
         }
         private void OnExperienceAddedInvoke(int amount)
         {
-            m_OnExperienceAdded.Invoke(amount, m_Config.LevelFormula.GetCurrentMaxExperience(m_CurrentLevel));
+            m_OnExperienceAdded.Invoke(amount, m_Config.LevelFormula.GetCurrentMaxExperience(m_CurrentLevel+1));
         }
 
         private void SetLevel(int level)

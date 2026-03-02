@@ -10,18 +10,16 @@ namespace Rush
         [SerializeField]
         private RogueLevelFormula m_LevelFormula;
         [SerializeField]
-        private int m_DrawCardEachLevelUp = 3;
-        [SerializeField]
         private CardConfig[] m_CardConfigs;
         public RogueLevelFormula LevelFormula => m_LevelFormula;
         public CardConfig[] CardConfigs => m_CardConfigs;
 
-        public CardConfig[] GetDifferenceCardRandom()
+        public CardConfig[] GetDifferenceCardRandom(int drawAmount)
         {
             if (m_CardConfigs == null || m_CardConfigs.Length == 0)
                 return new CardConfig[0];
 
-            int drawCount = Mathf.Min(m_DrawCardEachLevelUp, m_CardConfigs.Length);
+            int drawCount = Mathf.Min(drawAmount, m_CardConfigs.Length);
 
             return m_CardConfigs.OrderBy(x => Random.value).Take(drawCount).ToArray();
         }

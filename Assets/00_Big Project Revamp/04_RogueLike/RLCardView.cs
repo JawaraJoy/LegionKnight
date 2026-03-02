@@ -29,7 +29,7 @@ namespace Rush
             m_SelectButton.onClick.RemoveListener(OnSelectButtonClicked);
             m_SelectButton.onClick.AddListener(OnSelectButtonClicked);
         }
-        public void Initialize(CardConfig cardConfig)
+        public void ShowCard(CardConfig cardConfig)
         {
             m_CardConfig = cardConfig;
 

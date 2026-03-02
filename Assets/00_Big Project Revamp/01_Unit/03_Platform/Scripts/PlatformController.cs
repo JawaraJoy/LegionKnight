@@ -46,12 +46,13 @@ namespace Rush
             if (m_ModuleContext.Unit.HasBind(out SkillController skillController))
             {
                 m_SkillController = skillController;
-                foreach(PlatformConfig config in m_PlatformConfigs)
+/*                foreach(PlatformConfig config in m_PlatformConfigs)
                 {
                     RushGameManager.Instance.StageManager.PlatformHandler.AddPreparedPlatformConfig(config, this);
                     
                     
-                }
+                }*/
+                RushGameManager.Instance.StageManager.PlatformHandler.AddPreparedPlatformConfigs(m_PlatformConfigs.ToArray(), this);
             }
             
         }

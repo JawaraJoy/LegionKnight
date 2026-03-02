@@ -137,8 +137,14 @@ namespace Rush
         {
             return GetWaitingListPlatformConfigInternal(config.BaseInfo.Id) != null;
         }
+        public void AddPreparedPlatformConfigs(PlatformConfig[] configs, PlatformController controller)
+        {
+            AddPreparedPlatformsConfigInternal(configs, controller);
+        }
         private void AddPreparedPlatformsConfigInternal(PlatformConfig[] configs, PlatformController controller)
         {
+            int length = configs.Length;
+            if (length == 0) return;
             for (int i = 0; i < configs.Length; i++)
             {
                 AddPreparedPlatformConfigInternal(configs[i], controller);
@@ -342,8 +348,11 @@ namespace Rush
         }
 
 
-        private Platform2D CreateNewPlatform(PlatformConfig config, PlatformController controller = null)
+        private Platform2D CreateNewPlatform(PlatformConfig config, PlatformController controller)
         {
+            Debug.Log($"Controller null? {controller == null}");
+            Debug.Log($"ModuleContext null? {controller.ModuleContext == null}");
+
             Platform2D newPlatform = Instantiate(config.PlatformPrefab, transform);
             newPlatform.IniPlatform(config);
             if (controller != null)

@@ -17,16 +17,32 @@ namespace Rush
                 button.onClick.AddListener(HideInternal);
             }
         }
-        public void ShowCards(CardConfig[] cardConfigs)
+        private void ShowCards(CardConfig[] cardConfigs)
         {
             for (int i = 0; i < m_CardViews.Length; i++)
             {
                 if (i < cardConfigs.Length)
                 {
-                    m_CardViews[i].Initialize(cardConfigs[i]);
+                    m_CardViews[i].ShowCard(cardConfigs[i]);
                 }
             }
-            ShowInternal();
+        }
+        override protected void ShowInternal()
+        {
+            // Additional logic for showing the card panel can be added here
+            
+            base.ShowInternal();
+            RefreshCardsInternal();
+        }
+        public void RefreshCards()
+        {
+            RefreshCardsInternal();
+        }
+        private void RefreshCardsInternal()
+        {
+            int drawAmount = m_CardViews.Length; // Assuming you want to draw as many cards as there are views
+            CardConfig[] cardConfigs = RushGameManager.Instance.RogueLikeManager.Config.GetDifferenceCardRandom(drawAmount);
+            ShowCards(cardConfigs);
         }
     }
 }

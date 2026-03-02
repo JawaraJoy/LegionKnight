@@ -18,7 +18,7 @@ namespace Rush
                 skillController.ForceActives(SkillConfigs);
 
                 RogueLikeManager manager = RushGameManager.Instance.RogueLikeManager;
-                manager.OnCardSelected?.Invoke(this);
+                manager.OnCardCollected?.Invoke(this);
             }
         }
     }
