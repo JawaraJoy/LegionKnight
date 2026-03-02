@@ -38,21 +38,18 @@ namespace Rush
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
-            if (unitOwner.Config is IHasPlatform platformConfig)
+            if (unitOwner.Config is IHasPlatform owner)
             {
                 m_PlatformConfigs.Clear();
-                m_PlatformConfigs = new(platformConfig.UniquePlatforms);
+                m_PlatformConfigs = new(owner.UniquePlatforms);
             }
             if (m_ModuleContext.Unit.HasBind(out SkillController skillController))
             {
                 m_SkillController = skillController;
-/*                foreach(PlatformConfig config in m_PlatformConfigs)
+                foreach (var platformConfig in m_PlatformConfigs)
                 {
-                    RushGameManager.Instance.StageManager.PlatformHandler.AddPreparedPlatformConfig(config, this);
-                    
-                    
-                }*/
-                RushGameManager.Instance.StageManager.PlatformHandler.AddPreparedPlatformConfigs(m_PlatformConfigs.ToArray(), this);
+                    m_SkillController.AddNewSkills(PlatformUtility.GetPlatformSkillConfigs(platformConfig).ToArray());
+                }     
             }
             
         }

@@ -64,6 +64,10 @@ namespace Rush
             if (unitPlayer.HasBind(out PlatformController controller))
             {
                 AddPreparedPlatformsConfigInternal(config.InitialPlatformConfigs, controller);
+                if (unitPlayer.Config is IHasPlatform owner)
+                {
+                    AddPreparedPlatformsConfigInternal(owner.UniquePlatforms, controller);
+                }
             }
             m_LastContactPoint = RushPlayer.Instance.PlatformSpawnPost.position;
             SetMaxGlobalSpeedRateInternal(config.MaxGlobalSpeedRate);
