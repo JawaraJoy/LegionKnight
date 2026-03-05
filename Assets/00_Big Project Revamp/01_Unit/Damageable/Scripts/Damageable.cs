@@ -81,6 +81,10 @@ namespace Rush
         private UnityEvent<bool> m_OnInvisibleChanged;
         [SerializeField]
         private UnityEvent<float> m_OnInvisibleDurationSet;
+        [SerializeField]
+        private UnityEvent<int> m_OnBlocked;
+        [SerializeField]
+        private UnityEvent<int> m_OnShieldConsumed;
 
         private const int m_MinimumDefendReduction = 0;
         public int RemainingReborn => m_RemainingReborn;
@@ -213,6 +217,7 @@ namespace Rush
             if (m_Barrier > 0)
             {
                 AddBarrierInternal(-1, true);
+                m_OnBlocked?.Invoke(damage);
                 return 0;
             }
 
@@ -222,6 +227,7 @@ namespace Rush
                 int absorbed = Mathf.Min(m_Shield, damage);
                 AddShieldInternal(-absorbed, true);
                 damage -= absorbed;
+                m_OnShieldConsumed?.Invoke(absorbed);
             }
 
             return damage;

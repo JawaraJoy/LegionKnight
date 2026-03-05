@@ -7,7 +7,7 @@ using Rush;
 
 namespace LegionKnight
 {
-    public partial class SkillView : PanelView
+    public partial class SkillView : UIView
     {
         [SerializeField]
         private string m_SkillName;
@@ -18,24 +18,31 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_SkilNameText;
         [SerializeField]
+        private TextMeshProUGUI m_ChargeText;
+        [SerializeField]
         private UnityEvent m_OnActive;
         [SerializeField]
         private UnityEvent<int> m_OnChargeAmount;
         public string SkillName => m_SkillName;
 
-        private SkillConfig m_SkillConfig;
-        public void Init(SkillConfig skillConfig)
+        private Skill m_Skill;
+        public void Init(Skill skill)
         {
-            m_SkillConfig = skillConfig;
-            m_SkillName = m_SkillConfig.BaseInfo.Name;
-            m_Icon.sprite = m_SkillConfig.CollectibleField.Icon;
+            m_Skill = skill;
+            m_SkillName = m_Skill.SkillConfig.BaseInfo.Name;
+            m_Icon.sprite = m_Skill.SkillConfig.CollectibleField.Icon;
             m_SkilNameText.text = m_SkillName;
         }
         public void SetFill(float fill)
         {
             m_Fill.fillAmount = fill;
         }
-
+        public void SetRemainingAmount(int amount)
+        {
+            string fillText = $"{amount}/{m_Skill.SkillConfig.Activation.Charge}";
+            m_Fill.fillAmount = (float)amount / m_Skill.SkillConfig.Activation.Charge;
+            m_ChargeText.text = fillText;
+        }
         public void ChargeAmount(int amount)
         {
             m_OnChargeAmount?.Invoke(amount);

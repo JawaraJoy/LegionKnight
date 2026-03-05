@@ -40,7 +40,9 @@ namespace Rush
         [SerializeField]
         private UnityEvent<IAbilityContext> m_OnActivateIndividu;
         [SerializeField]
-        private UnityEvent<SkillContext> m_OnActivates;
+        private UnityEvent<Skill> m_OnActivates;
+        [SerializeField]
+        private UnityEvent<int, int> m_OnChargeUpdate;
         [SerializeField]
         private UnityEvent<Unit> m_OnAbilityDelivered;
         public ProgressField Progression => m_Progression;
@@ -70,6 +72,10 @@ namespace Rush
         private int m_CurrentInterruptCount;
         [SerializeField, MMReadOnly]
         private int m_MaxInterruptCount;
+
+        public UnityEvent<Skill> OnActivate => m_OnActivates;
+
+        public float RemainingCharge => m_RemainingCharge;
         private AbilityDeliver GetAbilityDeliverInternal(string id)
         {
             return m_Delivers.Find(x => x.AbilityConfig.BaseInfo.Id == id);
@@ -174,6 +180,14 @@ namespace Rush
 
                 m_RemainingCharge = Mathf.Max(0f, overflow);
             }
+            OnChargeUpdate(m_RemainingCharge, m_SkillConfig.Activation.Charge);
+        }
+
+        private void OnChargeUpdate(float current, float max)
+        {
+            int roundedCurrent = Mathf.RoundToInt(current);
+            int roundedMax = Mathf.RoundToInt(max);
+            m_OnChargeUpdate?.Invoke(roundedCurrent, roundedMax);
         }
 
         #endregion
@@ -331,7 +345,7 @@ namespace Rush
                 ActivateInternal(deliver);
             }
 
-            m_OnActivates?.Invoke(m_SkillContext);
+            m_OnActivates?.Invoke(this);
         }
         public void ForceActivate(AbilityConfig config)
         {

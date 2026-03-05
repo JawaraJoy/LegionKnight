@@ -1,21 +1,26 @@
 using Rush;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace LegionKnight
 {
+    [Obsolete("This class is deprecated.")]
     public partial class SkillContainerView : UIView
     {
+        [SerializeField]
+        private SkillCategoryConfig m_SkillCategoryConfig;
         [SerializeField]
         private AssetReferenceGameObject m_SkillViewAsset;
 
         [SerializeField]
         private List<SkillView> m_SkillViews = new();
 
-        private UnitConfig m_UnitConfig;
+        private SkillController m_SkillController;
 
         private List<SkillConfig> m_Skills = new();
 
@@ -49,21 +54,21 @@ namespace LegionKnight
         {
             ClearViews();
 
-            m_Skills = new(m_UnitConfig.Skills);
+            //m_Skills = new(m_SkillController.Skills);
 
             foreach (SkillConfig skill in m_Skills)
             {
                 SpawnSkillView(skill);
             }
         }
-        public void Init(UnitConfig unitConfig)
+        public void Init(SkillController skillController)
         {
             ClearViews();
-            m_UnitConfig = unitConfig;
-            SkillConfig[] skills = m_UnitConfig.Skills;
-            foreach(SkillConfig skill in skills)
+            m_SkillController = skillController;
+            Skill[] skills = m_SkillController.Skills.ToArray();
+            foreach (Skill skill in skills)
             {
-                SpawnSkillView(skill);
+                //SpawnSkillView(skill);
             }
         }
         private IEnumerator SpawningSkillView(SkillConfig skill)
@@ -75,7 +80,7 @@ namespace LegionKnight
                 GameObject result = handle.Result;
                 if(result.TryGetComponent(out SkillView view))
                 {
-                    view.Init(skill);
+                    //view.Init(skill);
                     AddSkillViewInternal(view);
                 }
             }

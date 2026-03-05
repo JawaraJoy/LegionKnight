@@ -53,6 +53,19 @@ namespace Rush
         {
             return GetSkillsByCategoryInternal(category);
         }
+        private CategorySkillController GetCategoryControllerInternal(SkillCategoryConfig category)
+        {
+            return m_CategorySkillControllers.FirstOrDefault(x => x.SkillCategoryConfig == category);
+        }
+        private bool HasCategoryControllerInternal(SkillCategoryConfig category, out CategorySkillController categorySkill)
+        {
+            categorySkill = GetCategoryControllerInternal(category);
+            return GetCategoryControllerInternal(category) != null;
+        }
+        public bool HasCategoryController(SkillCategoryConfig category, out CategorySkillController categorySkill)
+        {
+            return HasCategoryControllerInternal(category, out categorySkill);
+        }
         private IReadOnlyList<Skill> GetSkillsByCategoryInternal(SkillCategoryConfig category)
         {
             List<Skill> findCategories = new List<Skill>();

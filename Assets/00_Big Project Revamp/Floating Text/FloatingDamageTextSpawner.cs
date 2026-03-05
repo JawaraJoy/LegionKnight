@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Rush
 {
@@ -13,6 +13,7 @@ namespace Rush
 
         public void SpawnText(int amount)
         {
+            if (amount <= 0) return;
             var obj = Get();
             obj.Setup(amount, this, GetSpawnPosition());
         }
