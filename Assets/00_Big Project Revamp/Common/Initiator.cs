@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class Initiator : Singleton<Initiator>
+    public class Initiator : MonoBehaviour
     {
         [SerializeField]
         private UnityEvent m_OnStart;

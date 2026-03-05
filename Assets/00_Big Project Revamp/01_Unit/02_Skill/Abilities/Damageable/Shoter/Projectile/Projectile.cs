@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rush
@@ -10,7 +11,9 @@ namespace Rush
     public class Projectile : Ammo
     {
         private ProjectileConfig m_ProjectileConfig;
-
+        [SerializeField]
+        private Attacker m_Attacker;
+        
         public override void Init(AbilityContext context, AmmoConfig config)
         {
             base.Init(context, config);
@@ -72,16 +75,18 @@ namespace Rush
         protected virtual void HandleHit(GameObject target)
         {
             m_OnHit?.Invoke(target);
-
-            if (m_ProjectileConfig != null &&
-                m_ProjectileConfig.ExplodeSetup.ExplodeOnHit)
+            
+            if (m_ProjectileConfig.ExplodeSetup.ExplodeOnHit)
             {
                 Explode();
             }
-
-            if (m_ProjectileConfig != null &&
-                m_ProjectileConfig.DespawnOnHit)
+            else
             {
+                m_Attacker.Init(m_AbilityContext);
+            }
+            if (m_ProjectileConfig != null && m_ProjectileConfig.DespawnOnHit)
+            {
+
                 DisableAmmo();
             }
         }

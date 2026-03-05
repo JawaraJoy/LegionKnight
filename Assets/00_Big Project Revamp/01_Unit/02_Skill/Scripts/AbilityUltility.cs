@@ -388,7 +388,7 @@ namespace Rush
 
             Vector2 direction = targetable.TargetTransform.position - subject.position;
 
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
 
             subject.rotation = Quaternion.Euler(0f, 0f, angle);
         }

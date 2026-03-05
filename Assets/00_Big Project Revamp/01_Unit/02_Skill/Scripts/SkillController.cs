@@ -2,10 +2,11 @@ using MoreMountains.Tools;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
-    public class SkillController : MonoBehaviour, IUnitExtension, IHasSkills
+    public class SkillController : MonoBehaviour, IUnitExtension, IHasSkills, IReseter
     {
         [SerializeField]
         private Transform m_SkillSpawnPost;
@@ -13,9 +14,21 @@ namespace Rush
         private ModuleContext m_ModuleContext;
         [SerializeField, MMReadOnly]
         private List<Skill> m_Skills = new();
+
+        [SerializeField, MMReadOnly]
+        private List<Skill> m_RemovedSkills = new();
+
+        [SerializeField]
+        private CategorySkillController[] m_CategorySkillControllers;
         public IReadOnlyList<Skill> Skills => m_Skills;
 
         public IModuleContext ModuleContext => m_ModuleContext;
+        [SerializeField]
+        private UnityEvent<Skill> m_OnSkillAdded;
+        [SerializeField]
+        private UnityEvent<Skill> m_OnSkillRemoved;
+        [SerializeField]
+        private UnityEvent m_OnResetProgress;
 
         public void Init(Unit unitOwner)
         {
@@ -27,9 +40,18 @@ namespace Rush
         {
             return m_Skills.Find(x => x.SkillContext.Skill.SkillConfig.BaseInfo.Id == id);
         }
+        private Skill GetSkillByIndex(int index)
+        {
+            if (index < 0 || index >= m_Skills.Count) return null;
+            return m_Skills[index];
+        }
         public Skill GetSkillActivator(SkillConfig config)
         {
             return GetSkillActivatorInternal(config.BaseInfo.Id);
+        }
+        public IReadOnlyList<Skill> GetSkillsByCategory(SkillCategoryConfig category)
+        {
+            return GetSkillsByCategoryInternal(category);
         }
         private IReadOnlyList<Skill> GetSkillsByCategoryInternal(SkillCategoryConfig category)
         {
@@ -131,16 +153,26 @@ namespace Rush
             }
             else
             {
-                Skill spawned = Instantiate(config.ActivatorPrefab, m_SkillSpawnPost, false);
-                spawned.Init(config, m_ModuleContext);
-                RegisterSkillInternal(spawned);
+                RegisterSkillInternal(config);
             }
         }
-        private void RegisterSkillInternal(Skill skill)
+        private void RegisterSkillInternal(SkillConfig skillConfig)
         {
-            if (GetSkillActivatorInternal(skill.SkillConfig.BaseInfo.Id) == null)
+            Skill newSkill = null;
+            if (m_RemovedSkills.Any(x => x.SkillConfig.BaseInfo.Id == skillConfig.BaseInfo.Id))
             {
-                m_Skills.Add(skill);
+                newSkill = m_RemovedSkills.Find(x => x.SkillConfig.BaseInfo.Id == skillConfig.BaseInfo.Id);
+            }
+            else
+            {
+                newSkill = Instantiate(skillConfig.ActivatorPrefab, m_SkillSpawnPost, false);
+                newSkill.Init(skillConfig, m_ModuleContext);
+            }
+            if (newSkill != null)
+            {
+                m_Skills.Add(newSkill);
+                m_RemovedSkills.Remove(newSkill);
+                m_OnSkillAdded?.Invoke(newSkill);
             }
         }
         private void UnregisterSkillInternal(Skill skill)
@@ -148,13 +180,24 @@ namespace Rush
             if (GetSkillActivatorInternal(skill.SkillConfig.BaseInfo.Id) != null)
             {
                 m_Skills.Remove(skill);
+                m_RemovedSkills.Add(skill);
+                m_OnSkillRemoved?.Invoke(skill);
             }
         }
+
         public void ForceActives(SkillConfig[] skillConfigs)
         {
             foreach (SkillConfig config in skillConfigs)
             {
                 ForceActiveInternal(config);
+            }
+        }
+        public void ForceActiveByIndex(int index)
+        {
+            Skill skill = GetSkillByIndex(index);
+            if (skill != null)
+            {
+                ForceActiveInternal(skill.SkillConfig);
             }
         }
         public void ForceActive(SkillConfig skillConfig)
@@ -187,12 +230,18 @@ namespace Rush
                 }
             }
         }
-        public void ResetProgression()
+        public void ResetProgresstion()
         {
             foreach (Skill skill in m_Skills)
             {
                 skill.Progression.SetLevel(1);
             }
+            m_OnResetProgress?.Invoke();
+        }
+
+        public CategorySkillController GetCategoryController(SkillCategoryConfig categoryConfig)
+        {
+            return m_CategorySkillControllers.FirstOrDefault(x => x.SkillCategoryConfig == categoryConfig);
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Rush
                     {
                         for (int i = 0; i < burstCount && fired < fireCount; i++)
                         {
-                            int index = ResolveShapeIndex(mode, fired, ref shapeIndex, ref direction);
+                            int index  = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
                             SpawnSingle(index, fireCount, targets);
                             fired++;
                             yield return new WaitForSeconds(fireInterval);
@@ -93,7 +93,7 @@ namespace Rush
                 default: // Interval / Loop / PingPong / Random
                     for (int i = 0; i < fireCount; i++)
                     {
-                        int index = ResolveShapeIndex(mode, i, ref shapeIndex, ref direction);
+                        int index = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
                         SpawnSingle(index, fireCount, targets);
                         yield return new WaitForSeconds(fireInterval);
                     }
@@ -101,23 +101,29 @@ namespace Rush
             }
         }
 
-        private int ResolveShapeIndex(FireMode mode, int shotIndex, ref int shapeIndex, ref int direction)
+        private int ResolveShapeIndex(FireMode mode, int shotIndex, int totalCount, ref int shapeIndex, ref int direction)
         {
-            int count = m_ShooterAbilityConfig.SpawningSetup.FireCount;
+            if (totalCount <= 0)
+                return 0;
 
             switch (mode)
             {
                 case FireMode.Random:
-                    return Random.Range(0, count);
+                    return Random.Range(0, totalCount);
 
                 case FireMode.Loop:
-                    shapeIndex = (shapeIndex + 1) % count;
+                    shapeIndex = (shapeIndex + 1) % totalCount;
                     return shapeIndex;
 
                 case FireMode.PingPong:
+                    if (totalCount == 1)
+                        return 0;
+
                     shapeIndex += direction;
-                    if (shapeIndex >= count - 1 || shapeIndex <= 0)
+
+                    if (shapeIndex >= totalCount - 1 || shapeIndex <= 0)
                         direction *= -1;
+
                     return shapeIndex;
 
                 default:
@@ -140,7 +146,6 @@ namespace Rush
             ammo.transform.SetPositionAndRotation(pos, rot);
 
             ITargetable target = ResolveTarget(index, targets);
-            FaceSpawnToTarget(target);
 
             ammo.Shot(target);
 
@@ -176,14 +181,6 @@ namespace Rush
             return targets[0];
         }
 
-        private void FaceSpawnToTarget(ITargetable targetable)
-        {
-            if (!m_ShooterAbilityConfig.ShoterLookAtTargetOnActivate)
-                return;
-
-            AbilityUltility.LookAtFirstTarget2D(m_DeliverTransform, targetable);
-        }
-
         private void PreWarm()
         {
             if (m_ShooterAbilityConfig == null || m_AmmoConfig == null)
@@ -214,8 +211,8 @@ namespace Rush
 
             ammo.transform.SetParent(null);
             ammo.gameObject.SetActive(true);
-            ammo.Init(m_AbilityContext, m_AmmoConfig);
-
+            //ammo.Init(m_AbilityContext, m_AmmoConfig);
+            ammo.OnSpawnFromPool();
             return ammo;
         }
 

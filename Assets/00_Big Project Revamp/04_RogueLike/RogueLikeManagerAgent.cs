@@ -7,6 +7,8 @@ namespace Rush
     public class RogueLikeManagerAgent : MonoBehaviour
     {
         [SerializeField]
+        private int m_ExpMultiplyByPerfect = 1;
+        [SerializeField]
         private UnityEvent<int> m_OnLevelUp;
         [SerializeField]
         private UnityEvent<CardConfig> m_OnCardCollected;
@@ -42,9 +44,10 @@ namespace Rush
 
             
         }
-        public void AddExperience(int amount)
+        public void AddExperience(int perfectCombo)
         {
-            Handler.AddExperience(amount);
+            int totalAmount = (perfectCombo + 1) * m_ExpMultiplyByPerfect;
+            Handler.AddExperience(totalAmount);
         }
         public void ResetProgress()
         {

@@ -13,8 +13,7 @@ namespace Rush
             // Bonus based on target Max HP
             if (attacker.DamageBasedTargetMaxHP > 0f)
             {
-                baseDamage += Mathf.RoundToInt(
-                    target.MaxHealth * attacker.DamageBasedTargetMaxHP);
+                baseDamage += Mathf.RoundToInt(target.MaxHealth * attacker.DamageBasedTargetMaxHP);
             }
 
             int result = 0;
@@ -43,8 +42,7 @@ namespace Rush
             if (attack <= 0)
                 return MinimumDamage;
 
-            float damage = (float)(attack * attack) /
-                           (attack + Mathf.Max(0, defense));
+            float damage = (float)(attack * attack) / (attack + Mathf.Max(0, defense));
 
             return Mathf.Max(MinimumDamage, Mathf.RoundToInt(damage));
         }

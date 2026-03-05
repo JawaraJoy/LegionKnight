@@ -17,10 +17,9 @@ namespace Rush
         [SerializeField]
         private UnityEvent m_OnVFXStop;
 
-        [SerializeField, MMReadOnly]
-        private float m_Duration = 1.0f;
-
         private Action<VfxPLayer> m_OnFinishedCallback;
+        private Coroutine m_StopRoutine;
+        private bool m_IsPlaying;
 
         public void SetOnFinished(Action<VfxPLayer> callback)
         {
@@ -29,20 +28,49 @@ namespace Rush
 
         public void Play()
         {
-            StopAllCoroutines();
+            if (m_IsPlaying)
+                return;
 
-            m_Vfx.Play();
-            m_Duration = m_Vfx.main.duration;
+            m_IsPlaying = true;
+
+            if (m_StopRoutine != null)
+                StopCoroutine(m_StopRoutine);
+
+            // Full reset particle state
+            m_Vfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            m_Vfx.Play(true);
 
             m_OnVFXStart?.Invoke();
-            StartCoroutine(Stopping());
+
+            m_StopRoutine = StartCoroutine(WaitForFinish());
         }
 
-        private IEnumerator Stopping()
+        private IEnumerator WaitForFinish()
         {
-            yield return new WaitForSeconds(m_Duration);
+            // Wait until particle fully dead (safe for any config)
+            yield return new WaitUntil(() => !m_Vfx.IsAlive(true));
 
             m_OnVFXStop?.Invoke();
+
+            m_IsPlaying = false;
+            m_StopRoutine = null;
+
+            m_OnFinishedCallback?.Invoke(this);
+        }
+
+        public void ForceStop()
+        {
+            if (!m_IsPlaying)
+                return;
+
+            if (m_StopRoutine != null)
+                StopCoroutine(m_StopRoutine);
+
+            m_Vfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+            m_IsPlaying = false;
+            m_StopRoutine = null;
+
             m_OnFinishedCallback?.Invoke(this);
         }
     }

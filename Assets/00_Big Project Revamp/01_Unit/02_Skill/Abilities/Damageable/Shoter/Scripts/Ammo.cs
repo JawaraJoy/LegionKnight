@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,9 +27,12 @@ namespace Rush
         protected ITargetable m_Targetable;
         protected AbilityContext m_AbilityContext;
 
-        public AmmoConfig Config => m_Config;
-        public bool CanMove => m_CanMove;
+        // Because sprite faces UP (Y axis)
+        private const float SPRITE_ANGLE_OFFSET = -90f;
+
         public bool IsActive => gameObject.activeSelf;
+        private HashSet<ITargetable> m_HitTargets = new();
+
 
         private void OnEnable()
         {
@@ -47,9 +51,7 @@ namespace Rush
             m_Config = config;
 
             if (context.AbilityDeliver is Shooter shooter)
-            {
                 m_Shooter = shooter;
-            }
 
             CacheMoveDirection();
         }
@@ -61,7 +63,7 @@ namespace Rush
 
             m_OnShot?.Invoke(m_AbilityContext);
 
-            FacingAtFirstTarget2D(targetable);
+            FaceTargetInstant(targetable);
         }
 
         public virtual void Tick()
@@ -69,12 +71,10 @@ namespace Rush
             if (!m_CanMove)
                 return;
 
-            if (m_Config.TargetingDistributeMode == TargetingDistributeMode.Homing)
+            if (m_Config.TargetingDistributeMode == TargetingMode.Homing)
             {
                 if (IsTargetInvalid())
-                {
                     TryRetarget();
-                }
 
                 UpdateRotation();
             }
@@ -85,18 +85,7 @@ namespace Rush
 
         protected virtual void CacheMoveDirection()
         {
-            switch (m_Config.ForwardAxis)
-            {
-                case LocalAxis.X:
-                    m_MoveDirection = Vector3.right;
-                    break;
-                case LocalAxis.Y:
-                    m_MoveDirection = Vector3.up;
-                    break;
-                case LocalAxis.Z:
-                    m_MoveDirection = Vector3.forward;
-                    break;
-            }
+            m_MoveDirection = Vector3.up; // since ForwardAxis = Y
         }
 
         protected virtual float Move()
@@ -109,6 +98,38 @@ namespace Rush
             );
 
             return distance;
+        }
+
+        private void UpdateRotation()
+        {
+            if (m_Targetable == null)
+                return;
+
+            Vector2 dir = m_Targetable.TargetTransform.position - transform.position;
+            if (dir.sqrMagnitude <= 0.0001f)
+                return;
+
+            float targetAngle =
+                Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + SPRITE_ANGLE_OFFSET;
+
+            float newAngle = Mathf.MoveTowardsAngle(
+                transform.eulerAngles.z,
+                targetAngle,
+                m_Config.HomingTurnSpeed * Time.deltaTime
+            );
+
+            transform.rotation = Quaternion.Euler(0f, 0f, newAngle);
+        }
+
+        private void FaceTargetInstant(ITargetable targetable)
+        {
+            if (targetable == null) 
+                return;
+
+            Vector2 dir = targetable.TargetTransform.position - transform.position;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + SPRITE_ANGLE_OFFSET;
+
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
 
         protected virtual void UpdateLifetime(float deltaDistance)
@@ -127,26 +148,15 @@ namespace Rush
             {
                 m_TraveledDistance += deltaDistance;
                 if (m_TraveledDistance >= m_Config.MaxDistance)
-                {
                     DisableAmmo();
-                }
             }
-        }
-
-        protected virtual bool IsValidHit(GameObject target)
-        {
-            return (m_Config.TargetLayer.value & (1 << target.layer)) != 0;
         }
 
         protected virtual void DisableAmmo()
         {
             m_CanMove = false;
             gameObject.SetActive(false);
-
-            if (m_Shooter != null)
-            {
-                m_Shooter.NotifyProjectileFinished(this);
-            }
+            m_Shooter?.NotifyProjectileFinished(this);
         }
 
         private void ResetLifetime()
@@ -157,13 +167,7 @@ namespace Rush
 
         private bool IsTargetInvalid()
         {
-            if (m_Targetable == null)
-                return true;
-
-            if (!m_Targetable.IsAlive)
-                return true;
-
-            return false;
+            return m_Targetable == null || !m_Targetable.IsAlive;
         }
 
         private void TryRetarget()
@@ -173,35 +177,33 @@ namespace Rush
 
             ITargetable newTarget = m_Shooter.GetNewTargetForAmmo();
             if (newTarget != null)
-            {
                 m_Targetable = newTarget;
-            }
         }
-
-        private void UpdateRotation()
+        public virtual void OnSpawnFromPool()
         {
-            if (m_Targetable == null || !m_CanMove)
-                return;
-
-            Vector3 dir = m_Targetable.TargetTransform.position - transform.position;
-            if (dir.sqrMagnitude <= 0.0001f)
-                return;
-
-            float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            float currentAngle = transform.eulerAngles.z;
-
-            float newAngle = Mathf.MoveTowardsAngle(
-                currentAngle,
-                targetAngle,
-                m_Config.HomingTurnSpeed * Time.deltaTime
-            );
-
-            transform.rotation = Quaternion.Euler(0f, 0f, newAngle);
+            m_HitTargets.Clear();
         }
-
-        private void FacingAtFirstTarget2D(ITargetable targetable)
+        protected virtual bool IsValidHit(GameObject other)
         {
-            AbilityUltility.LookAtFirstTarget2D(transform, targetable);
+            if (!other.TryGetComponent(out ITargetable target))
+                return false;
+
+            if (m_HitTargets.Contains(target))
+                return false;
+
+            AbilityConfig abilityConfig = m_AbilityContext.AbilityDeliver.AbilityConfig;
+
+            if (!abilityConfig.CanTargetDeathUnit && !target.IsAlive)
+                return false;
+
+            if (!AbilityUltility.IsTargetAllowedByTargetObject(
+                    m_AbilityContext.AbilityDeliver,
+                    target))
+                return false;
+
+            m_HitTargets.Add(target);
+
+            return true;
         }
     }
 }

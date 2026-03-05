@@ -31,9 +31,9 @@ namespace Rush
         private int m_CurrentDamageTaken;
         [SerializeField, MMReadOnly]
         private int m_TotalDamageTaken;
-        [SerializeField, MMReadOnly]
+        [SerializeField]
         private bool m_IsImmortal = false;
-        [SerializeField, MMReadOnly]
+        [SerializeField]
         private bool m_IsInvisible = false;
 
         
@@ -47,6 +47,8 @@ namespace Rush
         private UnityEvent<IAbilityContext> m_OnHit;
         [SerializeField]
         private UnityEvent<IAbilityContext> m_OnDamageTaken;
+        [SerializeField]
+        private UnityEvent<int> m_OnSimpleDamageTaken;
         [SerializeField]
         private UnityEvent<IAbilityContext> m_OnDeath;
         [SerializeField]
@@ -200,7 +202,7 @@ namespace Rush
                 ApplyDamage(finalDamage);
             }
 
-            OnDamageTaken(context);
+            OnDamageTaken(context, finalDamage);
         }
         private int ApplyProtectionLayers(int damage)
         {
@@ -310,9 +312,14 @@ namespace Rush
             }
         }
 
-        private void OnDamageTaken(IAbilityContext context)
+        private void OnSimpleDamageTakenInvoke(int damage)
+        {
+            m_OnSimpleDamageTaken?.Invoke(damage);
+        }
+        private void OnDamageTaken(IAbilityContext context, int finalAmount)
         {
             m_OnDamageTaken?.Invoke(context);
+            OnSimpleDamageTakenInvoke(finalAmount);
             Unit unitTaker = m_ModuleContext.Unit;
             if (unitTaker == null)
             {

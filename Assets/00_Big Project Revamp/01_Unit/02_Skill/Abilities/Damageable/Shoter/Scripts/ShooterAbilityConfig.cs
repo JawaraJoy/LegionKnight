@@ -33,7 +33,7 @@ namespace Rush
         }
     }
 
-    public enum TargetingDistributeMode
+    public enum TargetingMode
     {
         None = 0,
         Straight = 1,

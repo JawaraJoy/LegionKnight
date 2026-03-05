@@ -14,7 +14,14 @@ namespace Rush
         [SerializeField]
         private float m_SmoothTime = 0.2f;
 
+        [SerializeField]
+        private float m_FollowDelay = 1f; // Delay after target moves
+
         private Vector3 m_Velocity;
+        private Vector3 m_LastTargetPosition;
+
+        private float m_DelayTimer;
+        private bool m_IsWaitingForDelay;
 
         public bool IsActive => m_PostToFollow != null;
         public Transform PostToSpawn => m_PostToSpawn;
@@ -22,16 +29,25 @@ namespace Rush
         private void OnEnable()
         {
             UpdateBank.Instance.RegisterLateUpdateTick(gameObject, this);
+
             EnemyWaveHandler waveHandler = RushGameManager.Instance.StageManager.EnemyWaveHandler;
             if (waveHandler != null)
             {
-               waveHandler.SetEnemyWavePost(this);
+                waveHandler.SetEnemyWavePost(this);
             }
-            
         }
+
         private void OnDisable()
         {
             UpdateBank.Instance.UnregisterLateUpdateTick(gameObject);
+        }
+
+        private void Start()
+        {
+            m_PostToFollow = RushPlayer.Instance.EnemySpawnPost;
+
+            if (m_PostToFollow != null)
+                m_LastTargetPosition = m_PostToFollow.position;
         }
 
         public void LateTick()
@@ -39,14 +55,38 @@ namespace Rush
             if (m_PostToFollow == null || m_PostToSpawn == null)
                 return;
 
-            Vector3 targetPosition = m_PostToFollow.position;
+            Vector3 currentTargetPos = m_PostToFollow.position;
 
-            m_PostToSpawn.position = Vector3.SmoothDamp(m_PostToSpawn.position, targetPosition, ref m_Velocity, m_SmoothTime);
-        }
+            // Detect position change
+            if (currentTargetPos != m_LastTargetPosition)
+            {
+                m_LastTargetPosition = currentTargetPos;
+                m_DelayTimer = 0f;
+                m_IsWaitingForDelay = true;
+            }
 
-        private void Start()
-        {
-            m_PostToFollow = RushPlayer.Instance.EnemySpawnPost;
+            // Handle delay
+            if (m_IsWaitingForDelay)
+            {
+                m_DelayTimer += Time.deltaTime;
+
+                if (m_DelayTimer >= m_FollowDelay)
+                {
+                    m_IsWaitingForDelay = false;
+                }
+                else
+                {
+                    return; // Still waiting
+                }
+            }
+
+            // Follow after delay
+            m_PostToSpawn.position = Vector3.SmoothDamp(
+                m_PostToSpawn.position,
+                currentTargetPos,
+                ref m_Velocity,
+                m_SmoothTime
+            );
         }
     }
 }

@@ -32,7 +32,7 @@ namespace LegionKnight
         }
         private Vector3 GetRadiusSpawnPosition()
         {
-            Vector3 spread = Random.insideUnitSphere * m_SprayRadius;
+            Vector2 spread = Random.insideUnitCircle * m_SprayRadius;
             Vector3 randomPos = new Vector3(spread.x, spread.y, 0);
             randomPos.y = 0.5f; // Ensure the text spawns above the ground
             return transform.position + randomPos;

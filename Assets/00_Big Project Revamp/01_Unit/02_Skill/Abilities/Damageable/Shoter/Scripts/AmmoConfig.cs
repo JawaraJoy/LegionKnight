@@ -18,7 +18,7 @@ namespace Rush
         [SerializeField]
         private LayerMask m_TargetLayer;
         [SerializeField]
-        protected TargetingDistributeMode m_TargetingDistributeMode = TargetingDistributeMode.None;
+        protected TargetingMode m_TargetingDistributeMode = TargetingMode.None;
         
         [SerializeField]
         [Tooltip("Movement speed in units per second")]
@@ -32,7 +32,7 @@ namespace Rush
         [SerializeField]
         protected float m_HomingTurnSpeed = 90f;
         public LocalAxis ForwardAxis => m_ForwardAxis;
-        public TargetingDistributeMode TargetingDistributeMode => m_TargetingDistributeMode;
+        public TargetingMode TargetingDistributeMode => m_TargetingDistributeMode;
         public LayerMask TargetLayer => m_TargetLayer;
         public float HomingTurnSpeed => m_HomingTurnSpeed;
 
