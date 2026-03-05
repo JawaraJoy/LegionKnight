@@ -7,10 +7,7 @@ using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public static partial class PanelId
-    {
-        public const string WinPanel = "WinPanel";
-    }
+    
     public partial class WinPanel : PanelView
     {
         [SerializeField]

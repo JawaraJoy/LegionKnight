@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public static partial class PanelId
-    {
-
-    }
     public partial class PanelView : UIView
     {
 

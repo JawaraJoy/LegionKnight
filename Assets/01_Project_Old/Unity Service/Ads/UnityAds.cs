@@ -173,13 +173,13 @@ namespace LegionKnight
 
         public void OnUnityAdsAdLoaded(string placementId)
         {
-            CanvasManager.Instance.HidePanel(PanelId.AdsWait);
+            CanvasManager.Instance.GetPanel<AdsWaitPanel>().Hide();
             Debug.Log($"Unity Ads Ad Loaded: {placementId}");
         }
 
         public void OnUnityAdsFailedToLoad(string placementId, UnityAdsLoadError error, string message)
         {
-            CanvasManager.Instance.HidePanel(PanelId.AdsWait);
+            CanvasManager.Instance.GetPanel<AdsWaitPanel>().Hide();
             Debug.LogError($"Unity Ads Failed to Load: {placementId} - {error} - {message}");
             OnAdLoadFailedInvoke();
         }

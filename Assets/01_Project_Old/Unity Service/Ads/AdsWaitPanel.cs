@@ -4,14 +4,9 @@ using UnityEngine;
 
 namespace LegionKnight
 {
-    public static partial class PanelId
-    {
-        public const string AdsWait = "AdsWaitPanel";
-    }
+    
     public class AdsWaitPanel : PanelView
     {
-        public override string UniqueId => PanelId.AdsWait;
-
         [SerializeField]
         private TextMeshProUGUI m_WaitingText;
         public void ShowWaitMessage(string message)
@@ -61,4 +56,5 @@ namespace LegionKnight
             GetAdsWaitPanel().ShowWaitMessage(message, duration);
         }
     }
+
 }

@@ -3,13 +3,9 @@ using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public static partial class PanelId
-    {
-        public static string StartGamePanel = "StartGame";
-    }
+    
     public partial class StartGamePanel : PanelView
     {
-        public override string UniqueId => PanelId.StartGamePanel;
         private bool m_Showed = false;
 
         private string m_StartGameKey = "hasshowsg";
