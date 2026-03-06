@@ -24,6 +24,8 @@ namespace Rush
 
         public IModuleContext ModuleContext => m_ModuleContext;
         [SerializeField]
+        private UnityEvent<IModuleContext> m_OnInit;
+        [SerializeField]
         private UnityEvent<Skill> m_OnSkillAdded;
         [SerializeField]
         private UnityEvent<Skill> m_OnSkillRemoved;
@@ -34,6 +36,7 @@ namespace Rush
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
             AddNewSkillsInternal(m_ModuleContext.Unit.Config.Skills);
+            m_OnInit?.Invoke(m_ModuleContext);
         }
 
         private Skill GetSkillActivatorInternal(string id)

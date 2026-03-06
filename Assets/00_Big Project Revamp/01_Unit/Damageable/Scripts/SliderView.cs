@@ -20,10 +20,6 @@ namespace Rush
         protected float m_MaxDuration;
         public bool IsActive => IsShowInternal;
 
-        private void OnEnable()
-        {
-            
-        }
         protected override void ShowInternal()
         {
             base.ShowInternal();

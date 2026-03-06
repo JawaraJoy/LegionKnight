@@ -1,5 +1,6 @@
 using MoreMountains.Tools;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -20,12 +21,16 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private List<Skill> m_Skills = new();
         [SerializeField]
+        private UnityEvent<int> m_OnQueueChanged;
+        [SerializeField]
         private UnityEvent<int, int> m_OnChargeSkill;
         [SerializeField]
         private UnityEvent<Skill> m_OnSkillAdded;
         [SerializeField]
+        private UnityEvent<Skill> m_OnCurrentChanged;
+        [SerializeField]
         private UnityEvent<Skill> m_OnSkillRemoved;
-        public Skill GetCurrentSkill()
+        private Skill GetCurrentSkill()
         {
             if (m_Skills.Count == 0)
                 return null;
@@ -113,6 +118,10 @@ namespace Rush
             {
                 m_QueueIndex = (m_QueueIndex + 1) % m_Skills.Count;
             }
+            m_OnCurrentChanged.Invoke(GetCurrentSkill());
+            int currentCharge = Mathf.RoundToInt(GetCurrentSkill().RemainingCharge);
+            int maxCharge = Mathf.RoundToInt(GetCurrentSkill().SkillConfig.Activation.Charge);
+            m_OnChargeSkill.Invoke(currentCharge, maxCharge);
         }
         private void ForceActiveAll()
         {
@@ -134,6 +143,7 @@ namespace Rush
             index = Mathf.Clamp(index, 0, m_Skills.Count - 1);
 
             m_Skills[index].ForceActivateAll();
+            m_OnQueueChanged?.Invoke(index);
         }
         public void ClearSkills()
         {
@@ -144,10 +154,12 @@ namespace Rush
 
             m_Skills.Clear();
             m_QueueIndex = 0;
+            m_OnQueueChanged?.Invoke(m_QueueIndex);
         }
         public void SetQueueIndex(int index)
         {
             m_QueueIndex = Mathf.Clamp(index, 0, m_Skills.Count - 1);
+            m_OnQueueChanged?.Invoke(m_QueueIndex);
         }
     }
 }
