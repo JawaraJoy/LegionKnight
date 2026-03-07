@@ -13,9 +13,9 @@ namespace LegionKnight
         {
             PlayerCamera.Instance.SetOffsite(set);
         }
-        public void SetOffSite(string postName)
+        public void SetOffSite(CameraPostSetConfig config)
         {
-            PlayerCamera.Instance.SetOffSite(postName);
+            PlayerCamera.Instance.SetOffSite(config);
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Rush
         }
         private CategorySkillController GetCategoryControllerInternal(SkillCategoryConfig category)
         {
-            return m_CategorySkillControllers.FirstOrDefault(x => x.SkillCategoryConfig == category);
+            return m_CategorySkillControllers.FirstOrDefault(x => x.SkillCategoryConfig.BaseInfo.Id == category.BaseInfo.Id);
         }
         private bool HasCategoryControllerInternal(SkillCategoryConfig category, out CategorySkillController categorySkill)
         {
@@ -257,7 +257,7 @@ namespace Rush
 
         public CategorySkillController GetCategoryController(SkillCategoryConfig categoryConfig)
         {
-            return m_CategorySkillControllers.FirstOrDefault(x => x.SkillCategoryConfig == categoryConfig);
+            return m_CategorySkillControllers.FirstOrDefault(x => x.SkillCategoryConfig.BaseInfo.Id == categoryConfig.BaseInfo.Id);
         }
     }
 }
