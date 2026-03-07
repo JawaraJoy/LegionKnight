@@ -16,6 +16,8 @@ namespace Rush
         private UnityEvent<AbilityContext> m_OnAttackDone;
         [SerializeField]
         private UnityEvent<IDamageable> m_OnAttackDelivered;
+        [SerializeField]
+        private UnityEvent<ITargetable> m_OnAttackDeliveredTarget;
         public UnityEvent<AbilityContext> OnAttackDone => m_OnAttackDone;
         private AbilityContext m_AbilityContext;
         public IAbilityContext AbilityContext => m_AbilityContext;
@@ -24,7 +26,7 @@ namespace Rush
         public bool Initialized => m_AbilityContext.Initialized;
 
         public UnityEvent<IDamageable> OnAttackDelivered => m_OnAttackDelivered;
-
+        public UnityEvent<ITargetable> OnAttackDeliveredTarget => m_OnAttackDeliveredTarget;
         public void Init(IAbilityContext context)
         {
             m_AbilityContext = new AbilityContext(context.AbilityDeliver, context.SkillContext);

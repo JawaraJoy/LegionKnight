@@ -1,20 +1,23 @@
 using UnityEngine;
-using UnityEngine.Purchasing;
 
 namespace Rush
 {
     [CreateAssetMenu(fileName = "Defensive", menuName = "Rush/Combat/StatusEff/Defensive", order = 1)]
     public class DefensiveStatusEffectConfig : StatusEffectConfig
     {
-        [Header("Defensive Status Effect")]
+        [Header("Sources")]
         [SerializeField]
         private int m_RebornCount;
         [SerializeField]
         private int m_Shield;
         [SerializeField]
         private int m_Barrier;
+
+        [Header("Stats")]
         [SerializeField]
         private float m_DamageReductionRate;
+
+        [Header("States")]
         [SerializeField]
         private bool m_Immortality;
         [SerializeField]
@@ -23,8 +26,14 @@ namespace Rush
         {
             if (unitTarget.HasBind(out Damageable damageable))
             {
-                damageable.SetImmortal(m_Immortality);
-                damageable.SetInvisible(m_Invisibility);
+                if (m_Invisibility)
+                {
+                    damageable.SetInvisible(true);
+                }
+                if (m_Immortality)
+                {
+                    damageable.SetImmortal(true);
+                }
             }
         }
 
@@ -32,8 +41,14 @@ namespace Rush
         {
             if (unitTarget.HasBind(out Damageable damageable))
             {
-                damageable.SetImmortal(false);
-                damageable.SetInvisible(false);
+                if (m_Invisibility)
+                {
+                    damageable.SetInvisible(false);
+                }
+                if (m_Immortality)
+                {
+                    damageable.SetImmortal(false);
+                }
             }
         }
         public override void OnStackAdded(Unit unitTarget)

@@ -4,8 +4,10 @@ using LegionKnight;
 
 namespace Rush
 {
-    public class RogueLikeManagerAgent : MonoBehaviour
+    public class RogueLikeManagerAgent : MonoBehaviour, IReseter
     {
+        [SerializeField]
+        private RogueLikeForProgressType m_For = RogueLikeForProgressType.Player;
         [SerializeField]
         private int m_ExpMultiplyByPerfect = 1;
         [SerializeField]
@@ -39,19 +41,28 @@ namespace Rush
         }
         private void Start()
         {
-            Handler.OnLevelUp.AddListener(OnLevelUpInvoke);
-            Handler.OnCardCollected.AddListener(OnCardCollectedInvoke);
+            if (m_For == RogueLikeForProgressType.Player)
+            {
+                Handler.OnForPlayerLevelUp.AddListener(OnLevelUpInvoke);
+            }
+            else
+            {
+                Handler.OnForBossLevelUp.AddListener(OnLevelUpInvoke);
+            }
 
-            
+            Handler.OnCardCollected.AddListener(OnCardCollectedInvoke);
         }
         public void AddExperience(int perfectCombo)
         {
             int totalAmount = (perfectCombo + 1) * m_ExpMultiplyByPerfect;
-            Handler.AddExperience(totalAmount);
-        }
-        public void ResetProgress()
-        {
-            Handler.ResetProgress();
+            if (m_For == RogueLikeForProgressType.Player)
+            {
+                Handler.AddForPlayerExperience(totalAmount);
+            }
+            else
+            {
+                Handler.AddForBossExperience(totalAmount);
+            }
         }
         private void OnLevelUpInvoke(int level)
         {
@@ -65,5 +76,15 @@ namespace Rush
         {
             CardPanel.Show();
         }
+
+        public void ResetProgression()
+        {
+            Handler.ResetProgression();
+        }
+    }
+    public enum RogueLikeForProgressType
+    {
+        Player,
+        Enemy,
     }
 }

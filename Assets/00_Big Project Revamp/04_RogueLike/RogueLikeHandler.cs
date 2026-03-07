@@ -1,89 +1,145 @@
-using LegionKnight;
+
 using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Rush
 {
-    public class RogueLikeHandler : MonoBehaviour
+    public class RogueLikeHandler : MonoBehaviour, IReseter
     {
         [SerializeField]
         private RogueLikeConfig m_Config;
         [SerializeField, MMReadOnly]
-        private int m_CurrentLevel = 1;
+        private int m_ForPlayerCurrentLevel = 1;
         [SerializeField, MMReadOnly]
-        private int m_CurrentExperience;
+        private int m_ForPlayerCurrentExperience;
 
         [SerializeField]
-        private UnityEvent<int, int> m_OnExperienceAdded;
+        private UnityEvent<int, int> m_OnForPlayerExperienceAdded;
         [SerializeField]
-        private UnityEvent<int> m_OnLevelUp; // Event that triggers when the player levels up, passing the new level as an argument
+        private UnityEvent<int> m_OnForPlayerLevelUp;
+        [SerializeField, MMReadOnly]
+        private int m_ForBossCurrentLevel = 1;
+
+        [SerializeField, MMReadOnly]
+        private int m_ForBossCurrentExperience;
+
+        [SerializeField]
+        private UnityEvent<int, int> m_OnForBossExperienceAdded;
+
+        [SerializeField]
+        private UnityEvent<int> m_OnForBossLevelUp;
         [SerializeField]
         private UnityEvent<CardConfig> m_OnCardCollected;
         public RogueLikeConfig Config => m_Config;
-        public int CurrentExperience => m_CurrentExperience;
-        public int CurrentLevel => m_CurrentLevel;
-        public UnityEvent<int, int> OnExperienceAdded => m_OnExperienceAdded;
-        public UnityEvent<int> OnLevelUp => m_OnLevelUp;
-        public UnityEvent<CardConfig> OnCardCollected => m_OnCardCollected;
+        public int ForPlayerCurrentExperience => m_ForPlayerCurrentExperience;
+        public int ForPlayerCurrentLevel => m_ForPlayerCurrentLevel;
+        public UnityEvent<int, int> OnForPlayerExperienceAdded => m_OnForPlayerExperienceAdded;
+        public UnityEvent<int> OnForPlayerLevelUp => m_OnForPlayerLevelUp;
+        public int ForBossCurrentLevel => m_ForBossCurrentLevel;
+        public int ForBossCurrentExperience => m_ForBossCurrentExperience;
 
-        private RogueLikeCardPanel m_CardPanel;
-        private RogueLikeCardPanel CardPanel
+        public UnityEvent<int, int> OnForBossExperienceAdded => m_OnForBossExperienceAdded;
+        public UnityEvent<int> OnForBossLevelUp => m_OnForBossLevelUp;
+        public UnityEvent<CardConfig> OnCardCollected => m_OnCardCollected;
+        public void ResetProgression()
         {
-            get
+            SetForPlayerLevel(1);
+            SetForPlayerExperience(0);
+            SetForBossLevel(1);
+            SetForBossExperience(0);
+            OnForPlayerExperienceAddedInvoke(m_ForPlayerCurrentExperience);
+            OnForBossExperienceAddedInvoke(m_ForBossCurrentExperience);
+        }
+        public void AddForPlayerExperience(int amount)
+        {
+            m_ForPlayerCurrentExperience += amount;
+            CheckForPlayerLevelUp();
+        }
+        private void SetForPlayerExperience(int amount)
+        {
+            m_ForPlayerCurrentExperience = amount;
+            CheckForPlayerLevelUp();
+        }
+        private void CheckForPlayerLevelUp()
+        {
+            int nextLevelExp = m_Config.ForPlayerLevelFormula.GetCurrentMaxExperience(m_ForPlayerCurrentLevel + 1);
+            if (m_ForPlayerCurrentExperience >= nextLevelExp)
             {
-                if (m_CardPanel == null)
-                {
-                    m_CardPanel = CanvasManager.Instance.GetPanel<RogueLikeCardPanel>();
-                }
-                return m_CardPanel;
-            }
-        }
-        public void ResetProgress()
-        {
-            SetLevel(1);
-            SetExperience(0);
-            OnExperienceAddedInvoke(m_CurrentExperience);
-        }
-        public void AddExperience(int amount)
-        {
-            m_CurrentExperience += amount;
-            CheckLevelUp();
-        }
-        private void SetExperience(int amount)
-        {
-            m_CurrentExperience = amount;
-            CheckLevelUp();
-        }
-        private void CheckLevelUp()
-        {
-            int nextLevelExp = m_Config.LevelFormula.GetCurrentMaxExperience(m_CurrentLevel + 1);
-            if (m_CurrentExperience >= nextLevelExp)
-            {
-                int excessExp = m_CurrentExperience - nextLevelExp;
+                int excessExp = m_ForPlayerCurrentExperience - nextLevelExp;
                 OnLevelUpInvoke();
-                m_CurrentExperience = excessExp; // Carry over excess experience to the next level
+                m_ForPlayerCurrentExperience = excessExp; // Carry over excess experience to the next level
             }
-            OnExperienceAddedInvoke(m_CurrentExperience);
+            OnForPlayerExperienceAddedInvoke(m_ForPlayerCurrentExperience);
         }
         private void OnLevelUpInvoke()
         {
-            AddLevel(1);
-            m_OnLevelUp.Invoke(m_CurrentLevel);
+            AddForPlayerLevel(1);
+            m_OnForPlayerLevelUp.Invoke(m_ForPlayerCurrentLevel);
             // Implement level-up logic here (e.g., increase stats, unlock skills, etc.)
         }
-        private void OnExperienceAddedInvoke(int amount)
+        private void OnForPlayerExperienceAddedInvoke(int amount)
         {
-            m_OnExperienceAdded.Invoke(amount, m_Config.LevelFormula.GetCurrentMaxExperience(m_CurrentLevel+1));
+            m_OnForPlayerExperienceAdded.Invoke(amount, m_Config.ForPlayerLevelFormula.GetCurrentMaxExperience(m_ForPlayerCurrentLevel+1));
         }
 
-        private void SetLevel(int level)
+        private void SetForPlayerLevel(int level)
         {
-            m_CurrentLevel = level;
+            m_ForPlayerCurrentLevel = level;
         }
-        private void AddLevel(int amount)
+        private void AddForPlayerLevel(int amount)
         {
-            m_CurrentLevel += amount;
+            m_ForPlayerCurrentLevel += amount;
+        }
+        public void AddForBossExperience(int amount)
+        {
+            m_ForBossCurrentExperience += amount;
+            CheckForBossLevelUp();
+        }
+
+        private void SetForBossExperience(int amount)
+        {
+            m_ForBossCurrentExperience = amount;
+            CheckForBossLevelUp();
+        }
+
+        private void CheckForBossLevelUp()
+        {
+            int nextLevelExp = m_Config.ForEnemiesLevelFormula
+                .GetCurrentMaxExperience(m_ForBossCurrentLevel + 1);
+
+            if (m_ForBossCurrentExperience >= nextLevelExp)
+            {
+                int excessExp = m_ForBossCurrentExperience - nextLevelExp;
+
+                OnBossLevelUpInvoke();
+
+                m_ForBossCurrentExperience = excessExp;
+            }
+
+            OnForBossExperienceAddedInvoke(m_ForBossCurrentExperience);
+        }
+
+        private void OnBossLevelUpInvoke()
+        {
+            AddForBossLevel(1);
+            m_OnForBossLevelUp.Invoke(m_ForBossCurrentLevel);
+        }
+
+        private void OnForBossExperienceAddedInvoke(int amount)
+        {
+            m_OnForBossExperienceAdded.Invoke(amount,m_Config.ForEnemiesLevelFormula.
+                GetCurrentMaxExperience(m_ForBossCurrentLevel + 1));
+        }
+
+        private void SetForBossLevel(int level)
+        {
+            m_ForBossCurrentLevel = level;
+        }
+
+        private void AddForBossLevel(int amount)
+        {
+            m_ForBossCurrentLevel += amount;
         }
     }
 }

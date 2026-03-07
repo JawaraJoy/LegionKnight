@@ -4,6 +4,6 @@ namespace Rush
 {
     public interface IReseter
     {
-        void ResetProgresstion();
+        void ResetProgression();
     }
 }

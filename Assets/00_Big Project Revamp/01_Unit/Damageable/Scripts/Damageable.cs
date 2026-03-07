@@ -163,12 +163,14 @@ namespace Rush
         {
             if (collision.TryGetComponent(out IHasAttacker attacker))
             {
+                if (!attacker.AttackerField.Enabled) return;
                 IAbilityDeliver abilityDeliver = attacker.AbilityContext.AbilityDeliver;
                 bool isAllowed = AbilityUltility.IsTargetAllowedByTargetObject(abilityDeliver, this);
                 if (isAllowed)
                 {
                     TakeDamageInternal(attacker.AbilityContext);
                     attacker.OnAttackDelivered.Invoke(this);
+                    attacker.OnAttackDeliveredTarget.Invoke(this);
                     
                 }
                 //Debug.Log($"Take Damage from {attacker.AbilityContext.AbilityDeliver.AbilityConfig.BaseInfo.Name}");

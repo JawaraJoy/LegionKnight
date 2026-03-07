@@ -2,10 +2,11 @@ using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
-    public class PlatformHandler : MonoBehaviour
+    public class PlatformHandler : MonoBehaviour, IReseter
     {
         [SerializeField, MMReadOnly]
         private PlatformHandlerConfig m_Config;
@@ -161,6 +162,19 @@ namespace Rush
             {
                 m_PreparedPlatformConfigs.Add(config);
                 PreWarm(config, controller);
+            }
+            else
+            {
+                string id = config.BaseInfo.Id;
+
+                if (!m_Pools.ContainsKey(id))
+                {
+                    m_Pools.Add(id, new Queue<Platform2D>());
+                }
+
+                Platform2D platform = CreateNewPlatform(config, controller);
+                m_Pools[id].Enqueue(platform);
+                // tambah jumlah prewarmnya 1 saja
             }
         }
         private void RemovePreparedPlatformConfigInternal(PlatformConfig config)
@@ -450,6 +464,11 @@ namespace Rush
             }
 
             m_CurrentLastDisplayedPlatform = m_StackedPlatforms.Peek();
+        }
+
+        public void ResetProgression()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

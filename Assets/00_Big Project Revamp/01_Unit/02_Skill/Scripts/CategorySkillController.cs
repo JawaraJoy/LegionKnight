@@ -27,9 +27,11 @@ namespace Rush
         [SerializeField]
         private UnityEvent<Skill> m_OnSkillAdded;
         [SerializeField]
-        private UnityEvent<Skill> m_OnCurrentChanged;
+        private UnityEvent<Skill> m_OnCurrentSkillChanged;
         [SerializeField]
         private UnityEvent<Skill> m_OnSkillRemoved;
+        [SerializeField]
+        private UnityEvent<Skill> m_OnForceActive;
         private Skill GetCurrentSkill()
         {
             if (m_Skills.Count == 0)
@@ -38,6 +40,11 @@ namespace Rush
             m_QueueIndex %= m_Skills.Count;
 
             return m_Skills[m_QueueIndex];
+        }
+        private void Init()
+        {
+            m_QueueIndex = 0;
+            m_OnCurrentSkillChanged.Invoke(GetCurrentSkill());
         }
 
         // it called on other class unityevent
@@ -48,6 +55,10 @@ namespace Rush
                 m_Skills.Add(skill);
                 skill.OnActivate.AddListener(OnSkillActivated);
                 m_OnSkillAdded.Invoke(skill);
+            }
+            if (m_Skills.Count == 1)
+            {
+                Init();
             }
         }
         // it called on other class unityevent
@@ -118,10 +129,11 @@ namespace Rush
             {
                 m_QueueIndex = (m_QueueIndex + 1) % m_Skills.Count;
             }
-            m_OnCurrentChanged.Invoke(GetCurrentSkill());
+            m_OnCurrentSkillChanged.Invoke(GetCurrentSkill());
             int currentCharge = Mathf.RoundToInt(GetCurrentSkill().RemainingCharge);
             int maxCharge = Mathf.RoundToInt(GetCurrentSkill().SkillConfig.Activation.Charge);
             m_OnChargeSkill.Invoke(currentCharge, maxCharge);
+            m_OnForceActive.Invoke(skill);
         }
         private void ForceActiveAll()
         {
@@ -160,6 +172,7 @@ namespace Rush
         {
             m_QueueIndex = Mathf.Clamp(index, 0, m_Skills.Count - 1);
             m_OnQueueChanged?.Invoke(m_QueueIndex);
+            m_OnCurrentSkillChanged?.Invoke(GetCurrentSkill());
         }
     }
 }

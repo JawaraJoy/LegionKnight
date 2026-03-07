@@ -246,7 +246,7 @@ namespace Rush
                 }
             }
         }
-        public void ResetProgresstion()
+        public void ResetProgression()
         {
             foreach (Skill skill in m_Skills)
             {

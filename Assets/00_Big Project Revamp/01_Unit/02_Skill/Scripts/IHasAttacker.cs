@@ -7,6 +7,7 @@ namespace Rush
     {
         AttackerField AttackerField { get; }
         UnityEvent<IDamageable> OnAttackDelivered {  get; }
+        UnityEvent<ITargetable> OnAttackDeliveredTarget { get; }
     }
     
 }

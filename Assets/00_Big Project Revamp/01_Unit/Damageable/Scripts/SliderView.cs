@@ -16,7 +16,7 @@ namespace Rush
         [SerializeField, MMReadOnly]
         protected float m_Rate;
 
-        protected float m_CurrentDuration;
+        protected float m_CurrentDuration = -1f;
         protected float m_MaxDuration;
         public bool IsActive => IsShowInternal;
 

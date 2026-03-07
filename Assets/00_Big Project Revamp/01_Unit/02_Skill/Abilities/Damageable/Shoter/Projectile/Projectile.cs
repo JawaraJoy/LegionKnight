@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rush
@@ -17,7 +17,9 @@ namespace Rush
         public override void Init(AbilityContext context, AmmoConfig config)
         {
             base.Init(context, config);
-
+            m_Attacker.OnAttackDeliveredTarget.RemoveListener(OnAttackDelivered);
+            m_Attacker.OnAttackDeliveredTarget.AddListener(OnAttackDelivered);
+            m_Attacker.Init(context);
             if (config is ProjectileConfig projectileConfig)
             {
                 m_ProjectileConfig = projectileConfig;
@@ -26,6 +28,8 @@ namespace Rush
             {
                 Debug.LogError("[Projectile] Invalid config type. Expected ProjectileConfig.");
             }
+            bool isExplodeOnHit = m_ProjectileConfig.ExplodeSetup.ExplodeOnHit;
+            m_Attacker.AttackerField.SetEnabled(!isExplodeOnHit);
         }
 
         protected virtual void OnTriggerEnter(Collider other)
@@ -74,19 +78,24 @@ namespace Rush
 
         protected virtual void HandleHit(GameObject target)
         {
-            m_OnHit?.Invoke(target);
-            
-            if (m_ProjectileConfig.ExplodeSetup.ExplodeOnHit)
+            bool explodeOnHit = m_ProjectileConfig.ExplodeSetup.ExplodeOnHit;
+
+            if (explodeOnHit)
             {
                 Explode();
             }
-            else
-            {
-                m_Attacker.Init(m_AbilityContext);
-            }
-            if (m_ProjectileConfig != null && m_ProjectileConfig.DespawnOnHit)
-            {
 
+            m_OnHit?.Invoke(target);
+
+            if (m_ProjectileConfig.DespawnOnHit)
+            {
+                DisableAmmo();
+            }
+        }
+        private void OnAttackDelivered(ITargetable target)
+        {
+            if (m_ProjectileConfig.DespawnOnHit)
+            {
                 DisableAmmo();
             }
         }

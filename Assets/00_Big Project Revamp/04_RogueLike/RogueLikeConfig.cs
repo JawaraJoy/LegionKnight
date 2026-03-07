@@ -8,10 +8,13 @@ namespace Rush
     public class RogueLikeConfig : Configuration
     {
         [SerializeField]
-        private RogueLevelFormula m_LevelFormula;
+        private RogueLevelFormula m_ForPlayerLevelFormula;
+        [SerializeField]
+        private RogueLevelFormula m_ForEnemiesLevelFormula;
         [SerializeField]
         private CardConfig[] m_CardConfigs;
-        public RogueLevelFormula LevelFormula => m_LevelFormula;
+        public RogueLevelFormula ForPlayerLevelFormula => m_ForPlayerLevelFormula;
+        public RogueLevelFormula ForEnemiesLevelFormula => m_ForEnemiesLevelFormula;
         public CardConfig[] CardConfigs => m_CardConfigs;
 
         public CardConfig[] GetDifferenceCardRandom(int drawAmount)

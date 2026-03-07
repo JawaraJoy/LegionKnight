@@ -1,13 +1,11 @@
-using Rush;
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
+using System;
 
 namespace LegionKnight
 {
+    [Obsolete]
     public partial class SpawnIndicatorView : UIView
     {
-        [SerializeField]
+        /*[SerializeField]
         private Image m_IndicatorImage;
         [SerializeField]
         private Slider m_Slider;
@@ -47,7 +45,7 @@ namespace LegionKnight
         private void SetIndicatorImage(Sprite icon)
         {
             m_IndicatorImage.sprite = icon;
-        }
+        }*/
     }
     
 }

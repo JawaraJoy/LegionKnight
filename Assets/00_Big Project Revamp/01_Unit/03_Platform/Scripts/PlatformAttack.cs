@@ -1,5 +1,4 @@
 using MoreMountains.Tools;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,6 +15,8 @@ namespace Rush
         private AbilityContext m_AbilityContext;
         [SerializeField]
         private UnityEvent<IDamageable> m_OnAttackDelivered;
+        [SerializeField]
+        private UnityEvent<ITargetable> m_OnAttackDeliveredTarget;
         public AttackerField AttackerField => m_AttackerField;
 
         public IAbilityContext AbilityContext => m_AbilityContext;
@@ -23,6 +24,8 @@ namespace Rush
         public bool Initialized => m_AbilityContext.Initialized;
 
         public UnityEvent<IDamageable> OnAttackDelivered => m_OnAttackDelivered;
+
+        public UnityEvent<ITargetable> OnAttackDeliveredTarget => m_OnAttackDeliveredTarget;
 
         private void Start()
         {

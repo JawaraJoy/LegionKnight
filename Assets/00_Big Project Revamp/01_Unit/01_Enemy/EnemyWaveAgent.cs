@@ -22,5 +22,19 @@ namespace Rush
         {
             EnemyWaveHandler.DespawnUnit(unit);
         }
+        public void StopPostToFollow()
+        {
+            if (EnemyWaveHandler.EnemyWavePost != null)
+            {
+                EnemyWaveHandler.EnemyWavePost.SetPostToFollow(null);
+            }
+        }
+        public void StartPostToFollow()
+        {
+            if (EnemyWaveHandler.EnemyWavePost != null)
+            {
+                EnemyWaveHandler.EnemyWavePost.SetPostToFollow(RushPlayer.Instance.EnemySpawnPost);
+            }
+        }
     }
 }

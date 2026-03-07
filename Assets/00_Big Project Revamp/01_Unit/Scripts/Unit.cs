@@ -22,6 +22,11 @@ namespace Rush
         public void Init(UnitConfig config)
         {
             m_Config = config;
+            RefreshInitInternal();
+
+        }
+        private void RefreshInitInternal()
+        {
             m_OnInit?.Invoke(this);
             m_Progression = m_Config.Progression;
             /*if (m_Config is HeroUnitConfig heroConfig) 
@@ -29,7 +34,7 @@ namespace Rush
                 int savedLevel = Player.Instance.HeroDeck.GetHeroUnit(heroConfig).Level;
                 m_Progression.SetLevel(savedLevel);
             }*/
-            
+
             foreach (MonoBehaviour bind in m_Binds)
             {
                 if (bind is IUnitExtension extention)
@@ -37,6 +42,10 @@ namespace Rush
                     extention.Init(this);
                 }
             }
+        }
+        public void RefreshInit()
+        {
+            //RefreshInitInternal();
         }
     }
 }

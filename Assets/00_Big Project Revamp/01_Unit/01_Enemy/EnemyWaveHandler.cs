@@ -1,5 +1,4 @@
-﻿using LegionKnight;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,15 +12,18 @@ namespace Rush
         private EnemyWaveConfig m_CurrentEnemyWave;
 
         [SerializeField]
-        private UnityEvent<float> m_OnCurrentThresholdRateChanged;
+        private UnityEvent<int, int> m_OnCurrentThresholdRateChanged;
         [SerializeField]
         private UnityEvent<Sprite> m_OnWaveIconChanged;
-        [SerializeField] private UnityEvent<EnemyWaveConfig> m_OnWaveSetCleared;
+        [SerializeField] 
+        private UnityEvent<EnemyWaveConfig> m_OnWaveSetCleared;
+        [SerializeField]
+        private UnityEvent<Unit> m_OnBossSpawn;
+        [SerializeField]
+        private UnityEvent<Unit> m_OnBossDespawn;
         public UnityEvent<EnemyWaveConfig> OnWaveSetCleared => m_OnWaveSetCleared;
         private int m_CurrenWaveIndex = -1;
         private int m_CurrentThreshold = 0;
-
-        private float m_BossVerticalOffsiteSpawn = 10f;
         private EnemyWaveSpawnPost m_EnemyWavePost;
 
         // Optional: track actives (useful for cleanup between waves)
@@ -29,45 +31,21 @@ namespace Rush
         // ✅ Pool per config (prevents wrong-type reuse)
         private readonly Dictionary<EnemyUnitConfig, Queue<Unit>> m_PoolsByConfig = new();
 
-        private StageManager m_StageManager;
-
         private Unit m_BossUnitExisten;
         private Sprite m_CurrentWaveIcon;
         private int m_CurrentMaxThreshold;
-        private float CurrentThresholdRateInternal
-        {
-            get
-            {
-                if (m_CurrentMaxThreshold <= 0) return 0f;
-                return (float)m_CurrentThreshold / m_CurrentMaxThreshold;
-            }
-        }
         public Sprite CurrentWaveIcon => m_CurrentWaveIcon;
-        public UnityEvent<float> OnCurrentThresholdRateChanged => m_OnCurrentThresholdRateChanged;
+        public UnityEvent<int, int> OnCurrentThresholdRateChanged => m_OnCurrentThresholdRateChanged;
         public UnityEvent<Sprite> OnWaveIconChanged => m_OnWaveIconChanged;
+        public EnemyWaveSpawnPost EnemyWavePost => m_EnemyWavePost;
         private void SetCurrentWaveIcon(Sprite waveIcon)
         {
             m_CurrentWaveIcon = waveIcon;
             m_OnWaveIconChanged?.Invoke(waveIcon);
         }
-        private bool IsLoopMode
+        public HashSet<Unit> GetActiveEnemies()
         {
-            get
-            {
-                var mode = StageManager.UsedStageConfig.StageMode;
-                return mode == StageMode.Classic || mode == StageMode.Collosal;
-            }
-        }
-        private StageManager StageManager
-        {
-            get
-            {
-                if (m_StageManager == null)
-                {
-                    m_StageManager = RushGameManager.Instance.StageManager;
-                }
-                return m_StageManager;
-            }
+            return m_ActiveEnemies;
         }
         private void LoopBackToStart()
         {
@@ -78,7 +56,12 @@ namespace Rush
         }
         private MinionWaveField GetMinionWaveByIndexInternal(int waveIndex)
         {
-            return m_CurrentEnemyWave.MinionWaveFields[waveIndex];
+            var waves = m_CurrentEnemyWave.MinionWaveFields;
+
+            if (waves == null || waveIndex < 0 || waveIndex >= waves.Length)
+                return null;
+
+            return waves[waveIndex];
         }
         private bool HasMinionWaveByIndexInternal(int waveIndex, out MinionWaveField minionWaveField)
         {
@@ -162,6 +145,7 @@ namespace Rush
 
             // Track active
             m_ActiveEnemies.Add(unit);
+            unit.Init(enemyConfig);
             return unit;
         }
         private Unit CreateUnit(EnemyUnitConfig enemyConfig)
@@ -200,10 +184,11 @@ namespace Rush
         private void SpawnBoss(Unit bossUnit)
         {
             if (bossUnit == null) return;
-            bossUnit.transform.position += Vector3.up * m_BossVerticalOffsiteSpawn;
+            bossUnit.transform.position = m_EnemyWavePost.PostToSpawn.position;
             if (bossUnit.Config is BossUnitConfig)
             {
                 m_BossUnitExisten = bossUnit;
+                m_OnBossSpawn?.Invoke(bossUnit);
             }
         }
         private void DespawnBoss(Unit bossUnit)
@@ -214,6 +199,7 @@ namespace Rush
                 m_BossUnitExisten = null;
 
                 m_OnWaveSetCleared?.Invoke(m_CurrentEnemyWave);
+                m_OnBossDespawn?.Invoke(bossUnit);
             }
         }
         /// <summary>
@@ -265,7 +251,7 @@ namespace Rush
             }
             m_CurrentThreshold += amount;
             UpdateState();
-            m_OnCurrentThresholdRateChanged?.Invoke(CurrentThresholdRateInternal);
+            m_OnCurrentThresholdRateChanged?.Invoke(m_CurrentThreshold, m_CurrentMaxThreshold);
         }
         public void AddCurrentThreshold(int amount)
         {
@@ -281,6 +267,16 @@ namespace Rush
                     RestState(m_CurrentMaxThreshold);
                     break;
                 case WaveState.Minion:
+
+                    int waveLength = m_CurrentEnemyWave.MinionWaveFields.Length;
+
+                    if (m_CurrenWaveIndex >= waveLength)
+                    {
+                        SetWaveStateInternal(WaveState.Boss);
+                        UpdateState();
+                        return;
+                    }
+
                     m_CurrentMaxThreshold = m_CurrentEnemyWave.MinionWaveFields[m_CurrenWaveIndex].ThresholdToSpawn;
                     MinionState(m_CurrentMaxThreshold);
                     break;
@@ -333,20 +329,30 @@ namespace Rush
                 }
                 else
                 {
-                    SetWaveStateInternal(WaveState.Boss);
+                    if (m_CurrenWaveIndex >= waveLenght)
+                    {
+                        SetWaveStateInternal(WaveState.Boss);
+                        return;
+                    }
                 }
                 m_CurrentThreshold = overFlow;
             }
         }
         private void BossState(int currentMaxThreshold)
         {
+            if (m_BossUnitExisten != null)
+                return;
+
             if (m_CurrentThreshold >= currentMaxThreshold)
             {
                 int overFlow = m_CurrentThreshold - currentMaxThreshold;
+
                 BossUnitConfig bossUnitConfig = m_CurrentEnemyWave.BossWaveField.BossConfig;
                 Unit bossUnit = GetUnitFromPool(bossUnitConfig);
+
                 bossUnit.Init(bossUnitConfig);
                 SpawnBoss(bossUnit);
+
                 m_CurrentThreshold = overFlow;
             }
         }

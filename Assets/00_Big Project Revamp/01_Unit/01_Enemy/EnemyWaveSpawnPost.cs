@@ -44,10 +44,23 @@ namespace Rush
 
         private void Start()
         {
-            m_PostToFollow = RushPlayer.Instance.EnemySpawnPost;
+            Transform target = RushPlayer.Instance.EnemySpawnPost;
 
+            SetPostToFollowInternal(target);
+        }
+        public void SetPostToFollow(Transform target)
+        {
+            SetPostToFollowInternal(target);
+        }
+        private void SetPostToFollowInternal(Transform target)
+        {
+            m_PostToFollow = target;
             if (m_PostToFollow != null)
+            {
                 m_LastTargetPosition = m_PostToFollow.position;
+                m_DelayTimer = 0f;
+                m_IsWaitingForDelay = false;
+            }
         }
 
         public void LateTick()

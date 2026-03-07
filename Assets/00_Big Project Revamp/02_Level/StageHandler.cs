@@ -84,13 +84,22 @@ namespace Rush
         private void StartCurrentWaveSet()
         {
             if (m_UsedStageConfig == null) return;
+
             var waves = m_UsedStageConfig.EnemyWaveConfigs;
-            if (waves == null || waves.Length == 0) return;
 
-            if (m_CurrentWaveIndex < 0) m_CurrentWaveIndex = 0;
-            if (m_CurrentWaveIndex >= waves.Length) m_CurrentWaveIndex = waves.Length - 1;
+            if (waves == null || waves.Length == 0)
+            {
+                Debug.LogWarning("Stage has no waves.");
+                return;
+            }
 
-            m_EnemyWaveHandler.SetNewWave(m_UsedStageConfig.GetEnemyWaveByIndex(m_CurrentWaveIndex));
+            if (m_CurrentWaveIndex < 0)
+                m_CurrentWaveIndex = 0;
+
+            if (m_CurrentWaveIndex >= waves.Length)
+                m_CurrentWaveIndex = waves.Length - 1;
+
+            m_EnemyWaveHandler.SetNewWave(waves[m_CurrentWaveIndex]);
         }
 
         private bool IsLoopMode
@@ -108,11 +117,12 @@ namespace Rush
             m_CurrentWaveIndex++;
 
             int len = m_UsedStageConfig.EnemyWaveConfigs.Length;
+
             if (m_CurrentWaveIndex >= len)
             {
                 if (IsLoopMode)
                 {
-                    m_CurrentWaveIndex = 0;      // ✅ loop balik
+                    m_CurrentWaveIndex = 0;
                     StartCurrentWaveSet();
                 }
                 else
@@ -121,7 +131,7 @@ namespace Rush
                 }
                 return;
             }
-            m_EnemyWaveHandler.OnWaveSetCleared.Invoke(waveConfig);
+
             StartCurrentWaveSet();
         }
 
