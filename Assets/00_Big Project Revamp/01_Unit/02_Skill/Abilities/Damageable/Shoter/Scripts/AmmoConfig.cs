@@ -12,6 +12,20 @@ namespace Rush
     {
         [SerializeField]
         private Ammo m_AmmoPrefab;
+        [SerializeField, Header("Flight Noise")]
+        private float m_SwayAmplitude = 0f;
+
+        [SerializeField]
+        private float m_SwayFrequency = 5f;
+
+        [SerializeField, Header("Arc")]
+        private float m_ArcHeight = 0f;
+
+        [SerializeField, Header("Homing Behaviour")]
+        private float m_HomingDelay = 0f;
+
+        [SerializeField]
+        private float m_InitialWanderAngle = 0f;
         public Ammo AmmoPrefab => m_AmmoPrefab;
         [SerializeField]
         protected LocalAxis m_ForwardAxis = LocalAxis.Y;
@@ -39,6 +53,10 @@ namespace Rush
         public float Speed => m_Speed;
         public float Lifetime => m_Lifetime;
         public float MaxDistance => m_MaxDistance;
-        
+        public float SwayAmplitude => m_SwayAmplitude;
+        public float SwayFrequency => m_SwayFrequency;
+        public float ArcHeight => m_ArcHeight;
+        public float HomingDelay => m_HomingDelay;
+        public float InitialWanderAngle => m_InitialWanderAngle;
     }
 }

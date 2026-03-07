@@ -13,6 +13,7 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private bool m_CanMove = true;
 
+
         [SerializeField]
         protected UnityEvent<AbilityContext> m_OnShot;
 
@@ -29,7 +30,9 @@ namespace Rush
 
         // Because sprite faces UP (Y axis)
         private const float SPRITE_ANGLE_OFFSET = -90f;
-
+        private float m_SpawnTime;
+        private float m_HomingTimer;
+        private Vector3 m_StartPosition;
         public bool IsActive => gameObject.activeSelf;
         private HashSet<ITargetable> m_HitTargets = new();
 
@@ -38,6 +41,9 @@ namespace Rush
         {
             ResetLifetime();
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            m_SpawnTime = Time.time;
+            m_HomingTimer = 0f;
+            m_StartPosition = transform.position;
         }
 
         private void OnDisable()
@@ -64,6 +70,16 @@ namespace Rush
             m_OnShot?.Invoke(m_AbilityContext);
 
             FaceTargetInstant(targetable);
+
+            if (m_Config.InitialWanderAngle > 0)
+            {
+                float randomAngle = Random.Range(
+                    -m_Config.InitialWanderAngle,
+                    m_Config.InitialWanderAngle
+                );
+
+                transform.Rotate(0, 0, randomAngle);
+            }
         }
 
         public virtual void Tick()
@@ -71,7 +87,10 @@ namespace Rush
             if (!m_CanMove)
                 return;
 
-            if (m_Config.TargetingDistributeMode == TargetingMode.Homing)
+            m_HomingTimer += Time.deltaTime;
+
+            if (m_Config.TargetingDistributeMode == TargetingMode.Homing &&
+                m_HomingTimer >= m_Config.HomingDelay)
             {
                 if (IsTargetInvalid())
                     TryRetarget();
@@ -80,22 +99,58 @@ namespace Rush
             }
 
             float deltaDistance = Move();
+
             UpdateLifetime(deltaDistance);
         }
 
         protected virtual void CacheMoveDirection()
         {
-            m_MoveDirection = Vector3.up; // since ForwardAxis = Y
+            switch (m_Config.ForwardAxis)
+            {
+                case LocalAxis.X:
+                    m_MoveDirection = Vector3.right;
+                    break;
+
+                case LocalAxis.Y:
+                    m_MoveDirection = Vector3.up;
+                    break;
+
+                case LocalAxis.Z:
+                    m_MoveDirection = Vector3.forward;
+                    break;
+            }
         }
 
         protected virtual float Move()
         {
             float distance = m_Config.Speed * Time.deltaTime;
 
-            transform.Translate(
-                m_MoveDirection * distance,
-                Space.Self
-            );
+            Vector3 move = m_MoveDirection * distance;
+
+            // sway kiri kanan
+            if (m_Config.SwayAmplitude > 0)
+            {
+                float sway =
+                    Mathf.Sin(Time.time * m_Config.SwayFrequency) *
+                    m_Config.SwayAmplitude;
+
+                move += sway * Time.deltaTime * transform.right;
+            }
+
+            transform.Translate(move, Space.Self);
+
+            // arc (melambung)
+            if (m_Config.ArcHeight > 0)
+            {
+                float progress = m_TraveledDistance / Mathf.Max(1f, m_Config.MaxDistance);
+
+                float arc = Mathf.Sin(progress * Mathf.PI) * m_Config.ArcHeight;
+
+                Vector3 pos = transform.position;
+                pos.y += arc * Time.deltaTime;
+
+                transform.position = pos;
+            }
 
             return distance;
         }
