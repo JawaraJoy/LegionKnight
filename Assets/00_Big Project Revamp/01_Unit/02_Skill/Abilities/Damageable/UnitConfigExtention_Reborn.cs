@@ -4,12 +4,17 @@ namespace Rush
 {
     public class UnitConfigExtention_Reborn : MonoBehaviour
     {
-        
+
     }
-    public abstract partial class UnitConfig
+    public abstract partial class UnitConfig : IHasReborn
     {
-        [SerializeField, Min(0)]
-        private int m_RebornCount;
-        public int RebornCount => m_RebornCount;
+        [SerializeField]
+        private RebornConfig m_RebornConfig;
+        public RebornConfig RebornConfig => m_RebornConfig;
+    }
+
+    public interface IHasReborn
+    {
+        public RebornConfig RebornConfig { get; }
     }
 }

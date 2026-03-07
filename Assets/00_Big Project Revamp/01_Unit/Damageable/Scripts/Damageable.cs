@@ -114,12 +114,14 @@ namespace Rush
 
         public bool IsAlive => m_Health > 0;
         public Transform TargetTransform => gameObject.transform;
+        public UnityEvent<int> OnRebornStart => m_OnRebornStart;
+        public UnityEvent OnRebornDone => m_OnRebornDone;
 
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
-            SetRemainingRebornCountInternal(unitOwner.Config.RebornCount);
-            ReborInternal(1f); // always reborn in 100% health
+            SetRemainingRebornCountInternal(unitOwner.Config.RebornConfig.StartingReborn);
+            ReborInternal(unitOwner.Config.RebornConfig); // always reborn in 100% health
         }
         public void RefreshDamageableStat(float healRate, bool currentHealthRefresh)
         {
@@ -145,19 +147,13 @@ namespace Rush
             }
             SetDefenseInternal(Mathf.RoundToInt(defenseFinal));
         }
-        public void Reborn(float healthRate, int fixedShield = 0, int barrier = 0, float InvisibilityDuration = 2f) // change to rebornContext if too many argument in the future
+        public void Reborn(RebornConfig rebornConfig)
         {
-            ReborInternal(healthRate, fixedShield, barrier, InvisibilityDuration);
+            ReborInternal(rebornConfig);
         }
-        private void ReborInternal(float healthRate, int fixedShield = 0, int barrier = 0, float InvisibilityDuration = 2f)
+        private void ReborInternal(RebornConfig rebornConfig)
         {
-            InvisibleForWhileInternal(InvisibilityDuration);
-
-            RefreshDamageableStatInternal(healthRate, true);
-
-            SetShieldInternal(fixedShield);
-            SetBarrierInternal(barrier);
-            m_OnRebornDone?.Invoke();
+            StartCoroutine(RebornDelayRoutine(rebornConfig));
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -261,7 +257,7 @@ namespace Rush
         }
         private void HealInternal(IHealer healer)
         {
-            AddHealthInternal(healer.HealAmount);
+            SimpleHealInternal(healer.HealAmount);
             Unit targetHeal = m_ModuleContext.Unit;
             if (targetHeal == null) return;
             AbilityUltility.OnAbilityDeliveredInvoke(healer.AbilityContext, targetHeal);
@@ -276,6 +272,14 @@ namespace Rush
             }
             m_OnHealed?.Invoke(new HealerContext(healer, this));
         }
+        public void SimpleHeal(int healAmount)
+        {
+            SimpleHealInternal(healAmount);
+        }
+        private void SimpleHealInternal(int healAmount)
+        {
+            AddHealthInternal(healAmount);
+        }
         private void OnHealthDepleted(IAbilityContext context)
         {
             // Masih punya reborn? -> reborn saja, JANGAN OnDeath
@@ -284,7 +288,7 @@ namespace Rush
                 AddRemaininRebornCountInternal(-1, true);
                 
                 //StartCoroutine(RebornDelayRoutine(1f));
-                ReborInternal(1f);
+                ReborInternal(m_ModuleContext.Unit.Config.RebornConfig);
                 Debug.Log("Reborned");
                 return;
             }
@@ -292,14 +296,12 @@ namespace Rush
             // Reborn habis -> baru benar-benar mati
             OnDeathInvoke(context);
         }
-        private IEnumerator RebornDelayRoutine(float delay)
+        private IEnumerator RebornDelayRoutine(RebornConfig rebornConfig)
         {
-            SetInvisibleInternal(true);
             m_OnRebornStart?.Invoke(m_RemainingReborn);
-            yield return new WaitForSeconds(delay);
-            ReborInternal(1f);
+            yield return new WaitForSeconds(rebornConfig.RebornDelay);
+            rebornConfig.ApplyReborn(this);
             Debug.Log("Reborned");
-            SetInvisibleInternal(false);
         }
         private void OnHitInvoke(IAbilityContext context)
         {
@@ -389,6 +391,15 @@ namespace Rush
             m_OnShieldExisted?.Invoke(m_Shield > 0);
             if (!callAddRemoveEvent) return;
             // call add remove event
+        }
+        public void AddShieldBasedOnMaxHealth(float rate, bool callAddRemoveEvent)
+        {
+            AddShieldBasedOnMaxHealthInternal(rate, callAddRemoveEvent);
+        }
+        protected virtual void AddShieldBasedOnMaxHealthInternal(float rate, bool callAddRemoveEvent)
+        {
+            int amount = Mathf.RoundToInt(m_MaxHealth * rate);
+            AddShieldInternal(amount, callAddRemoveEvent);
         }
 
         public void AddBarrier(int amount, bool callAddRemoveEvent)
@@ -521,7 +532,10 @@ namespace Rush
             yield return new WaitForSeconds(duration);
             SetImmortalInternal(false);
         }
-
+        public void InvisibleForWhile(float duration)
+        {
+            InvisibleForWhileInternal(duration);
+        }
         private void InvisibleForWhileInternal(float duration)
         {
             StartCoroutine(InvisiblingForWhile(duration));
