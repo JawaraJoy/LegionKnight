@@ -12,7 +12,7 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private int m_StayPerfectCount;
         [SerializeField]
-        private UnityEvent<bool,ISkillContext> m_OnTouchDown;
+        private UnityEvent<bool, ISkillContext> m_OnTouchDown;
         [SerializeField]
         private UnityEvent<ISkillContext> m_OnNormalTouchDown;
         [SerializeField]
@@ -51,7 +51,7 @@ namespace Rush
         private void OnNormalTouchDownInvoke(ISkillContext context)
         {
             m_OnNormalTouchDown?.Invoke(context);
-            
+
         }
         private void OnPerfectTouchDownInvoke(ISkillContext context)
         {
@@ -59,6 +59,50 @@ namespace Rush
             m_OnStayPerfectCountChange?.Invoke(m_StayPerfectCount);
         }
 
-        
+        /// <summary>
+        /// Daftarkan callback yang dipanggil setiap kali StayPerfectCount berubah.
+        /// Digunakan oleh PlatformHandler untuk mengecek apakah boost threshold tercapai.
+        /// </summary>
+        public void RegisterBoostCheck(UnityEngine.Events.UnityAction<int> callback)
+        {
+            m_OnStayPerfectCountChange.AddListener(callback);
+        }
+
+        /// <summary>
+        /// Hapus semua boost check listener. Panggil saat platform dikembalikan ke pool.
+        /// </summary>
+        public void ClearBoostCheck()
+        {
+            m_OnStayPerfectCountChange.RemoveAllListeners();
+        }
+
+        /// <summary>
+        /// Daftarkan callback yang dipanggil setiap kali ada PERFECT landing (bukan normal).
+        /// Digunakan oleh PlatformHandler global untuk mengakumulasi count lintas semua platform.
+        /// </summary>
+        public void RegisterPerfectLandingCallback(UnityEngine.Events.UnityAction<ISkillContext> callback)
+        {
+            m_OnPerfectTouchDown.AddListener(callback);
+        }
+
+        /// <summary>
+        /// Daftarkan callback yang dipanggil setiap kali ada NORMAL landing.
+        /// Digunakan untuk reset perfect streak count di PlatformHandler.
+        /// </summary>
+        public void RegisterNormalLandingCallback(UnityEngine.Events.UnityAction<ISkillContext> callback)
+        {
+            m_OnNormalTouchDown.AddListener(callback);
+        }
+
+        /// <summary>
+        /// Reset state perfect count dan streak. Dipanggil saat platform di-spawn ulang.
+        /// </summary>
+        public void ResetTouchDown()
+        {
+            m_IsStayPerfect = false;
+            m_StayPerfectCount = 0;
+        }
+
+
     }
 }

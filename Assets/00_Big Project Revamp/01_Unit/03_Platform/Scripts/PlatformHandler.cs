@@ -2,6 +2,7 @@ using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
@@ -24,8 +25,24 @@ namespace Rush
 
         [SerializeField]
         private TouchDownCheckField m_TouchDownCheckField;
+
+        [Header("Boost Events")]
+        [SerializeField]
+        private UnityEvent m_OnBoostStart = new();
+        [SerializeField]
+        private UnityEvent m_OnBoostTick = new();
+        [SerializeField]
+        private UnityEvent m_OnBoostEnd = new();
+
+        public UnityEvent OnBoostStart => m_OnBoostStart;
+        public UnityEvent OnBoostTick => m_OnBoostTick;
+        public UnityEvent OnBoostEnd => m_OnBoostEnd;
         [SerializeField, MMReadOnly]
         private bool m_IsSpawningNextPlatform = false; // Flag to prevent multiple spawn requests
+        [SerializeField, MMReadOnly]
+        private bool m_IsBoostActive = false; // Flag: ada platform yang sedang boosting, tahan spawn berikutnya
+        [SerializeField, MMReadOnly]
+        private int m_GlobalPerfectCount = 0; // Akumulasi perfect landing lintas semua platform
 
         private readonly Dictionary<string, Queue<Platform2D>> m_Pools = new Dictionary<string, Queue<Platform2D>>();
 
@@ -44,7 +61,23 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private Vector2 m_LastContactPoint = Vector2.zero;
         public bool IsPaused => m_IsPaused;
+        public bool IsBoostActive => m_IsBoostActive;
+        public int GlobalPerfectCount => m_GlobalPerfectCount;
         public Vector2 LastContactPoint => m_LastContactPoint;
+
+        /// <summary>
+        /// Dipanggil oleh PlatformBooster untuk memberi tahu handler
+        /// bahwa ada / tidak ada platform yang sedang boost.
+        /// Selama boost aktif, spawn platform berikutnya ditahan.
+        /// </summary>
+        public void SetIsBoostActive(bool value)
+        {
+            m_IsBoostActive = value;
+            // Reset perfect count setiap kali boost selesai
+            // agar player harus mengumpulkan perfect dari awal lagi
+            if (!value)
+                ResetGlobalPerfectCount();
+        }
         public float MinGlobalSpeedRate => m_MinGlobalSpeedRate;
         public float MaxGlobalSpeedRate => m_MaxGlobalSpeedRate;
         public float GlobalPerfectTouchRange => m_GlobalPerfectTouchRange;
@@ -75,6 +108,12 @@ namespace Rush
             SetGlobalPerfectTouchRange(config.GlobalPerfectTouchRange);
 
             InputToWaitingListByRandom();
+
+            // Subscribe global perfect landing event
+            // m_TouchDownCheckField adalah field handler level yang di-invoke dari TouchDownCheck
+            // setiap kali player landing di platform manapun
+            m_TouchDownCheckField.RegisterPerfectLandingCallback(OnGlobalPerfectLanding);
+            m_TouchDownCheckField.RegisterNormalLandingCallback(OnGlobalNormalLanding);
         }
         private void AddTotalPlayedPlatform(int add)
         {
@@ -154,7 +193,7 @@ namespace Rush
                 AddPreparedPlatformConfigInternal(configs[i], controller);
             }
         }
-        
+
         private void AddPreparedPlatformConfigInternal(PlatformConfig config, PlatformController controller)
         {
             if (!HasPreparedPlatformConfig(config))
@@ -219,7 +258,7 @@ namespace Rush
         public void AddPreparedPlatformConfig(PlatformConfig config, PlatformController controller)
         {
             AddPreparedPlatformConfigInternal(config, controller);
-            
+
         }
         public void RemovePreparedPlatformConfig(PlatformConfig config)
         {
@@ -234,7 +273,7 @@ namespace Rush
         {
             m_IsPaused = false;
             if (m_Config == null) return;
-            
+
             //InputToWaitingListByRandom();
             SpawnNextPlatformFromWaitingListInternal(m_Config.InitialSpawnDelay);
         }
@@ -304,10 +343,10 @@ namespace Rush
         {
             int maxSlot = m_Config.MaxStackedPlatforms;
             bool isFull = m_WaitingListPlatformConfigs.Count >= maxSlot;
-            
+
             possibleSlotCount = 0;
             if (!isFull)
-            { 
+            {
                 possibleSlotCount = maxSlot - m_WaitingListPlatformConfigs.Count;
             }
             return isFull;
@@ -318,6 +357,10 @@ namespace Rush
         }
         private void SpawnNextPlatformFromWaitingListInternal(float delay)
         {
+            // Tahan spawn jika ada platform yang sedang boosting
+            if (m_IsBoostActive)
+                return;
+
             if (m_WaitingListPlatformConfigs.Count == 0 || m_IsSpawningNextPlatform)
                 return;
 
@@ -376,7 +419,7 @@ namespace Rush
             {
                 newPlatform.Init(config.AttackSkill, controller.ModuleContext);
             }
-            
+
             newPlatform.gameObject.SetActive(false);
             return newPlatform;
         }
@@ -404,7 +447,16 @@ namespace Rush
 
             platform.OnReachDestination.RemoveAllListeners();
             platform.OnReachDestination.AddListener(() => HandlePlatformReached(platform));
-            
+
+            platform.OnBoostStart.RemoveAllListeners();
+            platform.OnBoostStart.AddListener(() => m_OnBoostStart?.Invoke());
+
+            platform.OnBoostTick.RemoveAllListeners();
+            platform.OnBoostTick.AddListener(() => m_OnBoostTick?.Invoke());
+
+            platform.OnBoostEnd.RemoveAllListeners();
+            platform.OnBoostEnd.AddListener(() => m_OnBoostEnd?.Invoke());
+
             return platform;
         }
 
@@ -416,6 +468,9 @@ namespace Rush
             {
                 m_Pools.Add(id, new Queue<Platform2D>());
             }
+
+            // Bersihkan boost check listener agar tidak menumpuk saat platform di-reuse
+            platform.TouchDownCheck.ClearBoostCheck();
 
             platform.gameObject.SetActive(false);
 
@@ -442,6 +497,35 @@ namespace Rush
             SpawnNextPlatformFromWaitingListInternal(m_Config.NextSpawnDelay);
             Debug.Log($"Reached: {platform.PlatformConfig.BaseInfo.Name} | Count before: {m_StackedPlatforms.Count}");
         }
+
+        /// <summary>
+        /// Dipanggil dari TouchDownCheckField (global handler level) setiap kali ada perfect landing.
+        /// Mengakumulasi count lintas semua platform dan trigger boost jika threshold tercapai.
+        /// </summary>
+        private void OnGlobalPerfectLanding(ISkillContext context)
+        {
+            if (m_Config.BoostField == null) return;
+            if (m_IsBoostActive) return;
+
+            m_GlobalPerfectCount++;
+            Debug.Log($"[Boost] GlobalPerfectCount: {m_GlobalPerfectCount}");
+
+            m_Config.BoostField.TryApplyBoost(m_GlobalPerfectCount, m_CurrentNewDisplayedPlatform);
+        }
+
+        /// <summary>
+        /// Reset perfect count saat ada normal landing — boost harus dicapai dengan perfect BERUNTUN.
+        /// </summary>
+        private void OnGlobalNormalLanding(ISkillContext context)
+        {
+            ResetGlobalPerfectCount();
+            Debug.Log("[Boost] Normal landing - perfect count reset to 0");
+        }
+
+        private void ResetGlobalPerfectCount()
+        {
+            m_GlobalPerfectCount = 0;
+        }
         private void LimitStackSize()
         {
             int maxStack = m_Config.MaxStackedPlatforms;
@@ -467,7 +551,7 @@ namespace Rush
 
         public void ResetProgression()
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
     }
 }

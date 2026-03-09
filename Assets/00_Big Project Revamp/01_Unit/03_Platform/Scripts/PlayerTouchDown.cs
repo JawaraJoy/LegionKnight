@@ -6,8 +6,6 @@ namespace Rush
     public class PlayerTouchDown : MonoBehaviour
     {
         [SerializeField, MMReadOnly]
-        private int calledCount;
-        [SerializeField, MMReadOnly]
         private PlatformSkillField m_PlatformSkillField;
         public void ForceSkillActivate(bool isPerfect, ISkillContext context)
         {
@@ -51,7 +49,6 @@ namespace Rush
                     }
                 }
             }
-            calledCount++;
         }
     }
 }

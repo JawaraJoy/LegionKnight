@@ -11,7 +11,7 @@ namespace Rush
         [SerializeField]
         private UnitConfig m_Config;
 
-        [SerializeField] // change tp progression monobehaviour later
+        [SerializeField]
         private ProgressField m_Progression;
         public bool IsPlayer => m_IsPlayer;
         // add Stats Modifier MonoBehaviour later
@@ -28,7 +28,8 @@ namespace Rush
         private void RefreshInitInternal()
         {
             m_OnInit?.Invoke(this);
-            m_Progression = m_Config.Progression;
+            m_Progression.SetLevel(m_Config.Progression.Level);
+            m_Progression.SetMaxLevel(m_Config.Progression.MaxLevel);
             /*if (m_Config is HeroUnitConfig heroConfig) 
             {
                 int savedLevel = Player.Instance.HeroDeck.GetHeroUnit(heroConfig).Level;

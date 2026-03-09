@@ -35,30 +35,32 @@ namespace Rush
             if (m_For == RogueLikeForProgressType.Player)
             {
                 Handler.OnForPlayerExperienceAdded.RemoveListener(SetFill);
-                Handler.OnForPlayerLevelUp.RemoveListener(SetLevel);
+                Handler.OnForPlayerLevelUp.RemoveListener(SetLevelInternal);
 
                 Handler.OnForPlayerExperienceAdded.AddListener(SetFill);
-                Handler.OnForPlayerLevelUp.AddListener(SetLevel);
+                Handler.OnForPlayerLevelUp.AddListener(SetLevelInternal);
             }
             else
             {
                 Handler.OnForBossExperienceAdded.RemoveListener(SetFill);
-                Handler.OnForBossLevelUp.RemoveListener(SetLevel);
+                Handler.OnForBossLevelUp.RemoveListener(SetLevelInternal);
 
                 Handler.OnForBossExperienceAdded.AddListener(SetFill);
-                Handler.OnForBossLevelUp.AddListener(SetLevel);
+                Handler.OnForBossLevelUp.AddListener(SetLevelInternal);
             }
         }
         private void SetFill(int current, int max)
         {
             m_FillRate.fillAmount = (float)current / max;
         }
-        private void SetLevel(int level)
+        private void SetLevelInternal(int level)
         {
             m_LevelText.text = $"{level}";
             m_OnLevelChanged.Invoke(level);
         }
-    }
-
-    
+        public void SetLevel(int level)
+        {
+            SetLevelInternal(level);
+        }
+    }    
 }

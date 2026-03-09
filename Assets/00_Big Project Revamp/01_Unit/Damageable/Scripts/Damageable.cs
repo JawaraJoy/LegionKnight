@@ -1,4 +1,5 @@
 ﻿
+using LegionKnight;
 using MoreMountains.Tools;
 using System.Collections;
 using UnityEngine;
@@ -356,6 +357,10 @@ namespace Rush
         {
             m_OnDeath?.Invoke(context);
             m_OnDeathDirection?.Invoke(context.AbilityDeliver.DeliverTransform);
+            if (m_ModuleContext.Unit.IsPlayer)
+            {
+                UnityService.Instance.ShowInterstitialAd();
+            }    
         }
         protected virtual void SetCurrentDamageTakeInternal(int damage)
         {

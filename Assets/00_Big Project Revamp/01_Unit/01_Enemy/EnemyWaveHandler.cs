@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MoreMountains.Tools;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -34,10 +35,24 @@ namespace Rush
         private Unit m_BossUnitExisten;
         private Sprite m_CurrentWaveIcon;
         private int m_CurrentMaxThreshold;
+
+        [SerializeField, MMReadOnly]
+        private int m_WaveLevel = 1;
         public Sprite CurrentWaveIcon => m_CurrentWaveIcon;
         public UnityEvent<int, int> OnCurrentThresholdRateChanged => m_OnCurrentThresholdRateChanged;
         public UnityEvent<Sprite> OnWaveIconChanged => m_OnWaveIconChanged;
         public EnemyWaveSpawnPost EnemyWavePost => m_EnemyWavePost;
+        [SerializeField]
+        private UnityEvent<int> m_OnWaveLevelChanged;
+        private void AddWaveLevelInternal(int amount)
+        {
+            m_WaveLevel += amount;
+            m_OnWaveLevelChanged?.Invoke(m_WaveLevel);
+            foreach (Unit spawner in GetActiveEnemies())
+            {
+                spawner.Progression.SetLevel(m_WaveLevel);
+            }
+        }
         private void SetCurrentWaveIcon(Sprite waveIcon)
         {
             m_CurrentWaveIcon = waveIcon;
@@ -146,6 +161,7 @@ namespace Rush
             // Track active
             m_ActiveEnemies.Add(unit);
             unit.Init(enemyConfig);
+            
             return unit;
         }
         private Unit CreateUnit(EnemyUnitConfig enemyConfig)
@@ -189,6 +205,7 @@ namespace Rush
             {
                 m_BossUnitExisten = bossUnit;
                 m_OnBossSpawn?.Invoke(bossUnit);
+                AddWaveLevelInternal(1);
             }
         }
         private void DespawnBoss(Unit bossUnit)
@@ -200,6 +217,7 @@ namespace Rush
 
                 m_OnWaveSetCleared?.Invoke(m_CurrentEnemyWave);
                 m_OnBossDespawn?.Invoke(bossUnit);
+                
             }
         }
         /// <summary>

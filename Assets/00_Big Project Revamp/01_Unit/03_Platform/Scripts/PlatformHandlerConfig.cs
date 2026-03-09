@@ -15,7 +15,7 @@ namespace Rush
         private float m_InitialSpawnDelay = 1f;
         [SerializeField]
         private float m_NextSpawnDelay = 1f;
-        
+
         [SerializeField, Range(0f, 2f)]
         private float m_MinGlobalSpeedRate = 1f;
         [SerializeField, Range(0f, 2f)]
@@ -28,8 +28,9 @@ namespace Rush
         private float m_GlobalPerfectTouchRange = 0.3f;
         [SerializeField]
         private int m_MaxStackedPlatforms = 15;
+        [Header("Boost")]
         [SerializeField]
-        private SkillConfig[] m_GlobalSkillForPlayerOnTouchDown;
+        private PlatformBoostField m_BoostField;
         public PlatformConfig[] InitialPlatformConfigs => m_InitialPlatformConfigs;
         public int MaxStackedPlatforms => m_MaxStackedPlatforms;
         public float MaxGlobalSpeedRate => m_MaxGlobalSpeedRate;
@@ -40,7 +41,7 @@ namespace Rush
         public float GlobalPerfectTouchRange => m_GlobalPerfectTouchRange;
         public float SpawnHorizontalDistanceFromPost => m_SpawnHorizontalDistanceFromPost;
         public float OffSiteReachHorizontalPost => m_OffSiteReachHorizontalPost;
-        public SkillConfig[] GlobalSkillForPlayerOnTouchDown => m_GlobalSkillForPlayerOnTouchDown;
+        public PlatformBoostField BoostField => m_BoostField;
         public float SpeedRateLimit => m_SpeedRateLimit;
     }
 }

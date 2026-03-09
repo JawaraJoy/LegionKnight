@@ -12,35 +12,46 @@ namespace Rush
         public TouchDownCheckField TouchDown => m_TouchDown;
         public float PerfectTouchRange => m_PerfectTouchRange;
 
-        private bool m_Touched;
+        private Platform2D m_TouchedPlatform; // Referensi platform yang sudah di-touched
+
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (m_Touched)
+            if (!collision.TryGetComponent(out Platform2D platform))
                 return;
-            if (collision.TryGetComponent(out Platform2D platform))
+
+            // Ignore kalau platform ini sudah pernah di-touch sebelumnya
+            if (m_TouchedPlatform == platform)
             {
-                PlatformHandler platformManager = RushGameManager.Instance.StageManager.PlatformHandler;
-                float globalPerfectTouchRate = platformManager.GlobalPerfectTouchRange;
-                bool isPerfectLanding = PlatformUtility.IsPerfectLanding(this, platform, globalPerfectTouchRate);
-
-                m_TouchDown.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
-                Vector2 contactPoint = platform.TouchDownSpot.position;
-
-                platform.TouchDownCheck.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
-                platform.OnReachDestinationInvoke();
-
-                platformManager.TouchDownCheckField.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
-                platformManager.SetLastContactPoint(contactPoint);
-
-                
+                Debug.Log($"[TouchDownCheck] IGNORED - sudah pernah touch platform: {platform.name}");
+                return;
             }
-            Debug.Log($"TouchDown{collision.name}");
-            m_Touched = true;
+
+            m_TouchedPlatform = platform;
+
+            PlatformHandler platformManager = RushGameManager.Instance.StageManager.PlatformHandler;
+            float globalPerfectTouchRate = platformManager.GlobalPerfectTouchRange;
+            bool isPerfectLanding = PlatformUtility.IsPerfectLanding(this, platform, globalPerfectTouchRate);
+
+            m_TouchDown.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
+            Vector2 contactPoint = platform.TouchDownSpot.position;
+
+            platform.TouchDownCheck.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
+            platform.OnReachDestinationInvoke();
+
+            platformManager.TouchDownCheckField.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
+            platformManager.SetLastContactPoint(contactPoint);
+
+            Debug.Log($"TouchDown {collision.name}");
         }
-        private void OnTriggerExit2D(Collider2D collision)
+
+        /// <summary>
+        /// Reset state touchdown secara manual jika diperlukan dari luar.
+        /// </summary>
+        public void ResetTouchDown()
         {
-            m_Touched = false;
+            m_TouchedPlatform = null;
         }
+
         public void SetPerfectTouchRange(float value)
         {
             m_PerfectTouchRange = Mathf.Clamp(value, 0.1f, 1f);

@@ -20,7 +20,7 @@ namespace Rush
         private ProgressField m_Progression;
         [SerializeField]
         private TouchDownCheckField m_TouchDownCheck;
-        
+
         [SerializeField, MMReadOnly]
         private PlatformDirection m_Direction = PlatformDirection.Left;
         [SerializeField, MMReadOnly]
@@ -35,6 +35,32 @@ namespace Rush
         private UnityEvent m_OnReachDestination;
         [SerializeField]
         private UnityEvent<Unit> m_OnAbilityDelivered;
+
+        [Header("Boost")]
+        [SerializeField]
+        private UnityEvent m_OnBoostStart;
+        [SerializeField]
+        private UnityEvent m_OnBoostEnd;
+        [SerializeField]
+        private UnityEvent m_OnBoostTick; // Di-invoke tiap 1 detik selama boosting
+
+        public UnityEvent OnBoostStart => m_OnBoostStart;
+        public UnityEvent OnBoostEnd => m_OnBoostEnd;
+        public UnityEvent OnBoostTick => m_OnBoostTick;
+
+        public bool IsBoosting => m_IsBoosting;
+
+        // --- Boost State ---
+        private enum BoostState { Idle, Boosting, PostBoostDelay }
+        private BoostState m_BoostState = BoostState.Idle;
+        private bool m_IsBoosting;
+        private PlatformBoostField m_ActiveBoostField;
+        private float m_BoostElapsed;
+        private float m_BoostNextTickTime;
+        private float m_PostBoostElapsed;
+        private Collider2D m_PlatformCollider;
+        private Collider2D m_PlayerCollider;
+        private bool m_DidIgnoreCollision;
         public UnityEvent OnReachDestination => m_OnReachDestination;
         public PlatformConfig PlatformConfig => m_PlatformConfig;
         public SkillContext SkillContext => m_SkillContext;
@@ -106,11 +132,12 @@ namespace Rush
 
         public void StartMove(Vector2 startPost)
         {
-            if (m_PlatformConfig ==  null) return;
+            if (m_PlatformConfig == null) return;
             m_ReachedDestination = false;
             SetIsPausedInternal(false);
             transform.position = startPost;
-            RefreshInternal();         
+
+            RefreshInternal();
         }
         public void StopMove()
         {
@@ -123,7 +150,7 @@ namespace Rush
         private void RefreshInternal()
         {
             if (m_PlatformConfig == null) return;
-            
+
             SetIsPausedInternal(false);
 
             float minSpeedRate = RushGameManager.Instance.StageManager.PlatformHandler.MinGlobalSpeedRate;
@@ -168,7 +195,13 @@ namespace Rush
         {
             bool isPaused = RushGameManager.Instance.StageManager.PlatformHandler.IsPaused;
 
-            if (isPaused || m_IsPaused)
+            if (isPaused)
+                return;
+
+            TickBoost();
+
+            // Gerakan horizontal hanya jalan kalau tidak sedang boost
+            if (m_IsBoosting || m_IsPaused)
                 return;
 
             if (IsReachedDestination())
@@ -179,6 +212,74 @@ namespace Rush
 
             Vector3 move = m_FinalSpeed * Time.deltaTime * Vector3.right;
             transform.Translate(move);
+        }
+
+        private void TickBoost()
+        {
+            switch (m_BoostState)
+            {
+                case BoostState.Boosting:
+                    TickBoosting();
+                    break;
+
+                case BoostState.PostBoostDelay:
+                    TickPostBoostDelay();
+                    break;
+            }
+        }
+
+        private void TickBoosting()
+        {
+            m_BoostElapsed += Time.deltaTime;
+
+            transform.Translate(Vector3.up * m_ActiveBoostField.BoostSpeed * Time.deltaTime);
+
+            // OnBoostTick tiap 1 detik
+            if (m_BoostElapsed >= m_BoostNextTickTime)
+            {
+                m_OnBoostTick?.Invoke();
+                m_BoostNextTickTime += 1f;
+            }
+
+            if (m_BoostElapsed >= m_ActiveBoostField.BoostDuration)
+            {
+                EndBoosting();
+            }
+        }
+
+        private void EndBoosting()
+        {
+            // Restore collision
+            if (m_DidIgnoreCollision)
+            {
+                Physics2D.IgnoreCollision(m_PlatformCollider, m_PlayerCollider, false);
+                m_DidIgnoreCollision = false;
+            }
+
+            // Update contact point ke posisi baru setelah naik
+            PlatformHandler handler = RushGameManager.Instance.StageManager.PlatformHandler;
+            handler.SetLastContactPoint(m_TouchDownSpot.position);
+
+            FinishBoost();
+
+            // Mulai post-boost delay
+            m_PostBoostElapsed = 0f;
+            m_BoostState = BoostState.PostBoostDelay;
+        }
+
+        private void TickPostBoostDelay()
+        {
+            m_PostBoostElapsed += Time.deltaTime;
+
+            if (m_PostBoostElapsed >= m_ActiveBoostField.PostBoostSpawnDelay)
+            {
+                PlatformHandler handler = RushGameManager.Instance.StageManager.PlatformHandler;
+                handler.SetIsBoostActive(false);
+                handler.SpawnNextPlatformFromWaitingList(handler.Config.NextSpawnDelay);
+
+                m_BoostState = BoostState.Idle;
+                m_ActiveBoostField = null;
+            }
         }
 
         private void SetIsPausedInternal(bool isPaused)
@@ -208,12 +309,72 @@ namespace Rush
 
         public void ForceActivateAll()
         {
-            
+
         }
 
         public void ForceActivate(AbilityConfig config)
         {
-            
+
+        }
+
+        /// <summary>
+        /// Panggil method ini dari event manapun di luar class ini
+        /// untuk mengaktifkan boost pada platform.
+        /// </summary>
+        public void Boost(PlatformBoostField boostField)
+        {
+            if (boostField == null)
+            {
+                Debug.LogWarning("[Platform2D] BoostField is null, boost dibatalkan.");
+                return;
+            }
+
+            if (m_IsBoosting)
+                return;
+
+            m_ActiveBoostField = boostField;
+            m_IsBoosting = true;
+            m_BoostElapsed = 0f;
+            m_BoostNextTickTime = 1f;
+            m_BoostState = BoostState.Boosting;
+
+            StopMove();
+
+            // Ignore collision dengan player selama boost
+            m_PlatformCollider = GetComponent<Collider2D>();
+            m_PlayerCollider = RushPlayer.Instance.GetComponent<Collider2D>();
+            m_DidIgnoreCollision = m_PlatformCollider != null && m_PlayerCollider != null;
+            if (m_DidIgnoreCollision)
+                Physics2D.IgnoreCollision(m_PlatformCollider, m_PlayerCollider, true);
+
+            PlatformHandler handler = RushGameManager.Instance.StageManager.PlatformHandler;
+            handler.SetIsBoostActive(true);
+
+            m_OnBoostStart?.Invoke();
+        }
+
+        /// <summary>
+        /// Hentikan boost paksa dari luar jika diperlukan.
+        /// </summary>
+        public void StopBoost()
+        {
+            if (!m_IsBoosting) return;
+
+            if (m_DidIgnoreCollision)
+            {
+                Physics2D.IgnoreCollision(m_PlatformCollider, m_PlayerCollider, false);
+                m_DidIgnoreCollision = false;
+            }
+
+            m_BoostState = BoostState.Idle;
+            m_ActiveBoostField = null;
+            FinishBoost();
+        }
+
+        private void FinishBoost()
+        {
+            m_IsBoosting = false;
+            m_OnBoostEnd?.Invoke();
         }
     }
 }
