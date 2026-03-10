@@ -38,13 +38,13 @@ namespace Rush
 
         [Header("Boost")]
         [SerializeField]
-        private UnityEvent m_OnBoostStart;
+        private UnityEvent<float, int> m_OnBoostStart; // (duration, perfectComboCount)
         [SerializeField]
         private UnityEvent m_OnBoostEnd;
         [SerializeField]
         private UnityEvent m_OnBoostTick; // Di-invoke tiap 1 detik selama boosting
 
-        public UnityEvent OnBoostStart => m_OnBoostStart;
+        public UnityEvent<float, int> OnBoostStart => m_OnBoostStart;
         public UnityEvent OnBoostEnd => m_OnBoostEnd;
         public UnityEvent OnBoostTick => m_OnBoostTick;
 
@@ -55,6 +55,7 @@ namespace Rush
         private BoostState m_BoostState = BoostState.Idle;
         private bool m_IsBoosting;
         private PlatformBoostField m_ActiveBoostField;
+        private float m_ActiveBoostDuration;
         private float m_BoostElapsed;
         private float m_BoostNextTickTime;
         private float m_PostBoostElapsed;
@@ -241,7 +242,7 @@ namespace Rush
                 m_BoostNextTickTime += 1f;
             }
 
-            if (m_BoostElapsed >= m_ActiveBoostField.BoostDuration)
+            if (m_BoostElapsed >= m_ActiveBoostDuration)
             {
                 EndBoosting();
             }
@@ -321,7 +322,7 @@ namespace Rush
         /// Panggil method ini dari event manapun di luar class ini
         /// untuk mengaktifkan boost pada platform.
         /// </summary>
-        public void Boost(PlatformBoostField boostField)
+        public void Boost(PlatformBoostField boostField, float duration, int comboCount)
         {
             if (boostField == null)
             {
@@ -333,6 +334,7 @@ namespace Rush
                 return;
 
             m_ActiveBoostField = boostField;
+            m_ActiveBoostDuration = duration;
             m_IsBoosting = true;
             m_BoostElapsed = 0f;
             m_BoostNextTickTime = 1f;
@@ -350,7 +352,7 @@ namespace Rush
             PlatformHandler handler = RushGameManager.Instance.StageManager.PlatformHandler;
             handler.SetIsBoostActive(true);
 
-            m_OnBoostStart?.Invoke();
+            m_OnBoostStart?.Invoke(duration, comboCount);
         }
 
         /// <summary>

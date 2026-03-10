@@ -7,27 +7,37 @@ namespace Rush
     {
         [SerializeField]
         private int m_BoostThreshold;
+
         [Header("Boost Movement")]
         [SerializeField, Tooltip("Kecepatan platform terbang ke atas (unit/detik)")]
         private float m_BoostSpeed = 8f;
 
-        [SerializeField, Tooltip("Durasi platform terbang ke atas (detik)")]
-        private float m_BoostDuration = 1.5f;
-
         [SerializeField, Tooltip("Delay setelah boost selesai sebelum next platform spawn (detik)")]
         private float m_PostBoostSpawnDelay = 0.5f;
 
-        public float BoostSpeed => m_BoostSpeed;
-        public float BoostDuration => m_BoostDuration;
-        public float PostBoostSpawnDelay => m_PostBoostSpawnDelay;
+        [Header("Boost Stock")]
+        [SerializeField, Tooltip("Maksimal jumlah boost yang bisa disimpan")]
+        private int m_MaxBoostStock = 3;
 
-        public void TryApplyBoost(int currentStayPerfectCount, Platform2D platform2D)
+        [SerializeField, Tooltip("Durasi minimum boost (detik)")]
+        private float m_MinBoostDuration = 1f;
+        [SerializeField, Tooltip("Tambahan durasi boost per 1 perfect combo stack (detik)")]
+        private float m_BoostDurationPerStack = 1f;
+
+        public int BoostThreshold => m_BoostThreshold;
+        public float BoostSpeed => m_BoostSpeed;
+        public float PostBoostSpawnDelay => m_PostBoostSpawnDelay;
+        public int MaxBoostStock => m_MaxBoostStock;
+        public float MinBoostDuration => m_MinBoostDuration;
+        public float BoostDurationPerStack => m_BoostDurationPerStack;
+
+        /// <summary>
+        /// Hitung durasi boost berdasarkan combo count.
+        /// Durasi = max(MinBoostDuration, comboCount x BoostDurationPerStack)
+        /// </summary>
+        public float CalculateBoostDuration(int comboCount)
         {
-            bool shouldApplyBoost = currentStayPerfectCount >= m_BoostThreshold;
-            if (shouldApplyBoost)
-            {
-                platform2D.Boost(this);
-            }
+            return Mathf.Max(m_MinBoostDuration, comboCount * m_BoostDurationPerStack);
         }
     }
 }

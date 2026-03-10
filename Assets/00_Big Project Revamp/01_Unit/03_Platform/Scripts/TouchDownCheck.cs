@@ -40,6 +40,7 @@ namespace Rush
 
             platformManager.TouchDownCheckField.SetIsStayPerfect(isPerfectLanding, platform.SkillContext);
             platformManager.SetLastContactPoint(contactPoint);
+            platformManager.SetCurrentTouchedPlatform(platform);
 
             Debug.Log($"TouchDown {collision.name}");
         }

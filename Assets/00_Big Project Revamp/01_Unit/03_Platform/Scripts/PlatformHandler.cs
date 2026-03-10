@@ -19,6 +19,8 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private Platform2D m_CurrentNewDisplayedPlatform;
         [SerializeField, MMReadOnly]
+        private Platform2D m_CurrentTouchedPlatform; // Platform terakhir yang player touchdown
+        [SerializeField, MMReadOnly]
         private Platform2D m_CurrentLastDisplayedPlatform;
         [SerializeField, MMReadOnly]
         private Queue<Platform2D> m_StackedPlatforms = new();
@@ -28,21 +30,38 @@ namespace Rush
 
         [Header("Boost Events")]
         [SerializeField]
-        private UnityEvent m_OnBoostStart = new();
+        private UnityEvent<float, int> m_OnBoostStart = new(); // (duration, perfectComboCount)
         [SerializeField]
         private UnityEvent m_OnBoostTick = new();
         [SerializeField]
         private UnityEvent m_OnBoostEnd = new();
+        [SerializeField]
+        private UnityEvent m_OnPrepare = new();
+        [SerializeField]
+        private UnityEvent<int> m_OnPerfectCountChanged = new(); // current combo count
+        [SerializeField]
+        private UnityEvent<int, int> m_OnCurrentBoostStockChanged = new(); // (currentStock, maxStock)
+        [SerializeField]
+        private UnityEvent<int> m_OnBoostEnabled = new(); // parameter: overflow (comboCount - threshold)
+        [SerializeField]
+        private UnityEvent m_OnBoostDisabled = new();
 
-        public UnityEvent OnBoostStart => m_OnBoostStart;
+        public UnityEvent<float, int> OnBoostStart => m_OnBoostStart;
         public UnityEvent OnBoostTick => m_OnBoostTick;
         public UnityEvent OnBoostEnd => m_OnBoostEnd;
+        public UnityEvent OnPrepare => m_OnPrepare;
+        public UnityEvent<int> OnPerfectCountChanged => m_OnPerfectCountChanged;
+        public UnityEvent<int, int> OnCurrentBoostStockChanged => m_OnCurrentBoostStockChanged;
+        public UnityEvent<int> OnBoostEnabled => m_OnBoostEnabled;
+        public UnityEvent OnBoostDisabled => m_OnBoostDisabled;
         [SerializeField, MMReadOnly]
         private bool m_IsSpawningNextPlatform = false; // Flag to prevent multiple spawn requests
         [SerializeField, MMReadOnly]
         private bool m_IsBoostActive = false; // Flag: ada platform yang sedang boosting, tahan spawn berikutnya
         [SerializeField, MMReadOnly]
         private int m_GlobalPerfectCount = 0; // Akumulasi perfect landing lintas semua platform
+        [SerializeField, MMReadOnly]
+        private int m_CurrentBoostStock = 0; // Runtime stock, tidak disimpan di ScriptableObject
 
         private readonly Dictionary<string, Queue<Platform2D>> m_Pools = new Dictionary<string, Queue<Platform2D>>();
 
@@ -62,7 +81,9 @@ namespace Rush
         private Vector2 m_LastContactPoint = Vector2.zero;
         public bool IsPaused => m_IsPaused;
         public bool IsBoostActive => m_IsBoostActive;
+        public Platform2D CurrentTouchedPlatform => m_CurrentTouchedPlatform;
         public int GlobalPerfectCount => m_GlobalPerfectCount;
+        public int CurrentBoostStock => m_CurrentBoostStock;
         public Vector2 LastContactPoint => m_LastContactPoint;
 
         /// <summary>
@@ -70,11 +91,19 @@ namespace Rush
         /// bahwa ada / tidak ada platform yang sedang boost.
         /// Selama boost aktif, spawn platform berikutnya ditahan.
         /// </summary>
+        public void SetCurrentTouchedPlatform(Platform2D platform)
+        {
+            SetCurrentTouchedPlatformInternal(platform);
+        }
+
+        private void SetCurrentTouchedPlatformInternal(Platform2D platform)
+        {
+            m_CurrentTouchedPlatform = platform;
+        }
+
         public void SetIsBoostActive(bool value)
         {
             m_IsBoostActive = value;
-            // Reset perfect count setiap kali boost selesai
-            // agar player harus mengumpulkan perfect dari awal lagi
             if (!value)
                 ResetGlobalPerfectCount();
         }
@@ -109,11 +138,17 @@ namespace Rush
 
             InputToWaitingListByRandom();
 
+            // Isi current boost stock sesuai max saat prepare
+            if (config.BoostField != null)
+                SetBoostStockInternal(config.BoostField.MaxBoostStock);
+
             // Subscribe global perfect landing event
             // m_TouchDownCheckField adalah field handler level yang di-invoke dari TouchDownCheck
             // setiap kali player landing di platform manapun
             m_TouchDownCheckField.RegisterPerfectLandingCallback(OnGlobalPerfectLanding);
             m_TouchDownCheckField.RegisterNormalLandingCallback(OnGlobalNormalLanding);
+
+            m_OnPrepare?.Invoke();
         }
         private void AddTotalPlayedPlatform(int add)
         {
@@ -449,7 +484,7 @@ namespace Rush
             platform.OnReachDestination.AddListener(() => HandlePlatformReached(platform));
 
             platform.OnBoostStart.RemoveAllListeners();
-            platform.OnBoostStart.AddListener(() => m_OnBoostStart?.Invoke());
+            platform.OnBoostStart.AddListener((duration, combo) => m_OnBoostStart?.Invoke(duration, combo));
 
             platform.OnBoostTick.RemoveAllListeners();
             platform.OnBoostTick.AddListener(() => m_OnBoostTick?.Invoke());
@@ -508,9 +543,49 @@ namespace Rush
             if (m_IsBoostActive) return;
 
             m_GlobalPerfectCount++;
+            m_OnPerfectCountChanged?.Invoke(m_GlobalPerfectCount);
             Debug.Log($"[Boost] GlobalPerfectCount: {m_GlobalPerfectCount}");
 
-            m_Config.BoostField.TryApplyBoost(m_GlobalPerfectCount, m_CurrentNewDisplayedPlatform);
+            // Jika threshold tercapai, isi stock dan invoke OnBoostEnabled dengan overflow
+            if (m_GlobalPerfectCount >= m_Config.BoostField.BoostThreshold)
+            {
+                int overflow = m_GlobalPerfectCount - m_Config.BoostField.BoostThreshold;
+                m_OnBoostEnabled?.Invoke(overflow);
+                Debug.Log($"[Boost] Threshold tercapai, overflow: {overflow}");
+            }
+        }
+
+        /// <summary>
+        /// Aktifkan boost secara manual dari luar.
+        /// Menggunakan 1 stock dan menghitung durasi dari GlobalPerfectCount saat ini.
+        /// </summary>
+        private void ActivateBoostInternal()
+        {
+            PlatformBoostField boostField = m_Config.BoostField;
+            if (boostField == null) return;
+            if (m_IsBoostActive) return;
+            if (m_CurrentBoostStock <= 0)
+            {
+                Debug.Log("[PlatformHandler] Boost stock habis.");
+                return;
+            }
+            if (m_GlobalPerfectCount < boostField.BoostThreshold)
+            {
+                Debug.Log($"[PlatformHandler] Combo belum cukup. {m_GlobalPerfectCount}/{boostField.BoostThreshold}");
+                return;
+            }
+            if (m_CurrentTouchedPlatform == null) return;
+
+            int comboCount = m_GlobalPerfectCount > 0 ? m_GlobalPerfectCount : boostField.BoostThreshold;
+            float duration = boostField.CalculateBoostDuration(comboCount);
+            ConsumeBoostStockInternal(1);
+            m_OnBoostStart?.Invoke(duration, comboCount);
+            m_CurrentTouchedPlatform.Boost(boostField, duration, comboCount);
+        }
+
+        public void ActivateBoost()
+        {
+            ActivateBoostInternal();
         }
 
         /// <summary>
@@ -518,13 +593,18 @@ namespace Rush
         /// </summary>
         private void OnGlobalNormalLanding(ISkillContext context)
         {
+            bool wasEnabled = m_Config.BoostField != null
+                && m_GlobalPerfectCount >= m_Config.BoostField.BoostThreshold;
             ResetGlobalPerfectCount();
+            if (wasEnabled)
+                m_OnBoostDisabled?.Invoke();
             Debug.Log("[Boost] Normal landing - perfect count reset to 0");
         }
 
         private void ResetGlobalPerfectCount()
         {
             m_GlobalPerfectCount = 0;
+            m_OnPerfectCountChanged?.Invoke(m_GlobalPerfectCount);
         }
         private void LimitStackSize()
         {
@@ -548,6 +628,38 @@ namespace Rush
 
             m_CurrentLastDisplayedPlatform = m_StackedPlatforms.Peek();
         }
+
+        private void SetBoostStockInternal(int value)
+        {
+            int max = m_Config.BoostField?.MaxBoostStock ?? 0;
+            m_CurrentBoostStock = Mathf.Clamp(value, 0, max);
+            m_OnCurrentBoostStockChanged?.Invoke(m_CurrentBoostStock, max);
+        }
+
+        private void AddBoostStockInternal(int amount)
+        {
+            int max = m_Config.BoostField?.MaxBoostStock ?? 0;
+            m_CurrentBoostStock = Mathf.Clamp(m_CurrentBoostStock + amount, 0, max);
+            m_OnCurrentBoostStockChanged?.Invoke(m_CurrentBoostStock, max);
+        }
+
+        private void ConsumeBoostStockInternal(int amount)
+        {
+            int max = m_Config.BoostField?.MaxBoostStock ?? 0;
+            m_CurrentBoostStock = Mathf.Clamp(m_CurrentBoostStock - amount, 0, max);
+            m_OnCurrentBoostStockChanged?.Invoke(m_CurrentBoostStock, max);
+        }
+
+        public void AddBoostStock(int amount)
+        {
+            AddBoostStockInternal(amount);
+        }
+
+        public void ConsumeBoostStock(int amount)
+        {
+            ConsumeBoostStockInternal(amount);
+        }
+
 
         public void ResetProgression()
         {
