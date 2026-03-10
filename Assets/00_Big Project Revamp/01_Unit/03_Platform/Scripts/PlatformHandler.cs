@@ -21,6 +21,10 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private Platform2D m_CurrentTouchedPlatform; // Platform terakhir yang player touchdown
         [SerializeField, MMReadOnly]
+        private float m_ActiveBoostDuration;
+        [SerializeField, MMReadOnly]
+        private float m_ActiveBoostElapsed; // Platform terakhir yang player touchdown
+        [SerializeField, MMReadOnly]
         private Platform2D m_CurrentLastDisplayedPlatform;
         [SerializeField, MMReadOnly]
         private Queue<Platform2D> m_StackedPlatforms = new();
@@ -36,6 +40,8 @@ namespace Rush
         [SerializeField]
         private UnityEvent m_OnBoostEnd = new();
         [SerializeField]
+        private UnityEvent<float, float> m_OnBoostDurationTick = new(); // (remainingDuration, totalDuration)
+        [SerializeField]
         private UnityEvent m_OnPrepare = new();
         [SerializeField]
         private UnityEvent<int> m_OnPerfectCountChanged = new(); // current combo count
@@ -49,6 +55,7 @@ namespace Rush
         public UnityEvent<float, int> OnBoostStart => m_OnBoostStart;
         public UnityEvent OnBoostTick => m_OnBoostTick;
         public UnityEvent OnBoostEnd => m_OnBoostEnd;
+        public UnityEvent<float, float> OnBoostDurationTick => m_OnBoostDurationTick;
         public UnityEvent OnPrepare => m_OnPrepare;
         public UnityEvent<int> OnPerfectCountChanged => m_OnPerfectCountChanged;
         public UnityEvent<int, int> OnCurrentBoostStockChanged => m_OnCurrentBoostStockChanged;
@@ -487,7 +494,13 @@ namespace Rush
             platform.OnBoostStart.AddListener((duration, combo) => m_OnBoostStart?.Invoke(duration, combo));
 
             platform.OnBoostTick.RemoveAllListeners();
-            platform.OnBoostTick.AddListener(() => m_OnBoostTick?.Invoke());
+            platform.OnBoostTick.AddListener(() =>
+            {
+                m_ActiveBoostElapsed += 1f;
+                float remaining = Mathf.Max(0f, m_ActiveBoostDuration - m_ActiveBoostElapsed);
+                m_OnBoostTick?.Invoke();
+                m_OnBoostDurationTick?.Invoke(remaining, m_ActiveBoostDuration);
+            });
 
             platform.OnBoostEnd.RemoveAllListeners();
             platform.OnBoostEnd.AddListener(() => m_OnBoostEnd?.Invoke());
@@ -579,6 +592,8 @@ namespace Rush
             int comboCount = m_GlobalPerfectCount > 0 ? m_GlobalPerfectCount : boostField.BoostThreshold;
             float duration = boostField.CalculateBoostDuration(comboCount);
             ConsumeBoostStockInternal(1);
+            m_ActiveBoostDuration = duration;
+            m_ActiveBoostElapsed = 0f;
             m_OnBoostStart?.Invoke(duration, comboCount);
             m_CurrentTouchedPlatform.Boost(boostField, duration, comboCount);
         }
@@ -659,7 +674,6 @@ namespace Rush
         {
             ConsumeBoostStockInternal(amount);
         }
-
 
         public void ResetProgression()
         {
