@@ -69,7 +69,10 @@ namespace Rush
 
             m_OnShot?.Invoke(m_AbilityContext);
 
-            FaceTargetInstant(targetable);
+            // Hanya face target secara instan jika homing
+            // Non-homing mengikuti rotasi shooter (DeliverTransform)
+            if (m_Config.TargetingDistributeMode == TargetingMode.Homing)
+                FaceTargetInstant(targetable);
 
             if (m_Config.InitialWanderAngle > 0)
             {
@@ -178,7 +181,7 @@ namespace Rush
 
         private void FaceTargetInstant(ITargetable targetable)
         {
-            if (targetable == null) 
+            if (targetable == null)
                 return;
 
             Vector2 dir = targetable.TargetTransform.position - transform.position;

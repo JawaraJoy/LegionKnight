@@ -45,10 +45,25 @@ namespace Rush
         {
             List<ITargetable> targets = new(GetTargetsInternal());
 
+            if (m_ShooterAbilityConfig.ShoterLookAtTargetOnActivate)
+                LookAtTargetInternal(targets);
+
             StopAllCoroutines();
             StartCoroutine(AttackRoutine(targets));
 
             base.Activate();
+        }
+
+        private void LookAtTargetInternal(List<ITargetable> targets)
+        {
+            if (targets == null || targets.Count == 0) return;
+
+            ITargetable target = targets[0];
+            if (target?.TargetTransform == null) return;
+
+            Vector2 dir = target.TargetTransform.position - m_DeliverTransform.position;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+            m_DeliverTransform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
 
         private IEnumerator AttackRoutine(List<ITargetable> targets)
@@ -80,7 +95,7 @@ namespace Rush
                     {
                         for (int i = 0; i < burstCount && fired < fireCount; i++)
                         {
-                            int index  = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
+                            int index = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
                             SpawnSingle(index, fireCount, targets);
                             fired++;
                             yield return new WaitForSeconds(fireInterval);
