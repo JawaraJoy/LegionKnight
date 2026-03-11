@@ -154,7 +154,7 @@ namespace Rush
         }
         private void ReborInternal(RebornConfig rebornConfig)
         {
-            StartCoroutine(RebornDelayRoutine(rebornConfig));
+           RushGameManager.Instance.StartCoroutine(RebornDelayRoutine(rebornConfig));
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -529,7 +529,7 @@ namespace Rush
 
         private void ImmortalForWhileInternal(float duration)
         {
-            StartCoroutine(ImmortalingForWhile(duration));
+            RushGameManager.Instance.StartCoroutine(ImmortalingForWhile(duration));
             m_OnImmortalDurationSet?.Invoke(duration);
         }
         private IEnumerator ImmortalingForWhile(float duration)
@@ -544,7 +544,7 @@ namespace Rush
         }
         private void InvisibleForWhileInternal(float duration)
         {
-            StartCoroutine(InvisiblingForWhile(duration));
+            RushGameManager.Instance.StartCoroutine(InvisiblingForWhile(duration));
             m_OnInvisibleDurationSet?.Invoke(duration);
         }
         private IEnumerator InvisiblingForWhile(float duration)

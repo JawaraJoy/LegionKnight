@@ -200,7 +200,24 @@ namespace Rush
                 m_OnSkillRemoved?.Invoke(skill);
             }
         }
-
+        public void AddCharges(SkillConfig[] skillConfigs, int chargeAmount)
+        {
+            AddChargesInternal(skillConfigs, chargeAmount);
+        }
+        private void AddChargesInternal(SkillConfig[] skillConfigs, int chargeAmount)
+        {
+            foreach (SkillConfig config in skillConfigs)
+            {
+                AddChargeInternal(config, chargeAmount);
+            }
+        }
+        private void AddChargeInternal(SkillConfig skillConfig, int chargeAmount)
+        {
+            if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skill))
+            {
+                skill.AddCharge(chargeAmount);
+            }
+        }
         public void ForceActives(SkillConfig[] skillConfigs)
         {
             foreach (SkillConfig config in skillConfigs)

@@ -19,6 +19,11 @@ namespace Rush
         }
         public bool HasBind<T>(out T found)
         {
+            return HasBindInternal(out found);
+        }
+            
+        protected bool HasBindInternal<T>(out T found)
+        {
             found = GetBindInternal<T>();
             return found != null;
         }

@@ -26,14 +26,20 @@ namespace Rush
         {
             if (EnemyWaveHandler.EnemyWavePost != null)
             {
-                EnemyWaveHandler.EnemyWavePost.SetPostToFollow(null);
+                if (EnemyWaveHandler.TryGetComponent(out FollowPlayer followPlayer))
+                {
+                    followPlayer.SetPostToFollow(null);
+                }
             }
         }
         public void StartPostToFollow()
         {
             if (EnemyWaveHandler.EnemyWavePost != null)
             {
-                EnemyWaveHandler.EnemyWavePost.SetPostToFollow(RushPlayer.Instance.EnemySpawnPost);
+                if (EnemyWaveHandler.TryGetComponent(out FollowPlayer followPlayer))
+                {
+                    followPlayer.SetPostToFollow(RushPlayer.Instance.transform);
+                }
             }
         }
     }

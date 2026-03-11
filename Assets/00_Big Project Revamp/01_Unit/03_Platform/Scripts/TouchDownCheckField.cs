@@ -63,7 +63,7 @@ namespace Rush
         /// Daftarkan callback yang dipanggil setiap kali StayPerfectCount berubah.
         /// Digunakan oleh PlatformHandler untuk mengecek apakah boost threshold tercapai.
         /// </summary>
-        public void RegisterBoostCheck(UnityEngine.Events.UnityAction<int> callback)
+        public void RegisterBoostCheck(UnityAction<int> callback)
         {
             m_OnStayPerfectCountChange.AddListener(callback);
         }
@@ -80,9 +80,13 @@ namespace Rush
         /// Daftarkan callback yang dipanggil setiap kali ada PERFECT landing (bukan normal).
         /// Digunakan oleh PlatformHandler global untuk mengakumulasi count lintas semua platform.
         /// </summary>
-        public void RegisterPerfectLandingCallback(UnityEngine.Events.UnityAction<ISkillContext> callback)
+        public void RegisterPerfectLandingCallback(UnityAction<ISkillContext> callback)
         {
             m_OnPerfectTouchDown.AddListener(callback);
+        }
+        public void UnregisterPerfectLandingCallback(UnityAction<ISkillContext> callback)
+        {
+            m_OnPerfectTouchDown.RemoveListener(callback);
         }
 
         /// <summary>

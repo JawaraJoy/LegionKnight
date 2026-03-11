@@ -50,7 +50,7 @@ namespace Rush
 
         [SerializeField, MMReadOnly]
         private List<SummonJob> m_LoopJobs = new();
-
+        public List<Unit> ActiveSummonedUnits => m_ActiveSummonedUnits;
         private void OnEnable()
         {
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
@@ -292,20 +292,19 @@ namespace Rush
 
             Unit unit = GetFromPool();
             unit.transform.SetPositionAndRotation(pos, rot);
+            unit.Init(m_SummonedConfig);
+            if (unit is SummonerUnit summonerUnit)
+            {
+                summonerUnit.SetSummoner(this);
 
-            var controller = unit.GetComponent<SummonControler>();
-            if (controller == null)
-                controller = unit.gameObject.AddComponent<SummonControler>();
+                if (!m_ActiveSummonedUnits.Contains(unit))
+                    m_ActiveSummonedUnits.Add(unit);
 
-            controller.Init(this);
+                m_ExecutedJobs++;
 
-            if (!m_ActiveSummonedUnits.Contains(unit))
-                m_ActiveSummonedUnits.Add(unit);
-
-            m_ExecutedJobs++;
-
-            if (m_ExecutedJobs >= m_TotalJobs)
-                m_IsSpawning = false;
+                if (m_ExecutedJobs >= m_TotalJobs)
+                    m_IsSpawning = false;
+            }
         }
 
         private void PreWarm()

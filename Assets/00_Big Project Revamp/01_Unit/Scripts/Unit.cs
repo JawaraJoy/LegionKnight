@@ -9,7 +9,7 @@ namespace Rush
         [SerializeField]
         private bool m_IsPlayer;
         [SerializeField]
-        private UnitConfig m_Config;
+        protected UnitConfig m_Config;
 
         [SerializeField]
         private ProgressField m_Progression;

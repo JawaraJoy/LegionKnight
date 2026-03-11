@@ -1,28 +1,26 @@
 using MoreMountains.Tools;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
-    public class SummonControler : MonoBehaviour, IUpdater
+    public class SummonerUnit : Unit, IUpdater
     {
+
         [SerializeField, MMReadOnly]
         private Summoner m_Summoner;
         [SerializeField, MMReadOnly]
         private float m_RemainingLifeTime = 1.0f;
-        [SerializeField, MMReadOnly]
-        private Unit m_Unit;
         public bool IsActive => gameObject.activeSelf;
+        public Summoner Summoner => m_Summoner;
 
         // taruh semua field yang diperlukan disini untuk mengontrol summon
         // misal lifetime, behavior, dll
         // compoenent ini di add ke unit yang di summon (1 game object dengan unit)
 
-        public void Init(Summoner summoner)
+        public void SetSummoner(Summoner summoner)
         {
             m_Summoner = summoner;
-
-            if (!TryGetComponent(out m_Unit))
-                return;
 
             var durationConfig = m_Summoner.SummonConfig.SpawnDuration;
 
@@ -30,6 +28,18 @@ namespace Rush
                 m_RemainingLifeTime = durationConfig.Duration;
             else
                 m_RemainingLifeTime = 0f;
+
+            if (HasBindInternal(out Damageable damageable))
+            {
+                damageable.OnDeath.RemoveListener((context) => DeSpawn());
+                damageable.OnDeath.AddListener((context) => DeSpawn());
+            }
+            Unit owner = summoner.AbilityContext.SkillContext.ModuleContext.Unit;
+            if (owner.HasBind(out SummonController summonController))
+            {
+                if (!summonController.Summoners.Contains(summoner))
+                    summonController.Summoners.Add(summoner);
+            }
         }
 
 
@@ -62,10 +72,7 @@ namespace Rush
 
         private void DeSpawn()
         {
-            if (m_Unit == null || m_Summoner == null)
-                return;
-
-            m_Summoner.ReturnToPool(m_Unit);
+            m_Summoner.ReturnToPool(this);
         }
     }
 }
