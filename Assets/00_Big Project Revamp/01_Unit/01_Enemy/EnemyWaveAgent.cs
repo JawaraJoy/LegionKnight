@@ -28,7 +28,7 @@ namespace Rush
             {
                 if (EnemyWaveHandler.TryGetComponent(out FollowPlayer followPlayer))
                 {
-                    followPlayer.SetPostToFollow(null);
+                    followPlayer.NullTheFollow();
                 }
             }
         }
@@ -38,7 +38,7 @@ namespace Rush
             {
                 if (EnemyWaveHandler.TryGetComponent(out FollowPlayer followPlayer))
                 {
-                    followPlayer.SetPostToFollow(RushPlayer.Instance.transform);
+                    followPlayer.SetPostToFollow(FollowPostOnPlayer.EnemyPost);
                 }
             }
         }

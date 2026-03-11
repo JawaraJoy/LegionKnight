@@ -7,34 +7,65 @@ namespace Rush
     public enum FollowAxisConstraint
     {
         None = 0,
-        XUp = 1 << 0, // Follow X hanya saat bertambah
-        XDown = 1 << 1, // Follow X hanya saat berkurang
-        YUp = 1 << 2, // Follow Y hanya saat bertambah
-        YDown = 1 << 3, // Follow Y hanya saat berkurang
-        ZUp = 1 << 4, // Follow Z hanya saat bertambah
-        ZDown = 1 << 5, // Follow Z hanya saat berkurang
+        XUp = 1 << 0,
+        XDown = 1 << 1,
+        YUp = 1 << 2,
+        YDown = 1 << 3,
+        ZUp = 1 << 4,
+        ZDown = 1 << 5
     }
 
     public class FollowPlayer : MonoBehaviour, ILateUpdater
     {
+        [Header("Target")]
+        [SerializeField]
+        private FollowPostOnPlayer m_PostTypeToFollow = FollowPostOnPlayer.EnemyPost;
+
         [SerializeField, MMReadOnly]
         private Transform m_PostToFollow;
 
+        [Header("Follow")]
         [SerializeField]
         private float m_SmoothTime = 0.2f;
 
         [SerializeField]
-        private float m_FollowDelay = 1f;
+        private float m_FollowDelay = 0f;
 
-        [SerializeField, Tooltip("Batasi axis mana yang diikuti berdasarkan arah perubahan. None = ikuti semua axis bebas.")]
+        [SerializeField]
+        private float m_MinFollowDistance = 0.5f;
+
+        [Header("Formation")]
+        [SerializeField]
+        private float m_FormationRadius = 2f;
+
+        [SerializeField]
+        private float m_RingSpacing = 1.5f;
+
+        [SerializeField]
+        private int m_FirstRingCapacity = 6;
+
+        [Header("Axis Constraint")]
+        [SerializeField]
         private FollowAxisConstraint m_AxisConstraint = FollowAxisConstraint.None;
 
+        [Header("Random Offset")]
+        [SerializeField] private float m_XOffsetMin = -0.3f;
+        [SerializeField] private float m_XOffsetMax = 0.3f;
+        [SerializeField] private float m_YOffsetMin = -0.3f;
+        [SerializeField] private float m_YOffsetMax = 0.3f;
+        [SerializeField] private float m_ZOffsetMin = -0.3f;
+        [SerializeField] private float m_ZOffsetMax = 0.3f;
+
         private Vector3 m_Velocity;
-        private Vector3 m_LastTargetPosition;
-        private Vector3 m_LastAllowedPosition; // posisi target yang sudah difilter
+        private Vector3 m_TargetOffset;
+
+        private int m_FollowerIndex;
+        private int m_TotalFollowers = 1;
 
         private float m_DelayTimer;
-        private bool m_IsWaitingForDelay;
+        private bool m_IsWaitingDelay;
+
+        private Vector3 m_LastTargetPosition;
 
         public bool IsActive => m_PostToFollow != null;
 
@@ -50,25 +81,60 @@ namespace Rush
 
         private void Start()
         {
-            Transform target = RushPlayer.Instance.EnemySpawnPost;
+            SetPostToFollow(m_PostTypeToFollow);
+        }
+
+        public void SetFormationIndex(int index, int total)
+        {
+            m_FollowerIndex = index;
+            m_TotalFollowers = Mathf.Max(1, total);
+        }
+
+        public void SetPostToFollow(FollowPostOnPlayer postType)
+        {
+            Transform target = null;
+
+            switch (postType)
+            {
+                case FollowPostOnPlayer.EnemyPost:
+                    target = RushPlayer.Instance.EnemySpawnPost;
+                    break;
+
+                case FollowPostOnPlayer.SummonPost:
+                    target = RushPlayer.Instance.SummonSpawnPost;
+                    break;
+            }
+
             SetPostToFollowInternal(target);
         }
 
-        public void SetPostToFollow(Transform target)
+        public void NullTheFollow()
         {
-            SetPostToFollowInternal(target);
+            SetPostToFollowInternal(null);
         }
 
         private void SetPostToFollowInternal(Transform target)
         {
             m_PostToFollow = target;
-            if (m_PostToFollow != null)
-            {
-                m_LastTargetPosition = m_PostToFollow.position;
-                m_LastAllowedPosition = m_PostToFollow.position;
-                m_DelayTimer = 0f;
-                m_IsWaitingForDelay = false;
-            }
+
+            if (target == null)
+                return;
+
+            m_LastTargetPosition = target.position;
+
+            GenerateRandomOffset();
+
+            m_DelayTimer = 0f;
+            m_IsWaitingDelay = false;
+        }
+
+        private void GenerateRandomOffset()
+        {
+            m_TargetOffset = new Vector3(
+                Random.Range(m_XOffsetMin, m_XOffsetMax),
+                Random.Range(m_YOffsetMin, m_YOffsetMax),
+                Random.Range(m_ZOffsetMin, m_ZOffsetMax)
+            );
         }
 
         public void LateTick()
@@ -76,93 +142,110 @@ namespace Rush
             if (m_PostToFollow == null)
                 return;
 
-            Vector3 currentTargetPos = m_PostToFollow.position;
+            Vector3 targetCenter = m_PostToFollow.position;
 
-            // Detect position change
-            if (currentTargetPos != m_LastTargetPosition)
+            if (targetCenter != m_LastTargetPosition)
             {
-                m_LastTargetPosition = currentTargetPos;
+                m_LastTargetPosition = targetCenter;
+
                 m_DelayTimer = 0f;
-                m_IsWaitingForDelay = true;
+                m_IsWaitingDelay = true;
             }
 
-            // Handle delay
-            if (m_IsWaitingForDelay)
+            if (m_IsWaitingDelay)
             {
                 m_DelayTimer += Time.deltaTime;
-                if (m_DelayTimer >= m_FollowDelay)
-                    m_IsWaitingForDelay = false;
-                else
+
+                if (m_DelayTimer < m_FollowDelay)
                     return;
+
+                m_IsWaitingDelay = false;
             }
 
-            // Terapkan constraint per axis
-            Vector3 filteredTarget = m_AxisConstraint == FollowAxisConstraint.None
-                ? currentTargetPos
-                : ApplyAxisConstraintInternal(currentTargetPos);
+            Vector3 formationTarget = GetFormationPosition(targetCenter);
+
+            formationTarget = ApplyAxisConstraint(formationTarget);
+
+            Vector3 dir = formationTarget - transform.position;
+            float sqrDist = dir.sqrMagnitude;
+
+            if (sqrDist <= m_MinFollowDistance * m_MinFollowDistance)
+                return;
 
             transform.position = Vector3.SmoothDamp(
                 transform.position,
-                filteredTarget,
+                formationTarget,
                 ref m_Velocity,
                 m_SmoothTime
             );
         }
 
-        /// <summary>
-        /// Filter target position berdasarkan AxisConstraint.
-        /// Tiap axis hanya diupdate jika arah perubahannya sesuai flag yang diset.
-        /// Jika axis tidak punya flag sama sekali, axis itu bebas diikuti.
-        /// </summary>
-        private Vector3 ApplyAxisConstraintInternal(Vector3 targetPos)
+        private Vector3 GetFormationPosition(Vector3 center)
         {
-            Vector3 result = m_LastAllowedPosition;
+            int ringIndex = 0;
+            int capacity = m_FirstRingCapacity;
 
-            result.x = ResolveAxisInternal(
-                m_LastAllowedPosition.x,
-                targetPos.x,
-                FollowAxisConstraint.XUp,
-                FollowAxisConstraint.XDown
-            );
+            int index = m_FollowerIndex;
 
-            result.y = ResolveAxisInternal(
-                m_LastAllowedPosition.y,
-                targetPos.y,
-                FollowAxisConstraint.YUp,
-                FollowAxisConstraint.YDown
-            );
+            while (index >= capacity)
+            {
+                index -= capacity;
+                ringIndex++;
+                capacity += m_FirstRingCapacity;
+            }
 
-            result.z = ResolveAxisInternal(
-                m_LastAllowedPosition.z,
-                targetPos.z,
-                FollowAxisConstraint.ZUp,
-                FollowAxisConstraint.ZDown
-            );
+            float radius = m_FormationRadius + (ringIndex * m_RingSpacing);
 
-            m_LastAllowedPosition = result;
+            float angleStep = 360f / capacity;
+            float angle = angleStep * index;
+
+            float rad = angle * Mathf.Deg2Rad;
+
+            Vector3 offset = new Vector3(
+                Mathf.Cos(rad),
+                Mathf.Sin(rad),
+                0f
+            ) * radius;
+
+            return center + offset + m_TargetOffset;
+        }
+
+        private Vector3 ApplyAxisConstraint(Vector3 target)
+        {
+            if (m_AxisConstraint == FollowAxisConstraint.None)
+                return target;
+
+            Vector3 result = target;
+
+            Vector3 delta = target - transform.position;
+
+            if (!AllowAxis(delta.x, FollowAxisConstraint.XUp, FollowAxisConstraint.XDown))
+                result.x = transform.position.x;
+
+            if (!AllowAxis(delta.y, FollowAxisConstraint.YUp, FollowAxisConstraint.YDown))
+                result.y = transform.position.y;
+
+            if (!AllowAxis(delta.z, FollowAxisConstraint.ZUp, FollowAxisConstraint.ZDown))
+                result.z = transform.position.z;
+
             return result;
         }
 
-        /// <summary>
-        /// Tentukan apakah nilai axis boleh diupdate berdasarkan arah perubahan dan flag constraint.
-        /// Jika axis tidak punya flag sama sekali → bebas ikuti.
-        /// Jika ada flag → hanya ikuti jika arahnya sesuai.
-        /// </summary>
-        private float ResolveAxisInternal(float current, float target, FollowAxisConstraint upFlag, FollowAxisConstraint downFlag)
+        private bool AllowAxis(float delta, FollowAxisConstraint up, FollowAxisConstraint down)
         {
-            bool hasUpFlag = (m_AxisConstraint & upFlag) != 0;
-            bool hasDownFlag = (m_AxisConstraint & downFlag) != 0;
+            bool allowUp = (m_AxisConstraint & up) != 0;
+            bool allowDown = (m_AxisConstraint & down) != 0;
 
-            // Tidak ada constraint pada axis ini → bebas ikuti
-            if (!hasUpFlag && !hasDownFlag)
-                return target;
+            if (!allowUp && !allowDown)
+                return true;
 
-            float delta = target - current;
+            if (delta > 0 && allowUp)
+                return true;
 
-            if (delta > 0f && hasUpFlag) return target; // naik dan boleh naik
-            if (delta < 0f && hasDownFlag) return target; // turun dan boleh turun
+            if (delta < 0 && allowDown)
+                return true;
 
-            return current; // arah tidak diizinkan → tahan posisi
+            return false;
         }
     }
 }
