@@ -13,7 +13,7 @@ namespace Rush
         private ProjectileConfig m_ProjectileConfig;
         [SerializeField]
         private Attacker m_Attacker;
-        
+
         public override void Init(AbilityContext context, AmmoConfig config)
         {
             base.Init(context, config);
@@ -83,12 +83,18 @@ namespace Rush
             if (explodeOnHit)
             {
                 Explode();
+                m_OnHit?.Invoke(target);
+                DisableAmmo();
+                return;
             }
 
             m_OnHit?.Invoke(target);
 
+            // Langsung disable di frame yang sama agar collider tidak menyentuh
+            // enemy lain yang berdekatan sebelum physics frame berikutnya
             if (m_ProjectileConfig.DespawnOnHit)
             {
+                SetHitDisabled(); // blok hit lain dalam frame yang sama
                 DisableAmmo();
             }
         }
