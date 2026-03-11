@@ -35,7 +35,6 @@ namespace Rush
         private Vector3 m_StartPosition;
         public bool IsActive => gameObject.activeSelf;
         private HashSet<ITargetable> m_HitTargets = new();
-        private bool m_IsHitDisabled; // true setelah hit pertama pada DespawnOnHit non-explode
 
 
         private void OnEnable()
@@ -241,23 +240,7 @@ namespace Rush
         public virtual void OnSpawnFromPool()
         {
             m_HitTargets.Clear();
-            m_IsHitDisabled = false;
         }
-        /// <summary>
-        /// Dipanggil dari Damageable.OnTriggerEnter2D untuk validasi apakah hit ini sah.
-        /// Mencegah enemy berdekatan ikut kena damage dari satu projectile.
-        /// </summary>
-        public bool ValidateHit(GameObject other)
-        {
-            if (m_IsHitDisabled) return false;
-            return IsValidHit(other);
-        }
-
-        public void SetHitDisabled()
-        {
-            m_IsHitDisabled = true;
-        }
-
         protected virtual bool IsValidHit(GameObject other)
         {
             if (!other.TryGetComponent(out ITargetable target))
