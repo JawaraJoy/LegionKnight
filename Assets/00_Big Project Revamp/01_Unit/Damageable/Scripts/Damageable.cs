@@ -360,7 +360,8 @@ namespace Rush
             if (m_ModuleContext.Unit.IsPlayer)
             {
                 UnityService.Instance.ShowInterstitialAd();
-            }    
+            } 
+            
         }
         protected virtual void SetCurrentDamageTakeInternal(int damage)
         {

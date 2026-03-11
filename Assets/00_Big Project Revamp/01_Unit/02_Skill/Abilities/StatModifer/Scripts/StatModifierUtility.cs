@@ -12,25 +12,22 @@ namespace Rush
             StatField result = StatField.Zero;
             PowerField finalScore = PowerField.GetFinalPower(EffectScore.BaseAmount, EffectScore.ScaleByLevel, context.Influencer.StackCount);
 
-            if (EffectScore.Purpose == PowerPurpose.StatModifier)
+            switch (EffectScore.ScaleBy)
             {
-                switch (EffectScore.ScaleBy)
-                {
-                    case ScalingWithStat.Health:
-                        result.SetHealth(ownerStat.Health * finalScore.MultiplierAmount + finalScore.InitialAmount);
-                        break;
-                    case ScalingWithStat.Attack:
-                        result.SetAttack(ownerStat.Attack * finalScore.MultiplierAmount + finalScore.InitialAmount);
-                        break;
-                    case ScalingWithStat.Defense:
-                        result.SetDefense(ownerStat.Defense * finalScore.MultiplierAmount + finalScore.InitialAmount);
-                        break;
-                    default:
-                        Debug.LogWarning($"Unhandled ScalingStat: {EffectScore.ScaleBy}");
-                        break;
-                }
+                case ScalingWithStat.Health:
+                    result.SetHealth(ownerStat.Health * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                    break;
+                case ScalingWithStat.Attack:
+                    result.SetAttack(ownerStat.Attack * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                    break;
+                case ScalingWithStat.Defense:
+                    result.SetDefense(ownerStat.Defense * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                    break;
+                default:
+                    Debug.LogWarning($"Unhandled ScalingStat: {EffectScore.ScaleBy}");
+                    break;
             }
-            
+
             return result;
         }
     }
