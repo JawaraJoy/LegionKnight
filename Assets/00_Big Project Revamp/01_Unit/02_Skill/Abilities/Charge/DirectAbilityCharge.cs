@@ -171,7 +171,7 @@ namespace Rush
         {
             Charger charger = Instantiate(m_ChargePrefab, m_DeliverTransform);
             charger.gameObject.SetActive(false);
-            charger.OnHealDone.AddListener((ctx) => ReturnToPool(charger));
+            charger.OnChargeDone.AddListener((ctx) => ReturnToPool(charger));
             return charger;
         }
 

@@ -13,13 +13,13 @@ namespace Rush
         private AbilityContext m_AbilityContext;
         public AbilityContext AbilityContext => m_AbilityContext;
         [SerializeField]
-        private UnityEvent<AbilityContext> m_OnHealStart;
+        private UnityEvent<AbilityContext> m_OnChargeStart;
         [SerializeField]
         private UnityEvent<int> m_OnChargeAmount;
-        public UnityEvent<AbilityContext> OnHealStart => m_OnHealStart;
+        public UnityEvent<AbilityContext> OnChargeStart => m_OnChargeStart;
         [SerializeField]
-        private UnityEvent<AbilityContext> m_OnHealDone;
-        public UnityEvent<AbilityContext> OnHealDone => m_OnHealDone;
+        private UnityEvent<AbilityContext> m_OnChargeDone;
+        public UnityEvent<AbilityContext> OnChargeDone => m_OnChargeDone;
 
         private ChargeAbilityConfig m_ChargeConfig;
         public void Init(AbilityContext context)
@@ -37,7 +37,7 @@ namespace Rush
         /// </summary>
         public void Charge(ITargetable target, float delay)
         {
-            m_OnHealStart?.Invoke(m_AbilityContext);
+            m_OnChargeStart?.Invoke(m_AbilityContext);
             StopAllCoroutines();
             StartCoroutine(Charging(target, delay));
             
@@ -78,7 +78,7 @@ namespace Rush
                     yield return new WaitForSeconds(m_ChargeConfig.ChargeTickInterval);
             }
 
-            m_OnHealDone?.Invoke(m_AbilityContext);
+            m_OnChargeDone?.Invoke(m_AbilityContext);
         }
     }
 }
