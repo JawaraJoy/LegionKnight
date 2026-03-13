@@ -9,7 +9,7 @@ namespace Rush
     public class AetherStateComboView : UIView, IUpdater
     {
         [SerializeField]
-        private ComboButtonView m_ComboButton;
+        private ComboButtonView[] m_ComboButtons;
         [SerializeField]
         private Transform m_ComboButtonSpawnPoint;
         [SerializeField]
@@ -43,7 +43,11 @@ namespace Rush
 
         private void Start()
         {
-            m_ComboButton.ComboButton.onClick.AddListener(OnComboButtonPressedInternal);
+            foreach (var comboButton in m_ComboButtons)
+            {
+                comboButton.ComboButton.onClick.AddListener(OnComboButtonPressedInternal);
+            }
+            //m_ComboButtons.ComboButton.onClick.AddListener(OnComboButtonPressedInternal);
 
             Handler.OnBoostStart.AddListener(OnBoostStartInternal);
             Handler.OnBoostEnd.AddListener(OnBoostEndInternal);
@@ -63,7 +67,11 @@ namespace Rush
 
         private void OnDestroy()
         {
-            m_ComboButton.ComboButton.onClick.RemoveListener(OnComboButtonPressedInternal);
+            foreach (var comboButton in m_ComboButtons)
+            {
+                comboButton.ComboButton.onClick.RemoveListener(OnComboButtonPressedInternal);
+            }
+            //m_ComboButtons.ComboButton.onClick.RemoveListener(OnComboButtonPressedInternal);
 
             Handler.OnBoostStart.RemoveListener(OnBoostStartInternal);
             Handler.OnBoostEnd.RemoveListener(OnBoostEndInternal);
@@ -128,14 +136,24 @@ namespace Rush
 
         private void ShowComboButtonAtRandomPositionInternal()
         {
-            Vector2 randomOffset = Random.insideUnitCircle * m_ComboButtonSpawnRadius;
-            m_ComboButton.transform.position = m_ComboButtonSpawnPoint.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
-            m_ComboButton.gameObject.SetActive(true);
+            
+            foreach (var comboButton in m_ComboButtons)
+            {
+                Vector2 randomOffset = Random.insideUnitCircle * m_ComboButtonSpawnRadius;
+                comboButton.transform.position = m_ComboButtonSpawnPoint.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+                comboButton.gameObject.SetActive(true);
+            }
+            //m_ComboButtons.transform.position = m_ComboButtonSpawnPoint.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+            //m_ComboButtons.gameObject.SetActive(true);
         }
 
         private void HideComboButtonInternal()
         {
-            m_ComboButton.gameObject.SetActive(false);
+            foreach (var comboButton in m_ComboButtons)
+            {
+                comboButton.gameObject.SetActive(false);
+            }
+            //m_ComboButtons.gameObject.SetActive(false);
         }
 
         private void SetupSliderInternal(float totalDuration)
