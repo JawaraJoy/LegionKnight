@@ -3,17 +3,20 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace Rush
 {
     public class AetherStateComboView : UIView, IUpdater
     {
         [SerializeField]
-        private ComboButtonView[] m_ComboButtons;
+        private ComboButtonView m_ComboButtonPrefab;
         [SerializeField]
         private Transform m_ComboButtonSpawnPoint;
         [SerializeField]
         private float m_ComboButtonSpawnRadius = 5f;
+        [SerializeField]
+        private int m_PrewarmCount = 3;
         [SerializeField]
         private Slider m_ComboStateDurationSlider;
         [SerializeField]
@@ -21,9 +24,10 @@ namespace Rush
         [SerializeField]
         private UnityEvent m_OnComboButtonPressed;
 
+        private readonly List<ComboButtonView> m_ButtonPool = new();
+        private readonly List<ComboButtonView> m_ActiveButtons = new();
+
         private PlatformHandler m_Handler;
-        private int m_TotalComboCount;
-        private int m_RemainingCombo;
         private int m_PressedCombo;
         private float m_BoostDuration;
         private float m_BoostElapsed;
@@ -43,15 +47,9 @@ namespace Rush
 
         private void Start()
         {
-            foreach (var comboButton in m_ComboButtons)
-            {
-                ComboButtonView btn = comboButton; // capture untuk lambda
-                btn.ComboButton.onClick.AddListener(() => OnComboButtonPressedInternal(btn));
-            }
-
             Handler.OnBoostStart.AddListener(OnBoostStartInternal);
             Handler.OnBoostEnd.AddListener(OnBoostEndInternal);
-
+            PrewarmPool(m_PrewarmCount);
             HideInternal();
         }
 
@@ -67,11 +65,6 @@ namespace Rush
 
         private void OnDestroy()
         {
-            foreach (var comboButton in m_ComboButtons)
-            {
-                comboButton.ComboButton.onClick.RemoveAllListeners();
-            }
-
             Handler.OnBoostStart.RemoveListener(OnBoostStartInternal);
             Handler.OnBoostEnd.RemoveListener(OnBoostEndInternal);
         }
@@ -84,7 +77,7 @@ namespace Rush
 
             m_BoostElapsed += Time.deltaTime;
             float remaining = Mathf.Max(0f, m_BoostDuration - m_BoostElapsed);
-            SetSliderValueInternal(remaining, m_BoostDuration);
+            SetSliderValueInternal(remaining);
         }
 
         // --- Boost Start / End ---
@@ -95,41 +88,93 @@ namespace Rush
             if (boostField == null) return;
 
             int overflow = Mathf.Max(0, comboCount - boostField.BoostThreshold);
-            m_TotalComboCount = boostField.CalculateComboCount(overflow);
-            m_RemainingCombo = m_TotalComboCount;
-            m_PressedCombo = 0;
+            int buttonCount = boostField.CalculateComboCount(overflow); // 1 + overflow
 
+            m_PressedCombo = 0;
             m_BoostDuration = duration;
             m_BoostElapsed = 0f;
             m_IsBoostActive = true;
 
             SetupSliderInternal(duration);
-            SetComboTextInternal(m_PressedCombo, m_TotalComboCount);
+            SetComboTextInternal(m_PressedCombo);
             ShowInternal();
-            ShowComboButtonAtRandomPositionInternal();
+
+            // Spawn sejumlah button sekaligus, semuanya aktif sampai boost selesai
+            SpawnActiveButtonsInternal(buttonCount);
         }
 
         private void OnBoostEndInternal()
         {
             m_IsBoostActive = false;
-            HideComboButtonInternal();
+            ReturnAllActiveButtonsToPool();
             HideInternal();
+        }
+
+        // --- Pool ---
+
+        private void PrewarmPool(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                ComboButtonView btn = CreateNewButton();
+                m_ButtonPool.Add(btn);
+            }
+        }
+
+        private void SpawnActiveButtonsInternal(int count)
+        {
+            ReturnAllActiveButtonsToPool();
+
+            for (int i = 0; i < count; i++)
+            {
+                ComboButtonView btn = GetFromPool();
+                RepositionButtonInternal(btn);
+                btn.gameObject.SetActive(true);
+                m_ActiveButtons.Add(btn);
+            }
+        }
+
+        private ComboButtonView GetFromPool()
+        {
+            foreach (ComboButtonView btn in m_ButtonPool)
+            {
+                if (!btn.gameObject.activeSelf)
+                    return btn;
+            }
+
+            ComboButtonView newBtn = CreateNewButton();
+            m_ButtonPool.Add(newBtn);
+            return newBtn;
+        }
+
+        private ComboButtonView CreateNewButton()
+        {
+            ComboButtonView btn = Instantiate(m_ComboButtonPrefab, m_ComboButtonSpawnPoint.parent);
+            btn.ComboButton.onClick.AddListener(() => OnComboButtonPressedInternal(btn));
+            btn.gameObject.SetActive(false);
+            return btn;
+        }
+
+        private void ReturnAllActiveButtonsToPool()
+        {
+            foreach (ComboButtonView btn in m_ActiveButtons)
+                btn.gameObject.SetActive(false);
+
+            m_ActiveButtons.Clear();
         }
 
         // --- Combo Button ---
 
         private void OnComboButtonPressedInternal(ComboButtonView pressedButton)
         {
-            m_PressedCombo++;
-            m_RemainingCombo--;
+            if (!m_IsBoostActive) return;
 
-            SetComboTextInternal(m_PressedCombo, m_TotalComboCount);
+            m_PressedCombo++;
+            SetComboTextInternal(m_PressedCombo);
             m_OnComboButtonPressed?.Invoke();
 
-            if (m_RemainingCombo > 0)
-                RepositionButtonInternal(pressedButton);
-            else
-                HideComboButtonInternal();
+            // Reposisi button yang ditekan — tetap aktif, tidak disembunyikan
+            RepositionButtonInternal(pressedButton);
         }
 
         // --- Internal Helpers ---
@@ -141,25 +186,6 @@ namespace Rush
                 + new Vector3(randomOffset.x, randomOffset.y, 0f);
         }
 
-        private void ShowComboButtonAtRandomPositionInternal()
-        {
-            foreach (var comboButton in m_ComboButtons)
-            {
-                Vector2 randomOffset = Random.insideUnitCircle * m_ComboButtonSpawnRadius;
-                comboButton.transform.position = m_ComboButtonSpawnPoint.position
-                    + new Vector3(randomOffset.x, randomOffset.y, 0f);
-                comboButton.gameObject.SetActive(true);
-            }
-        }
-
-        private void HideComboButtonInternal()
-        {
-            foreach (var comboButton in m_ComboButtons)
-            {
-                comboButton.gameObject.SetActive(false);
-            }
-        }
-
         private void SetupSliderInternal(float totalDuration)
         {
             if (m_ComboStateDurationSlider == null) return;
@@ -168,13 +194,13 @@ namespace Rush
             m_ComboStateDurationSlider.value = totalDuration;
         }
 
-        private void SetSliderValueInternal(float remaining, float total)
+        private void SetSliderValueInternal(float remaining)
         {
             if (m_ComboStateDurationSlider == null) return;
             m_ComboStateDurationSlider.value = remaining;
         }
 
-        private void SetComboTextInternal(int pressed, int total)
+        private void SetComboTextInternal(int pressed)
         {
             if (m_ComboStateCountText == null) return;
             m_ComboStateCountText.text = $"{pressed}x";

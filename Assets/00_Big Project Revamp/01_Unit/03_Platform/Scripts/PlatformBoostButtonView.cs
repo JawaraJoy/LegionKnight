@@ -1,6 +1,7 @@
 using LegionKnight;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Rush
@@ -20,7 +21,23 @@ namespace Rush
         [SerializeField]
         private CanvasGroup m_CanvasGroup;
 
+        [Header("Events")]
+        [SerializeField]
+        private UnityEvent<float> m_OnBoostFilled = new(); // (fillAmount 0-1) dipanggil tiap fill berubah
+        [SerializeField]
+        private UnityEvent m_OnBoostFull = new();          // dipanggil saat fill mencapai 1 (threshold tercapai)
+        [SerializeField]
+        private UnityEvent m_OnBoostBackToZero = new();    // dipanggil saat fill kembali ke 0
+        [SerializeField]
+        private UnityEvent<int> m_OnBoostOverflowChanged = new(); // (overflow) dipanggil tiap overflow berubah
+
+        public UnityEvent<float> OnBoostFilled => m_OnBoostFilled;
+        public UnityEvent OnBoostFull => m_OnBoostFull;
+        public UnityEvent OnBoostBackToZero => m_OnBoostBackToZero;
+        public UnityEvent<int> OnBoostOverflowChanged => m_OnBoostOverflowChanged;
+
         private PlatformHandler m_Handler;
+        private float m_LastFill = -1f; // track fill sebelumnya untuk deteksi full & zero
 
         private PlatformHandler Handler
         {
@@ -42,7 +59,6 @@ namespace Rush
             Handler.OnPrepare.AddListener(OnPrepareInternal);
             Handler.OnPerfectCountChanged.AddListener(OnPerfectCountChangedInternal);
 
-            // State awal
             SetCanvasInteractableInternal(false);
             SetOverflowTextVisibleInternal(false);
         }
@@ -72,7 +88,7 @@ namespace Rush
             SetCanvasInteractableInternal(false);
             SetOverflowTextVisibleInternal(false);
             SetStockTextInternal(Handler.CurrentBoostStock, Handler.Config.BoostField.MaxBoostStock);
-            SetFillInternal(0);
+            SetFillInternal(0f);
         }
 
         // --- Boost Enabled / Disabled ---
@@ -82,12 +98,14 @@ namespace Rush
             SetCanvasInteractableInternal(true);
             SetOverflowTextVisibleInternal(overflow > 0);
             SetOverflowTextInternal(overflow);
+            m_OnBoostOverflowChanged?.Invoke(overflow);
         }
 
         private void OnBoostDisabledInternal()
         {
             SetCanvasInteractableInternal(false);
             SetOverflowTextVisibleInternal(false);
+            m_OnBoostOverflowChanged?.Invoke(0);
         }
 
         // --- Stock Changed ---
@@ -106,8 +124,19 @@ namespace Rush
         private void OnPerfectCountChangedInternal(int currentCount)
         {
             int threshold = Handler.Config.BoostField.BoostThreshold;
-            float fill = threshold > 0 ? (float)currentCount / threshold : 0f;
-            SetFillInternal(Mathf.Clamp01(fill));
+            float fill = threshold > 0 ? Mathf.Clamp01((float)currentCount / threshold) : 0f;
+
+            SetFillInternal(fill);
+
+            // OnBoostFull — tepat saat fill pertama kali mencapai 1
+            if (fill >= 1f && m_LastFill < 1f)
+                m_OnBoostFull?.Invoke();
+
+            // OnBoostBackToZero — saat fill kembali ke 0 dari nilai sebelumnya
+            if (fill <= 0f && m_LastFill > 0f)
+                m_OnBoostBackToZero?.Invoke();
+
+            m_LastFill = fill;
         }
 
         // --- Setters ---
@@ -116,6 +145,10 @@ namespace Rush
         {
             if (m_BoostFillImage == null) return;
             m_BoostFillImage.fillAmount = fill;
+
+            // Hanya invoke saat fill bertambah
+            if (fill > m_LastFill)
+                m_OnBoostFilled?.Invoke(fill);
         }
 
         private void SetCanvasInteractableInternal(bool interactable)

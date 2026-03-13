@@ -21,23 +21,11 @@ namespace Rush
 
         [SerializeField, Tooltip("Durasi minimum boost (detik)")]
         private float m_MinBoostDuration = 1f;
+
         [SerializeField, Tooltip("Tambahan durasi boost per 1 perfect combo stack (detik)")]
         private float m_BoostDurationPerStack = 1f;
 
-        [Header("Combo")]
-        [SerializeField, Tooltip("Minimal jumlah combo button saat boost aktif")]
-        private int m_MinComboCount = 1;
-        [SerializeField, Tooltip("Tambahan combo per 1 overflow perfect")]
-        private int m_ComboPerOverflow = 1;
-
         public int BoostThreshold => m_BoostThreshold;
-        public int MinComboCount => m_MinComboCount;
-        public int ComboPerOverflow => m_ComboPerOverflow;
-
-        public int CalculateComboCount(int overflow)
-        {
-            return m_MinComboCount + (overflow * m_ComboPerOverflow);
-        }
         public float BoostSpeed => m_BoostSpeed;
         public float PostBoostSpawnDelay => m_PostBoostSpawnDelay;
         public int MaxBoostStock => m_MaxBoostStock;
@@ -45,8 +33,15 @@ namespace Rush
         public float BoostDurationPerStack => m_BoostDurationPerStack;
 
         /// <summary>
-        /// Hitung durasi boost berdasarkan combo count.
-        /// Durasi = max(MinBoostDuration, comboCount x BoostDurationPerStack)
+        /// Jumlah combo button = 1 (minimum) + overflow perfect landing di atas threshold.
+        /// </summary>
+        public int CalculateComboCount(int overflow)
+        {
+            return 1 + overflow;
+        }
+
+        /// <summary>
+        /// Durasi boost = max(MinBoostDuration, comboCount x BoostDurationPerStack)
         /// </summary>
         public float CalculateBoostDuration(int comboCount)
         {
