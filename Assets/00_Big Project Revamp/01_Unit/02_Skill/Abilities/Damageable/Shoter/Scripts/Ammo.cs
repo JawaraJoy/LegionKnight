@@ -13,7 +13,6 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private bool m_CanMove = true;
 
-
         [SerializeField]
         protected UnityEvent<AbilityContext> m_OnShot;
 
@@ -35,7 +34,6 @@ namespace Rush
         private Vector3 m_StartPosition;
         public bool IsActive => gameObject.activeSelf;
         private HashSet<ITargetable> m_HitTargets = new();
-
 
         private void OnEnable()
         {
@@ -69,10 +67,17 @@ namespace Rush
 
             m_OnShot?.Invoke(m_AbilityContext);
 
-            // Hanya face target secara instan jika homing
-            // Non-homing mengikuti rotasi shooter (DeliverTransform)
-            if (m_Config.TargetingDistributeMode == TargetingMode.Homing)
+            if (m_Config.LookAtTargetOnShot)
+            {
+                // LookAtTargetOnShot: rotate instan ke target saat ditembakkan,
+                // terlepas dari TargetingMode (Homing atau tidak)
                 FaceTargetInstant(targetable);
+            }
+            else if (m_Config.TargetingDistributeMode == TargetingMode.Homing)
+            {
+                // Homing tanpa LookAtTargetOnShot tetap face target di awal
+                FaceTargetInstant(targetable);
+            }
 
             if (m_Config.InitialWanderAngle > 0)
             {
@@ -130,7 +135,6 @@ namespace Rush
 
             Vector3 move = m_MoveDirection * distance;
 
-            // sway kiri kanan
             if (m_Config.SwayAmplitude > 0)
             {
                 float sway =
@@ -142,16 +146,13 @@ namespace Rush
 
             transform.Translate(move, Space.Self);
 
-            // arc (melambung)
             if (m_Config.ArcHeight > 0)
             {
                 float progress = m_TraveledDistance / Mathf.Max(1f, m_Config.MaxDistance);
-
                 float arc = Mathf.Sin(progress * Mathf.PI) * m_Config.ArcHeight;
 
                 Vector3 pos = transform.position;
                 pos.y += arc * Time.deltaTime;
-
                 transform.position = pos;
             }
 
@@ -237,10 +238,12 @@ namespace Rush
             if (newTarget != null)
                 m_Targetable = newTarget;
         }
+
         public virtual void OnSpawnFromPool()
         {
             m_HitTargets.Clear();
         }
+
         protected virtual bool IsValidHit(GameObject other)
         {
             if (!other.TryGetComponent(out ITargetable target))

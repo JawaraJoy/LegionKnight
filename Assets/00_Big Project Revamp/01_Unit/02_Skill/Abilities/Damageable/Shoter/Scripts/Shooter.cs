@@ -85,7 +85,7 @@ namespace Rush
                 case FireMode.Instant:
                     for (int i = 0; i < fireCount; i++)
                     {
-                        SpawnSingle(i, fireCount, targets);
+                        SpawnSingle(i, i, fireCount, targets);
                     }
                     yield break;
 
@@ -95,8 +95,10 @@ namespace Rush
                     {
                         for (int i = 0; i < burstCount && fired < fireCount; i++)
                         {
-                            int index = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
-                            SpawnSingle(index, fireCount, targets);
+                            // shapeIndex untuk posisi/bentuk spawn
+                            // fired sebagai targetIndex supaya distribusi target merata
+                            int resolvedShapeIndex = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
+                            SpawnSingle(resolvedShapeIndex, fired, fireCount, targets);
                             fired++;
                             yield return new WaitForSeconds(fireInterval);
                         }
@@ -108,8 +110,8 @@ namespace Rush
                 default: // Interval / Loop / PingPong / Random
                     for (int i = 0; i < fireCount; i++)
                     {
-                        int index = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
-                        SpawnSingle(index, fireCount, targets);
+                        int resolvedShapeIndex = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
+                        SpawnSingle(resolvedShapeIndex, i, fireCount, targets);
                         yield return new WaitForSeconds(fireInterval);
                     }
                     break;
@@ -146,7 +148,11 @@ namespace Rush
             }
         }
 
-        protected virtual void SpawnSingle(int index, int totalCount, List<ITargetable> targets)
+        /// <param name="shapeIndex">Index untuk menentukan posisi/bentuk spawn dari SpawnShape</param>
+        /// <param name="targetIndex">Index urutan tembakan global, dipakai untuk distribusi target</param>
+        /// <param name="totalCount">Total projectile yang ditembakkan</param>
+        /// <param name="targets">List target yang tersedia</param>
+        protected virtual void SpawnSingle(int shapeIndex, int targetIndex, int totalCount, List<ITargetable> targets)
         {
             Ammo ammo = GetFromPool();
 
@@ -155,12 +161,12 @@ namespace Rush
             SpawnShapeConfig shape = m_ShooterAbilityConfig.SpawnShape;
             if (shape != null)
             {
-                shape.GetSpawnTransform(m_DeliverTransform, index, totalCount, out pos, out rot);
+                shape.GetSpawnTransform(m_DeliverTransform, shapeIndex, totalCount, out pos, out rot);
             }
 
             ammo.transform.SetPositionAndRotation(pos, rot);
 
-            ITargetable target = ResolveTarget(index, targets);
+            ITargetable target = ResolveTarget(targetIndex, targets);
 
             ammo.Shot(target);
 
@@ -168,7 +174,7 @@ namespace Rush
                 m_ActiveProjectiles.Add(ammo);
         }
 
-        private ITargetable ResolveTarget(int shotIndex, List<ITargetable> targets)
+        private ITargetable ResolveTarget(int targetIndex, List<ITargetable> targets)
         {
             if (targets == null || targets.Count == 0)
                 return null;
@@ -183,7 +189,7 @@ namespace Rush
 
                 case TargetDistributeMode.SplitTargets:
                 default:
-                    return targets[shotIndex % targets.Count];
+                    return targets[targetIndex % targets.Count];
             }
         }
 
@@ -226,7 +232,6 @@ namespace Rush
 
             ammo.transform.SetParent(null);
             ammo.gameObject.SetActive(true);
-            //ammo.Init(m_AbilityContext, m_AmmoConfig);
             ammo.OnSpawnFromPool();
             return ammo;
         }
