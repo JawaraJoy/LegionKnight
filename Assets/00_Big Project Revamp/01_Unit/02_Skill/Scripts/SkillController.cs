@@ -164,8 +164,8 @@ namespace Rush
 
             if (HasSkillActivatorInternal(config.BaseInfo.Id, out Skill skill))
             {
-                //skill.Init(config, m_ModuleContext);
                 skill.Progression.AddLevel(1);
+                //skill.Init(config, m_ModuleContext);
             }
             else
             {

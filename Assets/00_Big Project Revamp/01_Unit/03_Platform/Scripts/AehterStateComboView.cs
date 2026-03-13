@@ -45,9 +45,9 @@ namespace Rush
         {
             foreach (var comboButton in m_ComboButtons)
             {
-                comboButton.ComboButton.onClick.AddListener(OnComboButtonPressedInternal);
+                ComboButtonView btn = comboButton; // capture untuk lambda
+                btn.ComboButton.onClick.AddListener(() => OnComboButtonPressedInternal(btn));
             }
-            //m_ComboButtons.ComboButton.onClick.AddListener(OnComboButtonPressedInternal);
 
             Handler.OnBoostStart.AddListener(OnBoostStartInternal);
             Handler.OnBoostEnd.AddListener(OnBoostEndInternal);
@@ -69,9 +69,8 @@ namespace Rush
         {
             foreach (var comboButton in m_ComboButtons)
             {
-                comboButton.ComboButton.onClick.RemoveListener(OnComboButtonPressedInternal);
+                comboButton.ComboButton.onClick.RemoveAllListeners();
             }
-            //m_ComboButtons.ComboButton.onClick.RemoveListener(OnComboButtonPressedInternal);
 
             Handler.OnBoostStart.RemoveListener(OnBoostStartInternal);
             Handler.OnBoostEnd.RemoveListener(OnBoostEndInternal);
@@ -119,32 +118,38 @@ namespace Rush
 
         // --- Combo Button ---
 
-        private void OnComboButtonPressedInternal()
+        private void OnComboButtonPressedInternal(ComboButtonView pressedButton)
         {
             m_PressedCombo++;
             m_RemainingCombo--;
 
-            HideComboButtonInternal();
             SetComboTextInternal(m_PressedCombo, m_TotalComboCount);
             m_OnComboButtonPressed?.Invoke();
 
             if (m_RemainingCombo > 0)
-                ShowComboButtonAtRandomPositionInternal();
+                RepositionButtonInternal(pressedButton);
+            else
+                HideComboButtonInternal();
         }
 
         // --- Internal Helpers ---
 
+        private void RepositionButtonInternal(ComboButtonView button)
+        {
+            Vector2 randomOffset = Random.insideUnitCircle * m_ComboButtonSpawnRadius;
+            button.transform.position = m_ComboButtonSpawnPoint.position
+                + new Vector3(randomOffset.x, randomOffset.y, 0f);
+        }
+
         private void ShowComboButtonAtRandomPositionInternal()
         {
-            
             foreach (var comboButton in m_ComboButtons)
             {
                 Vector2 randomOffset = Random.insideUnitCircle * m_ComboButtonSpawnRadius;
-                comboButton.transform.position = m_ComboButtonSpawnPoint.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
+                comboButton.transform.position = m_ComboButtonSpawnPoint.position
+                    + new Vector3(randomOffset.x, randomOffset.y, 0f);
                 comboButton.gameObject.SetActive(true);
             }
-            //m_ComboButtons.transform.position = m_ComboButtonSpawnPoint.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
-            //m_ComboButtons.gameObject.SetActive(true);
         }
 
         private void HideComboButtonInternal()
@@ -153,7 +158,6 @@ namespace Rush
             {
                 comboButton.gameObject.SetActive(false);
             }
-            //m_ComboButtons.gameObject.SetActive(false);
         }
 
         private void SetupSliderInternal(float totalDuration)

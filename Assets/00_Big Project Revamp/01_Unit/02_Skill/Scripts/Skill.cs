@@ -114,7 +114,8 @@ namespace Rush
             m_SkillContext = new SkillContext(this, ownerContext);
 
             m_OnInit?.Invoke(m_SkillContext);
-
+            m_Progression.SetLevel(skillConfig.LevelSet.Level);
+            m_Progression.SetMaxLevel(skillConfig.LevelSet.MaxLevel);
             ChangeState(m_SkillConfig.InitializeState);
             SpawnDelivers();
             Debug.Log($"Skill {m_SkillConfig.BaseInfo.Id} initialized with state {m_State}. Called Init {++calledInit} times.");

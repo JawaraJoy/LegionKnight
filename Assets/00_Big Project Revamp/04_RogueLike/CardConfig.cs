@@ -18,23 +18,25 @@ namespace Rush
             Unit player = RushPlayer.Instance.Unit;
             if (player.HasBind(out SkillController skillController))
             {
-                if (SkillConfigs.Length > 0)
+                if (SkillConfigs.Length == 0)
                 {
                     Debug.LogWarning($"Card {name} has no skill config to add.");
-                    for (int i = 0; i < SkillConfigs.Length; i++)
+                    return; // atau skip blok ini
+                }
+
+                for (int i = 0; i < SkillConfigs.Length; i++)
+                {
+                    CardSkillField skillConfig = SkillConfigs[i];
+                    if (skillConfig != null)
                     {
-                        CardSkillField skillConfig = SkillConfigs[i];
-                        if (skillConfig != null)
+                        switch (skillConfig.CardPurpose)
                         {
-                            switch (skillConfig.CardPurpose)
-                            {
-                                case CardPurpose.Activation:
-                                    skillController.ForceActive(skillConfig.SkillConfig);
-                                    break;
-                                case CardPurpose.SkillUp:
-                                    skillController.AddNewSkill(skillConfig.SkillConfig);
-                                    break;
-                            }
+                            case CardPurpose.Activation:
+                                skillController.ForceActive(skillConfig.SkillConfig);
+                                break;
+                            case CardPurpose.SkillUp:
+                                skillController.AddNewSkill(skillConfig.SkillConfig);
+                                break;
                         }
                     }
                 }
