@@ -9,6 +9,10 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private PlatformConfig m_PlatformConfig;
         [SerializeField]
+        private ParticleSystem m_PersonalityVFX;
+        [SerializeField]
+        private SpriteRenderer m_SpriteView;
+        [SerializeField]
         private PlatformAttack m_PlatformAttack;
         [SerializeField]
         private Transform m_TouchDownSpot;
@@ -97,6 +101,15 @@ namespace Rush
         public void IniPlatform(PlatformConfig platformConfig)
         {
             m_PlatformConfig = platformConfig;
+            if (m_PersonalityVFX != null)
+            {
+                var main = m_PersonalityVFX.main;
+                main.startColor = m_PlatformConfig.PersonalityColor;
+            }
+            if (m_SpriteView != null)
+            {
+                m_SpriteView.sprite = m_PlatformConfig.CollectibleField.SplashImage;
+            }
         }
         // initialize second
         public void Init(SkillConfig config, IModuleContext moduleContext)

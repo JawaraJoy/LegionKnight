@@ -62,6 +62,8 @@ namespace Rush
 
                 if (target.ModuleContext.Unit.HasBind(out IDamageable damageable))
                 {
+                    if (m_HealAmount <= 0)
+                        break;
                     damageable.Heal(this);
                     m_OnHealAmount?.Invoke(m_HealAmount);
                 }

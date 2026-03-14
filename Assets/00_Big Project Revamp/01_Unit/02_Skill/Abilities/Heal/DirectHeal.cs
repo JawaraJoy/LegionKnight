@@ -195,6 +195,12 @@ namespace Rush
             if (healer == null)
                 return;
 
+            RushGameManager.Instance.StartCoroutine(ReturningPool(healer, 1f));
+        }
+
+        private IEnumerator ReturningPool(Healer healer, float wait)
+        {
+            yield return new WaitForSeconds(wait);
             healer.gameObject.SetActive(false);
             healer.transform.SetParent(m_DeliverTransform);
 

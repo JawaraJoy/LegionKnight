@@ -79,6 +79,13 @@ namespace Rush
             vfx.gameObject.SetActive(true);
             vfx.Play();
         }
+        public void Stop()
+        {
+            foreach (var vfx in m_Active)
+            {
+                vfx.ForceStop();
+            }
+        }
 
         private void SetupTransform(VfxPLayer vfx)
         {

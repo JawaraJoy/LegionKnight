@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public abstract class SpawnShapeConfig : Configuration
+    public abstract class SpawnShapeConfig : ScriptableObject
     {
         /// <summary>
         /// Returns spawn position and rotation for each projectile index.

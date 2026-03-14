@@ -9,6 +9,8 @@ namespace Rush
         [SerializeField]
         private Platform2D m_PlatformPrefab;
         [SerializeField]
+        private Color m_PersonalityColor = Color.white;
+        [SerializeField]
         private int m_PrewarmCount = 5;
         [SerializeField]
         private float m_WidthRate = 3f;
@@ -22,6 +24,7 @@ namespace Rush
         private PlatformSkillField m_LeftSkillField;
         [SerializeField]
         private PlatformSkillField m_RightSkillField;
+        public Color PersonalityColor => m_PersonalityColor;
         public float PerfectTouchRange => m_PerfectTouchRange;
         public float Speed => m_Speed;
         public int PrewarmCount => m_PrewarmCount;
