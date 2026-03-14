@@ -415,11 +415,15 @@ namespace Rush
             });
 
             platform.OnBoostEnd.RemoveAllListeners();
-            platform.OnBoostEnd.AddListener(() => m_OnBoostEnd?.Invoke());
+            platform.OnBoostEnd.AddListener(() => OnBoostEndInvoke());
 
             return platform;
         }
-
+        private void OnBoostEndInvoke()
+        {
+            m_OnBoostEnd?.Invoke();
+            RushPlayer.Instance.Jump.SetCanJump(true);
+        }
         private void ReturnToPoolInternal(Platform2D platform)
         {
             string id = platform.PlatformConfig.BaseInfo.Id;
@@ -532,6 +536,8 @@ namespace Rush
             m_ActiveBoostElapsed = 0f;
             m_OnBoostStart?.Invoke(duration, comboCount);
             m_CurrentTouchedPlatform.Boost(boostField, duration, comboCount);
+
+            RushPlayer.Instance.Jump.SetCanJump(false);
         }
 
         private void OnGlobalPerfectLanding(ISkillContext context)

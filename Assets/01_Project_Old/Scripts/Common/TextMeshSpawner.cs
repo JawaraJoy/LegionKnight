@@ -30,6 +30,7 @@ namespace LegionKnight
 
         public void SpawnText(int val)
         {
+            if (val <= 0) return;
             m_Spawned = m_TextMeshPrefab.Spawn(GetRadiusSpawnPosition(), GetText(val), transform);
 
             var textMesh = m_Spawned.GetTextMesh();

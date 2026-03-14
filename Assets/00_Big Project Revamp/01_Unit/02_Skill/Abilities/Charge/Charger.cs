@@ -70,6 +70,7 @@ namespace Rush
                         if (skillActivator.SkillConfig.Category == m_ChargeConfig.SkillCategoryToCharge)
                         {
                             skillActivator.AddCharge(m_ChargeAmount);
+                            
                         }
                     }
                 }

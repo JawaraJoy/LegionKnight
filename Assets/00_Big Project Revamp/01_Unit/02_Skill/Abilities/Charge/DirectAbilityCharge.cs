@@ -195,6 +195,11 @@ namespace Rush
             if (charger == null)
                 return;
 
+            RushGameManager.Instance.StartCoroutine(ReturningPool(charger, 1f));
+        }
+        private IEnumerator ReturningPool(Charger charger, float wait)
+        {
+            yield return new WaitForSeconds(wait);
             charger.gameObject.SetActive(false);
             charger.transform.SetParent(m_DeliverTransform);
 
