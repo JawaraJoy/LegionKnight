@@ -120,7 +120,7 @@ namespace Rush
             if (unit.HasBind(out SkillController skillController))
             {
                 SkillConfig[] skillConfigs = PlatformUtility.GetPlatformSkillConfigs(m_PlatformConfig).ToArray();
-                skillController.AddNewSkills(skillConfigs);
+                skillController.AddNewSkillsWithoutAddLevel(skillConfigs);
                 Debug.Log("Skill platform Added");
                 Skill attackSkill = skillController.GetSkillActivator(m_PlatformConfig.AttackSkill);
                 if (attackSkill.HasAbility(attackSkill.SkillConfig.AbilitySets[0].BaseInfo.Id, out AbilityDeliver abilityDeliver))

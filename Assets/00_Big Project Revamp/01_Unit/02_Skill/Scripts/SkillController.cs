@@ -154,6 +154,7 @@ namespace Rush
         {
             AddNewSkillsInternal(configs);
         }
+        
         public void AddNewSkill(SkillConfig config)
         {
             AddNewSkillInternal(config);
@@ -165,6 +166,30 @@ namespace Rush
             if (HasSkillActivatorInternal(config.BaseInfo.Id, out Skill skill))
             {
                 skill.Progression.AddLevel(1);
+                //skill.Init(config, m_ModuleContext);
+            }
+            else
+            {
+                RegisterSkillInternal(config);
+            }
+        }
+        
+        public void AddNewSkillWithoutAddLevel(SkillConfig config)
+        {
+            AddNewSkillWithoutAddLevelInternal(config);
+        }
+        public void AddNewSkillsWithoutAddLevel(SkillConfig[] configs)
+        {
+            foreach (SkillConfig config in configs)
+            {
+                AddNewSkillWithoutAddLevelInternal(config);
+            }
+        }
+        private void AddNewSkillWithoutAddLevelInternal(SkillConfig config)
+        {
+            if (!m_ModuleContext.Initialized) return;
+            if (HasSkillActivatorInternal(config.BaseInfo.Id, out Skill skill))
+            {
                 //skill.Init(config, m_ModuleContext);
             }
             else
