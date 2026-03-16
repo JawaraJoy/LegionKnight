@@ -388,6 +388,15 @@ namespace Rush
         {
             AddShieldInternal(amount, callAddRemoveEvent);
         }
+        public void AddShieldBasedOnDefendRate(float rate, bool callAddRemoveEvent)
+        {
+            AddShieldBasedDefendRateInternal(rate, callAddRemoveEvent);
+        }
+        private void AddShieldBasedDefendRateInternal(float rate, bool callAddRemoveEvent)
+        {
+            int amount = Mathf.RoundToInt(m_Defense * rate);
+            AddShieldInternal(amount, callAddRemoveEvent);
+        }
         protected virtual void AddShieldInternal(int amount, bool callAddRemoveEvent)
         {
             m_Shield += amount;
