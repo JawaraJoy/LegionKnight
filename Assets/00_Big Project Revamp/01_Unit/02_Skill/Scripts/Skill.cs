@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -341,14 +342,23 @@ namespace Rush
             if (m_State == SkillActivationState.Silenced)
                 return;
 
-            foreach (AbilityDeliver deliver in m_Delivers)
+            float delay = m_SkillConfig.Activation.IntervalEachAbilityActive;
+            RushGameManager.Instance.StartCoroutine(ForceActivateAllWithDelay(delay));
+        }
+        private IEnumerator ForceActivateAllWithDelay(float delay)
+        {
+            for (int i = 0; i < m_Delivers.Count; i++)
             {
-                ActivateInternal(deliver);
+                ForceActivateInternal(m_Delivers[i].AbilityConfig);
+                yield return new WaitForSeconds(delay);
             }
-
             m_OnActivates?.Invoke(this);
         }
         public void ForceActivate(AbilityConfig config)
+        {
+            ForceActivateInternal(config);
+        }
+        private void ForceActivateInternal(AbilityConfig config)
         {
             if (m_State == SkillActivationState.Silenced)
                 return;

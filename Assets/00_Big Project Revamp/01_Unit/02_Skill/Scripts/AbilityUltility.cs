@@ -374,12 +374,26 @@ namespace Rush
             AbilityConfig abilityConfig = senderContext.AbilityDeliver.AbilityConfig;
             StatusEffectConfig[] statusEffects = abilityConfig.StatusEffectOnDelivered;
             
-            if (statusEffects.Length <= 0) return;
+            
             if (unitTarget.HasBind(out StatusEffectController controller))
             {
-                foreach (var effect in statusEffects)
+                if (statusEffects.Length >= 0)
                 {
-                    controller.ApplyEffector(effect, senderContext, unitTarget);
+                    foreach (var effect in statusEffects)
+                    {
+                        controller.ApplyEffector(effect, senderContext, unitTarget);
+                    }
+                }
+            }
+            if (senderContext.SkillContext.ModuleContext.Unit.HasBind(out StatusEffectController selfController))
+            {
+                StatusEffectConfig[] selfEffects = abilityConfig.StatusEffectOnSelf;
+                if (selfEffects.Length >= 0)
+                {
+                    foreach (var effect in selfEffects)
+                    {
+                        selfController.ApplyEffector(effect, senderContext, senderContext.SkillContext.ModuleContext.Unit);
+                    }
                 }
             }
         }
