@@ -27,6 +27,10 @@ namespace Rush
         [SerializeField]
         private float m_Range = 5f;
         [SerializeField]
+        [Tooltip("If true, use all targets found in range instead of MaxTargetCount")]
+        private bool m_UseAllTargetsInRange = false;
+        public bool UseAllTargetsInRange => m_UseAllTargetsInRange;
+        [SerializeField]
         private int m_MaxTargetCount = 1;
         [Space(10)]
         [SerializeField]

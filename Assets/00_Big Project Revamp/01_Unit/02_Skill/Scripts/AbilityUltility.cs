@@ -167,7 +167,9 @@ namespace Rush
 
             AbilityConfig config = deliver.AbilityConfig;
             TargetPriority priority = config.TargetPriority;
-            int maxCount = Mathf.Max(1, config.MaxTargetCount);
+            int maxCount = config.UseAllTargetsInRange 
+                ? Mathf.Min(candidates.Count, config.MaxTargetCount)  // ambil semua tapi max tetap berlaku
+                : Mathf.Max(1, config.MaxTargetCount);
 
             Vector3 origin = deliver.DeliverTransform.position;
 
