@@ -42,11 +42,11 @@ namespace Rush
         {
             var setup = m_DirectDamageAbilityConfig.SpawningSetup;
 
-            int fireCount = setup.FireCount;
+            int fireCount = m_AbilityConfig.UseAllTargetsInRange ? Mathf.Min(targets.Count, setup.FireCount) : setup.FireCount;
             FireMode mode = setup.FireMode;
 
             float interval = setup.FireInterval;
-            int burstCount = setup.BurstCount;
+            int burstCount = Mathf.Min(setup.BurstCount, fireCount);
             float burstInterval = setup.BurstInterval;
 
             int dir = 1;

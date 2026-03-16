@@ -317,7 +317,7 @@ namespace Rush
             for (int i = 0; i < count; i++)
             {
                 Unit unit = Instantiate(m_SummonConfig.UnitToSpawn.UnitPrefab, m_DeliverTransform);
-                unit.transform.LeanScale(unit.Config.UnitScale, 0.3f).setEaseLinear().setFrom(Vector3.one);
+                unit.transform.localScale = unit.Config.UnitScale;
                 unit.gameObject.SetActive(false);
                 unit.Init(m_SummonConfig.UnitToSpawn);
                 m_SummonedUnitPool.Enqueue(unit);
@@ -332,7 +332,7 @@ namespace Rush
                 unit = m_SummonedUnitPool.Dequeue();
             else
                 unit = Instantiate(m_SummonedConfig.UnitPrefab, m_DeliverTransform);
-                unit.transform.LeanScale(unit.Config.UnitScale, 0.3f).setEaseOutBack();
+                unit.transform.localScale = m_SummonedConfig.UnitScale;
 
             unit.transform.SetParent(null);
             unit.gameObject.SetActive(true);
