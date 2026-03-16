@@ -263,11 +263,11 @@ namespace Rush
             if (targetHeal == null) return;
             AbilityUltility.OnAbilityDeliveredInvoke(healer.AbilityContext, targetHeal);
             GameObject healerModule = healer.AbilityContext.SkillContext.ModuleContext.Module;
-            if (healerModule.TryGetComponent(out IHasSkills healerSkill))
+            if (healerModule.TryGetComponent(out SkillController healerSkill))
             {
                 AbilityUltility.OnSkillEventActivates(healerSkill, ForceActiveState.OnHealing);
             }
-            if (targetHeal.HasBind(out IHasSkills healedSkills))
+            if (targetHeal.HasBind(out SkillController healedSkills))
             {
                 AbilityUltility.OnSkillEventActivates(healedSkills, ForceActiveState.OnHealed);
             }
@@ -312,12 +312,12 @@ namespace Rush
             AbilityUltility.OnAbilityDeliveredInvoke(context, unitTaker);
 
             GameObject hitterModule = context.SkillContext.ModuleContext.Module;
-            if (hitterModule.TryGetComponent(out IHasSkills hitterSkill))
+            if (hitterModule.TryGetComponent(out SkillController hitterSkill))
             {
                 AbilityUltility.OnSkillEventActivates(hitterSkill, ForceActiveState.OnHit);
             }
 
-            if (unitTaker.HasBind(out IHasSkills hasSkill))
+            if (unitTaker.HasBind(out SkillController hasSkill))
             {
                 AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnGetHit);
             }
@@ -337,12 +337,12 @@ namespace Rush
                 return;
             }
             GameObject damagerModule = context.SkillContext.ModuleContext.Module;
-            if (damagerModule.TryGetComponent(out IHasSkills damagerSkill))
+            if (damagerModule.TryGetComponent(out SkillController damagerSkill))
             {
                 AbilityUltility.OnSkillEventActivates(damagerSkill, ForceActiveState.OnDamageDealed);
             }
 
-            if (unitTaker.HasBind(out IHasSkills hasSkill))
+            if (unitTaker.HasBind(out SkillController hasSkill))
             {
                 AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnDamageTaken);
             }
@@ -405,6 +405,14 @@ namespace Rush
             m_OnShieldChanged?.Invoke(m_Shield, m_MaxHealth);
             m_OnShieldExisted?.Invoke(m_Shield > 0);
             if (!callAddRemoveEvent) return;
+            if (amount < 0)
+            {
+                Unit unitTaker = m_ModuleContext.Unit;
+                if (unitTaker.HasBind(out SkillController hasSkill))
+                {
+                    AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnShieldDamageTaken);
+                }
+            }
             // call add remove event
         }
         public void AddShieldBasedOnMaxHealth(float rate, bool callAddRemoveEvent)

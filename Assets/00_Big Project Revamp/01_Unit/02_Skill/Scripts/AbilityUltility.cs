@@ -343,9 +343,9 @@ namespace Rush
                     targets.RemoveAt(i);
             }
         }
-        public static void OnSkillEventActivates(IHasSkills skillOwner, ForceActiveState filterState)
+        public static void OnSkillEventActivates(SkillController skillControllerOwner, ForceActiveState filterState)
         {
-            List<Skill> activators = new(skillOwner.Skills);
+            List<Skill> activators = new(skillControllerOwner.Skills);
             foreach (var activator in activators)
             {
                 ForceActiveState state = activator.SkillConfig.Activation.ForceActiveState;
