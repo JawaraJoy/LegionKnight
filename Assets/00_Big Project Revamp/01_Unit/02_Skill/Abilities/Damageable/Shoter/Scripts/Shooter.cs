@@ -116,6 +116,7 @@ namespace Rush
                     }
                     break;
             }
+
         }
 
         private int ResolveShapeIndex(FireMode mode, int shotIndex, int totalCount, ref int shapeIndex, ref int direction)

@@ -42,6 +42,7 @@ namespace Rush
             m_SpawnTime = Time.time;
             m_HomingTimer = 0f;
             m_StartPosition = transform.position;
+            m_CurrentLifeTimer = 0f;
         }
 
         private void OnDisable()

@@ -50,6 +50,7 @@ namespace Rush
         public StatModifierConfig Config => m_Config;
 
         private StatController m_TargetController;
+        public StatController TargetController => m_TargetController;
         public void Activate(AbilityContext context, StatController targetController)
         {
             ClearListeners();
@@ -73,12 +74,15 @@ namespace Rush
                 case HowStatRemoved.None:
                     break;
                 case HowStatRemoved.RemoveOnDurationEnd:
+                    m_OnDurationEnd.RemoveListener(OnDeactiveInvokeInternal);
                     m_OnDurationEnd.AddListener(OnDeactiveInvokeInternal);
                     break;
                 case HowStatRemoved.RemoveOnStackZero:
+                    m_OnStackEmpty.RemoveListener(OnDeactiveInvokeInternal);
                     m_OnStackEmpty.AddListener(OnDeactiveInvokeInternal);
                     break;
                 case HowStatRemoved.RemoveOnStackExceedMax:
+                    m_OnStackExceedMax.RemoveListener(OnDeactiveInvokeInternal);
                     m_OnStackExceedMax.AddListener(OnDeactiveInvokeInternal);
                     break;
             }
@@ -146,7 +150,7 @@ namespace Rush
             {
                 if (m_StackCount > m_Config.MaxStackCount)
                 {
-                    OnDeactiveInvoke();
+                    //OnDeactiveInvokeInternal();
                     m_OnStackExceedMax?.Invoke();
                 }
             }
@@ -154,7 +158,7 @@ namespace Rush
             {
                 if (m_StackCount <= 0)
                 {
-                    OnDeactiveInvoke();
+                    //OnDeactiveInvokeInternal();
                     m_OnStackEmpty?.Invoke();
                 }
             }
