@@ -355,13 +355,17 @@ namespace Rush
         }
         private void OnDeathInvoke(IAbilityContext context)
         {
+            Unit unitTaker = m_ModuleContext.Unit;
+            if (unitTaker.HasBind(out SkillController hasSkill))
+            {
+                AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnDeath);
+            }
             m_OnDeath?.Invoke(context);
             m_OnDeathDirection?.Invoke(context.AbilityDeliver.DeliverTransform);
             if (m_ModuleContext.Unit.IsPlayer)
             {
                 UnityService.Instance.ShowInterstitialAd();
-            } 
-            
+            }
         }
         protected virtual void SetCurrentDamageTakeInternal(int damage)
         {

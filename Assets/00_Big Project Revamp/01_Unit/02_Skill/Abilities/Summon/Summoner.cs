@@ -345,6 +345,11 @@ namespace Rush
             if (unit == null)
                 return;
 
+            Unit unitSummoner = m_AbilityContext.SkillContext.ModuleContext.Unit;
+            if (unitSummoner.HasBind(out SkillController hasSkill))
+            {
+                AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnSummonDeath);
+            }
             unit.gameObject.SetActive(false);
             unit.transform.SetParent(m_DeliverTransform);
 

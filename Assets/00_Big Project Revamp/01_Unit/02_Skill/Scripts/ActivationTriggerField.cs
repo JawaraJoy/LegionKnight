@@ -40,5 +40,7 @@ namespace Rush
         OnHealed,
         OnNormalTouch,
         OnPerfectTouch,
+        OnSummonDeath,
+        OnDeath,
     }
 }
