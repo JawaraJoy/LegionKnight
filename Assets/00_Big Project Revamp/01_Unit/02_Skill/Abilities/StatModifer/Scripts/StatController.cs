@@ -42,6 +42,16 @@ namespace Rush
             }
             return hasStatInfluencer;
         }
+        public void UpdateStack(AbilityContext abilityContext)
+        {
+            if (HasStatInfluencer(abilityContext, out StatModifier found))
+            {
+                if (found.IsActive)
+                {
+                    found.UpdateStack();
+                }
+            }
+        }
         public void AddModifier(AbilityContext abilityContext, StatController targetController)
         {
             if (HasStatInfluencer(abilityContext, out StatModifier found))

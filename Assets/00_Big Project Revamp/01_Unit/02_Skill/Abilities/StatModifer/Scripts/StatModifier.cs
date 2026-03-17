@@ -74,15 +74,15 @@ namespace Rush
                 case HowStatRemoved.None:
                     break;
                 case HowStatRemoved.RemoveOnDurationEnd:
-                    m_OnDurationEnd.RemoveListener(OnDeactiveInvokeInternal);
+                    //m_OnDurationEnd.RemoveListener(OnDeactiveInvokeInternal);
                     m_OnDurationEnd.AddListener(OnDeactiveInvokeInternal);
                     break;
                 case HowStatRemoved.RemoveOnStackZero:
-                    m_OnStackEmpty.RemoveListener(OnDeactiveInvokeInternal);
+                    //m_OnStackEmpty.RemoveListener(OnDeactiveInvokeInternal);
                     m_OnStackEmpty.AddListener(OnDeactiveInvokeInternal);
                     break;
                 case HowStatRemoved.RemoveOnStackExceedMax:
-                    m_OnStackExceedMax.RemoveListener(OnDeactiveInvokeInternal);
+                    //m_OnStackExceedMax.RemoveListener(OnDeactiveInvokeInternal);
                     m_OnStackExceedMax.AddListener(OnDeactiveInvokeInternal);
                     break;
             }
@@ -117,6 +117,11 @@ namespace Rush
             m_StackCount = 0;
             m_RemainingDuration = 0;
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+
+            if (m_TargetController.ModuleContext.Unit.HasBind(out SkillController skillController))
+            {
+                skillController.ForceActives(m_Config.InfluencedSkillToActivateOnStackEmpty);
+            }
         }
         private void SetStackInternal(int stack)
         {
@@ -150,7 +155,7 @@ namespace Rush
             {
                 if (m_StackCount > m_Config.MaxStackCount)
                 {
-                    //OnDeactiveInvokeInternal();
+                    OnDeactiveInvokeInternal();
                     m_OnStackExceedMax?.Invoke();
                 }
             }
@@ -158,7 +163,7 @@ namespace Rush
             {
                 if (m_StackCount <= 0)
                 {
-                    //OnDeactiveInvokeInternal();
+                    OnDeactiveInvokeInternal();
                     m_OnStackEmpty?.Invoke();
                 }
             }

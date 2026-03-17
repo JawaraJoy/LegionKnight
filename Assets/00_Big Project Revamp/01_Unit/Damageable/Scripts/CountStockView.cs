@@ -40,7 +40,7 @@ namespace Rush
             // prewarm here to avoid GC when showing the count stock view
             for (int i = 0; i < m_PrewarmCount; i++)
             {
-                CounterPieceView view = Instantiate(m_CountViewPrefab, m_CountViewParent);
+                CounterPieceView view = Instantiate(m_CountViewPrefab, m_CountViewParent, false);
                 m_Spawneds.Add(view);
                 view.Hide();
             }
@@ -54,7 +54,7 @@ namespace Rush
                 int spawnCount = count - m_Spawneds.Count;
                 for (int i = 0; i < spawnCount; i++)
                 {
-                    CounterPieceView view = Instantiate(m_CountViewPrefab, m_CountViewParent);
+                    CounterPieceView view = Instantiate(m_CountViewPrefab, m_CountViewParent, false);
                     m_Spawneds.Add(view);
                     view.Hide();
                 }

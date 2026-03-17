@@ -11,7 +11,7 @@ namespace Rush
         protected AmmoConfig m_Config;
 
         [SerializeField, MMReadOnly]
-        private bool m_CanMove = true;
+        private bool m_CanMove = false;
 
         [SerializeField]
         protected UnityEvent<AbilityContext> m_OnShot;
@@ -32,23 +32,29 @@ namespace Rush
         private float m_SpawnTime;
         private float m_HomingTimer;
         private Vector3 m_StartPosition;
+
         public bool IsActive => gameObject.activeSelf;
+
         private HashSet<ITargetable> m_HitTargets = new();
+
+        // -------------------------------------------------------------------------
+        // Unity Lifecycle
+        // -------------------------------------------------------------------------
 
         private void OnEnable()
         {
-            ResetLifetime();
+            // Hanya register ke UpdateBank — semua reset state dilakukan di OnSpawnFromPool
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
-            m_SpawnTime = Time.time;
-            m_HomingTimer = 0f;
-            m_StartPosition = transform.position;
-            m_CurrentLifeTimer = 0f;
         }
 
         private void OnDisable()
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
+
+        // -------------------------------------------------------------------------
+        // Init
+        // -------------------------------------------------------------------------
 
         public virtual void Init(AbilityContext context, AmmoConfig config)
         {
@@ -61,22 +67,50 @@ namespace Rush
             CacheMoveDirection();
         }
 
+        // -------------------------------------------------------------------------
+        // Pool
+        // -------------------------------------------------------------------------
+
+        /// <summary>
+        /// Dipanggil oleh Shooter.GetFromPool() setelah SetActive(true).
+        /// Reset semua state runtime supaya ammo bersih saat dipakai ulang.
+        /// m_CanMove sengaja false sampai Shot() dipanggil.
+        /// </summary>
+        public virtual void OnSpawnFromPool()
+        {
+            m_HitTargets.Clear();
+            m_CurrentLifeTimer = 0f;
+            m_TraveledDistance = 0f;
+            m_HomingTimer = 0f;
+            m_CanMove = false;
+            m_Targetable = null;
+            m_SpawnTime = Time.time;
+            m_StartPosition = transform.position;
+        }
+
+        // -------------------------------------------------------------------------
+        // Shot
+        // -------------------------------------------------------------------------
+
         public virtual void Shot(ITargetable targetable)
         {
             m_Targetable = targetable;
-            m_CanMove = true;
+            m_CanMove = true; // baru boleh gerak setelah Shot() dipanggil
 
             m_OnShot?.Invoke(m_AbilityContext);
 
+            Unit unitTaker = m_AbilityContext.SkillContext.ModuleContext.Unit;
+            if (unitTaker.HasBind(out SkillController hasSkill))
+            {
+                AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnDeclareAttack);
+            }
+
             if (m_Config.LookAtTargetOnShot)
             {
-                // LookAtTargetOnShot: rotate instan ke target saat ditembakkan,
-                // terlepas dari TargetingMode (Homing atau tidak)
                 FaceTargetInstant(targetable);
             }
             else if (m_Config.TargetingDistributeMode == TargetingMode.Homing)
             {
-                // Homing tanpa LookAtTargetOnShot tetap face target di awal
                 FaceTargetInstant(targetable);
             }
 
@@ -86,10 +120,13 @@ namespace Rush
                     -m_Config.InitialWanderAngle,
                     m_Config.InitialWanderAngle
                 );
-
                 transform.Rotate(0, 0, randomAngle);
             }
         }
+
+        // -------------------------------------------------------------------------
+        // Tick
+        // -------------------------------------------------------------------------
 
         public virtual void Tick()
         {
@@ -108,9 +145,12 @@ namespace Rush
             }
 
             float deltaDistance = Move();
-
             UpdateLifetime(deltaDistance);
         }
+
+        // -------------------------------------------------------------------------
+        // Movement
+        // -------------------------------------------------------------------------
 
         protected virtual void CacheMoveDirection()
         {
@@ -119,11 +159,9 @@ namespace Rush
                 case LocalAxis.X:
                     m_MoveDirection = Vector3.right;
                     break;
-
                 case LocalAxis.Y:
                     m_MoveDirection = Vector3.up;
                     break;
-
                 case LocalAxis.Z:
                     m_MoveDirection = Vector3.forward;
                     break;
@@ -133,15 +171,11 @@ namespace Rush
         protected virtual float Move()
         {
             float distance = m_Config.Speed * Time.deltaTime;
-
             Vector3 move = m_MoveDirection * distance;
 
             if (m_Config.SwayAmplitude > 0)
             {
-                float sway =
-                    Mathf.Sin(Time.time * m_Config.SwayFrequency) *
-                    m_Config.SwayAmplitude;
-
+                float sway = Mathf.Sin(Time.time * m_Config.SwayFrequency) * m_Config.SwayAmplitude;
                 move += sway * Time.deltaTime * transform.right;
             }
 
@@ -151,7 +185,6 @@ namespace Rush
             {
                 float progress = m_TraveledDistance / Mathf.Max(1f, m_Config.MaxDistance);
                 float arc = Mathf.Sin(progress * Mathf.PI) * m_Config.ArcHeight;
-
                 Vector3 pos = transform.position;
                 pos.y += arc * Time.deltaTime;
                 transform.position = pos;
@@ -169,9 +202,7 @@ namespace Rush
             if (dir.sqrMagnitude <= 0.0001f)
                 return;
 
-            float targetAngle =
-                Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + SPRITE_ANGLE_OFFSET;
-
+            float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + SPRITE_ANGLE_OFFSET;
             float newAngle = Mathf.MoveTowardsAngle(
                 transform.eulerAngles.z,
                 targetAngle,
@@ -188,9 +219,12 @@ namespace Rush
 
             Vector2 dir = targetable.TargetTransform.position - transform.position;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + SPRITE_ANGLE_OFFSET;
-
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
+
+        // -------------------------------------------------------------------------
+        // Lifetime
+        // -------------------------------------------------------------------------
 
         protected virtual void UpdateLifetime(float deltaDistance)
         {
@@ -216,14 +250,12 @@ namespace Rush
         {
             m_CanMove = false;
             gameObject.SetActive(false);
-            m_Shooter?.NotifyProjectileFinished(this);
+            m_Shooter.NotifyProjectileFinished(this);
         }
 
-        private void ResetLifetime()
-        {
-            m_CurrentLifeTimer = 0f;
-            m_TraveledDistance = 0f;
-        }
+        // -------------------------------------------------------------------------
+        // Targeting helpers
+        // -------------------------------------------------------------------------
 
         private bool IsTargetInvalid()
         {
@@ -238,11 +270,6 @@ namespace Rush
             ITargetable newTarget = m_Shooter.GetNewTargetForAmmo();
             if (newTarget != null)
                 m_Targetable = newTarget;
-        }
-
-        public virtual void OnSpawnFromPool()
-        {
-            m_HitTargets.Clear();
         }
 
         protected virtual bool IsValidHit(GameObject other)
@@ -264,7 +291,6 @@ namespace Rush
                 return false;
 
             m_HitTargets.Add(target);
-
             return true;
         }
     }

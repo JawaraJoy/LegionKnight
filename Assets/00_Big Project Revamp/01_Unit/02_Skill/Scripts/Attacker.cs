@@ -46,7 +46,12 @@ namespace Rush
         private void OnAttackStartInvoke()
         {
             m_OnAttackStart?.Invoke(m_AbilityContext);
-            
+
+            Unit unitTaker = m_AbilityContext.SkillContext.ModuleContext.Unit;
+            if (unitTaker.HasBind(out SkillController hasSkill))
+            {
+                AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnDeclareAttack);
+            }
         }
         private void OnAttackDoneInvoke()
         {
