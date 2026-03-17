@@ -78,19 +78,18 @@ namespace Rush
 
         protected virtual void HandleHit(GameObject target)
         {
+            
             bool explodeOnHit = m_ProjectileConfig.ExplodeSetup.ExplodeOnHit;
-
+            m_OnHit?.Invoke(target);
             if (explodeOnHit)
             {
                 Explode();
             }
-
-            m_OnHit?.Invoke(target);
-
             if (m_ProjectileConfig.DespawnOnHit)
             {
                 DisableAmmo();
             }
+            
         }
         private void OnAttackDelivered(ITargetable target)
         {

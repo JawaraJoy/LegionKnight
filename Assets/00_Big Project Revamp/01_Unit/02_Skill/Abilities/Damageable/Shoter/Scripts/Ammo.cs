@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -263,8 +264,13 @@ namespace Rush
             if (!gameObject.activeSelf)
                 return;
 
-            m_CanMove = false;
+            RushGameManager.Instance.StartCoroutine(DisablingAmmo());
+        }
 
+        private IEnumerator DisablingAmmo()
+        {
+            m_CanMove = false;
+            yield return new WaitForSeconds(0.1f);
             if (m_Shooter != null)
                 m_Shooter.NotifyProjectileFinished(this);
             else
