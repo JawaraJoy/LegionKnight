@@ -45,7 +45,7 @@ namespace Rush
         {
             List<ITargetable> targets = new(GetTargetsInternal());
 
-            if (m_ShooterAbilityConfig.ShoterLookAtTargetOnActivate)
+            if (m_ShooterAbilityConfig != null && m_ShooterAbilityConfig.ShoterLookAtTargetOnActivate)
                 LookAtTargetInternal(targets);
 
             StopAllCoroutines();
@@ -56,10 +56,12 @@ namespace Rush
 
         private void LookAtTargetInternal(List<ITargetable> targets)
         {
-            if (targets == null || targets.Count == 0) return;
+            if (targets == null || targets.Count == 0)
+                return;
 
             ITargetable target = targets[0];
-            if (target?.TargetTransform == null) return;
+            if (target?.TargetTransform == null)
+                return;
 
             Vector2 dir = target.TargetTransform.position - m_DeliverTransform.position;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
@@ -68,11 +70,16 @@ namespace Rush
 
         private IEnumerator AttackRoutine(List<ITargetable> targets)
         {
+            if (m_ShooterAbilityConfig == null)
+                yield break;
+
             var setup = m_ShooterAbilityConfig.SpawningSetup;
 
-            int fireCount = m_AbilityConfig.UseAllTargetsInRange ? Mathf.Min(targets.Count, setup.FireCount) : setup.FireCount;
-            FireMode mode = setup.FireMode;
+            int fireCount = m_AbilityConfig.UseAllTargetsInRange
+                ? Mathf.Min(targets.Count, setup.FireCount)
+                : setup.FireCount;
 
+            FireMode mode = setup.FireMode;
             float fireInterval = setup.FireInterval;
             int burstCount = Mathf.Min(setup.BurstCount, fireCount);
             float burstInterval = setup.BurstInterval;
@@ -95,15 +102,16 @@ namespace Rush
                     {
                         for (int i = 0; i < burstCount && fired < fireCount; i++)
                         {
-                            // shapeIndex untuk posisi/bentuk spawn
-                            // fired sebagai targetIndex supaya distribusi target merata
                             int resolvedShapeIndex = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
                             SpawnSingle(resolvedShapeIndex, fired, fireCount, targets);
                             fired++;
-                            yield return new WaitForSeconds(fireInterval);
+
+                            if (fireInterval > 0f)
+                                yield return new WaitForSeconds(fireInterval);
                         }
 
-                        yield return new WaitForSeconds(burstInterval);
+                        if (fired < fireCount && burstInterval > 0f)
+                            yield return new WaitForSeconds(burstInterval);
                     }
                     break;
 
@@ -112,11 +120,12 @@ namespace Rush
                     {
                         int resolvedShapeIndex = ResolveShapeIndex(mode, i, fireCount, ref shapeIndex, ref direction);
                         SpawnSingle(resolvedShapeIndex, i, fireCount, targets);
-                        yield return new WaitForSeconds(fireInterval);
+
+                        if (fireInterval > 0f)
+                            yield return new WaitForSeconds(fireInterval);
                     }
                     break;
             }
-
         }
 
         private int ResolveShapeIndex(FireMode mode, int shotIndex, int totalCount, ref int shapeIndex, ref int direction)
@@ -130,19 +139,25 @@ namespace Rush
                     return Random.Range(0, totalCount);
 
                 case FireMode.Loop:
-                    shapeIndex = (shapeIndex + 1) % totalCount;
-                    return shapeIndex;
+                    {
+                        int current = shapeIndex;
+                        shapeIndex = (shapeIndex + 1) % totalCount;
+                        return current;
+                    }
 
                 case FireMode.PingPong:
-                    if (totalCount == 1)
-                        return 0;
+                    {
+                        if (totalCount == 1)
+                            return 0;
 
-                    shapeIndex += direction;
+                        int current = shapeIndex;
 
-                    if (shapeIndex >= totalCount - 1 || shapeIndex <= 0)
-                        direction *= -1;
+                        shapeIndex += direction;
+                        if (shapeIndex >= totalCount - 1 || shapeIndex <= 0)
+                            direction *= -1;
 
-                    return shapeIndex;
+                        return current;
+                    }
 
                 default:
                     return shotIndex;
@@ -155,7 +170,7 @@ namespace Rush
         /// <param name="targets">List target yang tersedia</param>
         protected virtual void SpawnSingle(int shapeIndex, int targetIndex, int totalCount, List<ITargetable> targets)
         {
-            Ammo ammo = GetFromPool();
+            Ammo ammo = GetFromPoolInactive();
 
             m_DeliverTransform.GetPositionAndRotation(out Vector3 pos, out Quaternion rot);
 
@@ -165,10 +180,11 @@ namespace Rush
                 shape.GetSpawnTransform(m_DeliverTransform, shapeIndex, totalCount, out pos, out rot);
             }
 
-            ammo.transform.SetPositionAndRotation(pos, rot);
+            ammo.PrepareForSpawn(pos, rot);
 
             ITargetable target = ResolveTarget(targetIndex, targets);
 
+            ammo.gameObject.SetActive(true);
             ammo.Shot(target);
 
             if (!m_ActiveProjectiles.Contains(ammo))
@@ -225,15 +241,17 @@ namespace Rush
             return ammo;
         }
 
-        private Ammo GetFromPool()
+        /// <summary>
+        /// Ambil ammo dari pool dalam kondisi masih inactive.
+        /// State reset dan transform placement dilakukan sebelum SetActive(true).
+        /// </summary>
+        private Ammo GetFromPoolInactive()
         {
             Ammo ammo = m_ProjectilePool.Count > 0
                 ? m_ProjectilePool.Dequeue()
                 : CreateNewAmmo();
 
-            ammo.transform.SetParent(null);
-            ammo.gameObject.SetActive(true);
-            ammo.OnSpawnFromPool();
+            ammo.transform.SetParent(null, true);
             return ammo;
         }
 
@@ -242,11 +260,16 @@ namespace Rush
             if (ammo == null)
                 return;
 
-            ammo.gameObject.SetActive(false);
-            ammo.transform.SetParent(m_DeliverTransform);
+            if (!m_ProjectilePool.Contains(ammo))
+            {
+                ammo.gameObject.SetActive(false);
+                ammo.transform.SetParent(m_DeliverTransform, false);
+                ammo.transform.localPosition = Vector3.zero;
+                ammo.transform.localRotation = Quaternion.identity;
 
-            m_ActiveProjectiles.Remove(ammo);
-            m_ProjectilePool.Enqueue(ammo);
+                m_ActiveProjectiles.Remove(ammo);
+                m_ProjectilePool.Enqueue(ammo);
+            }
         }
 
         public void NotifyProjectileFinished(Ammo ammo)
