@@ -18,7 +18,9 @@ namespace Rush
         [SerializeField]
         private Image m_CardIcon;
         [SerializeField]
-        private Image m_CardRarityColor;
+        private Image m_CardRarityColorOutline;
+        [SerializeField]
+        private Image m_CardRarityColorBackground;
 
         [SerializeField]
         private Button m_SelectButton;
@@ -36,7 +38,9 @@ namespace Rush
             m_CardNameText.text = m_CardConfig.BaseInfo.Name;
             m_CardDescriptionText.text = m_CardConfig.BaseInfo.Description;
             m_CardIcon.sprite = m_CardConfig.CollectibleField.Icon;
-            m_CardRarityColor.color = m_CardConfig.CollectibleField.RarityConfig.Color;
+            Color rarityColor = m_CardConfig.CollectibleField.RarityConfig.Color;
+            m_CardRarityColorOutline.color = rarityColor;
+            m_CardRarityColorBackground.color = rarityColor;
             ShowInternal();
         }
         private void OnSelectButtonClicked()

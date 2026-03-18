@@ -36,6 +36,11 @@ namespace Rush
                 {
                     damageable.SetImmortal(true);
                 }
+                damageable.AddRemainingRebornCount(m_RebornCount, true);
+                damageable.AddShield(m_Shield, true);
+                damageable.AddShieldBasedOnDefendRate(m_ShieldBasedDefendRate, true);
+                damageable.AddBarrier(m_Barrier, true);
+                damageable.AddDamageReductionRate(m_DamageReductionRate);
             }
         }
 
@@ -51,7 +56,13 @@ namespace Rush
                 {
                     damageable.SetImmortal(false);
                 }
+                damageable.AddRemainingRebornCount(-m_RebornCount, false);
+                damageable.AddShield(-m_Shield, false);
+                damageable.AddShieldBasedOnDefendRate(-m_ShieldBasedDefendRate, false);
+                damageable.AddBarrier(-m_Barrier, false);
+                damageable.AddDamageReductionRate(-m_DamageReductionRate);
             }
+
         }
         public override void OnStackAdded(StatusEffectContext context)
         {

@@ -8,7 +8,7 @@ namespace Rush
     {
         [SerializeField] private StatusEffectConfig m_Config;
         [SerializeField] private UnityEvent<StatusEffectContext> m_OnApplied;
-        [SerializeField] private UnityEvent<int, int> m_OnStackUpdated; // current stack, max stack
+        [SerializeField] private UnityEvent<int, int> m_OnStackUpdated;
         [SerializeField] private UnityEvent<float> m_OnDurationUpdated;
         [SerializeField] private UnityEvent<StatusEffectContext> m_OnDone;
 
@@ -29,9 +29,18 @@ namespace Rush
             m_Config = config;
             ResetRuntime();
         }
+        private void OnEnable()
+        {
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+        private void OnDisable()
+        {
+            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+        }
 
         private void ResetRuntime()
         {
+            m_Context = null;
             m_CurrentStack = 0;
             m_RemainingDuration = 0f;
             m_IsActive = false;
@@ -46,107 +55,118 @@ namespace Rush
 
             if (!m_IsActive)
             {
-                Activate();
+                ActivateFirstTime();
+            }
+            else
+            {
+                Reapply();
             }
 
-            UpdateStackOnApply();
-            UpdateDurationOnApply();
             EvaluateRemovalCondition();
-
             m_OnApplied?.Invoke(m_Context);
         }
 
-        private void Activate()
+        private void ActivateFirstTime()
         {
             m_IsActive = true;
-            m_CurrentStack = m_Config.GetStartingStack();
+            m_CurrentStack = m_Config.InitialStack;
             m_RemainingDuration = m_Config.Duration;
 
-            InvokeStackUpdated();
-
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
-            RecalculateEffect(0, m_CurrentStack);
+
+            InvokeStackUpdated();
+            InvokeDurationUpdated();
+
+            m_Config.ApplyEffect(m_Context);
+
+            for (int i = 1; i < m_CurrentStack; i++)
+                m_Config.OnStackAdded(m_Context);
         }
 
-        private void UpdateStackOnApply()
+        private void Reapply()
+        {
+            switch (m_Config.ReapplyBehavior)
+            {
+                case StatusReapplyBehavior.Stack:
+                    ReapplyAsStack();
+                    break;
+
+                case StatusReapplyBehavior.Refresh:
+                    ReapplyAsRefresh();
+                    break;
+
+                case StatusReapplyBehavior.Override:
+                    ReapplyAsOverride();
+                    break;
+            }
+        }
+
+        private void ReapplyAsStack()
         {
             int previousStack = m_CurrentStack;
-            int stackBeforeClamp = m_CurrentStack;
+            m_CurrentStack = Mathf.Clamp(
+                m_CurrentStack + m_Config.StackPerApply,
+                0,
+                m_Config.MaxStackCount);
 
-            switch (m_Config.HowStackUpdate)
+            ApplyDurationRulesOnReapply();
+
+            int delta = m_CurrentStack - previousStack;
+            if (delta > 0)
             {
-                case HowStackUpdate.Addictive:
-                    stackBeforeClamp += m_Config.UpdatePerStackCount;
-                    break;
-
-                case HowStackUpdate.Subtractive:
-                    stackBeforeClamp -= m_Config.UpdatePerStackCount;
-                    break;
+                for (int i = 0; i < delta; i++)
+                    m_Config.OnStackAdded(m_Context);
             }
-
-            m_CurrentStack = Mathf.Clamp(stackBeforeClamp, 0, m_Config.MaxStackCount);
-
-            InvokeStackUpdated();
-
-            // Edge case:
-            // if already at max stack and trying to add more stack,
-            // still trigger OnStackAdded as a "max stack re-apply" behavior.
-            if (m_CurrentStack == m_Config.MaxStackCount &&
-                previousStack == m_Config.MaxStackCount &&
-                m_Config.HowStackUpdate == HowStackUpdate.Addictive)
+            else if (previousStack == m_Config.MaxStackCount)
             {
                 m_Config.OnStackAdded(m_Context);
-                return;
             }
 
-            RecalculateEffect(previousStack, m_CurrentStack);
+            InvokeStackUpdated();
+            InvokeDurationUpdated();
         }
 
-        private void RecalculateEffect(int oldStack, int newStack)
+        private void ReapplyAsRefresh()
         {
-            if (oldStack == newStack)
-                return;
+            ApplyDurationRulesOnReapply(forceReset: true);
 
-            if (oldStack == 0 && newStack > 0)
+            InvokeStackUpdated();
+            InvokeDurationUpdated();
+        }
+
+        private void ReapplyAsOverride()
+        {
+            int previousStack = m_CurrentStack;
+
+            if (previousStack > 0)
             {
-                m_Config.ApplyEffect(m_Context);
-
-                for (int i = 1; i < newStack; i++)
-                    m_Config.OnStackAdded(m_Context);
-
-                return;
-            }
-
-            if (newStack > oldStack)
-            {
-                int delta = newStack - oldStack;
-
-                for (int i = 0; i < delta; i++)
-                    m_Config.OnStackAdded(m_Context);
-
-                return;
-            }
-
-            if (newStack < oldStack)
-            {
-                int delta = oldStack - newStack;
-
-                for (int i = 0; i < delta; i++)
+                for (int i = 0; i < previousStack; i++)
                     m_Config.OnStackRemoved(m_Context);
             }
+
+            m_CurrentStack = m_Config.InitialStack;
+            m_RemainingDuration = m_Config.Duration;
+
+            m_Config.ApplyEffect(m_Context);
+
+            for (int i = 1; i < m_CurrentStack; i++)
+                m_Config.OnStackAdded(m_Context);
+
+            InvokeStackUpdated();
+            InvokeDurationUpdated();
         }
 
-        private void UpdateDurationOnApply()
+        private void ApplyDurationRulesOnReapply(bool forceReset = false)
         {
-            if (m_Config.ResetDurationOnStackUpdate)
+            if (forceReset || m_Config.ResetDurationOnReapply)
             {
                 m_RemainingDuration = m_Config.Duration;
                 return;
             }
 
-            if (m_Config.UseStackDuration)
+            if (m_Config.UseBonusDurationPerReapply)
             {
-                m_RemainingDuration += m_Config.StackDurationUpdate;
+                m_RemainingDuration += m_Config.BonusDurationPerReapply;
             }
         }
 
@@ -159,14 +179,10 @@ namespace Rush
                 return;
 
             m_RemainingDuration -= Time.deltaTime;
-
-            m_OnDurationUpdated?.Invoke(
-                Mathf.Clamp01(m_RemainingDuration / m_Config.Duration));
+            InvokeDurationUpdated();
 
             if (m_RemainingDuration <= 0f)
-            {
                 RemoveOneStack();
-            }
         }
 
         public void RemoveEffect()
@@ -180,13 +196,23 @@ namespace Rush
         private void RemoveOneStack()
         {
             int previousStack = m_CurrentStack;
+            if (previousStack <= 0)
+                return;
 
-            m_CurrentStack--;
-            m_CurrentStack = Mathf.Max(0, m_CurrentStack);
+            m_CurrentStack = Mathf.Max(0, m_CurrentStack - 1);
+
+            int delta = previousStack - m_CurrentStack;
+            for (int i = 0; i < delta; i++)
+                m_Config.OnStackRemoved(m_Context);
+
+            if (m_CurrentStack > 0)
+            {
+                m_RemainingDuration = m_Config.Duration;
+            }
 
             InvokeStackUpdated();
+            InvokeDurationUpdated();
 
-            RecalculateEffect(previousStack, m_CurrentStack);
             EvaluateRemovalCondition();
         }
 
@@ -198,7 +224,7 @@ namespace Rush
                     return;
 
                 case HowStatRemoved.RemoveOnDurationEnd:
-                    if (m_RemainingDuration <= 0f && m_CurrentStack <= 0)
+                    if (m_CurrentStack <= 0)
                         CompleteEffect();
                     break;
 
@@ -231,6 +257,15 @@ namespace Rush
                 return;
 
             m_OnStackUpdated?.Invoke(m_CurrentStack, m_Config.MaxStackCount);
+        }
+
+        private void InvokeDurationUpdated()
+        {
+            if (m_Config == null || m_Config.Duration <= 0f)
+                return;
+
+            float normalized = Mathf.Clamp01(m_RemainingDuration / m_Config.Duration);
+            m_OnDurationUpdated?.Invoke(normalized);
         }
     }
 }
