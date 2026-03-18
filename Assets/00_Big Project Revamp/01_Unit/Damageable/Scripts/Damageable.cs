@@ -364,6 +364,11 @@ namespace Rush
             {
                 AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnDeath);
             }
+            Unit unitKiller = context.SkillContext.ModuleContext.Unit;
+            if (unitKiller.HasBind(out SkillController killerSkills))
+            {
+                AbilityUltility.OnSkillEventActivates(killerSkills, ForceActiveState.OnKill);
+            }
             m_OnDeath?.Invoke(context);
             m_OnDeathDirection?.Invoke(context.AbilityDeliver.DeliverTransform);
             if (m_ModuleContext.Unit.IsPlayer)

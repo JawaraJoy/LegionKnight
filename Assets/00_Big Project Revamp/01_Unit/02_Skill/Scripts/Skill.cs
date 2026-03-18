@@ -75,6 +75,7 @@ namespace Rush
         private int m_MaxInterruptCount;
 
         public UnityEvent<Skill> OnActivate => m_OnActivates;
+        public UnityEvent<int, int> OnChargeUpdate => m_OnChargeUpdate;
 
         public float RemainingCharge => m_RemainingCharge;
         private AbilityDeliver GetAbilityDeliverInternal(string id)
@@ -182,10 +183,10 @@ namespace Rush
 
                 m_RemainingCharge = Mathf.Max(0f, overflow);
             }
-            OnChargeUpdate(m_RemainingCharge, m_SkillConfig.Activation.Charge);
+            OnChargeUpdateInvoke(m_RemainingCharge, m_SkillConfig.Activation.Charge);
         }
 
-        private void OnChargeUpdate(float current, float max)
+        private void OnChargeUpdateInvoke(float current, float max)
         {
             int roundedCurrent = Mathf.RoundToInt(current);
             int roundedMax = Mathf.RoundToInt(max);

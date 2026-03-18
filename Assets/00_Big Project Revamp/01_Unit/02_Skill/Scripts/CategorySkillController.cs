@@ -53,7 +53,8 @@ namespace Rush
             if (skill.SkillConfig.Category == m_SkillCategoryConfig)
             {
                 m_Skills.Add(skill);
-                skill.OnActivate.AddListener(OnSkillActivated);
+                skill.OnActivate.AddListener(OnSkillActivatedInvoke);
+                skill.OnChargeUpdate.AddListener(OnChargeSkillInvoke);
                 m_OnSkillAdded.Invoke(skill);
             }
             if (m_Skills.Count == 1)
@@ -66,7 +67,7 @@ namespace Rush
         {
             if (m_Skills.Contains(skill))
             {
-                skill.OnActivate.RemoveListener(OnSkillActivated);
+                skill.OnActivate.RemoveListener(OnSkillActivatedInvoke);
 
                 m_Skills.Remove(skill);
 
@@ -96,6 +97,11 @@ namespace Rush
             }
             int currentCharge = Mathf.RoundToInt(GetCurrentSkill().RemainingCharge);
             int maxCharge = Mathf.RoundToInt(GetCurrentSkill().SkillConfig.Activation.Charge);
+            OnChargeSkillInvoke(currentCharge, maxCharge);
+        }
+
+        private void OnChargeSkillInvoke(int currentCharge, int maxCharge)
+        {
             m_OnChargeSkill.Invoke(currentCharge, maxCharge);
         }
         public void AddLevel(int amount)
@@ -117,7 +123,7 @@ namespace Rush
                     break;
             }
         }
-        private void OnSkillActivated(Skill skill)
+        private void OnSkillActivatedInvoke(Skill skill)
         {
             if (m_ActivationMode != ActivationMode.Queue)
                 return;
@@ -161,7 +167,7 @@ namespace Rush
         {
             foreach (var skill in m_Skills)
             {
-                skill.OnActivate.RemoveListener(OnSkillActivated);
+                skill.OnActivate.RemoveListener(OnSkillActivatedInvoke);
             }
 
             m_Skills.Clear();

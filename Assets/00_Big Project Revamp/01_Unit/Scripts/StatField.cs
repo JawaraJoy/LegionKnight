@@ -11,9 +11,21 @@ namespace Rush
         private float m_Attack;
         [SerializeField]
         private float m_Defense;
+
+        [Header("Extend Critical")]
+        [SerializeField]
+        private float m_CriticalChance;
+        [SerializeField]
+        private float m_CriticalDamageFlat;
+        [SerializeField, Range(1f, 4f)]
+        private float m_CriticalDamageRate;
+        
         public int Health => Mathf.RoundToInt(m_Health);
         public int Attack => Mathf.RoundToInt(m_Attack);
         public int Defense => Mathf.RoundToInt(m_Defense);
+        public float CriticalChance => Mathf.RoundToInt(m_CriticalChance);
+        public float CriticalDamageFlat => Mathf.RoundToInt(m_CriticalDamageFlat);
+        public float CriticalDamageRate => Mathf.RoundToInt(m_CriticalDamageRate);
 
         public static StatField Zero
         {
@@ -24,6 +36,9 @@ namespace Rush
                     m_Health = 0f,
                     m_Attack = 0f,
                     m_Defense = 0f,
+                    m_CriticalChance = 0f,
+                    m_CriticalDamageFlat = 0f,
+                    m_CriticalDamageRate = 1f,
                 };
             }
         }
@@ -39,6 +54,18 @@ namespace Rush
         {
             m_Defense = defense;
         }
+        public void SetCriticalChance(float criticalChance)
+        {
+            m_CriticalChance = criticalChance;
+        }
+        public void SetCriticalDamageFlat(float criticalDamageFlat)
+        {
+            m_CriticalDamageFlat = criticalDamageFlat;
+        }
+        public void SetCriticalDamageRate(float criticalDamageRate)
+        {
+            m_CriticalDamageRate = criticalDamageRate;
+        }
 
         public static StatField operator +(StatField a, StatField b)
         {
@@ -47,6 +74,9 @@ namespace Rush
                 m_Health = a.m_Health + b.m_Health,
                 m_Attack = a.m_Attack + b.m_Attack,
                 m_Defense = a.m_Defense + b.m_Defense,
+                m_CriticalChance = a.m_CriticalChance + b.m_CriticalChance,
+                m_CriticalDamageFlat = a.m_CriticalDamageFlat + b.m_CriticalDamageFlat,
+                m_CriticalDamageRate = a.m_CriticalDamageRate + b.m_CriticalDamageRate
             };
         }
         public static StatField operator -(StatField a, StatField b)
@@ -56,6 +86,9 @@ namespace Rush
                 m_Health = a.m_Health - b.m_Health,
                 m_Attack = a.m_Attack - b.m_Attack,
                 m_Defense = a.m_Defense - b.m_Defense,
+                m_CriticalChance = a.m_CriticalChance - b.m_CriticalChance,
+                m_CriticalDamageFlat = a.m_CriticalDamageFlat - b.m_CriticalDamageFlat,
+                m_CriticalDamageRate = a.m_CriticalDamageRate - b.m_CriticalDamageRate,
             };
         }
         public static StatField operator *(StatField a, StatField b)
@@ -65,6 +98,9 @@ namespace Rush
                 m_Health = a.m_Health * b.m_Health,
                 m_Attack = a.m_Attack * b.m_Attack,
                 m_Defense = a.m_Defense * b.m_Defense,
+                m_CriticalChance = a.m_CriticalChance * b.m_CriticalChance,
+                m_CriticalDamageFlat = a.m_CriticalDamageFlat * b.m_CriticalDamageFlat,
+                m_CriticalDamageRate = a.m_CriticalDamageRate * b.m_CriticalDamageRate,
             };
         }
         public static StatField operator *(StatField a, int scalar)
@@ -74,6 +110,9 @@ namespace Rush
                 m_Health = a.m_Health * scalar,
                 m_Attack = a.m_Attack * scalar,
                 m_Defense = a.m_Defense * scalar,
+                m_CriticalChance = a.m_CriticalChance * scalar,
+                m_CriticalDamageFlat = a.m_CriticalDamageFlat * scalar,
+                m_CriticalDamageRate = a.m_CriticalDamageRate * scalar,
             };
         }
         private static StatField GetFinalFlatStatsInternal(StatField flatScaleByLevel, int level)
@@ -83,6 +122,10 @@ namespace Rush
                 m_Health = flatScaleByLevel.m_Health * (level - 1),
                 m_Attack = flatScaleByLevel.m_Attack * (level - 1),
                 m_Defense = flatScaleByLevel.m_Defense * (level - 1),
+                m_CriticalChance = flatScaleByLevel.m_CriticalChance * (level - 1),
+                m_CriticalDamageFlat = flatScaleByLevel.m_CriticalDamageFlat * (level - 1),
+                m_CriticalDamageRate = flatScaleByLevel.m_CriticalDamageRate * (level - 1),
+
             };
         }
         private static StatField GetFinalRateStatsInternal(StatField rateScaleByLevel, int level)

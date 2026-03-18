@@ -42,5 +42,6 @@ namespace Rush
         OnPerfectTouch,
         OnSummonDeath,
         OnDeath,
+        OnKill,
     }
 }
