@@ -8,5 +8,8 @@ namespace Rush
         Health = 1,
         Attack = 2,
         Defense = 3,
+        CriticalChance = 4,
+        CriticalDamageFlat = 5,
+        CriticalDamageRate = 6,
     }
 }

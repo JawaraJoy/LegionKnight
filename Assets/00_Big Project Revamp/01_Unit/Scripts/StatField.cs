@@ -13,12 +13,12 @@ namespace Rush
         private float m_Defense;
 
         [Header("Extend Critical")]
+        [SerializeField, Range(0f, 1f)]
+        private float m_CriticalChance = 0f;
         [SerializeField]
-        private float m_CriticalChance;
-        [SerializeField]
-        private float m_CriticalDamageFlat;
-        [SerializeField, Range(1f, 4f)]
-        private float m_CriticalDamageRate;
+        private float m_CriticalDamageFlat = 0f;
+        [SerializeField, Range(0f, 4f)]
+        private float m_CriticalDamageRate = 0f;
         
         public int Health => Mathf.RoundToInt(m_Health);
         public int Attack => Mathf.RoundToInt(m_Attack);
@@ -38,7 +38,7 @@ namespace Rush
                     m_Defense = 0f,
                     m_CriticalChance = 0f,
                     m_CriticalDamageFlat = 0f,
-                    m_CriticalDamageRate = 1f,
+                    m_CriticalDamageRate = 0f,
                 };
             }
         }
@@ -135,6 +135,9 @@ namespace Rush
                 m_Health = rateScaleByLevel.m_Health * (level - 1),
                 m_Attack = rateScaleByLevel.m_Attack * (level - 1),
                 m_Defense = rateScaleByLevel.m_Defense * (level - 1),
+                m_CriticalChance = rateScaleByLevel.m_CriticalChance * (level - 1),
+                m_CriticalDamageFlat = rateScaleByLevel.m_CriticalDamageFlat * (level - 1),
+                m_CriticalDamageRate = rateScaleByLevel.m_CriticalDamageRate * (level - 1),
             };
         }
         public static StatField GetFinalFlatStats(StatField flatScaleByLevel, int level)

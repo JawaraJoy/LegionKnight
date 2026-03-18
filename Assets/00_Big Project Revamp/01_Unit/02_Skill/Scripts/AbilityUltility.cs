@@ -236,6 +236,50 @@ namespace Rush
                 (list[i], list[j]) = (list[j], list[i]);
             }
         }
+        public static bool IsCriticalHit(IAbilityContext context)
+        {
+            return IsCriticalHitInternal(context);
+        }
+        private static bool IsCriticalHitInternal(IAbilityContext context)
+        {
+            Unit owner = context.SkillContext.ModuleContext.Unit;
+            if (owner == null)
+                return false;
+            StatField stats = owner.Config.MainStats.GetFinalStat(owner.Progression.Level);
+            if (owner.HasBind(out StatController statController))
+            {
+                stats = statController.GetFinalStat(stats);
+            }
+            float critChance = stats.CriticalChance;
+            return Random.value < Mathf.Clamp01(critChance);
+        }
+        public static int ApplyCriticalDamage(IAbilityContext context, int baseDamage)
+        {
+            Unit owner = context.SkillContext.ModuleContext.Unit;
+            if (owner == null)
+                return baseDamage;
+            StatField stats = owner.Config.MainStats.GetFinalStat(owner.Progression.Level);
+            if (owner.HasBind(out StatController statController))
+            {
+                stats = statController.GetFinalStat(stats);
+            }
+            float critDamageFlat = stats.CriticalDamageFlat;
+            float critDamageRate = stats.CriticalDamageRate;
+            float criticalDamage = baseDamage * critDamageRate + critDamageFlat;
+            int finalDamage = Mathf.RoundToInt(baseDamage + criticalDamage);
+            return finalDamage;
+        }
+
+        public static bool CanCriticalHit(IAbilityContext context)
+        {
+            AbilityConfig config = context.AbilityDeliver.AbilityConfig;
+            if (config is DamageAbilityConfig damageConfig)
+            {
+                return damageConfig.CanCriticalHit;
+            }
+            return false;
+        }
+
         public static AttackerField GetAttacker(IAbilityContext context)
         {
             float attackPower = GetFinalPowerAmountInternal(context);
@@ -282,6 +326,15 @@ namespace Rush
                     break;
                 case ScalingWithStat.Defense:
                     finalScaleAmount = ownerStats.Defense * finaPower.MultiplierAmount + finaPower.InitialAmount;
+                    break;
+                case ScalingWithStat.CriticalChance:
+                    finalScaleAmount = ownerStats.CriticalChance * finaPower.MultiplierAmount + finaPower.InitialAmount;
+                    break;
+                case ScalingWithStat.CriticalDamageFlat:
+                    finalScaleAmount = ownerStats.CriticalDamageFlat * finaPower.MultiplierAmount + finaPower.InitialAmount;
+                    break;
+                case ScalingWithStat.CriticalDamageRate:
+                    finalScaleAmount = ownerStats.CriticalDamageRate * finaPower.MultiplierAmount + finaPower.InitialAmount;
                     break;
 
             }

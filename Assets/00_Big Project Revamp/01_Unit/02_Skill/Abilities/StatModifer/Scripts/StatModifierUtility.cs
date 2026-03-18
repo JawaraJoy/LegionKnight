@@ -23,6 +23,15 @@ namespace Rush
                 case ScalingWithStat.Defense:
                     result.SetDefense(ownerStat.Defense * finalScore.MultiplierAmount + finalScore.InitialAmount);
                     break;
+                case ScalingWithStat.CriticalChance:
+                    result.SetCriticalChance(ownerStat.CriticalChance * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                    break;
+                case ScalingWithStat.CriticalDamageFlat:
+                    result.SetCriticalDamageFlat(ownerStat.CriticalDamageFlat * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                    break;
+                case ScalingWithStat.CriticalDamageRate:
+                    result.SetCriticalDamageRate(ownerStat.CriticalDamageRate * finalScore.MultiplierAmount + finalScore.InitialAmount);
+                    break;
                 default:
                     Debug.LogWarning($"Unhandled ScalingStat: {EffectScore.ScaleBy}");
                     break;

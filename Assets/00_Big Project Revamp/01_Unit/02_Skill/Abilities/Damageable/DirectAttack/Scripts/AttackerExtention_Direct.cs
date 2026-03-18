@@ -35,7 +35,6 @@ namespace Rush
                 Debug.Log($"Direct Attack {target.ModuleContext.Unit.Config.BaseInfo.Name}");
             }
             OnAttackDoneInvoke();
-            m_AttackCount++;
         }
 
         // Can be Simpled

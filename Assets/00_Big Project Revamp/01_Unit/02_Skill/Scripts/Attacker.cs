@@ -41,8 +41,6 @@ namespace Rush
             }
             
         }
-        [SerializeField, MMReadOnly]
-        private int m_AttackCount;
         private void OnAttackStartInvoke()
         {
             m_OnAttackStart?.Invoke(m_AbilityContext);
