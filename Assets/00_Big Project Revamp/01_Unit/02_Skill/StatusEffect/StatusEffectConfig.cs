@@ -61,4 +61,21 @@ namespace Rush
         public abstract void OnStackRemoved(StatusEffectContext context);
         public abstract void DoneEffect(StatusEffectContext context);
     }
+
+    public enum StatusCategory
+    {
+        None,
+        DamageOverTime,
+        CrowdControl,
+        BuffAttack,
+        BuffDefense,
+        Shield,
+        Utility
+    }
+    public enum StatusIdentityPolicy
+    {
+        SameConfig,
+        SameConfigAndSource,
+        SameGroup
+    }
 }
