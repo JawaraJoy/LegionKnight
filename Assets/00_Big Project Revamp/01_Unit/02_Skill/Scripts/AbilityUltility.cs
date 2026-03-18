@@ -10,6 +10,7 @@ namespace Rush
         private static readonly Collider2D[] m_ColliderBuffer2D = new Collider2D[32];
 
         private static GameConfig m_GameConfig;
+
         private static PhysicsMode GetPhysicsModeInternal()
         {
             if (m_GameConfig == null)
@@ -17,13 +18,13 @@ namespace Rush
                 GameConfig gameConfig = RushGameManager.Instance.GameConfig;
                 m_GameConfig = gameConfig;
             }
+
             return m_GameConfig.PhysicsMode;
         }
+
         private static List<ITargetable> GetTargetables(AbilityContext context)
         {
-
             IAbilityDeliver deliver = context.AbilityDeliver;
-
 
             return GetPhysicsModeInternal() switch
             {
@@ -32,17 +33,17 @@ namespace Rush
                 _ => new List<ITargetable>()
             };
         }
+
         private static IDamageable GetDamageable(ITargetable targetable)
         {
             if (targetable.ModuleContext.Unit.HasBind(out IDamageable damageable))
             {
                 return damageable;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
+
         private static List<ITargetable> GetTargetables2DInternal(IAbilityDeliver deliver)
         {
             AbilityConfig deliverConfig = deliver.AbilityConfig;
@@ -72,6 +73,7 @@ namespace Rush
                     result.Add(target);
                 }
             }
+
             return result;
         }
 
@@ -96,12 +98,15 @@ namespace Rush
                     result.Add(target);
                 }
             }
+
             return result;
         }
+
         public static bool IsTargetAllowedByTargetObject(IAbilityDeliver deliver, ITargetable targetable)
         {
             return IsTargetAllowedByTargetObjectInternal(deliver, targetable);
         }
+
         private static bool IsTargetAllowedByTargetObjectInternal(IAbilityDeliver deliver, ITargetable targetable)
         {
             if (deliver == null || targetable == null)
@@ -120,7 +125,6 @@ namespace Rush
             if (owner == null || targetUnit == null)
                 return false;
 
-            // Self
             if (config.TargetObject == TargetObject.Self)
                 return owner == targetUnit;
 
@@ -144,6 +148,7 @@ namespace Rush
                     return false;
             }
         }
+
         private static Unit GetOwnerUnit(IAbilityDeliver deliver)
         {
             return deliver.AbilityContext.SkillContext.ModuleContext.Unit;
@@ -156,10 +161,12 @@ namespace Rush
 
             return targetable.ModuleContext.Unit;
         }
+
         public static List<ITargetable> ApplyTargetPriority(AbilityContext context)
         {
             IAbilityDeliver deliver = context.AbilityDeliver;
             List<ITargetable> candidates = GetTargetables(context);
+
             if (candidates == null || candidates.Count == 0)
                 return candidates;
 
@@ -167,8 +174,8 @@ namespace Rush
 
             AbilityConfig config = deliver.AbilityConfig;
             TargetPriority priority = config.TargetPriority;
-            int maxCount = config.UseAllTargetsInRange 
-                ? Mathf.Min(candidates.Count, config.MaxTargetCount)  // ambil semua tapi max tetap berlaku
+            int maxCount = config.UseAllTargetsInRange
+                ? Mathf.Min(candidates.Count, config.MaxTargetCount)
                 : Mathf.Max(1, config.MaxTargetCount);
 
             Vector3 origin = deliver.DeliverTransform.position;
@@ -217,6 +224,7 @@ namespace Rush
 
             return candidates;
         }
+
         private static int GetHealth(ITargetable target)
         {
             IDamageable dmg = GetDamageable(target);
@@ -228,6 +236,7 @@ namespace Rush
             IDamageable dmg = GetDamageable(target);
             return dmg != null ? dmg.HealthRate : float.MaxValue;
         }
+
         private static void Shuffle<T>(List<T> list)
         {
             for (int i = 0; i < list.Count; i++)
@@ -236,36 +245,42 @@ namespace Rush
                 (list[i], list[j]) = (list[j], list[i]);
             }
         }
-        public static bool IsCriticalHit(IAbilityContext context)
-        {
-            return IsCriticalHitInternal(context);
-        }
-        private static bool IsCriticalHitInternal(IAbilityContext context)
+
+        private static StatField GetFinalOwnerStats(IAbilityContext context)
         {
             Unit owner = context.SkillContext.ModuleContext.Unit;
             if (owner == null)
-                return false;
+                return default;
+
             StatField stats = owner.Config.MainStats.GetFinalStat(owner.Progression.Level);
+
             if (owner.HasBind(out StatController statController))
             {
                 stats = statController.GetFinalStat(stats);
             }
-            float critChance = stats.CriticalChance;
-            return Random.value < Mathf.Clamp01(critChance);
+
+            return stats;
         }
-        public static int ApplyCriticalDamage(IAbilityContext context, int baseDamage)
+
+        public static bool GetIsCriticalHit(IAbilityContext context)
         {
-            Unit owner = context.SkillContext.ModuleContext.Unit;
-            if (owner == null)
-                return baseDamage;
-            StatField stats = owner.Config.MainStats.GetFinalStat(owner.Progression.Level);
-            if (owner.HasBind(out StatController statController))
-            {
-                stats = statController.GetFinalStat(stats);
-            }
+            return GetIsCriticalHitInternal(context);
+        }
+
+        private static bool GetIsCriticalHitInternal(IAbilityContext context)
+        {
+            StatField stats = GetFinalOwnerStats(context);
+            return Random.value < Mathf.Clamp01(stats.CriticalChance);
+        }
+
+        public static int GetCriticalDamage(IAbilityContext context, int baseDamage)
+        {
+            StatField stats = GetFinalOwnerStats(context);
+
             float critDamageFlat = stats.CriticalDamageFlat;
             float critDamageRate = stats.CriticalDamageRate;
             float criticalDamage = baseDamage * critDamageRate + critDamageFlat;
+
             int finalDamage = Mathf.RoundToInt(baseDamage + criticalDamage);
             return finalDamage;
         }
@@ -277,22 +292,58 @@ namespace Rush
             {
                 return damageConfig.CanCriticalHit;
             }
+
             return false;
         }
 
         public static AttackerField GetAttacker(IAbilityContext context)
         {
+            return GetAttackerInternal(context);
+        }
+
+        private static AttackerField GetAttackerInternal(IAbilityContext context)
+        {
             float attackPower = GetFinalPowerAmountInternal(context);
             int roundAttackPower = Mathf.CeilToInt(attackPower);
-            float damageBaseTargetMaxHp = 0;
+
+            float damageBaseTargetMaxHp = 0f;
             DamageType damageType = DamageType.CompareWithDefense;
+            bool canCriticalHit = false;
+
             AbilityConfig abilityConfig = context.AbilityDeliver.AbilityConfig;
             if (abilityConfig is DamageAbilityConfig damageAbilityConfig)
             {
                 damageBaseTargetMaxHp = damageAbilityConfig.DamageBasedTargetMaxHP;
                 damageType = damageAbilityConfig.DamageType;
+                canCriticalHit = damageAbilityConfig.CanCriticalHit;
             }
-            AttackerField attackerField = new AttackerField(roundAttackPower, damageBaseTargetMaxHp, damageType);
+
+            StatField stats = GetFinalOwnerStats(context);
+
+            bool isCritical = false;
+            float criticalDamageFlat = 0f;
+            float criticalDamageRate = 0f;
+
+            if (canCriticalHit)
+            {
+                isCritical = Random.value < Mathf.Clamp01(stats.CriticalChance);
+
+                if (isCritical)
+                {
+                    criticalDamageFlat = stats.CriticalDamageFlat;
+                    criticalDamageRate = stats.CriticalDamageRate;
+                }
+            }
+
+            AttackerField attackerField = new AttackerField(
+                roundAttackPower,
+                damageBaseTargetMaxHp,
+                damageType,
+                isCritical,
+                criticalDamageFlat,
+                criticalDamageRate
+            );
+
             return attackerField;
         }
 
@@ -303,6 +354,7 @@ namespace Rush
             Unit ownerObject = context.SkillContext.ModuleContext.Unit;
             int ownerLevel = ownerObject.Progression.Level;
             StatField ownerStats = ownerObject.Config.MainStats.GetFinalStat(ownerLevel);
+
             if (ownerObject.HasBind(out StatController statController))
             {
                 StatField controllerFinalStat = statController.GetFinalStat(ownerStats);
@@ -336,16 +388,16 @@ namespace Rush
                 case ScalingWithStat.CriticalDamageRate:
                     finalScaleAmount = ownerStats.CriticalDamageRate * finaPower.MultiplierAmount + finaPower.InitialAmount;
                     break;
-
             }
 
             return finalScaleAmount;
         }
-        
+
         public static float GetFinalPowerAmount(IAbilityContext context)
         {
             return GetFinalPowerAmountInternal(context);
         }
+
         private static void ApplyContextFilters(IAbilityDeliver deliver, List<ITargetable> candidates)
         {
             AbilityConfig config = deliver.AbilityConfig;
@@ -356,6 +408,7 @@ namespace Rush
             if (config.RequireLineOfSight)
                 FilterByLineOfSight(deliver.DeliverTransform.position, candidates);
         }
+
         private static void FilterByCone(Transform origin, float coneAngle, List<ITargetable> targets)
         {
             Vector3 forward = origin.forward;
@@ -370,6 +423,7 @@ namespace Rush
                     targets.RemoveAt(i);
             }
         }
+
         private static void FilterByLineOfSight(Vector3 origin, List<ITargetable> targets)
         {
             PhysicsMode mode = GetPhysicsModeInternal();
@@ -382,8 +436,7 @@ namespace Rush
                 if (mode == PhysicsMode.Physics2D)
                 {
                     RaycastHit2D hit = Physics2D.Linecast(origin, targetPos);
-                    blocked = hit.collider != null &&
-                              !hit.collider.TryGetComponent<ITargetable>(out _);
+                    blocked = hit.collider != null && !hit.collider.TryGetComponent<ITargetable>(out _);
                 }
                 else
                 {
@@ -397,6 +450,7 @@ namespace Rush
                     targets.RemoveAt(i);
             }
         }
+
         public static void OnSkillEventActivates(SkillController skillControllerOwner, ForceActiveState filterState)
         {
             List<Skill> activators = new(skillControllerOwner.Skills);
@@ -408,30 +462,30 @@ namespace Rush
                     activator.ForceActivateAll();
                 }
             }
-
         }
+
         public static void OnAbilityDeliveredInvoke(IAbilityContext abilityOwner, Unit unitReceiver)
         {
             Unit unitDeliver = abilityOwner.SkillContext.ModuleContext.Unit;
-            
+
             if (unitDeliver == null)
             {
                 Debug.LogError($"{nameof(OnAbilityDeliveredInvoke)} cant found Unit component");
                 return;
             }
+
             abilityOwner.SkillContext.Skill.OnAbilityDelivered?.Invoke(unitDeliver);
             ApplyStatusEffect(abilityOwner, unitReceiver);
         }
-       
+
         private static void ApplyStatusEffect(IAbilityContext senderContext, Unit unitTarget)
         {
             AbilityConfig abilityConfig = senderContext.AbilityDeliver.AbilityConfig;
             StatusEffectConfig[] statusEffects = abilityConfig.StatusEffectOnDelivered;
-            
-            
+
             if (unitTarget.HasBind(out StatusEffectController controller))
             {
-                if (statusEffects.Length >= 0)
+                if (statusEffects != null && statusEffects.Length > 0)
                 {
                     foreach (var effect in statusEffects)
                     {
@@ -439,10 +493,11 @@ namespace Rush
                     }
                 }
             }
+
             if (senderContext.SkillContext.ModuleContext.Unit.HasBind(out StatusEffectController selfController))
             {
                 StatusEffectConfig[] selfEffects = abilityConfig.StatusEffectOnSelf;
-                if (selfEffects.Length >= 0)
+                if (selfEffects != null && selfEffects.Length > 0)
                 {
                     foreach (var effect in selfEffects)
                     {
@@ -451,13 +506,13 @@ namespace Rush
                 }
             }
         }
+
         public static void LookAtFirstTarget2D(Transform subject, ITargetable targetable)
         {
             if (targetable == null)
                 return;
 
             Vector2 direction = targetable.TargetTransform.position - subject.position;
-
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
 
             subject.rotation = Quaternion.Euler(0f, 0f, angle);

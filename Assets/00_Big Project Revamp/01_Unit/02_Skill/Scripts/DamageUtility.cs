@@ -10,7 +10,6 @@ namespace Rush
         {
             int baseDamage = Mathf.RoundToInt(attacker.Attack);
 
-            // Bonus based on target Max HP
             if (attacker.DamageBasedTargetMaxHP > 0f)
             {
                 baseDamage += Mathf.RoundToInt(target.MaxHealth * attacker.DamageBasedTargetMaxHP);
@@ -29,12 +28,22 @@ namespace Rush
                     break;
 
                 case DamageType.FatalDamage:
-                    // Fatal = enough to kill health + shield
                     result = target.Health + target.Shield;
                     break;
             }
 
             return Mathf.Max(MinimumDamage, result);
+        }
+
+        public static int ApplyCriticalDamage(int damage, AttackerField attacker)
+        {
+            if (!attacker.IsCritical)
+                return damage;
+
+            float bonusDamage = damage * attacker.CriticalDamageRate + attacker.CriticalDamageFlat;
+            int finalDamage = Mathf.RoundToInt(damage + bonusDamage);
+
+            return Mathf.Max(MinimumDamage, finalDamage);
         }
 
         private static int CalculateDefenseDamage(int attack, int defense)

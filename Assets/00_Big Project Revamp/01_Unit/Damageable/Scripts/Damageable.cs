@@ -198,11 +198,8 @@ namespace Rush
             AttackerField attacker = AbilityUltility.GetAttacker(context);
 
             int rawDamage = DamageUtility.CalculateRawDamage(attacker, this);
-            if (AbilityUltility.CanCriticalHit(context) && AbilityUltility.IsCriticalHit(context))
-            {
-                int bonusDamage = AbilityUltility.ApplyCriticalDamage(context, rawDamage);
-                rawDamage += bonusDamage;
-            }
+            rawDamage = DamageUtility.ApplyCriticalDamage(rawDamage, attacker);
+
             int reducedDamage = DamageUtility.ApplyDamageReduction(rawDamage, m_DamageReductionRate);
 
             OnHitInvoke(context);

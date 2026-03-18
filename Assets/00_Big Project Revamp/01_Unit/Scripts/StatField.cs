@@ -23,9 +23,9 @@ namespace Rush
         public int Health => Mathf.RoundToInt(m_Health);
         public int Attack => Mathf.RoundToInt(m_Attack);
         public int Defense => Mathf.RoundToInt(m_Defense);
-        public float CriticalChance => Mathf.RoundToInt(m_CriticalChance);
+        public float CriticalChance => m_CriticalChance;
         public float CriticalDamageFlat => Mathf.RoundToInt(m_CriticalDamageFlat);
-        public float CriticalDamageRate => Mathf.RoundToInt(m_CriticalDamageRate);
+        public float CriticalDamageRate => m_CriticalDamageRate;
 
         public static StatField Zero
         {
