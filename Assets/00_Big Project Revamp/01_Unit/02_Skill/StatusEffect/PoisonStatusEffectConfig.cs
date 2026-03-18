@@ -2,52 +2,50 @@ using UnityEngine;
 
 namespace Rush
 {
+    [CreateAssetMenu(fileName = "Poison", menuName = "Rush/Combat/StatusEff/Poison", order = 2)]
     public class PoisonStatusEffectConfig : StatusEffectConfig
     {
+        [Tooltip("you have to add skill configuration with this ability on Infector Skills")]
         [SerializeField]
-        private ScalingWithStat m_ScalingWithStat = ScalingWithStat.Attack;
-        [SerializeField]
-        private PowerField m_DamagOnApplied;
-        [SerializeField]
-        private PowerField m_DamagePerUpdateStack;
-        [SerializeField]
-        private SkillConfig m_SkillOnAppliedToInfected;
+        private AbilityConfig m_AbilityOnAppliedToInfected;
         public override void ApplyEffect(StatusEffectContext context)
         {
-            
+            TakePoisonDamage(context);
         }
-
-        private void ApplyDamageToInfected(StatusEffectContext context, PowerField power)
+        private void TakePoisonDamage(StatusEffectContext context)
         {
-            if (HasInfectorStatController(context, out StatController controller))
+            if (HasInfectorSkillController(context, out SkillController controller))
             {
-                int damage = GetDamageByScaling(controller, power);
-                if (context.Infected.HasBind(out Damageable damageable))
+                if (controller.HasAbility(m_AbilityOnAppliedToInfected, out AbilityDeliver abilityDeliver))
                 {
-                    damageable.TakeDamage;
+                    Damageable infectedDamageable = GetInfectedDamageable(context);
+                    if (infectedDamageable != null)
+                    {
+                        IAbilityContext abilityContext = context.AbilityContext;
+                        infectedDamageable.TakeDamage(abilityContext);
+                    }
                 }
             }
         }
-        private int GetDamageByScaling(StatController controller, PowerField power)
+        private Damageable GetInfectedDamageable(StatusEffectContext context)
         {
-            int damage = PowerField.GetFinalPowerByStatScaling(m_ScalingWithStat, controller);
-            float initialDamage = power.InitialAmount;
-            float multiplierDamage = power.MultiplierAmount;
-
-            float finalDamage = initialDamage + (damage * multiplierDamage);
-            return Mathf.RoundToInt(finalDamage);
+            if (context.Infected.HasBind(out Damageable damageable))
+            {
+                return damageable;
+            }
+            return null;
         }
-        private StatController GetInfectorStatController(StatusEffectContext context)
+        private SkillController GetInfectorStatController(StatusEffectContext context)
         {
             Unit infector = context.AbilityContext.SkillContext.ModuleContext.Unit;
-            if (infector.HasBind(out StatController controller))
+            if (infector.HasBind(out SkillController controller))
             {
                 return controller;
             }
             return null;
         }
 
-        private bool HasInfectorStatController(StatusEffectContext context, out StatController controller)
+        private bool HasInfectorSkillController(StatusEffectContext context, out SkillController controller)
         {
             controller = GetInfectorStatController(context);
             return controller != null;
@@ -55,17 +53,17 @@ namespace Rush
 
         public override void DoneEffect(StatusEffectContext context)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public override void OnStackAdded(StatusEffectContext context)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public override void OnStackRemoved(StatusEffectContext context)
         {
-            throw new System.NotImplementedException();
+            TakePoisonDamage(context);
         }
     }
 }

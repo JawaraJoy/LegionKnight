@@ -8,6 +8,8 @@ namespace Rush
     {
         [SerializeField] private StatusEffectConfig m_Config;
         [SerializeField] private UnityEvent<StatusEffectContext> m_OnApplied;
+        [SerializeField]
+        private UnityEvent<int, int> m_OnStackUpdated; // current stack, max stack
         [SerializeField] private UnityEvent<float> m_OnDurationUpdated;
         [SerializeField] private UnityEvent<StatusEffectContext> m_OnDone;
 

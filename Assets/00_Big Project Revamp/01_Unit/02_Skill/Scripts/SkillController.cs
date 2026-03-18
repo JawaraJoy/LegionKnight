@@ -38,7 +38,22 @@ namespace Rush
             AddNewSkillsInternal(m_ModuleContext.Unit.Config.Skills);
             m_OnInit?.Invoke(m_ModuleContext);
         }
-
+        private AbilityDeliver GetAbilityDeliverInternal(AbilityConfig abilityConfig)
+        {
+            foreach (Skill skill in m_Skills)
+            {
+                if (skill.HasAbility(abilityConfig.BaseInfo.Id, out AbilityDeliver abilityDeliver))
+                {
+                    return abilityDeliver;
+                }
+            }
+            return null;
+        }
+        public bool HasAbility(AbilityConfig abilityConfig, out AbilityDeliver abilityDeliver)
+        {
+            abilityDeliver = GetAbilityDeliverInternal(abilityConfig);
+            return abilityDeliver != null;
+        }
         private Skill GetSkillActivatorInternal(string id)
         {
             return m_Skills.Find(x => x.SkillContext.Skill.SkillConfig.BaseInfo.Id == id);

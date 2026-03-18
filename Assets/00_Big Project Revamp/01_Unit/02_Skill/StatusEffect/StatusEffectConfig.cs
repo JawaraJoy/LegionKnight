@@ -14,8 +14,6 @@ namespace Rush
         [SerializeField]
         protected float m_Duration = 1.0f;
         [SerializeField]
-        private float m_DurationGrowthByLevel = 0f;
-        [SerializeField]
         private int m_MaxStackCount = 1;
         [SerializeField]
         private int m_UpdatePerStackCount = 1;
@@ -37,11 +35,6 @@ namespace Rush
         public bool UseStackDuration => m_UseStackDuration;
         public float Duration => m_Duration;
         public float StackDurationUpdate => m_StackDurationUpdate;
-        public float DurationGrowthByLevel => m_DurationGrowthByLevel;
-        public float FinalDurationByLevel(int level)
-        {
-            return m_Duration + m_DurationGrowthByLevel * level;
-        }
         public int MaxStackCount => m_MaxStackCount;
         public int GetStartingStack()
         {
