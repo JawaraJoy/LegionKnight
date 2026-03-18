@@ -29,6 +29,10 @@ namespace Rush
         private HowStackUpdate m_HowStackUpdate = HowStackUpdate.Addictive;
         [SerializeField]
         private HowStatRemoved m_HowToRemove = HowStatRemoved.RemoveOnDurationEnd;
+        [Header("OnStackEmpty Activation OnInfected")]
+        [SerializeField]
+        protected SkillConfig[] m_InfectedSkillsToActivateOnStackEmpty;
+        public SkillConfig[] InfectedSkillsToActivateOnStackEmpty => m_InfectedSkillsToActivateOnStackEmpty;
         public ModifierType ModifierType => m_ModifierType;
         public bool UseStackDuration => m_UseStackDuration;
         public float Duration => m_Duration;
@@ -59,9 +63,9 @@ namespace Rush
         public HowStatRemoved HowToRemove => m_HowToRemove;
         public Sprite Icon => m_Icon;
         public StatusEffector EffectorPrefab => m_EffectorPrefab;
-        public abstract void ApplyEffect(Unit unitTarget);
-        public abstract void OnStackAdded(Unit unitTarget);
-        public abstract void OnStackRemoved(Unit unitTarget);
-        public abstract void DoneEffect(Unit unitTarget);
+        public abstract void ApplyEffect(StatusEffectContext context);
+        public abstract void OnStackAdded(StatusEffectContext context);
+        public abstract void OnStackRemoved(StatusEffectContext context);
+        public abstract void DoneEffect(StatusEffectContext context);
     }
 }

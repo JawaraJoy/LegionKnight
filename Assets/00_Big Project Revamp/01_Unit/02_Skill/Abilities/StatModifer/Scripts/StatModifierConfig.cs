@@ -31,7 +31,7 @@ namespace Rush
 
         [Header("OnStackEmpty Activation OnInfluenced")]
         [SerializeField]
-        private SkillConfig[] m_InfluencedSkillToActivateOnStackEmpty;
+        protected SkillConfig[] m_InfluencedSkillToActivateOnStackEmpty;
         public SkillConfig[] InfluencedSkillToActivateOnStackEmpty => m_InfluencedSkillToActivateOnStackEmpty;
         public ModifierType ModifierType => m_ModifierType;
         public StatModifier StatModifierPrefab => m_StatModifierPrefab;

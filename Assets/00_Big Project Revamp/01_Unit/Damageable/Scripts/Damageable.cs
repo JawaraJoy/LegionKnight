@@ -186,6 +186,10 @@ namespace Rush
         {
             TakeDamageInternal(attacker.AbilityContext);
         }
+        public void TakeDamage(IAbilityContext context)
+        {
+            TakeDamageInternal(context);
+        }
         protected virtual void TakeDamageInternal(IAbilityContext context)
         {
             if (m_IsInvisible)

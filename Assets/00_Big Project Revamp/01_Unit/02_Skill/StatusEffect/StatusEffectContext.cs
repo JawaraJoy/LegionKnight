@@ -8,14 +8,14 @@ namespace Rush
         [SerializeField]
         private IAbilityContext m_AbilityContext;
         [SerializeField]
-        private StatusEffector m_StatusEffector;
+        private Unit m_Infected;
         public IAbilityContext AbilityContext => m_AbilityContext;
-        public StatusEffector StatusEffector => m_StatusEffector;
-        public bool IsInitialed => m_AbilityContext.Initialized && m_StatusEffector != null;
-        public StatusEffectContext(IAbilityContext abilityContext, StatusEffector effector)
+        public Unit Infected => m_Infected;
+        public bool IsInitialed => m_AbilityContext.Initialized && m_Infected != null;
+        public StatusEffectContext(IAbilityContext abilityContext, Unit infected)
         {
             m_AbilityContext = abilityContext;
-            m_StatusEffector = effector;
+            m_Infected = infected;
         }
     }
 }

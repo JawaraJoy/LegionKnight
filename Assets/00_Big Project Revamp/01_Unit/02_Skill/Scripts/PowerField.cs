@@ -66,6 +66,29 @@ namespace Rush
                 m_MultiplierAmount = finalMultiplierAmount,
             };
         }
+        public static int GetFinalPowerByStatScaling(ScalingWithStat scaling, StatController unitStat)
+        {
+            Unit unit = unitStat.ModuleContext.Unit;
+            int ownerLevel = unit.Progression.Level;
+            StatField statValue = unit.Config.MainStats.GetFinalStat(ownerLevel);
+            int finalInitialAmount = unitStat.GetFinalStat(statValue).Attack;
+
+            switch (scaling)
+            {
+                case ScalingWithStat.None:
+                    break;
+                case ScalingWithStat.Health:
+                    finalInitialAmount = unitStat.GetFinalStat(statValue).Health;
+                    break;
+                case ScalingWithStat.Attack:
+                    finalInitialAmount = unitStat.GetFinalStat(statValue).Attack;
+                    break;
+                case ScalingWithStat.Defense:
+                    finalInitialAmount = unitStat.GetFinalStat(statValue).Defense;
+                    break;
+            }
+            return finalInitialAmount;
+        }
     }
     [System.Serializable]
     public partial class AbilityPowerField

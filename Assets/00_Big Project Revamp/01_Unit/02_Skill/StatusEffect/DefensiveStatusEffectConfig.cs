@@ -24,9 +24,9 @@ namespace Rush
         private bool m_Immortality;
         [SerializeField]
         private bool m_Invisibility;
-        public override void ApplyEffect(Unit unitTarget)
+        public override void ApplyEffect(StatusEffectContext context)
         {
-            if (unitTarget.HasBind(out Damageable damageable))
+            if (context.Infected.HasBind(out Damageable damageable))
             {
                 if (m_Invisibility)
                 {
@@ -39,9 +39,9 @@ namespace Rush
             }
         }
 
-        public override void DoneEffect(Unit unitTarget)
+        public override void DoneEffect(StatusEffectContext context)
         {
-            if (unitTarget.HasBind(out Damageable damageable))
+            if (context.Infected.HasBind(out Damageable damageable))
             {
                 if (m_Invisibility)
                 {
@@ -53,9 +53,9 @@ namespace Rush
                 }
             }
         }
-        public override void OnStackAdded(Unit unitTarget)
+        public override void OnStackAdded(StatusEffectContext context)
         {
-            if (unitTarget.HasBind(out Damageable damageable))
+            if (context.Infected.HasBind(out Damageable damageable))
             {
                 damageable.AddRemainingRebornCount(m_RebornCount, true);
                 damageable.AddShield(m_Shield, true);
@@ -64,9 +64,9 @@ namespace Rush
                 damageable.AddDamageReductionRate(m_DamageReductionRate);
             }
         }
-        public override void OnStackRemoved(Unit unitTarget)
+        public override void OnStackRemoved(StatusEffectContext context)
         {
-            if (unitTarget.HasBind(out Damageable damageable))
+            if (context.Infected.HasBind(out Damageable damageable))
             {
                 damageable.AddRemainingRebornCount(-m_RebornCount, false);
                 damageable.AddShield(-m_Shield, false);

@@ -11,13 +11,13 @@ namespace Rush
         private SkillConfig[] m_SpecificSkillsToSilence;
         [SerializeField]
         private SkillCategoryConfig[] m_CategoriesSkillToSilence;
-        public override void ApplyEffect(Unit unitTarget)
+        public override void ApplyEffect(StatusEffectContext context)
         {
-            if (unitTarget.HasBind(out SkillController skill))
+            if (context.Infected.HasBind(out SkillController skill))
             {
                 SilenceBySpecific(true, skill);
                 SilenceByCategory(true, skill);
-                Debug.Log($"[effector]Apply silence to {unitTarget.name} with {m_SpecificSkillsToSilence.Length} specific skills and {m_CategoriesSkillToSilence.Length} categories");
+                
             }
         }
 
@@ -57,21 +57,21 @@ namespace Rush
             }
         }
 
-        public override void DoneEffect(Unit unit)
+        public override void DoneEffect(StatusEffectContext context)
         {
-            if (unit.HasBind(out SkillController skill))
+            if (context.Infected.HasBind(out SkillController skill))
             {
                 SilenceBySpecific(false, skill);
                 SilenceByCategory(false, skill);
             }
         }
 
-        public override void OnStackRemoved(Unit unitTarget)
+        public override void OnStackRemoved(StatusEffectContext context)
         {
             // No stack for silence, do nothing
         }
 
-        public override void OnStackAdded(Unit unitTarget)
+        public override void OnStackAdded(StatusEffectContext context)
         {
             // No stack for silence, do nothing
         }

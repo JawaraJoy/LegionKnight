@@ -11,7 +11,6 @@ namespace Rush
         [SerializeField] private UnityEvent<float> m_OnDurationUpdated;
         [SerializeField] private UnityEvent<StatusEffectContext> m_OnDone;
 
-        private Unit m_Target;
         private StatusEffectContext m_Context;
 
         private float m_RemainingDuration;
@@ -42,13 +41,12 @@ namespace Rush
 
         #region APPLY
 
-        public void ApplyEffect(StatusEffectConfig config, IAbilityContext context, Unit target)
+        public void ApplyEffect(StatusEffectConfig config, IAbilityContext context, Unit infected)
         {
             if (m_Config == null)
                 m_Config = config;
 
-            m_Target = target;
-            m_Context = new StatusEffectContext(context, this);
+            m_Context = new StatusEffectContext(context, infected);
 
             if (!m_IsActive)
             {
@@ -100,7 +98,7 @@ namespace Rush
                 previousStack == m_Config.MaxStackCount &&
                 m_Config.HowStackUpdate == HowStackUpdate.Addictive)
             {
-                m_Config.OnStackAdded(m_Target);
+                m_Config.OnStackAdded(m_Context);
                 return;
             }
 
@@ -115,11 +113,11 @@ namespace Rush
             // First activation (0 -> 1)
             if (oldStack == 0 && newStack > 0)
             {
-                m_Config.ApplyEffect(m_Target);
+                m_Config.ApplyEffect(m_Context);
 
                 // if more than 1 stack directly
                 for (int i = 1; i < newStack; i++)
-                    m_Config.OnStackAdded(m_Target);
+                    m_Config.OnStackAdded(m_Context);
 
                 return;
             }
@@ -129,7 +127,7 @@ namespace Rush
             {
                 int delta = newStack - oldStack;
                 for (int i = 0; i < delta; i++)
-                    m_Config.OnStackAdded(m_Target);
+                    m_Config.OnStackAdded(m_Context);
 
                 return;
             }
@@ -139,7 +137,7 @@ namespace Rush
             {
                 int delta = oldStack - newStack;
                 for (int i = 0; i < delta; i++)
-                    m_Config.OnStackRemoved(m_Target);
+                    m_Config.OnStackRemoved(m_Context);
             }
         }
 
@@ -232,7 +230,7 @@ namespace Rush
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
 
-            m_Config.DoneEffect(m_Target);
+            m_Config.DoneEffect(m_Context);
             m_OnDone?.Invoke(m_Context);
 
             ResetRuntime();

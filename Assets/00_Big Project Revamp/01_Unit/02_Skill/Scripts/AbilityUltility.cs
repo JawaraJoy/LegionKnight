@@ -288,6 +288,7 @@ namespace Rush
 
             return finalScaleAmount;
         }
+        
         public static float GetFinalPowerAmount(IAbilityContext context)
         {
             return GetFinalPowerAmountInternal(context);
