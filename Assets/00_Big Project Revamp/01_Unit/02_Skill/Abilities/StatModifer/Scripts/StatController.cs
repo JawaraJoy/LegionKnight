@@ -1,4 +1,3 @@
-using LegionKnight;
 using MoreMountains.Tools;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +5,7 @@ using UnityEngine;
 namespace Rush
 {
     [System.Serializable]
-    public partial class StatController : MonoBehaviour, IUnitExtension
+    public partial class StatController : MonoBehaviour, IUnitExtension, IReseter
     {
         [SerializeField]
         private Transform m_ModifierPost;
@@ -73,8 +72,9 @@ namespace Rush
                 {
                     StatModifier prefab = modifier.ModifierConfig.StatModifierPrefab;
                     StatModifier spawnedModifier = Instantiate(prefab, m_ModifierPost, false);
-                    spawnedModifier.Activate(abilityContext, targetController);
                     m_Modifiers.Add(spawnedModifier);
+                    spawnedModifier.Activate(abilityContext, targetController);
+                    
                 }
             }
             AbilityUltility.OnAbilityDeliveredInvoke(abilityContext, m_ModuleContext.Unit);
@@ -121,6 +121,11 @@ namespace Rush
             {
                 damageable.RefreshDamageableStat(1f, false);
             }
+        }
+
+        public void ResetProgression()
+        {
+            RemoveAllModifier();
         }
     }
 }

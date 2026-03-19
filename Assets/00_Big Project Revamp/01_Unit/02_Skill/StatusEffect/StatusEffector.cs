@@ -6,50 +6,67 @@ namespace Rush
 {
     public class StatusEffector : MonoBehaviour, IUpdater
     {
+        [Header("Config")]
         [SerializeField] private StatusEffectConfig m_Config;
+
+        [Header("Events")]
         [SerializeField] private UnityEvent<StatusEffectContext> m_OnApplied;
         [SerializeField] private UnityEvent<int, int> m_OnStackUpdated;
-        [SerializeField] private UnityEvent<float> m_OnDurationUpdated;
+        [SerializeField] private UnityEvent<float> m_OnMainDurationUpdated;
+        [SerializeField] private UnityEvent<float> m_OnStackDurationUpdated;
         [SerializeField] private UnityEvent<StatusEffectContext> m_OnDone;
 
+        [Header("Runtime")]
+        [SerializeField, MMReadOnly] private int m_CurrentStack;
+        [SerializeField, MMReadOnly] private float m_RemainingMainDuration;
+        [SerializeField, MMReadOnly] private float m_RemainingStackDuration;
+        [SerializeField, MMReadOnly] private bool m_IsActive;
+
         private StatusEffectContext m_Context;
-        private float m_RemainingDuration;
-
-        [SerializeField, MMReadOnly]
-        private int m_CurrentStack;
-
-        private bool m_IsActive;
 
         public bool IsActive => m_IsActive;
         public StatusEffectConfig Config => m_Config;
         public int CurrentStack => m_CurrentStack;
+        public float RemainingMainDuration => m_RemainingMainDuration;
+        public float RemainingStackDuration => m_RemainingStackDuration;
 
         public void Initialize(StatusEffectConfig config)
         {
             m_Config = config;
             ResetRuntime();
         }
-        private void OnEnable()
-        {
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
-        }
+
         private void OnDisable()
         {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            UnregisterTick();
         }
 
         private void ResetRuntime()
         {
             m_Context = null;
             m_CurrentStack = 0;
-            m_RemainingDuration = 0f;
+            m_RemainingMainDuration = 0f;
+            m_RemainingStackDuration = 0f;
             m_IsActive = false;
         }
 
         public void ApplyEffect(StatusEffectConfig config, IAbilityContext context, Unit infected)
         {
+            if (config == null)
+            {
+                Debug.LogError($"{name} -> ApplyEffect failed: config is null.");
+                return;
+            }
+
             if (m_Config == null)
+            {
                 m_Config = config;
+            }
+            else if (m_Config != config)
+            {
+                Debug.LogError($"{name} -> StatusEffector received a different config than the initialized one.");
+                return;
+            }
 
             m_Context = new StatusEffectContext(context, infected);
 
@@ -62,25 +79,26 @@ namespace Rush
                 Reapply();
             }
 
-            EvaluateRemovalCondition();
-            m_OnApplied?.Invoke(m_Context);
+            if (m_IsActive)
+                m_OnApplied?.Invoke(m_Context);
         }
 
         private void ActivateFirstTime()
         {
             m_IsActive = true;
-            m_CurrentStack = m_Config.InitialStack;
-            m_RemainingDuration = m_Config.Duration;
 
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            m_Config.OnEffectStarted(m_Context);
 
-            InvokeStackUpdated();
-            InvokeDurationUpdated();
+            m_CurrentStack = 0;
+            AddStacks(m_Config.InitialStack);
 
-            m_Config.ApplyEffect(m_Context);
+            ResetMainDuration();
+            ResetStackDecayTimerClamped();
 
-            for (int i = 1; i < m_CurrentStack; i++)
-                m_Config.OnStackAdded(m_Context);
+            RegisterTick();
+            InvokeAllRuntimeEvents();
+
+            EvaluateEndConditions();
         }
 
         private void Reapply()
@@ -103,152 +121,339 @@ namespace Rush
 
         private void ReapplyAsStack()
         {
-            int previousStack = m_CurrentStack;
-            m_CurrentStack = Mathf.Clamp(
-                m_CurrentStack + m_Config.StackPerApply,
-                0,
-                m_Config.MaxStackCount);
+            int attemptedStack = m_CurrentStack + m_Config.StackPerApply;
+            bool reachedMax = attemptedStack >= m_Config.MaxStackCount;
+            bool exceededMax = attemptedStack > m_Config.MaxStackCount;
 
-            ApplyDurationRulesOnReapply();
+            AddStacks(m_Config.StackPerApply);
 
-            int delta = m_CurrentStack - previousStack;
-            if (delta > 0)
+            if (m_Config.UseMainDuration && m_Config.ResetMainDurationOnReapply)
+                ResetMainDuration();
+
+            if (m_Config.UseStackDecay)
             {
-                for (int i = 0; i < delta; i++)
-                    m_Config.OnStackAdded(m_Context);
-            }
-            else if (previousStack == m_Config.MaxStackCount)
-            {
-                m_Config.OnStackAdded(m_Context);
+                if (m_Config.ResetStackDecayTimerOnReapply)
+                    ResetStackDecayTimerClamped();
+                else
+                    ClampStackDecayTimerToMainDuration();
             }
 
-            InvokeStackUpdated();
-            InvokeDurationUpdated();
+            InvokeAllRuntimeEvents();
+
+            EvaluateSpecialRemovalRules(reachedMax, exceededMax);
+            EvaluateEndConditions();
         }
 
         private void ReapplyAsRefresh()
         {
-            ApplyDurationRulesOnReapply(forceReset: true);
+            if (m_Config.UseMainDuration && m_Config.ResetMainDurationOnReapply)
+                ResetMainDuration();
 
-            InvokeStackUpdated();
-            InvokeDurationUpdated();
+            if (m_Config.UseStackDecay)
+            {
+                if (m_Config.ResetStackDecayTimerOnReapply)
+                    ResetStackDecayTimerClamped();
+                else
+                    ClampStackDecayTimerToMainDuration();
+            }
+
+            InvokeAllRuntimeEvents();
+            EvaluateEndConditions();
         }
 
         private void ReapplyAsOverride()
         {
-            int previousStack = m_CurrentStack;
+            ForceEndEffect(false);
 
-            if (previousStack > 0)
-            {
-                for (int i = 0; i < previousStack; i++)
-                    m_Config.OnStackRemoved(m_Context);
-            }
+            m_IsActive = true;
+            m_Config.OnEffectStarted(m_Context);
 
-            m_CurrentStack = m_Config.InitialStack;
-            m_RemainingDuration = m_Config.Duration;
+            m_CurrentStack = 0;
+            AddStacks(m_Config.InitialStack);
 
-            m_Config.ApplyEffect(m_Context);
+            ResetMainDuration();
+            ResetStackDecayTimerClamped();
 
-            for (int i = 1; i < m_CurrentStack; i++)
-                m_Config.OnStackAdded(m_Context);
+            RegisterTick();
+            InvokeAllRuntimeEvents();
 
-            InvokeStackUpdated();
-            InvokeDurationUpdated();
-        }
-
-        private void ApplyDurationRulesOnReapply(bool forceReset = false)
-        {
-            if (forceReset || m_Config.ResetDurationOnReapply)
-            {
-                m_RemainingDuration = m_Config.Duration;
-                return;
-            }
-
-            if (m_Config.UseBonusDurationPerReapply)
-            {
-                m_RemainingDuration += m_Config.BonusDurationPerReapply;
-            }
+            EvaluateEndConditions();
         }
 
         public void Tick()
         {
+            if (!m_IsActive || m_Config == null)
+                return;
+
+            float deltaTime = Time.deltaTime;
+
+            TickMainDuration(deltaTime);
+
             if (!m_IsActive)
                 return;
 
-            if (m_Config.HowToRemove != HowStatRemoved.RemoveOnDurationEnd)
+            TickStackDecay(deltaTime);
+
+            if (!m_IsActive)
                 return;
 
-            m_RemainingDuration -= Time.deltaTime;
-            InvokeDurationUpdated();
-
-            if (m_RemainingDuration <= 0f)
-                RemoveOneStack();
+            ClampStackDecayTimerToMainDuration();
+            InvokeAllRuntimeEvents();
+            EvaluateEndConditions();
         }
 
+        private void TickMainDuration(float deltaTime)
+        {
+            if (!m_Config.UseMainDuration)
+                return;
+
+            m_RemainingMainDuration -= deltaTime;
+
+            if (m_RemainingMainDuration <= 0f)
+                m_RemainingMainDuration = 0f;
+
+            if (m_Config.RemoveRule == StatusRemoveRule.OnMainDurationEnd &&
+                m_RemainingMainDuration <= 0f)
+            {
+                CompleteEffect();
+            }
+        }
+
+        private void TickStackDecay(float deltaTime)
+        {
+            if (!m_Config.UseStackDecay)
+                return;
+
+            if (m_CurrentStack <= 0)
+                return;
+
+            m_RemainingStackDuration -= deltaTime;
+
+            if (m_RemainingStackDuration <= 0f)
+            {
+                RemoveStacksByDecay();
+            }
+        }
+
+        /// <summary>
+        /// Menghapus seluruh effect secara paksa.
+        /// </summary>
         public void RemoveEffect()
         {
             if (!m_IsActive)
                 return;
 
-            RemoveOneStack();
+            CompleteEffect();
         }
 
-        private void RemoveOneStack()
+        /// <summary>
+        /// Menghapus stack secara manual.
+        /// </summary>
+        public void RemoveStacksManually(int amount)
         {
-            int previousStack = m_CurrentStack;
-            if (previousStack <= 0)
+            if (!m_IsActive)
                 return;
 
-            m_CurrentStack = Mathf.Max(0, m_CurrentStack - 1);
+            RemoveStacks(amount);
 
-            int delta = previousStack - m_CurrentStack;
-            for (int i = 0; i < delta; i++)
-                m_Config.OnStackRemoved(m_Context);
+            if (!m_IsActive)
+                return;
+
+            if (m_CurrentStack > 0 && m_Config.UseStackDecay)
+                ResetStackDecayTimerClamped();
+
+            InvokeAllRuntimeEvents();
+            EvaluateEndConditions();
+        }
+
+        private void RemoveStacksByDecay()
+        {
+            RemoveStacks(m_Config.StackDecayAmountPerInterval);
+
+            if (!m_IsActive)
+                return;
 
             if (m_CurrentStack > 0)
             {
-                m_RemainingDuration = m_Config.Duration;
+                if (m_Config.UseMainDuration && m_Config.ResetMainDurationOnStackDecay)
+                    ResetMainDuration();
+
+                if (m_Config.UseStackDecay)
+                    ResetStackDecayTimerClamped();
+            }
+            else
+            {
+                m_RemainingStackDuration = 0f;
             }
 
-            InvokeStackUpdated();
-            InvokeDurationUpdated();
-
-            EvaluateRemovalCondition();
+            InvokeAllRuntimeEvents();
+            EvaluateEndConditions();
         }
 
-        private void EvaluateRemovalCondition()
+        private void AddStacks(int amount)
         {
-            switch (m_Config.HowToRemove)
+            if (amount <= 0)
+                return;
+
+            int targetStack = Mathf.Clamp(m_CurrentStack + amount, 0, m_Config.MaxStackCount);
+            int delta = targetStack - m_CurrentStack;
+
+            for (int i = 0; i < delta; i++)
             {
-                case HowStatRemoved.None:
-                    return;
+                m_CurrentStack++;
+                m_Config.OnStackAdded(m_Context);
+            }
+        }
 
-                case HowStatRemoved.RemoveOnDurationEnd:
+        private void RemoveStacks(int amount)
+        {
+            if (amount <= 0)
+                return;
+
+            int removable = Mathf.Min(amount, m_CurrentStack);
+
+            for (int i = 0; i < removable; i++)
+            {
+                m_CurrentStack--;
+                m_Config.OnStackRemoved(m_Context);
+            }
+        }
+
+        private void ResetMainDuration()
+        {
+            if (!m_Config.UseMainDuration)
+            {
+                m_RemainingMainDuration = 0f;
+                return;
+            }
+
+            m_RemainingMainDuration = m_Config.MainDuration;
+        }
+
+        private void ResetStackDecayTimerClamped()
+        {
+            if (!m_Config.UseStackDecay)
+            {
+                m_RemainingStackDuration = 0f;
+                return;
+            }
+
+            float newDuration = m_Config.StackDecayInterval;
+
+            if (m_Config.UseMainDuration)
+                newDuration = Mathf.Min(newDuration, m_RemainingMainDuration);
+
+            m_RemainingStackDuration = Mathf.Max(0f, newDuration);
+        }
+
+        private void ClampStackDecayTimerToMainDuration()
+        {
+            if (!m_Config.UseStackDecay)
+                return;
+
+            if (!m_Config.UseMainDuration)
+                return;
+
+            if (m_RemainingStackDuration > m_RemainingMainDuration)
+                m_RemainingStackDuration = m_RemainingMainDuration;
+        }
+
+        private void EvaluateSpecialRemovalRules(bool reachedMax, bool exceededMax)
+        {
+            if (!m_IsActive)
+                return;
+
+            switch (m_Config.RemoveRule)
+            {
+                case StatusRemoveRule.OnStackReachMax:
+                    if (reachedMax && m_CurrentStack >= m_Config.MaxStackCount)
+                    {
+                        CompleteEffect();
+                    }
+                    break;
+
+                case StatusRemoveRule.OnStackExceedMax:
+                    if (exceededMax)
+                    {
+                        CompleteEffect();
+                    }
+                    break;
+            }
+        }
+
+        private void EvaluateEndConditions()
+        {
+            if (!m_IsActive)
+                return;
+
+            switch (m_Config.RemoveRule)
+            {
+                case StatusRemoveRule.None:
+                    break;
+
+                case StatusRemoveRule.OnMainDurationEnd:
+                    if (m_Config.UseMainDuration && m_RemainingMainDuration <= 0f)
+                        CompleteEffect();
+                    break;
+
+                case StatusRemoveRule.OnStackZero:
                     if (m_CurrentStack <= 0)
                         CompleteEffect();
                     break;
 
-                case HowStatRemoved.RemoveOnStackZero:
-                    if (m_CurrentStack <= 0)
-                        CompleteEffect();
-                    break;
-
-                case HowStatRemoved.RemoveOnStackExceedMax:
+                case StatusRemoveRule.OnStackReachMax:
                     if (m_CurrentStack >= m_Config.MaxStackCount)
                         CompleteEffect();
+                    break;
+
+                case StatusRemoveRule.OnStackExceedMax:
+                    // dicek khusus saat reapply/add stack
                     break;
             }
         }
 
         private void CompleteEffect()
         {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            if (!m_IsActive)
+                return;
 
-            m_Config.DoneEffect(m_Context);
-            m_OnDone?.Invoke(m_Context);
+            ForceEndEffect(true);
+        }
+
+        private void ForceEndEffect(bool deactivateGameObject)
+        {
+            UnregisterTick();
+
+            StatusEffectContext cachedContext = m_Context;
+
+            if (m_Config != null && cachedContext != null)
+                m_Config.OnEffectEnded(cachedContext);
+
+            m_OnDone?.Invoke(cachedContext);
 
             ResetRuntime();
-            gameObject.SetActive(false);
+
+            if (deactivateGameObject)
+                gameObject.SetActive(false);
+        }
+
+        private void RegisterTick()
+        {
+            if (UpdateBank.Instance != null)
+                UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+
+        private void UnregisterTick()
+        {
+            if (UpdateBank.Instance != null)
+                UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+        }
+
+        private void InvokeAllRuntimeEvents()
+        {
+            InvokeStackUpdated();
+            InvokeMainDurationUpdated();
+            InvokeStackDurationUpdated();
         }
 
         private void InvokeStackUpdated()
@@ -259,13 +464,35 @@ namespace Rush
             m_OnStackUpdated?.Invoke(m_CurrentStack, m_Config.MaxStackCount);
         }
 
-        private void InvokeDurationUpdated()
+        private void InvokeMainDurationUpdated()
         {
-            if (m_Config == null || m_Config.Duration <= 0f)
+            if (m_Config == null || !m_Config.UseMainDuration)
                 return;
 
-            float normalized = Mathf.Clamp01(m_RemainingDuration / m_Config.Duration);
-            m_OnDurationUpdated?.Invoke(normalized);
+            if (m_Config.MainDuration <= 0f)
+            {
+                m_OnMainDurationUpdated?.Invoke(0f);
+                return;
+            }
+
+            float normalized = Mathf.Clamp01(m_RemainingMainDuration / m_Config.MainDuration);
+            m_OnMainDurationUpdated?.Invoke(normalized);
+        }
+
+        private void InvokeStackDurationUpdated()
+        {
+            if (m_Config == null || !m_Config.UseStackDecay)
+                return;
+
+            float maxDuration = m_Config.StackDecayInterval;
+
+            if (m_Config.UseMainDuration)
+                maxDuration = Mathf.Min(maxDuration, m_Config.MainDuration);
+
+            maxDuration = Mathf.Max(0.01f, maxDuration);
+
+            float normalized = Mathf.Clamp01(m_RemainingStackDuration / maxDuration);
+            m_OnStackDurationUpdated?.Invoke(normalized);
         }
     }
 }

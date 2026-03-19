@@ -11,13 +11,21 @@ namespace Rush
         private SkillConfig[] m_SpecificSkillsToSilence;
         [SerializeField]
         private SkillCategoryConfig[] m_CategoriesSkillToSilence;
-        public override void ApplyEffect(StatusEffectContext context)
+        public override void OnEffectStarted(StatusEffectContext context)
         {
             if (context.Infected.HasBind(out SkillController skill))
             {
                 SilenceBySpecific(true, skill);
                 SilenceByCategory(true, skill);
-                
+
+            }
+        }
+        public override void OnEffectEnded(StatusEffectContext context)
+        {
+            if (context.Infected.HasBind(out SkillController skill))
+            {
+                SilenceBySpecific(false, skill);
+                SilenceByCategory(false, skill);
             }
         }
 
@@ -54,15 +62,6 @@ namespace Rush
                 {
                     activator.ExitSilence();
                 }
-            }
-        }
-
-        public override void DoneEffect(StatusEffectContext context)
-        {
-            if (context.Infected.HasBind(out SkillController skill))
-            {
-                SilenceBySpecific(false, skill);
-                SilenceByCategory(false, skill);
             }
         }
 

@@ -12,9 +12,9 @@ namespace Rush
         private DirectDamageAbilityConfig m_DamageOnStackAddedToInfected;
         [SerializeField]
         private DirectDamageAbilityConfig m_DamageOnDoneToInfected;
-        public override void ApplyEffect(StatusEffectContext context)
+        public override void OnEffectStarted(StatusEffectContext context)
         {
-            //TakePoisonDamage(context, m_DamageOnAppliedToInfected);
+            
         }
         private void TakePoisonDamage(StatusEffectContext context, DirectDamageAbilityConfig directDamageAbility)
         {
@@ -59,13 +59,8 @@ namespace Rush
             return controller != null;
         }
 
-        public override void DoneEffect(StatusEffectContext context)
+        public override void OnEffectEnded(StatusEffectContext context)
         {
-            /*if (HasInfectorSkillController(context, out SkillController controller))
-            {
-                controller.ForceActives(m_InfectorSkillsToActivateOnDoneEffect);
-            }*/
-
             TakePoisonDamage(context, m_DamageOnDoneToInfected);
         }
 
