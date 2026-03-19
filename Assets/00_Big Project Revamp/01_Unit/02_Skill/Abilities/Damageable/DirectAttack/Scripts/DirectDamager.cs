@@ -38,6 +38,13 @@ namespace Rush
 
             base.Activate();
         }
+        public void ActiveOverrideTarget(List<ITargetable> overrideTargets)
+        {
+            StopAllCoroutines();
+            StartCoroutine(AttackRoutine(overrideTargets));
+
+            base.Activate();
+        }
         private IEnumerator AttackRoutine(List<ITargetable> targets)
         {
             var setup = m_DirectDamageAbilityConfig.SpawningSetup;

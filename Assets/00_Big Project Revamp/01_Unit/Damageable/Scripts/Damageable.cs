@@ -210,7 +210,10 @@ namespace Rush
             {
                 ApplyDamage(finalDamage);
             }
-
+            else
+            {
+                return;
+            }
             OnDamageTaken(context, finalDamage);
         }
         private int ApplyProtectionLayers(int damage)

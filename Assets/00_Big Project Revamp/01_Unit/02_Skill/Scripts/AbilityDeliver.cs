@@ -20,9 +20,6 @@ namespace Rush
         public AbilityConfig AbilityConfig => m_AbilityConfig;
         public IAbilityContext AbilityContext => m_AbilityContext;
         public Transform DeliverTransform => m_DeliverTransform;
-
-        [SerializeField, MMReadOnly]
-        private int m_ActivateCount;
         protected List<ITargetable> GetTargetsInternal()
         {
             List<ITargetable> damageables = new(AbilityUltility.ApplyTargetPriority(m_AbilityContext));
@@ -37,7 +34,6 @@ namespace Rush
         public virtual void Activate()
         {
             m_OnActivate?.Invoke(m_AbilityContext);
-            m_ActivateCount++;
         }
 
 

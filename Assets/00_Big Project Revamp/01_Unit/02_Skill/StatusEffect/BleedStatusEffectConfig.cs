@@ -1,28 +1,36 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Poison", menuName = "Rush/Combat/StatusEff/Poison", order = 2)]
-    public class PoisonStatusEffectConfig : StatusEffectConfig
+    // the status to apply additional damage to the infected when stack added or on done
+    [CreateAssetMenu(fileName = "Bleed", menuName = "Rush/Combat/StatusEff/Bleed", order = 2)]
+    public class BleedStatusEffectConfig : StatusEffectConfig
     {
         [Tooltip("you have to add skill configuration with this ability on Infector Skills")]
         [SerializeField]
-        private DamageAbilityConfig m_DamageOnAppliedToInfected;
+        private DirectDamageAbilityConfig m_DamageOnStackAddedToInfected;
+        [SerializeField]
+        private DirectDamageAbilityConfig m_DamageOnDoneToInfected;
         public override void ApplyEffect(StatusEffectContext context)
         {
-            TakePoisonDamage(context);
+            //TakePoisonDamage(context, m_DamageOnAppliedToInfected);
         }
-        private void TakePoisonDamage(StatusEffectContext context)
+        private void TakePoisonDamage(StatusEffectContext context, DirectDamageAbilityConfig directDamageAbility)
         {
             if (HasInfectorSkillController(context, out SkillController controller))
             {
-                if (controller.HasAbility(m_DamageOnAppliedToInfected, out AbilityDeliver abilityDeliver))
+                if (controller.HasAbility(directDamageAbility, out AbilityDeliver abilityDeliver))
                 {
                     Damageable infectedDamageable = GetInfectedDamageable(context);
                     if (infectedDamageable != null)
                     {
                         IAbilityContext abilityContext = abilityDeliver.AbilityContext;
                         infectedDamageable.TakeDamage(abilityContext);
+                    }
+                    if (abilityDeliver is DirectDamager damager)
+                    {
+                        damager.ActiveOverrideTarget(new List<ITargetable>() { infectedDamageable });
                     }
                 }
             }
@@ -53,15 +61,17 @@ namespace Rush
 
         public override void DoneEffect(StatusEffectContext context)
         {
-            if (HasInfectorSkillController(context, out SkillController controller))
+            /*if (HasInfectorSkillController(context, out SkillController controller))
             {
                 controller.ForceActives(m_InfectorSkillsToActivateOnDoneEffect);
-            }
+            }*/
+
+            TakePoisonDamage(context, m_DamageOnDoneToInfected);
         }
 
         public override void OnStackAdded(StatusEffectContext context)
         {
-            TakePoisonDamage(context);
+            TakePoisonDamage(context, m_DamageOnStackAddedToInfected);
         }
 
         public override void OnStackRemoved(StatusEffectContext context)

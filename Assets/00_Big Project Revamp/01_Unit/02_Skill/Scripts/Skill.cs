@@ -335,7 +335,6 @@ namespace Rush
         public void ForceActivateAll()
         {
             ForceActivateAllInternal();
-            Debug.Log($"Force activated all abilities of skill {m_SkillConfig.BaseInfo.Id}.");
         }
 
         private void ForceActivateAllInternal()
