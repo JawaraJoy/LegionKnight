@@ -54,19 +54,7 @@ namespace Rush
             base.Activate();
         }
 
-        private void LookAtTargetInternal(List<ITargetable> targets)
-        {
-            if (targets == null || targets.Count == 0)
-                return;
-
-            ITargetable target = targets[0];
-            if (target?.TargetTransform == null)
-                return;
-
-            Vector2 dir = target.TargetTransform.position - m_DeliverTransform.position;
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
-            m_DeliverTransform.rotation = Quaternion.Euler(0f, 0f, angle);
-        }
+        
 
         private IEnumerator AttackRoutine(List<ITargetable> targets)
         {

@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rush
@@ -16,6 +17,19 @@ namespace Rush
                 
                 m_OnActivate.AddListener((x) => skill.ForceActivateAll());
             }
+        }
+        protected void LookAtTargetInternal(List<ITargetable> targets)
+        {
+            if (targets == null || targets.Count == 0)
+                return;
+
+            ITargetable target = targets[0];
+            if (target?.TargetTransform == null)
+                return;
+
+            Vector2 dir = target.TargetTransform.position - m_DeliverTransform.position;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+            m_DeliverTransform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
     }
 }
