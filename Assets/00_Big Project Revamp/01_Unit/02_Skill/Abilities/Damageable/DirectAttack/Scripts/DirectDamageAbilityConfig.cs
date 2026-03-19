@@ -7,17 +7,13 @@ namespace Rush
     public class DirectDamageAbilityConfig : DamageAbilityConfig
     {
         [SerializeField]
-        private SpawnSetupField m_SpawningSetup;
-        public SpawnSetupField SpawningSetup => m_SpawningSetup;
-        [SerializeField]
         private ExplodeSetupField m_ExplodeSetup;
         public ExplodeSetupField ExplodeSetup => m_ExplodeSetup;
-        [SerializeField]
-        private TargetDistributeMode m_TargetDistributeMode;
+        
         [SerializeField]
         private float m_AttackDelay = 0f;
         public float AttackDelay => m_AttackDelay;
-        public TargetDistributeMode TargetDistributeMode => m_TargetDistributeMode;
+        
         protected override int GetDamageInternal(IAbilityContext context)
         {
             float damage = AbilityUltility.GetFinalPowerAmount(context);

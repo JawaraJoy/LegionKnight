@@ -45,7 +45,7 @@ namespace Rush
         {
             List<ITargetable> targets = new(GetTargetsInternal());
 
-            if (m_ShooterAbilityConfig != null && m_ShooterAbilityConfig.ShoterLookAtTargetOnActivate)
+            if (m_ShooterAbilityConfig != null && m_ShooterAbilityConfig.DeliverLookAtTargetOnActivate)
                 LookAtTargetInternal(targets);
 
             StopAllCoroutines();

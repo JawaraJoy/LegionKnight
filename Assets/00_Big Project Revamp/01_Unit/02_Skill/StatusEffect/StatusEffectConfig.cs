@@ -19,7 +19,7 @@ namespace Rush
 
         [Header("Main Duration")]
         [SerializeField] private bool m_UseMainDuration = true;
-        [SerializeField] private float m_MainDuration = 5f;
+        [SerializeField] protected float m_MainDuration = 5f;
         [SerializeField] private bool m_ResetMainDurationOnReapply = true;
 
         [Header("Stack Decay")]
