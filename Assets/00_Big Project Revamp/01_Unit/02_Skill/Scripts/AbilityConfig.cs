@@ -39,6 +39,8 @@ namespace Rush
         private AbilityDeliver m_DeliverPrefab;
         [SerializeField]
         private AbilityPowerField m_Power;
+
+        [Header("Status Effect")]
         [SerializeField]
         private StatusEffectConfig[] m_StatusEffectOnSelf;
         [SerializeField]
