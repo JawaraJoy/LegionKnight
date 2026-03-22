@@ -39,7 +39,9 @@ namespace Rush
             {
                 if (!summonController.Summoners.Contains(summoner))
                     summonController.Summoners.Add(summoner);
+
             }
+
         }
 
 

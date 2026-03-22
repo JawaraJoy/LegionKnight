@@ -292,7 +292,7 @@ namespace Rush
 
             Unit unit = GetFromPool();
             unit.transform.SetPositionAndRotation(pos, rot);
-            unit.Init(m_SummonedConfig);
+            
             if (unit is SummonerUnit summonerUnit)
             {
                 summonerUnit.SetSummoner(this);
@@ -302,9 +302,16 @@ namespace Rush
 
                 m_ExecutedJobs++;
 
+                
+
                 if (m_ExecutedJobs >= m_TotalJobs)
                     m_IsSpawning = false;
             }
+
+            int levelSkillSummon = m_AbilityContext.SkillContext.Skill.Progression.Level;
+            unit.Init(m_SummonedConfig);
+            unit.Progression.SetLevel(levelSkillSummon);
+            
         }
 
         private void PreWarm()
