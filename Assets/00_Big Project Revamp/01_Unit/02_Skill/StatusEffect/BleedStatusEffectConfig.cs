@@ -23,15 +23,16 @@ namespace Rush
                 if (controller.HasAbility(directDamageAbility, out AbilityDeliver abilityDeliver))
                 {
                     Damageable infectedDamageable = GetInfectedDamageable(context);
-                    if (infectedDamageable != null)
-                    {
-                        IAbilityContext abilityContext = abilityDeliver.AbilityContext;
-                        infectedDamageable.TakeDamage(abilityContext);
-                    }
                     if (abilityDeliver is DirectDamager damager)
                     {
                         damager.ActiveOverrideTarget(new List<ITargetable>() { infectedDamageable });
                     }
+                    /*if (infectedDamageable != null)
+                    {
+                        IAbilityContext abilityContext = abilityDeliver.AbilityContext;
+                        infectedDamageable.TakeDamage(abilityContext);
+                    }*/
+                    
                 }
             }
         }

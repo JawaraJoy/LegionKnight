@@ -13,11 +13,11 @@ namespace Rush
             StatField result = StatField.Zero;
 
             int stackLevel = Mathf.Max(0, context.Influencer.StackCount - 1);
-
+            int levelSkill = context.Influencer.Context.AbilityContext.SkillContext.Skill.Progression.Level;
             PowerField finalScore = PowerField.GetFinalPower(
-                effectScore.BaseAmount,
+                effectScore.BaseAmount * stackLevel,
                 effectScore.ScaleByLevel,
-                stackLevel
+                levelSkill
             );
 
             switch (effectScore.ScaleBy)

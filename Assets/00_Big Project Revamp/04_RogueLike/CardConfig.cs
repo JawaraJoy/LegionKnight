@@ -7,9 +7,11 @@ namespace Rush
     {
         [SerializeField]
         private CardSkillField[] m_SkillConfigs;
-
+        [SerializeField]
+        private CardSkillCategoryModification[] m_SkillCategoryModifications;
         [SerializeField]
         private PlatformConfig[] m_PlatformToAdds;
+         
 
         public CardSkillField[] SkillConfigs => m_SkillConfigs;
 
@@ -38,7 +40,14 @@ namespace Rush
                     }
                 }
 
-                
+                if (m_SkillCategoryModifications.Length > 0)
+                {
+                    for (int i = 0; i < m_SkillCategoryModifications.Length; i++)
+                    {
+                        CardSkillCategoryModification modification = m_SkillCategoryModifications[i];
+                        modification.ApplyModification(skillController);
+                    }
+                }
             }
             if (m_PlatformToAdds.Length > 0)
             {
@@ -47,9 +56,11 @@ namespace Rush
                 {
                     platformHandler.AddPreparedPlatformConfigs(m_PlatformToAdds, controller);
                 }
-            }    
+            }
             RogueLikeManager manager = RushGameManager.Instance.RogueLikeManager;
             manager.OnCardCollected?.Invoke(this);
+
+            
         }
     }
 }

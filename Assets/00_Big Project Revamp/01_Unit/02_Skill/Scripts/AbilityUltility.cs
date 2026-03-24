@@ -480,14 +480,15 @@ namespace Rush
 
         private static void ApplyStatusEffect(IAbilityContext senderContext, Unit unitTarget)
         {
-            AbilityConfig abilityConfig = senderContext.AbilityDeliver.AbilityConfig;
-            StatusEffectConfig[] statusEffects = abilityConfig.StatusEffectOnDelivered;
+            IAbilityDeliver abilityDeliver = senderContext.AbilityDeliver;
+            StatusEffectConfig[] statusEffectsOnDelivered = abilityDeliver.GetStatusEffectsOnDelivered()?.ToArray();
+            StatusEffectConfig[] statusEffectsOnSelf = abilityDeliver.GetStatusEffectsOnSelf()?.ToArray();
 
             if (unitTarget.HasBind(out StatusEffectController controller))
             {
-                if (statusEffects != null && statusEffects.Length > 0)
+                if (statusEffectsOnDelivered != null && statusEffectsOnDelivered.Length > 0)
                 {
-                    foreach (var effect in statusEffects)
+                    foreach (var effect in statusEffectsOnDelivered)
                     {
                         controller.ApplyEffector(effect, senderContext, unitTarget);
                     }
@@ -496,10 +497,10 @@ namespace Rush
 
             if (senderContext.SkillContext.ModuleContext.Unit.HasBind(out StatusEffectController selfController))
             {
-                StatusEffectConfig[] selfEffects = abilityConfig.StatusEffectOnSelf;
-                if (selfEffects != null && selfEffects.Length > 0)
+                
+                if (statusEffectsOnSelf != null && statusEffectsOnSelf.Length > 0)
                 {
-                    foreach (var effect in selfEffects)
+                    foreach (var effect in statusEffectsOnSelf)
                     {
                         selfController.ApplyEffector(effect, senderContext, senderContext.SkillContext.ModuleContext.Unit);
                     }

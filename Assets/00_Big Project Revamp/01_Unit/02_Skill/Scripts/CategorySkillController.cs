@@ -62,6 +62,53 @@ namespace Rush
                 Init();
             }
         }
+        private void AddAbilityToSkills(AbilityConfig abilityConfig)
+        {
+            foreach (Skill skill in m_Skills)
+            {
+                skill.AddAbility(abilityConfig);
+            }
+        }
+        public void AddStatusEffectOnSelf<T>(StatusEffectConfig statusEffectConfig) where T : IAbilityDeliver
+        {
+            AddStatusEffectOnSelfInternal<T>(statusEffectConfig);
+        }
+        public void AddStatusEffectOnTarget<T>(StatusEffectConfig statusEffectConfig) where T : IAbilityDeliver
+        {
+            AddStatusEffectOnTargetInternal<T>(statusEffectConfig);
+        }
+        private void AddStatusEffectOnSelfInternal<T>(StatusEffectConfig statusEffectConfig) where T : IAbilityDeliver
+        {
+            foreach (IAbilityDeliver deliver in GetAbilityDeliversInternal<T>())
+            {
+                deliver.AddCustomStatusEffectOnSelf(statusEffectConfig);
+            }
+        }
+        private void AddStatusEffectOnTargetInternal<T>(StatusEffectConfig statusEffectConfig) where T : IAbilityDeliver
+        {
+            foreach (IAbilityDeliver deliver in GetAbilityDeliversInternal<T>())
+            {
+                deliver.AddCustomStatusEffectOnDelivered(statusEffectConfig);
+            }
+        }
+
+        private IAbilityDeliver[] GetAbilityDeliversInternal<T>() where T : IAbilityDeliver
+        {
+            List<IAbilityDeliver> delivers = new List<IAbilityDeliver>();
+            foreach (Skill skill in m_Skills)
+            {
+                delivers.AddRange(skill.Delivers);
+            }
+            foreach (var deliver in delivers)
+            {
+                if (deliver is not T)
+                {
+                    delivers.Remove(deliver);
+                }
+            }
+            return delivers.ToArray();
+
+        }
         // it called on other class unityevent
         public void RemoveSkill(Skill skill)
         {

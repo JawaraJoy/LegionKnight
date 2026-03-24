@@ -146,6 +146,13 @@ namespace Rush
         {
             m_OnStackChange?.Invoke(m_StackCount);
             
+            if (m_StackCount >= m_Config.MaxStackCount)
+            {
+                if (m_TargetController.ModuleContext.Unit.HasBind(out SkillController skillController))
+                {
+                    skillController.ForceActives(m_Config.InfluencedSkillToActivateOnStackFull);
+                }
+            }
             m_RemainingStackUpdateDuration = TotalStackUpdateDurationInternal;
             if (m_Config.ResetDurationOnStackUpdate)
             {

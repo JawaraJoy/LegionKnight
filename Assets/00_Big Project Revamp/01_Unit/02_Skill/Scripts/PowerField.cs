@@ -6,10 +6,10 @@ namespace Rush
     public class PowerField
     {
         [SerializeField]
-        private int m_InitialAmount;
+        private float m_InitialAmount;
         [SerializeField]
         private float m_MultiplierAmount;
-        public int InitialAmount => m_InitialAmount;
+        public float InitialAmount => m_InitialAmount;
         public float MultiplierAmount => m_MultiplierAmount;
         public PowerField Zero
         {
@@ -58,7 +58,7 @@ namespace Rush
 
         public static PowerField GetFinalPower(PowerField baseEffect, PowerField scaleEffect, int scaleLevel)
         {
-            int finalInitialAmount = baseEffect.m_InitialAmount + Mathf.RoundToInt(scaleEffect.m_InitialAmount * scaleLevel);
+            float finalInitialAmount = baseEffect.m_InitialAmount + Mathf.RoundToInt(scaleEffect.m_InitialAmount * scaleLevel);
             float finalMultiplierAmount = baseEffect.m_MultiplierAmount + (scaleEffect.m_MultiplierAmount * scaleLevel);
             return new PowerField
             {

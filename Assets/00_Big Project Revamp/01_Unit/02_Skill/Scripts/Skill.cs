@@ -192,7 +192,10 @@ namespace Rush
             int roundedMax = Mathf.RoundToInt(max);
             m_OnChargeUpdate?.Invoke(roundedCurrent, roundedMax);
         }
-
+        public void AddAbility(AbilityConfig abilityConfig)
+        {
+            SpawnDeliver(abilityConfig);
+        }
         #endregion
 
         #region Activation Entry
@@ -387,11 +390,28 @@ namespace Rush
         {
             foreach (AbilityConfig ability in m_SkillConfig.AbilitySets)
             {
-                AbilityDeliver deliver = Instantiate(ability.DeliverPrefab, m_DeliverSpawnPost, false);
-
-                deliver.Init(ability, m_SkillContext);
-                m_Delivers.Add(deliver);
+                SpawnDeliver(ability);
             }
+        }
+
+        private void SpawnDeliver(AbilityConfig abilityConfig)
+        {
+            AbilityDeliver deliver = Instantiate(abilityConfig.DeliverPrefab, m_DeliverSpawnPost, false);
+            deliver.Init(abilityConfig, m_SkillContext);
+            m_Delivers.Add(deliver);
+        }
+
+        private void ClearNonSkillConfigDelivers()
+        {
+            for (int i = m_Delivers.Count - 1; i >= 0; i--)
+            {
+                if (!HasAbilityInternal(m_Delivers[i].AbilityConfig.BaseInfo.Id, out AbilityDeliver abilityDeliver))
+                {
+                    Destroy(abilityDeliver.gameObject);
+                    m_Delivers.RemoveAt(i);
+                }
+            }
+
         }
 
         #endregion

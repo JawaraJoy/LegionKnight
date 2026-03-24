@@ -29,9 +29,12 @@ namespace Rush
         [SerializeField]
         private HowStatRemoved m_HowToRemove = HowStatRemoved.RemoveOnDurationEnd;
 
-        [Header("OnStackEmpty Activation OnInfluenced")]
+        [Header("Activation OnInfluenced")]
+        [SerializeField]
+        private SkillConfig[] m_SkillToActivateOnStackFull;
         [SerializeField]
         protected SkillConfig[] m_InfluencedSkillToActivateOnStackEmpty;
+        public SkillConfig[] InfluencedSkillToActivateOnStackFull => m_SkillToActivateOnStackFull;
         public SkillConfig[] InfluencedSkillToActivateOnStackEmpty => m_InfluencedSkillToActivateOnStackEmpty;
         public ModifierType ModifierType => m_ModifierType;
         public StatModifier StatModifierPrefab => m_StatModifierPrefab;
