@@ -47,13 +47,15 @@ namespace Rush
 
         private string BuildText(int amount)
         {
+            if (amount <= 0)
+                return $"{m_Config.BeforeText}{m_Config.AfterText}";
             if (m_Config.SpriteAsset == null)
                 return $"{m_Config.BeforeText}{amount}{m_Config.AfterText}";
             string sprite = "<sprite=0 tint=1>";
 
             if (m_Config.SpriteAssetPosition == SpriteAssetPosition.Before)
                 return $"{sprite}{m_Config.BeforeText}{amount}{m_Config.AfterText}";
-
+            
             return $"{m_Config.BeforeText}{amount}{m_Config.AfterText}{sprite}";
         }
 

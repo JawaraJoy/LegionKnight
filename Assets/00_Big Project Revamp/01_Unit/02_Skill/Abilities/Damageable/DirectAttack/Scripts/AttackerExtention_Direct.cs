@@ -22,15 +22,16 @@ namespace Rush
             yield return new WaitForSeconds(delay);
             if (target.ModuleContext.Unit.HasBind(out IDamageable damageable))
             {
-                damageable.TakeDamage(this);
-                DirectDamageAbilityConfig config;
                 if (m_AbilityContext.AbilityDeliver.AbilityConfig is DirectDamageAbilityConfig directConfig)
                 {
-                    config = directConfig;
-                    if (config.ExplodeSetup.ExplodeOnHit)
+                    if (directConfig.ExplodeSetup.ExplodeOnHit)
                     {
-                        ExplodeDirectAttack(target, config);
-                    }   
+                        ExplodeDirectAttack(target, directConfig);
+                    }
+                    else
+                    {
+                        damageable.TakeDamage(this);
+                    }
                 }
                 Debug.Log($"Direct Attack {target.ModuleContext.Unit.Config.BaseInfo.Name}");
             }

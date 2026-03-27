@@ -47,9 +47,7 @@ namespace Rush
             SetForPlayerLevel(1);
             SetForPlayerExperience(0);
             SetForBossLevel(1);
-            SetForBossExperience(0);
             OnForPlayerExperienceAddedInvoke(m_ForPlayerCurrentExperience);
-            OnForBossExperienceAddedInvoke(m_ForBossCurrentExperience);
         }
         public void AddForPlayerExperience(int amount)
         {
@@ -91,45 +89,11 @@ namespace Rush
         {
             m_ForPlayerCurrentLevel += amount;
         }
-        public void AddForBossExperience(int amount)
-        {
-            m_ForBossCurrentExperience += amount;
-            CheckForBossLevelUp();
-        }
-
-        private void SetForBossExperience(int amount)
-        {
-            m_ForBossCurrentExperience = amount;
-            CheckForBossLevelUp();
-        }
-
-        private void CheckForBossLevelUp()
-        {
-            int nextLevelExp = m_Config.ForEnemiesLevelFormula
-                .GetCurrentMaxExperience(m_ForBossCurrentLevel + 1);
-
-            if (m_ForBossCurrentExperience >= nextLevelExp)
-            {
-                int excessExp = m_ForBossCurrentExperience - nextLevelExp;
-
-                OnBossLevelUpInvoke();
-
-                m_ForBossCurrentExperience = excessExp;
-            }
-
-            OnForBossExperienceAddedInvoke(m_ForBossCurrentExperience);
-        }
 
         private void OnBossLevelUpInvoke()
         {
             AddForBossLevel(1);
             m_OnForBossLevelUp.Invoke(m_ForBossCurrentLevel);
-        }
-
-        private void OnForBossExperienceAddedInvoke(int amount)
-        {
-            m_OnForBossExperienceAdded.Invoke(amount,m_Config.ForEnemiesLevelFormula.
-                GetCurrentMaxExperience(m_ForBossCurrentLevel + 1));
         }
 
         private void SetForBossLevel(int level)

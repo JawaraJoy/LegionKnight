@@ -31,10 +31,6 @@ namespace Rush
 
         [Header("Remove Rule")]
         [SerializeField] private StatusRemoveRule m_RemoveRule = StatusRemoveRule.OnStackZero;
-
-        [Header("On Effect End - Activate Skill On Infected")]
-        [SerializeField] protected SkillConfig[] m_InfectorSkillsToActivateOnDoneEffect;
-
         public Sprite Icon => m_Icon;
         public ModifierType ModifierType => m_ModifierType;
         public StatusEffector EffectorPrefab => m_EffectorPrefab;

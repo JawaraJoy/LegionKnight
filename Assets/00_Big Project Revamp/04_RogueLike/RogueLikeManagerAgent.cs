@@ -7,8 +7,6 @@ namespace Rush
     public class RogueLikeManagerAgent : MonoBehaviour, IReseter
     {
         [SerializeField]
-        private RogueLikeForProgressType m_For = RogueLikeForProgressType.Player;
-        [SerializeField]
         private int m_ExpMultiplyByPerfect = 1;
         [SerializeField]
         private UnityEvent<int> m_OnLevelUp;
@@ -41,28 +39,13 @@ namespace Rush
         }
         private void Start()
         {
-            if (m_For == RogueLikeForProgressType.Player)
-            {
-                Handler.OnForPlayerLevelUp.AddListener(OnLevelUpInvoke);
-            }
-            else
-            {
-                Handler.OnForBossLevelUp.AddListener(OnLevelUpInvoke);
-            }
-
+            Handler.OnForPlayerLevelUp.AddListener(OnLevelUpInvoke);
             Handler.OnCardCollected.AddListener(OnCardCollectedInvoke);
         }
         public void AddExperience(int perfectCombo)
         {
             int totalAmount = (perfectCombo + 1) * m_ExpMultiplyByPerfect;
-            if (m_For == RogueLikeForProgressType.Player)
-            {
-                Handler.AddForPlayerExperience(totalAmount);
-            }
-            else
-            {
-                Handler.AddForBossExperience(totalAmount);
-            }
+            Handler.AddForPlayerExperience(totalAmount);
         }
         private void OnLevelUpInvoke(int level)
         {

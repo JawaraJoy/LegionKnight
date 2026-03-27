@@ -11,6 +11,7 @@ namespace Rush
 
         [Header("Events")]
         [SerializeField] private UnityEvent<StatusEffectContext> m_OnApplied;
+        [SerializeField] private UnityEvent<int> m_OnCurrentStackUpdated;
         [SerializeField] private UnityEvent<int, int> m_OnStackUpdated;
         [SerializeField] private UnityEvent<float> m_OnMainDurationUpdated;
         [SerializeField] private UnityEvent<float> m_OnStackDurationUpdated;
@@ -462,6 +463,7 @@ namespace Rush
                 return;
 
             m_OnStackUpdated?.Invoke(m_CurrentStack, m_Config.MaxStackCount);
+            m_OnCurrentStackUpdated?.Invoke(m_CurrentStack);
         }
 
         private void InvokeMainDurationUpdated()

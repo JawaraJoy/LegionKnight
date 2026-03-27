@@ -24,6 +24,9 @@ namespace Rush
         private bool m_Immortality;
         [SerializeField]
         private bool m_Invisibility;
+
+        [SerializeField] 
+        protected SkillConfig[] m_InfectorSkillToOnEffectDone;
         public override void OnEffectStarted(StatusEffectContext context)
         {
             if (context.Infected.HasBind(out Damageable damageable))
@@ -50,6 +53,11 @@ namespace Rush
                 {
                     damageable.SetImmortal(false);
                 }
+            }
+            Unit infected = context.Infected;
+            if (infected.HasBind(out SkillController skillController))
+            {
+                skillController.ForceActives(m_InfectorSkillToOnEffectDone);
             }
         }
 
