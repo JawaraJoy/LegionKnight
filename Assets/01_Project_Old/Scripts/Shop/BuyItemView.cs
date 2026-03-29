@@ -46,14 +46,14 @@ namespace LegionKnight
             if (defi is HeroUnitConfig character)
             {
                 m_Icon.sprite = character.CollectibleField.Icon;
-                bool owned = Player.Instance.HeroDeck.GetHeroUnit(character).Owned;
+                bool owned = Player.Instance.HeroesCollection.GetHeroUnit(character).Owned;
                 if (owned)
                 {
                     StartCoroutine(CharcterDuplicated(character));
                 }
                 else
                 {
-                    Player.Instance.HeroDeck.SetOwned(character, true);
+                    Player.Instance.HeroesCollection.SetOwned(character, true);
                 }
             }
         }

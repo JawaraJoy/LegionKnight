@@ -16,7 +16,7 @@ namespace LegionKnight
         private HeroUnit m_HeroUnit;
         public void Init(HeroUnitConfig heroConfig)
         {
-            HeroUnit unit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
+            HeroUnit unit = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
             m_HeroUnit = unit;
             bool isCharacterUsed = unit.IsUsed;
             m_UseButton.interactable = !isCharacterUsed;

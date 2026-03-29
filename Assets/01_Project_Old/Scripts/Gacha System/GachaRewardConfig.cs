@@ -23,13 +23,13 @@ namespace LegionKnight
 
             if (m_GachaItemConfig is HeroUnitConfig heroConfig)
             {
-                if (Player.Instance.HeroDeck.GetHeroUnit(heroConfig).Owned)
+                if (Player.Instance.HeroesCollection.GetHeroUnit(heroConfig).Owned)
                 {
                     Player.Instance.CurrencyControl.AddCurrencyAmount(heroConfig.ItemDuplicateConverter.ItemConfig, heroConfig.ItemDuplicateConverter.Amount);
                 }
                 else
                 {
-                    Player.Instance.HeroDeck.SetOwned(heroConfig, true);
+                    Player.Instance.HeroesCollection.SetOwned(heroConfig, true);
                 }
             }
         }

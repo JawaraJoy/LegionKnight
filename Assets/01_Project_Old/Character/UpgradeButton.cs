@@ -47,14 +47,14 @@ namespace LegionKnight
         {
             if (m_HeroUsed == null)
             {
-                m_HeroUsed = Player.Instance.HeroDeck.SelectedHero;
+                m_HeroUsed = Player.Instance.HeroesCollection.SelectedHero;
             }
             InitInternal(m_HeroUsed);
         }
         private void InitInternal(HeroUnitConfig heroConfig)
         {
             m_HeroUsed = heroConfig;
-            HeroUnit unit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
+            HeroUnit unit = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
             m_CharacterUnit = unit;
 
             ItemConfig levelUpItemRequirment = unit.LevelFormulaDefinition.ItemRequirmentConfig;

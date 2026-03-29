@@ -57,7 +57,7 @@ namespace Rush
         {
             if (collectibleConfig is HeroUnitConfig heroConfig)
             {
-                bool owned = Player.Instance.HeroDeck.GetHeroUnit(heroConfig).Owned;
+                bool owned = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig).Owned;
                 if (owned)
                 {
                     ItemConfig itemConverter = heroConfig.ItemDuplicateConverter.ItemConfig;
@@ -66,7 +66,7 @@ namespace Rush
                 }
                 else
                 {
-                    Player.Instance.HeroDeck.SetOwned(heroConfig, true);
+                    Player.Instance.HeroesCollection.SetOwned(heroConfig, true);
                 }
             }
         }

@@ -41,7 +41,7 @@ namespace Rush
         private void RefreshCardsInternal()
         {
             int drawAmount = m_CardViews.Length; // Assuming you want to draw as many cards as there are views
-            CardConfig[] cardConfigs = RushGameManager.Instance.RogueLikeManager.Config.GetDifferenceCardRandom(drawAmount);
+            CardConfig[] cardConfigs = RushGameManager.Instance.RogueLikeManager.GetDifferenceCardRandom(drawAmount).ToArray();
             ShowCards(cardConfigs);
         }
     }

@@ -42,14 +42,14 @@ namespace LegionKnight
         {
             if (m_HeroConfig == null)
             {
-                m_HeroConfig = Player.Instance.HeroDeck.SelectedHero;
+                m_HeroConfig = Player.Instance.HeroesCollection.SelectedHero;
             }
             Init(m_HeroConfig);
         }
         public void Init(HeroUnitConfig heroConfig)
         {
             m_HeroConfig = heroConfig;
-            HeroUnit unit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
+            HeroUnit unit = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
             m_HeroUnit = unit;
 
             ItemConfig breakItemConfig = heroConfig.BreakThroughFormulaConfig.ShardConfig;

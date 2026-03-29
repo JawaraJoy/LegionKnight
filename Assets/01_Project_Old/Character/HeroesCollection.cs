@@ -6,7 +6,7 @@ using Rush;
 
 namespace LegionKnight
 {
-    public partial class CharacterDeck : MonoBehaviour
+    public partial class HeroesCollection : MonoBehaviour
     {
         [SerializeField]
         private HeroUnitConfig m_DefaultHeroConfig;
@@ -107,7 +107,7 @@ namespace LegionKnight
             m_OnCharacterOwnedAmount?.Invoke(ownedAmount);
         }
 
-        public void SetUsedCharacter()
+        public void SetUsedHero()
         {
             m_UsedHeroConfig = m_SelectedHeroConfig;
             GetHeroUnitInternal(m_UsedHeroConfig).SetIsUsed(true);
@@ -121,7 +121,7 @@ namespace LegionKnight
             UnityService.Instance.SaveData("usedcharacter", m_UsedHeroConfig.BaseInfo.Id);
             OnCharacterUsedInvoke();
         }
-        public void SetSelectedCharacter(HeroUnitConfig config)
+        public void SetSelectedHero(HeroUnitConfig config)
         {
             m_SelectedHeroConfig = config;
             OnSelectedCharacterInvoke();

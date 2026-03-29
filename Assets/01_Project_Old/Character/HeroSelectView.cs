@@ -33,7 +33,7 @@ namespace LegionKnight
         }
         private void SelectCharacterInternal()
         {
-            Player.Instance.HeroDeck.SetSelectedCharacter(m_HeroConfig);
+            Player.Instance.HeroesCollection.SetSelectedHero(m_HeroConfig);
             OnCharacterSelectedInvoke();
         }
         public void SelectCharacter()
@@ -46,7 +46,7 @@ namespace LegionKnight
         }
         private void InitInternal()
         {
-            HeroUnit character = Player.Instance.HeroDeck.GetHeroUnit(m_HeroConfig);
+            HeroUnit character = Player.Instance.HeroesCollection.GetHeroUnit(m_HeroConfig);
             InitInternal(character);
             
         }

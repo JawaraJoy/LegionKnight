@@ -1,5 +1,6 @@
 
 using MoreMountains.Tools;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,16 +14,15 @@ namespace Rush
         private int m_ForPlayerCurrentLevel = 1;
         [SerializeField, MMReadOnly]
         private int m_ForPlayerCurrentExperience;
+        [SerializeField, MMReadOnly]
+        private HeroUnitConfig m_CurrentHero;
+        [SerializeField, MMReadOnly]
+        private List<CardConfig> m_CustomCards = new();
 
         [SerializeField]
         private UnityEvent<int, int> m_OnForPlayerExperienceAdded;
         [SerializeField]
         private UnityEvent<int> m_OnForPlayerLevelUp;
-        [SerializeField, MMReadOnly]
-        private int m_ForBossCurrentLevel = 1;
-
-        [SerializeField, MMReadOnly]
-        private int m_ForBossCurrentExperience;
 
         [SerializeField]
         private UnityEvent<int, int> m_OnForBossExperienceAdded;
@@ -36,17 +36,75 @@ namespace Rush
         public int ForPlayerCurrentLevel => m_ForPlayerCurrentLevel;
         public UnityEvent<int, int> OnForPlayerExperienceAdded => m_OnForPlayerExperienceAdded;
         public UnityEvent<int> OnForPlayerLevelUp => m_OnForPlayerLevelUp;
-        public int ForBossCurrentLevel => m_ForBossCurrentLevel;
-        public int ForBossCurrentExperience => m_ForBossCurrentExperience;
 
         public UnityEvent<int, int> OnForBossExperienceAdded => m_OnForBossExperienceAdded;
         public UnityEvent<int> OnForBossLevelUp => m_OnForBossLevelUp;
         public UnityEvent<CardConfig> OnCardCollected => m_OnCardCollected;
+        public List<CardConfig> CustomCards => m_CustomCards;
+
+        public List<CardConfig> GetDifferenceCardRandom(int amount)
+        {
+            List<CardConfig> pool = new List<CardConfig>();
+
+            // 1. Add Base Deck
+            if (m_Config.BaseDeck != null)
+            {
+                pool.AddRange(m_Config.BaseDeck.CardConfigs);
+            }
+
+            // 2. Add Hero Deck
+            if (m_CurrentHero != null && m_CurrentHero.HeroDeckConfig != null)
+            {
+                pool.AddRange(m_CurrentHero.HeroDeckConfig.CardConfigs);
+            }
+
+            // 3. Remove duplicates (important!)
+            HashSet<CardConfig> uniquePool = new HashSet<CardConfig>(pool);
+
+            // 4. Remove owned cards
+            uniquePool.ExceptWith(m_CustomCards);
+
+            List<CardConfig> finalPool = new List<CardConfig>(uniquePool);
+
+            // 5. Random pick
+            List<CardConfig> result = new List<CardConfig>();
+
+            for (int i = 0; i < amount && finalPool.Count > 0; i++)
+            {
+                int index = Random.Range(0, finalPool.Count);
+                result.Add(finalPool[index]);
+                finalPool.RemoveAt(index);
+            }
+
+            return result;
+        }
+        public void SetCurrentHero(HeroUnitConfig heroConfig)
+        {
+            m_CurrentHero = heroConfig;
+        }
+        public void AddCard(CardConfig cardConfig)
+        {
+            if (!m_CustomCards.Contains(cardConfig))
+            {
+                m_CustomCards.Add(cardConfig);
+                m_OnCardCollected.Invoke(cardConfig);
+            }
+        }
+        public void RemoveCard(CardConfig cardConfig)
+        {
+            if (m_CustomCards.Contains(cardConfig))
+            {
+                m_CustomCards.Remove(cardConfig);
+            }
+        }
+        private void ClearCustomCard()
+        {
+            m_CustomCards.Clear();
+        }
         public void ResetProgression()
         {
             SetForPlayerLevel(1);
             SetForPlayerExperience(0);
-            SetForBossLevel(1);
             OnForPlayerExperienceAddedInvoke(m_ForPlayerCurrentExperience);
         }
         public void AddForPlayerExperience(int amount)
@@ -88,22 +146,6 @@ namespace Rush
         private void AddForPlayerLevel(int amount)
         {
             m_ForPlayerCurrentLevel += amount;
-        }
-
-        private void OnBossLevelUpInvoke()
-        {
-            AddForBossLevel(1);
-            m_OnForBossLevelUp.Invoke(m_ForBossCurrentLevel);
-        }
-
-        private void SetForBossLevel(int level)
-        {
-            m_ForBossCurrentLevel = level;
-        }
-
-        private void AddForBossLevel(int amount)
-        {
-            m_ForBossCurrentLevel += amount;
         }
     }
 }

@@ -98,7 +98,7 @@ namespace LegionKnight
             GameManager.Instance.ShopManager.OnItemBuyInvoke(this);
             if (item is HeroUnitConfig heroconfig)
             {
-                if (Player.Instance.HeroDeck.GetHeroUnit(heroconfig).Owned)
+                if (Player.Instance.HeroesCollection.GetHeroUnit(heroconfig).Owned)
                 {
                     //GameManager.Instance.AddStarConvertCount(itemDefinition.ShardConvert.Amount);
                     Currency shard = new(heroconfig.ItemDuplicateConverter.ItemConfig, heroconfig.ItemDuplicateConverter.Amount);
@@ -106,7 +106,7 @@ namespace LegionKnight
                 }
                 else
                 {
-                    Player.Instance.HeroDeck.SetOwned(heroconfig, true);
+                    Player.Instance.HeroesCollection.SetOwned(heroconfig, true);
                 }
             }
             if (item is ItemConfig currencyDefinition)
@@ -134,7 +134,7 @@ namespace LegionKnight
         {
             if (item is HeroUnitConfig heroConfig)
             {
-                Player.Instance.HeroDeck.SetOwned(heroConfig, true);
+                Player.Instance.HeroesCollection.SetOwned(heroConfig, true);
             }
             if (item is ItemConfig itemConfig)
             {

@@ -4,7 +4,7 @@ namespace Rush
 {
     public class PlayerNagaAgent : MonoBehaviour
     {
-        private PlayerNaga m_PlayerNaga;
+        /*private PlayerNaga m_PlayerNaga;
 
         private PlayerNaga PlayerNagaInternal
         {
@@ -24,6 +24,6 @@ namespace Rush
         public void ShowNaga()
         {
             PlayerNagaInternal.ShowNaga();
-        }
+        }*/
     }
 }

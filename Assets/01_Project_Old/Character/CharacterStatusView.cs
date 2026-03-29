@@ -32,7 +32,7 @@ namespace LegionKnight
 
         public void Init(HeroUnitConfig heroConfig)
         {
-            HeroUnit characterUnit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
+            HeroUnit characterUnit = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
 
             bool isTimeToBreak = heroConfig.BreakThroughFormulaConfig.CanBreakByLevel(characterUnit.Star, characterUnit.Level);
             //bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && 

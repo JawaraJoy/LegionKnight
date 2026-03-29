@@ -7,10 +7,10 @@ namespace Rush
     {
         
     }
-    public partial class RushPlayer
+    /*public partial class RushPlayer
     {
         [SerializeField]
         private PlayerNaga m_Naga;
         public PlayerNaga Naga => m_Naga;
-    }
+    }*/
 }

@@ -23,7 +23,7 @@ namespace LegionKnight
         {
             base.OnShowInvoke();
             m_SpawnedCharacterSelectView = new List<HeroSelectView>(m_SpawnContainer.GetComponentsInChildren<HeroSelectView>(true));
-            List<HeroUnit> characterDecks = Player.Instance.HeroDeck.HeroUnits;
+            List<HeroUnit> characterDecks = Player.Instance.HeroesCollection.HeroUnits;
             foreach (HeroUnit unit in characterDecks)
             {
                 if (GetSelectView(unit.HeroConfig) == null)

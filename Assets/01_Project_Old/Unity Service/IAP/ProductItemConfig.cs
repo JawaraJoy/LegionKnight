@@ -21,7 +21,7 @@ namespace Rush
             }
             else if (m_CollectibleConfig is HeroUnitConfig heroConfig)
             {
-                Player.Instance.HeroDeck.SetOwned(heroConfig, true);
+                Player.Instance.HeroesCollection.SetOwned(heroConfig, true);
             }
             else if (m_CollectibleConfig is PlatformConfig platfrormConfig)
             {

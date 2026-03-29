@@ -34,7 +34,7 @@ namespace LegionKnight
         }
         private void RefreshInternal()
         {
-            HeroUnitConfig selected = Player.Instance.HeroDeck.SelectedHero;
+            HeroUnitConfig selected = Player.Instance.HeroesCollection.SelectedHero;
             if (selected == null) return;
             SetCharacterSelectedInternal(selected);
             OnInitInvoke(selected);
@@ -43,8 +43,8 @@ namespace LegionKnight
         private void InitInternal()
         {
             
-            if (Player.Instance.HeroDeck.SelectedHero == null) return;
-            HeroUnitConfig usedHero = Player.Instance.HeroDeck.UsedHero;
+            if (Player.Instance.HeroesCollection.SelectedHero == null) return;
+            HeroUnitConfig usedHero = Player.Instance.HeroesCollection.UsedHero;
             SetCharacterSelectedInternal(usedHero);
             OnInitInvoke(usedHero);
             

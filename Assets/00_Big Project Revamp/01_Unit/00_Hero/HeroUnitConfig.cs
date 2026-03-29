@@ -18,7 +18,7 @@ namespace Rush
         [SerializeField]
         private Currency m_ItemDuplicateConverter;
         [SerializeField]
-        private DeckConfig m_DeckConfig;
+        private DeckConfig m_HeroDeckConfig;
         [SerializeField]
         private bool m_UseAsDefault = false;
         [SerializeField]
@@ -28,7 +28,7 @@ namespace Rush
         public int MaxStars => m_MaxStars;
         public bool UseAsDefault => m_UseAsDefault;
         public bool OwnedAtFirst => m_OwnedAtFirst;
-        public DeckConfig DeckConfig => m_DeckConfig;
+        public DeckConfig HeroDeckConfig => m_HeroDeckConfig;
         public LevelFormulaConfig LevelFormulaConfig => m_LevelFormulaConfig;
         public BreakThroughFormulaConfig BreakThroughFormulaConfig => m_BreakThroughFormulaConfig;
         public Currency ItemDuplicateConverter => m_ItemDuplicateConverter;

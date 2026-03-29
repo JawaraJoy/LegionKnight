@@ -89,8 +89,8 @@ namespace LegionKnight
             }
             UnityService.Instance.SaveData(m_HeroConfig.BaseInfo.Id + "Lv", m_Level);
             m_OnLevelUp?.Invoke(this);
-            Player.Instance.HeroDeck.OnCharacterLevelUp.Invoke(m_HeroConfig);
-            Player.Instance.HeroDeck.OnCharacterLevelUpAmount.Invoke(m_Level);
+            Player.Instance.HeroesCollection.OnCharacterLevelUp.Invoke(m_HeroConfig);
+            Player.Instance.HeroesCollection.OnCharacterLevelUpAmount.Invoke(m_Level);
             Debug.Log($"Level Up! New Level: {m_Level}");
 
             //--Tenjin Record
@@ -111,8 +111,8 @@ namespace LegionKnight
                 //UnityService.Instance.SaveData(m_CurrentLevelKey, m_Level);
                 //OnLevelUpInvoke();
                 m_OnLevelUp?.Invoke(this);
-                Player.Instance.HeroDeck.OnCharacterLevelUp.Invoke(m_HeroConfig);
-                Player.Instance.HeroDeck.OnCharacterLevelUpAmount.Invoke(m_Level);
+                Player.Instance.HeroesCollection.OnCharacterLevelUp.Invoke(m_HeroConfig);
+                Player.Instance.HeroesCollection.OnCharacterLevelUpAmount.Invoke(m_Level);
 
                 Debug.Log($"Level Up! New Level: {m_Level}");
 
@@ -138,7 +138,7 @@ namespace LegionKnight
             }
             UnityService.Instance.SaveData(m_HeroConfig.BaseInfo.Id + "Star", m_Star);
             OnCharacterStarUpInvoke();
-            Player.Instance.HeroDeck.OnCharacterStarUp.Invoke(m_HeroConfig);
+            Player.Instance.HeroesCollection.OnCharacterStarUp.Invoke(m_HeroConfig);
 
             //--Tenjin Record
             TenjinManager.Instance.SendEventToCharacterBreakthrough(m_Star);
@@ -195,7 +195,7 @@ namespace LegionKnight
                 m_Star = m_HeroConfig.StartingStars;
             }
             //m_Owned = UnityService.Instance.GetData<bool>(m_Definition.Id + "Owned");
-            if (m_HeroConfig == Player.Instance.HeroDeck.DefaultHero)
+            if (m_HeroConfig == Player.Instance.HeroesCollection.DefaultHero)
             {
                 SetOwnedInternal(true);
             }

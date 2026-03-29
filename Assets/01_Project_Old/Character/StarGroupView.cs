@@ -10,7 +10,7 @@ namespace LegionKnight
 
         public void Init(HeroUnitConfig heroConfig)
         {
-            HeroUnit heroUnit = Player.Instance.HeroDeck.GetHeroUnit(heroConfig);
+            HeroUnit heroUnit = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
             int maxStar = heroUnit.MaxStar;
             int openedStar = heroUnit.Star;
 
