@@ -176,7 +176,7 @@ namespace Rush
             }
             RefreshDamageStat(m_TargetController);
 
-            //m_StackCount = Mathf.Clamp(m_StackCount, 0, m_Config.MaxStackCount);
+            m_StackCount = Mathf.Clamp(m_StackCount, 0, m_Config.MaxStackCount);
         }
         private void ClearListeners()
         {

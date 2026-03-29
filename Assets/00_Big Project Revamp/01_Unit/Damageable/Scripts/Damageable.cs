@@ -345,8 +345,8 @@ namespace Rush
             {
                 return;
             }
-            GameObject damagerModule = context.SkillContext.ModuleContext.Module;
-            if (damagerModule.TryGetComponent(out SkillController damagerSkill))
+            Unit damager = context.SkillContext.ModuleContext.Unit;
+            if (damager.HasBind(out SkillController damagerSkill))
             {
                 AbilityUltility.OnSkillEventActivates(damagerSkill, ForceActiveState.OnDamageDealed);
             }
