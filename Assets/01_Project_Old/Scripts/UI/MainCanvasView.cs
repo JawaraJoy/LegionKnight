@@ -7,8 +7,5 @@ namespace LegionKnight
         
     }
 
-    public partial class GameManager
-    {
-        
-    }
+    
 }
