@@ -3,7 +3,7 @@ using Rush;
 
 namespace LegionKnight
 {
-    [CreateAssetMenu(fileName = "Gacha Reward", menuName = "Rush/Gacha/Reward")]
+    [CreateAssetMenu(fileName = "GachaReward_", menuName = "Rush/Gacha/Reward")]
     public class GachaRewardConfig : CollectibleConfig
     {
         [SerializeField] private CollectibleConfig m_GachaItemConfig;

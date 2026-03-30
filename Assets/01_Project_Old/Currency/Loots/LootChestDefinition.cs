@@ -5,15 +5,11 @@ using Rush;
 
 namespace LegionKnight
 {
-    [CreateAssetMenu(fileName = "Loot", menuName = "Legion Knight/Loot", order = 0)]
+    [CreateAssetMenu(fileName = "LootChest_", menuName = "Legion Knight/LootChest", order = 0)]
     public class LootChestDefinition : CollectibleConfig
     {
         [SerializeField]
-        private string m_Id;
-        [SerializeField]
         private LootField[] m_LootFields;
-
-        public string Id => m_Id;
         public LootField[] LootFields => m_LootFields;
 
         private LootedPanel m_Panel;

@@ -5,14 +5,14 @@ namespace Rush
 {
     public class EnemyWaveIndicatorViewAgent : MonoBehaviour
     {
-        private NewGameplayPanel m_GameplayPanel;
-        private NewGameplayPanel GameplayPanel
+        private GameplayPanel m_GameplayPanel;
+        private GameplayPanel GameplayPanel
         {
             get
             {
                 if (m_GameplayPanel == null)
                 {
-                    m_GameplayPanel = CanvasManager.Instance.GetPanel<NewGameplayPanel>();
+                    m_GameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
                 }
                 return m_GameplayPanel;
             }

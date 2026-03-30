@@ -143,7 +143,7 @@ namespace LegionKnight
             m_Reward = reward;
         }
 
-        private string Key => $"{DailyReward.DailyRewardKey}_{m_Reward.Id}";
+        private string Key => $"{DailyReward.DailyRewardKey}_{m_Reward.BaseInfo.Id}";
 
         public void CheckState()
         {
