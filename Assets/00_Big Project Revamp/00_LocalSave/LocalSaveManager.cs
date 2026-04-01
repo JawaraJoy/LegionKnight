@@ -19,13 +19,13 @@ namespace LegionKnight
         public void LoadAllData()
         {
             //m_CloudSaveManager.LoadAllData();
-            m_LocalSaveManager.LoadAllDataWithExpiry();
+            m_LocalSaveManager.LoadAll();
         }
-        public void SaveData(string key, object val, UnityAction callback = null)
+        public void SaveData<T>(string key, T val, long ttl = 0, UnityAction callback = null)
         {
             Debug.Log("----- " + key + " - " + val.GetType().ToString());
 
-            m_LocalSaveManager.SaveData(key, val, callback);
+            m_LocalSaveManager.SaveData(key, val, ttl, callback);
         }
         public bool HasData(string key)
         {
@@ -47,7 +47,7 @@ namespace LegionKnight
         }
         public T GetData<T>(string key)
         {
-            return m_LocalSaveManager.GetData<T>(key);
+            return m_LocalSaveManager.GetDataValue<T>(key);
         }
     }
 }

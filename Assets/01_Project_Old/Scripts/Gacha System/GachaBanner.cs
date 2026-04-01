@@ -15,7 +15,7 @@ namespace LegionKnight
         private int m_SmallPity;
         private bool m_FirstDrawUsed;
 
-        private LocalSave Cloud => UnityService.Instance.LocalSave;
+        private LocalSave LocalSave => UnityService.Instance.LocalSave;
 
         private string TotalKey => $"{m_Definition.Id}_total";
         private string SmallKey => $"{m_Definition.Id}_small";
@@ -103,14 +103,14 @@ namespace LegionKnight
 
         public void Init()
         {
-            if (Cloud.HasData(TotalKey))
-                m_TotalDraws = Cloud.GetDataValue<int>(TotalKey);
+            if (LocalSave.HasData(TotalKey))
+                m_TotalDraws = UnityService.Instance.GetData<int>(TotalKey);
 
-            if (Cloud.HasData(SmallKey))
-                m_SmallPity = Cloud.GetDataValue<int>(SmallKey);
+            if (LocalSave.HasData(SmallKey))
+                m_SmallPity = UnityService.Instance.GetData<int>(SmallKey);
 
-            if (Cloud.HasData(FirstKey))
-                m_FirstDrawUsed = Cloud.GetDataValue<bool>(FirstKey);
+            if (LocalSave.HasData(FirstKey))
+                m_FirstDrawUsed = UnityService.Instance.GetData<bool>(FirstKey);
 
             LoadDiscount(m_SingleDiscount);
             LoadDiscount(m_MultiDiscount);
@@ -207,9 +207,9 @@ namespace LegionKnight
                 ? m_Definition.SeasonDurationSeconds
                 : 0;
 
-            Cloud.SaveData(TotalKey, m_TotalDraws, ttl);
-            Cloud.SaveData(SmallKey, m_SmallPity, ttl);
-            Cloud.SaveData(FirstKey, m_FirstDrawUsed, ttl);
+            LocalSave.SaveData(TotalKey, m_TotalDraws, ttl);
+            LocalSave.SaveData(SmallKey, m_SmallPity, ttl);
+            LocalSave.SaveData(FirstKey, m_FirstDrawUsed, ttl);
 
             SaveDiscount(m_SingleDiscount);
             SaveDiscount(m_MultiDiscount);
@@ -224,7 +224,7 @@ namespace LegionKnight
                 ? m_Definition.SeasonDurationSeconds
                 : 0;
 
-            Cloud.SaveData($"{m_Definition.Id}_discount_{discount.Id}",
+            LocalSave.SaveData($"{m_Definition.Id}_discount_{discount.Id}",
                 discount.FirstDrawConsumed,
                 ttl);
         }
@@ -235,7 +235,7 @@ namespace LegionKnight
                 return;
 
             string key = $"{m_Definition.Id}_discount_{discount.Id}";
-            if (Cloud.HasData(key))
+            if (LocalSave.HasData(key))
                 discount.ConsumeFirstDraw();
         }
     }
