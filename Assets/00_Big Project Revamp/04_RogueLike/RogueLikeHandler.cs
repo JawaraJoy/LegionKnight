@@ -84,13 +84,31 @@ namespace Rush
         }
         public void AddCard(CardConfig cardConfig)
         {
+            AddCardInternal(cardConfig);
+        }
+        private void AddCardInternal(CardConfig cardConfig)
+        {
             if (!m_CustomCards.Contains(cardConfig))
             {
                 m_CustomCards.Add(cardConfig);
                 m_OnCardCollected.Invoke(cardConfig);
             }
         }
-        public void RemoveCard(CardConfig cardConfig)
+        public void AddCards(List<CardConfig> cardConfigs)
+        {
+            foreach (var cardConfig in cardConfigs)
+            {
+                AddCardInternal(cardConfig);
+            }
+        }
+        public void RemoveCards(List<CardConfig> cardConfigs)
+        {
+            foreach (var cardConfig in cardConfigs)
+            {
+                RemoveCardInternal(cardConfig);
+            }
+        }
+        private void RemoveCardInternal(CardConfig cardConfig)
         {
             if (m_CustomCards.Contains(cardConfig))
             {

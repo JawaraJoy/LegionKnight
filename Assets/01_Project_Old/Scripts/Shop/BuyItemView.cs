@@ -28,7 +28,7 @@ namespace LegionKnight
                 GameManager.Instance.ShopManager.GetShopContainer(shopItem.ContainerName).GetShopItemControl(shopItem).SetAvailable(false);
                 CurrencyApplier(d, totalAmount);
                 CharacterApplier(d);
-                PlatformApplier(d, totalAmount);
+                CardApplier(d, totalAmount);
                 EnergyApplier(d, totalAmount);
             }
         }
@@ -66,12 +66,12 @@ namespace LegionKnight
             int amount = heroConfig.ItemDuplicateConverter.Amount;
             Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
         }
-        private void PlatformApplier(CollectibleConfig config, int amount)
+        private void CardApplier(CollectibleConfig config, int amount)
         {
-            if (config is PlatformConfig platformConfig)
+            if (config is CardConfig cardConfig)
             {
-                m_Icon.sprite = platformConfig.CollectibleField.Icon;
-                Player.Instance.PlatformDeck.AddPlatformAmount(platformConfig, amount);
+                m_Icon.sprite = cardConfig.CollectibleField.Icon;
+                Player.Instance.PlayerCardDeck.AddCardAmount(cardConfig, amount);
             }
         }
         private void EnergyApplier(CollectibleConfig config, int amount)

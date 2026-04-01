@@ -83,6 +83,8 @@ namespace LegionKnight
                 unit.Init();
                 //unit.Definition.InitAsOwner();
             }
+            RushPlayer.Instance.Init(m_UsedHeroConfig);
+            Debug.Log("Heroes Collection Initialized");
         }
         public void SetOwned(HeroUnitConfig config, bool set)
         {
@@ -129,6 +131,7 @@ namespace LegionKnight
         private void OnCharacterUsedInvoke()
         {
             m_OnCharacterUsed?.Invoke(m_UsedHeroConfig);
+            RushPlayer.Instance.Init(m_UsedHeroConfig);
         }
         private void OnSelectedCharacterInvoke()
         {

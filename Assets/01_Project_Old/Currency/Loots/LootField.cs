@@ -26,7 +26,7 @@ namespace Rush
         public void DirectTakeLoot()
         {
             CurrencyApplierInternal(m_CollectibleConfig, m_Amount);
-            StandbyPlatformApplierInternal(m_CollectibleConfig, m_Amount);
+            CardApplierInternal(m_CollectibleConfig, m_Amount);
             EnergyApplierInternal(m_CollectibleConfig, m_Amount);
             CharacterApplierInternal(m_CollectibleConfig);
             RandomApplierInternal(m_CollectibleConfig);
@@ -70,11 +70,11 @@ namespace Rush
                 }
             }
         }
-        private static void StandbyPlatformApplierInternal(CollectibleConfig collectibleConfig, int amount)
+        private static void CardApplierInternal(CollectibleConfig collectibleConfig, int amount)
         {
-            if (collectibleConfig is PlatformConfig platform)
+            if (collectibleConfig is CardConfig cardConfig)
             {
-                Player.Instance.PlatformDeck.AddPlatformAmount(platform, amount);
+                Player.Instance.PlayerCardDeck.AddCardAmount(cardConfig, amount);
             }
         }
         private static void EnergyApplierInternal(CollectibleConfig collectibleConfig, int amount)
@@ -94,7 +94,7 @@ namespace Rush
         }
         public static void StandbyPlatformApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            StandbyPlatformApplierInternal(collectibleConfig, amount);
+            CardApplierInternal(collectibleConfig, amount);
         }
         public static void EnergyApplier(CollectibleConfig collectibleConfig, int amount)
         {

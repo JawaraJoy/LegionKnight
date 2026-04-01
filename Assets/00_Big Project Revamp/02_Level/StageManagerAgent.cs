@@ -16,5 +16,9 @@ namespace Rush
         {
             RushGameManager.Instance.StageManager.Pause();
         }
+        public void SelectStage(StageConfig stage)
+        {
+            RushGameManager.Instance.StageManager.SelectStage(stage);
+        }
     }
 }

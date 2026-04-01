@@ -15,7 +15,7 @@ namespace LegionKnight
         private int m_SmallPity;
         private bool m_FirstDrawUsed;
 
-        private CloudSave Cloud => UnityService.Instance.CloudSave;
+        private LocalSave Cloud => UnityService.Instance.LocalSave;
 
         private string TotalKey => $"{m_Definition.Id}_total";
         private string SmallKey => $"{m_Definition.Id}_small";

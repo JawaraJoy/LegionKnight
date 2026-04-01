@@ -92,10 +92,10 @@ namespace LegionKnight
         }
         private void PlatformApplier(CollectibleConfig collectibleConfig, int amount)
         {
-            if (collectibleConfig is PlatformConfig platformConfig)
+            if (collectibleConfig is CardConfig cardConfig)
             {
-                m_Icon.sprite = platformConfig.CollectibleField.Icon;
-                Player.Instance.PlatformDeck.AddPlatformAmount(platformConfig, amount);
+                m_Icon.sprite = cardConfig.CollectibleField.Icon;
+                Player.Instance.PlayerCardDeck.AddCardAmount(cardConfig, amount);
             }
         }
     }

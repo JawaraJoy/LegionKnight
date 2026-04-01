@@ -9,8 +9,8 @@ namespace LegionKnight
 
     public partial class GameManager
     {
-        [SerializeField]
+        /*[SerializeField]
         private SceneController m_SceneController;
-        public SceneController SceneController => m_SceneController;
+        public SceneController SceneController => m_SceneController;*/
     }
 }

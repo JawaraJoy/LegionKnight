@@ -72,6 +72,10 @@ namespace Rush
                 stage.Init();
             }
         }
+        public void SelectStage(StageConfig stage)
+        {
+            SelectStageInternal(stage);
+        }
         private void SelectStageInternal(StageConfig stage)
         {
             if (HasStageSelection(stage, out StageSelectionField stageSelection))

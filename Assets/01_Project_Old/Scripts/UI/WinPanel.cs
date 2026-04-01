@@ -18,23 +18,14 @@ namespace LegionKnight
         private Image m_NextLevelImage;
         [SerializeField]
         private TextMeshProUGUI m_CompleteText;
-
-        protected override void ShowInternal()
-        {
-            
-        }
         private IEnumerator DelayOpen(float delay, UnityAction action)
         {
             yield return new WaitForSeconds(delay);
             if (IsShowInternal) yield break;
             action?.Invoke();
         }
-        public override void Hide()
-        {
-            base.Hide();
-        }
 
-        public void SetLevelDefinition(StageConfig stageConfig)
+        public void SetStageConfig(StageConfig stageConfig)
         {
             
         }
@@ -62,11 +53,6 @@ namespace LegionKnight
             {
                 Debug.LogError("No level definition set.");
             }
-            HideInternal();
-        }
-        public void BackHome()
-        {
-            GameManager.Instance.SceneController.LoadSceneConfig(m_HomeScene);
             HideInternal();
         }
     }

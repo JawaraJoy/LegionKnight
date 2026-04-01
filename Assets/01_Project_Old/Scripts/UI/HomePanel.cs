@@ -1,29 +1,31 @@
 using Rush;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public static partial class PanelId
-    {
-        public static string HomePanelId = "Home";
-    }
     public partial class HomePanel : PanelView
     {
         [SerializeField]
-        private SceneConfig m_GameplayScene;
-        public override string UniqueId => PanelId.HomePanelId;
-
+        private Button m_PlayButton;
         [SerializeField]
         private UnityEvent m_OnStart;
-        public void LoadGameplayScene()
+        [SerializeField]
+        private UnityEvent m_OnPlayButtonClick;
+        private void OnPLayButtonClick()
         {
-            GameManager.Instance.SceneController.LoadSceneConfig(m_GameplayScene);
+            //GameManager.Instance.SceneController.LoadSceneConfig(m_GameplayScene);
+            //RushGameManager.Instance.GameStateManager.ChangeState(GameStateConfig.Gameplay);
+            m_OnPlayButtonClick?.Invoke();
         }
 
         private void Start()
         {
             m_OnStart.Invoke();
+
+            m_PlayButton.onClick.RemoveListener(OnPLayButtonClick);
+            m_PlayButton.onClick.AddListener(OnPLayButtonClick);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace LegionKnight
     [CreateAssetMenu(fileName = "New Shop Item", menuName = "Legion Knight/Shop Item")]
     public partial class ShopItemDefinition : CollectibleConfig
     {
+        [SerializeField]
         private string m_ContainerName;
         [SerializeField]
         private string m_TabName;
@@ -113,9 +114,9 @@ namespace LegionKnight
             {
                 Player.Instance.CurrencyControl.AddCurrencyAmount(currencyDefinition, m_Amount);
             }
-            if (item is PlatformConfig platformConfig)
+            if (item is CardConfig cardConfig)
             {
-                Player.Instance.PlatformDeck.AddPlatformAmount(platformConfig, m_Amount);
+                Player.Instance.PlayerCardDeck.AddCardAmount(cardConfig, m_Amount);
             }
             else
             {
@@ -140,9 +141,9 @@ namespace LegionKnight
             {
                 Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, m_BonusAmount);
             }
-            if (item is PlatformConfig platformConfig)
+            if (item is CardConfig cardConfig)
             {
-                Player.Instance.PlatformDeck.AddPlatformAmount(platformConfig, m_Amount);
+                Player.Instance.PlayerCardDeck.AddCardAmount(cardConfig, m_Amount);
             }
             else
             {

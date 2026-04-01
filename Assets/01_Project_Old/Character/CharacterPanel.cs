@@ -18,7 +18,7 @@ namespace LegionKnight
         [SerializeField]
         private CharacterSelectionView m_CharacterSelectionView;
         [SerializeField]
-        private PlatformSelectionView m_PlatformSelectionView;
+        private CardSelectionView m_PlatformSelectionView;
         public void SetSelectMode(int index)
         {
             m_SelectCharacterMode = (SelectCharacterMode)index;
@@ -29,7 +29,7 @@ namespace LegionKnight
         {
             if (m_SelectCharacterMode == SelectCharacterMode.Character)
             {
-                m_PlatformSelectionView.HideAllPlatforms();
+                m_PlatformSelectionView.HideAllCards();
             }
             else
             {
@@ -45,7 +45,7 @@ namespace LegionKnight
         public void ShowAll()
         {
             m_CharacterSelectionView.ShowAll();
-            m_PlatformSelectionView.ShowAllPlatforms();
+            m_PlatformSelectionView.ShowAllCards();
             Adjust();
         }
     }

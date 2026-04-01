@@ -23,9 +23,9 @@ namespace Rush
             {
                 Player.Instance.HeroesCollection.SetOwned(heroConfig, true);
             }
-            else if (m_CollectibleConfig is PlatformConfig platfrormConfig)
+            else if (m_CollectibleConfig is CardConfig cardConfig)
             {
-                Player.Instance.PlatformDeck.AddPlatformAmount(platfrormConfig, m_Amount);
+                Player.Instance.PlayerCardDeck.AddCardAmount(cardConfig, m_Amount);
             }
             else if (m_CollectibleConfig is EnergyConfig ene)
             {
