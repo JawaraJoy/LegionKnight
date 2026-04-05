@@ -11,48 +11,8 @@ namespace LegionKnight
     {
         public override string UniqueId => PanelId.CharacterPanelId;
 
-        [SerializeField]
-        private SelectCharacterMode m_SelectCharacterMode = SelectCharacterMode.Character;
-        public SelectCharacterMode SelectCharacterMode => m_SelectCharacterMode;
-
-        [SerializeField]
-        private CharacterSelectionView m_CharacterSelectionView;
-        [SerializeField]
-        private CardSelectionView m_PlatformSelectionView;
-        public void SetSelectMode(int index)
-        {
-            m_SelectCharacterMode = (SelectCharacterMode)index;
-            Adjust();
-        }
-
-        private void Adjust()
-        {
-            if (m_SelectCharacterMode == SelectCharacterMode.Character)
-            {
-                m_PlatformSelectionView.HideAllCards();
-            }
-            else
-            {
-                m_CharacterSelectionView.HideAll();
-            }
-        }
-        public void ShowRarity(RarityConfig rarityConfig)
-        { 
-            m_CharacterSelectionView.ShowRarity(rarityConfig);
-            m_PlatformSelectionView.ShowRarity(rarityConfig);
-            Adjust();
-        }
-        public void ShowAll()
-        {
-            m_CharacterSelectionView.ShowAll();
-            m_PlatformSelectionView.ShowAllCards();
-            Adjust();
-        }
+        
     }
 
-    public enum SelectCharacterMode
-    {
-        Character = 0,
-        Platform = 1
-    }
+    
 }

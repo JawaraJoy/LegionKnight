@@ -228,12 +228,14 @@ namespace LegionKnight
             if (!m_UseLocalSave)
                 return false;
 
-            if (!m_Cache.ContainsKey(key))
+            string fullKey = Prefixed(key);
+
+            if (!m_Cache.ContainsKey(fullKey))
                 return false;
 
             try
             {
-                var peek = JsonUtility.FromJson<ExpiryPeek>(m_Cache[key]);
+                var peek = JsonUtility.FromJson<ExpiryPeek>(m_Cache[fullKey]);
 
                 if (peek != null && IsExpired(peek.lastUpdateUnix, peek.ttlSeconds))
                 {
@@ -273,7 +275,10 @@ namespace LegionKnight
                 string fullKey = Prefixed(key);
 
                 if (!PlayerPrefs.HasKey(fullKey))
+                {
+                    toRemove.Add(key);
                     continue;
+                }
 
                 string json = PlayerPrefs.GetString(fullKey);
 
@@ -288,7 +293,8 @@ namespace LegionKnight
                         continue;
                     }
 
-                    m_Cache[key] = json;
+                    // ✅ FIX: cache harus pakai prefixed key
+                    m_Cache[fullKey] = json;
                 }
                 catch
                 {
@@ -296,6 +302,7 @@ namespace LegionKnight
                 }
             }
 
+            // cleanup index
             foreach (var k in toRemove)
                 index.keys.Remove(k);
 
@@ -311,8 +318,13 @@ namespace LegionKnight
 
         public void DeleteData(string key)
         {
-            PlayerPrefs.DeleteKey(Prefixed(key));
-            m_Cache.Remove(key);
+            string fullKey = Prefixed(key);
+
+            PlayerPrefs.DeleteKey(fullKey);
+
+            // ✅ cache pakai prefixed
+            m_Cache.Remove(fullKey);
+
             RemoveFromIndex(key);
         }
 
@@ -336,6 +348,7 @@ namespace LegionKnight
         {
             var index = GetIndex();
 
+            // ❗ key TANPA prefix
             if (!index.keys.Contains(key))
                 index.keys.Add(key);
 

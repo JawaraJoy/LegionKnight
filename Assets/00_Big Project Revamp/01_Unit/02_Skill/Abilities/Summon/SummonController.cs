@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public class SummonController : MonoBehaviour, IUnitExtension
+    public class SummonController : MonoBehaviour, IUnitExtension, IReseter
     {
         private ModuleContext m_ModuleContext;
         public IModuleContext ModuleContext => m_ModuleContext;
@@ -30,6 +30,14 @@ namespace Rush
                         skillController.AddCharges(unit.Config.Skills, chargeAmount);
                     }
                 }
+            }
+        }
+
+        public void ResetProgression()
+        {
+            foreach (var summon in m_Summoners)
+            {
+                summon.ResetProgression();
             }
         }
     }

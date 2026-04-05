@@ -19,21 +19,13 @@ namespace LegionKnight
         }
         private Currency GetCurrency(ItemConfig config)
         {
-            Currency match = m_Currencies.Find(x => x.ItemConfig == config);
+            Currency match = m_Currencies.Find(x => x.ItemConfig.BaseInfo.Id == config.BaseInfo.Id);
             return match;
         }
         public bool HasCurrency(ItemConfig config, out Currency currency)
         {
-            bool has = GetCurrency(config) != null;
-            if (has)
-            {
-                currency = GetCurrency(config);
-            }
-            else
-            {
-                currency = null;
-            }
-            return has;
+            currency = GetCurrency(config);
+            return currency != null;
         }
         public int GetCurrencyAmount(ItemConfig itemConfig)
         {

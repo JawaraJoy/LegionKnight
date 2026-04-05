@@ -108,6 +108,7 @@ namespace Rush
 
         private void RemoveAllModifier()
         {
+            if (m_ModuleContext == null) return;
             if (m_Modifiers.Count > 0)
             {
                 for (int i = 0; i < m_Modifiers.Count; i++)
@@ -119,7 +120,10 @@ namespace Rush
             // Refresh stat setelah semua modifier hilang
             if (m_ModuleContext.Unit.HasBind(out Damageable damageable))
             {
-                damageable.RefreshDamageableStat(1f, false);
+                if (damageable.ModuleContext.Initialized)
+                {
+                    damageable.RefreshDamageableStat(1f, false);
+                }
             }
         }
 

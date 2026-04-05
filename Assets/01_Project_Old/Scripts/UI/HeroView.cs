@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public partial class HeroView : UIView
+    public partial class HeroView : MonoBehaviour
     {
         [SerializeField]
         private TextMeshProUGUI m_HeroNameText;
@@ -23,7 +23,29 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<HeroUnitConfig> m_OnHeroSelected = new();
         [SerializeField]
-        private GameObject m_UniquePlatformContent;
+        private StarGroupView m_StarGroupView;
+        [SerializeField]
+        private HeroStatusView m_HeroStatusView;
+        [SerializeField]
+        private UseButton m_UseButton;
+        [SerializeField]
+        private UpgradeView m_UpgradeView;
+        [SerializeField]
+        private UpgradeButton m_UpgradeButton;
+        [SerializeField]
+        private BreakThroughButton m_BreakThroughButton;
+        [SerializeField]
+        private AvatarSpineUI m_AvatarSpineUI;
+
+        [Header("Skills")]
+        [SerializeField]
+        private AbilityView m_BasicAttack;
+        [SerializeField]
+        private AbilityView m_Skilll;
+        [SerializeField]
+        private AbilityView m_Platform;
+        [SerializeField]
+        private AbilityView m_Passive;
         private void Start()
         {
             InitInternal();
@@ -36,18 +58,17 @@ namespace LegionKnight
         {
             HeroUnitConfig selected = Player.Instance.HeroesCollection.SelectedHero;
             if (selected == null) return;
-            SetCharacterSelectedInternal(selected);
+            SetHeroSelectedInternal(selected);
             OnInitInvoke(selected);
 
         }
         private void InitInternal()
         {
-            
             if (Player.Instance.HeroesCollection.SelectedHero == null) return;
             HeroUnitConfig usedHero = Player.Instance.HeroesCollection.UsedHero;
-            SetCharacterSelectedInternal(usedHero);
+            SetHeroSelectedInternal(usedHero);
+            m_StarGroupView.Init(usedHero);
             OnInitInvoke(usedHero);
-            
         }
 
         private string GetHeroNameTextFormat(HeroUnitConfig config)
@@ -55,26 +76,15 @@ namespace LegionKnight
             string hex = ColorUtility.ToHtmlStringRGB(config.CollectibleField.RarityConfig.Color);
             return $"{config.BaseInfo.Name} [<color=#{hex}>{config.CollectibleField.RarityConfig.BaseInfo.Name}</color>]"; // Format: "{Rarity} {HeroName}"
         }
-        public void SetCharacterSelectedInternal(HeroUnitConfig heroConfig)
+        private void SetHeroSelectedInternal(HeroUnitConfig heroConfig)
         {
             m_HeroBigIcon.sprite = heroConfig.CollectibleField.Icon;
-            string heroName = heroConfig.BaseInfo.Name;
-            string rarity = heroConfig.CollectibleField.RarityConfig.BaseInfo.Name.ToString();
             m_HeroNameText.text = GetHeroNameTextFormat(heroConfig);
-            m_HeroSkillIcon.sprite = heroConfig.Skills[0].CollectibleField.Icon;
-
-            m_UniquePlatformContent.SetActive(heroConfig.UniquePlatforms[0] != null);
-
-            if (heroConfig.UniquePlatforms[0] != null)
-            {
-                m_HeroUniquePlatformIcon.sprite = heroConfig.UniquePlatforms[0].CollectibleField.Icon;
-            }
-            
             OnCharacterSelectedInvoke(heroConfig);
         }
-        public void SetCharacterSelected(HeroUnitConfig heroConfig)
+        public void SetHeroSelected(HeroUnitConfig heroConfig)
         {
-            SetCharacterSelectedInternal(heroConfig);
+            SetHeroSelectedInternal(heroConfig);
         }
         private void OnCharacterSelectedInvoke(HeroUnitConfig heroConfig)
         {
@@ -84,29 +94,21 @@ namespace LegionKnight
         {
             if (config == null) return;
             m_OnInit?.Invoke(config);
-        }
-    }
-    public partial class HeroPanel
-    {
-        private HeroView GetHeroView()
-        {
-            return GetBinding<HeroView>();
-        }
 
-        public void SetHeroSelected(HeroUnitConfig config)
-        {
-            GetHeroView().SetCharacterSelected(config);
-        }
-    }
-    public partial class CanvasManager
-    {
-        private HeroPanel GetHeroPanel()
-        {
-            return GetPanel<HeroPanel>();
-        }
-        public void SetHeroSelected(HeroUnitConfig defi)
-        {
-            GetHeroPanel().SetHeroSelected(defi);
+            m_AvatarSpineUI.SetSkeletonAssetData(config.SkeletonDataAsset);
+            m_AvatarSpineUI.PlayClip(config.Idle);
+
+            m_StarGroupView.Init(config);
+            m_HeroStatusView.Init(config);
+            m_UseButton.Init(config);
+            m_UpgradeView.Init(Player.Instance.HeroesCollection.GetHeroUnit(config));
+            m_UpgradeButton.Init(config);
+            m_BreakThroughButton.Init(config);
+            m_BasicAttack.Init(config);
+            m_Skilll.Init(config);
+            m_Platform.Init(config);
+            m_Passive.Init(config);
+
         }
     }
 }

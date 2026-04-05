@@ -8,7 +8,7 @@ namespace LegionKnight
         public void OnCharacterLevelUpCharacterView(HeroUnitConfig heroConfig)
         {
             HeroPanel cp = CanvasManager.Instance.GetPanel<HeroPanel>();
-            cp.SetHeroSelected(heroConfig);
+            //cp.SetHeroSelected(heroConfig);
         }
     }
 }

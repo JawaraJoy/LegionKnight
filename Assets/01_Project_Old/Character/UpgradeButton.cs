@@ -57,12 +57,12 @@ namespace LegionKnight
             HeroUnit unit = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
             m_CharacterUnit = unit;
 
-            ItemConfig levelUpItemRequirment = unit.LevelFormulaDefinition.ItemRequirmentConfig;
-            int levelUpCurAmount = unit.LevelFormulaDefinition.GetCurrentMaxExperience(unit.Level);
+            ItemConfig levelUpItemRequirment = unit.HeroConfig.LevelFormulaConfig.ItemRequirmentConfig;
+            int levelUpCurAmount = unit.HeroConfig.LevelFormulaConfig.GetCurrentMaxExperience(unit.Level);
 
             Currency levelUpCurrency = new(levelUpItemRequirment, levelUpCurAmount);
 
-            bool isMaxLevel = unit.Level >= unit.LevelFormulaDefinition.MaxLevel;
+            bool isMaxLevel = unit.Level >= unit.HeroConfig.LevelFormulaConfig.MaxLevel;
             bool canLevelUp = Player.Instance.CurrencyControl.GetCurrencyAmount(levelUpItemRequirment) >= levelUpCurAmount && !isMaxLevel;
 
             m_CurrencyUsed = levelUpCurrency;

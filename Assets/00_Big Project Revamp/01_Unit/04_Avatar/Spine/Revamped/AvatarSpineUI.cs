@@ -104,6 +104,11 @@ namespace Rush
             m_OnInitialized?.Invoke(m_ModuleContext);
         }
 
+        public void SetSkeletonAssetData(SkeletonDataAsset skeletonDataAsset)
+        {
+            SetSkeletonDataAssetInternal(skeletonDataAsset);
+        }
+
         public void FlipX(bool left)
         {
             if (m_SkeletonGraphic.Skeleton == null) return;

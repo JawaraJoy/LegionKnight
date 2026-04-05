@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public partial class PlatformController : MonoBehaviour, IUnitExtension, IHasSkills
+    public partial class PlatformController : MonoBehaviour, IUnitExtension, IHasSkills, IReseter
     {
         [SerializeField, MMReadOnly]
         private List<PlatformConfig> m_PlatformConfigs = new();
@@ -52,6 +52,11 @@ namespace Rush
                 }     
             }
             
+        }
+
+        public void ResetProgression()
+        {
+            m_PlatformConfigs.Clear();
         }
     }
 }

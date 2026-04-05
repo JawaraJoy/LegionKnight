@@ -14,21 +14,29 @@ namespace LegionKnight
         private TextMeshProUGUI m_UseText;
 
         private HeroUnit m_HeroUnit;
+
+        private void Start()
+        {
+            m_UseButton.onClick.RemoveAllListeners();
+            m_UseButton.onClick.AddListener(Use);
+        }
         public void Init(HeroUnitConfig heroConfig)
         {
             HeroUnit unit = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
             m_HeroUnit = unit;
-            bool isCharacterUsed = unit.IsUsed;
+            Refresh();
+        }
+        private void Refresh()
+        {
+            bool isCharacterUsed = m_HeroUnit.IsUsed;
             m_UseButton.interactable = !isCharacterUsed;
 
             m_UseText.text = isCharacterUsed ? "Used" : "Use";
         }
-        public void Init()
+        private void Use()
         {
-            if (m_HeroUnit == null) return;
-            bool isCharacterUsed = m_HeroUnit.IsUsed;
-            m_UseButton.interactable = !isCharacterUsed;
-            m_UseText.text = isCharacterUsed ? "Used" : "Use";
+            Player.Instance.HeroesCollection.SetUsedHero();
+            Refresh();
         }
     }
 }

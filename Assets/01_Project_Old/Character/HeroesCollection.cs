@@ -85,6 +85,7 @@ namespace LegionKnight
             }
             RushPlayer.Instance.Init(m_UsedHeroConfig);
             Debug.Log("Heroes Collection Initialized");
+            CanvasManager.Instance.GetPanel<PreparationPanel>().HeroTabView.Init();
         }
         public void SetOwned(HeroUnitConfig config, bool set)
         {
@@ -136,7 +137,7 @@ namespace LegionKnight
         private void OnSelectedCharacterInvoke()
         {
             m_OnSelectedCharacter?.Invoke(m_SelectedHeroConfig);
-            CanvasManager.Instance.SetHeroSelected(m_SelectedHeroConfig);
+            //CanvasManager.Instance.SetHeroSelected(m_SelectedHeroConfig);
         }
         
     }

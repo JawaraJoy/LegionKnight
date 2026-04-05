@@ -12,15 +12,8 @@ namespace LegionKnight
         protected override void OnShowInvoke()
         {
             base.OnShowInvoke();
-            //Player.Instance.SetPause(true);
             m_Showed = true;
             UnityService.Instance.SaveData(m_StartGameKey, true);
-        }
-        protected override void OnHideInvoke()
-        {
-            base.OnHideInvoke();
-            //GameTimeScale.SetTimeScale(1);
-            //Player.Instance.SetPause(false);
         }
 
         protected override void ShowInternal()

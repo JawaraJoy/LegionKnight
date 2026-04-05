@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public class Summoner : AbilityDeliver, IUpdater
+    public class Summoner : AbilityDeliver, IUpdater, IReseter
     {
         [SerializeField, MMReadOnly]
         private SummonAbilityConfig m_SummonConfig;
@@ -349,6 +349,11 @@ namespace Rush
 
         public void ReturnToPool(Unit unit)
         {
+            ReturnToPoolInternal(unit);
+        }
+
+        private void ReturnToPoolInternal(Unit unit)
+        {
             if (unit == null)
                 return;
 
@@ -362,6 +367,17 @@ namespace Rush
 
             m_ActiveSummonedUnits.Remove(unit);
             m_SummonedUnitPool.Enqueue(unit);
+        }
+
+        public void ResetProgression()
+        {
+            foreach (var unit in m_ActiveSummonedUnits)
+            {
+                if (unit != null)
+                {
+                    ReturnToPoolInternal(unit);
+                }
+            }
         }
     }
 }

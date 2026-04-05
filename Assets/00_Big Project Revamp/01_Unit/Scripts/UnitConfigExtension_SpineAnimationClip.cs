@@ -24,7 +24,9 @@ namespace Rush
         private AnimationClipConfig m_Jump;
         [SerializeField]
         private AnimationClipConfig m_Emote;
-        
+
+        public AnimationClipConfig Idle => m_Idle;
+
         public void PlayIdle(Unit unit)
         {
              Play(unit, unit.Config.m_Idle);

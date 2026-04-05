@@ -4,7 +4,7 @@ using UnityEngine.Events;
 namespace Rush
 {
     [System.Serializable]
-    public partial class ProgressField : IProgressable
+    public partial class ProgressField : IProgressable, IReseter
     {
         [SerializeField]
         private int m_Level = 1;
@@ -21,20 +21,31 @@ namespace Rush
         }
         public void AddLevel(int amount)
         {
-            m_Level = Mathf.Clamp(m_Level + amount, 0, m_MaxLevel);
+            m_Level = Mathf.Clamp(m_Level + amount, 1, m_MaxLevel);
             m_OnLevelChanged?.Invoke(LevelInternal);
         }
+        private void SetLevelInternal(int level)
+        {
+            m_Level = Mathf.Clamp(level, 1, m_MaxLevel);
+            m_OnLevelChanged?.Invoke(LevelInternal);
+        }   
         public void SetLevel(int level)
         {
-            m_Level = Mathf.Clamp(level, 0, m_MaxLevel);
-            m_OnLevelChanged?.Invoke(LevelInternal);
+           
+            SetLevelInternal(level);
         }
         public void SetMaxLevel(int maxLevel)
         {
             m_MaxLevel = maxLevel;
-            m_Level = Mathf.Clamp(m_Level, 0, m_MaxLevel);
+            m_Level = Mathf.Clamp(m_Level, 1, m_MaxLevel);
             m_OnLevelChanged?.Invoke(LevelInternal);
         }
+
+        public void ResetProgression()
+        {
+            SetLevelInternal(1);
+        }
+
         public ProgressField(int level, int maxLevel)
         {
             m_Level = level;

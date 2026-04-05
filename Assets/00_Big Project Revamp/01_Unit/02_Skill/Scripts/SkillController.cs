@@ -235,6 +235,7 @@ namespace Rush
         {
             if (GetSkillActivatorInternal(skill.SkillConfig.BaseInfo.Id) != null)
             {
+                skill.
                 m_Skills.Remove(skill);
                 m_RemovedSkills.Add(skill);
                 m_OnSkillRemoved?.Invoke(skill);
@@ -305,11 +306,15 @@ namespace Rush
         }
         public void ResetProgression()
         {
-            foreach (Skill skill in m_Skills)
+            if (m_Skills.Count == 0) return;
+            if (m_ModuleContext != null)
             {
-                skill.Progression.SetLevel(1);
+                foreach (Skill skill in m_Skills)
+                {
+                    UnregisterSkillInternal(skill);
+                }
+                m_OnResetProgress?.Invoke();
             }
-            m_OnResetProgress?.Invoke();
         }
 
         public CategorySkillController GetCategoryController(SkillCategoryConfig categoryConfig)

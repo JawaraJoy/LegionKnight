@@ -16,9 +16,7 @@ namespace LegionKnight
         }
         public void Refresh()
         {
-            HeroPanel panel = GetCharacterPanel();
-            HeroView heroView = panel.GetBinding<HeroView>();
-            heroView.Refresh();
+            
         }
     }
 }

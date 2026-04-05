@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using Rush;
 using TMPro;
 using UnityEngine;
@@ -27,33 +28,28 @@ namespace LegionKnight
 
         [SerializeField]
         private StarGroupView m_StarGroupView;
-        private void OnEnable()
-        {
-            InitInternal();
-        }
+        [SerializeField, MMReadOnly]
+        private HeroView m_HeroView;
         private void SelectCharacterInternal()
         {
             Player.Instance.HeroesCollection.SetSelectedHero(m_HeroConfig);
             OnCharacterSelectedInvoke();
         }
-        public void SelectCharacter()
+        public void Init(HeroView heroView)
         {
-            SelectCharacterInternal();
+            InitInternal(heroView);
         }
-        public void Init()
-        {
-            InitInternal();
-        }
-        private void InitInternal()
+        private void InitInternal(HeroView heroView)
         {
             HeroUnit character = Player.Instance.HeroesCollection.GetHeroUnit(m_HeroConfig);
-            InitInternal(character);
+            InitInternal(character, heroView);
             
         }
         private bool m_ButtonalreadyListen = false;
-        private void InitInternal(HeroUnit unit)
+        private void InitInternal(HeroUnit unit, HeroView heroView)
         {
             m_HeroConfig = unit.HeroConfig;
+            m_HeroView = heroView;
             m_LockIcon.SetActive(!unit.Owned);
             m_SelectButton.interactable = unit.Owned;
             m_UnitIcon.sprite = unit.HeroConfig.CollectibleField.Icon;
@@ -69,14 +65,15 @@ namespace LegionKnight
             m_LevelText.text = $"Lv {unit.Level}";
             m_ButtonalreadyListen = true;
         }
-        public void Init(HeroUnit unit)
+        public void Init(HeroUnit unit, HeroView heroView)
         {
-            InitInternal(unit);
+            InitInternal(unit, heroView);
         }
 
         private void OnCharacterSelectedInvoke()
         {
             m_OnCharacterSelected?.Invoke(m_HeroConfig);
+            m_HeroView.Refresh();
         }
     }
 }

@@ -34,9 +34,6 @@ namespace LegionKnight
         public int Star => m_Star;
         public int MaxStar => m_HeroConfig.MaxStars;
         public bool IsUsed => m_IsUsed;
-        [SerializeField]
-        private LevelFormulaConfig m_LevelFormulaDefinition;
-        public LevelFormulaConfig LevelFormulaDefinition => m_LevelFormulaDefinition;
 
         [SerializeField]
         private UnityEvent<HeroUnit> m_OnLevelUp = new();
@@ -45,8 +42,8 @@ namespace LegionKnight
         public void SetExp(int exp)
         {
             m_Exp = exp;
-            int maxLevel = m_LevelFormulaDefinition.MaxLevel;
-            int currentMaxExp = m_LevelFormulaDefinition.GetCurrentMaxExperience(m_Level);
+            int maxLevel = m_HeroConfig.LevelFormulaConfig.MaxLevel;
+            int currentMaxExp = m_HeroConfig.LevelFormulaConfig.GetCurrentMaxExperience(m_Level);
             while (m_Level < maxLevel && m_Exp >= currentMaxExp)
             {
                 LevelUpInternal();
@@ -67,8 +64,8 @@ namespace LegionKnight
         private void AddExpInternal(int exp)
         {
             m_Exp += exp;
-            int maxLevel = m_LevelFormulaDefinition.MaxLevel;
-            int currentMaxExp = m_LevelFormulaDefinition.GetCurrentMaxExperience(m_Level);
+            int maxLevel = m_HeroConfig.LevelFormulaConfig.MaxLevel;
+            int currentMaxExp = m_HeroConfig.LevelFormulaConfig.GetCurrentMaxExperience(m_Level);
             while (m_Level < maxLevel && m_Exp >= currentMaxExp)
             {
                 LevelUpInternal();
@@ -81,9 +78,9 @@ namespace LegionKnight
         {
             if (level <= 0) return;
             m_Level += level;
-            if (m_Level > m_LevelFormulaDefinition.MaxLevel)
+            if (m_Level > m_HeroConfig.LevelFormulaConfig.MaxLevel)
             {
-                m_Level = m_LevelFormulaDefinition.MaxLevel;
+                m_Level = m_HeroConfig.LevelFormulaConfig.MaxLevel;
             }
             UnityService.Instance.SaveData(m_HeroConfig.BaseInfo.Id + "Lv", m_Level);
             m_OnLevelUp?.Invoke(this);
@@ -100,8 +97,8 @@ namespace LegionKnight
         }
         private void LevelUpInternal()
         {
-            int maxLevel = m_LevelFormulaDefinition.MaxLevel;
-            int currentMaxExp = m_LevelFormulaDefinition.GetCurrentMaxExperience(m_Level);
+            int maxLevel = m_HeroConfig.LevelFormulaConfig.MaxLevel;
+            int currentMaxExp = m_HeroConfig.LevelFormulaConfig.GetCurrentMaxExperience(m_Level);
             if (m_Level < maxLevel)
             {
                 m_Exp -= currentMaxExp;

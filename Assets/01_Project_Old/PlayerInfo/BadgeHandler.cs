@@ -19,7 +19,7 @@ namespace LegionKnight
         {
             foreach (var badgeContent in m_Badges)
             {
-                if (badgeContent.Config == badge)
+                if (badgeContent.Config.BaseInfo.Id == badge.BaseInfo.Id)
                 {
                     return badgeContent;
                 }

@@ -11,6 +11,7 @@ namespace Rush
         public void Init(UnitConfig lastUsedHero)
         {
             m_OnInitizlied?.Invoke(lastUsedHero);
+            Debug.Log($"RushPlayer Initialized with {lastUsedHero.BaseInfo.Name}");
         }
 
     }

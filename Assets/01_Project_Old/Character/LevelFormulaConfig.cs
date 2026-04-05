@@ -58,8 +58,8 @@ namespace LegionKnight
         }
         public int GetCurrentMaxExperience(int level)
         {
-            if (level - 1 < m_ExpTable.Count)
-                return m_ExpTable[level - 1];
+            if (level < m_ExpTable.Count)
+                return m_ExpTable[level];
             return m_ExpTable.Count > 0 ? m_ExpTable[^1] : m_FirstLevelExp;
         }
     }

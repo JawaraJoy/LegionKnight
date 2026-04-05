@@ -7,7 +7,7 @@ using Rush;
 
 namespace LegionKnight
 {
-    public class CardSelectionView : UIView
+    public class CardSelectTabView : UIView
     {
         [SerializeField]
         private AssetReferenceGameObject m_CardSelectViewAsset;
@@ -73,14 +73,14 @@ namespace LegionKnight
             ShowRarityInternal(rarityConfig);
         }
 
-        public void ShowAllCards()
+        public void ShowAll()
         {
             foreach (CardSelectView cardSelectView in m_SpawnedCardSelectionViews)
             {
                 cardSelectView.Show();
             }
         }
-        public void HideAllCards()
+        public void HideAll()
         {
             foreach (CardSelectView cardSelectView in m_SpawnedCardSelectionViews)
             {

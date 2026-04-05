@@ -1,4 +1,5 @@
 using LegionKnight;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,10 +23,10 @@ namespace Rush
         public void Init(UnitConfig config)
         {
             m_Config = config;
-            RefreshInitInternal();
+            RushGameManager.Instance.StartCoroutine(RefreshInitInternal());
 
         }
-        private void RefreshInitInternal()
+        private IEnumerator RefreshInitInternal()
         {
             m_OnInit?.Invoke(this);
             m_Progression.SetLevel(m_Config.Progression.Level);
@@ -36,17 +37,29 @@ namespace Rush
                 m_Progression.SetLevel(savedLevel);
             }*/
 
+            foreach (MonoBehaviour reseter in m_Binds)
+            {
+                if (reseter is IReseter resetter)
+                {
+                    resetter.ResetProgression();
+                    yield return new WaitForEndOfFrame();
+                }
+            }
+
+            yield return new WaitForSecondsRealtime(1f);
+
             foreach (MonoBehaviour bind in m_Binds)
             {
                 if (bind is IUnitExtension extention)
                 {
                     extention.Init(this);
+                    yield return new WaitForEndOfFrame();
                 }
             }
         }
         public void RefreshInit()
         {
-            //RefreshInitInternal();
+            RefreshInitInternal();
         }
     }
 }

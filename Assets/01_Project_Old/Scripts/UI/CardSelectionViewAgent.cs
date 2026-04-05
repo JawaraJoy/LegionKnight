@@ -9,9 +9,9 @@ namespace LegionKnight
             return CanvasManager.Instance.GetPanel<HeroPanel>();
         }
 
-        private CardSelectionView GetCardSelectionView()
+        private CardSelectTabView GetCardSelectionView()
         {
-            return GetCharacterPanel().GetBinding<CardSelectionView>();
+            return GetCharacterPanel().GetBinding<CardSelectTabView>();
         }
 
         public void SpawnCardSelectionView(CardUnit unit)

@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public partial class CharacterStatusView : UIView
+    public partial class HeroStatusView : UIView
     {
         [SerializeField]
         private StatView m_AttackView;
@@ -80,7 +80,6 @@ namespace LegionKnight
             m_AttackView.ShowNextValue();
             m_DefenseView.ShowNextValue();
             m_HealthView.ShowNextValue();
-
             m_LevelView.ShowNextValue();
         }
         public void HideNextValue()
@@ -92,9 +91,7 @@ namespace LegionKnight
             m_AttackView.HideNextValue();
             m_DefenseView.HideNextValue();
             m_HealthView.HideNextValue();
-
             m_LevelView.HideNextValue();
-
         }
     }
 }
