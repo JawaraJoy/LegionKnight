@@ -7,7 +7,7 @@ using UnityEngine.Events;
 namespace Rush
 {
     
-    public partial class Skill : Bindable, IUpdater, ISkill
+    public partial class Skill : Bindable, IUpdater, ISkill, IReseter
     {
         [Header("Config")]
         [SerializeField]
@@ -412,6 +412,11 @@ namespace Rush
                 }
             }
 
+        }
+
+        public void ResetProgression()
+        {
+            m_Progression.SetLevel(1);
         }
 
         #endregion

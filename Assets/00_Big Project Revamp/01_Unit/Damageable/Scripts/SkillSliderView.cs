@@ -16,6 +16,11 @@ namespace Rush
 
         public void SetSkill(Skill skill)
         {
+            if (skill == null)
+            {
+                Debug.LogError("Skill is null.");
+                return;
+            }
             m_SkillNameText.text = skill.SkillConfig.BaseInfo.Name;
             m_SkillIcon.sprite = skill.SkillConfig.CollectibleField.Icon;
             int currentCharge = Mathf.RoundToInt(skill.RemainingCharge);

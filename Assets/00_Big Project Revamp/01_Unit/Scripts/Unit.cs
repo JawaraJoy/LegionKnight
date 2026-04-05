@@ -46,7 +46,7 @@ namespace Rush
                 }
             }
 
-            yield return new WaitForSecondsRealtime(1f);
+            yield return new WaitForEndOfFrame();
 
             foreach (MonoBehaviour bind in m_Binds)
             {

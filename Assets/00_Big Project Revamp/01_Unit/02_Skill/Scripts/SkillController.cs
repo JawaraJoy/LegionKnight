@@ -235,7 +235,7 @@ namespace Rush
         {
             if (GetSkillActivatorInternal(skill.SkillConfig.BaseInfo.Id) != null)
             {
-                skill.
+                skill.ResetProgression();
                 m_Skills.Remove(skill);
                 m_RemovedSkills.Add(skill);
                 m_OnSkillRemoved?.Invoke(skill);
@@ -309,7 +309,8 @@ namespace Rush
             if (m_Skills.Count == 0) return;
             if (m_ModuleContext != null)
             {
-                foreach (Skill skill in m_Skills)
+                List<Skill> skillsToReset = new List<Skill>(m_Skills);
+                foreach (Skill skill in skillsToReset)
                 {
                     UnregisterSkillInternal(skill);
                 }
