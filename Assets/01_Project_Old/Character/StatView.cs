@@ -16,7 +16,8 @@ namespace LegionKnight
         {
             if (m_CurrentText != null)
             {
-                m_CurrentText.text = value.ToString();
+
+                m_CurrentText.text = value + 1.ToString();
             }
         }
         public void SetNextValue(int value)

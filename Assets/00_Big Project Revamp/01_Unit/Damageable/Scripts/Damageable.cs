@@ -461,6 +461,11 @@ namespace Rush
             else if (amount < 0)
             {
                 m_OnBarrierRemoved?.Invoke(amount);
+                Unit unitTaker = m_ModuleContext.Unit;  
+                if (unitTaker.HasBind(out SkillController hasSkill))
+                {
+                    AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnBarrierDamageTaken);
+                }
             }
         }
         public void AddDamageReductionRate(float rate)

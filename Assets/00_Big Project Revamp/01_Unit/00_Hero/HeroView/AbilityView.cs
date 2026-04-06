@@ -14,8 +14,6 @@ namespace Rush
         private UnitConfig m_UnitConfig;
         [SerializeField]
         private Image m_Icon;
-        [SerializeField]
-        private TextMeshProUGUI m_NameText;
 
         [SerializeField]
         private Button m_Button;
@@ -33,7 +31,6 @@ namespace Rush
             {
                 SkillConfig skillConfig = skillConfigs[0];
                 m_Icon.sprite = skillConfig.CollectibleField.Icon;
-                m_NameText.text = skillConfig.BaseInfo.Name;
                 m_Button.onClick.RemoveAllListeners();
                 m_Button.onClick.AddListener(() => DetailView(skillConfig));
             }

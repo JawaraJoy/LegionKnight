@@ -36,6 +36,7 @@ namespace Rush
         OnDamageDealed,
         OnDamageTaken,
         OnShieldDamageTaken,
+        OnBarrierDamageTaken,
         OnHealing,
         OnHealed,
         OnNormalTouch,
