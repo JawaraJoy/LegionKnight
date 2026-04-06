@@ -49,7 +49,7 @@ namespace LegionKnight.Prototype
             else
             {
                 ShowInternal();
-                StartCoroutine(SpawItemViews());
+                RushGameManager.Instance.StartCoroutine(SpawItemViews());
             }
         }
 
@@ -78,7 +78,7 @@ namespace LegionKnight.Prototype
                 LootField loot = m_Definition.Rewards[i];
                 if (!HasItemView(loot, out MailItemView view))
                 {
-                    yield return StartCoroutine(SpawnItemView(loot));
+                    yield return RushGameManager.Instance.StartCoroutine(SpawnItemView(loot));
                 }
                 else
                 {

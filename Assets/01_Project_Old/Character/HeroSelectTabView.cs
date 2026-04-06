@@ -50,6 +50,7 @@ namespace Rush
                     GetSelectView(unit.HeroConfig).Init(unit, m_HeroView);
                 }
             }
+            m_HeroView.Refresh();
         }
 
         protected override void ShowInternal()

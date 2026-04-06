@@ -12,6 +12,11 @@ namespace LegionKnight
         [SerializeField]
         private GameObject m_NextContent;
 
+        private void Start()
+        {
+            HideNextValueInternal();
+        }
+
         public void SetCurrentValue(int value)
         {
             if (m_CurrentText != null)
@@ -35,6 +40,11 @@ namespace LegionKnight
             }
         }
         public void HideNextValue()
+        {
+            HideNextValueInternal();
+        }
+
+        private void HideNextValueInternal()
         {
             if (m_NextContent != null)
             {

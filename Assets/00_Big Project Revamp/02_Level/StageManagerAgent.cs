@@ -20,5 +20,9 @@ namespace Rush
         {
             RushGameManager.Instance.StageManager.SelectStage(stage);
         }
+        public void SetBackground(VerticalBackgroundConfig backgroundConfig)
+        {
+            RushGameManager.Instance.StageManager.SetBackground(backgroundConfig);
+        }
     }
 }

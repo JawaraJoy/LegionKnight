@@ -22,7 +22,18 @@ namespace LegionKnight
 
         [SerializeField] private UnityEvent<HeroUnit> m_OnLevelUp = new();
         [SerializeField] private UnityEvent<HeroUnit> m_OnExpUpdate = new();
-
+        private PreparationPanel m_PreparationPanel;
+        private PreparationPanel PreparationPanel
+        {
+            get
+            {
+                if (m_PreparationPanel == null)
+                {
+                    m_PreparationPanel = CanvasManager.Instance.GetPanel<PreparationPanel>();
+                }
+                return m_PreparationPanel;
+            }
+        }
         public bool Owned => m_Owned;
         public int Level => m_Level;
         public int Exp => m_Exp;
@@ -80,6 +91,7 @@ namespace LegionKnight
             m_OnLevelUp?.Invoke(this);
             Player.Instance.HeroesCollection.OnCharacterLevelUp.Invoke(m_HeroConfig);
             Player.Instance.HeroesCollection.OnCharacterLevelUpAmount.Invoke(m_Level);
+            PreparationPanel.HeroTabView.Init();
         }
 
         // =========================
@@ -237,9 +249,11 @@ namespace LegionKnight
             m_OnCharacterStarUp?.Invoke(this);
             Player.Instance.HeroesCollection.OnCharacterStarUp.Invoke(m_HeroConfig);
 
-            TenjinManager.Instance.SendEventToCharacterBreakthrough(m_Star);
+            //TenjinManager.Instance.SendEventToCharacterBreakthrough(m_Star);    
 
             Debug.Log($"[STAR UP] {HeroName} → ⭐{m_Star}");
+
+            PreparationPanel.HeroTabView.Init();
         }
 
         // =========================

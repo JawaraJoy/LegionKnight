@@ -37,9 +37,9 @@ namespace LegionKnight
         public void Init()
         {
             
-            OnStartInvoke();
+            OnInitInvoke();
         }
-        private void OnStartInvoke()
+        private void OnInitInvoke()
         {
             m_OnStart?.Invoke();
             m_PlayerName = UnityService.Instance.PlayerName;

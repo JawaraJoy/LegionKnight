@@ -139,6 +139,11 @@ namespace Rush
             StartCurrentWaveSet();
         }
 
+        public void SetBackground(VerticalBackgroundConfig backgroundConfig)
+        {
+            m_VerticalLoopView.Init(backgroundConfig);
+        }
+
         public void PlayStage()
         {
             m_UsedStageConfig = m_SelectedStageConfig;

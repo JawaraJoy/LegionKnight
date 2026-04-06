@@ -1,4 +1,3 @@
-using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,42 +6,36 @@ namespace LegionKnight
 {
     public class UpgradeView : UIView
     {
-        [SerializeField]
-        private TextMeshProUGUI m_ItemNameText;
-        [SerializeField]
-        private CurrencyView m_ItemNeed;
-        [SerializeField]
-        private CurrencyView m_ItemOwned;
+        [SerializeField] private TextMeshProUGUI m_ItemNameText;
+        [SerializeField] private CurrencyView m_ItemNeed;
+        [SerializeField] private CurrencyView m_ItemOwned;
 
         private HeroUnit m_HeroUnit;
 
-        [SerializeField]
-        private Button m_UpgradeButton;
-        [SerializeField]
-        private Button m_QuickAccessButton;
+        [SerializeField] private Button m_UpgradeButton;
+        [SerializeField] private Button m_QuickAccessButton;
 
         private Currency m_UsedUpgradeItem;
-
         private bool m_IsUpgradeAvailable = false;
 
-        [SerializeField]
-        private StatView[] m_StatViews;
+        [SerializeField] private StatView[] m_StatViews;
 
         private void OnEnable()
         {
             m_UpgradeButton.onClick.AddListener(UpgradeHero);
         }
+
         private void OnDisable()
         {
             m_UpgradeButton.onClick.RemoveListener(UpgradeHero);
         }
+
         public void Init(HeroUnit unit)
         {
             m_HeroUnit = unit;
-            
-
             InitInternal();
         }
+
         public void Refresh()
         {
             InitInternal();
@@ -51,58 +44,85 @@ namespace LegionKnight
         public void UpgradeHero()
         {
             if (!m_IsUpgradeAvailable) return;
+
             m_HeroUnit.AddLevel(1);
 
-            int ownShardAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_UsedUpgradeItem.ItemConfig);
-            int ressShardOwned = ownShardAmount - m_UsedUpgradeItem.Amount;
-            Player.Instance.CurrencyControl.SetCurrencyAmount(m_UsedUpgradeItem.ItemConfig, ressShardOwned);
+            ApplyCurrencyCost(m_UsedUpgradeItem);
 
             InitInternal();
         }
 
         private void InitInternal()
         {
-            ItemConfig levelIUpConfig = m_HeroUnit.HeroConfig.LevelFormulaConfig.ItemRequirmentConfig;
-            int levelUpCurAmount = m_HeroUnit.HeroConfig.LevelFormulaConfig.GetCurrentMaxExperience(m_HeroUnit.Level);
+            var state = EvaluateState();
 
-            Currency levelUpCurrency = new(levelIUpConfig, levelUpCurAmount);
+            m_UsedUpgradeItem = state.RequiredCurrency;
+            m_IsUpgradeAvailable = state.CanUpgrade;
 
-            bool isMaxLevel = m_HeroUnit.Level >= m_HeroUnit.HeroConfig.Progression.MaxLevel;
-            bool canLevelUp = Player.Instance.CurrencyControl.GetCurrencyAmount(levelIUpConfig) >= levelUpCurAmount && !isMaxLevel;
-            m_UsedUpgradeItem = levelUpCurrency;
-            m_IsUpgradeAvailable = canLevelUp;
-            m_UpgradeButton.interactable = canLevelUp;
-            m_QuickAccessButton.gameObject.SetActive(!canLevelUp);
+            ApplyUI(state);
+        }
 
-            int ownerCurrencyAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_UsedUpgradeItem.ItemConfig);
-            Currency ownedCurrency = new(m_UsedUpgradeItem.ItemConfig, ownerCurrencyAmount);
+        private UpgradeState EvaluateState()
+        {
+            var config = m_HeroUnit.HeroConfig.LevelFormulaConfig;
 
-            m_ItemNeed.SetView(m_UsedUpgradeItem);
+            int cost = config.GetCurrentMaxExperience(m_HeroUnit.Level);
 
-            m_ItemOwned.SetView(ownedCurrency);
+            Currency required = new(config.ItemRequirmentConfig, cost);
 
-            m_IsUpgradeAvailable = canLevelUp;
-            m_UpgradeButton.interactable = canLevelUp;
+            int ownedAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(required.ItemConfig);
+            Currency owned = new(required.ItemConfig, ownedAmount);
 
-            m_ItemNameText.text = $"Owned {m_UsedUpgradeItem.ItemConfig.name}:";
-            m_ItemNeed.SetView(new Currency(m_UsedUpgradeItem.ItemConfig, m_UsedUpgradeItem.Amount));
+            bool isMaxLevel = m_HeroUnit.Level >= config.MaxLevel;
+            bool enough = ownedAmount >= cost;
+
+            return new UpgradeState
+            {
+                RequiredCurrency = required,
+                OwnedCurrency = owned,
+                CanUpgrade = enough && !isMaxLevel,
+                IsMaxLevel = isMaxLevel
+            };
+        }
+
+        private void ApplyUI(UpgradeState state)
+        {
+            m_UpgradeButton.interactable = state.CanUpgrade;
+            m_QuickAccessButton.gameObject.SetActive(!state.CanUpgrade);
+
+            m_ItemNeed.SetView(state.RequiredCurrency);
+            m_ItemOwned.SetView(state.OwnedCurrency);
+
+            m_ItemNameText.text = $"Owned {state.RequiredCurrency.ItemConfig.name}:";
+        }
+
+        private void ApplyCurrencyCost(Currency cost)
+        {
+            int owned = Player.Instance.CurrencyControl.GetCurrencyAmount(cost.ItemConfig);
+            Player.Instance.CurrencyControl.SetCurrencyAmount(cost.ItemConfig, owned - cost.Amount);
         }
 
         protected override void ShowInternal()
         {
             base.ShowInternal();
             foreach (var statView in m_StatViews)
-            {
                 statView.ShowNextValue();
-            }
         }
+
         protected override void HideInternal()
         {
             foreach (var statView in m_StatViews)
-            {
                 statView.HideNextValue();
-            }
+
             base.HideInternal();
+        }
+
+        private struct UpgradeState
+        {
+            public Currency RequiredCurrency;
+            public Currency OwnedCurrency;
+            public bool CanUpgrade;
+            public bool IsMaxLevel;
         }
     }
 }

@@ -46,6 +46,19 @@ namespace LegionKnight
         public List<HeroUnit> HeroUnits => m_HeroUnits;
         public HeroUnitConfig UsedHero => m_UsedHeroConfig;
         public HeroUnitConfig SelectedHero => m_SelectedHeroConfig;
+
+        private PreparationPanel m_PreparationPanel;
+        private PreparationPanel PreparationPanel
+        {
+            get
+            {
+                if (m_PreparationPanel == null)
+                {
+                    m_PreparationPanel = CanvasManager.Instance.GetPanel<PreparationPanel>();
+                }
+                return m_PreparationPanel;
+            }
+        }
         private HeroUnit GetHeroUnitInternal(HeroUnitConfig config)
         {
             HeroUnit match = m_HeroUnits.Find(x => x.HeroConfig == config);
@@ -65,7 +78,8 @@ namespace LegionKnight
         {
             if (UnityService.Instance.HasData("usedcharacter"))
             {
-                m_UsedHeroConfig = GetHeroUnitInternal(UnityService.Instance.GetData<string>("usedcharacter")).HeroConfig;
+                string usedCharacterId = UnityService.Instance.GetData<string>("usedcharacter");
+                m_UsedHeroConfig = GetHeroUnitInternal(usedCharacterId).HeroConfig;
                 m_SelectedHeroConfig = m_UsedHeroConfig;
             }
             else
@@ -85,7 +99,7 @@ namespace LegionKnight
             }
             RushPlayer.Instance.Init(m_UsedHeroConfig);
             Debug.Log("Heroes Collection Initialized");
-            CanvasManager.Instance.GetPanel<PreparationPanel>().HeroTabView.Init();
+            PreparationPanel.HeroTabView.Init();
         }
         public void SetOwned(HeroUnitConfig config, bool set)
         {
@@ -133,6 +147,7 @@ namespace LegionKnight
         {
             m_OnCharacterUsed?.Invoke(m_UsedHeroConfig);
             RushPlayer.Instance.Init(m_UsedHeroConfig);
+            //PreparationPanel.HeroTabView.Init();
         }
         private void OnSelectedCharacterInvoke()
         {

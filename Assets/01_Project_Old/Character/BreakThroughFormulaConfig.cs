@@ -13,7 +13,7 @@ namespace LegionKnight
         [Header("Steps (0-based stars)")]
         [Tooltip("Index = Star. Example: Length 4 => stars 0..3 (max star = 3).")]
         [SerializeField] private BreakThroughStep[] m_BreakThroughSteps;
-
+        public BreakThroughStep[] BreakThroughSteps => m_BreakThroughSteps;
         public ItemConfig ShardConfig => m_ShardConfig;
         public ItemConfig CoinConfig => m_CoinConfig;
 
