@@ -1,7 +1,6 @@
 using Rush;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -12,36 +11,63 @@ namespace LegionKnight
 
         protected virtual void Start()
         {
-            foreach(Currency currency in m_Currencies)
+            foreach (Currency currency in m_Currencies)
             {
                 currency.Init();
             }
         }
+
         private Currency GetCurrency(ItemConfig config)
         {
-            Currency match = m_Currencies.Find(x => x.ItemConfig.BaseInfo.Id == config.BaseInfo.Id);
-            return match;
+            return m_Currencies.Find(x => x.ItemConfig.BaseInfo.Id == config.BaseInfo.Id);
         }
+
         public bool HasCurrency(ItemConfig config, out Currency currency)
         {
             currency = GetCurrency(config);
             return currency != null;
         }
+
         public int GetCurrencyAmount(ItemConfig itemConfig)
         {
-            return GetCurrency(itemConfig).Amount;
+            var currency = GetCurrency(itemConfig);
+            return currency != null ? currency.Amount : 0;
         }
+
         public void SetCurrencyAmount(ItemConfig itemConfig, int amount)
         {
-            GetCurrency(itemConfig).SetAmount(amount);
+            var currency = GetCurrency(itemConfig);
+            if (currency == null)
+            {
+                Debug.LogError($"Currency not found: {itemConfig.name}");
+                return;
+            }
+
+            currency.SetAmount(amount);
         }
+
         public void AddCurrencyAmount(ItemConfig itemConfig, int amount)
         {
-            GetCurrency(itemConfig).AddAmount(amount);
+            var currency = GetCurrency(itemConfig);
+            if (currency == null)
+            {
+                Debug.LogError($"Currency not found: {itemConfig.name}");
+                return;
+            }
+
+            currency.AddAmount(amount);
         }
+
         public void RemoveCurrencyAmount(ItemConfig itemConfig, int amount)
         {
-            GetCurrency(itemConfig).RemoveAmount(amount);
+            var currency = GetCurrency(itemConfig);
+            if (currency == null)
+            {
+                Debug.LogError($"Currency not found: {itemConfig.name}");
+                return;
+            }
+
+            currency.RemoveAmount(amount);
         }
     }
 }
