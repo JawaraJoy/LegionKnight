@@ -14,6 +14,8 @@ namespace LegionKnight
         [SerializeField]
         private Image m_Icon;
         [SerializeField]
+        private Image m_Frame;
+        [SerializeField]
         private TextMeshProUGUI m_ItemNameText;
         [SerializeField]
         private TextMeshProUGUI m_ItemAmountText;
@@ -29,6 +31,7 @@ namespace LegionKnight
         }
         protected virtual void InitInternal(LootField lootField)
         {
+            if (m_LootField == null) return;
             m_LootField = lootField;
 
             CollectibleConfig itemLoot = lootField.ItemLoot;
@@ -39,15 +42,19 @@ namespace LegionKnight
             EnergyApplier(itemLoot, amount);
             SetAmountInternal(amount);
             SetNameInternal(itemLoot.BaseInfo.Name);
+            Color color = itemLoot.CollectibleField.RarityConfig.Color;
+            m_Frame.color = color;
             Debug.Log($"[Loot] is seted up");
         }
         private void SetNameInternal(string name)
         {
-            m_ItemNameText.text = name;
+            if (m_ItemNameText != null)
+                m_ItemNameText.text = name;
         }
         private void SetAmountInternal(int amount)
         {
-            m_ItemAmountText.text = amount.ToString();
+            if (m_ItemAmountText != null)
+                m_ItemAmountText.text = amount.ToString();
         }
         public void SetAmount(int amount)
         {
@@ -85,7 +92,9 @@ namespace LegionKnight
             {
                 text.SetText(itemName);
             }
-            //Player.Instance.AddCurrencyAmount(character.ShardConvert.CurrencyDefinition, character.ShardConvert.Amount);
+            ItemConfig itemConfig = heroConfig.ItemDuplicateConverter.ItemConfig;
+            int amount = heroConfig.ItemDuplicateConverter.Amount;
+            Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
         }
         private void StandbyPlatformApplier(CollectibleConfig collectibleConfig, int amount)
         {

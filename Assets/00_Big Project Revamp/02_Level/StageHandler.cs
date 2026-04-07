@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class StageHandler : MonoBehaviour
+    public class StageHandler : MonoBehaviour, IReseter
     {
         [SerializeField]
         private StageConfig m_UsedStageConfig;
@@ -185,6 +185,12 @@ namespace Rush
         private void OnStageCompletedInvokeInternal()
         {
             m_OnStageCompleted?.Invoke(m_UsedStageConfig);
+        }
+
+        public void ResetProgression()
+        {
+            m_PlatformHandler.ResetProgression();
+            m_EnemyWaveHandler.ResetProgression();
         }
     }
 }

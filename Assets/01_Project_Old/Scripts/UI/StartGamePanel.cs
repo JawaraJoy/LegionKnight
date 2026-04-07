@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,17 +7,17 @@ namespace LegionKnight
     
     public partial class StartGamePanel : PanelView
     {
-        private bool m_Showed = false;
+        /*private bool m_Showed = false;
 
-        private string m_StartGameKey = "hasshowsg";
+        private readonly string m_StartGameKey = "hasshowsg";
         protected override void OnShowInvoke()
         {
             base.OnShowInvoke();
             m_Showed = true;
             UnityService.Instance.SaveData(m_StartGameKey, true);
-        }
+        }*/
 
-        protected override void ShowInternal()
+        /*protected override void ShowInternal()
         {
             bool hasShowed = UnityService.Instance.HasData(m_StartGameKey);
             if (hasShowed)
@@ -27,11 +28,12 @@ namespace LegionKnight
             {
                 //Player.Instance.SetPause(false);
                 //GameManager.Instance.Play();
+                RushGameManager.Instance.StageManager.PlayStage();
             }
             else
             {
                 base.ShowInternal();
             }   
-        }
+        }*/
     }
 }

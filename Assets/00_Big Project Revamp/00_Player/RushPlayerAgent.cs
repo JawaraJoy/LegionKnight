@@ -8,5 +8,13 @@ namespace Rush
         {
             RushPlayer.Instance.Init(lastUsedHero);
         }
+        public void SetPosition(Vector2 set)
+        {
+            RushPlayer.Instance.SetPosition(set);
+        }
+        public void ResetProgression()
+        {
+            RushPlayer.Instance.ResetProgression();
+        }
     }
 }

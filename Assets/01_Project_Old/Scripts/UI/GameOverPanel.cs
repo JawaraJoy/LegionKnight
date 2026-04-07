@@ -1,56 +1,60 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Rush;
 
 namespace LegionKnight
 {
-    public static partial class PanelId
-    {
-        public static string GameOverPanelId = "GameOver";
-    }
     public partial class GameOverPanel : PanelView
     {
-        public override string UniqueId => PanelId.GameOverPanelId;
         [SerializeField]
         private Button m_PlayAgainButton;
         [SerializeField]
         private Button m_HomeButton;
         [SerializeField]
+        private Button m_WatchAdsButton;
+        [SerializeField]
         private Button m_DoubleRewardButton;
+
+        [SerializeField]
+        private GameStateConfig m_GameStateConfig;
+        [SerializeField]
+        private GameStateConfig m_HomeStateConfig;
 
         [SerializeField]
         private LootMonitor m_LootMonitor;
 
         private void Awake()
         {
-            m_PlayAgainButton.onClick.AddListener(StoreLevelScoreInternal);
-            m_HomeButton.onClick.AddListener(StoreLevelScoreInternal);
             m_DoubleRewardButton.onClick.AddListener(DoubleReward);
+            m_WatchAdsButton.onClick.AddListener(ShowRebornAds);
+            m_PlayAgainButton.onClick.AddListener(PlayAgain);
+            m_HomeButton.onClick.AddListener(BackHome);
         }
         protected override void ShowInternal()
         {
             if (IsShowInternal) return;
             base.ShowInternal();
+            m_LootMonitor.Show();
         }
-        public void PlayAgain()
+        private void PlayAgain()
         {
-            //GameManager.Instance.Play();
+            RushGameManager.Instance.GameStateManager.ChangeState(m_GameStateConfig);
+            HideInternal();
         }
-        protected override void OnShowInvoke()
+        private void BackHome()
         {
-            base.OnShowInvoke();
-            //Player.Instance.SetPause(true);
-
+            RushGameManager.Instance.GameStateManager.ChangeState(m_HomeStateConfig);
+            HideInternal();
         }
-        protected override void OnHideInvoke()
+        private void ShowRebornAds()
         {
-            base.OnHideInvoke();
-            //GameTimeScale.SetTimeScale(1);
-            //Player.Instance.SetPause(false);
+            UnityService.Instance.ShowRewardedAd(RebornAds);
         }
-
-        private void StoreLevelScoreInternal()
+        private void RebornAds()
         {
-            //GameManager.Instance.StoreLevelScore();
+            HideInternal();
+            CanvasManager.Instance.GetPanel<RevivePanel>().Show();
+            RushPlayer.Instance.Reborn.ForcingReborn(1f);
         }
 
         private void DoubleReward()
@@ -67,7 +71,7 @@ namespace LegionKnight
                 lootMonitor.DoubledCountDownLootAmount();
             }
             else
-                            {
+            {
                 Debug.LogWarning("LootMonitor binding not found in GameOverPanel");
             }
         }

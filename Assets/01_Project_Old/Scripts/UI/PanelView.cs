@@ -32,11 +32,16 @@ namespace LegionKnight
             }
             return match;
         }
-        private bool HasBinding(string uniqueId)
+        private bool HasBindingInternal(string uniqueId)
         {
             return m_Bindings.Contains(GetBinding(uniqueId));
         }
-        private bool HasBinding<T>() where T : UIView
+        public bool HasBinding<T>(out T binded) where T : UIView
+        {
+            binded = GetBinding<T>();
+            return binded != null;
+        }
+        private bool HasBindingInternal<T>() where T : UIView
         {
             return m_Bindings.Contains(GetBinding<T>());
         }
@@ -54,14 +59,14 @@ namespace LegionKnight
         }
         protected virtual void ShowBindingInternal(string uniqueId)
         {
-            if (HasBinding(uniqueId))
+            if (HasBindingInternal(uniqueId))
             {
                 GetBinding(uniqueId).Show();
             }
         }
         protected virtual void HideBindingInternal(string uniqueId)
         {
-            if (HasBinding(uniqueId))
+            if (HasBindingInternal(uniqueId))
             {
                 GetBinding(uniqueId).Hide();
             }

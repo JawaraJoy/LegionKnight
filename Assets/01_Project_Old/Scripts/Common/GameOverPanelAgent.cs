@@ -6,11 +6,11 @@ namespace LegionKnight
     {
         public void ShowGameOverPanel()
         {
-            CanvasManager.Instance.ShowPanel(PanelId.GameOverPanelId);
+            CanvasManager.Instance.GetPanel<GameOverPanel>().Show();
         }
         public void HideGameOverPanel()
         {
-            CanvasManager.Instance.HidePanel(PanelId.GameOverPanelId);
+            CanvasManager.Instance.GetPanel<GameOverPanel>().Hide();
         }
     }
 }

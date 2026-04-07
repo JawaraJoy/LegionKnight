@@ -201,7 +201,7 @@ public partial class LevelPlaySample : MonoBehaviour
         Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdDisplayedEvent With AdInfo: {adInfo}");
 
         //--Tenjin Record
-        TenjinManager.Instance.SendEventToAdShown(false);
+        //TenjinManager.Instance.SendEventToAdShown(false);
     }
     void RewardedVideoOnAdRewardedEvent(LevelPlayAdInfo adInfo, LevelPlayReward reward)
     {
@@ -215,7 +215,7 @@ public partial class LevelPlaySample : MonoBehaviour
         AppsflyerManager.Instance.SendEvent(AFEventName.OnAdWatched, "adrevenue", adRevenue);*/
 
         //--Tenjin Record
-        TenjinManager.Instance.SendEventToAdRewarded(reward);
+        //TenjinManager.Instance.SendEventToAdRewarded(reward);
 
         Dictionary<string, string> eventValues = new Dictionary<string, string>
         {

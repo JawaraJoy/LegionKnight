@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class EnemyWaveHandler : MonoBehaviour
+    public class EnemyWaveHandler : MonoBehaviour, IReseter
     {
         [SerializeField]
         private WaveState m_WaveState = WaveState.Rest;
@@ -22,9 +22,12 @@ namespace Rush
         private UnityEvent<Unit> m_OnBossSpawn;
         [SerializeField]
         private UnityEvent<Unit> m_OnBossDespawn;
+        [SerializeField]
+        private UnityEvent<int> m_OnCurrentScoreChanged;
         public UnityEvent<EnemyWaveConfig> OnWaveSetCleared => m_OnWaveSetCleared;
         private int m_CurrenWaveIndex = -1;
         private int m_CurrentThreshold = 0;
+        private int m_CurrentScore = 0;
         private EnemyWaveSpawnPost m_EnemyWavePost;
 
         // Optional: track actives (useful for cleanup between waves)
@@ -61,6 +64,22 @@ namespace Rush
         public HashSet<Unit> GetActiveEnemies()
         {
             return m_ActiveEnemies;
+        }
+        private void AddScoreInternal(int amount)
+        {
+            m_CurrentScore += amount;
+            OnScoreChangedInvoke(m_CurrentScore);
+        }
+        private void SetScoreInternal(int amount)
+        {
+            m_CurrentScore = amount;
+            OnScoreChangedInvoke(m_CurrentScore);
+        }
+        private void OnScoreChangedInvoke(int newScore)
+        {
+            m_OnCurrentScoreChanged?.Invoke(newScore);
+            // check highest player score
+            // if new score is higher, update the score in player
         }
         private void LoopBackToStart()
         {
@@ -171,6 +190,7 @@ namespace Rush
             unit.Init(enemyConfig);
             if (unit.HasBind(out Damageable damageable))
             {
+                damageable.OnDeath.RemoveListener((context) => DespawnUnitInternal(unit));
                 damageable.OnDeath.AddListener((context) => DespawnUnitInternal(unit));
             }
 
@@ -382,6 +402,58 @@ namespace Rush
         public void AddCurrentWaveIndex(int  amount)
         {
             AddCurrentWaveIndexInternal(amount);
+        }
+
+        public void ResetProgression()
+        {
+            if (m_CurrentEnemyWave == null) return;
+
+            // ---------------------------------------------------------------------
+            // Reset progression state (pakai internal setter)
+            // ---------------------------------------------------------------------
+            SetCurrentThresholdInternal(0);
+            SetCurrentWaveIndexInternal(0);
+            SetWaveStateInternal(WaveState.Rest);
+            SetScoreInternal(0);
+
+            // ---------------------------------------------------------------------
+            // Reset boss
+            // ---------------------------------------------------------------------
+            m_BossUnitExisten = null;
+
+            // ---------------------------------------------------------------------
+            // Despawn all active enemies (balik ke pool)
+            // ---------------------------------------------------------------------
+            if (m_ActiveEnemies.Count > 0)
+            {
+                var temp = new List<Unit>(m_ActiveEnemies);
+                foreach (var unit in temp)
+                {
+                    DespawnUnitInternal(unit);
+                }
+            }
+
+            m_ActiveEnemies.Clear();
+
+            // ---------------------------------------------------------------------
+            // Reset wave level
+            // ---------------------------------------------------------------------
+            m_WaveLevel = 1;
+            m_OnWaveLevelChanged?.Invoke(m_WaveLevel);
+
+            // ---------------------------------------------------------------------
+            // Reset icon (pakai setter biar event ke-trigger)
+            // ---------------------------------------------------------------------
+            SetCurrentWaveIcon(m_CurrentEnemyWave.Icon);
+
+            // ---------------------------------------------------------------------
+            // Reset threshold UI
+            // (jangan panggil UpdateState biar tetap idle)
+            // ---------------------------------------------------------------------
+            m_CurrentMaxThreshold = m_CurrentEnemyWave.RestThreshold;
+            m_OnCurrentThresholdRateChanged?.Invoke(0, m_CurrentMaxThreshold);
+
+            Debug.Log("[EnemyWaveHandler] Reset ONLY (Idle State)");
         }
     }
 }

@@ -378,7 +378,8 @@ namespace Rush
             m_OnDeathDirection?.Invoke(context.AbilityDeliver.DeliverTransform);
             if (m_ModuleContext.Unit.IsPlayer)
             {
-                UnityService.Instance.ShowInterstitialAd();
+                // just for test, will be replaced with revive item or something like that
+                UnityService.Instance.ShowRewardedAd(() => InvisibleForWhileInternal(5));
             }
         }
         protected virtual void SetCurrentDamageTakeInternal(int damage)

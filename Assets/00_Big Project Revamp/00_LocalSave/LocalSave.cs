@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using Rush;
 
 namespace LegionKnight
 {
-
     public class LocalSave : MonoBehaviour
     {
         [Header("Config")]
@@ -22,6 +20,8 @@ namespace LegionKnight
 
         private readonly Dictionary<string, string> m_Cache = new();
 
+        // ─────────────────────────────────────────────
+        // UTIL
         // ─────────────────────────────────────────────
 
         private string Prefixed(string key) => m_KeyPrefix + key;
@@ -65,17 +65,20 @@ namespace LegionKnight
                     version = m_CurrentVersion
                 };
 
-                string json = JsonUtility.ToJson(wrapper);
+                // hash dihitung TANPA field hash
+                string jsonWithoutHash = JsonUtility.ToJson(wrapper);
 
                 if (m_UseHashValidation)
-                    wrapper.hash = GenerateHash(json);
+                    wrapper.hash = GenerateHash(jsonWithoutHash);
 
-                json = JsonUtility.ToJson(wrapper);
+                string finalJson = JsonUtility.ToJson(wrapper);
 
-                m_Cache[Prefixed(key)] = json;
-                PlayerPrefs.SetString(Prefixed(key), json);
+                string fullKey = Prefixed(key);
 
-                AddToIndex(Prefixed(key));
+                m_Cache[fullKey] = finalJson;
+                PlayerPrefs.SetString(fullKey, finalJson);
+
+                AddToIndex(key); // index pakai raw key
                 PlayerPrefs.Save();
 
                 callback?.Invoke();
@@ -87,8 +90,9 @@ namespace LegionKnight
         }
 
         // ─────────────────────────────────────────────
-        // LOAD (NEW SYSTEM)
+        // GET
         // ─────────────────────────────────────────────
+
         public T GetDataValue<T>(string key)
         {
             if (TryGetData<T>(key, out var value))
@@ -96,11 +100,13 @@ namespace LegionKnight
 
             return default;
         }
+
         private bool TryGetData<T>(string key, out T value)
         {
             value = default;
+            string fullKey = Prefixed(key);
 
-            if (!m_Cache.TryGetValue(Prefixed(key), out string json))
+            if (!m_Cache.TryGetValue(fullKey, out string json))
                 return false;
 
             try
@@ -117,8 +123,14 @@ namespace LegionKnight
 
                 if (m_UseHashValidation)
                 {
+                    string originalHash = wrapper.hash;
+
+                    // remove hash dulu sebelum generate ulang
+                    wrapper.hash = null;
                     string rawJson = JsonUtility.ToJson(wrapper);
-                    if (!ValidateHash(rawJson, wrapper.hash))
+                    wrapper.hash = originalHash;
+
+                    if (!ValidateHash(rawJson, originalHash))
                     {
                         Debug.LogWarning($"Tampered data: {key}");
                         DeleteData(key);
@@ -138,7 +150,7 @@ namespace LegionKnight
         }
 
         // ─────────────────────────────────────────────
-        // LOAD (LEGACY API - DIPERTAHANKAN)
+        // LOAD (LEGACY SUPPORT)
         // ─────────────────────────────────────────────
 
         public void LoadData(string key, UnityAction callback = null)
@@ -170,7 +182,9 @@ namespace LegionKnight
                     return;
                 }
 
-                m_Cache[key] = json;
+                // ✅ FIX: pakai prefixed key
+                m_Cache[fullKey] = json;
+
                 callback?.Invoke();
             }
             catch
@@ -209,7 +223,9 @@ namespace LegionKnight
                     return;
                 }
 
-                m_Cache[key] = json;
+                // ✅ FIX: pakai prefixed key
+                m_Cache[fullKey] = json;
+
                 callback?.Invoke(true);
             }
             catch
@@ -220,7 +236,7 @@ namespace LegionKnight
         }
 
         // ─────────────────────────────────────────────
-        // HAS DATA (LEGACY)
+        // HAS DATA
         // ─────────────────────────────────────────────
 
         public bool HasData(string key)
@@ -293,7 +309,6 @@ namespace LegionKnight
                         continue;
                     }
 
-                    // ✅ FIX: cache harus pakai prefixed key
                     m_Cache[fullKey] = json;
                 }
                 catch
@@ -302,7 +317,6 @@ namespace LegionKnight
                 }
             }
 
-            // cleanup index
             foreach (var k in toRemove)
                 index.keys.Remove(k);
 
@@ -321,8 +335,6 @@ namespace LegionKnight
             string fullKey = Prefixed(key);
 
             PlayerPrefs.DeleteKey(fullKey);
-
-            // ✅ cache pakai prefixed
             m_Cache.Remove(fullKey);
 
             RemoveFromIndex(key);
@@ -348,7 +360,6 @@ namespace LegionKnight
         {
             var index = GetIndex();
 
-            // ❗ key TANPA prefix
             if (!index.keys.Contains(key))
                 index.keys.Add(key);
 
@@ -386,6 +397,16 @@ namespace LegionKnight
         {
             public long lastUpdateUnix;
             public long ttlSeconds;
+        }
+
+        [Serializable]
+        private class SaveWrapper<T>
+        {
+            public T value;
+            public long lastUpdateUnix;
+            public long ttlSeconds;
+            public int version;
+            public string hash;
         }
     }
 }

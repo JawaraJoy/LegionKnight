@@ -620,10 +620,84 @@ namespace Rush
         {
             return GetWaitingListPlatformConfigInternal(config.BaseInfo.Id) != null;
         }
-
         public void ResetProgression()
         {
-            // not implemented
+            if (m_Config == null) return;
+
+            
+            StopAllCoroutines();
+
+            // ---------------------------------------------------------------------
+            // Reset flags
+            // ---------------------------------------------------------------------
+            m_IsPaused = false;
+            m_IsBoostActive = false;
+            m_IsSpawningNextPlatform = false;
+
+            // ---------------------------------------------------------------------
+            // Reset counters
+            // ---------------------------------------------------------------------
+            m_GlobalPerfectCount = 0;
+            m_CurrentStackedPlatformsCount = 0;
+            m_ActiveBoostElapsed = 0f;
+            m_ActiveBoostDuration = 0f;
+
+            m_OnPerfectCountChanged?.Invoke(m_GlobalPerfectCount);
+
+            // ---------------------------------------------------------------------
+            // Reset boost stock
+            // ---------------------------------------------------------------------
+            if (m_Config.BoostField != null)
+            {
+                SetBoostStockInternal(m_Config.BoostField.MaxBoostStock);
+            }
+
+            // ---------------------------------------------------------------------
+            // Reset speed
+            // ---------------------------------------------------------------------
+            SetMinGlobalSpeedRateInternal(m_Config.MinGlobalSpeedRate);
+            SetMaxGlobalSpeedRateInternal(m_Config.MaxGlobalSpeedRate);
+
+            // ---------------------------------------------------------------------
+            // Return ALL active platforms to pool
+            // ---------------------------------------------------------------------
+            while (m_StackedPlatforms.Count > 0)
+            {
+                ReturnToPoolInternal(m_StackedPlatforms.Dequeue());
+            }
+
+            if (m_CurrentNewDisplayedPlatform != null)
+            {
+                ReturnToPoolInternal(m_CurrentNewDisplayedPlatform);
+                m_CurrentNewDisplayedPlatform = null;
+            }
+
+            if (m_CurrentTouchedPlatform != null)
+            {
+                m_CurrentTouchedPlatform = null;
+            }
+
+            m_CurrentLastDisplayedPlatform = null;
+
+            // ---------------------------------------------------------------------
+            // Reset waiting list
+            // ---------------------------------------------------------------------
+            ClearWaitingListPlatformConfigInternal();
+            InputToWaitingListByRandom();
+
+            // ---------------------------------------------------------------------
+            // Reset last contact point (spawn origin)
+            // ---------------------------------------------------------------------
+            m_LastContactPoint = RushPlayer.Instance.PlatformSpawnPost.position;
+
+            // ---------------------------------------------------------------------
+            // Optional: clear touch check state
+            // ---------------------------------------------------------------------
+            if (m_TouchDownCheckField != null)
+            {
+                m_TouchDownCheckField.ResetProgression();
+            }
+            Debug.Log("[PlatformHandler] Progression Reset Complete");
         }
     }
 }

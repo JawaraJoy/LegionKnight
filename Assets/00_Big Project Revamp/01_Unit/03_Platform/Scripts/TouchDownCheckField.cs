@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace Rush
 {
     [System.Serializable]
-    public class TouchDownCheckField
+    public class TouchDownCheckField : IReseter
     {
         [SerializeField, MMReadOnly]
         private bool m_IsStayPerfect;
@@ -101,12 +101,10 @@ namespace Rush
         /// <summary>
         /// Reset state perfect count dan streak. Dipanggil saat platform di-spawn ulang.
         /// </summary>
-        public void ResetTouchDown()
+        public void ResetProgression()
         {
-            m_IsStayPerfect = false;
-            m_StayPerfectCount = 0;
+            SetIsStayPerfectInternal(false, null);
+            SetStayPerfectCountInternal(0);
         }
-
-
     }
 }
