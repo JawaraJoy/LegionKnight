@@ -76,7 +76,7 @@ namespace LegionKnight
         private void ShowClaimedDailyReward(LootChestDefinition loot)
         {
             m_LootMonitor.ClearAllLootViews();
-            m_LootMonitor.AddLootsView(loot.LootFields.ToList());
+            //m_LootMonitor.AddLootsView(loot.LootFields.ToList());
             m_LootMonitor.Show();
         }
         private void Spin()

@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
 namespace LegionKnight
@@ -60,7 +57,7 @@ namespace LegionKnight
             LootChestDefinition loot = defi.Rewards;
             if (loot != null && m_LootMonitor != null)
             {
-                m_LootMonitor.AddLootsView(loot.LootFields.ToList());
+                //m_LootMonitor.AddLootsView(loot.LootFields.ToList());
             }
 
             m_DescriptionText.text = desc;

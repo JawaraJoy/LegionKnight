@@ -19,127 +19,197 @@ namespace LegionKnight
         private TextMeshProUGUI m_ItemNameText;
         [SerializeField]
         private TextMeshProUGUI m_ItemAmountText;
+
+        [Header("Animation")]
+        [SerializeField, Min(1)]
+        private int m_AnimateSteps = 6;
+        [SerializeField, Min(0.01f)]
+        private float m_AnimateDuration = 0.15f;
+
         [SerializeField]
         private UnityEvent<int> m_OnAmountChanged = new();
         [SerializeField]
         private UnityEvent m_OnAmountCountChanged = new();
+
         public LootField LootField => m_LootField;
+
+        private Coroutine m_AmountRoutine;
+        private int m_CurrentDisplayedAmount;
 
         public void Init(LootField lootField)
         {
             InitInternal(lootField);
         }
+
         protected virtual void InitInternal(LootField lootField)
         {
-            if (m_LootField == null) return;
+            if (lootField == null || lootField.ItemLoot == null)
+            {
+                return;
+            }
+
             m_LootField = lootField;
 
             CollectibleConfig itemLoot = lootField.ItemLoot;
             int amount = lootField.Amount;
-            //CurrencyApplier(itemLoot, amount);
-            //CharacterApplier(itemLoot);
-            //StandbyPlatformApplier(itemLoot, amount);
-            //EnergyApplier(itemLoot, amount);
-            SetAmountInternal(amount);
+
             SetNameInternal(itemLoot.BaseInfo.Name);
-            Color color = itemLoot.CollectibleField.RarityConfig.Color;
-            m_Frame.color = color;
-            Debug.Log($"[Loot] is seted up");
+            SetIconInternal(itemLoot);
+            SetFrameInternal(itemLoot);
+            SetAmountImmediateInternal(amount);
         }
-        private void SetNameInternal(string name)
+
+        public void Bind(LootField lootField)
         {
-            if (m_ItemNameText != null)
-                m_ItemNameText.text = name;
+            BindInternal(lootField);
         }
-        private void SetAmountInternal(int amount)
+
+        protected virtual void BindInternal(LootField lootField)
         {
-            if (m_ItemAmountText != null)
-                m_ItemAmountText.text = amount.ToString();
+            if (lootField == null || lootField.ItemLoot == null)
+            {
+                return;
+            }
+
+            m_LootField = lootField;
+
+            SetNameInternal(lootField.ItemLoot.BaseInfo.Name);
+            SetIconInternal(lootField.ItemLoot);
+            SetFrameInternal(lootField.ItemLoot);
         }
+
         public void SetAmount(int amount)
         {
             SetAmountInternal(amount);
         }
 
-        private void CurrencyApplier(CollectibleConfig collectibleConfig, int amount)
+        protected virtual void SetAmountInternal(int amount)
         {
-            if (collectibleConfig is ItemConfig itemConfig)
-            {
-                m_Icon.sprite = itemConfig.CollectibleField.Icon;
-                Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
-            }
-        }
-        private void CharacterApplier(CollectibleConfig collectibleConfig)
-        {
-            if (collectibleConfig is HeroUnitConfig heroConfig)
-            {
-                m_Icon.sprite = heroConfig.CollectibleField.Icon;
-                bool owned = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig).Owned;
-                if (owned)
-                {
-                    StartCoroutine(CharcterDuplicated(heroConfig));
-                }
-            }
+            SetAmountImmediateInternal(amount);
         }
 
-        private IEnumerator CharcterDuplicated(HeroUnitConfig heroConfig)
+        public void SetAmountImmediate(int amount)
         {
-            yield return new WaitForSeconds(1.5f);
-            m_Icon.sprite = heroConfig.ItemDuplicateConverter.ItemConfig.CollectibleField.Icon;
-            m_ItemAmountText.text = heroConfig.ItemDuplicateConverter.Amount.ToString();
-            string itemName = heroConfig.ItemDuplicateConverter.ItemConfig.BaseInfo.Name;
-            if (gameObject.TryGetComponent(out TextView text))
-            {
-                text.SetText(itemName);
-            }
-            ItemConfig itemConfig = heroConfig.ItemDuplicateConverter.ItemConfig;
-            int amount = heroConfig.ItemDuplicateConverter.Amount;
-            Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
+            SetAmountImmediateInternal(amount);
         }
-        private void StandbyPlatformApplier(CollectibleConfig collectibleConfig, int amount)
+
+        protected virtual void SetAmountImmediateInternal(int amount)
         {
-            if (collectibleConfig is PlatformConfig platformConfig)
+            if (m_AmountRoutine != null)
             {
-                m_Icon.sprite = platformConfig.CollectibleField.Icon;
+                RushGameManager.Instance.StopCoroutine(m_AmountRoutine);
+                m_AmountRoutine = null;
+            }
+
+            m_CurrentDisplayedAmount = amount;
+
+            if (m_ItemAmountText != null)
+            {
                 m_ItemAmountText.text = amount.ToString();
             }
+
+            m_OnAmountChanged?.Invoke(amount);
         }
-        private void EnergyApplier(CollectibleConfig collectibleConfig, int amount)
+
+        public void SetAmountAnimated(int amount)
         {
-            if (collectibleConfig is EnergyConfig energy)
+            SetAmountAnimatedInternal(amount);
+        }
+
+        protected virtual void SetAmountAnimatedInternal(int amount)
+        {
+            if (!gameObject.activeInHierarchy)
             {
-                m_Icon.sprite = energy.CollectibleField.Icon;
+                SetAmountImmediateInternal(amount);
+                return;
             }
-        }
-        public void AddAmountWithCountDown(int addCount)
-        {
-            StartCoroutine(AddCountDown(addCount));
-        }
-        int m_AmountTriggerCount = 0;
-        private IEnumerator AddCountDown(int addCount)
-        {
-            int start = m_LootField.Amount;
-            int target = m_LootField.Amount + addCount;
-            int amountPseudo = m_LootField.Amount;
-            for (int i = start; i < target; i++)
+
+            if (m_AmountRoutine != null)
             {
+                RushGameManager.Instance.StopCoroutine(m_AmountRoutine);
+            }
 
-                amountPseudo = i + 1;
-                m_OnAmountChanged?.Invoke(amountPseudo);
+            m_AmountRoutine = RushGameManager.Instance.StartCoroutine(AnimatingAmount(amount));
+        }
 
-                m_AmountTriggerCount++;
-                if (m_AmountTriggerCount >= 5)
-                {
-                    m_OnAmountCountChanged?.Invoke();
-                    m_AmountTriggerCount = 0;
-                }
+        private IEnumerator AnimatingAmount(int targetAmount)
+        {
+            int startAmount = m_CurrentDisplayedAmount;
+            int steps = Mathf.Max(1, m_AnimateSteps);
+            float duration = Mathf.Max(0.01f, m_AnimateDuration);
+            float waitPerStep = duration / steps;
+
+            if (startAmount == targetAmount)
+            {
+                SetAmountImmediateInternal(targetAmount);
+                m_AmountRoutine = null;
+                yield break;
+            }
+
+            for (int step = 1; step <= steps; step++)
+            {
+                int amount = Mathf.RoundToInt(Mathf.Lerp(startAmount, targetAmount, (float)step / steps));
+                m_CurrentDisplayedAmount = amount;
+
                 if (m_ItemAmountText != null)
                 {
-                    SetAmountInternal(amountPseudo);
+                    m_ItemAmountText.text = amount.ToString();
                 }
-                Debug.Log($"Counting up loot amount: {amountPseudo}");
-                yield return new WaitForSeconds(0.05f);
+
+                m_OnAmountChanged?.Invoke(amount);
+
+                if (step % 2 == 0)
+                {
+                    m_OnAmountCountChanged?.Invoke();
+                }
+
+                if (step < steps)
+                {
+                    yield return new WaitForSeconds(waitPerStep);
+                }
             }
+
+            SetAmountImmediateInternal(targetAmount);
+            m_AmountRoutine = null;
+        }
+
+        public void AddAmountWithCountDown(int addCount)
+        {
+            AddAmountWithCountDownInternal(addCount);
+        }
+
+        protected virtual void AddAmountWithCountDownInternal(int addCount)
+        {
+            int target = m_CurrentDisplayedAmount + addCount;
+            SetAmountAnimatedInternal(target);
+        }
+
+        private void SetNameInternal(string itemName)
+        {
+            if (m_ItemNameText != null)
+            {
+                m_ItemNameText.text = itemName;
+            }
+        }
+
+        private void SetIconInternal(CollectibleConfig collectibleConfig)
+        {
+            if (m_Icon == null || collectibleConfig == null)
+            {
+                return;
+            }
+
+            m_Icon.sprite = collectibleConfig.CollectibleField.Icon;
+        }
+
+        private void SetFrameInternal(CollectibleConfig collectibleConfig)
+        {
+            if (m_Frame == null || collectibleConfig == null)
+            {
+                return;
+            }
+
+            m_Frame.color = collectibleConfig.CollectibleField.RarityConfig.Color;
         }
     }
 }

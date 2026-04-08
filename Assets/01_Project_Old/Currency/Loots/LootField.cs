@@ -20,9 +20,15 @@ namespace Rush
         public LootField(CollectibleConfig config, int amount, float chance)
         {
             m_CollectibleConfig = config;
-            m_Amount = amount;
+            m_Amount = Mathf.Max(0, amount);
             m_Chance = chance;
         }
+
+        public LootField Clone()
+        {
+            return new LootField(m_CollectibleConfig, m_Amount, m_Chance);
+        }
+
         public void DirectTakeLoot()
         {
             CurrencyApplierInternal(m_CollectibleConfig, m_Amount);
@@ -31,10 +37,17 @@ namespace Rush
             CharacterApplierInternal(m_CollectibleConfig);
             RandomApplierInternal(m_CollectibleConfig);
         }
+
         public void AddAmount(int amount)
         {
-            m_Amount += amount;
+            m_Amount = Mathf.Max(0, m_Amount + amount);
         }
+
+        public void SetAmount(int amount)
+        {
+            m_Amount = Mathf.Max(0, amount);
+        }
+
         private static void RandomApplierInternal(CollectibleConfig collectibleConfig)
         {
             if (collectibleConfig is LootChestDefinition loot)
@@ -46,6 +59,7 @@ namespace Rush
                 }
             }
         }
+
         private static void CurrencyApplierInternal(CollectibleConfig collectibleConfig, int amount)
         {
             if (collectibleConfig is ItemConfig itemConfig)
@@ -53,6 +67,7 @@ namespace Rush
                 Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
             }
         }
+
         private static void CharacterApplierInternal(CollectibleConfig collectibleConfig)
         {
             if (collectibleConfig is HeroUnitConfig heroConfig)
@@ -70,6 +85,7 @@ namespace Rush
                 }
             }
         }
+
         private static void CardApplierInternal(CollectibleConfig collectibleConfig, int amount)
         {
             if (collectibleConfig is CardConfig cardConfig)
@@ -77,6 +93,7 @@ namespace Rush
                 Player.Instance.PlayerCardDeck.AddCardAmount(cardConfig, amount);
             }
         }
+
         private static void EnergyApplierInternal(CollectibleConfig collectibleConfig, int amount)
         {
             if (collectibleConfig is EnergyConfig energy)
@@ -84,22 +101,27 @@ namespace Rush
                 Player.Instance.AddEnergy(energy, amount);
             }
         }
+
         public static void CurrencyApplier(CollectibleConfig collectibleConfig, int amount)
         {
             CurrencyApplierInternal(collectibleConfig, amount);
         }
+
         public static void CharacterApplier(CollectibleConfig collectibleConfig)
         {
             CharacterApplierInternal(collectibleConfig);
         }
+
         public static void StandbyPlatformApplier(CollectibleConfig collectibleConfig, int amount)
         {
             CardApplierInternal(collectibleConfig, amount);
         }
+
         public static void EnergyApplier(CollectibleConfig collectibleConfig, int amount)
         {
             EnergyApplierInternal(collectibleConfig, amount);
         }
+
         public static void RandomApplier(CollectibleConfig collectibleConfig)
         {
             RandomApplierInternal(collectibleConfig);

@@ -128,7 +128,7 @@ namespace LegionKnight
                 LootChestDefinition lootDef = m_ExpTable[m_Level - 1].RewardLevelReached;
                 if (lootDef != null)
                 {
-                    levelUpPanel.ShowRewardLevelUp(lootDef);
+                    //levelUpPanel.ShowRewardLevelUp(lootDef);
                 }
             }
         }

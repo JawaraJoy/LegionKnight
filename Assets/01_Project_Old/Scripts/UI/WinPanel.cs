@@ -11,8 +11,6 @@ namespace LegionKnight
     public partial class WinPanel : PanelView
     {
         [SerializeField]
-        private SceneConfig m_HomeScene;
-        [SerializeField]
         private StageConfig m_CurrenStage;
         [SerializeField]
         private Image m_NextLevelImage;

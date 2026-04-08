@@ -85,7 +85,8 @@ namespace LegionKnight
             if (lootMonitor != null)
             {
                 Debug.Log("Doubling Reward Loots");
-                lootMonitor.DoubledCountDownLootAmount();
+                //lootMonitor.DoubledCountDownLootAmount();
+                GameManager.Instance.LootStorageManager.StartDoubleStoredLoots();
             }
             else
             {
