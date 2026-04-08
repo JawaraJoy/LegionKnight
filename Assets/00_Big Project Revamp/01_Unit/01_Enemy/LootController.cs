@@ -24,6 +24,7 @@ namespace Rush
             }
             if (unit.HasBind(out Damageable damageable))
             {
+                damageable.OnDeath.RemoveListener((context) => Loots());
                 damageable.OnDeath.AddListener((context) => Loots());
             }
         }
@@ -34,6 +35,7 @@ namespace Rush
             var loot = m_LootConfig.GetRandomOneLoot();
             m_LootStorageManager.AddLoot(loot);
             m_OnLoot?.Invoke(loot.ItemLoot);
+            Debug.Log($"Loot {loot.ItemLoot.BaseInfo.Name}_ {loot.Amount}");
         }
     }
 }

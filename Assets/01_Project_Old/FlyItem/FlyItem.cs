@@ -44,12 +44,14 @@ namespace LegionKnight
         {
             m_PadDefinition = paddefi;
             m_Renderer.sprite = defi.CollectibleField.Icon;
-            // Prepare movement values
-            flySpeed = TargetPad.Definition.FlySpeed;
+
+            // RESET STATE (PENTING untuk pooling)
+            isFlying = false;
             lerpT = 0f;
 
-            // Start delayed flight
-            StartCoroutine(StartFlightAfterDelay());
+            flySpeed = TargetPad.Definition.FlySpeed;
+
+            RushGameManager.Instance.StartCoroutine(StartFlightAfterDelay());
         }
 
         private IEnumerator StartFlightAfterDelay()

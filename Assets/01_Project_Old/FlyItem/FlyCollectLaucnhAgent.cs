@@ -9,79 +9,79 @@ namespace LegionKnight
 {
     public class FlyCollectLaucnhAgent : MonoBehaviour
     {
-        [SerializeField]
-        private AssetReferenceGameObject m_FlyItemPrefab;
-        [SerializeField]
-        private PadDefinition m_TargetPad;
+        [SerializeField] private AssetReferenceGameObject m_FlyItemPrefab;
+        [SerializeField] private PadDefinition m_TargetPad;
+        [SerializeField] private int m_PrewarmCount = 5;
 
-        private readonly List<FlyItem> m_ActiveFlyItems = new List<FlyItem>();
+        private readonly List<FlyItem> m_Pool = new List<FlyItem>();
 
-        private void Register(FlyItem item)
+        private void Start()
         {
-            if (!m_ActiveFlyItems.Contains(item))
-            {
-                m_ActiveFlyItems.Add(item);
-            }
+            RushGameManager.Instance.StartCoroutine(Prewarm());
         }
-        private void Unregister(FlyItem item)
+
+        private IEnumerator Prewarm()
         {
-            if (m_ActiveFlyItems.Contains(item))
+            for (int i = 0; i < m_PrewarmCount; i++)
             {
-                m_ActiveFlyItems.Remove(item);
+                yield return CreateNewItem(false);
             }
         }
 
-        private bool AnyCountFlyItemExists()
+        private IEnumerator CreateNewItem(bool active, CollectibleConfig config = null)
         {
-            bool anyCount = m_ActiveFlyItems.Count > 0;
-            return anyCount;
-        }
-        private bool AnyActiveFlyItemExists()
-        {
-            // Check if any FlyItem in the list is active in hierarchy
-            return m_ActiveFlyItems.Exists(item => item.gameObject.activeInHierarchy);
+            var handle = m_FlyItemPrefab.InstantiateAsync(transform.position, Quaternion.identity);
+            yield return handle;
+
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                GameObject obj = handle.Result;
+
+                if (obj.TryGetComponent(out FlyItem item))
+                {
+                    item.gameObject.SetActive(active);
+                    m_Pool.Add(item);
+
+                    if (active && config != null)
+                    {
+                        item.transform.position = transform.position;
+                        item.Init(config, m_TargetPad);
+                    }
+                }
+            }
         }
 
-        private FlyItem GetInactiveFlyItem()
+        private FlyItem GetAvailableItem()
         {
-            foreach (var item in m_ActiveFlyItems)
+            foreach (var item in m_Pool)
             {
-                if (!item.gameObject.activeInHierarchy)
+                if (!item.IsActive)
                 {
                     return item;
                 }
             }
             return null;
         }
-        public void SpawnFlyItem(CollectibleConfig objek)
+
+        public void SpawnFlyItem(CollectibleConfig config)
         {
-            RushGameManager.Instance.StartCoroutine(SpawningFlyItem(objek, m_TargetPad));
+            RushGameManager.Instance.StartCoroutine(SpawnRoutine(config));
         }
-        private IEnumerator SpawningFlyItem(CollectibleConfig objek, PadDefinition targetPad)
+
+        private IEnumerator SpawnRoutine(CollectibleConfig config)
         {
-            // Reuse inactive FlyItem if available
-            if (AnyCountFlyItemExists() && !AnyActiveFlyItemExists())
+            FlyItem item = GetAvailableItem();
+
+            if (item != null)
             {
-                FlyItem item = GetInactiveFlyItem();
                 item.gameObject.SetActive(true);
                 item.transform.position = transform.position;
-                item.Init(objek, targetPad);
+                item.Init(config, m_TargetPad);
             }
             else
             {
-                var handle = m_FlyItemPrefab.InstantiateAsync(transform.position, Quaternion.identity);
-                yield return handle;
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    GameObject flyItemObj = handle.Result;
-                    if (flyItemObj.TryGetComponent<FlyItem>(out var existingFlyItem))
-                    {
-                        Register(existingFlyItem);
-                        existingFlyItem.Init(objek, targetPad);
-                    }
-                }
+                yield return CreateNewItem(true, config);
             }
-                
         }
     }
 }

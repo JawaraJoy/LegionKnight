@@ -49,7 +49,7 @@ namespace LegionKnight
 
         protected void AddLootsViewInternal(List<LootField> loots)
         {
-            StartCoroutine(AddingLootsView(loots));
+            RushGameManager.Instance.StartCoroutine(AddingLootsView(loots));
         }
         private IEnumerator AddingLootsView(List<LootField> loots)
         {
@@ -58,7 +58,7 @@ namespace LegionKnight
             for (int i = 0; i < loots.Count; i++)
             {   
                 Debug.Log($"Loot {i}: {loots[i].ItemLoot.BaseInfo.Name}, IsUnique: {loots[i].ItemLoot.CollectibleField.IsUnique}");
-                yield return StartCoroutine(AddingLootView(loots[i]));
+                yield return RushGameManager.Instance.StartCoroutine(AddingLootView(loots[i]));
                 bool alreadySpawned = GetLootViewInternal(loots[i]) != null;
                 yield return new WaitUntil(() => alreadySpawned);
             }
@@ -78,13 +78,13 @@ namespace LegionKnight
                 }
                 else
                 {
-                    yield return StartCoroutine(SpawningLootView(loot));
+                    yield return RushGameManager.Instance.StartCoroutine(SpawningLootView(loot));
                 }
             }
             else
             {
                 // spawn new loot view
-                yield return StartCoroutine(SpawningLootView(loot));
+                yield return RushGameManager.Instance.StartCoroutine(SpawningLootView(loot));
             }
             yield return new WaitForEndOfFrame();
             OnLootUpdate(loot.ItemLoot);
@@ -108,7 +108,7 @@ namespace LegionKnight
         }
         public virtual void AddLootView(LootField loot)
         {
-            StartCoroutine(AddingLootView(loot));
+            RushGameManager.Instance.StartCoroutine(AddingLootView(loot));
         }
         public virtual void RemoveLootView(LootField loot)
         {
