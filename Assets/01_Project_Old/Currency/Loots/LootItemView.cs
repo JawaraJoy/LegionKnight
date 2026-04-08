@@ -36,10 +36,10 @@ namespace LegionKnight
 
             CollectibleConfig itemLoot = lootField.ItemLoot;
             int amount = lootField.Amount;
-            CurrencyApplier(itemLoot, amount);
-            CharacterApplier(itemLoot);
-            StandbyPlatformApplier(itemLoot, amount);
-            EnergyApplier(itemLoot, amount);
+            //CurrencyApplier(itemLoot, amount);
+            //CharacterApplier(itemLoot);
+            //StandbyPlatformApplier(itemLoot, amount);
+            //EnergyApplier(itemLoot, amount);
             SetAmountInternal(amount);
             SetNameInternal(itemLoot.BaseInfo.Name);
             Color color = itemLoot.CollectibleField.RarityConfig.Color;
