@@ -1,5 +1,6 @@
 using LegionKnight;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
@@ -10,6 +11,9 @@ namespace Rush
 
         private LootChestDefinition m_LootConfig;
         private LootStorageManager m_LootStorageManager;
+
+        [SerializeField]
+        private UnityEvent<CollectibleConfig> m_OnLoot;
         public void Init(Unit unit)
         {
             m_ModuleContext = new ModuleContext(unit, gameObject);
@@ -29,6 +33,7 @@ namespace Rush
             if (m_LootConfig == null) return;
             var loot = m_LootConfig.GetRandomOneLoot();
             m_LootStorageManager.AddLoot(loot);
+            m_OnLoot?.Invoke(loot.ItemLoot);
         }
     }
 }

@@ -12,6 +12,9 @@ namespace Rush
 
         private Rigidbody2D m_Rigidbody;
         public Vector2 InitialPosition => m_InitialPosition;
+
+        [SerializeField]
+        private UnityEvent m_OnReset;
         private void Start()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
@@ -43,6 +46,7 @@ namespace Rush
             RepositionInternal();
             if (m_Unit.Config != null)
                 m_Unit.RefreshInit();
+            m_OnReset?.Invoke();
         }
     }
 }

@@ -10,11 +10,13 @@ namespace LegionKnight
         private Button m_PlayAgainButton;
         [SerializeField]
         private Button m_HomeButton;
+        
         [SerializeField]
-        private Button m_WatchAdsButton;
+        private Button m_RebornAdsButton;
         [SerializeField]
         private Button m_DoubleRewardButton;
-
+        [SerializeField]
+        private GameObject m_RebornContent;
         [SerializeField]
         private GameStateConfig m_GameStateConfig;
         [SerializeField]
@@ -26,7 +28,7 @@ namespace LegionKnight
         private void Awake()
         {
             m_DoubleRewardButton.onClick.AddListener(DoubleReward);
-            m_WatchAdsButton.onClick.AddListener(ShowRebornAds);
+            m_RebornAdsButton.onClick.AddListener(ShowRebornAds);
             m_PlayAgainButton.onClick.AddListener(PlayAgain);
             m_HomeButton.onClick.AddListener(BackHome);
         }
@@ -35,6 +37,21 @@ namespace LegionKnight
             if (IsShowInternal) return;
             base.ShowInternal();
             m_LootMonitor.Show();
+            RebornButtonStateCheck();
+        }
+
+        private void RebornButtonStateCheck()
+        {
+            bool canReborn = RushPlayer.Instance.Reborn.CanForceReborn;
+            m_RebornContent.SetActive(canReborn);
+            if (canReborn)
+            {
+                // anything else here
+            }
+            else
+            {
+                UnityService.Instance.ShowInterstitialAd();
+            }
         }
         private void PlayAgain()
         {

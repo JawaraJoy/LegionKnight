@@ -379,7 +379,7 @@ namespace Rush
             if (m_ModuleContext.Unit.IsPlayer)
             {
                 // just for test, will be replaced with revive item or something like that
-                UnityService.Instance.ShowRewardedAd(() => InvisibleForWhileInternal(5));
+                //UnityService.Instance.ShowRewardedAd(() => InvisibleForWhileInternal(5));
             }
         }
         protected virtual void SetCurrentDamageTakeInternal(int damage)

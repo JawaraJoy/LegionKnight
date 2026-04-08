@@ -92,10 +92,10 @@ namespace Rush
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
         }
 
-        private void OnDisable()
+        /*private void OnDisable()
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
-        }
+        }*/
 
         // initialize first
         public void IniPlatform(PlatformConfig platformConfig)

@@ -55,7 +55,7 @@ namespace LegionKnight
         }
         public void SpawnFlyItem(CollectibleConfig objek)
         {
-            StartCoroutine(SpawningFlyItem(objek, m_TargetPad));
+            RushGameManager.Instance.StartCoroutine(SpawningFlyItem(objek, m_TargetPad));
         }
         private IEnumerator SpawningFlyItem(CollectibleConfig objek, PadDefinition targetPad)
         {

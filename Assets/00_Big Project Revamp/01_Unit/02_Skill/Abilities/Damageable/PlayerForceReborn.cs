@@ -5,13 +5,25 @@ using UnityEngine;
 
 namespace Rush
 {
-    public class PlayerReborn : MonoBehaviour
+    public class PlayerForceReborn : MonoBehaviour, IReseter
     {
         [SerializeField, MMReadOnly]
         private Unit m_PlayerHerounit;
+
+        private bool m_CanForceReborn;
+        public bool CanForceReborn => m_CanForceReborn;
         private void Start()
         {
             m_PlayerHerounit = RushPlayer.Instance.Unit;
+            SetCanForceRebornInternal(true);
+        }
+        private void SetCanForceRebornInternal(bool set)
+        {
+            m_CanForceReborn = set;
+        }
+        public void SetCanForceReborn(bool set)
+        {
+            SetCanForceRebornInternal(set);
         }
         public void ForcingReborn(float delay)
         {
@@ -31,12 +43,18 @@ namespace Rush
             }
             yield return new WaitForSeconds(1f);
             RushGameManager.Instance.StageManager.Resume();
+            SetCanForceRebornInternal(false);
+        }
+
+        public void ResetProgression()
+        {
+            SetCanForceRebornInternal(true);
         }
     }
     public partial class RushPlayer
     {
         [SerializeField]
-        private PlayerReborn m_Reborn;
-        public PlayerReborn Reborn => m_Reborn;
+        private PlayerForceReborn m_Reborn;
+        public PlayerForceReborn Reborn => m_Reborn;
     }
 }
