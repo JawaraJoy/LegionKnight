@@ -59,7 +59,7 @@ namespace Rush
         }
         public void RefreshInit()
         {
-            RefreshInitInternal();
+            StartCoroutine(RefreshInitInternal());
         }
     }
 }

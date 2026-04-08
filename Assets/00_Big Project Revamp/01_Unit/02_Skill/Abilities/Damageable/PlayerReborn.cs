@@ -29,6 +29,8 @@ namespace Rush
                 damageable.Reborn(m_PlayerHerounit.Config.RebornConfig);
                 RushPlayer.Instance.SetPosition(offsite);
             }
+            yield return new WaitForSeconds(1f);
+            RushGameManager.Instance.StageManager.Resume();
         }
     }
     public partial class RushPlayer

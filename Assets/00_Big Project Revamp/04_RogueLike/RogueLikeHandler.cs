@@ -149,8 +149,14 @@ namespace Rush
         private void OnLevelUpInvoke()
         {
             AddForPlayerLevel(1);
-            m_OnForPlayerLevelUp.Invoke(m_ForPlayerCurrentLevel);
             // Implement level-up logic here (e.g., increase stats, unlock skills, etc.)
+        }
+        private void OnLevelChangedInvoke(int level)
+        {
+            if (m_ForPlayerCurrentLevel > 1)
+            {
+                m_OnForPlayerLevelUp.Invoke(level);
+            }
         }
         private void OnForPlayerExperienceAddedInvoke(int amount)
         {
@@ -160,10 +166,13 @@ namespace Rush
         private void SetForPlayerLevel(int level)
         {
             m_ForPlayerCurrentLevel = level;
+            OnLevelChangedInvoke(m_ForPlayerCurrentLevel);
+            
         }
         private void AddForPlayerLevel(int amount)
         {
             m_ForPlayerCurrentLevel += amount;
+            OnLevelChangedInvoke(m_ForPlayerCurrentLevel);
         }
     }
 }

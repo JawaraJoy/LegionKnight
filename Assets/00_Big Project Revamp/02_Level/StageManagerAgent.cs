@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public class StageManagerAgent : MonoBehaviour
+    public class StageManagerAgent : MonoBehaviour, IReseter
     {
         public void PlayStage()
         {
@@ -23,6 +23,11 @@ namespace Rush
         public void SetBackground(VerticalBackgroundConfig backgroundConfig)
         {
             RushGameManager.Instance.StageManager.SetBackground(backgroundConfig);
+        }
+
+        public void ResetProgression()
+        {
+            RushGameManager.Instance.StageManager.ResetProgression();
         }
     }
 }

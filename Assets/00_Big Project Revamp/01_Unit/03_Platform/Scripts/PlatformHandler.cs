@@ -167,6 +167,7 @@ namespace Rush
             m_IsPaused = false;
             if (m_Config == null) return;
             SpawnNextPlatformFromWaitingListInternal(m_Config.InitialSpawnDelay);
+            m_LastContactPoint = RushPlayer.Instance.PlatformSpawnPost.position;
         }
 
         public void Pause() => m_IsPaused = true;
@@ -620,6 +621,46 @@ namespace Rush
         {
             return GetWaitingListPlatformConfigInternal(config.BaseInfo.Id) != null;
         }
+        // === TAMBAHKAN FUNCTION INI DI DALAM CLASS (bebas taruh di mana, rekomendasi di bawah Pool) ===
+        private void ReturnAllSpawnedPlatforms(bool includeSceneCheck = false)
+        {
+            // Hentikan spawning biar tidak race condition
+            StopAllCoroutines();
+            m_IsSpawningNextPlatform = false;
+
+            // Return semua dari stack
+            while (m_StackedPlatforms.Count > 0)
+            {
+                Platform2D platform = m_StackedPlatforms.Dequeue();
+                ReturnToPoolInternal(platform);
+            }
+
+            // Return current new displayed
+            if (m_CurrentNewDisplayedPlatform != null)
+            {
+                ReturnToPoolInternal(m_CurrentNewDisplayedPlatform);
+                m_CurrentNewDisplayedPlatform = null;
+            }
+
+            // OPTIONAL: scan semua child (safety kalau ada yang nyangkut)
+            if (includeSceneCheck)
+            {
+                foreach (Transform child in transform)
+                {
+                    Platform2D platform = child.GetComponent<Platform2D>();
+                    if (platform != null && platform.gameObject.activeSelf)
+                    {
+                        ReturnToPoolInternal(platform);
+                    }
+                }
+            }
+
+            // Reset reference
+            m_CurrentLastDisplayedPlatform = null;
+            m_CurrentTouchedPlatform = null;
+
+            Debug.Log("[PlatformHandler] All spawned platforms returned.");
+        }
         public void ResetProgression()
         {
             if (m_Config == null) return;
@@ -658,19 +699,7 @@ namespace Rush
             SetMinGlobalSpeedRateInternal(m_Config.MinGlobalSpeedRate);
             SetMaxGlobalSpeedRateInternal(m_Config.MaxGlobalSpeedRate);
 
-            // ---------------------------------------------------------------------
-            // Return ALL active platforms to pool
-            // ---------------------------------------------------------------------
-            while (m_StackedPlatforms.Count > 0)
-            {
-                ReturnToPoolInternal(m_StackedPlatforms.Dequeue());
-            }
-
-            if (m_CurrentNewDisplayedPlatform != null)
-            {
-                ReturnToPoolInternal(m_CurrentNewDisplayedPlatform);
-                m_CurrentNewDisplayedPlatform = null;
-            }
+            ReturnAllSpawnedPlatforms(true);
 
             if (m_CurrentTouchedPlatform != null)
             {
@@ -688,7 +717,7 @@ namespace Rush
             // ---------------------------------------------------------------------
             // Reset last contact point (spawn origin)
             // ---------------------------------------------------------------------
-            m_LastContactPoint = RushPlayer.Instance.PlatformSpawnPost.position;
+            
 
             // ---------------------------------------------------------------------
             // Optional: clear touch check state
