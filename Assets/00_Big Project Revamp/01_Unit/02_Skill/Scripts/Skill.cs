@@ -164,7 +164,18 @@ namespace Rush
 
         #region Charge
 
+        private void SetChargeInternal(float amount)
+        {
+            m_RemainingCharge = amount;
+            OnChargeUpdateInvoke(m_RemainingCharge, m_SkillConfig.Activation.Charge);
+        }
+
         public void AddCharge(float amount)
+        {
+            AddChargeInternal(amount);
+        }
+
+        private void AddChargeInternal(float amount)
         {
             if (m_State == SkillActivationState.Silenced)
                 return;
@@ -417,6 +428,7 @@ namespace Rush
         public void ResetProgression()
         {
             m_Progression.SetLevel(1);
+            SetChargeInternal(0);
         }
 
         #endregion

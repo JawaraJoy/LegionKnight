@@ -11,6 +11,8 @@ namespace Rush
         [SerializeField]
         private UnityEvent<int> m_OnLevelUp;
         [SerializeField]
+        private UnityEvent<int> m_OnLevelChanged;
+        [SerializeField]
         private UnityEvent<CardConfig> m_OnCardCollected;
 
         private RogueLikeManager m_Handler;
@@ -40,6 +42,7 @@ namespace Rush
         private void Start()
         {
             Handler.OnForPlayerLevelUp.AddListener(OnLevelUpInvoke);
+            Handler.OnPlayerLevelChanged.AddListener(OnLevelChangedInvoke);
             Handler.OnCardCollected.AddListener(OnCardCollectedInvoke);
         }
         public void AddExperience(int perfectCombo)
@@ -49,7 +52,11 @@ namespace Rush
         }
         private void OnLevelUpInvoke(int level)
         {
-            m_OnLevelUp.Invoke(level);
+            m_OnLevelUp?.Invoke(level);
+        }
+        private void OnLevelChangedInvoke(int level)
+        {
+            m_OnLevelChanged?.Invoke(level);
         }
         private void OnCardCollectedInvoke(CardConfig card)
         {
@@ -65,6 +72,7 @@ namespace Rush
             Handler.ResetProgression();
         }
     }
+    // in current gameplya we dont use enemy to progress use this logic, but some time you can change it
     public enum RogueLikeForProgressType
     {
         Player,

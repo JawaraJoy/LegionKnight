@@ -1,6 +1,7 @@
 
 using MoreMountains.Tools;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,6 +24,8 @@ namespace Rush
         private UnityEvent<int, int> m_OnForPlayerExperienceAdded;
         [SerializeField]
         private UnityEvent<int> m_OnForPlayerLevelUp;
+        [SerializeField]
+        private UnityEvent<int> m_OnPlayerLevelChanged;
 
         [SerializeField]
         private UnityEvent<int, int> m_OnForBossExperienceAdded;
@@ -36,6 +39,7 @@ namespace Rush
         public int ForPlayerCurrentLevel => m_ForPlayerCurrentLevel;
         public UnityEvent<int, int> OnForPlayerExperienceAdded => m_OnForPlayerExperienceAdded;
         public UnityEvent<int> OnForPlayerLevelUp => m_OnForPlayerLevelUp;
+        public UnityEvent<int> OnPlayerLevelChanged => m_OnPlayerLevelChanged;
 
         public UnityEvent<int, int> OnForBossExperienceAdded => m_OnForBossExperienceAdded;
         public UnityEvent<int> OnForBossLevelUp => m_OnForBossLevelUp;
@@ -157,6 +161,7 @@ namespace Rush
             {
                 m_OnForPlayerLevelUp.Invoke(level);
             }
+            m_OnPlayerLevelChanged.Invoke(level);
         }
         private void OnForPlayerExperienceAddedInvoke(int amount)
         {

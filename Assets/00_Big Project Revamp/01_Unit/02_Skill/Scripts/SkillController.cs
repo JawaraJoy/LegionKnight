@@ -312,6 +312,7 @@ namespace Rush
                 List<Skill> skillsToReset = new List<Skill>(m_Skills);
                 foreach (Skill skill in skillsToReset)
                 {
+                    skill.ResetProgression();
                     UnregisterSkillInternal(skill);
                 }
                 m_OnResetProgress?.Invoke();

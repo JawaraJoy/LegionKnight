@@ -35,10 +35,12 @@ namespace Rush
             if (m_For == RogueLikeForProgressType.Player)
             {
                 Handler.OnForPlayerExperienceAdded.RemoveListener(SetFill);
-                Handler.OnForPlayerLevelUp.RemoveListener(SetLevelInternal);
+                //Handler.OnForPlayerLevelUp.RemoveListener(SetLevelInternal);
+                Handler.OnPlayerLevelChanged.RemoveListener(SetLevelInternal);
 
                 Handler.OnForPlayerExperienceAdded.AddListener(SetFill);
-                Handler.OnForPlayerLevelUp.AddListener(SetLevelInternal);
+                //Handler.OnForPlayerLevelUp.AddListener(SetLevelInternal);
+                Handler.OnPlayerLevelChanged.AddListener(SetLevelInternal);
             }
             else
             {
