@@ -19,7 +19,7 @@ namespace LegionKnight
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            Energy energy = Player.Instance.GetEnergy(m_Definition);
+            Energy energy = Player.Instance.EnergyController.GetEnergy(m_Definition);
             SetEnergy(energy);
         }
         public void SetEnergy(Energy energy)

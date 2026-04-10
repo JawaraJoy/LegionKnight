@@ -15,15 +15,13 @@ namespace LegionKnight
 
         [SerializeField]
         private UnityEvent m_OnNotPay;
-        [SerializeField]
-        private GameStateConfig m_CanPayState;
         private void PayInternal()
         {
-            Player.Instance.PayPreviouesEnergyCost(OnCanPayInvoke, OnCantPayInvoke);
+            Player.Instance.EnergyController.PayPreviouesCost(OnCanPayInvoke, OnCantPayInvoke);
         }
         private void TryPayInternal()
         {
-            OnTryPayInvoke(Player.Instance.PreviousEnergyCost);
+            OnTryPayInvoke(Player.Instance.EnergyController.PreviousCost);
         }
 
         public void Pay()
@@ -38,26 +36,25 @@ namespace LegionKnight
         private void OnCanPayInvoke(Energy[] costs)
         {
             m_OnCanPay.Invoke(costs);
-            Player.Instance.OnCanPayEnergy.Invoke(costs);
-            RushGameManager.Instance.GameStateManager.ChangeState(m_CanPayState);
+            Player.Instance.EnergyController.OnCanPay.Invoke(costs);
         }
 
         private void OnCantPayInvoke(Energy[] costRest)
         {
             m_OnCantPay.Invoke(costRest);
-            Player.Instance.OnCantPayEnergy.Invoke(costRest);
+            Player.Instance.EnergyController.OnCantPay.Invoke(costRest);
         }
         private void OnTryPayInvoke(Energy[] costs)
         {
             if (costs == null || costs.Length == 0)
             {
-                m_OnNotPay?.Invoke();
+                m_OnNotPay?.Invoke();   
             }
             else
             {
-                Player.Instance.TryPayPreviousEnergyCost();
+                Player.Instance.EnergyController.TryPayPreviousCost();
                 m_OnTryPay.Invoke(costs, OnCanPayInvoke, OnCantPayInvoke);
-                Player.Instance.OnTryPayEnergy.Invoke(costs);
+                Player.Instance.EnergyController.OnTryPay.Invoke(costs);
             }
                 
         }

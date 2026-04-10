@@ -98,7 +98,7 @@ namespace Rush
         {
             if (collectibleConfig is EnergyConfig energy)
             {
-                Player.Instance.AddEnergy(energy, amount);
+                Player.Instance.EnergyController.Add(energy, amount);
             }
         }
 
@@ -112,7 +112,7 @@ namespace Rush
             CharacterApplierInternal(collectibleConfig);
         }
 
-        public static void StandbyPlatformApplier(CollectibleConfig collectibleConfig, int amount)
+        public static void CardApplier(CollectibleConfig collectibleConfig, int amount)
         {
             CardApplierInternal(collectibleConfig, amount);
         }

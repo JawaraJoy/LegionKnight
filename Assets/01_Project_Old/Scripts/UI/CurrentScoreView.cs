@@ -5,23 +5,7 @@ namespace LegionKnight
 {
     public partial class CurrentScoreView : CurrencyView
     {
-        private PlayerScore m_PlayerScore;
-
-        private PlayerScore PlayerScore
-        {
-            get
-            {
-                if (m_PlayerScore == null)
-                {
-                    m_PlayerScore = RushPlayer.Instance.PlayerScore;
-                }
-                return m_PlayerScore;
-            }
-        }
-        private void Awake()
-        {
-            PlayerScore.OnScoreCurrencyChanged.AddListener(SetViewInternal);
-        }
+        
     }
     public partial class GameplayPanel
     {

@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    public class EnergyController : MonoBehaviour
+    public class EnergyController : MonoBehaviour, IUpdater
     {
         [SerializeField]
         private Energy[] m_Energies;
@@ -26,6 +27,15 @@ namespace LegionKnight
         private Energy[] m_PreviousCost;
         public Energy[] PreviousCost => m_PreviousCost;
 
+        public bool IsActive => gameObject.activeInHierarchy;
+        private void OnEnable()
+        {
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+        private void OnDisable()
+        {
+            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+        }
         public void ClearPreviousCost()
         {
             m_PreviousCost = null;
@@ -57,7 +67,7 @@ namespace LegionKnight
         {
             return GetEnergyInternal(definition) != null;
         }
-        public bool IsFull(EnergyConfig definition)
+        private bool IsFull(EnergyConfig definition)
         {
             var energy = GetEnergyInternal(definition);
             if (energy == null)
@@ -107,10 +117,6 @@ namespace LegionKnight
                 //--Tenjin Record
                 TenjinManager.Instance.SendEventToReEnergy();
             }
-        }
-        private void Update()
-        {
-            Regen();
         }
 
         private void Regen()
@@ -168,6 +174,11 @@ namespace LegionKnight
         public void Pay(Energy[] energyCosts, UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
         {
             PayInternal(energyCosts, onCanPayListen, onCantPayListen);
+        }
+
+        public void Tick()
+        {
+            Regen();
         }
     }
 

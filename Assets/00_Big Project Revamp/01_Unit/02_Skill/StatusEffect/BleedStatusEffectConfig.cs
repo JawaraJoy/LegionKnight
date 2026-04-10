@@ -16,7 +16,7 @@ namespace Rush
         {
             
         }
-        private void TakePoisonDamage(StatusEffectContext context, DirectDamageAbilityConfig directDamageAbility)
+        private void TakeBleedDamage(StatusEffectContext context, DirectDamageAbilityConfig directDamageAbility)
         {
             if (HasInfectorSkillController(context, out SkillController controller))
             {
@@ -62,12 +62,12 @@ namespace Rush
 
         public override void OnEffectEnded(StatusEffectContext context)
         {
-            TakePoisonDamage(context, m_DamageOnDoneToInfected);
+            TakeBleedDamage(context, m_DamageOnDoneToInfected);
         }
 
         public override void OnStackAdded(StatusEffectContext context)
         {
-            TakePoisonDamage(context, m_DamageOnStackAddedToInfected);
+            TakeBleedDamage(context, m_DamageOnStackAddedToInfected);
         }
 
         public override void OnStackRemoved(StatusEffectContext context)

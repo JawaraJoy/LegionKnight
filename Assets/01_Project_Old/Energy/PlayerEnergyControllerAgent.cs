@@ -6,7 +6,7 @@ namespace LegionKnight
     {
         public void ClearPreviousCost()
         {
-            Player.Instance.ClearPreviousEnergyCost();
+            Player.Instance.EnergyController.ClearPreviousCost();
         }
     }
 }

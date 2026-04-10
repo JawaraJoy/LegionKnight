@@ -34,8 +34,8 @@ namespace Rush
         }
         private void SetPositionInternal(Vector2 set)
         {
-            transform.position = set;
             m_Rigidbody.linearVelocity = Vector2.zero;
+            transform.position = set;
         }
         public void SetPosition(Vector2 set)
         {

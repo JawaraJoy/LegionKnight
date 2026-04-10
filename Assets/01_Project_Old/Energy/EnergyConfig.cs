@@ -24,11 +24,11 @@ namespace LegionKnight
 
         public void AddEnergy(int amount)
         {
-            Player.Instance.AddEnergy(this, amount);
+            Player.Instance.EnergyController.Add(this, amount);
         }
         public void SetEnergy(int amount)
         {
-            Player.Instance.SetEnergy(this, amount);
+            Player.Instance.EnergyController.Set(this, amount);
         }
     }
 }

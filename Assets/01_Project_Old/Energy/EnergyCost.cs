@@ -17,11 +17,11 @@ namespace LegionKnight
 
         private void PayInternal()
         {
-            Player.Instance.PayEnergies(m_Costs, OnCanPayInvoke, OnCantPayInvoke);
+            Player.Instance.EnergyController.Pay(m_Costs, OnCanPayInvoke, OnCantPayInvoke);
         }
         private void TryPayInternal()
         {
-            Player.Instance.TryPayEnergies(m_Costs);
+            Player.Instance.EnergyController.TryPay(m_Costs);
             OnTryPayInvoke(m_Costs);
         }
 
@@ -37,18 +37,18 @@ namespace LegionKnight
         private void OnCanPayInvoke(Energy[] costs) 
         {
             m_OnCanPay.Invoke(costs);
-            Player.Instance.OnCanPayEnergy.Invoke(costs);
+            Player.Instance.EnergyController.OnCanPay.Invoke(costs);
         }
 
         private void OnCantPayInvoke(Energy[] costRest)
         {
             m_OnCantPay.Invoke(costRest);
-            Player.Instance.OnCantPayEnergy.Invoke(costRest);
+            Player.Instance.EnergyController.OnCantPay.Invoke(costRest);
         }
         private void OnTryPayInvoke(Energy[] costs)
         {
             m_OnTryPay.Invoke(costs, OnCanPayInvoke, OnCantPayInvoke);
-            Player.Instance.OnTryPayEnergy.Invoke(costs);
+            Player.Instance.EnergyController.OnTryPay.Invoke(costs);
         }
     }
 }

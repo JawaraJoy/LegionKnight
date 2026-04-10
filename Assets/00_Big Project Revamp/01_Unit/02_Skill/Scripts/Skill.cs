@@ -100,10 +100,6 @@ namespace Rush
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
         }
 
-        private void OnDestroy()
-        {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
-        }
 
         #endregion
 

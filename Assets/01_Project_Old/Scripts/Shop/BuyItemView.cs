@@ -79,7 +79,7 @@ namespace LegionKnight
             if (config is EnergyConfig energy)
             {
                 m_Icon.sprite = energy.CollectibleField.Icon;
-                Player.Instance.AddEnergy(energy, amount);
+                Player.Instance.EnergyController.Add(energy, amount);
             }
         }
     }

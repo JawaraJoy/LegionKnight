@@ -16,8 +16,6 @@ namespace LegionKnight
         [SerializeField]
         private GameStateConfig m_HomeState;
         [SerializeField]
-        private GameStateConfig m_GameState;
-        [SerializeField]
         private PreviousEnergyCost m_PreviousEnergyCost;
         private void Start()
         {

@@ -15,7 +15,13 @@ namespace Rush
 
         public void AddProductToPlayer()
         {
-            if (m_CollectibleConfig is ItemConfig itemConfig)
+            LootField.CharacterApplier(m_CollectibleConfig);
+            LootField.CurrencyApplier(m_CollectibleConfig, m_Amount);
+            LootField.EnergyApplier(m_CollectibleConfig, m_Amount);
+            LootField.CardApplier(m_CollectibleConfig, m_Amount);
+            LootField.RandomApplier(m_CollectibleConfig);
+
+            /*if (m_CollectibleConfig is ItemConfig itemConfig)
             {
                 Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, m_Amount);
             }
@@ -29,7 +35,7 @@ namespace Rush
             }
             else if (m_CollectibleConfig is EnergyConfig ene)
             {
-                Player.Instance.AddEnergy(ene, m_Amount);
+                Player.Instance.EnergyController.Add(ene, m_Amount);
             }
             else if (m_CollectibleConfig is CustomImageDefinition img)
             {
@@ -38,7 +44,7 @@ namespace Rush
             else if (m_CollectibleConfig is BadgeConfig badge)
             {
                 Player.Instance.BadgeManager.SetCurrentUpgradeLevel(badge, m_Amount);
-            }
+            }*/
         }
     }
 }
