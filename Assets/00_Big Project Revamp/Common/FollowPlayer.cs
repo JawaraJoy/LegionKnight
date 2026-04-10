@@ -74,11 +74,6 @@ namespace Rush
             UpdateBank.Instance.RegisterLateUpdateTick(gameObject, this);
         }
 
-        private void OnDisable()
-        {
-            UpdateBank.Instance.UnregisterLateUpdateTick(gameObject);
-        }
-
         private void Start()
         {
             SetPostToFollow(m_PostTypeToFollow);

@@ -1,3 +1,4 @@
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,7 +15,8 @@ namespace LegionKnight
 
         [SerializeField]
         private UnityEvent m_OnNotPay;
-
+        [SerializeField]
+        private GameStateConfig m_CanPayState;
         private void PayInternal()
         {
             Player.Instance.PayPreviouesEnergyCost(OnCanPayInvoke, OnCantPayInvoke);
@@ -37,6 +39,7 @@ namespace LegionKnight
         {
             m_OnCanPay.Invoke(costs);
             Player.Instance.OnCanPayEnergy.Invoke(costs);
+            RushGameManager.Instance.GameStateManager.ChangeState(m_CanPayState);
         }
 
         private void OnCantPayInvoke(Energy[] costRest)

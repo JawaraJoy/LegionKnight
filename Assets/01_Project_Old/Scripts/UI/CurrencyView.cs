@@ -24,6 +24,10 @@ namespace LegionKnight
         private UnityEvent<int> m_OnSetAmountInvoke = new();
         public void Init()
         {
+            InitInternal();
+        }
+        protected void InitInternal()
+        {
             if (m_ItemConfig == null)
             {
                 Debug.LogError("Currency is null");

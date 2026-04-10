@@ -10,7 +10,7 @@ namespace LegionKnight
         }
         public void SetHighScoreView(Currency currency)
         {
-            CanvasManager.Instance.SetHomeHighScoreView(currency);
+            //CanvasManager.Instance.SetHomeHighScoreView(currency);
         }
         
     }

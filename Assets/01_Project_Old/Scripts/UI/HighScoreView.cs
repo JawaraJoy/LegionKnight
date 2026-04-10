@@ -4,26 +4,14 @@ namespace LegionKnight
 {
     public partial class HighScoreView : CurrencyView
     {
-        
-    }
-
-    public partial class HomePanel
-    {
-        private HighScoreView GetHighScoreView()
+        private void OnEnable()
         {
-            return GetBinding<HighScoreView>();
+            
         }
-
-        public void SetHighScoreView(Currency currency)
+        protected override void ShowInternal()
         {
-            GetHighScoreView().SetView(currency);
-        }
-    }
-    public partial class CanvasManager
-    {
-        public void SetHomeHighScoreView(Currency currency)
-        {
-            GetPanelInternal<HomePanel>().SetHighScoreView(currency);
+            Currency playerHighScore = Player.Instance.CurrencyControl.GetCurrency(m_ItemConfig);
+            SetViewInternal(playerHighScore);
         }
     }
 }

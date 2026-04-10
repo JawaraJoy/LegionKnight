@@ -22,6 +22,19 @@ namespace LegionKnight
         private UnityEvent<string> m_OnNameChanged = new();
 
         private PlayerInfoPanel m_CustomProfilePanel;
+
+        private string PlayerNameKey => "playerName";
+
+        private string PlayerDefaultName
+        {
+            get
+            {
+                int getrandomTag = Random.Range(0, RandomTagNumber);
+                string defaultName = $"User[{getrandomTag}]";
+                return defaultName ;
+            }
+        }
+        private int RandomTagNumber => 1000000;
         private PlayerInfoPanel GetProfileInfoPanel()
         {
             if (m_CustomProfilePanel == null)
@@ -42,14 +55,27 @@ namespace LegionKnight
         private void OnInitInvoke()
         {
             m_OnStart?.Invoke();
-            m_PlayerName = UnityService.Instance.PlayerName;
+            bool hasEditedName = UnityService.Instance.HasData(PlayerNameKey);
+            string getName = PlayerDefaultName;
+            if (hasEditedName)
+            {
+                getName = UnityService.Instance.GetData<string>(PlayerNameKey);
+            }
+            SetPlayerNameInternal(getName);
             Debug.Log($"Player name: {m_PlayerName}");
             CanvasManager.Instance.SetPlayerNameView(m_PlayerName);
         }
         public void SetPlayerName(string playerName)
         {
+            
+            //SetPlayerNameAsync(m_PlayerName);
+            SetPlayerNameInternal(playerName);
+        }
+        private void SetPlayerNameInternal(string playerName)
+        {
             m_PlayerName = playerName;
             m_OnNameChanged?.Invoke(m_PlayerName);
+            UnityService.Instance.SaveData(PlayerNameKey, m_PlayerName);
             GetProfileInfoPanel().GetBinding<LevelView>().SetNameText(m_PlayerName);
             SetPlayerNameAsync(m_PlayerName);
         }

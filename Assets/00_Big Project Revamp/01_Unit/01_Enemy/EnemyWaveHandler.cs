@@ -411,6 +411,8 @@ namespace Rush
             // ---------------------------------------------------------------------
             // Reset progression state (pakai internal setter)
             // ---------------------------------------------------------------------
+
+            m_EnemyWavePost.ResetProgression();
             SetCurrentThresholdInternal(0);
             SetCurrentWaveIndexInternal(0);
             SetWaveStateInternal(WaveState.Rest);

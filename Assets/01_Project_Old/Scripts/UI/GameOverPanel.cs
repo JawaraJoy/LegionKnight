@@ -1,20 +1,22 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Rush;
+using TMPro;
 
 namespace LegionKnight
 {
-    public partial class GameOverPanel : PanelView
+    public partial class GameOverPanel : PanelView, IUpdater
     {
         [SerializeField]
         private Button m_PlayAgainButton;
         [SerializeField]
         private Button m_HomeButton;
-        
+        [SerializeField]
+        private float m_CountDownDuration = 5f;
+        [SerializeField]
+        private TextMeshProUGUI m_TimerCountDown;
         [SerializeField]
         private Button m_RebornAdsButton;
-        [SerializeField]
-        private Button m_DoubleRewardButton;
         [SerializeField]
         private GameObject m_RebornContent;
         [SerializeField]
@@ -25,18 +27,45 @@ namespace LegionKnight
         [SerializeField]
         private LootMonitor m_LootMonitor;
 
+        private float m_CurrentCountDownTime;
+        public bool IsActive => IsShowInternal;
+
         private void Awake()
         {
-            m_DoubleRewardButton.onClick.AddListener(DoubleReward);
             m_RebornAdsButton.onClick.AddListener(ShowRebornAds);
             m_PlayAgainButton.onClick.AddListener(PlayAgain);
             m_HomeButton.onClick.AddListener(BackHome);
+        }
+        private void OnEnable()
+        {
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+        private void OnDisable()
+        {
+            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+        }
+        private void ResetTimerInternal()
+        {
+            m_CurrentCountDownTime = m_CountDownDuration;
+
+            if (m_TimerCountDown != null)
+            {
+                m_TimerCountDown.text = Mathf.CeilToInt(m_CurrentCountDownTime).ToString();
+            }
+
+            if (m_RebornAdsButton != null)
+            {
+                m_RebornAdsButton.interactable = true;
+            }
         }
         protected override void ShowInternal()
         {
             if (IsShowInternal) return;
             base.ShowInternal();
+
             m_LootMonitor.Show();
+
+            ResetTimerInternal(); // <-- tambahin ini
             RebornButtonStateCheck();
         }
 
@@ -74,23 +103,44 @@ namespace LegionKnight
             RushPlayer.Instance.Reborn.ForcingReborn(1f);
         }
 
-        private void DoubleReward()
+        public void Tick()
         {
-            UnityService.Instance.ShowRewardedAd(DoubleRewardAction);
-        }
-
-        private void DoubleRewardAction()
-        {
-            LootMonitor lootMonitor = m_LootMonitor;
-            if (lootMonitor != null)
+            if (!IsShowInternal)
             {
-                Debug.Log("Doubling Reward Loots");
-                //lootMonitor.DoubledCountDownLootAmount();
-                GameManager.Instance.LootStorageManager.StartDoubleStoredLoots();
+                return;
             }
-            else
+
+            if (m_CurrentCountDownTime <= 0f)
             {
-                Debug.LogWarning("LootMonitor binding not found in GameOverPanel");
+                return;
+            }
+
+            m_CurrentCountDownTime -= Time.deltaTime;
+
+            if (m_CurrentCountDownTime < 0f)
+            {
+                m_CurrentCountDownTime = 0f;
+            }
+
+            // update UI text
+            if (m_TimerCountDown != null)
+            {
+                m_TimerCountDown.text = Mathf.CeilToInt(m_CurrentCountDownTime).ToString();
+            }
+
+            // selesai countdown
+            if (m_CurrentCountDownTime <= 0f)
+            {
+                if (m_RebornAdsButton != null)
+                {
+                    m_RebornAdsButton.interactable = false;
+                }
+
+                // optional: ubah text
+                if (m_TimerCountDown != null)
+                {
+                    m_TimerCountDown.text = "0";
+                }
             }
         }
     }

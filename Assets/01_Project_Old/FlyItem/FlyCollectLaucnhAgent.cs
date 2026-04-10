@@ -11,7 +11,7 @@ namespace LegionKnight
     {
         [SerializeField] private AssetReferenceGameObject m_FlyItemPrefab;
         [SerializeField] private PadDefinition m_TargetPad;
-        [SerializeField] private int m_PrewarmCount = 5;
+        private const int m_PrewarmCount = 2;
 
         private readonly List<FlyItem> m_Pool = new List<FlyItem>();
 

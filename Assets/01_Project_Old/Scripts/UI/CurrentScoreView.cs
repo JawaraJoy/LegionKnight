@@ -1,16 +1,33 @@
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
 {
-    public partial class ScoreView : CurrencyView
+    public partial class CurrentScoreView : CurrencyView
     {
-        
+        private PlayerScore m_PlayerScore;
+
+        private PlayerScore PlayerScore
+        {
+            get
+            {
+                if (m_PlayerScore == null)
+                {
+                    m_PlayerScore = RushPlayer.Instance.PlayerScore;
+                }
+                return m_PlayerScore;
+            }
+        }
+        private void Awake()
+        {
+            PlayerScore.OnScoreCurrencyChanged.AddListener(SetViewInternal);
+        }
     }
     public partial class GameplayPanel
     {
-        private ScoreView GetScoreView()
+        private CurrentScoreView GetScoreView()
         {
-            return GetBinding<ScoreView>();
+            return GetBinding<CurrentScoreView>();
         }
         public void SetScoreView(Currency currency)
         {
@@ -19,9 +36,9 @@ namespace LegionKnight
     }
     public partial class GameOverPanel
     {
-        private ScoreView GetScoreView()
+        private CurrentScoreView GetScoreView()
         {
-            return GetBinding<ScoreView>();
+            return GetBinding<CurrentScoreView>();
         }
         public void SetScoreView(Currency currency)
         {

@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using Rush;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,13 +6,14 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.UI;
 
 namespace LegionKnight
 {
     public class LootMonitor : UIView
     {
         [Header("Source")]
-        [SerializeField]
+        [SerializeField, MMReadOnly]
         private LootStorageManager m_LootStorageManager;
 
         [Header("View")]
@@ -19,6 +21,8 @@ namespace LegionKnight
         private AssetReferenceGameObject m_LootViewAsset;
         [SerializeField]
         private Transform m_LootViewSpawn;
+        [SerializeField]
+        private Button m_DoubleLootButton;
 
         [Header("Runtime")]
         [SerializeField]
@@ -37,8 +41,20 @@ namespace LegionKnight
         protected virtual void Awake()
         {
             SetupStorageReferenceInternal();
-        }
 
+            m_DoubleLootButton.onClick.RemoveListener(ShowAdToDoubleLoot);
+            m_DoubleLootButton.onClick.AddListener(ShowAdToDoubleLoot);
+        }
+        protected override void OnShowInvoke()
+        {
+            base.OnShowInvoke();
+            m_DoubleLootButton.gameObject.SetActive(true);
+        }
+        protected override void OnHideInvoke()
+        {
+            base.OnHideInvoke();
+            TakeLoots();
+        }
         protected virtual void OnEnable()
         {
             BindStorageEventsInternal();
@@ -54,7 +70,19 @@ namespace LegionKnight
         {
             SetLootStorageManagerInternal(storage);
         }
-
+        private void ShowAdToDoubleLoot()
+        {
+            UnityService.Instance.ShowRewardedAd(DoubleLoot);
+        }
+        protected virtual void DoubleLoot()
+        {
+            m_LootStorageManager.StartDoubleStoredLoots();
+            m_DoubleLootButton.gameObject.SetActive(false);
+        }
+        protected virtual void TakeLoots()
+        {
+            m_LootStorageManager.TakeLooteds();
+        }
         protected virtual void SetLootStorageManagerInternal(LootStorageManager storage)
         {
             if (m_LootStorageManager == storage)
