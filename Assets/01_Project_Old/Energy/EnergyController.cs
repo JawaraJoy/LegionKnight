@@ -1,7 +1,9 @@
 ﻿using MoreMountains.Tools;
 using Rush;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -186,24 +188,32 @@ namespace LegionKnight
     [System.Serializable]
     public class Energy
     {
+        // ── Config ────────────────────────────────────────────────────────────
         [SerializeField]
         private EnergyConfig m_Config;
         [SerializeField]
-        private TimerDefinition m_Timer;
-        [SerializeField]
         private int m_Amount;
 
+        // ── Events ────────────────────────────────────────────────────────────
         [SerializeField]
         private UnityEvent<Energy> m_OnAmountChanged;
         [SerializeField]
         private UnityEvent<int> m_OnAmountSpend;
-        [SerializeField]
-        private UnityEvent<Energy> m_OnInitialized;
 
+        // ── Runtime ───────────────────────────────────────────────────────────
+        private float m_CurrentRegenTimeSpend;
+
+        // ── Save keys ─────────────────────────────────────────────────────────
+        // Pisahkan key amount dan key reset time agar tidak bentrok
+        private string AmountKey => m_Config.BaseInfo.Id + "amount";
+        private string ResetTimeKey => m_Config.BaseInfo.Id + "resetTime";
+
+        private static readonly string DateFormat = "yyyy-MM-dd HH:mm:ss";
+
+        // ── Public props ──────────────────────────────────────────────────────
         public EnergyConfig Config => m_Config;
         public int Amount => m_Amount;
-
-        private float m_CurrentTimeSpend;
+        public bool IsFull => m_Amount >= m_Config.MaxAmount;
 
         public Energy(EnergyConfig config, int amount)
         {
@@ -211,49 +221,172 @@ namespace LegionKnight
             m_Amount = amount;
         }
 
-        public bool IsFull => m_Amount >= m_Config.MaxAmount;
-
+        // ─────────────────────────────────────────────────────────────────────
+        // INITIALIZE
+        // ─────────────────────────────────────────────────────────────────────
         /// <summary>
-        /// Urutan yang benar:
-        /// 1. Cek timer dulu — kalau expired, reset ke max dan start timer baru (tidak perlu load)
-        /// 2. Kalau timer belum expired, baru load saved amount
-        /// 3. Kalau belum pernah ada data sama sekali, reset ke max dan start timer
+        /// Urutan:
+        /// 1. Cek apakah sudah waktunya daily reset
+        ///    - Ya dan energy tidak exceed max → reset ke max, simpan next reset time
+        /// 2. Load saved amount
+        /// 3. Kalau belum pernah ada data → set ke max dan simpan next reset time
         /// </summary>
         public void Initialize()
         {
-            string key = m_Config.BaseInfo.Id;
-            bool hasData = UnityService.Instance.HasData(key);
+            bool hasAmount = UnityService.Instance.HasData(AmountKey);
+            bool hasResetTime = UnityService.Instance.HasData(ResetTimeKey);
 
-            Debug.Log($"[Energy] Initialize key='{key}' hasData={hasData} IsTimeToReset={m_Timer.IsTimeToReset()}");
+            Debug.Log($"[Energy] key='{m_Config.BaseInfo.Id}' AmountKey='{AmountKey}' ResetTimeKey='{ResetTimeKey}'");
+            Debug.Log($"[Energy] hasAmount={hasAmount} hasResetTime={hasResetTime}");
+            if (hasAmount)
+                Debug.Log($"[Energy] saved amount={UnityService.Instance.GetData<int>(AmountKey)}");
+            if (hasResetTime)
+                Debug.Log($"[Energy] saved resetTime='{UnityService.Instance.GetData<string>(ResetTimeKey)}'");
 
-            if (!hasData)
+            if (!hasAmount || !hasResetTime)
             {
-                Debug.Log($"[Energy] No data found → ResetEnergy()");
-                ResetEnergy();
-            }
-            else if (m_Timer.IsTimeToReset())
-            {
-                Debug.Log($"[Energy] Timer expired → ResetEnergy()");
-                ResetEnergy();
-            }
-            else
-            {
-                int saved = UnityService.Instance.GetData<int>(key);
-                Debug.Log($"[Energy] Loading saved amount={saved}");
-                SetInternal(saved);
+                // Fresh install atau data hilang → set max dan simpan reset time berikutnya
+                Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' no data found, initializing fresh.");
+                SetInternal(m_Config.MaxAmount);
+                SaveNextResetTime();
+                return;
             }
 
+            // Ada data → cek apakah sudah waktunya reset harian
+            if (IsDailyResetTime())
+            {
+                int savedAmount = UnityService.Instance.GetData<int>(AmountKey);
+                bool isExceedMax = savedAmount > m_Config.MaxAmount;
+
+                if (isExceedMax)
+                {
+                    // Exceed max → jangan reset, tapi tetap load dan update reset time
+                    Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' daily reset skipped (exceed max={savedAmount}).");
+                    SetInternal(savedAmount);
+                }
+                else
+                {
+                    // Reset ke max
+                    Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' daily reset triggered → set to max.");
+                    SetInternal(m_Config.MaxAmount);
+                }
+
+                // Simpan next reset time untuk besok
+                SaveNextResetTime();
+                return;
+            }
+
+            // Belum waktunya reset → load saved amount
+            int loaded = UnityService.Instance.GetData<int>(AmountKey);
+            Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' loaded amount={loaded}");
+            SetInternal(loaded);
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // DAILY RESET LOGIC
+        // ─────────────────────────────────────────────────────────────────────
+        private bool IsDailyResetTime()
+        {
+            string savedStr = UnityService.Instance.GetData<string>(ResetTimeKey);
+
+            if (string.IsNullOrEmpty(savedStr))
+                return true; // Tidak ada data reset time → anggap perlu reset
+
+            if (!DateTime.TryParseExact(savedStr, DateFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out DateTime nextReset))
+            {
+                return true; // Data korup → anggap perlu reset
+            }
+
+            bool isTime = DateTime.Now >= nextReset;
+            
+            return isTime;
+        }
+
+        /// <summary>
+        /// Simpan next reset time = hari ini jam ResetClockHour.
+        /// Kalau sekarang sudah lewat jam itu, maka besok jam itu.
+        /// </summary>
+        private void SaveNextResetTime()
+        {
+            int resetHour = m_Config.DailyResetHour; // misal 15 = jam 15:00
+            DateTime now = DateTime.Now;
+            DateTime nextReset = new DateTime(now.Year, now.Month, now.Day, resetHour, 0, 0);
+
+            if (now >= nextReset)
+                nextReset = nextReset.AddDays(1);
+
+            string resetStr = nextReset.ToString(DateFormat);
+            UnityService.Instance.SaveData(ResetTimeKey, resetStr);
+            Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' next reset saved: {resetStr}");
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // REGEN (dipanggil tiap frame via EnergyController.Tick)
+        // ─────────────────────────────────────────────────────────────────────
+        public void Regening()
+        {
+            if (!m_Config.CanRegen) return;
+
+            bool isExceedMax = m_Amount > m_Config.MaxAmount;
+            if (isExceedMax) return; // Exceed max → skip regen
+
+            // Cek daily reset saat regen (game dibiarkan hidup melewati jam reset)
+            if (IsDailyResetTime())
+            {
+                Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' daily reset triggered during regen.");
+                SetInternal(m_Config.MaxAmount);
+                SaveNextResetTime();
+                return;
+            }
+
+            if (IsFull) return; // Sudah penuh → skip regen
+
+            m_CurrentRegenTimeSpend += Time.deltaTime;
+            if (m_CurrentRegenTimeSpend >= m_Config.RegenEverEverySeconds)
+            {
+                m_CurrentRegenTimeSpend = 0f;
+                AddInternal(m_Config.RegenAmount);
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // PUBLIC API
+        // ─────────────────────────────────────────────────────────────────────
+        public void Add(int amount) => AddInternal(amount);
+        public void Set(int amount) => SetInternal(amount);
+
+        public bool CanPay(int cost) => m_Amount >= cost;
+
+        public void Pay(int cost)
+        {
+            if (CanPay(cost))
+            {
+                AddInternal(-cost);
+                m_OnAmountSpend?.Invoke(cost);
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // INTERNAL
+        // ─────────────────────────────────────────────────────────────────────
+        private void AddInternal(int add)
+        {
+            m_Amount += add;
             ClampAmount();
+            m_OnAmountChanged?.Invoke(this);
+            UnityService.Instance.SaveData(AmountKey, m_Amount);
+            Debug.Log($"[Energy] AddInternal key='{AmountKey}' newAmount={m_Amount}");
         }
 
-        public void Add(int amount)
+        private void SetInternal(int set)
         {
-            AddInternal(amount);
-        }
-
-        public void Set(int amount)
-        {
-            SetInternal(amount);
+            m_Amount = set;
+            ClampAmount();
+            m_OnAmountChanged?.Invoke(this);
+            UnityService.Instance.SaveData(AmountKey, m_Amount);
         }
 
         private void ClampAmount()
@@ -267,78 +400,6 @@ namespace LegionKnight
                 m_Amount = 0;
             else if (m_Amount > m_Config.MaxAmount)
                 m_Amount = m_Config.MaxAmount;
-        }
-
-        public void Regening()
-        {
-            if (!m_Config.CanRegen) return;
-
-            int interval = m_Config.RegenEverEverySeconds;
-            bool offSiteMax = m_Amount > m_Config.MaxAmount;
-
-            if (!offSiteMax)
-            {
-                m_CurrentTimeSpend += Time.deltaTime;
-                if (m_CurrentTimeSpend > interval)
-                {
-                    // Cek timer sebelum regen — kalau expired, reset dulu
-                    if (m_Timer.IsTimeToReset())
-                    {
-                        ResetEnergy();
-                    }
-                    else
-                    {
-                        AddInternal(m_Config.RegenAmount);
-                    }
-                    m_CurrentTimeSpend = 0f;
-                }
-            }
-        }
-
-        private void AddInternal(int add)
-        {
-            m_Amount += add;
-            ClampAmount();
-            m_OnAmountChanged?.Invoke(this);
-            UnityService.Instance.SaveData(m_Config.BaseInfo.Id, m_Amount);
-        }
-
-        private void SetInternal(int set)
-        {
-            m_Amount = set;
-            ClampAmount();
-            m_OnAmountChanged?.Invoke(this);
-            UnityService.Instance.SaveData(m_Config.BaseInfo.Id, m_Amount);
-        }
-
-        private void ResetEnergy()
-        {
-            bool offSiteMax = m_Amount >= m_Config.MaxAmount;
-            if (!offSiteMax)
-            {
-                SetInternal(m_Config.MaxAmount);
-            }
-            // ✅ Selalu start timer baru setelah reset
-            m_Timer.StartTimer();
-        }
-
-        private bool CanPayInternal(int cost)
-        {
-            return m_Amount >= cost;
-        }
-
-        public bool CanPay(int cost)
-        {
-            return CanPayInternal(cost);
-        }
-
-        public void Pay(int cost)
-        {
-            if (CanPayInternal(cost))
-            {
-                AddInternal(-cost);
-                m_OnAmountSpend?.Invoke(cost);
-            }
         }
     }
 }

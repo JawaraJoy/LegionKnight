@@ -13,10 +13,5 @@ namespace LegionKnight
         {
             return GetCharacterPanel().GetBinding<CardSelectTabView>();
         }
-
-        public void SpawnCardSelectionView(CardUnit unit)
-        {
-            GetCardSelectionView().SpawnCardSelect(unit);
-        }
     }
 }

@@ -6,6 +6,8 @@ namespace Rush
     {
         
     }
+    // this is singleton
+    // you can call RushGameManager.Instance.RoguelikeManager
     public partial class RushGameManager
     {
         [SerializeField]

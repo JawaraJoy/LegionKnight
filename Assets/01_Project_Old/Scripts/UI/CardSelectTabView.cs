@@ -18,30 +18,17 @@ namespace LegionKnight
         [SerializeField]
         private List<CardSelectView> m_SpawnedCardSelectionViews = new();
 
-        public void Init()
-        {
-            InitInternal();
-        }
+        [SerializeField]
+        private CardDetailView m_CardView;
 
+        private void Awake()
+        {
+            Player.Instance.PlayerCardDeck.OnInitializedUnit.AddListener(SpawnCardSelectInternal);
+        }
         private CardSelectView GetSelectView(CardConfig cardConfig)
         {
             CardSelectView view = m_SpawnedCardSelectionViews.Find(x => x.CardConfig == cardConfig);
             return view;
-        }
-        private void InitInternal()
-        {
-            CardUnit[] units = Player.Instance.PlayerCardDeck.GetCardUnits();
-            foreach (CardUnit unit in units)
-            {
-                if (GetSelectView(unit.CardConfig) != null)
-                {
-                    GetSelectView(unit.CardConfig).Init(unit);
-                }
-                else
-                {
-                    SpawnCardSelectInternal(unit);
-                }   
-            }
         }
         private IEnumerator SpawningCardSelectView(AsyncOperationHandle<GameObject> handle, CardUnit unit)
         {
@@ -61,12 +48,16 @@ namespace LegionKnight
 
         private void SpawnCardSelectInternal(CardUnit unit)
         {
-            AsyncOperationHandle<GameObject> handle = m_CardSelectViewAsset.InstantiateAsync(m_SpawnSpot, false);
-            StartCoroutine(SpawningCardSelectView(handle, unit));
-        }
-        public void SpawnCardSelect(CardUnit unit)
-        {
-            SpawnCardSelectInternal(unit);
+            if (GetSelectView(unit.CardConfig) != null)
+            {
+                GetSelectView(unit.CardConfig).Init(unit);
+            }
+            else
+            {
+                AsyncOperationHandle<GameObject> handle = m_CardSelectViewAsset.InstantiateAsync(m_SpawnSpot, false);
+                StartCoroutine(SpawningCardSelectView(handle, unit));
+            }
+            
         }
         public void ShowRarity(RarityConfig rarityConfig)
         {
@@ -85,14 +76,6 @@ namespace LegionKnight
             foreach (CardSelectView cardSelectView in m_SpawnedCardSelectionViews)
             {
                 cardSelectView.Hide();
-            }
-        }
-
-        public void RefreshEquiped()
-        {
-            foreach (CardSelectView cardSelectView in m_SpawnedCardSelectionViews)
-            {
-                cardSelectView.RefreshEquiped();
             }
         }
 

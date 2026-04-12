@@ -11,20 +11,20 @@ namespace LegionKnight
         [SerializeField]
         private bool m_IsOwned;
         [SerializeField]
-        private bool m_IsEquiped;
+        private bool m_IsAdded;
         [SerializeField]
         private int m_Amount;
         [SerializeField]
         private CardConfig m_CardConfig;
         public bool IsOwned => m_IsOwned = m_Amount > 0;
-        public bool IsEquiped => m_IsEquiped;
+        public bool IsAdded => m_IsAdded;
         public int Amount => m_Amount;
         public CardConfig CardConfig => m_CardConfig;
         public CardUnit(CardConfig cardConfig)
         {
             m_CardConfig = cardConfig;
             m_IsOwned = false;
-            m_IsEquiped = false;
+            m_IsAdded = false;
         }
         public void AddAmount(int add)
         {
@@ -34,7 +34,7 @@ namespace LegionKnight
         }
         public void SetIsEquiped(bool set)
         {
-            m_IsEquiped = set;
+            m_IsAdded = set;
         }
         public void Init()
         {
@@ -54,34 +54,40 @@ namespace LegionKnight
     public partial class CardDeck : MonoBehaviour
     {
         [SerializeField]
-        private List<CardConfig> m_UsedCardConfig = new();
+        private List<CardUnit> m_UsedCards = new();
         [SerializeField]
         private int m_MaxUsedCardCount = 5; // Clamp max used card
         [SerializeField]
-        private CardConfig m_SelectedCard;
+        private CardUnit m_SelectedCard;
         [SerializeField]
-        private List<CardUnit> m_Deck = new();
+        private List<CardUnit> m_CardCollections = new();
 
         [SerializeField]
         private UnityEvent m_OnInitialized = new();
         [SerializeField]
         private UnityEvent<CardUnit> m_OnInitializedUnit = new();
         [SerializeField]
-        private UnityEvent<List<CardConfig>> m_OnCardConfigUsed = new();
+        private UnityEvent<CardUnit> m_OnCardAdded = new();
         [SerializeField]
-        private UnityEvent<CardConfig> m_OnSelectedPlatform = new();
-
+        private UnityEvent<List<CardUnit>> m_OnCardUnitUsed = new();
+        [SerializeField]
+        private UnityEvent<CardUnit> m_OnSelectedCard = new();
+        public List<CardUnit> GetUsedCards() => m_UsedCards;
+        public int GetMaxUsedCardCount() => m_MaxUsedCardCount;
+        public UnityEvent<CardUnit> OnInitializedUnit => m_OnInitializedUnit;
+        public UnityEvent<CardUnit> OnSelectedCard => m_OnSelectedCard;
+        public UnityEvent<CardUnit> OnCardAdded => m_OnCardAdded;
         private CardUnit GetCardOwnedInternal(CardConfig cardConfig)
         {
-            foreach (var platformOwned in m_Deck)
+            foreach (var cardOwned in m_CardCollections)
             {
-                if (platformOwned.CardConfig.BaseInfo.Id == cardConfig.BaseInfo.Id)
-                    return platformOwned;
+                if (cardOwned.CardConfig.BaseInfo.Id == cardConfig.BaseInfo.Id)
+                    return cardOwned;
             }
             return null;
         }
 
-        public CardUnit[] GetCardUnits() => m_Deck.ToArray();
+        public CardUnit[] GetCardUnits() => m_CardCollections.ToArray();
 
         public CardUnit GetCardOwned(CardConfig cardConfig) => GetCardOwnedInternal(cardConfig);
 
@@ -91,13 +97,9 @@ namespace LegionKnight
             return cardOwned != null && cardOwned.IsOwned;
         }
 
-        public List<CardConfig> GetUsedCardConfig() => m_UsedCardConfig;
-
-        public int GetMaxUsedCardCount() => m_MaxUsedCardCount;
-
         public void SetIsEquiped(CardConfig config, bool isEquiped)
         {
-            foreach (var platformOwned in m_Deck)
+            foreach (var platformOwned in m_CardCollections)
                 platformOwned.SetIsEquiped(false);
             GetCardOwnedInternal(config)?.SetIsEquiped(isEquiped);
         }
@@ -108,6 +110,7 @@ namespace LegionKnight
         {
             var cardOwned = GetCardOwnedInternal(config);
             cardOwned?.AddAmount(add);
+            m_OnCardAdded?.Invoke(GetCardOwnedInternal(config));
         }
 
         // Add selected card to used list (with clamp & duplicate check)
@@ -115,28 +118,30 @@ namespace LegionKnight
         {
             if (m_SelectedCard == null) return;
 
-            if (m_UsedCardConfig.Contains(m_SelectedCard))
+            if (m_UsedCards.Contains(m_SelectedCard))
             {
                 Debug.Log("Card already in used list.");
                 return;
             }
 
-            if (m_UsedCardConfig.Count >= m_MaxUsedCardCount)
+            if (m_UsedCards.Count >= m_MaxUsedCardCount)
             {
                 Debug.Log($"Max used card limit ({m_MaxUsedCardCount}) reached.");
                 return;
             }
 
-            m_UsedCardConfig.Add(m_SelectedCard);
+            m_UsedCards.Add(m_SelectedCard);
+            AddCardAmountInternal(m_SelectedCard.CardConfig, -1);
             OnCardConfigUsedInvoke();
         }
 
         // Remove card from used list
         public void RemoveUsedCardConfig(CardConfig cardConfig)
         {
-            if (m_UsedCardConfig.Contains(cardConfig))
+            if (GetCardOwnedInternal(cardConfig) != null)
             {
-                m_UsedCardConfig.Remove(cardConfig);
+                m_UsedCards.Remove(GetCardOwnedInternal(cardConfig));
+                AddCardAmountInternal(m_SelectedCard.CardConfig, 1);
                 OnCardConfigUsedInvoke();
             }
         }
@@ -144,20 +149,20 @@ namespace LegionKnight
         // Only update UI preview, does NOT modify used list
         public void SelectStandbyCardConfig(CardConfig cardConfig)
         {
-            m_SelectedCard = cardConfig;
+            m_SelectedCard = GetCardOwnedInternal(cardConfig);
             OnSelectedCardConfigInvoke();
         }
 
         // Use ALL cards in used list, add each to roguelike deck
         public void UseCardConfig()
         {
-            foreach (var cardConfig in m_UsedCardConfig)
+            foreach (var cardunit in m_UsedCards)
             {
-                var cardUnit = GetCardOwnedInternal(cardConfig);
+                var cardUnit = GetCardOwnedInternal(cardunit.CardConfig);
                 if (cardUnit != null && cardUnit.IsOwned)
                 {
-                    RushGameManager.Instance.RogueLikeManager.AddCard(cardConfig);
-                    AddCardAmountInternal(cardConfig, -1);
+                    RushGameManager.Instance.RogueLikeManager.AddCard(cardunit.CardConfig);
+                    AddCardAmountInternal(cardunit.CardConfig, -1);
                 }
             }
         }
@@ -167,7 +172,7 @@ namespace LegionKnight
         private void OnInitializedInvoke()
         {
             m_OnInitialized?.Invoke();
-            foreach (CardUnit unit in m_Deck)
+            foreach (CardUnit unit in m_CardCollections)
             {
                 unit.Init();
                 m_OnInitializedUnit?.Invoke(unit);
@@ -176,14 +181,12 @@ namespace LegionKnight
 
         private void OnSelectedCardConfigInvoke()
         {
-            m_OnSelectedPlatform?.Invoke(m_SelectedCard);
-            CanvasManager.Instance.SetCardConfigSelected(m_SelectedCard);
+            m_OnSelectedCard?.Invoke(m_SelectedCard);
         }
 
         private void OnCardConfigUsedInvoke()
         {
-            m_OnCardConfigUsed?.Invoke(m_UsedCardConfig);
-            CanvasManager.Instance.SetUsedCardConfigList(m_UsedCardConfig);
+            m_OnCardUnitUsed?.Invoke(m_UsedCards);
         }
     }
 }

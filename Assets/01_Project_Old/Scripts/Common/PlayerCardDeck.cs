@@ -7,6 +7,8 @@ namespace LegionKnight
     {
         
     }
+    // this is singleton
+    // you can call Player.Instance.PlayerCardDeck
     public partial class Player
     {
         [SerializeField]

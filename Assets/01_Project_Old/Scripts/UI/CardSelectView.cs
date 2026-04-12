@@ -25,19 +25,16 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<CardConfig> m_OnCardSelected = new();
         public CardConfig CardConfig => m_CardConfig;
+        // Called when player selects a card (preview only)
+
+        private void Awake()
+        {
+            Player.Instance.PlayerCardDeck.OnCardAdded.AddListener(InitInternal);
+        }
         private void SelectCardInternal()
         {
             Player.Instance.PlayerCardDeck.SelectStandbyCardConfig(m_CardConfig);
             OnCharacterSelectedInvoke();
-        }
-        public void SelectPlatform()
-        {
-            SelectCardInternal();
-        }
-        private void RefreshInternal()
-        {
-            CardUnit platform = Player.Instance.PlayerCardDeck.GetCardOwned(m_CardConfig);
-            InitInternal(platform);
         }
         private void InitInternal(CardUnit cardUnit)
         {
@@ -49,18 +46,12 @@ namespace LegionKnight
             m_AmountText.text = cardUnit.Amount.ToString();
             m_RarityColor.color = cardUnit.CardConfig.CollectibleField.RarityConfig.Color;
 
-            m_EquipedSign.gameObject.SetActive(cardUnit.IsEquiped);
+            m_EquipedSign.gameObject.SetActive(cardUnit.IsAdded);
 
-            m_SelectButton.onClick.RemoveAllListeners();
+            m_SelectButton.onClick.RemoveListener(SelectCardInternal);
             m_SelectButton.onClick.AddListener(SelectCardInternal);
 
             HideInternal();
-        }
-
-        public void RefreshEquiped()
-        {
-            CardUnit platform = Player.Instance.PlayerCardDeck.GetCardOwned(m_CardConfig);
-            m_EquipedSign.gameObject.SetActive(platform.IsEquiped);
         }
         public void Init(CardUnit unit)
         {

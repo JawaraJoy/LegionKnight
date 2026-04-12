@@ -33,7 +33,7 @@ namespace LegionKnight
 
         public void Init()
         {
-            List<CardConfig> usedList = Player.Instance.PlayerCardDeck.GetUsedCardConfig();
+            List<CardUnit> usedList = Player.Instance.PlayerCardDeck.GetUsedCards();
 
             if (usedList == null || usedList.Count == 0)
             {
@@ -43,12 +43,12 @@ namespace LegionKnight
 
             // Display icon from the first owned card in the used list
             bool anyOwned = false;
-            foreach (var cardConfig in usedList)
+            foreach (var cardunit in usedList)
             {
-                if (Player.Instance.PlayerCardDeck.IsCardOwned(cardConfig))
+                if (Player.Instance.PlayerCardDeck.IsCardOwned(cardunit.CardConfig))
                 {
                     ShowInternal();
-                    m_CardEquipedIcon.sprite = cardConfig.CollectibleField.Icon;
+                    m_CardEquipedIcon.sprite = cardunit.CardConfig.CollectibleField.Icon;
                     anyOwned = true;
                     break;
                 }
