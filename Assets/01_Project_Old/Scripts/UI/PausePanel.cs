@@ -35,7 +35,6 @@ namespace LegionKnight
         }
         private void RestartButtonClick()
         {
-            HideInternal();
             m_PreviousEnergyCost.TryPay();
             //RushGameManager.Instance.GameStateManager.ChangeState(m_GameState);
         }

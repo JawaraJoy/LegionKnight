@@ -41,7 +41,7 @@ namespace Rush
             }
         }
 
-        private void AddScoreInternal(int  score)
+        private void AddScoreInternal(int score)
         {
             m_Score += score;
             m_OnScoreChanged?.Invoke(m_Score);
@@ -53,6 +53,8 @@ namespace Rush
                 item.SetView(m_ScoreCurrency);
             }
             ApplyHighScoreToPlayerInternal();
+
+            Player.Instance.AddPlayerExperience(score);
         }
         public void AddScore(int score)
         {

@@ -11,6 +11,10 @@ namespace Rush
         [SerializeField]
         private StageState m_StartingStageState = StageState.Locked;
         [SerializeField]
+        private EnergyConfig m_EnergyConfig;
+        [SerializeField]
+        private int m_EnergyAmountToPay;
+        [SerializeField]
         private Sprite m_SplashImage;
         [SerializeField]
         private VerticalBackgroundConfig m_VerticalBackgroundConfig;
@@ -24,6 +28,8 @@ namespace Rush
         public StageState StartingStageState => m_StartingStageState;  
         public EnemyWaveConfig[] EnemyWaveConfigs => m_EnemyWaveConfigs;
         public PlatformHandlerConfig PlatformHandlerConfig => m_PlatformHandlerConfig;
+        public EnergyConfig EnergyConfig => m_EnergyConfig;
+        public int EnergyAmountToPay => m_EnergyAmountToPay;
 
         public EnemyWaveConfig GetEnemyWaveByIndex(int index)
         {

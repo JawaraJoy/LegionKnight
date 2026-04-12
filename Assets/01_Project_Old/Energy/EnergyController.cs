@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+﻿using MoreMountains.Tools;
 using Rush;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,6 +24,7 @@ namespace LegionKnight
         public UnityEvent<Energy[]> OnCanPay => m_OnCanPay;
         public UnityEvent<Energy[]> OnCantPay => m_OnCantPay;
 
+        [SerializeField, MMReadOnly]
         private Energy[] m_PreviousCost;
         public Energy[] PreviousCost => m_PreviousCost;
 
@@ -212,63 +213,88 @@ namespace LegionKnight
 
         public bool IsFull => m_Amount >= m_Config.MaxAmount;
 
+        /// <summary>
+        /// Urutan yang benar:
+        /// 1. Cek timer dulu — kalau expired, reset ke max dan start timer baru (tidak perlu load)
+        /// 2. Kalau timer belum expired, baru load saved amount
+        /// 3. Kalau belum pernah ada data sama sekali, reset ke max dan start timer
+        /// </summary>
         public void Initialize()
         {
-            if (UnityService.Instance.HasData(m_Config.BaseInfo.Id))
+            string key = m_Config.BaseInfo.Id;
+            bool hasData = UnityService.Instance.HasData(key);
+
+            Debug.Log($"[Energy] Initialize key='{key}' hasData={hasData} IsTimeToReset={m_Timer.IsTimeToReset()}");
+
+            if (!hasData)
             {
-                SetInternal(UnityService.Instance.GetData<int>(m_Config.BaseInfo.Id));
+                Debug.Log($"[Energy] No data found → ResetEnergy()");
+                ResetEnergy();
+            }
+            else if (m_Timer.IsTimeToReset())
+            {
+                Debug.Log($"[Energy] Timer expired → ResetEnergy()");
+                ResetEnergy();
             }
             else
             {
-                ResetEnergy();
+                int saved = UnityService.Instance.GetData<int>(key);
+                Debug.Log($"[Energy] Loading saved amount={saved}");
+                SetInternal(saved);
             }
-            m_Timer.CheckTimer(ResetEnergy, () => AddInternal(0));
+
             ClampAmount();
         }
+
         public void Add(int amount)
         {
             AddInternal(amount);
         }
+
         public void Set(int amount)
         {
             SetInternal(amount);
         }
+
         private void ClampAmount()
         {
             if (m_Config.CanBreakMaxAmount)
             {
-                // If can break max amount, we don't clamp to max amount
-                if (m_Amount < 0)
-                {
-                    m_Amount = 0;
-                }
+                if (m_Amount < 0) m_Amount = 0;
                 return;
             }
             if (m_Amount < 0)
-            {
                 m_Amount = 0;
-            }
             else if (m_Amount > m_Config.MaxAmount)
-            {
                 m_Amount = m_Config.MaxAmount;
-            }
         }
+
         public void Regening()
         {
             if (!m_Config.CanRegen) return;
+
             int interval = m_Config.RegenEverEverySeconds;
-            bool offsiteMax = m_Amount > m_Config.MaxAmount;
-            //bool canRegen = !offsiteMax && underTimeSpend;
-            if (!offsiteMax)
+            bool offSiteMax = m_Amount > m_Config.MaxAmount;
+
+            if (!offSiteMax)
             {
                 m_CurrentTimeSpend += Time.deltaTime;
                 if (m_CurrentTimeSpend > interval)
                 {
-                    m_Timer.CheckTimer(ResetEnergy, () => AddInternal(m_Config.RegenAmount));
+                    // Cek timer sebelum regen — kalau expired, reset dulu
+                    if (m_Timer.IsTimeToReset())
+                    {
+                        ResetEnergy();
+                    }
+                    else
+                    {
+                        AddInternal(m_Config.RegenAmount);
+                    }
                     m_CurrentTimeSpend = 0f;
                 }
             }
         }
+
         private void AddInternal(int add)
         {
             m_Amount += add;
@@ -276,6 +302,7 @@ namespace LegionKnight
             m_OnAmountChanged?.Invoke(this);
             UnityService.Instance.SaveData(m_Config.BaseInfo.Id, m_Amount);
         }
+
         private void SetInternal(int set)
         {
             m_Amount = set;
@@ -283,13 +310,15 @@ namespace LegionKnight
             m_OnAmountChanged?.Invoke(this);
             UnityService.Instance.SaveData(m_Config.BaseInfo.Id, m_Amount);
         }
+
         private void ResetEnergy()
         {
-            bool offsiteMax = m_Amount >= m_Config.MaxAmount;
-            if (!offsiteMax)
+            bool offSiteMax = m_Amount >= m_Config.MaxAmount;
+            if (!offSiteMax)
             {
                 SetInternal(m_Config.MaxAmount);
             }
+            // ✅ Selalu start timer baru setelah reset
             m_Timer.StartTimer();
         }
 
@@ -297,6 +326,7 @@ namespace LegionKnight
         {
             return m_Amount >= cost;
         }
+
         public bool CanPay(int cost)
         {
             return CanPayInternal(cost);

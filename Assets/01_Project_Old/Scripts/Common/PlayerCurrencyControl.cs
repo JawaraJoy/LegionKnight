@@ -6,7 +6,8 @@ namespace LegionKnight
     {
 
     }
-
+    // for you know this is singleton
+    // you can get this just RushGameManager.Instance.CurrencyControl to get it
     public partial class Player
     {
         [SerializeField]

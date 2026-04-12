@@ -26,6 +26,8 @@ namespace LegionKnight
 
         [SerializeField]
         private LootMonitor m_LootMonitor;
+        [SerializeField]
+        private PreviousEnergyCost m_PreviousEnergyCost;
 
         private float m_CurrentCountDownTime;
         public bool IsActive => IsShowInternal;
@@ -33,7 +35,7 @@ namespace LegionKnight
         private void Awake()
         {
             m_RebornAdsButton.onClick.AddListener(ShowRebornAds);
-            m_PlayAgainButton.onClick.AddListener(PlayAgain);
+            m_PlayAgainButton.onClick.AddListener(TryPlayAgain);
             m_HomeButton.onClick.AddListener(BackHome);
         }
         private void OnEnable()
@@ -82,10 +84,9 @@ namespace LegionKnight
                 UnityService.Instance.ShowInterstitialAd();
             }
         }
-        private void PlayAgain()
+        private void TryPlayAgain()
         {
-            RushGameManager.Instance.GameStateManager.ChangeState(m_GameStateConfig);
-            HideInternal();
+            m_PreviousEnergyCost.TryPay();
         }
         private void BackHome()
         {

@@ -26,6 +26,10 @@ namespace Rush
             RushGameManager.Instance.StartCoroutine(RefreshInitInternal());
 
         }
+        private void InitInternal()
+        {
+
+        }
         private IEnumerator RefreshInitInternal()
         {
             m_OnInit?.Invoke(this);

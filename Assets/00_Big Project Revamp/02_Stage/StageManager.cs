@@ -6,8 +6,9 @@ namespace Rush
     {
         
     }
-
-    public partial class RushGameManager
+    // for you know this is singleton
+    // you can get this just RushGameManager.Instance.StageManager to get it
+    public partial class RushGameManager 
     {
         [SerializeField]
         private StageManager m_StageManager;

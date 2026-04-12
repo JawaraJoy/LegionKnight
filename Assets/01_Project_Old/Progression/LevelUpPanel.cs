@@ -1,27 +1,33 @@
-using System.Collections.Generic;
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public static partial class PanelIds
-    {
-        public const string LevelUpPanel = "LevelUpPanel";
-    }
     public partial class LevelUpPanel : PanelView
     {
-        public override string UniqueId => PanelIds.LevelUpPanel;
 
         [SerializeField]
         private TextMeshProUGUI m_LevelText;
         [SerializeField]
         private Slider m_ExpSlider;
+        [SerializeField]
+        private LevelUpMonitor m_LevelUpMonitor;
 
         private void Awake()
         {
             Player.Instance.AddOnCurrentExpRateChange(SetExpSlider);
             Player.Instance.AddOnLevelUp(SetLevelText);
+            m_LevelUpMonitor.Init();
+        }
+        protected override void ShowInternal()
+        {
+            bool isLevelUp = Player.Instance.Progression.LevelUpTrigerred;
+            if (isLevelUp)
+            {
+                base.ShowInternal();
+            }
         }
 
         public void SetLevelText(int level)

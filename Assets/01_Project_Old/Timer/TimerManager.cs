@@ -12,6 +12,8 @@ namespace LegionKnight
         [SerializeField]
         private TimerManager m_TimerManager;
 
+        public TimerManager TimerManager => m_TimerManager;
+
         public void InitTimer()
         {
             m_TimerManager.Init();

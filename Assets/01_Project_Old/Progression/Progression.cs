@@ -42,10 +42,19 @@ namespace LegionKnight
         private UnityEvent<float> m_OnCurrentExpRateChange = new();
         [SerializeField]
         private UnityEvent<int> m_OnLevelUp = new ();
+        [SerializeField]
+        private UnityEvent<ExpTable> m_OnLevelUpExpTable = new ();
 
         [SerializeField, MMReadOnly]
         private bool m_LevelUpTriggered = false;
 
+        public bool LevelUpTrigerred => m_LevelUpTriggered;
+        public UnityEvent<ExpTable> OnLevelUpExpTable => m_OnLevelUpExpTable;
+
+        private ExpTable GetCurrentExpTable(int level)
+        {
+            return m_ExpTable[level];
+        }
         private void InitInternal()
         {
             if (UnityService.Instance.HasData(m_CurrentLevelKey))
@@ -70,11 +79,19 @@ namespace LegionKnight
         {
             InitInternal();
         }
-
+        private void SetLevelUpTriggeredInternal(bool triggered)
+        {
+            m_LevelUpTriggered = triggered;
+        }
+        public void SetLevelUpTriggered(bool triggered)
+        {
+            SetLevelUpTriggeredInternal(triggered);
+        }
         private void OnLevelUpInvoke()
         {
             m_OnLevelUp?.Invoke(m_Level);
-            m_LevelUpTriggered = true;
+            m_OnLevelUpExpTable?.Invoke(GetCurrentExpTable(m_Level - 1));
+            SetLevelUpTriggeredInternal(true);
 
             GetCurrentOnLevelUpEnter()?.Invoke();
 
@@ -116,21 +133,6 @@ namespace LegionKnight
         public void RemoveOnLevelUp(UnityAction<int> action)
         {
             m_OnLevelUp.RemoveListener(action);
-        }
-
-        public void ShowLevelUpPanel()
-        {
-            if (m_LevelUpTriggered)
-            {
-                LevelUpPanel levelUpPanel = CanvasManager.Instance.GetPanel<LevelUpPanel>();
-                CanvasManager.Instance.ShowLevelUpPanel();
-                m_LevelUpTriggered = false;
-                LootChestDefinition lootDef = m_ExpTable[m_Level - 1].RewardLevelReached;
-                if (lootDef != null)
-                {
-                    //levelUpPanel.ShowRewardLevelUp(lootDef);
-                }
-            }
         }
         private void OnCurrentExpChangeInvoke()
         {

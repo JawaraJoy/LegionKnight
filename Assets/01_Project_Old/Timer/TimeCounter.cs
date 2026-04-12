@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using System;
 using UnityEngine;
 
@@ -8,9 +9,9 @@ namespace LegionKnight
     {
         [SerializeField]
         private TimerDefinition m_Definition;
-        [SerializeField]
+        [SerializeField, MMReadOnly]
         private string m_ResetDateString;
-        [SerializeField]
+        [SerializeField, MMReadOnly]
         private string m_TimeRemainingString;
 
         private DateTime m_ResetDateTime;
@@ -87,7 +88,7 @@ namespace LegionKnight
             m_TimeRemainingString = timeRemaining.ToString();
             return timeRemaining;
         }
-        
+
         private string GetRemainingTimeAsStringMinute()
         {
             TimeSpan remainingTime = GetRemainingTimeInternal();

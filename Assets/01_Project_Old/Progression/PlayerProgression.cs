@@ -12,6 +12,7 @@ namespace LegionKnight
     {
         [SerializeField]
         private PlayerProgression m_PlayerProgression;
+        public PlayerProgression Progression => m_PlayerProgression;
 
         public void InitPlayerProgression()
         {
@@ -56,17 +57,6 @@ namespace LegionKnight
         public int GetPlayerLevel()
         {
             return m_PlayerProgression.GetCurrentLevel();
-        }
-        public void ShowLevelUpPanel()
-        {
-            m_PlayerProgression.ShowLevelUpPanel();
-        }
-    }
-    public partial class PlayerAgent
-    {
-        public void ShowLevelUpPanel()
-        {
-            Player.Instance.ShowLevelUpPanel();
         }
     }
 }

@@ -190,7 +190,7 @@ namespace Rush
             unit.Init(enemyConfig);
             if (unit.HasBind(out Damageable damageable))
             {
-                damageable.OnDeath.RemoveListener((context) => DespawnUnitInternal(unit));
+                //damageable.OnDeath.RemoveListener((context) => DespawnUnitInternal(unit));
                 damageable.OnDeath.AddListener((context) => DespawnUnitInternal(unit));
             }
 

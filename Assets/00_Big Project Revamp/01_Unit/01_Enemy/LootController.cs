@@ -12,6 +12,18 @@ namespace Rush
         private LootChestDefinition m_LootConfig;
         private LootStorageManager m_LootStorageManager;
 
+        private LootStorageManager LootStorageManager
+        {
+            get
+            {
+                if (m_LootStorageManager == null)
+                {
+                    m_LootStorageManager = GameManager.Instance.LootStorageManager;
+                }
+                return m_LootStorageManager;
+            }
+        }
+
         [SerializeField]
         private UnityEvent<CollectibleConfig> m_OnLoot;
         public void Init(Unit unit)
@@ -20,7 +32,6 @@ namespace Rush
             if (unit.Config is EnemyUnitConfig enemyConfig)
             {
                 m_LootConfig = enemyConfig.Loot;
-                m_LootStorageManager = GameManager.Instance.LootStorageManager;
             }
             if (unit.HasBind(out Damageable damageable))
             {
@@ -32,9 +43,10 @@ namespace Rush
         private void Loots()
         {
             if (m_LootConfig == null) return;
-            var loot = m_LootConfig.GetRandomOneLoot();
-            m_LootStorageManager.AddLoot(loot);
+            LootField loot = m_LootConfig.GetRandomOneLoot();
+            if (loot == null) return;
             m_OnLoot?.Invoke(loot.ItemLoot);
+            LootStorageManager.AddLoot(loot);
             Debug.Log($"Loot {loot.ItemLoot.BaseInfo.Name}_ {loot.Amount}");
         }
     }

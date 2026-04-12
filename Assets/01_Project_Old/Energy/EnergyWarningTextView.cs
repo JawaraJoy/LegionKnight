@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 namespace LegionKnight
@@ -10,20 +10,26 @@ namespace LegionKnight
 
         public void SetWarningText(Energy[] costs)
         {
-            ShowInternal();
             EnergyConfirmationView.SetEnergyWarningText(m_WarningText, costs);
+            ShowInternal();
         }
     }
 
+    // ─── EnergyConfirmationPanel partial ─────────────────────────────────────
     public partial class EnergyConfirmationPanel
     {
         private EnergyWarningTextView GetEnergyConfirmationWarningView()
-        {
-            return GetBindingInternal<EnergyWarningTextView>();
-        }
+            => GetBindingInternal<EnergyWarningTextView>();
 
+        /// <summary>
+        /// Buka panel dan tampilkan warning.
+        /// Hide confirmation view dulu jika sedang tampil.
+        /// </summary>
         public void SetWarningText(Energy[] costs)
         {
+            // ✅ Hide confirmation view dulu jika sedang tampil
+            GetEnergyConfirmationView()?.Hide();
+
             ShowInternal();
             GetEnergyConfirmationWarningView().SetWarningText(costs);
         }
