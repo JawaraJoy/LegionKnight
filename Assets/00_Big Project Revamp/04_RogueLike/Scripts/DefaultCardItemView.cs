@@ -1,8 +1,8 @@
-﻿using Rush;
+﻿using LegionKnight;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LegionKnight
+namespace Rush
 {
     /// <summary>
     /// Satu item card di DefaultCardDeckView.

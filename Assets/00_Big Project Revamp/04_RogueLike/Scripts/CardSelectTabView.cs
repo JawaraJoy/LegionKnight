@@ -10,6 +10,8 @@ namespace LegionKnight
 {
     public class CardSelectTabView : UIView
     {
+        [SerializeField]
+        private DefaultCardDeckView m_DefaultCardDeckView;
         [Header("Deck Slot Bar")]
         [SerializeField] private CardDeckSlotBarView m_DeckSlotBarView;
 
@@ -17,22 +19,17 @@ namespace LegionKnight
         [SerializeField] private AssetReferenceGameObject m_CardSelectViewAsset;
         [SerializeField] private Transform m_SpawnSpot;
         [SerializeField] private List<CardSelectView> m_SpawnedCardSelectionViews = new();
+
+        [Header("Detail")]
         [SerializeField] private CardDetailView m_CardDetailView;
 
         public CardDeckSlotBarView CardDeckSlotBarView => m_DeckSlotBarView;
+        public DefaultCardDeckView DefaultCardDeckView => m_DefaultCardDeckView;
 
-        // ── Init ──────────────────────────────────────────────────────────────
-        /// <summary>
-        /// Dipanggil sekali saat CardDeck.OnInitializedInvoke().
-        /// Init slot bar dulu, baru spawn card list.
-        /// </summary>
-        public void InitSlotBar()
-        {
-            if (m_DeckSlotBarView != null)
-                m_DeckSlotBarView.Init();
-        }
+        // ✅ Expose CardDetailView agar DefaultCardItemView bisa akses ShowReadOnly()
+        public CardDetailView CardDetailView => m_CardDetailView;
 
-        // ── Spawn card select item ─────────────────────────────────────────────
+        // ── Spawn card select item ────────────────────────────────────────────
         public void SpawnCardSelect(CardUnit unit)
         {
             SpawnCardSelectInternal(unit);
@@ -75,25 +72,22 @@ namespace LegionKnight
             base.ShowInternal();
             m_CardDetailView.Hide();
         }
+
         protected override void HideInternal()
         {
             HideAllCardInternal();
             base.HideInternal();
         }
-        public void ShowAllCard()
-        {
-            ShowAllCardInternal();
-        }
 
-        public void HideAllCard()
-        {
-            HideAllCardInternal();
-        }
+        public void ShowAllCard() => ShowAllCardInternal();
+        public void HideAllCard() => HideAllCardInternal();
+
         private void ShowAllCardInternal()
         {
             foreach (var view in m_SpawnedCardSelectionViews)
                 view.Show();
         }
+
         private void HideAllCardInternal()
         {
             foreach (var view in m_SpawnedCardSelectionViews)
@@ -102,11 +96,6 @@ namespace LegionKnight
 
         // ── Filter by rarity ──────────────────────────────────────────────────
         public void ShowRarity(RarityConfig rarityConfig)
-        {
-            ShowRarityInternal(rarityConfig);
-        }
-
-        private void ShowRarityInternal(RarityConfig rarityConfig)
         {
             foreach (var view in m_SpawnedCardSelectionViews)
                 view.Hide();

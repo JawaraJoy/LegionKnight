@@ -182,7 +182,8 @@ namespace LegionKnight
                 
                 m_OnInitializedUnit?.Invoke(unit);
             }
-            PreparationPanel.CardTabView.InitSlotBar();
+            PreparationPanel.CardTabView.CardDeckSlotBarView.Init();
+            PreparationPanel.CardTabView.DefaultCardDeckView.Init();
         }
 
         // ── Events ────────────────────────────────────────────────────────────

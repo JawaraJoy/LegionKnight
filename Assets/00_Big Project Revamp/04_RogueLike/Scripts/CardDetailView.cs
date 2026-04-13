@@ -5,18 +5,22 @@ using UnityEngine.UI;
 
 namespace LegionKnight
 {
-    public partial class CardDetailView : UIView
+    public enum CardDetailMode
+    {
+        Normal,   // Add/Remove button aktif
+        ReadOnly  // Hanya lihat detail, button tersembunyi
+    }
+
+    public partial class CardDetailView : UIView    
     {
         [SerializeField] private TextMeshProUGUI m_CardNameText;
         [SerializeField] private TextMeshProUGUI m_CardDescriptionText;
-        [SerializeField] private Image m_CardBigIcon;
+        [SerializeField] private Image m_CardIcon;
         [SerializeField] private Button m_AddOrRemoveToDeckButton;
         [SerializeField] private TextMeshProUGUI m_AddOrRemoveText;
 
-        // ✅ Tambah: feedback slot count "2 / 5"
-        [SerializeField] private TextMeshProUGUI m_SlotCountText;
-
         private CardUnit m_SelectedCard;
+        private CardDetailMode m_Mode = CardDetailMode.Normal;
 
         private void Awake()
         {
@@ -25,55 +29,62 @@ namespace LegionKnight
             m_AddOrRemoveToDeckButton.onClick.AddListener(OnAddOrRemoveClicked);
         }
 
-        // ── Dipanggil saat player tap card di list ────────────────────────────
+        // ── Show normal mode (dari CardSelectView / CardSlotView) ─────────────
         private void OnCardSelected(CardUnit cardUnit)
         {
-            m_SelectedCard = cardUnit;
+            ShowCard(cardUnit, CardDetailMode.Normal);
+        }
 
-            m_CardBigIcon.sprite = cardUnit.CardConfig.CollectibleField.Icon;
+        // ── Show read-only mode (dari DefaultCardDeckView) ────────────────────
+        public void ShowReadOnly(CardUnit cardUnit)
+        {
+            ShowCard(cardUnit, CardDetailMode.ReadOnly);
+        }
+
+        // ── Core show ─────────────────────────────────────────────────────────
+        private void ShowCard(CardUnit cardUnit, CardDetailMode mode)
+        {
+            m_SelectedCard = cardUnit;
+            m_Mode = mode;
+
+            m_CardIcon.sprite = cardUnit.CardConfig.CollectibleField.Icon;
             m_CardNameText.text = cardUnit.CardConfig.BaseInfo.Name;
             m_CardDescriptionText.text = cardUnit.CardConfig.BaseInfo.Description;
 
-            RefreshButtonState();
+            // Sembunyikan button di read-only mode
+            m_AddOrRemoveToDeckButton.gameObject.SetActive(mode == CardDetailMode.Normal);
+
+            if (mode == CardDetailMode.Normal)
+                RefreshButtonState();
+
             ShowInternal();
         }
 
-        // ── Refresh teks Add/Remove dan interactable ──────────────────────────
+        // ── Refresh Add/Remove button state ───────────────────────────────────
         private void RefreshButtonState()
         {
             if (m_SelectedCard == null) return;
+            if (m_Mode == CardDetailMode.ReadOnly) return;
 
             bool isAdded = m_SelectedCard.IsAdded;
             bool isFull = Player.Instance.PlayerCardDeck.GetUsedCards().Count
-                              >= Player.Instance.PlayerCardDeck.GetMaxUsedCardCount();
+                           >= Player.Instance.PlayerCardDeck.GetMaxUsedCardCount();
             bool isOwned = m_SelectedCard.IsOwned;
 
-            // Teks button
             m_AddOrRemoveText.text = isAdded ? "Remove" : "Add";
-
-            // Disable Add jika sudah full atau card tidak dimiliki
             m_AddOrRemoveToDeckButton.interactable = isAdded || (isOwned && !isFull);
-
-            // Slot count feedback
-            if (m_SlotCountText != null)
-            {
-                int used = Player.Instance.PlayerCardDeck.GetUsedCards().Count;
-                int max = Player.Instance.PlayerCardDeck.GetMaxUsedCardCount();
-                m_SlotCountText.text = $"{used} / {max}";
-            }
         }
 
-        // ── Add atau Remove ───────────────────────────────────────────────────
+        // ── Add / Remove ──────────────────────────────────────────────────────
         private void OnAddOrRemoveClicked()
         {
             if (m_SelectedCard == null) return;
+            if (m_Mode == CardDetailMode.ReadOnly) return;
 
             if (m_SelectedCard.IsAdded)
                 Player.Instance.PlayerCardDeck.RemoveUsedCardConfig(m_SelectedCard.CardConfig);
             else
                 Player.Instance.PlayerCardDeck.SetUsedCardConfig();
-
-            // RefreshButtonState sudah dipanggil via OnUsedCardsChanged event
         }
     }
 }
