@@ -43,6 +43,7 @@ namespace LegionKnight
             m_LockIcon.SetActive(!cardUnit.IsOwned);
             m_SelectButton.interactable = cardUnit.IsOwned;
             m_UnitIcon.sprite = m_CardConfig.CollectibleField.Icon;
+
             m_AmountText.text = cardUnit.Amount.ToString();
             m_RarityColor.color = cardUnit.CardConfig.CollectibleField.RarityConfig.Color;
 
@@ -50,8 +51,6 @@ namespace LegionKnight
 
             m_SelectButton.onClick.RemoveListener(SelectCardInternal);
             m_SelectButton.onClick.AddListener(SelectCardInternal);
-
-            HideInternal();
         }
         public void Init(CardUnit unit)
         {

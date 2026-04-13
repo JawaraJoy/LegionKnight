@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using Rush;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,9 +9,9 @@ namespace LegionKnight
     [System.Serializable]
     public partial class CardUnit
     {
-        [SerializeField]
+        [SerializeField, MMReadOnly]
         private bool m_IsOwned;
-        [SerializeField]
+        [SerializeField, MMReadOnly]
         private bool m_IsAdded;
         [SerializeField]
         private int m_Amount;
@@ -20,6 +21,9 @@ namespace LegionKnight
         public bool IsAdded => m_IsAdded;
         public int Amount => m_Amount;
         public CardConfig CardConfig => m_CardConfig;
+
+        private string AmountKey => m_CardConfig.BaseInfo.Id + "amount";
+        private string UsedKey => m_CardConfig.BaseInfo.Id + "used";
         public CardUnit(CardConfig cardConfig)
         {
             m_CardConfig = cardConfig;
@@ -29,23 +33,19 @@ namespace LegionKnight
         public void AddAmount(int add)
         {
             m_Amount += add;
-            UnityService.Instance.SaveData(m_CardConfig.BaseInfo.Id + "amount", m_Amount);
+            UnityService.Instance.SaveData(AmountKey, m_Amount);
             m_IsOwned = m_Amount > 0;
         }
-        public void SetIsEquiped(bool set)
+        public void SetIsAdded(bool set)
         {
             m_IsAdded = set;
+            UnityService.Instance.SaveData(UsedKey, m_IsAdded);
         }
         public void Init()
         {
-            if (UnityService.Instance.HasData(m_CardConfig.BaseInfo.Id + "amount"))
+            if (UnityService.Instance.HasData(AmountKey))
             {
-                m_Amount = UnityService.Instance.GetData<int>(m_CardConfig.BaseInfo.Id + "amount");
-            }
-            else
-            {
-                m_Amount = 0;
-                UnityService.Instance.SaveData(m_CardConfig.BaseInfo.Id + "amount", m_Amount);
+                m_Amount = UnityService.Instance.GetData<int>(AmountKey);
             }
             m_IsOwned = m_Amount > 0;
         }
@@ -53,7 +53,7 @@ namespace LegionKnight
 
     public partial class CardDeck : MonoBehaviour
     {
-        [SerializeField]
+        [SerializeField, MMReadOnly]
         private List<CardUnit> m_UsedCards = new();
         [SerializeField]
         private int m_MaxUsedCardCount = 5; // Clamp max used card
@@ -91,6 +91,18 @@ namespace LegionKnight
 
         public CardUnit GetCardOwned(CardConfig cardConfig) => GetCardOwnedInternal(cardConfig);
 
+        private PreparationPanel m_PreparationPanel;
+        private PreparationPanel PreparationPanel
+        {
+            get
+            {
+                if (m_PreparationPanel == null)
+                {
+                    m_PreparationPanel = CanvasManager.Instance.GetPanel<PreparationPanel>();
+                }
+                return m_PreparationPanel;
+            }
+        }
         public bool IsCardOwned(CardConfig cardConfig)
         {
             var cardOwned = GetCardOwnedInternal(cardConfig);
@@ -100,13 +112,13 @@ namespace LegionKnight
         public void SetIsEquiped(CardConfig config, bool isEquiped)
         {
             foreach (var platformOwned in m_CardCollections)
-                platformOwned.SetIsEquiped(false);
-            GetCardOwnedInternal(config)?.SetIsEquiped(isEquiped);
+                platformOwned.SetIsAdded(false);
+            GetCardOwnedInternal(config)?.SetIsAdded(isEquiped);
         }
 
         public void AddCardAmount(CardConfig config, int add) => AddCardAmountInternal(config, add);
 
-        public void AddCardAmountInternal(CardConfig config, int add)
+        private void AddCardAmountInternal(CardConfig config, int add)
         {
             var cardOwned = GetCardOwnedInternal(config);
             cardOwned?.AddAmount(add);
@@ -175,6 +187,7 @@ namespace LegionKnight
             foreach (CardUnit unit in m_CardCollections)
             {
                 unit.Init();
+                //PreparationPanel.CardTabView.SpawnCardSelect(unit);
                 m_OnInitializedUnit?.Invoke(unit);
             }
         }
