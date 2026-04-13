@@ -30,7 +30,7 @@ namespace LegionKnight
         {
             m_SelectedCard = cardUnit;
 
-            m_CardBigIcon.sprite = cardUnit.CardConfig.CollectibleField.SplashImage;
+            m_CardBigIcon.sprite = cardUnit.CardConfig.CollectibleField.Icon;
             m_CardNameText.text = cardUnit.CardConfig.BaseInfo.Name;
             m_CardDescriptionText.text = cardUnit.CardConfig.BaseInfo.Description;
 

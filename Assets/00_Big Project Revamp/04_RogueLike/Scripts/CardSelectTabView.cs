@@ -1,109 +1,132 @@
+﻿using LegionKnight;
+using Rush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using Rush;
 
 namespace LegionKnight
 {
     public class CardSelectTabView : UIView
     {
-        [SerializeField]
-        private AssetReferenceGameObject m_CardSelectViewAsset;
+        [Header("Deck Slot Bar")]
+        [SerializeField] private CardDeckSlotBarView m_DeckSlotBarView;
 
-        [SerializeField]
-        private Transform m_SpawnSpot;
+        [Header("Card List")]
+        [SerializeField] private AssetReferenceGameObject m_CardSelectViewAsset;
+        [SerializeField] private Transform m_SpawnSpot;
+        [SerializeField] private List<CardSelectView> m_SpawnedCardSelectionViews = new();
+        [SerializeField] private CardDetailView m_CardDetailView;
 
-        [SerializeField]
-        private List<CardSelectView> m_SpawnedCardSelectionViews = new();
+        public CardDeckSlotBarView CardDeckSlotBarView => m_DeckSlotBarView;
 
-        [SerializeField]
-        private CardDetailView m_CardDetailView;
-
-        private void Awake()
+        // ── Init ──────────────────────────────────────────────────────────────
+        /// <summary>
+        /// Dipanggil sekali saat CardDeck.OnInitializedInvoke().
+        /// Init slot bar dulu, baru spawn card list.
+        /// </summary>
+        public void InitSlotBar()
         {
-            Player.Instance.PlayerCardDeck.OnInitializedUnit.AddListener(SpawnCardSelectInternal);
+            if (m_DeckSlotBarView != null)
+                m_DeckSlotBarView.Init();
         }
 
-        private CardSelectView GetSelectView(CardConfig cardConfig)
+        // ── Spawn card select item ─────────────────────────────────────────────
+        public void SpawnCardSelect(CardUnit unit)
         {
-            CardSelectView view = m_SpawnedCardSelectionViews.Find(x => x.CardConfig == cardConfig);
-            return view;
+            SpawnCardSelectInternal(unit);
+        }
+
+        private void SpawnCardSelectInternal(CardUnit unit)
+        {
+            CardSelectView existing = GetSelectView(unit.CardConfig);
+            if (existing != null)
+            {
+                existing.Init(unit);
+                return;
+            }
+
+            AsyncOperationHandle<GameObject> handle =
+                m_CardSelectViewAsset.InstantiateAsync(m_SpawnSpot, false);
+
+            RushGameManager.Instance.StartCoroutine(SpawningCardSelectView(handle, unit));
         }
 
         private IEnumerator SpawningCardSelectView(AsyncOperationHandle<GameObject> handle, CardUnit unit)
         {
             yield return handle;
+
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 GameObject spawned = handle.Result;
                 if (spawned.TryGetComponent(out CardSelectView view))
                 {
                     view.Init(unit);
-                    if (m_SpawnedCardSelectionViews.Contains(view)) yield break;
-                    m_SpawnedCardSelectionViews.Add(view);
+                    if (!m_SpawnedCardSelectionViews.Contains(view))
+                        m_SpawnedCardSelectionViews.Add(view);
                 }
+            }
+        }
 
-            }
-        }
-        public void SpawnCardSelect(CardUnit unit)
-        {
-            SpawnCardSelectInternal(unit);
-        }
-        private void SpawnCardSelectInternal(CardUnit unit)
-        {
-            if (GetSelectView(unit.CardConfig) != null)
-            {
-                GetSelectView(unit.CardConfig).Init(unit);
-            }
-            else
-            {
-                AsyncOperationHandle<GameObject> handle = m_CardSelectViewAsset.InstantiateAsync(m_SpawnSpot, false);
-                RushGameManager.Instance.StartCoroutine(SpawningCardSelectView(handle, unit));
-            }
-            
-        }
-        public void ShowRarity(RarityConfig rarityConfig)
-        {
-            ShowRarityInternal(rarityConfig);
-        }
+        // ── Show / Hide ───────────────────────────────────────────────────────
         protected override void ShowInternal()
         {
             base.ShowInternal();
             m_CardDetailView.Hide();
         }
-
-        public void ShowAll()
+        protected override void HideInternal()
         {
-            foreach (CardSelectView cardSelectView in m_SpawnedCardSelectionViews)
-            {
-                cardSelectView.Show();
-            }
+            HideAllCardInternal();
+            base.HideInternal();
         }
-        public void HideAll()
+        public void ShowAllCard()
         {
-            foreach (CardSelectView cardSelectView in m_SpawnedCardSelectionViews)
-            {
-                cardSelectView.Hide();
-            }
+            ShowAllCardInternal();
+        }
+
+        public void HideAllCard()
+        {
+            HideAllCardInternal();
+        }
+        private void ShowAllCardInternal()
+        {
+            foreach (var view in m_SpawnedCardSelectionViews)
+                view.Show();
+        }
+        private void HideAllCardInternal()
+        {
+            foreach (var view in m_SpawnedCardSelectionViews)
+                view.Hide();
+        }
+
+        // ── Filter by rarity ──────────────────────────────────────────────────
+        public void ShowRarity(RarityConfig rarityConfig)
+        {
+            ShowRarityInternal(rarityConfig);
         }
 
         private void ShowRarityInternal(RarityConfig rarityConfig)
         {
-            foreach (CardSelectView cardSelectView in m_SpawnedCardSelectionViews)
-            {
-                cardSelectView.Hide();
-            }
-            CardSelectView[] views = GetCardSelectViews(rarityConfig);
-            foreach (CardSelectView characterSelectView in views)
-            {
-                characterSelectView.Show();
-            }
+            foreach (var view in m_SpawnedCardSelectionViews)
+                view.Hide();
+
+            foreach (var view in GetCardSelectViews(rarityConfig))
+                view.Show();
         }
+
+        // ── Lookup ────────────────────────────────────────────────────────────
+        private CardSelectView GetSelectView(CardConfig cardConfig)
+        {
+            return m_SpawnedCardSelectionViews.Find(x => x.CardConfig == cardConfig);
+        }
+
         private CardSelectView[] GetCardSelectViews(RarityConfig rarityConfig)
         {
-            return m_SpawnedCardSelectionViews.FindAll(x => x.CardConfig.CollectibleField.RarityConfig.BaseInfo.Id == rarityConfig.BaseInfo.Id).ToArray();
+            return m_SpawnedCardSelectionViews
+                .FindAll(x => x.CardConfig.CollectibleField.RarityConfig.BaseInfo.Id
+                              == rarityConfig.BaseInfo.Id)
+                .ToArray();
         }
     }
 }

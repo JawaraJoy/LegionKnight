@@ -121,11 +121,11 @@ namespace Rush
                 heroSelectView.Show();
             }
         }
-        public void ShowAll()
+        public void ShowAllCard()
         {
             ShowAllSelectInternal();
         }
-        public void HideAll()
+        public void HideAllCard()
         {
             foreach (HeroSelectView heroSelectView in m_SpawnedHeroSelectView)
             {

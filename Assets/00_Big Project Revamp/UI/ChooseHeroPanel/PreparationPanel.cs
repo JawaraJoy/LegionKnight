@@ -47,11 +47,13 @@ namespace Rush
         {
             if (m_SelectCharacterMode == SelectCharacterMode.Hero)
             {
-                m_CardTabView.HideAll();
+                m_CardTabView.HideAllCard();
+                m_HeroTabView.ShowAllCard();
             }
             else
             {
-                m_HeroTabView.HideAll();
+                m_HeroTabView.HideAllCard();
+                m_CardTabView.ShowAllCard();
             }
         }
         public void ShowRarity(RarityConfig rarityConfig)
