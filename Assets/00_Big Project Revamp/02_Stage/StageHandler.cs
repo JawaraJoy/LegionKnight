@@ -207,7 +207,7 @@ namespace Rush
 
                 StartCurrentWaveSet();
             }
-
+            Player.Instance.PlayerCardDeck.UseCardConfig();
             m_OnStageStart?.Invoke(m_UsedStageConfig);
         }
 

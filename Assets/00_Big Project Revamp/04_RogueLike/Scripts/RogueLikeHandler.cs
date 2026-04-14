@@ -118,12 +118,13 @@ namespace Rush
                 m_CustomCards.Remove(cardConfig);
             }
         }
-        private void ClearCustomCard()
+        private void ClearCards()
         {
             m_CustomCards.Clear();
         }
         public void ResetProgression()
         {
+            ClearCards();
             SetForPlayerLevel(1);
             SetForPlayerExperience(0);
             OnForPlayerExperienceAddedInvoke(m_ForPlayerCurrentExperience);

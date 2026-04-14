@@ -1,4 +1,5 @@
-﻿using MoreMountains.Tools;
+﻿using LegionKnight;
+using MoreMountains.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -207,9 +208,11 @@ namespace Rush
                 Debug.LogWarning($"[EnemyWaveHandler] DespawnUnit called but unit.Config is not EnemyUnitConfig: {unit.name}");
                 unit.gameObject.SetActive(false);
                 m_ActiveEnemies.Remove(unit);
+                 
                 return;
             }
-
+            RushGameManager.Instance.RogueLikeManager.AddForPlayerExperience(enemyCfg.ExpReward);
+            RushPlayer.Instance.PlayerScore.AddScore(enemyCfg.ScoreReward);
             unit.gameObject.SetActive(false);
             unit.transform.SetParent(m_EnemyWavePost.PostToSpawn, false);
 

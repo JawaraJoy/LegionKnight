@@ -120,7 +120,6 @@ namespace LegionKnight
 
             // ✅ Mark sebagai equipped dan kurangi amount
             SetIsEquipped(m_SelectedCard.CardConfig, true);
-            AddCardAmountInternal(m_SelectedCard.CardConfig, -1);
 
             OnCardConfigUsedInvoke();
         }
@@ -131,6 +130,11 @@ namespace LegionKnight
         /// sehingga remove card yang benar meski player sedang preview card lain.
         /// </summary>
         public void RemoveUsedCardConfig(CardConfig cardConfig)
+        {
+            RemoveUsedCardConfigInternal(cardConfig);
+        }
+
+        private void RemoveUsedCardConfigInternal(CardConfig cardConfig)
         {
             CardUnit card = GetCardOwnedInternal(cardConfig);
             if (card == null) return;
@@ -145,7 +149,6 @@ namespace LegionKnight
 
             // ✅ Unmark equipped dan kembalikan amount
             SetIsEquipped(cardConfig, false);
-            AddCardAmountInternal(cardConfig, 1); // ✅ fix: pakai cardConfig bukan m_SelectedCard
 
             OnCardConfigUsedInvoke();
         }
@@ -153,13 +156,25 @@ namespace LegionKnight
         // ── Use all cards (roguelike run) ─────────────────────────────────────
         public void UseCardConfig()
         {
+            foreach(CardConfig cardConfig in UsedHeroDeckInternal.CardConfigs)
+            {
+                RushGameManager.Instance.RogueLikeManager.AddCard(cardConfig);
+            }
             foreach (var cardUnit in m_UsedCards)
             {
                 var card = GetCardOwnedInternal(cardUnit.CardConfig);
                 if (card != null && card.IsOwned)
                 {
-                    RushGameManager.Instance.RogueLikeManager.AddCard(cardUnit.CardConfig);
-                    AddCardAmountInternal(cardUnit.CardConfig, -1);
+                    bool isEnoughToAdd = cardUnit.Amount > 0;
+                    if (isEnoughToAdd)
+                    {
+                        RushGameManager.Instance.RogueLikeManager.AddCard(cardUnit.CardConfig);
+                        AddCardAmountInternal(cardUnit.CardConfig, -1);
+                    }
+                    else
+                    {
+                        RemoveUsedCardConfigInternal(cardUnit.CardConfig);
+                    }
                 }
             }
         }

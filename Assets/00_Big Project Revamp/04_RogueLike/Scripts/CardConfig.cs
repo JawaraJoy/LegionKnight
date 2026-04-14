@@ -66,7 +66,7 @@ namespace Rush
             RogueLikeManager manager = RushGameManager.Instance.RogueLikeManager;
             manager.OnCardCollected?.Invoke(this);
 
-            if (m_GetCurrency.Amount > 0)
+            if (m_GetCurrency.ItemConfig != null && m_GetCurrency.Amount > 0)
             {
                 Player.Instance.CurrencyControl.AddCurrencyAmount(m_GetCurrency.ItemConfig, m_GetCurrency.Amount);
             }

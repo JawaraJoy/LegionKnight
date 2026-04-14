@@ -12,5 +12,7 @@ namespace Rush
         [SerializeField]
         private int m_ScoreReward; // used for score system
         public LootChestDefinition Loot => m_Loot;
+        public int ExpReward => m_ExpReward;
+        public int ScoreReward => m_ScoreReward;
     }
 }
