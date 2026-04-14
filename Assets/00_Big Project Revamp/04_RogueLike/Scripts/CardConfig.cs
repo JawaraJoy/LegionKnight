@@ -1,3 +1,4 @@
+using LegionKnight;
 using UnityEngine;
 
 namespace Rush
@@ -11,7 +12,10 @@ namespace Rush
         private CardSkillCategoryModification[] m_SkillCategoryModifications;
         [SerializeField]
         private PlatformConfig[] m_PlatformToAdds;
-         
+        [SerializeField]
+        private Currency m_GetCurrency;
+        [SerializeField]
+        private int m_GetAetherEssence;
 
         public CardSkillField[] SkillConfigs => m_SkillConfigs;
 
@@ -49,9 +53,11 @@ namespace Rush
                     }
                 }
             }
+            PlatformHandler platformHandler = RushGameManager.Instance.StageManager.PlatformHandler;
+            platformHandler.AddBoostStock(m_GetAetherEssence);
             if (m_PlatformToAdds.Length > 0)
             {
-                PlatformHandler platformHandler = RushGameManager.Instance.StageManager.PlatformHandler;
+                
                 if (player.HasBind(out PlatformController controller))
                 {
                     platformHandler.AddPreparedPlatformConfigs(m_PlatformToAdds, controller);
@@ -60,7 +66,10 @@ namespace Rush
             RogueLikeManager manager = RushGameManager.Instance.RogueLikeManager;
             manager.OnCardCollected?.Invoke(this);
 
-            
+            if (m_GetCurrency.Amount > 0)
+            {
+                Player.Instance.CurrencyControl.AddCurrencyAmount(m_GetCurrency.ItemConfig, m_GetCurrency.Amount);
+            }
         }
     }
 }
