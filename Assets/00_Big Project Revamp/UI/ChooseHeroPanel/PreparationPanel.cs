@@ -1,6 +1,7 @@
 using UnityEngine;
 using LegionKnight;
 using UnityEngine.UI;
+using UnityEditor;
 
 namespace Rush
 {
@@ -14,6 +15,8 @@ namespace Rush
         private HeroSelectTabView m_HeroTabView;
         [SerializeField]
         private CardSelectTabView m_CardTabView;
+        [SerializeField]
+        private TabGroup m_TabGroup;
 
         [SerializeField]
         private Button m_HeroButton;
@@ -25,9 +28,13 @@ namespace Rush
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            m_HeroTabView.Show();
-            //m_CardTabView.ShowAll();
+            m_TabGroup.OnTabClicked(0);
             Adjust();
+        }
+        protected override void HideInternal()
+        {
+            base.HideInternal();
+            SetSelectMode(SelectCharacterMode.Hero);
         }
         private void SetSelectMode(SelectCharacterMode mode)
         {

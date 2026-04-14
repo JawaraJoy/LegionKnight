@@ -49,34 +49,17 @@ namespace Rush
         {
             List<CardConfig> pool = new List<CardConfig>();
 
-            // 1. Add Base Deck
-            if (m_Config.BaseDeck != null)
-            {
-                pool.AddRange(m_Config.BaseDeck.CardConfigs);
-            }
-
-            // 2. Add Hero Deck
+            // Pool dari hero deck
             if (m_CurrentHero != null && m_CurrentHero.HeroDeckConfig != null)
-            {
                 pool.AddRange(m_CurrentHero.HeroDeckConfig.CardConfigs);
-            }
 
-            // 3. Remove duplicates (important!)
-            HashSet<CardConfig> uniquePool = new HashSet<CardConfig>(pool);
-
-            // 4. Remove owned cards
-            uniquePool.ExceptWith(m_CustomCards);
-
-            List<CardConfig> finalPool = new List<CardConfig>(uniquePool);
-
-            // 5. Random pick
+            // Random pick
             List<CardConfig> result = new List<CardConfig>();
-
-            for (int i = 0; i < amount && finalPool.Count > 0; i++)
+            for (int i = 0; i < amount && pool.Count > 0; i++)
             {
-                int index = Random.Range(0, finalPool.Count);
-                result.Add(finalPool[index]);
-                finalPool.RemoveAt(index);
+                int index = Random.Range(0, pool.Count);
+                result.Add(pool[index]);
+                pool.RemoveAt(index);
             }
 
             return result;
@@ -85,46 +68,52 @@ namespace Rush
         {
             m_CurrentHero = heroConfig;
         }
-        public void AddCard(CardConfig cardConfig)
+        public void AddCustomCard(CardConfig cardConfig)
         {
-            AddCardInternal(cardConfig);
+            AddCustomCardInternal(cardConfig);
         }
-        private void AddCardInternal(CardConfig cardConfig)
+        private void AddCustomCardInternal(CardConfig cardConfig)
         {
             if (!m_CustomCards.Contains(cardConfig))
             {
                 m_CustomCards.Add(cardConfig);
-                m_OnCardCollected.Invoke(cardConfig);
             }
         }
-        public void AddCards(List<CardConfig> cardConfigs)
+        public void AddCustomCards(List<CardConfig> cardConfigs)
         {
             foreach (var cardConfig in cardConfigs)
             {
-                AddCardInternal(cardConfig);
+                AddCustomCardInternal(cardConfig);
             }
         }
-        public void RemoveCards(List<CardConfig> cardConfigs)
+        public void RemoveCustomCards(List<CardConfig> cardConfigs)
         {
             foreach (var cardConfig in cardConfigs)
             {
-                RemoveCardInternal(cardConfig);
+                RemoveCustomCardInternal(cardConfig);
             }
         }
-        private void RemoveCardInternal(CardConfig cardConfig)
+        public void RemoveCustomCard(CardConfig cardConfig)
+        {
+            RemoveCustomCardInternal(cardConfig);
+        }
+        private void RemoveCustomCardInternal(CardConfig cardConfig)
         {
             if (m_CustomCards.Contains(cardConfig))
             {
                 m_CustomCards.Remove(cardConfig);
             }
         }
-        private void ClearCards()
+        private void ClearCustomCardsInternal()
         {
             m_CustomCards.Clear();
         }
+        public void ClearCustomCards()
+        {
+            ClearCustomCardsInternal();
+        }
         public void ResetProgression()
         {
-            ClearCards();
             SetForPlayerLevel(1);
             SetForPlayerExperience(0);
             OnForPlayerExperienceAddedInvoke(m_ForPlayerCurrentExperience);

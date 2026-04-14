@@ -100,6 +100,7 @@ namespace LegionKnight
             RushPlayer.Instance.Init(m_UsedHeroConfig);
             Debug.Log("Heroes Collection Initialized");
             PreparationPanel.HeroTabView.Init();
+            OnCharacterUsedInvoke();
         }
         public void SetOwned(HeroUnitConfig config, bool set)
         {
@@ -136,6 +137,7 @@ namespace LegionKnight
                 }
             }
             UnityService.Instance.SaveData("usedcharacter", m_UsedHeroConfig.BaseInfo.Id);
+            
             OnCharacterUsedInvoke();
         }
         public void SetSelectedHero(HeroUnitConfig config)
@@ -147,6 +149,8 @@ namespace LegionKnight
         {
             m_OnCharacterUsed?.Invoke(m_UsedHeroConfig);
             RushPlayer.Instance.Init(m_UsedHeroConfig);
+
+            RushGameManager.Instance.RogueLikeManager.SetCurrentHero(m_UsedHeroConfig);
             //PreparationPanel.HeroTabView.Init();
         }
         private void OnSelectedCharacterInvoke()

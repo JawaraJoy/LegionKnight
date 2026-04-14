@@ -79,9 +79,12 @@ namespace LegionKnight
         /// </summary>
         public void SetIsEquipped(CardConfig config, bool isEquipped)
         {
+            SetIsEquippedInternal(config, isEquipped);
+        }
+        private void SetIsEquippedInternal(CardConfig config, bool isEquipped)
+        {
             GetCardOwnedInternal(config)?.SetIsAdded(isEquipped);
         }
-
         // ── Amount ────────────────────────────────────────────────────────────
         public void AddCardAmount(CardConfig config, int add) => AddCardAmountInternal(config, add);
 
@@ -117,9 +120,10 @@ namespace LegionKnight
             }
 
             m_UsedCards.Add(m_SelectedCard);
+            RushGameManager.Instance.RogueLikeManager.AddCustomCard(m_SelectedCard.CardConfig);
 
             // ✅ Mark sebagai equipped dan kurangi amount
-            SetIsEquipped(m_SelectedCard.CardConfig, true);
+            SetIsEquippedInternal(m_SelectedCard.CardConfig, true);
 
             OnCardConfigUsedInvoke();
         }
@@ -146,9 +150,9 @@ namespace LegionKnight
             }
 
             m_UsedCards.Remove(card);
-
+            RushGameManager.Instance.RogueLikeManager.RemoveCustomCard(cardConfig);
             // ✅ Unmark equipped dan kembalikan amount
-            SetIsEquipped(cardConfig, false);
+            SetIsEquippedInternal(cardConfig, false);
 
             OnCardConfigUsedInvoke();
         }
@@ -156,10 +160,6 @@ namespace LegionKnight
         // ── Use all cards (roguelike run) ─────────────────────────────────────
         public void UseCardConfig()
         {
-            foreach(CardConfig cardConfig in UsedHeroDeckInternal.CardConfigs)
-            {
-                RushGameManager.Instance.RogueLikeManager.AddCard(cardConfig);
-            }
             foreach (var cardUnit in m_UsedCards)
             {
                 var card = GetCardOwnedInternal(cardUnit.CardConfig);
@@ -168,13 +168,17 @@ namespace LegionKnight
                     bool isEnoughToAdd = cardUnit.Amount > 0;
                     if (isEnoughToAdd)
                     {
-                        RushGameManager.Instance.RogueLikeManager.AddCard(cardUnit.CardConfig);
+                        RushGameManager.Instance.RogueLikeManager.AddCustomCard(cardUnit.CardConfig);
                         AddCardAmountInternal(cardUnit.CardConfig, -1);
                     }
-                    else
-                    {
-                        RemoveUsedCardConfigInternal(cardUnit.CardConfig);
-                    }
+                }
+            }
+
+            foreach (var cardUnit in m_UsedCards)
+            {
+                if (cardUnit.Amount < 1)
+                {
+                    RemoveUsedCardConfigInternal(cardUnit.CardConfig);
                 }
             }
         }
