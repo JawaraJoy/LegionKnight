@@ -10,10 +10,8 @@ namespace LegionKnight
 {
     public class CardSelectTabView : UIView
     {
-        [SerializeField]
-        private DefaultCardDeckView m_DefaultCardDeckView;
-        [Header("Deck Slot Bar")]
         [SerializeField] private CardDeckSlotBarView m_DeckSlotBarView;
+        [SerializeField] private DefaultCardDeckView m_DefaultCardDeckView;
 
         [Header("Card List")]
         [SerializeField] private AssetReferenceGameObject m_CardSelectViewAsset;
@@ -24,10 +22,24 @@ namespace LegionKnight
         [SerializeField] private CardDetailView m_CardDetailView;
 
         public CardDeckSlotBarView CardDeckSlotBarView => m_DeckSlotBarView;
+        public CardDetailView CardDetailView => m_CardDetailView;
         public DefaultCardDeckView DefaultCardDeckView => m_DefaultCardDeckView;
 
-        // ✅ Expose CardDetailView agar DefaultCardItemView bisa akses ShowReadOnly()
-        public CardDetailView CardDetailView => m_CardDetailView;
+        // Track berapa card yang belum selesai spawn (async)
+        private int m_PendingSpawnCount = 0;
+
+        // ── Init slot bar ─────────────────────────────────────────────────────
+        public void InitSlotBar()
+        {
+            if (m_DeckSlotBarView != null)
+                m_DeckSlotBarView.Init();
+        }
+
+        private void Awake()
+        {
+            // Re-sort saat amount card berubah (misal setelah add/remove dari deck)
+            Player.Instance.PlayerCardDeck.OnCardAdded.AddListener(_ => SortCardViews());
+        }
 
         // ── Spawn card select item ────────────────────────────────────────────
         public void SpawnCardSelect(CardUnit unit)
@@ -41,9 +53,11 @@ namespace LegionKnight
             if (existing != null)
             {
                 existing.Init(unit);
+                SortCardViews();
                 return;
             }
 
+            m_PendingSpawnCount++;
             AsyncOperationHandle<GameObject> handle =
                 m_CardSelectViewAsset.InstantiateAsync(m_SpawnSpot, false);
 
@@ -63,6 +77,43 @@ namespace LegionKnight
                     if (!m_SpawnedCardSelectionViews.Contains(view))
                         m_SpawnedCardSelectionViews.Add(view);
                 }
+            }
+
+            m_PendingSpawnCount--;
+
+            // Sort hanya setelah semua card selesai di-spawn
+            if (m_PendingSpawnCount <= 0)
+            {
+                m_PendingSpawnCount = 0;
+                SortCardViews();
+            }
+        }
+
+        // ── Sort: amount > 0 di atas, amount = 0 di bawah ────────────────────
+        /// <summary>
+        /// Sort berdasarkan amount descending — card yang punya amount
+        /// lebih banyak tampil lebih atas. Amount 0 selalu paling bawah.
+        /// Pakai sibling index di Transform untuk mengatur urutan UI.
+        /// </summary>
+        private void SortCardViews()
+        {
+            if (m_SpawnedCardSelectionViews.Count == 0) return;
+
+            // Sort list berdasarkan amount descending
+            m_SpawnedCardSelectionViews.Sort((a, b) =>
+            {
+                int amountA = Player.Instance.PlayerCardDeck
+                    .GetCardOwned(a.CardConfig)?.Amount ?? 0;
+                int amountB = Player.Instance.PlayerCardDeck
+                    .GetCardOwned(b.CardConfig)?.Amount ?? 0;
+
+                return amountB.CompareTo(amountA); // descending
+            });
+
+            // Apply urutan ke sibling index di container
+            for (int i = 0; i < m_SpawnedCardSelectionViews.Count; i++)
+            {
+                m_SpawnedCardSelectionViews[i].transform.SetSiblingIndex(i);
             }
         }
 

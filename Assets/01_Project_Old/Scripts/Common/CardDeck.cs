@@ -162,6 +162,13 @@ namespace LegionKnight
         {
             foreach (var cardUnit in m_UsedCards)
             {
+                if (cardUnit.Amount < 1)
+                {
+                    RemoveUsedCardConfigInternal(cardUnit.CardConfig);
+                }
+            }
+            foreach (var cardUnit in m_UsedCards)
+            {
                 var card = GetCardOwnedInternal(cardUnit.CardConfig);
                 if (card != null && card.IsOwned)
                 {
@@ -171,14 +178,6 @@ namespace LegionKnight
                         RushGameManager.Instance.RogueLikeManager.AddCustomCard(cardUnit.CardConfig);
                         AddCardAmountInternal(cardUnit.CardConfig, -1);
                     }
-                }
-            }
-
-            foreach (var cardUnit in m_UsedCards)
-            {
-                if (cardUnit.Amount < 1)
-                {
-                    RemoveUsedCardConfigInternal(cardUnit.CardConfig);
                 }
             }
         }

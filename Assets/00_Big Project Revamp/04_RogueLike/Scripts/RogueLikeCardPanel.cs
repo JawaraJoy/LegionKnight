@@ -30,9 +30,14 @@ namespace Rush
         override protected void ShowInternal()
         {
             // Additional logic for showing the card panel can be added here
-            
-            base.ShowInternal();
-            RefreshCardsInternal();
+            if (RushPlayer.Instance.Unit.HasBind(out Damageable damageable))
+            {
+                if (damageable.IsAlive)
+                {
+                    base.ShowInternal();
+                    RefreshCardsInternal();
+                }
+            }
         }
         public void RefreshCards()
         {
