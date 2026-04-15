@@ -25,7 +25,7 @@ namespace Rush
                     return m_Pool[i];
             }
 
-            var newObj = Instantiate(m_Config.Prefab, transform);
+            var newObj = Instantiate(m_Config.Prefab, transform, true);
             newObj.gameObject.SetActive(false);
 
             m_Pool.Add(newObj);

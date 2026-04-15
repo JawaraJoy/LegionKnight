@@ -63,7 +63,7 @@ namespace Rush
             if (m_StopCoroutine != null)
                 StopCoroutine(m_StopCoroutine);
 
-            m_StopCoroutine = StartCoroutine(StopForcing());
+            m_StopCoroutine =  RushGameManager.Instance.StartCoroutine(StopForcing());
         }
 
         private IEnumerator StopForcing()
