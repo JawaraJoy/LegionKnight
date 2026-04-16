@@ -30,7 +30,8 @@ namespace LegionKnight
         protected virtual void InitInternal(CollectibleConfig collectibleConfig)
         {
             m_CollectibleConfig = collectibleConfig;
-            OnDefinitionSetInvoke(collectibleConfig);
+            m_Icon.sprite = collectibleConfig.CollectibleField.Icon;
+            OnConfigSetInvoke(collectibleConfig);
         }
 
         public void AddAmountWithCountDown(int addCount)
@@ -61,7 +62,7 @@ namespace LegionKnight
                 yield return new WaitForSeconds(0.05f);
             }
         }
-        protected virtual void OnDefinitionSetInvoke(CollectibleConfig collectibleConfig)
+        protected virtual void OnConfigSetInvoke(CollectibleConfig collectibleConfig)
         {
             m_OnCollectibleConfigSet?.Invoke(collectibleConfig);
         }

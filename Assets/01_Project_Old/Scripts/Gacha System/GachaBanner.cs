@@ -7,7 +7,7 @@ namespace LegionKnight
     [System.Serializable]
     public class GachaBanner
     {
-        [SerializeField] private BannerDefinition m_Definition;
+        [SerializeField] private BannerConfiguration m_BannerConfig;
         [SerializeField] private DrawDiscount m_SingleDiscount;
         [SerializeField] private DrawDiscount m_MultiDiscount;
 
@@ -17,15 +17,15 @@ namespace LegionKnight
 
         private LocalSave LocalSave => UnityService.Instance.LocalSave;
 
-        private string TotalKey => $"{m_Definition.Id}_total";
-        private string SmallKey => $"{m_Definition.Id}_small";
-        private string FirstKey => $"{m_Definition.Id}_first";
+        private string TotalKey => $"{m_BannerConfig.BaseInfo.Id}_total";
+        private string SmallKey => $"{m_BannerConfig.BaseInfo.Id}_small";
+        private string FirstKey => $"{m_BannerConfig.BaseInfo.Id}_first";
 
-        public BannerDefinition Definition => m_Definition;
+        public BannerConfiguration Definition => m_BannerConfig;
 
         public float GetDrawCountRate()
         {
-            return (float)m_TotalDraws / m_Definition.GuaranteedDraw;
+            return (float)m_TotalDraws / m_BannerConfig.GuaranteedDraw;
         }
         private void ConsumeDiscountIfNeeded(int drawCount)
         {
@@ -55,7 +55,7 @@ namespace LegionKnight
                 baseCost = Definition.AlternativeCurrency;
             else
             {
-                Debug.LogError($"Currency {currency.name} not supported by banner {Definition.Label}");
+                Debug.LogError($"Currency {currency.name} not supported by banner {Definition.BaseInfo.Name}");
                 return int.MaxValue;
             }
 
@@ -72,7 +72,7 @@ namespace LegionKnight
             // ✅ HANYA alternative currency
             if (Definition.AlternativeCurrency.ItemConfig != currency)
             {
-                Debug.LogError($"Currency {currency.name} not supported by banner {Definition.Label}");
+                Debug.LogError($"Currency {currency.name} not supported by banner {Definition.BaseInfo.Name}");
                 return int.MaxValue;
             }
 
@@ -134,25 +134,25 @@ namespace LegionKnight
             m_TotalDraws++;
             m_SmallPity++;
 
-            if (!m_FirstDrawUsed && firstIndex && m_Definition.FirstDrawReward != null)
+            if (!m_FirstDrawUsed && firstIndex && m_BannerConfig.FirstDrawReward != null)
             {
                 m_FirstDrawUsed = true;
-                return m_Definition.FirstDrawReward;
+                return m_BannerConfig.FirstDrawReward;
             }
 
-            if (m_TotalDraws >= m_Definition.GuaranteedDraw)
+            if (m_TotalDraws >= m_BannerConfig.GuaranteedDraw)
             {
                 m_TotalDraws = 0;
-                return RollWithSoftPity(m_Definition.MainRewards);
+                return RollWithSoftPity(m_BannerConfig.MainRewards);
             }
 
-            if (m_SmallPity >= m_Definition.SmallPity)
+            if (m_SmallPity >= m_BannerConfig.SmallPity)
             {
                 m_SmallPity = 0;
-                return RollFrom(m_Definition.SmallPityRewards);
+                return RollFrom(m_BannerConfig.SmallPityRewards);
             }
 
-            return RollFrom(m_Definition.NormalRewards);
+            return RollFrom(m_BannerConfig.NormalRewards);
         }
 
         private GachaRewardConfig RollFrom(IReadOnlyList<GachaRewardConfig> pool)
@@ -178,10 +178,10 @@ namespace LegionKnight
         {
             float multiplier = 1f;
 
-            if (m_Definition.EnableSoftPity && m_TotalDraws >= m_Definition.SoftPityStart)
+            if (m_BannerConfig.EnableSoftPity && m_TotalDraws >= m_BannerConfig.SoftPityStart)
             {
-                int excess = m_TotalDraws - m_Definition.SoftPityStart + 1;
-                multiplier += excess * m_Definition.SoftPityMultiplier * 0.01f;
+                int excess = m_TotalDraws - m_BannerConfig.SoftPityStart + 1;
+                multiplier += excess * m_BannerConfig.SoftPityMultiplier * 0.01f;
             }
 
             float total = 0f;
@@ -203,8 +203,8 @@ namespace LegionKnight
 
         private void SaveState()
         {
-            long ttl = m_Definition.IsSeasonal
-                ? m_Definition.SeasonDurationSeconds
+            long ttl = m_BannerConfig.IsSeasonal
+                ? m_BannerConfig.SeasonDurationSeconds
                 : 0;
 
             LocalSave.SaveData(TotalKey, m_TotalDraws, ttl);
@@ -220,11 +220,11 @@ namespace LegionKnight
             if (discount == null || !discount.DiscountEnabled)
                 return;
 
-            long ttl = m_Definition.IsSeasonal
-                ? m_Definition.SeasonDurationSeconds
+            long ttl = m_BannerConfig.IsSeasonal
+                ? m_BannerConfig.SeasonDurationSeconds
                 : 0;
 
-            LocalSave.SaveData($"{m_Definition.Id}_discount_{discount.Id}",
+            LocalSave.SaveData($"{m_BannerConfig.BaseInfo.Id}_discount_{discount.Id}",
                 discount.FirstDrawConsumed,
                 ttl);
         }
@@ -234,7 +234,7 @@ namespace LegionKnight
             if (discount == null)
                 return;
 
-            string key = $"{m_Definition.Id}_discount_{discount.Id}";
+            string key = $"{m_BannerConfig.BaseInfo.Id}_discount_{discount.Id}";
             if (LocalSave.HasData(key))
                 discount.ConsumeFirstDraw();
         }

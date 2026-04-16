@@ -47,13 +47,13 @@ namespace LegionKnight
             {
                 item.Hide();
             }
-            BannerDefinition defi = GetGachaManagerInternal().GetSelectedBanner().Definition;
+            BannerConfiguration defi = GetGachaManagerInternal().GetSelectedBanner().Definition;
             if (defi == null) return;
 
             StartCoroutine(SettingUpRateNote(defi));
         }
 
-        private IEnumerator SettingUpRateNote(BannerDefinition defi)
+        private IEnumerator SettingUpRateNote(BannerConfiguration defi)
         {
             List<GachaRewardConfig> gr = new(defi.NormalRewards);
             m_SpawnedItemsCount = m_SpawnedItems.Count;

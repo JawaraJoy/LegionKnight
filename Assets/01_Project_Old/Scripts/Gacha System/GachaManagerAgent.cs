@@ -12,7 +12,7 @@ namespace LegionKnight
         {
             return CanvasManager.Instance.GetPanel<BannerPanel>();
         }
-        public void SelectBanner(BannerDefinition definition)
+        public void SelectBanner(BannerConfiguration definition)
         {
             GameManager.Instance.SelectBanner(definition);
         }

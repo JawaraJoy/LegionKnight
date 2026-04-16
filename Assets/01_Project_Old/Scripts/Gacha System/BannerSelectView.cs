@@ -7,7 +7,7 @@ namespace LegionKnight
     public partial class BannerSelectView : UIView
     {
         [SerializeField]
-        private BannerDefinition m_Definition;
+        private BannerConfiguration m_Definition;
         [SerializeField]
         private Image m_Icon;
         [SerializeField]
@@ -22,7 +22,7 @@ namespace LegionKnight
             m_TitleText.text = m_Definition.PromoText;
             m_SelectButton.onClick?.AddListener(() => SelectBanner(m_Definition));
         }
-        private void SelectBanner(BannerDefinition defi)
+        private void SelectBanner(BannerConfiguration defi)
         {
             GameManager.Instance.GachaMananger.SelectBanner(defi);
 

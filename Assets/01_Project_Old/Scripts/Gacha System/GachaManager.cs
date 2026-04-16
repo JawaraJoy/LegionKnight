@@ -17,7 +17,7 @@ namespace LegionKnight
         {
             m_GachanBanner.Init();
         }
-        public void SelectBanner(BannerDefinition definition)
+        public void SelectBanner(BannerConfiguration definition)
         {
             //m_GachanBanner.SelectBanner(definition);
 

@@ -30,11 +30,11 @@ namespace LegionKnight
 
         private GachaBanner m_Selected;
 
-        private GachaBanner GetGachaBanner(BannerDefinition definition)
+        private GachaBanner GetGachaBanner(BannerConfiguration config)
         {
             foreach (var banner in m_Banners)
             {
-                if (banner.Definition.Id == definition.Id)
+                if (banner.Definition.BaseInfo.Id == config.BaseInfo.Id)
                     return banner;
             }
             return null;
@@ -87,7 +87,7 @@ namespace LegionKnight
             return m_Selected;
         }
 
-        public void SelectBanner(BannerDefinition banner)
+        public void SelectBanner(BannerConfiguration banner)
         {
             m_Selected = GetGachaBanner(banner);
             InitAgentButton();
