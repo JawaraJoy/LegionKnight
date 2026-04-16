@@ -15,6 +15,8 @@ namespace Rush
 
         [SerializeField] private UnityEvent<GachaDrawResult> m_OnDrawComplete;
         [SerializeField] private UnityEvent<string> m_OnDrawFailed;
+        // event ini dipanggil SEBELUM draw: berisi breakdown untuk ditampilkan di konfirmasi
+        [SerializeField] private UnityEvent<GachaConfirmData> m_OnDrawRequested;
 
         private GachaBannerConfig m_ActiveBanner;
 
@@ -23,6 +25,7 @@ namespace Rush
         public GachaPityTracker PityTracker => m_PityTracker;
         public UnityEvent<GachaDrawResult> OnDrawComplete => m_OnDrawComplete;
         public UnityEvent<string> OnDrawFailed => m_OnDrawFailed;
+        public UnityEvent<GachaConfirmData> OnDrawRequested => m_OnDrawRequested;
 
         protected virtual void Awake()
         {
@@ -30,7 +33,8 @@ namespace Rush
                 SelectBannerInternal(m_Banners[0]);
         }
 
-        // ── Banner Selection ──────────────────────────────────────────────────
+        // ── Banner ────────────────────────────────────────────────────────────
+
         private void SelectBannerInternal(GachaBannerConfig banner)
         {
             m_ActiveBanner = banner;
@@ -49,42 +53,49 @@ namespace Rush
             SelectBannerInternal(m_Banners[index]);
         }
 
-        // ── Draw ──────────────────────────────────────────────────────────────
-        public void DrawSingle()
+        // ── Request Draw (pre-confirm) ────────────────────────────────────────
+        // GachaPanel memanggil ini dulu → breakdown dikirim → confirm panel tampil
+        // Setelah user confirm → GachaPanel memanggil ExecuteDrawSingle/Multi
+
+        public void RequestDrawSingle()
         {
             if (!ValidateBannerInternal()) return;
+            var breakdown = BuildBreakdownInternal(false);
+            if (!breakdown.CanAfford) { m_OnDrawFailed?.Invoke("Mata uang tidak cukup."); return; }
+            m_OnDrawRequested?.Invoke(new GachaConfirmData(m_ActiveBanner, breakdown, false));
+        }
 
-            var currency = GetCurrencyInternal();
+        public void RequestDrawMulti()
+        {
+            if (!ValidateBannerInternal()) return;
+            var breakdown = BuildBreakdownInternal(true);
+            if (!breakdown.CanAfford) { m_OnDrawFailed?.Invoke("Mata uang tidak cukup."); return; }
+            m_OnDrawRequested?.Invoke(new GachaConfirmData(m_ActiveBanner, breakdown, true));
+        }
+
+        // ── Execute Draw (post-confirm) ───────────────────────────────────────
+
+        public void ExecuteDrawSingle()
+        {
+            if (!ValidateBannerInternal()) return;
             bool isDaily = m_CostResolver.IsDailyFirstDraw(m_ActiveBanner, false);
+            var breakdown = BuildBreakdownInternal(false);
+            if (!breakdown.CanAfford) { m_OnDrawFailed?.Invoke("Mata uang tidak cukup."); return; }
 
-            if (!m_CostResolver.HasEnoughCurrency(m_ActiveBanner, currency, false, isDaily))
-            {
-                m_OnDrawFailed?.Invoke("Mata uang tidak cukup.");
-                return;
-            }
-
-            m_CostResolver.DeductCost(m_ActiveBanner, currency, false, isDaily);
+            m_CostResolver.DeductCost(m_ActiveBanner, GetCurrencyInternal(), breakdown);
             if (isDaily) m_CostResolver.MarkDailyDrawUsed(m_ActiveBanner, false);
-
             m_OnDrawComplete?.Invoke(ExecuteDrawsInternal(1));
         }
 
-        public void DrawMulti()
+        public void ExecuteDrawMulti()
         {
             if (!ValidateBannerInternal()) return;
-
-            var currency = GetCurrencyInternal();
             bool isDaily = m_CostResolver.IsDailyFirstDraw(m_ActiveBanner, true);
+            var breakdown = BuildBreakdownInternal(true);
+            if (!breakdown.CanAfford) { m_OnDrawFailed?.Invoke("Mata uang tidak cukup."); return; }
 
-            if (!m_CostResolver.HasEnoughCurrency(m_ActiveBanner, currency, true, isDaily))
-            {
-                m_OnDrawFailed?.Invoke("Mata uang tidak cukup.");
-                return;
-            }
-
-            m_CostResolver.DeductCost(m_ActiveBanner, currency, true, isDaily);
+            m_CostResolver.DeductCost(m_ActiveBanner, GetCurrencyInternal(), breakdown);
             if (isDaily) m_CostResolver.MarkDailyDrawUsed(m_ActiveBanner, true);
-
             m_OnDrawComplete?.Invoke(ExecuteDrawsInternal(m_ActiveBanner.MultiDrawCount));
         }
 
@@ -96,17 +107,16 @@ namespace Rush
                 m_PityTracker.IncrementDraw();
                 var item = m_DrawResolver.Resolve(m_ActiveBanner, m_PityTracker);
                 if (item == null) continue;
-
                 result.AddItem(item);
                 result.SetPityTriggered(
                     m_PityTracker.IsInFinalPityWindow || m_PityTracker.IsInSmallPityWindow);
-
                 m_CollectibleControl?.AddCollectible(item.Collect, item.Amount);
             }
             return result;
         }
 
         // ── Info ──────────────────────────────────────────────────────────────
+
         public List<GachaRateInfo> GetRateInfo(GachaBannerConfig banner)
         {
             var list = new List<GachaRateInfo>();
@@ -118,25 +128,22 @@ namespace Rush
 
             foreach (var c in banner.Collectables)
                 list.Add(new GachaRateInfo(c, c.Chance / total));
-
             return list;
         }
 
-        public int GetDrawCost(bool isMulti)
-        {
-            if (m_ActiveBanner == null) return 0;
-            bool isDaily = m_CostResolver.IsDailyFirstDraw(m_ActiveBanner, isMulti);
-            return m_CostResolver.CalculateCost(m_ActiveBanner, isMulti, isDaily);
-        }
+        public GachaCostBreakdown GetBreakdown(bool isMulti) => BuildBreakdownInternal(isMulti);
 
-        public bool CanAffordDraw(bool isMulti)
-        {
-            if (m_ActiveBanner == null) return false;
-            bool isDaily = m_CostResolver.IsDailyFirstDraw(m_ActiveBanner, isMulti);
-            return m_CostResolver.HasEnoughCurrency(m_ActiveBanner, GetCurrencyInternal(), isMulti, isDaily);
-        }
+        public bool CanAffordDraw(bool isMulti) => BuildBreakdownInternal(isMulti).CanAfford;
 
         // ── Helpers ───────────────────────────────────────────────────────────
+
+        private GachaCostBreakdown BuildBreakdownInternal(bool isMulti)
+        {
+            bool isDaily = m_CostResolver.IsDailyFirstDraw(m_ActiveBanner, isMulti);
+            return m_CostResolver.CalculateBreakdown(
+                m_ActiveBanner, GetCurrencyInternal(), isMulti, isDaily);
+        }
+
         private bool ValidateBannerInternal()
         {
             if (m_ActiveBanner != null) return true;

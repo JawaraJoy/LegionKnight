@@ -7,8 +7,6 @@ namespace Rush
 {
     public class GachaPanel : PanelView
     {
-        // Sub-view dalam satu panel ini → pakai m_Bindings
-        // Panel lain (Detail, Confirm, Result) → akses via CanvasManager
         [SerializeField] private Image m_BannerImage;
         [SerializeField] private Button m_DrawSingleButton;
         [SerializeField] private Button m_DrawMultiButton;
@@ -17,12 +15,10 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_MultiCostText;
         [SerializeField] private TextMeshProUGUI m_PityProgressText;
         [SerializeField] private Transform m_BannerButtonContainer;
-
         [SerializeField] private GachaBannerButtonUI m_BannerButtonPrefab;
 
         private GachaManager Manager => RushPlayer.Instance.GachaManager;
 
-        // ── Lifecycle ─────────────────────────────────────────────────────────
         protected override void ShowInternal()
         {
             base.ShowInternal();
@@ -41,6 +37,7 @@ namespace Rush
         {
             Manager.OnDrawComplete.AddListener(OnDrawCompleteInternal);
             Manager.OnDrawFailed.AddListener(OnDrawFailedInternal);
+            Manager.OnDrawRequested.AddListener(OnDrawRequestedInternal);
             if (m_DrawSingleButton != null) m_DrawSingleButton.onClick.AddListener(OnDrawSingleClickedInternal);
             if (m_DrawMultiButton != null) m_DrawMultiButton.onClick.AddListener(OnDrawMultiClickedInternal);
             if (m_DetailButton != null) m_DetailButton.onClick.AddListener(OnDetailClickedInternal);
@@ -50,20 +47,26 @@ namespace Rush
         {
             Manager.OnDrawComplete.RemoveListener(OnDrawCompleteInternal);
             Manager.OnDrawFailed.RemoveListener(OnDrawFailedInternal);
+            Manager.OnDrawRequested.RemoveListener(OnDrawRequestedInternal);
             if (m_DrawSingleButton != null) m_DrawSingleButton.onClick.RemoveListener(OnDrawSingleClickedInternal);
             if (m_DrawMultiButton != null) m_DrawMultiButton.onClick.RemoveListener(OnDrawMultiClickedInternal);
             if (m_DetailButton != null) m_DetailButton.onClick.RemoveListener(OnDetailClickedInternal);
         }
 
-        // ── View ─────────────────────────────────────────────────────────────
         private void RefreshViewInternal()
         {
             var banner = Manager.ActiveBanner;
             if (banner == null) return;
 
             if (m_BannerImage != null) m_BannerImage.sprite = banner.BannerSplashSprite;
-            if (m_SingleCostText != null) m_SingleCostText.text = Manager.GetDrawCost(false).ToString();
-            if (m_MultiCostText != null) m_MultiCostText.text = Manager.GetDrawCost(true).ToString();
+
+            var singleBreakdown = Manager.GetBreakdown(false);
+            var multiBreakdown = Manager.GetBreakdown(true);
+
+            if (m_SingleCostText != null)
+                m_SingleCostText.text = singleBreakdown.MainCurrencyAmount.ToString();
+            if (m_MultiCostText != null)
+                m_MultiCostText.text = multiBreakdown.MainCurrencyAmount.ToString();
             if (m_PityProgressText != null)
                 m_PityProgressText.text =
                     $"{Manager.PityTracker.FinalPityCounter}/{banner.FinalPityCount}";
@@ -75,10 +78,7 @@ namespace Rush
         private void PopulateBannerButtonsInternal()
         {
             if (m_BannerButtonContainer == null || m_BannerButtonPrefab == null) return;
-
-            foreach (Transform child in m_BannerButtonContainer)
-                Destroy(child.gameObject);
-
+            foreach (Transform child in m_BannerButtonContainer) Destroy(child.gameObject);
             foreach (var banner in Manager.Banners)
             {
                 var btn = Instantiate(m_BannerButtonPrefab, m_BannerButtonContainer);
@@ -86,30 +86,24 @@ namespace Rush
             }
         }
 
-        // ── Callbacks ────────────────────────────────────────────────────────
         private void OnBannerSelectedInternal(GachaBannerConfig banner)
         {
             Manager.SelectBanner(banner);
             RefreshViewInternal();
         }
 
-        private void OnDrawSingleClickedInternal()
-        {
-            int cost = Manager.GetDrawCost(false);
-            var confirmPanel = CanvasManager.Instance.GetPanel<CurrencyConfirmationPanel>();
-            confirmPanel?.ShowConfirmation(
-                "Draw 1x?", cost, Manager.ActiveBanner.DrawCostCurrency,
-                () => Manager.DrawSingle());
-        }
+        // Tombol → request (pre-confirm)
+        private void OnDrawSingleClickedInternal() => Manager.RequestDrawSingle();
+        private void OnDrawMultiClickedInternal() => Manager.RequestDrawMulti();
 
-        private void OnDrawMultiClickedInternal()
+        // Manager memberi tahu ada request → buka confirm panel dengan breakdown
+        private void OnDrawRequestedInternal(GachaConfirmData data)
         {
-            int cost = Manager.GetDrawCost(true);
             var confirmPanel = CanvasManager.Instance.GetPanel<CurrencyConfirmationPanel>();
-            confirmPanel?.ShowConfirmation(
-                $"Draw {Manager.ActiveBanner.MultiDrawCount}x?", cost,
-                Manager.ActiveBanner.DrawCostCurrency,
-                () => Manager.DrawMulti());
+            System.Action executeAction = data.IsMulti
+                ? Manager.ExecuteDrawMulti
+                : Manager.ExecuteDrawSingle;
+            confirmPanel?.ShowConfirmation(data, executeAction);
         }
 
         private void OnDetailClickedInternal()
@@ -125,9 +119,7 @@ namespace Rush
             resultPanel?.Show(result);
         }
 
-        private void OnDrawFailedInternal(string message)
-        {
+        private void OnDrawFailedInternal(string message) =>
             Debug.LogWarning($"[GachaPanel] {message}");
-        }
     }
 }

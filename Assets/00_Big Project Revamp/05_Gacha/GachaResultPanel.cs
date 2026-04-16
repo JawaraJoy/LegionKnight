@@ -7,8 +7,7 @@ namespace Rush
 {
     public class GachaResultPanel : PanelView
     {
-        [SerializeField] private Transform m_ItemContainer;
-        [SerializeField] private GachaResultItemUI m_ResultItemPrefab;
+        [SerializeField] private GachaResultItemPool m_ResultItemPool;
         [SerializeField] private Button m_CloseButton;
         [SerializeField] private TextMeshProUGUI m_PityNoticeText;
 
@@ -21,6 +20,7 @@ namespace Rush
         protected override void HideInternal()
         {
             if (m_CloseButton != null) m_CloseButton.onClick.RemoveListener(Hide);
+            m_ResultItemPool?.ReturnAll();
             base.HideInternal();
         }
 
@@ -32,14 +32,12 @@ namespace Rush
 
         private void PopulateResultsInternal(GachaDrawResult result)
         {
-            if (m_ItemContainer == null || m_ResultItemPrefab == null) return;
-
-            foreach (Transform child in m_ItemContainer)
-                Destroy(child.gameObject);
+            if (m_ResultItemPool == null) return;
+            m_ResultItemPool.ReturnAll();
 
             foreach (var item in result.Items)
             {
-                var ui = Instantiate(m_ResultItemPrefab, m_ItemContainer);
+                var ui = m_ResultItemPool.Rent();
                 ui.Setup(item);
             }
 
