@@ -23,9 +23,9 @@ namespace LegionKnight
         [SerializeField, MMReadOnly]
         private int m_GachaIndex = 0;
         [SerializeField, MMReadOnly]
-        private List<GachaRewardConfig> m_GachaPulled = new List<GachaRewardConfig>();
+        private List<GachaCollectableConfig> m_GachaPulled = new List<GachaCollectableConfig>();
         [SerializeField]
-        private UnityEvent<List<GachaRewardConfig>> m_OnPreviewDone;
+        private UnityEvent<List<GachaCollectableConfig>> m_OnPreviewDone;
         protected override void HideInternal()
         {
             base.HideInternal();
@@ -34,15 +34,15 @@ namespace LegionKnight
             m_AnimationItemView.Hide();
             m_SpineVFX.Hide();
         }
-        public void SpawnGacha(List<GachaRewardConfig> gacharRewards)
+        public void SpawnGacha(List<GachaCollectableConfig> gacharRewards)
         {
             m_GachaIndex = 0;
             m_GachaPulled.Clear();
-            m_GachaPulled = new List<GachaRewardConfig>(gacharRewards);    
+            m_GachaPulled = new List<GachaCollectableConfig>(gacharRewards);    
             
             if (m_GachaPulled.Count > 0)
             {
-                GachaRewardConfig gachaReward = m_GachaPulled[m_GachaIndex];
+                GachaCollectableConfig gachaReward = m_GachaPulled[m_GachaIndex];
                 ShowPull(gachaReward);
             }
             else
@@ -58,12 +58,12 @@ namespace LegionKnight
                 HideInternal();
                 return;
             }
-            GachaRewardConfig so = m_GachaPulled[m_GachaIndex];
+            GachaCollectableConfig so = m_GachaPulled[m_GachaIndex];
             ShowPull(so);
         }
 
         private Coroutine m_PlayCoroutine;
-        private void ShowPull(GachaRewardConfig gachaReward)
+        private void ShowPull(GachaCollectableConfig gachaReward)
         {
             
             if (m_PlayCoroutine != null)
@@ -72,7 +72,7 @@ namespace LegionKnight
                 m_PlayCoroutine = null;
             }
             
-            if (gachaReward.GachaItemConfig is HeroUnitConfig heroConfig)
+            if (gachaReward.Collect is HeroUnitConfig heroConfig)
             {
                 ShowInternal();
                 m_PlayCoroutine = RushGameManager.Instance.StartCoroutine(PlayGachaEffect(gachaReward, heroConfig));
@@ -80,16 +80,16 @@ namespace LegionKnight
             else
             {
                 ShowInternal();
-                m_AnimationItemView.Init(gachaReward);
+                m_AnimationItemView.Init(gachaReward.Collect);
                 m_AnimationItemView.Show();
                 m_SpineVFX.Hide();
             }
         }
         [SerializeField]
         private float m_RevealDelay = 3f;
-        private IEnumerator PlayGachaEffect(GachaRewardConfig reward, HeroUnitConfig heroConfig)
+        private IEnumerator PlayGachaEffect(GachaCollectableConfig reward, HeroUnitConfig heroConfig)
         {
-            m_AnimationItemView.Init(reward);
+            m_AnimationItemView.Init(reward.Collect);
             m_AnimationItemView.Hide();
             m_CharacterSpineUI.Hide();
             m_SpineVFX.Show();

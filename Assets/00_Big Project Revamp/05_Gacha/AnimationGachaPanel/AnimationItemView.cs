@@ -14,20 +14,17 @@ namespace LegionKnight
             base.OnConfigSetInvoke(collectibleConfig);
             m_Amount.gameObject.SetActive(false);
             m_ItemName.gameObject.SetActive(true);
-            if (collectibleConfig is GachaRewardConfig reward)
-            {
-                string itemName = reward.GachaItemConfig.BaseInfo.Name;
-                string amountText = reward.Amount.ToString();
-                m_ItemName.text = $"{itemName}[x{amountText}]";
 
-                
-                if (reward.GachaItemConfig is HeroUnitConfig heroConfig)
-                {
-                    m_Icon.sprite = heroConfig.CollectibleField.SplashImage;
-                    m_ItemName.text = GetHeroNameTextFormat(heroConfig);
-                }
-            }
-            
+            /*string itemName = collectibleConfig.BaseInfo.Name;
+            string amountText = reward.Amount.ToString();
+            m_ItemName.text = $"{itemName}[x{amountText}]";
+
+
+            if (reward.GachaItemConfig is HeroUnitConfig heroConfig)
+            {
+                m_Icon.sprite = heroConfig.CollectibleField.SplashImage;
+                m_ItemName.text = GetHeroNameTextFormat(heroConfig);
+            }*/
         }
         private string GetHeroNameTextFormat(HeroUnitConfig heroConfig)
         {

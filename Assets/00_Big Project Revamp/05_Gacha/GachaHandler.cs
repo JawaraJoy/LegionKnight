@@ -15,7 +15,6 @@ namespace Rush
 
         [SerializeField] private UnityEvent<GachaDrawResult> m_OnDrawComplete;
         [SerializeField] private UnityEvent<string> m_OnDrawFailed;
-        // event ini dipanggil SEBELUM draw: berisi breakdown untuk ditampilkan di konfirmasi
         [SerializeField] private UnityEvent<GachaConfirmData> m_OnDrawRequested;
 
         private GachaBannerConfig m_ActiveBanner;
@@ -54,8 +53,6 @@ namespace Rush
         }
 
         // ── Request Draw (pre-confirm) ────────────────────────────────────────
-        // GachaPanel memanggil ini dulu → breakdown dikirim → confirm panel tampil
-        // Setelah user confirm → GachaPanel memanggil ExecuteDrawSingle/Multi
 
         public void RequestDrawSingle()
         {
@@ -107,9 +104,15 @@ namespace Rush
                 m_PityTracker.IncrementDraw();
                 var item = m_DrawResolver.Resolve(m_ActiveBanner, m_PityTracker);
                 if (item == null) continue;
+
                 result.AddItem(item);
-                result.SetPityTriggered(
-                    m_PityTracker.IsInFinalPityWindow || m_PityTracker.IsInSmallPityWindow);
+
+                // Pity triggered jika draw ini tepat menyentuh threshold
+                // Resolver sudah reset counter setelah trigger, jadi cek sebelum increment
+                // sudah dilakukan di dalam Resolve — flag di-set berdasarkan apakah
+                // resolver memilih dari guarantee array
+                result.SetPityTriggered(m_DrawResolver.LastDrawWasPity);
+
                 m_CollectibleControl?.AddCollectible(item.Collect, item.Amount);
             }
             return result;
@@ -152,6 +155,6 @@ namespace Rush
         }
 
         private CurrenciesControl GetCurrencyInternal() =>
-            Player.Instance.CurrencyControl;
+            Player.Instance.CurrencyControl;    
     }
 }

@@ -79,9 +79,9 @@ namespace Rush
             // Main currency row
             if (m_MainCostText != null)
                 m_MainCostText.text = $"{breakdown.MainCurrencyAmount} " +
-                                      $"{banner.DrawCostCurrency?.BaseInfo.Name}";
+                                      $"{banner.DrawCostCurrency.BaseInfo.Name}";
             if (m_MainCostIcon != null && banner.DrawCostCurrency is ItemConfig mainItem)
-                m_MainCostIcon.sprite = mainItem.BaseInfo != null ? null : null;
+                m_MainCostIcon.sprite = mainItem.CollectibleField.Icon;
             // pasang icon dari ItemConfig jika ada field icon-nya
 
             // Alt currency row — tampil hanya jika mixed

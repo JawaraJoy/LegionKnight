@@ -8,12 +8,11 @@ namespace Rush
     public class GachaPanel : PanelView
     {
         [SerializeField] private Image m_BannerImage;
-        [SerializeField] private Button m_DrawSingleButton;
-        [SerializeField] private Button m_DrawMultiButton;
+        [SerializeField] private GachaDrawButtonUI m_DrawSingleButtonUI;
+        [SerializeField] private GachaDrawButtonUI m_DrawMultiButtonUI;
         [SerializeField] private Button m_DetailButton;
-        [SerializeField] private TextMeshProUGUI m_SingleCostText;
-        [SerializeField] private TextMeshProUGUI m_MultiCostText;
         [SerializeField] private TextMeshProUGUI m_PityProgressText;
+        [SerializeField] private TextMeshProUGUI m_BannerNameText;
         [SerializeField] private Transform m_BannerButtonContainer;
         [SerializeField] private GachaBannerButtonUI m_BannerButtonPrefab;
 
@@ -38,9 +37,13 @@ namespace Rush
             Manager.OnDrawComplete.AddListener(OnDrawCompleteInternal);
             Manager.OnDrawFailed.AddListener(OnDrawFailedInternal);
             Manager.OnDrawRequested.AddListener(OnDrawRequestedInternal);
-            if (m_DrawSingleButton != null) m_DrawSingleButton.onClick.AddListener(OnDrawSingleClickedInternal);
-            if (m_DrawMultiButton != null) m_DrawMultiButton.onClick.AddListener(OnDrawMultiClickedInternal);
-            if (m_DetailButton != null) m_DetailButton.onClick.AddListener(OnDetailClickedInternal);
+
+            if (m_DrawSingleButtonUI?.Button != null)
+                m_DrawSingleButtonUI.Button.onClick.AddListener(OnDrawSingleClickedInternal);
+            if (m_DrawMultiButtonUI?.Button != null)
+                m_DrawMultiButtonUI.Button.onClick.AddListener(OnDrawMultiClickedInternal);
+            if (m_DetailButton != null)
+                m_DetailButton.onClick.AddListener(OnDetailClickedInternal);
         }
 
         private void UnsubscribeEventsInternal()
@@ -48,9 +51,13 @@ namespace Rush
             Manager.OnDrawComplete.RemoveListener(OnDrawCompleteInternal);
             Manager.OnDrawFailed.RemoveListener(OnDrawFailedInternal);
             Manager.OnDrawRequested.RemoveListener(OnDrawRequestedInternal);
-            if (m_DrawSingleButton != null) m_DrawSingleButton.onClick.RemoveListener(OnDrawSingleClickedInternal);
-            if (m_DrawMultiButton != null) m_DrawMultiButton.onClick.RemoveListener(OnDrawMultiClickedInternal);
-            if (m_DetailButton != null) m_DetailButton.onClick.RemoveListener(OnDetailClickedInternal);
+
+            if (m_DrawSingleButtonUI?.Button != null)
+                m_DrawSingleButtonUI.Button.onClick.RemoveListener(OnDrawSingleClickedInternal);
+            if (m_DrawMultiButtonUI?.Button != null)
+                m_DrawMultiButtonUI.Button.onClick.RemoveListener(OnDrawMultiClickedInternal);
+            if (m_DetailButton != null)
+                m_DetailButton.onClick.RemoveListener(OnDetailClickedInternal);
         }
 
         private void RefreshViewInternal()
@@ -60,19 +67,52 @@ namespace Rush
 
             if (m_BannerImage != null) m_BannerImage.sprite = banner.BannerSplashSprite;
 
-            var singleBreakdown = Manager.GetBreakdown(false);
-            var multiBreakdown = Manager.GetBreakdown(true);
-
-            if (m_SingleCostText != null)
-                m_SingleCostText.text = singleBreakdown.MainCurrencyAmount.ToString();
-            if (m_MultiCostText != null)
-                m_MultiCostText.text = multiBreakdown.MainCurrencyAmount.ToString();
             if (m_PityProgressText != null)
                 m_PityProgressText.text =
                     $"{Manager.PityTracker.FinalPityCounter}/{banner.FinalPityCount}";
 
-            if (m_DrawSingleButton != null) m_DrawSingleButton.interactable = Manager.CanAffordDraw(false);
-            if (m_DrawMultiButton != null) m_DrawMultiButton.interactable = Manager.CanAffordDraw(true);
+
+            RefreshDrawButtonInternal(m_DrawSingleButtonUI, banner, false);
+            RefreshDrawButtonInternal(m_DrawMultiButtonUI, banner, true);
+        }
+
+        private void RefreshDrawButtonInternal(GachaDrawButtonUI buttonUI,
+            GachaBannerConfig banner, bool isMulti)
+        {
+            if (buttonUI == null) return;
+
+            // Hitung biaya tanpa discount untuk original
+            int baseCost = isMulti
+                ? banner.SingleDrawCost * banner.MultiDrawCount
+                : banner.SingleDrawCost;
+
+            // Hitung biaya setelah discount (final)
+            var breakdown = Manager.GetBreakdown(isMulti);
+            // total final cost = main + alt yang akan dibayar
+            int finalCost = breakdown.MainCurrencyAmount + ConvertAltToMainEquivalentInternal(
+                banner, breakdown.AltCurrencyAmount);
+
+            // Icon: ambil dari ItemConfig currency utama
+            // Asumsikan ItemConfig memiliki field icon via CollectibleField
+            Sprite currencyIcon = GetCurrencyIconInternal(banner.DrawCostCurrency);
+
+            buttonUI.Refresh(baseCost, finalCost, currencyIcon);
+            buttonUI.SetInteractable(breakdown.CanAfford);
+        }
+
+        // Konversi alt currency amount ke equivalent main untuk keperluan display total
+        private int ConvertAltToMainEquivalentInternal(GachaBannerConfig banner, int altAmount)
+        {
+            if (altAmount <= 0 || banner.AltSingleDrawCost <= 0) return 0;
+            return Mathf.RoundToInt((float)altAmount / banner.AltSingleDrawCost
+                                    * banner.SingleDrawCost);
+        }
+
+        private Sprite GetCurrencyIconInternal(ItemConfig itemConfig)
+        {
+            if (itemConfig == null) return null;
+            // Ambil icon melalui CollectibleField sesuai pattern yang sudah ada
+            return itemConfig.CollectibleField?.Icon;
         }
 
         private void PopulateBannerButtonsInternal()
@@ -89,14 +129,14 @@ namespace Rush
         private void OnBannerSelectedInternal(GachaBannerConfig banner)
         {
             Manager.SelectBanner(banner);
+            if (m_BannerNameText != null)
+                m_BannerNameText.text = banner.BaseInfo.Name;
             RefreshViewInternal();
         }
 
-        // Tombol → request (pre-confirm)
         private void OnDrawSingleClickedInternal() => Manager.RequestDrawSingle();
         private void OnDrawMultiClickedInternal() => Manager.RequestDrawMulti();
 
-        // Manager memberi tahu ada request → buka confirm panel dengan breakdown
         private void OnDrawRequestedInternal(GachaConfirmData data)
         {
             var confirmPanel = CanvasManager.Instance.GetPanel<CurrencyConfirmationPanel>();
@@ -109,7 +149,7 @@ namespace Rush
         private void OnDetailClickedInternal()
         {
             var detailPanel = CanvasManager.Instance.GetPanel<BannerDetailPanel>();
-            detailPanel?.Show(Manager.ActiveBanner);
+            detailPanel.Show(Manager.ActiveBanner);
         }
 
         private void OnDrawCompleteInternal(GachaDrawResult result)

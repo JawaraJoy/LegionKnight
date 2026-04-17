@@ -1,3 +1,4 @@
+using Rush;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace LegionKnight
             }
             return m_Panel;
         }
-        public void SpawnGacha(List<GachaRewardConfig> gacharRewards)
+        public void SpawnGacha(List<GachaCollectableConfig> gacharRewards)
         {
             GetPanel().SpawnGacha(gacharRewards);
         }

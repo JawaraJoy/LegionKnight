@@ -309,11 +309,11 @@ namespace LegionKnight
             Instance.SendEvent("event_gacha_pull", isMultiDraw ? "1" : "0");
         }
 
-        public void SendEventToGachaPullType(List<GachaRewardConfig> gachaRewards)
+        public void SendEventToGachaPullType(List<GachaCollectableConfig> gachaRewards)
         {
             foreach (var gachaReward in gachaRewards)
             {
-                Instance.SendEvent("event_gacha_pulltype", gachaReward.GachaItemConfig.CollectibleField.RarityConfig.BaseInfo.Name);
+                Instance.SendEvent("event_gacha_pulltype", gachaReward.Collect.CollectibleField.RarityConfig.BaseInfo.Name);
             }
         }
 

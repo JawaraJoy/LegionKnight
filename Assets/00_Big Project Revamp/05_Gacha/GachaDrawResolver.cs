@@ -4,59 +4,40 @@ namespace Rush
 {
     public class GachaDrawResolver : MonoBehaviour
     {
-        // Entry point utama — dipanggil sekali per draw
+        // Dibaca oleh GachaHandler setelah tiap Resolve() untuk set flag pity di result
+        public bool LastDrawWasPity { get; private set; }
+
         public GachaCollectableConfig Resolve(GachaBannerConfig banner, GachaPityTracker pity)
         {
-            // Final pity window → override dengan array guarantee
-            if (pity.IsInFinalPityWindow && HasGuarantees(banner.FinalPityGuarantees))
+            LastDrawWasPity = false;
+
+            if (pity.ShouldTriggerFinalPity && HasGuarantees(banner.FinalPityGuarantees))
             {
-                var result = ResolveFromGuaranteeArrayInternal(
-                    banner.FinalPityGuarantees, pity.FinalPityGuaranteeIndex);
-
-                if (pity.ShouldResetFinalPity)
-                    pity.ResetFinalPity();
-
-                return result;
+                pity.ResetFinalPity();
+                LastDrawWasPity = true;
+                return ResolveRandomFromArrayInternal(banner.FinalPityGuarantees);
             }
 
-            // Small pity window → override dengan array guarantee
-            if (pity.IsInSmallPityWindow && HasGuarantees(banner.SmallPityGuarantees))
+            if (pity.ShouldTriggerSmallPity && HasGuarantees(banner.SmallPityGuarantees))
             {
-                var result = ResolveFromGuaranteeArrayInternal(
-                    banner.SmallPityGuarantees, pity.SmallPityGuaranteeIndex);
-
-                if (pity.ShouldResetSmallPity)
-                    pity.ResetSmallPity();
-
-                return result;
+                pity.ResetSmallPity();
+                LastDrawWasPity = true;
+                return ResolveRandomFromArrayInternal(banner.SmallPityGuarantees);
             }
 
-            // First draw guarantee
             if (pity.ShouldTriggerFirstDraw && HasGuarantees(banner.FirstDrawGuarantees))
             {
                 pity.MarkFirstDrawDone();
+                LastDrawWasPity = true;
                 return ResolveRandomFromArrayInternal(banner.FirstDrawGuarantees);
             }
 
             return ResolveRandomInternal(banner);
         }
 
-        // Ambil item dari slot index tertentu dalam array guarantee
-        // Slot dipilih secara random dari semua item yang ada di slot tersebut
-        // (karena setiap slot adalah satu GachaCollectableConfig, jadi langsung return)
-        private GachaCollectableConfig ResolveFromGuaranteeArrayInternal(
-            GachaCollectableConfig[] guarantees, int index)
-        {
-            // index sudah di-clamp oleh tracker, aman langsung akses
-            return guarantees[index];
-        }
-
-        // Untuk first draw: random dari seluruh array guarantee
         private GachaCollectableConfig ResolveRandomFromArrayInternal(
             GachaCollectableConfig[] guarantees)
         {
-            if (guarantees == null || guarantees.Length == 0) return null;
-
             float total = 0f;
             foreach (var g in guarantees) total += g.Chance;
 
@@ -70,7 +51,6 @@ namespace Rush
             return guarantees[^1];
         }
 
-        // Normal random dari pool collectables banner
         private GachaCollectableConfig ResolveRandomInternal(GachaBannerConfig banner)
         {
             if (banner.Collectables == null || banner.Collectables.Length == 0) return null;

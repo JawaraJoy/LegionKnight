@@ -14,7 +14,6 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_SmallPityText;
         [SerializeField] private TextMeshProUGUI m_FinalPityText;
         [SerializeField] private TextMeshProUGUI m_PityCountText;
-        [SerializeField] private TextMeshProUGUI m_PityWindowText;
         [SerializeField] private GachaRateItemPool m_RateItemPool;
         [SerializeField] private Button m_CloseButton;
 
@@ -49,26 +48,17 @@ namespace Rush
             if (m_BannerDescText != null) m_BannerDescText.text = m_Banner.BaseInfo.Description;
             if (m_BannerSplashImage != null) m_BannerSplashImage.sprite = m_Banner.BannerSplashSprite;
 
-            int smallLen = m_Banner.SmallPityGuarantees?.Length ?? 0;
-            int finalLen = m_Banner.FinalPityGuarantees?.Length ?? 0;
-
+            // Pity hanya trigger tepat di draw ke-N, tidak ada window
             if (m_SmallPityText != null)
-                m_SmallPityText.text = smallLen > 1
-                    ? $"Small pity: draw {m_Banner.SmallPityCount - smallLen + 1}–{m_Banner.SmallPityCount}"
-                    : $"Small pity: draw ke-{m_Banner.SmallPityCount}";
+                m_SmallPityText.text = $"Small pity: draw ke-{m_Banner.SmallPityCount}";
 
             if (m_FinalPityText != null)
-                m_FinalPityText.text = finalLen > 1
-                    ? $"Final pity: draw {m_Banner.FinalPityCount - finalLen + 1}–{m_Banner.FinalPityCount}"
-                    : $"Final pity: draw ke-{m_Banner.FinalPityCount}";
+                m_FinalPityText.text = $"Final pity: draw ke-{m_Banner.FinalPityCount}";
 
             var pity = RushPlayer.Instance.GachaManager.PityTracker;
             if (m_PityCountText != null)
                 m_PityCountText.text =
                     $"Pity saat ini: {pity.FinalPityCounter}/{m_Banner.FinalPityCount}";
-            if (m_PityWindowText != null)
-                m_PityWindowText.text = pity.IsInFinalPityWindow ? "Dalam final pity window!"
-                    : pity.IsInSmallPityWindow ? "Dalam small pity window!" : "";
 
             PopulateRatesInternal();
         }

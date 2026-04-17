@@ -4,16 +4,26 @@ namespace LegionKnight
 {
     public partial class BannerCurrencyView : CurrencyView
     {
-        
-        public void SelectBanner(ShopContainer container)
-        {
-            SetViewInternal(container.GetCurrencyUsed());
-        }
+        private CurrenciesControl m_CurrencyControl;
 
-        public void AdjustCurrency()
+        private CurrenciesControl CurrenciesControl
         {
-            int playerCurrencyAmount = Player.Instance.CurrencyControl.GetCurrencyAmount(m_ItemConfig);
-            m_AmountText.text = playerCurrencyAmount.ToString();
+            get
+            {
+                if (m_CurrencyControl == null)
+                {
+                    m_CurrencyControl = Player.Instance.CurrencyControl;
+                }
+                return m_CurrencyControl;
+            }
+        }
+        private void Awake()
+        {
+            CurrenciesControl.OnCurrencyChanged.AddListener(SetViewInternal);
+        }
+        private void OnEnable()
+        {
+            SetViewInternal(CurrenciesControl.GetCurrency(m_ItemConfig));
         }
     }
 }

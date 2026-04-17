@@ -37,6 +37,7 @@ namespace LegionKnight
                     ItemConfig itemConfig = currency.ItemConfig;
                     int amount = UnityService.Instance.GetData<int>(AmountKey(currency.ItemConfig));
                     SetCurrencyAmount(itemConfig, amount);
+                    OnCurrencyChangeInvoke(currency);
                 }
             }
         }
