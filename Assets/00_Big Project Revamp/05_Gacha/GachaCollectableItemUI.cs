@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using LegionKnight;
 
 namespace Rush
 {
     // Base class untuk semua UI yang menampilkan satu GachaCollectableConfig
     // GachaRateItemUI dan GachaResultItemUI mewarisi ini
-    public abstract class GachaCollectableItemUI : MonoBehaviour
+    public abstract class GachaCollectableItemUI : UIView
     {
         [SerializeField] private Image m_Icon;
         [SerializeField] private TextMeshProUGUI m_NameText;
@@ -22,6 +23,7 @@ namespace Rush
 
             RefreshAmountInternal(collectable.Amount);
             RefreshRarityInternal(collectable.Collect.CollectibleField.RarityConfig);
+            ShowInternal();
         }
 
         private void RefreshAmountInternal(int amount)

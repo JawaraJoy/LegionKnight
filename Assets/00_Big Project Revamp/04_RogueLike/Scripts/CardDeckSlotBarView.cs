@@ -25,7 +25,7 @@ namespace Rush
             Player.Instance.PlayerCardDeck.OnUsedCardsChanged.AddListener(OnUsedCardsChanged);
 
             // Refresh awal sesuai save data yang sudah di-load
-            Refresh(Player.Instance.PlayerCardDeck.GetUsedCards());
+            RefreshInternal(Player.Instance.PlayerCardDeck.GetUsedCards());
         }
 
         // ── Spawn slot sejumlah MaxUsedCardCount ──────────────────────────────
@@ -48,8 +48,12 @@ namespace Rush
             }
         }
 
+        public void Refresh()
+        {
+            RefreshInternal(Player.Instance.PlayerCardDeck.GetUsedCards());
+        }
         // ── Refresh semua slot sesuai used list terkini ───────────────────────
-        private void Refresh(List<CardUnit> usedCards)
+        private void RefreshInternal(List<CardUnit> usedCards)
         {
             for (int i = 0; i < m_Slots.Count; i++)
             {
@@ -62,7 +66,7 @@ namespace Rush
 
         private void OnUsedCardsChanged(List<CardUnit> usedCards)
         {
-            Refresh(usedCards);
+            RefreshInternal(usedCards);
         }
 
         private void OnDestroy()

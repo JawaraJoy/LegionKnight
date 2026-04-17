@@ -1,9 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Rush
 {
     public class GachaDrawResolver : MonoBehaviour
     {
+        private readonly List<GachaCollectableConfig> m_Items = new();
+        private bool m_WasPityTriggered;
+
+        public IReadOnlyList<GachaCollectableConfig> Items => m_Items;
+        public bool WasPityTriggered => m_WasPityTriggered;
+
+        internal void AddItem(GachaCollectableConfig item) => m_Items.Add(item);
+        internal void SetPityTriggered(bool value) => m_WasPityTriggered = value;
         // Dibaca oleh GachaHandler setelah tiap Resolve() untuk set flag pity di result
         public bool LastDrawWasPity { get; private set; }
 

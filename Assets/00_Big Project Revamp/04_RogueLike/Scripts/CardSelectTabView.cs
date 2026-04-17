@@ -34,7 +34,10 @@ namespace LegionKnight
             if (m_DeckSlotBarView != null)
                 m_DeckSlotBarView.Init();
         }
-
+        public void Refresh()
+        {
+            m_DeckSlotBarView.Refresh();
+        }
         private void Awake()
         {
             // Re-sort saat amount card berubah (misal setelah add/remove dari deck)

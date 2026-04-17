@@ -19,7 +19,7 @@ namespace LegionKnight
         }
         private void Awake()
         {
-            CurrenciesControl.OnCurrencyChanged.AddListener(SetViewInternal);
+            CurrenciesControl.OnCurrencyChanged.AddListener((_)=> InitInternal());
         }
         private void OnEnable()
         {

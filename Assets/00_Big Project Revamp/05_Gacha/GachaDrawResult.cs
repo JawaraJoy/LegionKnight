@@ -12,7 +12,15 @@ namespace Rush
         public bool WasPityTriggered => m_WasPityTriggered;
         public bool WasFirstDraw => m_WasFirstDraw;
 
-        internal void AddItem(GachaCollectableConfig item) => m_Items.Add(item);
+        internal void AddItem(GachaCollectableConfig item)
+        {
+            m_Items.Add(item);
+
+            LootField.CardApplier(item.Collect, item.Amount);
+            LootField.CharacterApplier(item.Collect);
+            LootField.CurrencyApplier(item.Collect, item.Amount);
+            LootField.EnergyApplier(item.Collect, item.Amount);
+        }
         internal void SetPityTriggered(bool value) => m_WasPityTriggered = value;
         internal void SetFirstDraw(bool value) => m_WasFirstDraw = value;
     }

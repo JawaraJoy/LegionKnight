@@ -19,7 +19,7 @@ namespace LegionKnight
             InitInternal();
         }
 
-        private void InitInternal()
+        protected void InitInternal()
         {
             foreach (CurrencyView view in m_CurrencieViews)
             {

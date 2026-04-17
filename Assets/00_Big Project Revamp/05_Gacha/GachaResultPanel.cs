@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -11,6 +12,18 @@ namespace Rush
         [SerializeField] private Button m_CloseButton;
         [SerializeField] private TextMeshProUGUI m_PityNoticeText;
 
+        [Header("Spawn Sequence")]
+        [SerializeField] private float m_SpawnInterval = 0.15f;
+        [SerializeField] private float m_DelayBeforeFirst = 0.3f;
+
+        [Header("SFX")]
+        [SerializeField] private AudioSource m_AudioSource;
+        [SerializeField] private AudioClip m_SpawnSfx;
+        // opsional: sfx khusus jika item yang spawn adalah pity
+        [SerializeField] private AudioClip m_PitySpawnSfx;
+
+        private Coroutine m_SpawnCoroutine;
+
         protected override void ShowInternal()
         {
             base.ShowInternal();
@@ -19,6 +32,7 @@ namespace Rush
 
         protected override void HideInternal()
         {
+            StopSpawnInternal();
             if (m_CloseButton != null) m_CloseButton.onClick.RemoveListener(Hide);
             m_ResultItemPool?.ReturnAll();
             base.HideInternal();
@@ -26,23 +40,87 @@ namespace Rush
 
         public void Show(GachaDrawResult result)
         {
-            PopulateResultsInternal(result);
+            // return semua item lama sebelum mulai sequence baru
+            m_ResultItemPool?.ReturnAll();
+            if (m_PityNoticeText != null)
+                m_PityNoticeText.gameObject.SetActive(false);
+
             Show();
+            StopSpawnInternal();
+            m_SpawnCoroutine = RushGameManager.Instance.StartCoroutine(SpawnSequenceRoutine(result));
         }
 
-        private void PopulateResultsInternal(GachaDrawResult result)
+        private IEnumerator SpawnSequenceRoutine(GachaDrawResult result)
         {
-            if (m_ResultItemPool == null) return;
-            m_ResultItemPool.ReturnAll();
+            yield return new WaitForSeconds(m_DelayBeforeFirst);
 
-            foreach (var item in result.Items)
+            for (int i = 0; i < result.Items.Count; i++)
             {
-                var ui = m_ResultItemPool.Rent();
-                ui.Setup(item);
+                var collectable = result.Items[i];
+                bool isLast = i == result.Items.Count - 1;
+
+                SpawnItemInternal(collectable);
+                PlaySpawnSfxInternal(collectable);
+
+                // tampilkan notice pity setelah item terakhir jika triggered
+                if (isLast && result.WasPityTriggered && m_PityNoticeText != null)
+                    m_PityNoticeText.gameObject.SetActive(true);
+
+                if (!isLast)
+                    yield return new WaitForSeconds(m_SpawnInterval);
             }
 
-            if (m_PityNoticeText != null)
-                m_PityNoticeText.gameObject.SetActive(result.WasPityTriggered);
+            m_SpawnCoroutine = null;
+        }
+
+        private void SpawnItemInternal(GachaCollectableConfig collectable)
+        {
+            if (m_ResultItemPool == null) return;
+            var ui = m_ResultItemPool.Rent();
+            ui.Setup(collectable);
+        }
+
+        private void PlaySpawnSfxInternal(GachaCollectableConfig collectable)
+        {
+            if (m_AudioSource == null) return;
+
+            // cek apakah item ini bagian dari guarantee array banner aktif
+            // untuk menentukan apakah pakai sfx pity atau normal
+            bool isPityItem = IsPityItemInternal(collectable);
+            AudioClip clip = isPityItem && m_PitySpawnSfx != null
+                ? m_PitySpawnSfx
+                : m_SpawnSfx;
+
+            if (clip != null)
+                m_AudioSource.PlayOneShot(clip);
+        }
+
+        private bool IsPityItemInternal(GachaCollectableConfig collectable)
+        {
+            var banner = RushPlayer.Instance.GachaManager.ActiveBanner;
+            if (banner == null) return false;
+
+            if (ContainsInArrayInternal(banner.FinalPityGuarantees, collectable)) return true;
+            if (ContainsInArrayInternal(banner.SmallPityGuarantees, collectable)) return true;
+            if (ContainsInArrayInternal(banner.FirstDrawGuarantees, collectable)) return true;
+
+            return false;
+        }
+
+        private static bool ContainsInArrayInternal(
+            GachaCollectableConfig[] arr, GachaCollectableConfig target)
+        {
+            if (arr == null) return false;
+            foreach (var c in arr)
+                if (c == target) return true;
+            return false;
+        }
+
+        private void StopSpawnInternal()
+        {
+            if (m_SpawnCoroutine == null) return;
+            StopCoroutine(m_SpawnCoroutine);
+            m_SpawnCoroutine = null;
         }
     }
 }
