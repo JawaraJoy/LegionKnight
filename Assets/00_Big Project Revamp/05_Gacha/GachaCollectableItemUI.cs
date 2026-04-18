@@ -1,13 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using LegionKnight;
 
 namespace Rush
 {
-    // Base class untuk semua UI yang menampilkan satu GachaCollectableConfig
-    // GachaRateItemUI dan GachaResultItemUI mewarisi ini
-    public abstract class GachaCollectableItemUI : UIView
+    public abstract class GachaCollectableItemUI : MonoBehaviour
     {
         [SerializeField] private Image m_Icon;
         [SerializeField] private TextMeshProUGUI m_NameText;
@@ -15,15 +12,20 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_RarityText;
         [SerializeField] private Image m_RarityFrame;
 
-        // Subclass memanggil ini sebagai base setup
+        // Overload untuk CollectibleConfig langsung (dipakai result panel & shop)
+        protected void SetupBase(CollectibleConfig collectible, int amount)
+        {
+            if (m_Icon != null) m_Icon.sprite = collectible.CollectibleField?.Icon;
+            if (m_NameText != null) m_NameText.text = collectible.BaseInfo.Name;
+
+            RefreshAmountInternal(amount);
+            RefreshRarityInternal(collectible.CollectibleField?.RarityConfig);
+        }
+
+        // Overload untuk GachaCollectableConfig (dipakai rate item)
         protected void SetupBase(GachaCollectableConfig collectable)
         {
-            if (m_Icon != null) m_Icon.sprite = collectable.Collect.CollectibleField.Icon;
-            if (m_NameText != null) m_NameText.text = collectable.Collect?.BaseInfo.Name ?? "-";
-
-            RefreshAmountInternal(collectable.Amount);
-            RefreshRarityInternal(collectable.Collect.CollectibleField.RarityConfig);
-            ShowInternal();
+            SetupBase(collectable.Collect, collectable.Amount);
         }
 
         private void RefreshAmountInternal(int amount)
@@ -57,7 +59,6 @@ namespace Rush
             }
         }
 
-        // Hook opsional untuk subclass jika perlu menambah setup setelah base
-        protected virtual void OnSetupComplete(GachaCollectableConfig collectable) { }
+        protected virtual void OnSetupComplete(CollectibleConfig collectible, int amount) { }
     }
 }

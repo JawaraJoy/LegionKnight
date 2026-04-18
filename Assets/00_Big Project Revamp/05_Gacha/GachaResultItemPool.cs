@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public class GachaResultItemPool : UIPoolManager<GachaResultItemUI>
+    public class GachaResultItemPool : CollectibleResultItemPool
     {
         
     }

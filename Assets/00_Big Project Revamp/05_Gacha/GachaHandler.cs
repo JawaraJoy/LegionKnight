@@ -13,7 +13,7 @@ namespace Rush
         [SerializeField] private GachaCostResolver m_CostResolver;
         [SerializeField] private CollectibleControl m_CollectibleControl;
 
-        [SerializeField] private UnityEvent<GachaDrawResult> m_OnDrawComplete;
+        [SerializeField] private UnityEvent<CollectibleResultData> m_OnDrawComplete;
         [SerializeField] private UnityEvent<string> m_OnDrawFailed;
         [SerializeField] private UnityEvent<GachaConfirmData> m_OnDrawRequested;
 
@@ -22,7 +22,7 @@ namespace Rush
         public GachaBannerConfig ActiveBanner => m_ActiveBanner;
         public GachaBannerConfig[] Banners => m_Banners;
         public GachaPityTracker PityTracker => m_PityTracker;
-        public UnityEvent<GachaDrawResult> OnDrawComplete => m_OnDrawComplete;
+        public UnityEvent<CollectibleResultData> OnDrawComplete => m_OnDrawComplete;
         public UnityEvent<string> OnDrawFailed => m_OnDrawFailed;
         public UnityEvent<GachaConfirmData> OnDrawRequested => m_OnDrawRequested;
 
@@ -96,23 +96,17 @@ namespace Rush
             m_OnDrawComplete?.Invoke(ExecuteDrawsInternal(m_ActiveBanner.MultiDrawCount));
         }
 
-        private GachaDrawResult ExecuteDrawsInternal(int count)
+        private CollectibleResultData ExecuteDrawsInternal(int count)
         {
-            var result = new GachaDrawResult();
+            var result = new CollectibleResultData();
             for (int i = 0; i < count; i++)
             {
                 m_PityTracker.IncrementDraw();
                 var item = m_DrawResolver.Resolve(m_ActiveBanner, m_PityTracker);
                 if (item == null) continue;
 
-                result.AddItem(item);
-
-                // Pity triggered jika draw ini tepat menyentuh threshold
-                // Resolver sudah reset counter setelah trigger, jadi cek sebelum increment
-                // sudah dilakukan di dalam Resolve — flag di-set berdasarkan apakah
-                // resolver memilih dari guarantee array
-                result.SetPityTriggered(m_DrawResolver.LastDrawWasPity);
-
+                result.AddEntry(item.Collect, item.Amount);
+                result.SetSpecialDrop(m_DrawResolver.LastDrawWasPity);
                 m_CollectibleControl?.AddCollectible(item.Collect, item.Amount);
             }
             return result;

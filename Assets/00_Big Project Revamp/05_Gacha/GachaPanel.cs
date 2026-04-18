@@ -152,7 +152,7 @@ namespace Rush
             detailPanel.Show(Manager.ActiveBanner);
         }
 
-        private void OnDrawCompleteInternal(GachaDrawResult result)
+        private void OnDrawCompleteInternal(CollectibleResultData result)
         {
             RefreshViewInternal();
             var resultPanel = CanvasManager.Instance.GetPanel<GachaResultPanel>();

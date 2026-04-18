@@ -1,11 +1,6 @@
 namespace Rush
 {
-    public class GachaResultItemUI : GachaCollectableItemUI
-    {
-        public void Setup(GachaCollectableConfig collectable)
-        {
-            SetupBase(collectable);
-            OnSetupComplete(collectable);
-        }
-    }
+    // Alias untuk backward compatibility prefab lama
+    // Semua logic ada di CollectibleResultItemUI
+    public class GachaResultItemUI : CollectibleResultItemUI { }
 }
