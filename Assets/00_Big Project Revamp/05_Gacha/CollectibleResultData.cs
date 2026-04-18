@@ -10,8 +10,15 @@ namespace Rush
         public IReadOnlyList<CollectibleResultEntry> Entries => m_Entries;
         public bool WasSpecialDrop => m_WasSpecialDrop;
 
-        internal void AddEntry(CollectibleConfig collectible, int amount) =>
+        internal void AddEntry(CollectibleConfig collectible, int amount)
+        {
             m_Entries.Add(new CollectibleResultEntry(collectible, amount));
+            LootField.CharacterApplier(collectible);
+            LootField.CurrencyApplier(collectible, amount);
+            LootField.CardApplier(collectible, amount);
+            LootField.EnergyApplier(collectible, amount);
+        }
+            
 
         // untuk gacha: dipanggil jika pity triggered
         // untuk shop: tidak dipakai (default false)

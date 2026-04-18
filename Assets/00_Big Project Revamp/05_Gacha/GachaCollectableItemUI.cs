@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using LegionKnight;
 
 namespace Rush
 {
-    public abstract class GachaCollectableItemUI : MonoBehaviour
+    public abstract class GachaCollectableItemUI : UIView
     {
         [SerializeField] private Image m_Icon;
         [SerializeField] private TextMeshProUGUI m_NameText;
@@ -59,6 +60,9 @@ namespace Rush
             }
         }
 
-        protected virtual void OnSetupComplete(CollectibleConfig collectible, int amount) { }
+        protected virtual void OnSetupComplete(CollectibleConfig collectible, int amount) 
+        {
+            ShowInternal();
+        }
     }
 }
