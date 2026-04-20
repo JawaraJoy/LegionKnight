@@ -6,7 +6,7 @@ using UnityEngine.Purchasing;
 
 namespace LegionKnight
 {
-    public class TenjinManager : MonoBehaviour
+    public class TenjinManager : Singleton<TenjinManager>
     {
         private BaseTenjin baseTenjin;
         private int floorProgression = 0;
@@ -17,8 +17,6 @@ namespace LegionKnight
         private bool progressionComplete = false;
 
         [SerializeField] private ItemConfig currencyCheat;
-
-        public static TenjinManager Instance { get; private set; }
 
         public static Dictionary<string, int> productIdCode = new Dictionary<string, int>()
         {
@@ -68,7 +66,6 @@ namespace LegionKnight
 
             if (!Instance)
             {
-                Instance = this;
                 timeStartPlay = Time.time;
                 Instance.Connect();
 

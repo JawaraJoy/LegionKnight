@@ -126,9 +126,9 @@ namespace Rush
             {
                 m_UnavailableReasonText.text = availability.LimitType switch
                 {
-                    ShopBundlePurchaseLimit.OneTime => "Sudah dibeli",
-                    ShopBundlePurchaseLimit.Daily => "Kembali besok",
-                    _ => "Tidak tersedia"
+                    ShopBundlePurchaseLimit.OneTime => "One Time Purchased",
+                    ShopBundlePurchaseLimit.Daily => "Come Back Tomorrow",
+                    _ => "Not Available"
                 };
             }
 

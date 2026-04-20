@@ -88,7 +88,7 @@ namespace Rush
             m_BuyButton.interactable = breakdown.CanAfford && availability.CanPurchase;
 
             if (m_BuyButtonText != null)
-                m_BuyButtonText.text = breakdown.IsFree ? "Ambil" : "Beli";
+                m_BuyButtonText.text = breakdown.IsFree ? "Take" : "Buy";
         }
 
         // ── Callbacks ─────────────────────────────────────────────────────────

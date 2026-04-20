@@ -26,7 +26,7 @@ namespace Rush
 
         protected override void HideInternal()
         {
-            m_BundlePool?.ReturnAll();
+            //m_BundlePool?.ReturnAll();
             base.HideInternal();
         }
     }

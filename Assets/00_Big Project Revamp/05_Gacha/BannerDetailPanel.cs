@@ -50,15 +50,15 @@ namespace Rush
 
             // Pity hanya trigger tepat di draw ke-N, tidak ada window
             if (m_SmallPityText != null)
-                m_SmallPityText.text = $"Small pity: draw ke-{m_Banner.SmallPityCount}";
+                m_SmallPityText.text = $"Small pity: draw -{m_Banner.SmallPityCount}";
 
             if (m_FinalPityText != null)
-                m_FinalPityText.text = $"Final pity: draw ke-{m_Banner.FinalPityCount}";
+                m_FinalPityText.text = $"Final pity: draw -{m_Banner.FinalPityCount}";
 
             var pity = RushPlayer.Instance.GachaManager.PityTracker;
             if (m_PityCountText != null)
                 m_PityCountText.text =
-                    $"Pity saat ini: {pity.FinalPityCounter}/{m_Banner.FinalPityCount}";
+                    $"Current Pity: {pity.FinalPityCounter}/{m_Banner.FinalPityCount}";
 
             PopulateRatesInternal();
         }

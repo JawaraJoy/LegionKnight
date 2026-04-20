@@ -18,7 +18,7 @@ namespace Rush
 
         // ── IConfirmData ──────────────────────────────────────────────────────
 
-        public string DescriptionText => $"Beli {m_Bundle.BaseInfo.Name}?";
+        public string DescriptionText => $"Buy {m_Bundle.BaseInfo.Name}?";
         public int MainCurrencyAmount => m_Breakdown.MainCurrencyAmount;
         public int OriginalCost => m_Breakdown.OriginalPrice;
         public bool HasDiscount => m_Breakdown.IsFirstPurchaseDiscount
@@ -33,4 +33,4 @@ namespace Rush
         public string AltCurrencyName => string.Empty;
         public Sprite AltCurrencyIcon => null;
     }
-}
+}   
