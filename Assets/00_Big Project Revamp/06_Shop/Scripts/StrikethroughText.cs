@@ -4,20 +4,14 @@ using TMPro;
 
 namespace Rush
 {
-    // Attach on the same GameObject as the TMP text
-    // Child hierarchy expected:
-    // OriginalPriceGroup
-    // ├── [this component + TextMeshProUGUI]
-    // └── StrikethroughLine (Image)
+    // Attach on the same GameObject as TextMeshProUGUI
+    // Assign m_StrikethroughLine to a child Image that acts as the strike line
     [RequireComponent(typeof(TextMeshProUGUI))]
     public class StrikethroughText : MonoBehaviour
     {
         [SerializeField] private Image m_StrikethroughLine;
 
-        // Line thickness in pixels
         [SerializeField] private float m_LineHeight = 2.5f;
-
-        // Vertical offset from text center — positive moves line up
         [SerializeField] private float m_VerticalOffset = 0f;
 
         private TextMeshProUGUI m_Text;
@@ -31,22 +25,13 @@ namespace Rush
                 : null;
         }
 
-        private void OnEnable()
-        {
-            // TMPro fires this after text + layout is updated
-            TMPro_EventManager.TEXT_CHANGED_EVENT.Add(OnTextChangedInternal);
-        }
-
-        private void OnDisable()
-        {
-            TMPro_EventManager.TEXT_CHANGED_EVENT.Remove(OnTextChangedInternal);
-        }
-
         public void SetText(string text)
         {
-            if (m_Text != null) m_Text.text = text;
-            // Force layout so bounds are immediately correct
-            Canvas.ForceUpdateCanvases();
+            if (m_Text == null) return;
+            m_Text.text = text;
+
+            // Force TMP to rebuild mesh so textBounds is accurate before we read it
+            m_Text.ForceMeshUpdate();
             RefreshLineInternal();
         }
 
@@ -55,9 +40,10 @@ namespace Rush
             gameObject.SetActive(visible);
         }
 
-        private void OnTextChangedInternal(Object obj)
+        // Recalculate when layout changes (e.g. parent resized)
+        private void OnRectTransformDimensionsChange()
         {
-            if (obj != m_Text) return;
+            if (!gameObject.activeInHierarchy) return;
             RefreshLineInternal();
         }
 
@@ -65,22 +51,24 @@ namespace Rush
         {
             if (m_LineRect == null || m_Text == null) return;
 
-            // Get the rendered text bounds in local space
-            m_Text.ForceMeshUpdate();
             Bounds bounds = m_Text.textBounds;
 
-            // Width matches text width exactly
-            float width = bounds.size.x;
+            // If text is empty textBounds can be zero — hide the line
+            if (bounds.size.x <= 0f)
+            {
+                m_StrikethroughLine.gameObject.SetActive(false);
+                return;
+            }
 
-            // Center of text vertically in local space + optional offset
-            float centerY = bounds.center.y + m_VerticalOffset;
+            m_StrikethroughLine.gameObject.SetActive(true);
 
-            // Apply to line rect
             m_LineRect.anchorMin = new Vector2(0.5f, 0.5f);
             m_LineRect.anchorMax = new Vector2(0.5f, 0.5f);
             m_LineRect.pivot = new Vector2(0.5f, 0.5f);
-            m_LineRect.anchoredPosition = new Vector2(bounds.center.x, centerY);
-            m_LineRect.sizeDelta = new Vector2(width, m_LineHeight);
+            m_LineRect.anchoredPosition = new Vector2(
+                bounds.center.x,
+                bounds.center.y + m_VerticalOffset);
+            m_LineRect.sizeDelta = new Vector2(bounds.size.x, m_LineHeight);
         }
     }
 }

@@ -8,17 +8,15 @@ namespace Rush
     {
         [SerializeField] private Button m_Button;
 
-        [Header("Main Currency Row")]
+        [Header("Main Currency Cost")]
         [SerializeField] private GameObject m_MainCostRow;
         [SerializeField] private Image m_MainCurrencyIcon;
-        [SerializeField] private TextMeshProUGUI m_OriginalCostText;  // dicoret jika ada discount
-        [SerializeField] private TextMeshProUGUI m_MainCostText;      // sisa main atau total cost
-
-        [Header("Discount")]
+        [SerializeField] private StrikethroughText m_OriginalCostText;
+        [SerializeField] private TextMeshProUGUI m_FinalCostText;
         [SerializeField] private GameObject m_DiscountBadge;
         [SerializeField] private TextMeshProUGUI m_DiscountPercentText;
 
-        [Header("Alt Currency Row — tampil jika main tidak cukup")]
+        [Header("Alt Currency — visible if main is insufficient")]
         [SerializeField] private GameObject m_AltCostRow;
         [SerializeField] private Image m_AltCurrencyIcon;
         [SerializeField] private TextMeshProUGUI m_AltCostText;
@@ -27,67 +25,39 @@ namespace Rush
 
         public void Refresh(GachaCostBreakdown breakdown, GachaBannerConfig banner, int mainHeld)
         {
-            RefreshCostRowsInternal(breakdown, banner, mainHeld);
-            RefreshDiscountInternal(breakdown);
+            RefreshMainCostInternal(breakdown, banner, mainHeld);
+            RefreshAltCostInternal(breakdown, banner, mainHeld);
 
             if (m_Button != null) m_Button.interactable = breakdown.CanAfford;
         }
 
-        private void RefreshCostRowsInternal(GachaCostBreakdown breakdown,
+        private void RefreshMainCostInternal(GachaCostBreakdown breakdown,
             GachaBannerConfig banner, int mainHeld)
         {
             bool mainIsEmpty = mainHeld <= 0;
             bool mainNotEnough = mainHeld < breakdown.TotalCost;
-            bool hasAlt = breakdown.AltDeductAmount > 0
-                                  && banner.AltCostCurrency != null;
 
-            // ── Main row ──────────────────────────────────────────────────────
-            // Sembunyikan main row hanya jika main benar-benar kosong DAN ada alt
-            bool showMain = !(mainIsEmpty && hasAlt);
-            if (m_MainCostRow != null) m_MainCostRow.SetActive(showMain);
+            // Hide entire main row if player has zero main currency
+            if (m_MainCostRow != null) m_MainCostRow.SetActive(!mainIsEmpty);
+            if (mainIsEmpty) return;
 
-            if (showMain)
+            if (m_MainCurrencyIcon != null)
+                m_MainCurrencyIcon.sprite = banner.DrawCostCurrency?.CollectibleField?.Icon;
+
+            // Show strikethrough original cost only if discounted and main is sufficient
+            if (m_OriginalCostText != null)
             {
-                if (m_MainCurrencyIcon != null)
-                    m_MainCurrencyIcon.sprite = banner.DrawCostCurrency?.CollectibleField?.Icon;
-
-                if (m_MainCostText != null)
-                {
-                    // Main cukup → tampilkan total cost (dari config)
-                    // Main kurang → tampilkan sisa main yang player punya
-                    m_MainCostText.text = mainNotEnough
-                        ? mainHeld.ToString()
-                        : breakdown.TotalCost.ToString();
-                }
-
-                // Original cost dicoret — hanya jika ada discount DAN main cukup
-                // (jika main kurang, kita sudah tampilkan sisa, bukan cost asli)
-                if (m_OriginalCostText != null)
-                {
-                    bool showOriginal = breakdown.HasDiscount && !mainNotEnough;
-                    m_OriginalCostText.gameObject.SetActive(showOriginal);
-                    if (showOriginal)
-                        m_OriginalCostText.text = $"<s>{breakdown.OriginalCost}</s>";
-                }
+                bool showOriginal = breakdown.HasDiscount && !mainNotEnough;
+                m_OriginalCostText.SetVisible(showOriginal);
+                if (showOriginal)
+                    m_OriginalCostText.SetText(breakdown.OriginalCost.ToString());
             }
 
-            // ── Alt row ───────────────────────────────────────────────────────
-            // Tampil jika main tidak cukup dan ada alt yang dibutuhkan
-            bool showAlt = mainNotEnough && hasAlt;
-            if (m_AltCostRow != null) m_AltCostRow.SetActive(showAlt);
+            if (m_FinalCostText != null)
+                m_FinalCostText.text = mainNotEnough
+                    ? mainHeld.ToString()
+                    : breakdown.TotalCost.ToString();
 
-            if (showAlt)
-            {
-                if (m_AltCurrencyIcon != null)
-                    m_AltCurrencyIcon.sprite = banner.AltCostCurrency?.CollectibleField?.Icon;
-
-                if (m_AltCostText != null)
-                    m_AltCostText.text = breakdown.AltDeductAmount.ToString();
-            }
-        }
-
-        private void RefreshDiscountInternal(GachaCostBreakdown breakdown)
-        {
             if (m_DiscountBadge != null)
                 m_DiscountBadge.SetActive(breakdown.HasDiscount);
 
@@ -99,5 +69,21 @@ namespace Rush
             }
         }
 
+        private void RefreshAltCostInternal(GachaCostBreakdown breakdown,
+            GachaBannerConfig banner, int mainHeld)
+        {
+            bool showAlt = mainHeld < breakdown.TotalCost
+                           && breakdown.AltDeductAmount > 0
+                           && banner.AltCostCurrency != null;
+
+            if (m_AltCostRow != null) m_AltCostRow.SetActive(showAlt);
+            if (!showAlt) return;
+
+            if (m_AltCurrencyIcon != null)
+                m_AltCurrencyIcon.sprite = banner.AltCostCurrency?.CollectibleField?.Icon;
+
+            if (m_AltCostText != null)
+                m_AltCostText.text = breakdown.AltDeductAmount.ToString();
+        }
     }
 }

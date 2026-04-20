@@ -13,7 +13,7 @@ namespace Rush
         [Tooltip("Discount tidak berlaku jika base cost sama atau kurang dari nilai ini")]
         [SerializeField] private int m_MinimumPriceForDiscount = 0;
 
-        public float SingleDrawDailyDiscount => m_SingleDrawDailyDiscount;
+        public float SingleDrawDailyDiscount => m_SingleDrawDailyDiscount;      
         public float MultiDrawDailyDiscount => m_MultiDrawDailyDiscount;
         public float MultiDrawDiscount => m_MultiDrawDiscount;
         public float GeneralDiscount => m_GeneralDiscount;
