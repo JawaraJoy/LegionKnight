@@ -29,7 +29,10 @@ namespace Rush
         {
             InitInternal();
         }
-
+        public void Refresh()
+        {
+            InitInternal();     
+        }
         private void InitInternal()
         {
             characterDecks = Player.Instance.HeroesCollection.HeroUnits;

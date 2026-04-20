@@ -10,6 +10,11 @@ namespace Rush
             if (config == null) return;
             Debug.Log($"[CollectibleControl] +{amount}x {config.name}");
             // Sambungkan ke InventoryManager / CollectionManager di sini
+
+            LootField.CharacterApplier(config);
+            LootField.CurrencyApplier(config, amount);
+            LootField.CardApplier(config, amount);
+            LootField.EnergyApplier(config, amount);
         }
     }
 }

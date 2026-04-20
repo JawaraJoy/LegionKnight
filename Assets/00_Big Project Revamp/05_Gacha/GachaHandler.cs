@@ -26,12 +26,11 @@ namespace Rush
         public UnityEvent<string> OnDrawFailed => m_OnDrawFailed;
         public UnityEvent<GachaConfirmData> OnDrawRequested => m_OnDrawRequested;
 
-        protected virtual void Awake()
+        public void Init()
         {
             if (m_Banners is { Length: > 0 })
                 SelectBannerInternal(m_Banners[0]);
         }
-
         // ── Banner ────────────────────────────────────────────────────────────
 
         private void SelectBannerInternal(GachaBannerConfig banner)

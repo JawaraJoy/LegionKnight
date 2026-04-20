@@ -15,84 +15,86 @@ namespace Rush
                 ? banner.SingleDrawCost * banner.MultiDrawCount
                 : banner.SingleDrawCost;
 
-            float discount = CalculateDiscountInternal(banner, isMulti, isDailyFirst);
+            float discount = CalculateDiscountInternal(banner, isMulti, isDailyFirst, baseCost);
             return Mathf.Max(1, Mathf.RoundToInt(baseCost * (1f - discount)));
         }
 
-        // Hitung breakdown mix currency secara detail
-        // Logic:
-        // 1. Coba bayar penuh dengan main → jika cukup, main saja
-        // 2. Main kurang → pakai semua main yang ada, kekurangannya dari alt
-        // 3. Alt juga kurang → CanAfford = false
         public GachaCostBreakdown CalculateBreakdown(GachaBannerConfig banner,
             CurrenciesControl currencyControl, bool isMulti, bool isDailyFirst)
         {
             var breakdown = new GachaCostBreakdown();
-            int totalCost = CalculateCost(banner, isMulti, isDailyFirst);
+
+            int baseCost = isMulti
+                ? banner.SingleDrawCost * banner.MultiDrawCount
+                : banner.SingleDrawCost;
+
+            float discount = CalculateDiscountInternal(banner, isMulti, isDailyFirst, baseCost);
+            bool hasDiscount = discount > 0f;
+            int totalCost = Mathf.Max(1, Mathf.RoundToInt(baseCost * (1f - discount)));
+
+            // Display — selalu dari config, tidak terpengaruh sisa currency player
+            breakdown.SetOriginalCost(baseCost);
+            breakdown.SetTotalCost(totalCost);
+            breakdown.SetHasDiscount(hasDiscount);
+
+            // Deduction — baru cek sisa currency player
             int mainHeld = currencyControl.GetCurrencyAmount(banner.DrawCostCurrency);
 
             if (mainHeld >= totalCost)
             {
-                // bayar penuh dengan main
-                breakdown.SetMain(totalCost);
-                breakdown.SetAlt(0);
+                // Bayar penuh dari main
+                breakdown.SetMainDeduct(totalCost);
+                breakdown.SetAltDeduct(0);
                 breakdown.SetMixed(false);
                 breakdown.SetCanAfford(true);
                 return breakdown;
             }
 
-            // main tidak cukup
-            int mainUsed = mainHeld;
-            int deficit = totalCost - mainUsed;
-
+            // Main tidak cukup → coba alt
             if (banner.AltCostCurrency == null)
             {
-                breakdown.SetMain(mainUsed);
-                breakdown.SetAlt(0);
+                breakdown.SetMainDeduct(mainHeld);
+                breakdown.SetAltDeduct(0);
                 breakdown.SetMixed(false);
                 breakdown.SetCanAfford(false);
                 return breakdown;
             }
 
-            // konversi deficit → kebutuhan alt currency
-            // rumus: altNeeded = ceil(deficit / singleDrawCost * altSingleDrawCost)
+            // Mix: pakai semua main yang ada, kekurangan dari alt
+            int mainUsed = mainHeld;
+            int deficit = totalCost - mainUsed;
             int altNeeded = Mathf.CeilToInt(
                 (float)deficit / banner.SingleDrawCost * banner.AltSingleDrawCost);
             int altHeld = currencyControl.GetCurrencyAmount(banner.AltCostCurrency);
 
-            breakdown.SetMain(mainUsed);
-            breakdown.SetAlt(altNeeded);
+            breakdown.SetMainDeduct(mainUsed);
+            breakdown.SetAltDeduct(altNeeded);
             breakdown.SetMixed(mainUsed > 0);
             breakdown.SetCanAfford(altHeld >= altNeeded);
             return breakdown;
         }
 
-        public bool HasEnoughCurrency(GachaBannerConfig banner,
-            CurrenciesControl currencyControl, bool isMulti, bool isDailyFirst)
-        {
-            return CalculateBreakdown(banner, currencyControl, isMulti, isDailyFirst).CanAfford;
-        }
-
-        public void DeductCost(GachaBannerConfig banner, CurrenciesControl currencyControl,
-            GachaCostBreakdown breakdown)
+        public void DeductCost(GachaBannerConfig banner,
+            CurrenciesControl currencyControl, GachaCostBreakdown breakdown)
         {
             if (!breakdown.CanAfford) return;
 
-            if (breakdown.MainCurrencyAmount > 0)
-                currencyControl.RemoveCurrencyAmount(banner.DrawCostCurrency,
-                    breakdown.MainCurrencyAmount);
+            if (breakdown.MainDeductAmount > 0)
+                currencyControl.RemoveCurrencyAmount(
+                    banner.DrawCostCurrency, breakdown.MainDeductAmount);
 
-            if (breakdown.AltCurrencyAmount > 0 && banner.AltCostCurrency != null)
-                currencyControl.RemoveCurrencyAmount(banner.AltCostCurrency,
-                    breakdown.AltCurrencyAmount);
+            if (breakdown.AltDeductAmount > 0 && banner.AltCostCurrency != null)
+                currencyControl.RemoveCurrencyAmount(
+                    banner.AltCostCurrency, breakdown.AltDeductAmount);
         }
 
         // ── Discount ──────────────────────────────────────────────────────────
 
         private float CalculateDiscountInternal(GachaBannerConfig banner,
-            bool isMulti, bool isDailyFirst)
+            bool isMulti, bool isDailyFirst, int baseCost)
         {
             if (banner.DiscountConfig == null) return 0f;
+            if (baseCost <= banner.DiscountConfig.MinimumPriceForDiscount) return 0f;
 
             var d = banner.DiscountConfig;
             float discount = d.GeneralDiscount;

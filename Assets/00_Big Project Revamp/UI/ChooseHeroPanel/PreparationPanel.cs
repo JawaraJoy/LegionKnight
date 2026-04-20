@@ -29,6 +29,8 @@ namespace Rush
         {
             base.ShowInternal();
             m_TabGroup.OnTabClicked(0);
+            m_CardTabView.Refresh();
+            m_HeroTabView.Refresh();
             Adjust();
         }
         protected override void HideInternal()

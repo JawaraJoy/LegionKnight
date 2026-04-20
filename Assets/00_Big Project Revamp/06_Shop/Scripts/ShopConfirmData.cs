@@ -20,6 +20,9 @@ namespace Rush
 
         public string DescriptionText => $"Beli {m_Bundle.BaseInfo.Name}?";
         public int MainCurrencyAmount => m_Breakdown.MainCurrencyAmount;
+        public int OriginalCost => m_Breakdown.OriginalPrice;
+        public bool HasDiscount => m_Breakdown.IsFirstPurchaseDiscount
+                                            || m_Breakdown.MainCurrencyAmount < m_Breakdown.OriginalPrice;
         public string MainCurrencyName => m_Bundle.CostCurrency?.BaseInfo.Name;
         public Sprite MainCurrencyIcon => m_Bundle.CostCurrency?.CollectibleField?.Icon;
         public bool IsFree => m_Breakdown.IsFree;
@@ -28,5 +31,6 @@ namespace Rush
         public bool HasAltCurrency => false;
         public int AltCurrencyAmount => 0;
         public string AltCurrencyName => string.Empty;
+        public Sprite AltCurrencyIcon => null;
     }
 }

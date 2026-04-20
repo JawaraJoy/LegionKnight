@@ -7,6 +7,7 @@ namespace Rush
     public class ShopBundleContentUI : MonoBehaviour
     {
         [SerializeField] private Image m_Icon;
+        [SerializeField] private Image m_RarityFrame;
         [SerializeField] private TextMeshProUGUI m_NameText;
         [SerializeField] private TextMeshProUGUI m_AmountText;
 
@@ -14,7 +15,10 @@ namespace Rush
         {
             if (m_Icon != null) m_Icon.sprite = entry.Collectible.CollectibleField?.Icon;
             if (m_NameText != null) m_NameText.text = entry.Collectible.BaseInfo.Name;
-
+            if (m_RarityFrame != null)
+            {
+                m_RarityFrame.color = entry.Collectible.CollectibleField.RarityConfig.Color;
+            }
             if (m_AmountText != null)
             {
                 bool show = entry.Amount >= 2;

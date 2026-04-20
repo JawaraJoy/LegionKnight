@@ -1,69 +1,103 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 namespace Rush
 {
-    // Attach ke GameObject yang sama dengan Button draw (single atau multi)
-    // GachaPanel cukup memanggil Refresh() saat data berubah
     public class GachaDrawButtonUI : MonoBehaviour
     {
         [SerializeField] private Button m_Button;
 
-        // Icon currency yang dipakai untuk bayar
-        [SerializeField] private Image m_CurrencyIcon;
+        [Header("Main Currency Row")]
+        [SerializeField] private GameObject m_MainCostRow;
+        [SerializeField] private Image m_MainCurrencyIcon;
+        [SerializeField] private TextMeshProUGUI m_OriginalCostText;  // dicoret jika ada discount
+        [SerializeField] private TextMeshProUGUI m_MainCostText;      // sisa main atau total cost
 
-        // Cost tanpa discount � dicoret jika ada discount aktif
-        [SerializeField] private TextMeshProUGUI m_OriginalCostText;
-
-        // Cost setelah discount � selalu tampil
-        [SerializeField] private TextMeshProUGUI m_FinalCostText;
-
-        // Opsional: badge "DISKON" atau persentase diskon
+        [Header("Discount")]
         [SerializeField] private GameObject m_DiscountBadge;
         [SerializeField] private TextMeshProUGUI m_DiscountPercentText;
 
+        [Header("Alt Currency Row — tampil jika main tidak cukup")]
+        [SerializeField] private GameObject m_AltCostRow;
+        [SerializeField] private Image m_AltCurrencyIcon;
+        [SerializeField] private TextMeshProUGUI m_AltCostText;
+
         public Button Button => m_Button;
 
-        // originalCost  = biaya sebelum discount (atau sama jika tidak ada discount)
-        // finalCost     = biaya setelah discount
-        // currencyIcon  = sprite dari ItemConfig currency
-        public void Refresh(int originalCost, int finalCost, Sprite currencyIcon)
+        public void Refresh(GachaCostBreakdown breakdown, GachaBannerConfig banner, int mainHeld)
         {
-            bool hasDiscount = finalCost < originalCost;
+            RefreshCostRowsInternal(breakdown, banner, mainHeld);
+            RefreshDiscountInternal(breakdown);
 
-            if (m_CurrencyIcon != null)
+            if (m_Button != null) m_Button.interactable = breakdown.CanAfford;
+        }
+
+        private void RefreshCostRowsInternal(GachaCostBreakdown breakdown,
+            GachaBannerConfig banner, int mainHeld)
+        {
+            bool mainIsEmpty = mainHeld <= 0;
+            bool mainNotEnough = mainHeld < breakdown.TotalCost;
+            bool hasAlt = breakdown.AltDeductAmount > 0
+                                  && banner.AltCostCurrency != null;
+
+            // ── Main row ──────────────────────────────────────────────────────
+            // Sembunyikan main row hanya jika main benar-benar kosong DAN ada alt
+            bool showMain = !(mainIsEmpty && hasAlt);
+            if (m_MainCostRow != null) m_MainCostRow.SetActive(showMain);
+
+            if (showMain)
             {
-                m_CurrencyIcon.sprite = currencyIcon;
-                m_CurrencyIcon.gameObject.SetActive(currencyIcon != null);
+                if (m_MainCurrencyIcon != null)
+                    m_MainCurrencyIcon.sprite = banner.DrawCostCurrency?.CollectibleField?.Icon;
+
+                if (m_MainCostText != null)
+                {
+                    // Main cukup → tampilkan total cost (dari config)
+                    // Main kurang → tampilkan sisa main yang player punya
+                    m_MainCostText.text = mainNotEnough
+                        ? mainHeld.ToString()
+                        : breakdown.TotalCost.ToString();
+                }
+
+                // Original cost dicoret — hanya jika ada discount DAN main cukup
+                // (jika main kurang, kita sudah tampilkan sisa, bukan cost asli)
+                if (m_OriginalCostText != null)
+                {
+                    bool showOriginal = breakdown.HasDiscount && !mainNotEnough;
+                    m_OriginalCostText.gameObject.SetActive(showOriginal);
+                    if (showOriginal)
+                        m_OriginalCostText.text = $"<s>{breakdown.OriginalCost}</s>";
+                }
             }
 
-            // Original cost: tampil hanya jika ada discount, dengan strikethrough via
-            // TextMeshPro rich text <s>
-            if (m_OriginalCostText != null)
+            // ── Alt row ───────────────────────────────────────────────────────
+            // Tampil jika main tidak cukup dan ada alt yang dibutuhkan
+            bool showAlt = mainNotEnough && hasAlt;
+            if (m_AltCostRow != null) m_AltCostRow.SetActive(showAlt);
+
+            if (showAlt)
             {
-                m_OriginalCostText.gameObject.SetActive(hasDiscount);
-                if (hasDiscount)
-                    m_OriginalCostText.text = $"<s>{originalCost}</s>";
+                if (m_AltCurrencyIcon != null)
+                    m_AltCurrencyIcon.sprite = banner.AltCostCurrency?.CollectibleField?.Icon;
+
+                if (m_AltCostText != null)
+                    m_AltCostText.text = breakdown.AltDeductAmount.ToString();
             }
+        }
 
-            if (m_FinalCostText != null)
-                m_FinalCostText.text = finalCost.ToString();
-
-            // Badge diskon
+        private void RefreshDiscountInternal(GachaCostBreakdown breakdown)
+        {
             if (m_DiscountBadge != null)
-                m_DiscountBadge.SetActive(hasDiscount);
+                m_DiscountBadge.SetActive(breakdown.HasDiscount);
 
-            if (m_DiscountPercentText != null && hasDiscount && originalCost > 0)
+            if (m_DiscountPercentText != null && breakdown.HasDiscount
+                && breakdown.OriginalCost > 0)
             {
-                float percent = (1f - (float)finalCost / originalCost) * 100f;
-                m_DiscountPercentText.text = $"-{percent:F0}%";
+                float pct = (1f - (float)breakdown.TotalCost / breakdown.OriginalCost) * 100f;
+                m_DiscountPercentText.text = $"-{pct:F0}%";
             }
         }
 
-        public void SetInteractable(bool interactable)
-        {
-            if (m_Button != null) m_Button.interactable = interactable;
-        }
     }
 }

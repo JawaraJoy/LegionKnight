@@ -12,7 +12,6 @@ namespace Rush
         [SerializeField] private GachaDrawButtonUI m_DrawMultiButtonUI;
         [SerializeField] private Button m_DetailButton;
         [SerializeField] private TextMeshProUGUI m_PityProgressText;
-        [SerializeField] private TextMeshProUGUI m_BannerNameText;
         [SerializeField] private Transform m_BannerButtonContainer;
         [SerializeField] private GachaBannerButtonUI m_BannerButtonPrefab;
 
@@ -71,48 +70,19 @@ namespace Rush
                 m_PityProgressText.text =
                     $"{Manager.PityTracker.FinalPityCounter}/{banner.FinalPityCount}";
 
+            int mainHeld = Player.Instance.CurrencyControl
+                .GetCurrencyAmount(banner.DrawCostCurrency);
 
-            RefreshDrawButtonInternal(m_DrawSingleButtonUI, banner, false);
-            RefreshDrawButtonInternal(m_DrawMultiButtonUI, banner, true);
+            RefreshDrawButtonInternal(m_DrawSingleButtonUI, banner, false, mainHeld);
+            RefreshDrawButtonInternal(m_DrawMultiButtonUI, banner, true, mainHeld);
         }
 
         private void RefreshDrawButtonInternal(GachaDrawButtonUI buttonUI,
-            GachaBannerConfig banner, bool isMulti)
+            GachaBannerConfig banner, bool isMulti, int mainHeld)
         {
             if (buttonUI == null) return;
-
-            // Hitung biaya tanpa discount untuk original
-            int baseCost = isMulti
-                ? banner.SingleDrawCost * banner.MultiDrawCount
-                : banner.SingleDrawCost;
-
-            // Hitung biaya setelah discount (final)
             var breakdown = Manager.GetBreakdown(isMulti);
-            // total final cost = main + alt yang akan dibayar
-            int finalCost = breakdown.MainCurrencyAmount + ConvertAltToMainEquivalentInternal(
-                banner, breakdown.AltCurrencyAmount);
-
-            // Icon: ambil dari ItemConfig currency utama
-            // Asumsikan ItemConfig memiliki field icon via CollectibleField
-            Sprite currencyIcon = GetCurrencyIconInternal(banner.DrawCostCurrency);
-
-            buttonUI.Refresh(baseCost, finalCost, currencyIcon);
-            buttonUI.SetInteractable(breakdown.CanAfford);
-        }
-
-        // Konversi alt currency amount ke equivalent main untuk keperluan display total
-        private int ConvertAltToMainEquivalentInternal(GachaBannerConfig banner, int altAmount)
-        {
-            if (altAmount <= 0 || banner.AltSingleDrawCost <= 0) return 0;
-            return Mathf.RoundToInt((float)altAmount / banner.AltSingleDrawCost
-                                    * banner.SingleDrawCost);
-        }
-
-        private Sprite GetCurrencyIconInternal(ItemConfig itemConfig)
-        {
-            if (itemConfig == null) return null;
-            // Ambil icon melalui CollectibleField sesuai pattern yang sudah ada
-            return itemConfig.CollectibleField?.Icon;
+            buttonUI.Refresh(breakdown, banner, mainHeld);
         }
 
         private void PopulateBannerButtonsInternal()
@@ -129,8 +99,6 @@ namespace Rush
         private void OnBannerSelectedInternal(GachaBannerConfig banner)
         {
             Manager.SelectBanner(banner);
-            if (m_BannerNameText != null)
-                m_BannerNameText.text = banner.BaseInfo.Name;
             RefreshViewInternal();
         }
 
@@ -149,7 +117,7 @@ namespace Rush
         private void OnDetailClickedInternal()
         {
             var detailPanel = CanvasManager.Instance.GetPanel<BannerDetailPanel>();
-            detailPanel.Show(Manager.ActiveBanner);
+            detailPanel?.Show(Manager.ActiveBanner);
         }
 
         private void OnDrawCompleteInternal(CollectibleResultData result)

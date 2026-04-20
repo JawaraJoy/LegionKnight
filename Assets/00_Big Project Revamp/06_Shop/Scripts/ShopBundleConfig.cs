@@ -26,6 +26,9 @@ namespace Rush
         [SerializeField, Range(0f, 1f)] private float m_MainDiscount = 0f;
         [SerializeField, Range(0f, 1f)] private float m_FirstPurchaseDiscount = 0f;
 
+        [Tooltip("Discount tidak berlaku jika BasePrice sama atau kurang dari nilai ini")]
+        [SerializeField] private int m_MinimumPriceForDiscount = 0;
+
         [Header("Purchase Limit")]
         [SerializeField] private ShopBundlePurchaseLimit m_PurchaseLimit = ShopBundlePurchaseLimit.Unlimited;
 
@@ -37,6 +40,7 @@ namespace Rush
         public int BasePrice => m_BasePrice;
         public float MainDiscount => m_MainDiscount;
         public float FirstPurchaseDiscount => m_FirstPurchaseDiscount;
+        public int MinimumPriceForDiscount => m_MinimumPriceForDiscount;
         public ShopBundlePurchaseLimit PurchaseLimit => m_PurchaseLimit;
         public Sprite BundleSprite => m_BundleSprite;
     }

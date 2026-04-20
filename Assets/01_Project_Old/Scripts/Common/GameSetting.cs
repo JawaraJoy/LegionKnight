@@ -13,6 +13,7 @@ namespace Rush
 
         private void Start()
         {
+            QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = m_FrameTarget;
         }
     }

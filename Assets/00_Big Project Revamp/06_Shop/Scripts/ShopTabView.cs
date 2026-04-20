@@ -9,7 +9,7 @@ namespace Rush
         [SerializeField] private ShopBundlePool m_BundlePool;
 
         public void Populate(ShopTabConfig tabConfig,
-            Action<ShopBundleConfig> onBuyClicked)
+            Action<ShopBundleConfig> onBundleClicked)
         {
             if (m_BundlePool == null || tabConfig?.Bundles == null) return;
             m_BundlePool.ReturnAll();
@@ -20,8 +20,7 @@ namespace Rush
                 var breakdown = manager.GetBreakdown(bundle);
                 var availability = manager.GetAvailability(bundle);
                 var item = m_BundlePool.Rent();
-                item.Setup(bundle, breakdown, availability);
-                item.SetBuyListener(onBuyClicked);
+                item.Setup(bundle, breakdown, availability, onBundleClicked);
             }
         }
 
@@ -31,4 +30,4 @@ namespace Rush
             base.HideInternal();
         }
     }
-}
+}   

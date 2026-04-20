@@ -13,14 +13,16 @@ namespace Rush
 
         [SerializeField] private UnityEvent<ShopConfirmData> m_OnPurchaseRequested;
         [SerializeField] private UnityEvent<CollectibleResultData> m_OnPurchaseComplete;
+        [SerializeField] private UnityEvent<ShopBundleConfig> m_OnPurchaseCompleteBundle;
         [SerializeField] private UnityEvent<string> m_OnPurchaseFailed;
 
         public ShopConfig ShopConfig => m_ShopConfig;
         public UnityEvent<ShopConfirmData> OnPurchaseRequested => m_OnPurchaseRequested;
         public UnityEvent<CollectibleResultData> OnPurchaseComplete => m_OnPurchaseComplete;
+        public UnityEvent<ShopBundleConfig> OnPurchaseCompleteBundle => m_OnPurchaseCompleteBundle;
         public UnityEvent<string> OnPurchaseFailed => m_OnPurchaseFailed;
 
-        public void RequestPurchase(ShopBundleConfig bundle)
+        public void     RequestPurchase(ShopBundleConfig bundle)
         {
             if (!ValidateBundleInternal(bundle)) return;
 
@@ -65,7 +67,13 @@ namespace Rush
 
             m_CostResolver.DeductCost(bundle, GetCurrencyInternal(), breakdown);
             m_PurchaseTracker.MarkPurchased(bundle);
-            m_OnPurchaseComplete?.Invoke(BuildResultInternal(bundle));
+            GiveItemsInternal(bundle);
+
+            var result = BuildResultInternal(bundle);
+            m_OnPurchaseComplete?.Invoke(result);
+
+            // Event terpisah untuk refresh detail panel tanpa harus tahu result
+            m_OnPurchaseCompleteBundle?.Invoke(bundle);
         }
 
         public ShopBundleAvailability GetAvailability(ShopBundleConfig bundle)
@@ -84,14 +92,19 @@ namespace Rush
                 bundle, GetCurrencyInternal(), isFirst);
         }
 
+        private void GiveItemsInternal(ShopBundleConfig bundle)
+        {
+            if (bundle.Entries == null) return;
+            foreach (var entry in bundle.Entries)
+                m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
+        }
+
         private CollectibleResultData BuildResultInternal(ShopBundleConfig bundle)
         {
             var result = new CollectibleResultData();
             if (bundle.Entries == null) return result;
-
             foreach (var entry in bundle.Entries)
                 result.AddEntry(entry.Collectible, entry.Amount);
-
             return result;
         }
 

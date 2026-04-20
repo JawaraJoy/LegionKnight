@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using LegionKnight;
 
@@ -12,19 +12,22 @@ namespace Rush
 
         private ShopManager Manager => RushPlayer.Instance.ShopManager;
 
+        private void Awake()
+        {
+            if (m_CloseButton != null) m_CloseButton.onClick.AddListener(HideInternal);
+        }
         protected override void ShowInternal()
         {
             base.ShowInternal();
             SubscribeEventsInternal();
             PopulateTabsInternal();
-            if (m_CloseButton != null) m_CloseButton.onClick.AddListener(Hide);
+            
             m_TabGroup?.Show();
         }
 
         protected override void HideInternal()
         {
             UnsubscribeEventsInternal();
-            if (m_CloseButton != null) m_CloseButton.onClick.RemoveListener(Hide);
             m_TabGroup?.Hide();
             base.HideInternal();
         }
@@ -49,12 +52,17 @@ namespace Rush
             if (tabs == null || m_ShopTabEntries == null) return;
 
             for (int i = 0; i < m_ShopTabEntries.Length && i < tabs.Length; i++)
-                m_ShopTabEntries[i].Populate(tabs[i], OnBuyClickedInternal);
+                m_ShopTabEntries[i].Populate(tabs[i], OnBundleClickedInternal);
         }
 
-        private void OnBuyClickedInternal(ShopBundleConfig bundle) =>
-            Manager.RequestPurchase(bundle);
+        // Bundle di-klik → buka detail panel
+        private void OnBundleClickedInternal(ShopBundleConfig bundle)
+        {
+            var detailPanel = CanvasManager.Instance.GetPanel<ShopBundleDetailPanel>();
+            detailPanel?.Show(bundle);
+        }
 
+        // Purchase request dari detail panel → buka confirm
         private void OnPurchaseRequestedInternal(ShopConfirmData data)
         {
             var confirmPanel = CanvasManager.Instance.GetPanel<CurrencyConfirmationPanel>();
@@ -63,7 +71,14 @@ namespace Rush
 
         private void OnPurchaseCompleteInternal(CollectibleResultData result)
         {
+            // Refresh list badge (first purchase, unavailable) di semua tab
             RefreshActiveTabInternal();
+
+            // Refresh detail panel jika masih terbuka
+            var detailPanel = CanvasManager.Instance.GetPanel<ShopBundleDetailPanel>();
+            // detail panel refresh dirinya sendiri via RefreshIfShowing
+
+            // Tampilkan result
             var resultPanel = CanvasManager.Instance.GetPanel<ShopResultPanel>();
             resultPanel?.Show(result);
         }
@@ -75,7 +90,7 @@ namespace Rush
         {
             if (m_ShopTabEntries == null) return;
             foreach (var entry in m_ShopTabEntries)
-                entry.RepopulateIfVisible(OnBuyClickedInternal);
+                entry.RepopulateIfVisible(OnBundleClickedInternal);
         }
     }
 }

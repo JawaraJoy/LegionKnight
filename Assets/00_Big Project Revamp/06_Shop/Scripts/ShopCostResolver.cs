@@ -7,10 +7,7 @@ namespace Rush
     {
         public int CalculateFinalPrice(ShopBundleConfig bundle, bool isFirstPurchase)
         {
-            float discount = isFirstPurchase
-                ? Mathf.Max(bundle.FirstPurchaseDiscount, bundle.MainDiscount)
-                : bundle.MainDiscount;
-
+            float discount = CalculateDiscountInternal(bundle, isFirstPurchase);
             return Mathf.Max(0, Mathf.RoundToInt(bundle.BasePrice * (1f - discount)));
         }
 
@@ -18,11 +15,16 @@ namespace Rush
             CurrenciesControl currencyControl, bool isFirstPurchase)
         {
             var breakdown = new ShopCostBreakdown();
-            int finalPrice = CalculateFinalPrice(bundle, isFirstPurchase);
+
+            float discount = CalculateDiscountInternal(bundle, isFirstPurchase);
+            bool hasDiscount = discount > 0f;
+            int finalPrice = Mathf.Max(0, Mathf.RoundToInt(bundle.BasePrice * (1f - discount)));
 
             breakdown.SetOriginalPrice(bundle.BasePrice);
+            breakdown.SetHasDiscount(hasDiscount);
             breakdown.SetFirstPurchaseDiscount(
-                isFirstPurchase && bundle.FirstPurchaseDiscount > 0f);
+                isFirstPurchase && bundle.FirstPurchaseDiscount > 0f
+                && bundle.BasePrice > bundle.MinimumPriceForDiscount);
 
             if (finalPrice <= 0)
             {
@@ -47,8 +49,21 @@ namespace Rush
         {
             if (!breakdown.CanAfford || breakdown.IsFree) return;
             if (bundle.CostCurrency == null) return;
-
             currencyControl.RemoveCurrencyAmount(bundle.CostCurrency, breakdown.MainCurrencyAmount);
+        }
+
+        // ── Discount ──────────────────────────────────────────────────────────
+
+        private float CalculateDiscountInternal(ShopBundleConfig bundle, bool isFirstPurchase)
+        {
+            // Jika BasePrice sama atau kurang dari threshold → tidak ada discount
+            if (bundle.BasePrice <= bundle.MinimumPriceForDiscount) return 0f;
+
+            float discount = isFirstPurchase
+                ? Mathf.Max(bundle.FirstPurchaseDiscount, bundle.MainDiscount)
+                : bundle.MainDiscount;
+
+            return Mathf.Clamp01(discount);
         }
     }
 }

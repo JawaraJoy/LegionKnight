@@ -13,10 +13,7 @@ namespace Rush
         internal void AddEntry(CollectibleConfig collectible, int amount)
         {
             m_Entries.Add(new CollectibleResultEntry(collectible, amount));
-            LootField.CharacterApplier(collectible);
-            LootField.CurrencyApplier(collectible, amount);
-            LootField.CardApplier(collectible, amount);
-            LootField.EnergyApplier(collectible, amount);
+            
         }
             
 

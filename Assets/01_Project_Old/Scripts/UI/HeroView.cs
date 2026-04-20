@@ -46,6 +46,8 @@ namespace LegionKnight
         private AbilityView m_Platform;
         [SerializeField]
         private AbilityView m_Passive;
+
+        private HeroUnitConfig m_Config;
         private void Start()
         {
             InitInternal();
@@ -93,6 +95,7 @@ namespace LegionKnight
         private void OnInitInvoke(HeroUnitConfig config)
         {
             if (config == null) return;
+            m_Config = config;
             m_OnInit?.Invoke(config);
 
             m_AvatarSpineUI.SetSkeletonAssetData(config.SkeletonDataAsset);
