@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 namespace Rush
 {
-    public class ShopBundleItemUI : MonoBehaviour
+    public class ShopBundleItemUI : MonoBehaviour, IUpdater
     {
-        [SerializeField] private TextMeshProUGUI m_NameText;
+        [SerializeField]
+        private TextMeshProUGUI m_NameText;
         [Header("Visual")]
         [SerializeField] private Button m_Button;
         [SerializeField] private Image m_BundleImage;
@@ -18,6 +18,7 @@ namespace Rush
         [SerializeField] private GameObject m_PriceGroup;
         [SerializeField] private Image m_CurrencyIcon;
         [SerializeField] private TextMeshProUGUI m_OriginalPriceText;
+        SerializeField] private Image m_Cost    
         [SerializeField] private TextMeshProUGUI m_FinalPriceText;
         [SerializeField] private GameObject m_DiscountBadge;
         [SerializeField] private TextMeshProUGUI m_DiscountPercentText;
@@ -32,18 +33,43 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_CountdownText;
 
         private ShopBundleConfig m_Bundle;
-        private Coroutine m_CountdownCoroutine;
+        private bool m_IsCountingDown;
+
+        // ── IUpdater ──────────────────────────────────────────────────────────
+        // Registered to UpdateBank only while countdown is active
+        public bool IsActive => m_IsCountingDown && m_Bundle != null;
+
+        public void Tick()
+        {
+            double remaining = RushPlayer.Instance.ShopManager
+                .GetAvailability(m_Bundle).ResetSecondsRemaining;
+
+            if (remaining <= 0)
+            {
+                StopCountdownInternal();
+                if (m_UnavailableOverlay != null) m_UnavailableOverlay.SetActive(false);
+                if (m_CountdownText != null) m_CountdownText.gameObject.SetActive(false);
+                if (m_Button != null) m_Button.interactable = true;
+                return;
+            }
+
+            if (m_CountdownText != null)
+                m_CountdownText.text = FormatCountdownInternal(remaining);
+        }
+
+        // ── Setup ─────────────────────────────────────────────────────────────
 
         public void Setup(ShopBundleConfig bundle, ShopCostBreakdown breakdown,
             ShopBundleAvailability availability, Action<ShopBundleConfig> onClicked)
         {
             m_Bundle = bundle;
+
             m_NameText.text = m_Bundle.BaseInfo.Name;
             if (m_BundleImage != null)
                 m_BundleImage.sprite = bundle.BundleSprite;
 
             RefreshPriceInternal(bundle, breakdown);
-            RefreshBadgesInternal(bundle, breakdown, availability);
+            RefreshBadgesInternal(bundle, breakdown);
             RefreshAvailabilityInternal(availability);
 
             if (m_Button != null)
@@ -53,7 +79,16 @@ namespace Rush
             }
         }
 
-        private void OnDisable() => StopCountdownInternal();
+        private void OnEnable()
+        {
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+
+        private void OnDisable()
+        {
+            StopCountdownInternal();
+            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+        }
 
         // ── Price ─────────────────────────────────────────────────────────────
 
@@ -75,7 +110,7 @@ namespace Rush
             {
                 m_OriginalPriceText.gameObject.SetActive(hasDiscount);
                 if (hasDiscount)
-                    m_OriginalPriceText.text = $"<s>{breakdown.OriginalPrice}</s>";
+                    m_OriginalPriceText.text = breakdown.OriginalPrice.ToString();
             }
 
             if (m_FinalPriceText != null)
@@ -94,8 +129,7 @@ namespace Rush
 
         // ── Badges ────────────────────────────────────────────────────────────
 
-        private void RefreshBadgesInternal(ShopBundleConfig bundle,
-            ShopCostBreakdown breakdown, ShopBundleAvailability availability)
+        private void RefreshBadgesInternal(ShopBundleConfig bundle, ShopCostBreakdown breakdown)
         {
             if (m_FirstPurchaseBadge != null)
                 m_FirstPurchaseBadge.SetActive(breakdown.IsFirstPurchaseDiscount);
@@ -114,9 +148,10 @@ namespace Rush
             if (m_UnavailableOverlay != null)
                 m_UnavailableOverlay.SetActive(unavailable);
 
+            StopCountdownInternal();
+
             if (!unavailable)
             {
-                StopCountdownInternal();
                 if (m_CountdownText != null)
                     m_CountdownText.gameObject.SetActive(false);
                 return;
@@ -126,60 +161,35 @@ namespace Rush
             {
                 m_UnavailableReasonText.text = availability.LimitType switch
                 {
-                    ShopBundlePurchaseLimit.OneTime => "One Time Purchased",
-                    ShopBundlePurchaseLimit.Daily => "Come Back Tomorrow",
-                    _ => "Not Available"
+                    ShopBundlePurchaseLimit.OneTime => "Already purchased",
+                    ShopBundlePurchaseLimit.Daily => "Come back tomorrow",
+                    _ => "Not available"
                 };
             }
 
+            // Start countdown only for daily bundles
             if (availability.IsDaily && availability.ResetSecondsRemaining > 0)
             {
-                StopCountdownInternal();
-                m_CountdownCoroutine = StartCoroutine(CountdownRoutine());
+                if (m_CountdownText != null)
+                    m_CountdownText.gameObject.SetActive(true);
+
+                m_IsCountingDown = true;
             }
         }
 
         // ── Countdown ─────────────────────────────────────────────────────────
 
-        private IEnumerator CountdownRoutine()
+        private void StopCountdownInternal()
         {
-            if (m_CountdownText != null)
-                m_CountdownText.gameObject.SetActive(true);
-
-            while (true)
-            {
-                double remaining = RushPlayer.Instance.ShopManager
-                    .GetAvailability(m_Bundle).ResetSecondsRemaining;
-
-                if (remaining <= 0)
-                {
-                    if (m_CountdownText != null) m_CountdownText.gameObject.SetActive(false);
-                    if (m_UnavailableOverlay != null) m_UnavailableOverlay.SetActive(false);
-                    if (m_Button != null) m_Button.interactable = true;
-                    m_CountdownCoroutine = null;
-                    yield break;
-                }
-
-                if (m_CountdownText != null)
-                    m_CountdownText.text = FormatCountdownInternal(remaining);
-
-                yield return new WaitForSeconds(1f);
-            }
+            m_IsCountingDown = false;
         }
 
         private static string FormatCountdownInternal(double totalSeconds)
         {
-            var span = System.TimeSpan.FromSeconds(totalSeconds);
+            var span = TimeSpan.FromSeconds(totalSeconds);
             return span.Hours > 0
                 ? $"{span.Hours:D2}:{span.Minutes:D2}:{span.Seconds:D2}"
                 : $"{span.Minutes:D2}:{span.Seconds:D2}";
-        }
-
-        private void StopCountdownInternal()
-        {
-            if (m_CountdownCoroutine == null) return;
-            StopCoroutine(m_CountdownCoroutine);
-            m_CountdownCoroutine = null;
         }
     }
 }

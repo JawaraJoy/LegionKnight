@@ -22,7 +22,7 @@ namespace Rush
         public UnityEvent<ShopBundleConfig> OnPurchaseCompleteBundle => m_OnPurchaseCompleteBundle;
         public UnityEvent<string> OnPurchaseFailed => m_OnPurchaseFailed;
 
-        public void     RequestPurchase(ShopBundleConfig bundle)
+        public void RequestPurchase(ShopBundleConfig bundle)
         {
             if (!ValidateBundleInternal(bundle)) return;
 

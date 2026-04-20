@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 
 namespace LegionKnight
-{
+{   
     public class TenjinManager : Singleton<TenjinManager>
     {
         private BaseTenjin baseTenjin;
