@@ -39,6 +39,24 @@ namespace Rush
 
             // Hide entire main row if player has zero main currency
             if (m_MainCostRow != null) m_MainCostRow.SetActive(!mainIsEmpty);
+
+            // Discount badge visibility is independent of main row
+            // Only show if there is an actual discount on this draw
+            if (m_DiscountBadge != null)
+                m_DiscountBadge.SetActive(breakdown.HasDiscount);
+
+            if (m_DiscountPercentText != null)
+            {
+                m_DiscountPercentText.gameObject.SetActive(
+                    breakdown.HasDiscount && breakdown.OriginalCost > 0);
+
+                if (breakdown.HasDiscount && breakdown.OriginalCost > 0)
+                {
+                    float pct = (1f - (float)breakdown.TotalCost / breakdown.OriginalCost) * 100f;
+                    m_DiscountPercentText.text = $"-{pct:F0}%";
+                }
+            }
+
             if (mainIsEmpty) return;
 
             if (m_MainCurrencyIcon != null)
@@ -57,16 +75,6 @@ namespace Rush
                 m_FinalCostText.text = mainNotEnough
                     ? mainHeld.ToString()
                     : breakdown.TotalCost.ToString();
-
-            if (m_DiscountBadge != null)
-                m_DiscountBadge.SetActive(breakdown.HasDiscount);
-
-            if (m_DiscountPercentText != null && breakdown.HasDiscount
-                && breakdown.OriginalCost > 0)
-            {
-                float pct = (1f - (float)breakdown.TotalCost / breakdown.OriginalCost) * 100f;
-                m_DiscountPercentText.text = $"-{pct:F0}%";
-            }
         }
 
         private void RefreshAltCostInternal(GachaCostBreakdown breakdown,

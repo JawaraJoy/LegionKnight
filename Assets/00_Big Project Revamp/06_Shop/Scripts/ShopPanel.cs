@@ -15,11 +15,12 @@ namespace Rush
         private void Awake()
         {
             if (m_CloseButton != null) m_CloseButton.onClick.AddListener(HideInternal);
+            SubscribeEventsInternal();
         }
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            SubscribeEventsInternal();
+            
             PopulateTabsInternal();
             
             m_TabGroup?.Show();
@@ -27,7 +28,7 @@ namespace Rush
 
         protected override void HideInternal()
         {
-            UnsubscribeEventsInternal();
+            //UnsubscribeEventsInternal();
             m_TabGroup?.Hide();
             base.HideInternal();
         }

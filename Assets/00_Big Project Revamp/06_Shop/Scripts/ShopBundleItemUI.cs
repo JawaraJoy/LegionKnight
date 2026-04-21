@@ -17,6 +17,7 @@ namespace Rush
         [SerializeField] private GameObject m_FreeLabel;
         [SerializeField] private GameObject m_PriceGroup;
         [SerializeField] private Image m_CurrencyIcon;
+        [SerializeField] private GameObject m_OriginalCostContent;
         [SerializeField] private StrikethroughText m_OriginalPriceText;
         [SerializeField] private TextMeshProUGUI m_FinalPriceText;
         [SerializeField] private GameObject m_DiscountBadge;
@@ -108,6 +109,7 @@ namespace Rush
 
             if (m_OriginalPriceText != null)
             {
+                m_OriginalCostContent.SetActive(hasDiscount);
                 m_OriginalPriceText.SetVisible(hasDiscount);
                 if (hasDiscount)
                     m_OriginalPriceText.SetText(breakdown.OriginalPrice.ToString());

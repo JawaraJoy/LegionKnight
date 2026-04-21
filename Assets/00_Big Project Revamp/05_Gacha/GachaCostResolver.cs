@@ -7,7 +7,7 @@ namespace Rush
     {
         [SerializeField] private string m_DailyResetKey = "GachaDailyReset_";
 
-        // ── Kalkulasi ──────────────────────────────────────────────────────────
+        // ── Public ────────────────────────────────────────────────────────────
 
         public int CalculateCost(GachaBannerConfig banner, bool isMulti, bool isDailyFirst)
         {
@@ -28,21 +28,20 @@ namespace Rush
                 ? banner.SingleDrawCost * banner.MultiDrawCount
                 : banner.SingleDrawCost;
 
+            // Discount only applies if baseCost exceeds the minimum threshold
             float discount = CalculateDiscountInternal(banner, isMulti, isDailyFirst, baseCost);
             bool hasDiscount = discount > 0f;
             int totalCost = Mathf.Max(1, Mathf.RoundToInt(baseCost * (1f - discount)));
 
-            // Display — selalu dari config, tidak terpengaruh sisa currency player
             breakdown.SetOriginalCost(baseCost);
             breakdown.SetTotalCost(totalCost);
             breakdown.SetHasDiscount(hasDiscount);
 
-            // Deduction — baru cek sisa currency player
             int mainHeld = currencyControl.GetCurrencyAmount(banner.DrawCostCurrency);
 
             if (mainHeld >= totalCost)
             {
-                // Bayar penuh dari main
+                // Main is sufficient — pay entirely from main
                 breakdown.SetMainDeduct(totalCost);
                 breakdown.SetAltDeduct(0);
                 breakdown.SetMixed(false);
@@ -50,7 +49,6 @@ namespace Rush
                 return breakdown;
             }
 
-            // Main tidak cukup → coba alt
             if (banner.AltCostCurrency == null)
             {
                 breakdown.SetMainDeduct(mainHeld);
@@ -60,11 +58,18 @@ namespace Rush
                 return breakdown;
             }
 
-            // Mix: pakai semua main yang ada, kekurangan dari alt
+            // Main insufficient — use all available main, cover deficit with alt
             int mainUsed = mainHeld;
             int deficit = totalCost - mainUsed;
-            int altNeeded = Mathf.CeilToInt(
-                (float)deficit / banner.SingleDrawCost * banner.AltSingleDrawCost);
+
+            // Alt conversion is based on the discounted single draw cost so alt
+            // proportionally reflects the same discount as main
+            // discountedSingleCost = SingleDrawCost * (1 - discount)
+            float discountedSingleCost = banner.SingleDrawCost * (1f - discount);
+            int altNeeded = discountedSingleCost > 0
+                ? Mathf.CeilToInt(deficit / discountedSingleCost * banner.AltSingleDrawCost)
+                : Mathf.CeilToInt((float)deficit / banner.SingleDrawCost * banner.AltSingleDrawCost);
+
             int altHeld = currencyControl.GetCurrencyAmount(banner.AltCostCurrency);
 
             breakdown.SetMainDeduct(mainUsed);
@@ -94,6 +99,8 @@ namespace Rush
             bool isMulti, bool isDailyFirst, int baseCost)
         {
             if (banner.DiscountConfig == null) return 0f;
+
+            // Discount does not apply if base cost is at or below the minimum threshold
             if (baseCost <= banner.DiscountConfig.MinimumPriceForDiscount) return 0f;
 
             var d = banner.DiscountConfig;
@@ -112,7 +119,7 @@ namespace Rush
             return Mathf.Clamp01(discount);
         }
 
-        // ── Daily ──────────────────────────────────────────────────────────────
+        // ── Daily ─────────────────────────────────────────────────────────────
 
         public bool IsDailyFirstDraw(GachaBannerConfig banner, bool isMulti)
         {
