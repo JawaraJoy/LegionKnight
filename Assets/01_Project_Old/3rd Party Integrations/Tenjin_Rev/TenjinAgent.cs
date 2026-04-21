@@ -73,31 +73,7 @@ namespace LegionKnight
             }
         }
 
-        public void SendEventToPurchaseStart(SellProduct product)
-        {
-            if (TenjinManager.Instance && TenjinManager.productIdCode.ContainsKey(product.Config.BaseInfo.Id))
-            {
-                TenjinManager.Instance.SendEvent("event_purchase_started", TenjinManager.productIdCode[product.Config.BaseInfo.Id].ToString());
-
-                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
-                {
-                    TenjinManager.Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_started");
-                }
-            }
-        }
-
-        public void SendEventToPurchaseSuccess(SellProduct product)
-        {
-            if (TenjinManager.Instance && TenjinManager.productIdCode.ContainsKey(product.Config.BaseInfo.Id))
-            {
-                TenjinManager.Instance.SendEvent("event_purchase_success", TenjinManager.productIdCode[product.Config.BaseInfo.Id].ToString());
-
-                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
-                {
-                    TenjinManager.Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_success");
-                }
-            }
-        }
+        
 
         public void SendEventToFirstSummon()
         {

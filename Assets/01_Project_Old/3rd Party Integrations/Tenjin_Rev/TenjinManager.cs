@@ -257,50 +257,7 @@ namespace LegionKnight
             Instance.SendEvent("event_energy_refilled");
         }
 
-        public void SendEventToPurchaseStart(SellProduct product)
-        {
-            if (productIdCode.ContainsKey(product.Config.BaseInfo.Id))
-            {
-                Instance.SendEvent("event_purchase_started", productIdCode[product.Config.BaseInfo.Id].ToString());
-
-                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
-                {
-                    Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_started");
-                }
-            }
-        }
-
-        public void SendEventToPurchaseFailed(PurchaseFailureReason reason, SellProduct product)
-        {
-            if (failedReasonCode.ContainsKey(reason))
-            {
-                Instance.SendEvent("event_purchase_failed", failedReasonCode[reason].ToString());
-
-                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
-                {
-                    Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_Failed");
-                }
-            }
-
-            if (currencyCheat)
-            {
-                //Cheat();
-            }
-        }
-
-        public void SendEventToPurchaseSuccess(SellProduct product)
-        {
-            if (productIdCode.ContainsKey(product.Config.BaseInfo.Id))
-            {
-                Instance.SendEvent("event_purchase_success", productIdCode[product.Config.BaseInfo.Id].ToString());
-
-                if(product.Config.BaseInfo.Id.IndexOf("killjoy") > -1)
-                {
-                    Instance.SendEvent("event_purchase_" + product.Config.name.Replace(" ", "_") + "_success");
-                }
-            }
-        }
-
+        
         public void SendEventToGachaPull(bool isMultiDraw)
         {
             Instance.SendEvent("event_gacha_pull", isMultiDraw ? "1" : "0");
