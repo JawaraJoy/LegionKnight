@@ -156,7 +156,7 @@ namespace LegionKnight
             m_Rb.linearVelocity = Vector2.zero; // Optionally stop movement
             m_CurrentFlyTime = 0f; // Reset fly timer
             m_Rb.bodyType = RigidbodyType2D.Dynamic; // Set back to dynamic for normal physics interactions
-            RushGameManager.Instance.StageManager.PlatformHandler.Pause();
+            //RushGameManager.Instance.StageManager.PlatformHandler.Pause();
             StartCoroutine(StopFlying()); // Start coroutine to stop flying
         }
 
@@ -164,7 +164,7 @@ namespace LegionKnight
         {
             yield return new WaitForSeconds(0.25f); // Wait for the fly duration
             RushGameManager.Instance.StageManager.PlatformHandler.AddGlobalSpeedRate(-m_PlatformSpeedUpOnFly);
-            RushGameManager.Instance.StageManager.PlatformHandler.Resume();
+            //RushGameManager.Instance.StageManager.PlatformHandler.Resume();
             //GameManager.Instance.SetLevelOver(false); // mortal the player
             //GameManager.Instance.SpawnPlatform();
             OnStopFlyInvoke();

@@ -173,13 +173,12 @@ namespace Rush
         public void Pause()
         {
             m_IsPaused = true;
-            m_CurrentNewDisplayedPlatform.SetIsPaused(true);
         }
 
         public void Resume()
         {
             m_IsPaused = false;
-            m_CurrentNewDisplayedPlatform.SetIsPaused(false);
+            Debug.Log($"Resume");
         }
 
         // -------------------------------------------------------------------------
