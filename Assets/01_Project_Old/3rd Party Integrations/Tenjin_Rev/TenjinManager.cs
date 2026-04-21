@@ -6,7 +6,7 @@ using UnityEngine.Purchasing;
 
 namespace LegionKnight
 {   
-    public class TenjinManager : Singleton<TenjinManager>
+    public class TenjinManager : Singleton<TenjinManager>, IUpdater
     {
         private BaseTenjin baseTenjin;
         private int floorProgression = 0;
@@ -17,6 +17,11 @@ namespace LegionKnight
         private bool progressionComplete = false;
 
         [SerializeField] private ItemConfig currencyCheat;
+
+        private void Start()
+        {
+            Connect();
+        }
 
         public static Dictionary<string, int> productIdCode = new Dictionary<string, int>()
         {
@@ -59,6 +64,8 @@ namespace LegionKnight
             [PurchaseFailureReason.Unknown] = 10
         };
 
+        public bool IsActive => gameObject.activeInHierarchy;
+
         public void Init()
         {
             Debug.Log("***** TENJIN INIT *****");
@@ -86,19 +93,6 @@ namespace LegionKnight
         {
             Debug.Log("***** TENJIN CHEAT *****");
             //Player.Instance.AddCurrencyAmount(currencyCheat, 1000000);
-        }
-
-        void Update()
-        {
-            if(Instance)
-            {
-                if(Time.time - lastRecordTime > recordTimeInterval)
-                {
-                    lastRecordTime = Time.time;
-                    PlayerPrefs.SetFloat("Record_PlayTime", Time.time - timeStartPlay);
-                    PlayerPrefs.Save();
-                }
-            }
         }
 
         private void StartSession()
@@ -288,6 +282,23 @@ namespace LegionKnight
                 string eventName = "event_" + (task.MissionCategory == MissionCategory.Daily ? "daily" : "weekly") + "_mission_completed_" + task.name.Replace(" ", "_");
 
                 Instance.SendEvent(eventName);    
+            }
+        }
+
+        private void OnEnable()
+        {
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+        public void Tick()
+        {
+            if (Instance)
+            {
+                if (Time.time - lastRecordTime > recordTimeInterval)
+                {
+                    lastRecordTime = Time.time;
+                    PlayerPrefs.SetFloat("Record_PlayTime", Time.time - timeStartPlay);
+                    PlayerPrefs.Save();
+                }
             }
         }
     }
