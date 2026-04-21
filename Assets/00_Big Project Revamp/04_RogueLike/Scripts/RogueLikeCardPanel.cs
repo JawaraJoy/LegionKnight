@@ -39,6 +39,11 @@ namespace Rush
                 }
             }
         }
+
+        public void WatchAds()
+        {
+            UnityService.Instance.ShowRewardedAd(RefreshCardsInternal);
+        }
         public void RefreshCards()
         {
             RefreshCardsInternal();

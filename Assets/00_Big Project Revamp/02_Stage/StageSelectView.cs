@@ -21,6 +21,7 @@ namespace LegionKnight
         [SerializeField]
         private GameObject m_CompleteContent;
 
+        [SerializeField]
         private StageConfig m_StageConfig;
 
         private GameStateConfig m_GamePlayState;
@@ -36,22 +37,28 @@ namespace LegionKnight
                 return m_GamePlayState;
             }
         }
-
-        public void Refresh()
+        public void RefreshSelf()
         {
+            RefreshInternal(true);
+        }
 
+        private void RefreshInternal(bool refreshSetUp)
+        {
             if (RushGameManager.Instance.StageManager.HasStageSelection(m_StageConfig, out StageSelectionField field))
             {
                 if (m_CompleteContent != null)
                     m_CompleteContent.SetActive(field.StageState == StageState.Completed);
 
                 m_SelectButton.interactable = field.StageState != StageState.Locked;
-            }
-            
-        }
 
-        // ── Setup (dipanggil oleh StageSelectPanel saat spawn) ───────────────
-        public void Setup(StageSelectionField field)
+                if (refreshSetUp)
+                {
+                    SetUpInternal(field);
+                }
+            }
+
+        }
+        private void SetUpInternal(StageSelectionField field)
         {
             m_StageConfig = field.StageConfig;
 
@@ -64,6 +71,19 @@ namespace LegionKnight
             m_SelectButton.onClick.RemoveAllListeners();
             m_SelectButton.onClick.AddListener(OnSelectClicked);
             m_SelectButton.interactable = field.StageState != StageState.Locked;
+        }
+
+        public void Refresh()
+        {
+
+            RefreshInternal(false);
+            
+        }
+
+        // ── Setup (dipanggil oleh StageSelectPanel saat spawn) ───────────────
+        public void Setup(StageSelectionField field)
+        {
+            SetUpInternal(field);
         }
 
         // ── Button callback ───────────────────────────────────────────────────

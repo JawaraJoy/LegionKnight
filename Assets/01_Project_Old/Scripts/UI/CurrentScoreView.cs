@@ -5,7 +5,18 @@ namespace LegionKnight
 {
     public partial class CurrentScoreView : CurrencyView
     {
-        
+        private void OnEnable()
+        {
+            StageConfig currenStage = RushGameManager.Instance.StageManager.UsedStageConfig;
+            if (currenStage.StageMode == StageMode.Collosal)
+            {
+                ShowInternal();
+            }
+            else
+            {
+                HideInternal();
+            }
+        }
     }
     public partial class GameplayPanel
     {

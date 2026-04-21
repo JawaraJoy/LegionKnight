@@ -43,6 +43,8 @@ namespace Rush
 
         private void AddScoreInternal(int score)
         {
+            StageConfig currenStage = RushGameManager.Instance.StageManager.UsedStageConfig;
+            if (currenStage.StageMode != StageMode.Collosal) return;
             m_Score += score;
             m_OnScoreChanged?.Invoke(m_Score);
             m_ScoreCurrency = new Currency(m_ItemConsiderAsScoreConfig, m_Score);

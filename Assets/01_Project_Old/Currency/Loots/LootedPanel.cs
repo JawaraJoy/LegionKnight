@@ -20,7 +20,7 @@ namespace LegionKnight
         {
             Show();
             GetLootMonitor().ClearAllLootViews();
-            //GetLootMonitor().AddLootsView(loots.ToList());
+            GetLootMonitor().AddLootsView(loots.ToList());
         }
         
     }
