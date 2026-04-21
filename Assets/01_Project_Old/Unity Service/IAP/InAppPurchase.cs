@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Purchasing;
@@ -109,7 +110,16 @@ namespace LegionKnight
         // v5 equivalent of ProcessPurchase — called for new purchases
         private void OnPurchasePendingInternal(PendingOrder order)
         {
-            string productId = order.Info.TransactionID;
+            var item = order.CartOrdered.Items()?.FirstOrDefault();
+
+            if (item == null)
+            {
+                Debug.LogWarning("[IAP] No item in cart.");
+                m_StoreController.ConfirmPurchase(order);
+                return;
+            }
+
+            string productId = item.Product.definition.storeSpecificId;
 
             if (!m_ProductMap.TryGetValue(productId, out var bundle))
             {
@@ -127,9 +137,13 @@ namespace LegionKnight
 
         private void OnPurchaseFailedInternal(FailedOrder order)
         {
-            string productId = order.Info.TransactionID;
-            m_ProductMap.TryGetValue(productId, out var bundle);
+            var item = order.CartOrdered.Items()?.FirstOrDefault();
+            string productId = item?.Product.definition.storeSpecificId;
+
+            m_ProductMap.TryGetValue(productId ?? string.Empty, out var bundle);
+
             string reason = order.FailureReason.ToString();
+
             Debug.LogWarning($"[IAP] Purchase failed: {productId} — {reason}");
             m_OnPurchaseFailed?.Invoke(bundle, reason);
         }
@@ -152,8 +166,15 @@ namespace LegionKnight
 
             if (bundle == null || string.IsNullOrEmpty(bundle.ProductId)) return;
 
-            // v5: Purchase() replaces InitiatePurchase()
-            m_StoreController.Purchase(bundle.ProductId);
+            Product product = m_StoreController.GetProductById(bundle.ProductId);
+
+            if (product == null)
+            {
+                Debug.LogWarning($"[IAP] Product not found: {bundle.ProductId}");
+                return;
+            }
+
+            m_StoreController.PurchaseProduct(product);
         }
 
         // ── Items ─────────────────────────────────────────────────────────────

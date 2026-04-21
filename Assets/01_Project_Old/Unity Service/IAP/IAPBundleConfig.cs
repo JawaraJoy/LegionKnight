@@ -5,10 +5,8 @@ using UnityEngine.Purchasing;
 namespace Rush
 {
     [CreateAssetMenu(fileName = "IAPBundle_", menuName = "Rush/IAP/Bundle")]
-    public class IAPBundleConfig : Configuration, ICart
+    public class IAPBundleConfig : Configuration
     {
-        [SerializeField]
-        private CartItem[] m_CartItems;
         [Header("Main Items")]
         [SerializeField] private IAPBundleEntry[] m_Entries;
 
@@ -26,9 +24,5 @@ namespace Rush
         public bool HasFirstPurchaseBonus =>
             m_FirstPurchaseBonusEntries is { Length: > 0 };
 
-        public IReadOnlyList<CartItem> Items()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
