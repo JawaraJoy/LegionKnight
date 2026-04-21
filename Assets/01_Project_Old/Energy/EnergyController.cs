@@ -1,7 +1,6 @@
 ﻿using MoreMountains.Tools;
 using Rush;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
@@ -11,169 +10,126 @@ namespace LegionKnight
 {
     public class EnergyController : MonoBehaviour, IUpdater
     {
-        [SerializeField]
-        private Energy[] m_Energies;
-        [SerializeField]
-        private UnityEvent<Energy> m_OnEnergyAmountChanged;
-        [SerializeField]
-        private UnityEvent<Energy[]> m_OnTryPay;
-        [SerializeField]
-        private UnityEvent<Energy[]> m_OnCanPay;
-        [SerializeField]
-        private UnityEvent<Energy[]> m_OnCantPay;
+        [SerializeField] private Energy[] m_Energies;
+        [SerializeField] private UnityEvent<Energy> m_OnEnergyAmountChanged;
+        [SerializeField] private UnityEvent<Energy[]> m_OnTryPay;
+        [SerializeField] private UnityEvent<Energy[]> m_OnCanPay;
+        [SerializeField] private UnityEvent<Energy[]> m_OnCantPay;
+
+        [SerializeField, MMReadOnly] private Energy[] m_PreviousCost;
 
         public UnityEvent<Energy[]> OnTryPay => m_OnTryPay;
         public UnityEvent<Energy[]> OnCanPay => m_OnCanPay;
         public UnityEvent<Energy[]> OnCantPay => m_OnCantPay;
-
-        [SerializeField, MMReadOnly]
-        private Energy[] m_PreviousCost;
         public Energy[] PreviousCost => m_PreviousCost;
-
         public bool IsActive => gameObject.activeInHierarchy;
+
         private void OnEnable()
         {
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            if (UpdateBank.Instance != null)
+            {
+                UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            }
         }
+
         private void OnDisable()
         {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            if (UpdateBank.Instance != null)
+            {
+                UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            }
         }
+
+        public void Init()
+        {
+            if (m_Energies == null) return;
+
+            foreach (var energy in m_Energies)
+            {
+                if (energy == null) continue;
+                energy.Initialize();
+            }
+        }
+
         public void ClearPreviousCost()
         {
             m_PreviousCost = null;
         }
+
         public void TryPayPreviousCost()
         {
+            if (m_PreviousCost == null || m_PreviousCost.Length == 0)
+            {
+                Debug.LogWarning("[EnergyController] TryPayPreviousCost called but no previous cost exists.");
+                return;
+            }
+
             TryPayInternal(m_PreviousCost);
         }
+
         public void PayPreviouesCost(UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
         {
+            if (m_PreviousCost == null || m_PreviousCost.Length == 0)
+            {
+                Debug.LogWarning("[EnergyController] PayPreviouesCost called but no previous cost exists.");
+                onCantPayListen?.Invoke(Array.Empty<Energy>());
+                return;
+            }
+
             PayInternal(m_PreviousCost, onCanPayListen, onCantPayListen);
         }
-        private Energy GetEnergyInternal(EnergyConfig definition)
-        {
-            foreach (var energy in m_Energies)
-            {
-                if (energy.Config == definition)
-                {
-                    return energy;
-                }
-            }
-            return null;
-        }
+
         public Energy GetEnergy(EnergyConfig definition)
         {
             return GetEnergyInternal(definition);
         }
+
         public bool HasEnergy(EnergyConfig definition)
         {
             return GetEnergyInternal(definition) != null;
         }
-        private bool IsFull(EnergyConfig definition)
-        {
-            var energy = GetEnergyInternal(definition);
-            if (energy == null)
-            {
-                Debug.LogError($"Energy '{definition.name}' not found in controller.");
-                return false;
-            }
-            return energy.IsFull;
-        }
-        public void Init()
-        {
-            foreach(var energy in m_Energies)
-            {
-                energy.Initialize();
-            }
-        }
+
         public void Add(EnergyConfig definition, int amount)
         {
             var energy = GetEnergyInternal(definition);
             if (energy == null)
             {
-                Debug.LogError($"Energy '{definition.name}' not found in controller.");
+                Debug.LogError($"[EnergyController] Energy '{definition?.name}' not found.");
                 return;
             }
+
             energy.Add(amount);
             m_OnEnergyAmountChanged?.Invoke(energy);
 
-            if(IsFull(definition))
+            if (energy.IsFull)
             {
-                //--Tenjin Record
-                TenjinManager.Instance.SendEventToReEnergy();
+                TenjinManager.Instance?.SendEventToReEnergy();
             }
         }
+
         public void Set(EnergyConfig definition, int amount)
         {
             var energy = GetEnergyInternal(definition);
             if (energy == null)
             {
-                Debug.LogError($"Energy '{definition.name}' not found in controller.");
+                Debug.LogError($"[EnergyController] Energy '{definition?.name}' not found.");
                 return;
             }
+
             energy.Set(amount);
             m_OnEnergyAmountChanged?.Invoke(energy);
 
-            if(IsFull(definition))
+            if (energy.IsFull)
             {
-                //--Tenjin Record
-                TenjinManager.Instance.SendEventToReEnergy();
+                TenjinManager.Instance?.SendEventToReEnergy();
             }
         }
 
-        private void Regen()
+        public void TryPay(Energy[] energyCosts)
         {
-            foreach(var energy in m_Energies)
-            {
-                energy.Regening();
-            }
+            TryPayInternal(energyCosts);
         }
-        private void TryPayInternal(Energy[] energiyCosts)
-        {
-            m_OnTryPay?.Invoke(energiyCosts);
-        }
-        public void TryPay(Energy[] energiyCosts)
-        {
-            TryPayInternal(energiyCosts);
-        }
-        private void PayInternal(Energy[] energyCosts, UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
-        {
-            int amountcanPay = 0;
-            List<Energy> energyNeeds = new List<Energy>();
-            foreach (var cost in energyCosts)
-            {
-                Energy ownEnergy = GetEnergyInternal(cost.Config);
-                bool canPay = ownEnergy.CanPay(cost.Amount);
-                if (canPay)
-                {
-                    amountcanPay++;
-                }
-                else
-                {
-                    int restAmount = cost.Amount - ownEnergy.Amount;
-                    Energy restEnergy = new Energy(cost.Config, restAmount);
-                    energyNeeds.Add(restEnergy);
-                }
-                Debug.Log($"ammount canpay = {amountcanPay}/ energyCosts Lenght {energyCosts.Length}");
-            }
-            if (amountcanPay >= energyCosts.Length)
-            {
-                foreach (var cost in energyCosts)
-                {
-                    Energy ownEnergy = GetEnergyInternal(cost.Config);
-                    ownEnergy.Pay(cost.Amount);
-                }
-                m_OnCanPay.Invoke(energyCosts);
-                onCanPayListen.Invoke(energyCosts);
-                m_PreviousCost = energyCosts;
-            }
-            else
-            {
-                onCantPayListen.Invoke(energyNeeds.ToArray());
-                m_OnCantPay.Invoke(energyNeeds.ToArray());
-            }
-        }
+
         public void Pay(Energy[] energyCosts, UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
         {
             PayInternal(energyCosts, onCanPayListen, onCantPayListen);
@@ -183,37 +139,145 @@ namespace LegionKnight
         {
             Regen();
         }
+
+        private Energy GetEnergyInternal(EnergyConfig definition)
+        {
+            if (definition == null || m_Energies == null) return null;
+
+            foreach (var energy in m_Energies)
+            {
+                if (energy == null || energy.Config == null) continue;
+
+                if (energy.Config == definition)
+                {
+                    return energy;
+                }
+            }
+
+            return null;
+        }
+
+        private void Regen()
+        {
+            if (m_Energies == null) return;
+
+            foreach (var energy in m_Energies)
+            {
+                if (energy == null) continue;
+                energy.Regening();
+            }
+        }
+
+        private void TryPayInternal(Energy[] energyCosts)
+        {
+            if (energyCosts == null || energyCosts.Length == 0)
+            {
+                Debug.LogWarning("[EnergyController] TryPayInternal called with empty costs.");
+                return;
+            }
+
+            m_OnTryPay?.Invoke(energyCosts);
+        }
+
+        private void PayInternal(Energy[] energyCosts, UnityAction<Energy[]> onCanPayListen, UnityAction<Energy[]> onCantPayListen)
+        {
+            if (energyCosts == null || energyCosts.Length == 0)
+            {
+                Debug.LogWarning("[EnergyController] PayInternal called with empty costs.");
+                onCantPayListen?.Invoke(Array.Empty<Energy>());
+                m_OnCantPay?.Invoke(Array.Empty<Energy>());
+                return;
+            }
+
+            int amountCanPay = 0;
+            List<Energy> energyNeeds = new List<Energy>();
+
+            foreach (var cost in energyCosts)
+            {
+                if (cost == null || cost.Config == null)
+                {
+                    Debug.LogWarning("[EnergyController] Found null cost/config in energyCosts.");
+                    continue;
+                }
+
+                Energy ownEnergy = GetEnergyInternal(cost.Config);
+                if (ownEnergy == null)
+                {
+                    Debug.LogError($"[EnergyController] Player does not own energy config '{cost.Config.name}'.");
+                    energyNeeds.Add(new Energy(cost.Config, cost.Amount));
+                    continue;
+                }
+
+                bool canPay = ownEnergy.CanPay(cost.Amount);
+                if (canPay)
+                {
+                    amountCanPay++;
+                }
+                else
+                {
+                    int restAmount = Mathf.Max(0, cost.Amount - ownEnergy.Amount);
+                    energyNeeds.Add(new Energy(cost.Config, restAmount));
+                }
+
+                Debug.Log($"[EnergyController] canPay={amountCanPay}/{energyCosts.Length}");
+            }
+
+            if (amountCanPay >= energyCosts.Length)
+            {
+                foreach (var cost in energyCosts)
+                {
+                    if (cost == null || cost.Config == null) continue;
+
+                    Energy ownEnergy = GetEnergyInternal(cost.Config);
+                    ownEnergy?.Pay(cost.Amount);
+                }
+
+                m_PreviousCost = energyCosts;
+                m_OnCanPay?.Invoke(energyCosts);
+                onCanPayListen?.Invoke(energyCosts);
+            }
+            else
+            {
+                Energy[] needs = energyNeeds.ToArray();
+                onCantPayListen?.Invoke(needs);
+                m_OnCantPay?.Invoke(needs);
+            }
+        }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class Energy
     {
-        // ── Config ────────────────────────────────────────────────────────────
-        [SerializeField]
-        private EnergyConfig m_Config;
-        [SerializeField]
-        private int m_Amount;
+        [SerializeField] private EnergyConfig m_Config;
+        [SerializeField] private int m_Amount;
 
-        // ── Events ────────────────────────────────────────────────────────────
-        [SerializeField]
-        private UnityEvent<Energy> m_OnAmountChanged;
-        [SerializeField]
-        private UnityEvent<int> m_OnAmountSpend;
+        [SerializeField] private UnityEvent<Energy> m_OnAmountChanged;
+        [SerializeField] private UnityEvent<int> m_OnAmountSpend;
 
-        // ── Runtime ───────────────────────────────────────────────────────────
         private float m_CurrentRegenTimeSpend;
 
-        // ── Save keys ─────────────────────────────────────────────────────────
-        // Pisahkan key amount dan key reset time agar tidak bentrok
-        private string AmountKey => m_Config.BaseInfo.Id + "amount";
-        private string ResetTimeKey => m_Config.BaseInfo.Id + "resetTime";
+        private const string DateFormat = "yyyy-MM-dd HH:mm:ss";
 
-        private static readonly string DateFormat = "yyyy-MM-dd HH:mm:ss";
+        private string EnergyId
+        {
+            get
+            {
+                if (m_Config == null || m_Config.BaseInfo == null || string.IsNullOrWhiteSpace(m_Config.BaseInfo.Id))
+                {
+                    Debug.LogError("[Energy] Invalid BaseInfo.Id. Energy save key cannot be built.");
+                    return "INVALID_ENERGY_ID";
+                }
 
-        // ── Public props ──────────────────────────────────────────────────────
+                return m_Config.BaseInfo.Id.Trim();
+            }
+        }
+
+        private string AmountKey => $"{EnergyId}_amount";
+        private string ResetTimeKey => $"{EnergyId}_resetTime";
+
         public EnergyConfig Config => m_Config;
         public int Amount => m_Amount;
-        public bool IsFull => m_Amount >= m_Config.MaxAmount;
+        public bool IsFull => m_Config != null && m_Amount >= m_Config.MaxAmount;
 
         public Energy(EnergyConfig config, int amount)
         {
@@ -221,128 +285,90 @@ namespace LegionKnight
             m_Amount = amount;
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // INITIALIZE
-        // ─────────────────────────────────────────────────────────────────────
-        /// <summary>
-        /// Urutan:
-        /// 1. Cek apakah sudah waktunya daily reset
-        ///    - Ya dan energy tidak exceed max → reset ke max, simpan next reset time
-        /// 2. Load saved amount
-        /// 3. Kalau belum pernah ada data → set ke max dan simpan next reset time
-        /// </summary>
         public void Initialize()
         {
+            if (m_Config == null)
+            {
+                Debug.LogError("[Energy] Initialize failed: config is null.");
+                return;
+            }
+
             bool hasAmount = UnityService.Instance.HasData(AmountKey);
             bool hasResetTime = UnityService.Instance.HasData(ResetTimeKey);
 
-            Debug.Log($"[Energy] key='{m_Config.BaseInfo.Id}' AmountKey='{AmountKey}' ResetTimeKey='{ResetTimeKey}'");
-            Debug.Log($"[Energy] hasAmount={hasAmount} hasResetTime={hasResetTime}");
-            if (hasAmount)
-                Debug.Log($"[Energy] saved amount={UnityService.Instance.GetData<int>(AmountKey)}");
-            if (hasResetTime)
-                Debug.Log($"[Energy] saved resetTime='{UnityService.Instance.GetData<string>(ResetTimeKey)}'");
+            Debug.Log($"[Energy] Init id='{EnergyId}' amountKey='{AmountKey}' resetTimeKey='{ResetTimeKey}'");
+            Debug.Log($"[Energy] hasAmount={hasAmount}, hasResetTime={hasResetTime}");
 
-            if (!hasAmount || !hasResetTime)
+            // 1. Load amount dulu kalau ada
+            if (hasAmount)
             {
-                // Fresh install atau data hilang → set max dan simpan reset time berikutnya
-                Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' no data found, initializing fresh.");
-                SetInternal(m_Config.MaxAmount);
+                int loadedAmount = UnityService.Instance.GetData<int>(AmountKey);
+                Debug.Log($"[Energy] Loaded saved amount={loadedAmount}");
+                SetInternalWithoutResetUpdate(loadedAmount);
+            }
+            else
+            {
+                Debug.Log($"[Energy] No saved amount found. Using max amount={m_Config.MaxAmount}");
+                SetInternalWithoutResetUpdate(m_Config.MaxAmount);
+                SaveAmount();
+            }
+
+            // 2. Kalau reset time belum ada, bikin baru TANPA merusak amount
+            if (!hasResetTime)
+            {
+                Debug.Log("[Energy] No reset time found. Creating next reset time.");
                 SaveNextResetTime();
                 return;
             }
 
-            // Ada data → cek apakah sudah waktunya reset harian
-            if (IsDailyResetTime())
+            // 3. Kalau reset time invalid / corrupt, regenerate reset time TANPA overwrite amount
+            if (!TryGetSavedResetTime(out DateTime nextReset))
             {
-                int savedAmount = UnityService.Instance.GetData<int>(AmountKey);
-                bool isExceedMax = savedAmount > m_Config.MaxAmount;
+                Debug.LogWarning("[Energy] Reset time invalid/corrupt. Regenerating reset time without touching saved amount.");
+                SaveNextResetTime();
+                return;
+            }
+
+            // 4. Kalau sudah masuk waktu reset, baru reset amount
+            if (DateTime.Now >= nextReset)
+            {
+                int currentSavedAmount = m_Amount;
+                bool isExceedMax = currentSavedAmount > m_Config.MaxAmount;
 
                 if (isExceedMax)
                 {
-                    // Exceed max → jangan reset, tapi tetap load dan update reset time
-                    Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' daily reset skipped (exceed max={savedAmount}).");
-                    SetInternal(savedAmount);
+                    Debug.Log($"[Energy] Daily reset skipped because saved amount exceeds max ({currentSavedAmount}).");
                 }
                 else
                 {
-                    // Reset ke max
-                    Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' daily reset triggered → set to max.");
-                    SetInternal(m_Config.MaxAmount);
+                    Debug.Log("[Energy] Daily reset triggered. Setting amount to max.");
+                    SetInternalWithoutResetUpdate(m_Config.MaxAmount);
+                    SaveAmount();
                 }
 
-                // Simpan next reset time untuk besok
                 SaveNextResetTime();
-                return;
             }
-
-            // Belum waktunya reset → load saved amount
-            int loaded = UnityService.Instance.GetData<int>(AmountKey);
-            Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' loaded amount={loaded}");
-            SetInternal(loaded);
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // DAILY RESET LOGIC
-        // ─────────────────────────────────────────────────────────────────────
-        private bool IsDailyResetTime()
-        {
-            string savedStr = UnityService.Instance.GetData<string>(ResetTimeKey);
-
-            if (string.IsNullOrEmpty(savedStr))
-                return true; // Tidak ada data reset time → anggap perlu reset
-
-            if (!DateTime.TryParseExact(savedStr, DateFormat,
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out DateTime nextReset))
-            {
-                return true; // Data korup → anggap perlu reset
-            }
-
-            bool isTime = DateTime.Now >= nextReset;
-            
-            return isTime;
-        }
-
-        /// <summary>
-        /// Simpan next reset time = hari ini jam ResetClockHour.
-        /// Kalau sekarang sudah lewat jam itu, maka besok jam itu.
-        /// </summary>
-        private void SaveNextResetTime()
-        {
-            int resetHour = m_Config.DailyResetHour; // misal 15 = jam 15:00
-            DateTime now = DateTime.Now;
-            DateTime nextReset = new DateTime(now.Year, now.Month, now.Day, resetHour, 0, 0);
-
-            if (now >= nextReset)
-                nextReset = nextReset.AddDays(1);
-
-            string resetStr = nextReset.ToString(DateFormat);
-            UnityService.Instance.SaveData(ResetTimeKey, resetStr);
-            Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' next reset saved: {resetStr}");
-        }
-
-        // ─────────────────────────────────────────────────────────────────────
-        // REGEN (dipanggil tiap frame via EnergyController.Tick)
-        // ─────────────────────────────────────────────────────────────────────
         public void Regening()
         {
+            if (m_Config == null) return;
             if (!m_Config.CanRegen) return;
 
             bool isExceedMax = m_Amount > m_Config.MaxAmount;
-            if (isExceedMax) return; // Exceed max → skip regen
+            if (isExceedMax) return;
 
-            // Cek daily reset saat regen (game dibiarkan hidup melewati jam reset)
-            if (IsDailyResetTime())
+            // Jika game hidup terus melewati jam reset
+            if (ShouldTriggerDailyReset())
             {
-                Debug.Log($"[Energy] '{m_Config.BaseInfo.Id}' daily reset triggered during regen.");
-                SetInternal(m_Config.MaxAmount);
+                Debug.Log($"[Energy] Daily reset triggered during regen for '{EnergyId}'.");
+                SetInternalWithoutResetUpdate(m_Config.MaxAmount);
+                SaveAmount();
                 SaveNextResetTime();
                 return;
             }
 
-            if (IsFull) return; // Sudah penuh → skip regen
+            if (IsFull) return;
 
             m_CurrentRegenTimeSpend += Time.deltaTime;
             if (m_CurrentRegenTimeSpend >= m_Config.RegenEverEverySeconds)
@@ -352,32 +378,37 @@ namespace LegionKnight
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // PUBLIC API
-        // ─────────────────────────────────────────────────────────────────────
-        public void Add(int amount) => AddInternal(amount);
-        public void Set(int amount) => SetInternal(amount);
+        public void Add(int amount)
+        {
+            AddInternal(amount);
+        }
 
-        public bool CanPay(int cost) => m_Amount >= cost;
+        public void Set(int amount)
+        {
+            SetInternal(amount);
+        }
+
+        public bool CanPay(int cost)
+        {
+            return m_Amount >= cost;
+        }
 
         public void Pay(int cost)
         {
-            if (CanPay(cost))
-            {
-                AddInternal(-cost);
-                m_OnAmountSpend?.Invoke(cost);
-            }
+            if (!CanPay(cost)) return;
+
+            AddInternal(-cost);
+            m_OnAmountSpend?.Invoke(cost);
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // INTERNAL
-        // ─────────────────────────────────────────────────────────────────────
         private void AddInternal(int add)
         {
             m_Amount += add;
             ClampAmount();
+
+            SaveAmount();
             m_OnAmountChanged?.Invoke(this);
-            UnityService.Instance.SaveData(AmountKey, m_Amount);
+
             Debug.Log($"[Energy] AddInternal key='{AmountKey}' newAmount={m_Amount}");
         }
 
@@ -385,21 +416,101 @@ namespace LegionKnight
         {
             m_Amount = set;
             ClampAmount();
+
+            SaveAmount();
             m_OnAmountChanged?.Invoke(this);
+
+            Debug.Log($"[Energy] SetInternal key='{AmountKey}' newAmount={m_Amount}");
+        }
+
+        /// <summary>
+        /// Set amount tanpa menyentuh reset time.
+        /// Tetap save amount supaya state konsisten.
+        /// </summary>
+        private void SetInternalWithoutResetUpdate(int set)
+        {
+            m_Amount = set;
+            ClampAmount();
+
+            SaveAmount();
+            m_OnAmountChanged?.Invoke(this);
+
+            Debug.Log($"[Energy] SetInternalWithoutResetUpdate key='{AmountKey}' newAmount={m_Amount}");
+        }
+
+        private void SaveAmount()
+        {
             UnityService.Instance.SaveData(AmountKey, m_Amount);
+        }
+
+        private bool TryGetSavedResetTime(out DateTime nextReset)
+        {
+            nextReset = default;
+
+            string savedStr = UnityService.Instance.GetData<string>(ResetTimeKey);
+            if (string.IsNullOrWhiteSpace(savedStr))
+            {
+                return false;
+            }
+
+            return DateTime.TryParseExact(
+                savedStr,
+                DateFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out nextReset
+            );
+        }
+
+        private bool ShouldTriggerDailyReset()
+        {
+            if (!TryGetSavedResetTime(out DateTime nextReset))
+            {
+                // jangan auto reset amount kalau resetTime rusak
+                // cukup bikin reset time baru agar save lama tidak hilang
+                SaveNextResetTime();
+                return false;
+            }
+
+            return DateTime.Now >= nextReset;
+        }
+
+        /// <summary>
+        /// Simpan next reset time = hari ini jam DailyResetHour.
+        /// Kalau sekarang sudah lewat jam itu, maka besok jam itu.
+        /// </summary>
+        private void SaveNextResetTime()
+        {
+            int resetHour = Mathf.Clamp(m_Config.DailyResetHour, 0, 23);
+
+            DateTime now = DateTime.Now;
+            DateTime nextReset = new DateTime(now.Year, now.Month, now.Day, resetHour, 0, 0);
+
+            if (now >= nextReset)
+            {
+                nextReset = nextReset.AddDays(1);
+            }
+
+            string resetStr = nextReset.ToString(DateFormat);
+            UnityService.Instance.SaveData(ResetTimeKey, resetStr);
+
+            Debug.Log($"[Energy] '{EnergyId}' next reset saved: {resetStr}");
         }
 
         private void ClampAmount()
         {
+            if (m_Config == null) return;
+
             if (m_Config.CanBreakMaxAmount)
             {
-                if (m_Amount < 0) m_Amount = 0;
+                if (m_Amount < 0)
+                {
+                    m_Amount = 0;
+                }
                 return;
             }
-            if (m_Amount < 0)
-                m_Amount = 0;
-            else if (m_Amount > m_Config.MaxAmount)
-                m_Amount = m_Config.MaxAmount;
+
+            m_Amount = Mathf.Clamp(m_Amount, 0, m_Config.MaxAmount);
         }
     }
 }
