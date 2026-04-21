@@ -23,12 +23,14 @@ namespace Rush
         [SerializeField]
         private PlatformHandler m_PlatformHandler;
         [SerializeField]
+        private UnityEvent<StageConfig> m_OnSelectStage;
+        [SerializeField]
         private UnityEvent<StageConfig> m_OnStageStart;
         [SerializeField]
         private UnityEvent<StageConfig> m_OnStageOver;
         [SerializeField]
         private UnityEvent<StageConfig> m_OnStageCompleted;
-
+        public UnityEvent<StageConfig> OnSelectStage => m_OnSelectStage;
         public UnityEvent<StageConfig> OnStageStart => m_OnStageStart;
         public UnityEvent<StageConfig> OnStageOver => m_OnStageOver;
         public UnityEvent<StageConfig> OnStageCompleted => m_OnStageCompleted;
@@ -93,6 +95,7 @@ namespace Rush
             {
                 if (stageSelection.StageState == StageState.Locked) return;
                 m_SelectedStageConfig = stage;
+                m_OnSelectStage?.Invoke(m_SelectedStageConfig);
                 m_PlatformHandler.Prepare(m_SelectedStageConfig.PlatformHandlerConfig);
             }
         }
