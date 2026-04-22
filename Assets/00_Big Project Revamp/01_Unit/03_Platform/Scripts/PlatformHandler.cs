@@ -177,10 +177,13 @@ namespace Rush
 
         public void Resume()
         {
-            m_IsPaused = false;
-            Debug.Log($"Resume");
+            RushGameManager.Instance.StartCoroutine(Resuming(0.4f));
         }
-
+        private IEnumerator Resuming(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            m_IsPaused = false;
+        }
         // -------------------------------------------------------------------------
         // Prepared platform config management
         // -------------------------------------------------------------------------

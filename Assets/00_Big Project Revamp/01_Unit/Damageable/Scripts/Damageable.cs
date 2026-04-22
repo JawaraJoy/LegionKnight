@@ -381,6 +381,7 @@ namespace Rush
                 // just for test, will be replaced with revive item or something like that
                 //UnityService.Instance.ShowRewardedAd(() => InvisibleForWhileInternal(5));
             }
+            unitTaker.Config.OnDeath(unitKiller.Config.BaseInfo.Id);
         }
         protected virtual void SetCurrentDamageTakeInternal(int damage)
         {

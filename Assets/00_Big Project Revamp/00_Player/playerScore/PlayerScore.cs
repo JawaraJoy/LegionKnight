@@ -43,6 +43,7 @@ namespace Rush
 
         private void AddScoreInternal(int score)
         {
+            Player.Instance.AddPlayerExperience(score);
             StageConfig currenStage = RushGameManager.Instance.StageManager.UsedStageConfig;
             if (currenStage.StageMode != StageMode.Collosal) return;
             m_Score += score;
@@ -55,8 +56,6 @@ namespace Rush
                 item.SetView(m_ScoreCurrency);
             }
             ApplyHighScoreToPlayerInternal();
-
-            Player.Instance.AddPlayerExperience(score);
         }
         public void AddScore(int score)
         {

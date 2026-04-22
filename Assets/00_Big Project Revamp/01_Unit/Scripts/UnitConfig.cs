@@ -20,5 +20,10 @@ namespace Rush
         public ProgressField Progression => m_ProgressLevel;
         public StatsField MainStats => m_MainStats;
         public Vector3 UnitScale => m_UnitScale;
+
+        public void OnDeath(string killerName)
+        {
+            TenjinManager.Instance.SendEvent("Death", $"{m_BaseInfo.Id} killed by {killerName}");
+        }
     }
 }

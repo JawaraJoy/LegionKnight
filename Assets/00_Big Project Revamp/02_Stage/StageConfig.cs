@@ -1,4 +1,5 @@
 using LegionKnight;
+using System;
 using UnityEngine;
 
 namespace Rush
@@ -31,9 +32,30 @@ namespace Rush
         public EnergyConfig EnergyConfig => m_EnergyConfig;
         public int EnergyAmountToPay => m_EnergyAmountToPay;
 
+        private DateTime m_PlayStartTime;
         public EnemyWaveConfig GetEnemyWaveByIndex(int index)
         {
             return m_EnemyWaveConfigs[index];
+        }
+        public void OnPlayed()
+        {
+            // Simpan waktu mulai
+            m_PlayStartTime = DateTime.UtcNow;
+        }
+
+        public void OnOver(bool gameover)
+        {
+            // Ambil waktu sekarang
+            DateTime endTime = DateTime.UtcNow;
+
+            // Hitung durasi
+            TimeSpan durationSpan = endTime - m_PlayStartTime;
+
+            float duration = (float)durationSpan.TotalSeconds;
+
+            string game = gameover ? "GameOver" : "Slay the Boss";
+
+            TenjinManager.Instance.SendEvent($"{game} in {duration:F2}s");
         }
     }
 }

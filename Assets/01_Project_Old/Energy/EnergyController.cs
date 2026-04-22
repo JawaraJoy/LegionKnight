@@ -103,7 +103,7 @@ namespace LegionKnight
 
             if (energy.IsFull)
             {
-                TenjinManager.Instance?.SendEventToReEnergy();
+                TenjinManager.Instance.SendEventToReEnergy();
             }
         }
 
@@ -121,7 +121,7 @@ namespace LegionKnight
 
             if (energy.IsFull)
             {
-                TenjinManager.Instance?.SendEventToReEnergy();
+                TenjinManager.Instance.SendEventToReEnergy();
             }
         }
 

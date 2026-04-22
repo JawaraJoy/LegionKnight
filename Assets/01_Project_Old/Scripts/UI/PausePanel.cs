@@ -17,6 +17,8 @@ namespace LegionKnight
         private GameStateConfig m_HomeState;
         [SerializeField]
         private PreviousEnergyCost m_PreviousEnergyCost;
+        [SerializeField]
+        private LootMonitor m_LootMonitor;
         private void Start()
         {
             m_ContinueButton.onClick.AddListener(ContinueButtonClick);
@@ -24,6 +26,11 @@ namespace LegionKnight
             m_HomeButton.onClick.AddListener(HomeButtonClick);
         }
 
+        protected override void ShowInternal()
+        {
+            base.ShowInternal();
+            m_LootMonitor.Show();
+        }
         private void ContinueButtonClick()
         {
             HideInternal();
@@ -37,19 +44,6 @@ namespace LegionKnight
         {
             m_PreviousEnergyCost.TryPay();
             //RushGameManager.Instance.GameStateManager.ChangeState(m_GameState);
-        }
-        protected override void HideInternal()
-        {
-            base.HideInternal();
-            //Player.Instance.SetPause(false);
-            GameTimeScale.SetTimeScale(1f);
-            
-        }
-        protected override void ShowInternal()
-        {
-            base.ShowInternal();
-            //Player.Instance.SetPause(true);
-            GameTimeScale.SetTimeScale(0f);
         }
     }
 }

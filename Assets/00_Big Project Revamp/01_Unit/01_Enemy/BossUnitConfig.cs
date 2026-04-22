@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Boss Enemy", menuName = "Rush/Unit/Boss Enemy", order = 2)]
+    [CreateAssetMenu(fileName = "Boss_", menuName = "Rush/Unit/Boss Enemy", order = 2)]
 
     public class BossUnitConfig : EnemyUnitConfig, IHasPlatform
     {
