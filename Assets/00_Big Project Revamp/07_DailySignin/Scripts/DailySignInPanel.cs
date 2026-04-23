@@ -7,12 +7,8 @@ namespace Rush
 {
     public class DailySignInPanel : PanelView, IUpdater
     {
-        // Assign manually in inspector — one entry per reward day
-        // Array length should match DailySignInConfig.Rewards length
         [SerializeField] private DailySignInDayItemUI[] m_DayItems;
 
-        [SerializeField] private Button m_ClaimButton;
-        [SerializeField] private TextMeshProUGUI m_ClaimButtonText;
         [SerializeField] private Button m_CloseButton;
 
         [Header("Status")]
@@ -39,7 +35,6 @@ namespace Rush
             base.ShowInternal();
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
 
-            if (m_ClaimButton != null) m_ClaimButton.onClick.AddListener(OnClaimClickedInternal);
             if (m_CloseButton != null) m_CloseButton.onClick.AddListener(Hide);
 
             Manager.OnClaimSuccess.AddListener(OnClaimSuccessInternal);
@@ -53,7 +48,6 @@ namespace Rush
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
 
-            if (m_ClaimButton != null) m_ClaimButton.onClick.RemoveListener(OnClaimClickedInternal);
             if (m_CloseButton != null) m_CloseButton.onClick.RemoveListener(Hide);
 
             Manager.OnClaimSuccess.RemoveListener(OnClaimSuccessInternal);
@@ -76,7 +70,6 @@ namespace Rush
                 {
                     if (m_DayItems[i] == null) continue;
 
-                    // If inspector has more slots than config rewards, hide the extra
                     if (i >= rewards.Length)
                     {
                         m_DayItems[i].gameObject.SetActive(false);
@@ -84,44 +77,60 @@ namespace Rush
                     }
 
                     m_DayItems[i].gameObject.SetActive(true);
-                    m_DayItems[i].Setup(i, rewards[i], GetDayDisplayStateInternal(i, state));
+                    m_DayItems[i].Setup(i, rewards[i],
+                        GetDayDisplayStateInternal(i, state),
+                        OnItemClaimClickedInternal);
                 }
             }
 
-            RefreshClaimButtonInternal(state);
             RefreshStatusTextInternal(state);
             RefreshCountdownInternal(state);
         }
 
-        private DayDisplayState GetDayDisplayStateInternal(int dayIndex,
-            DailySignInState state)
+        // Only refresh states without re-assigning all data
+        private void RefreshDayStatesInternal()
         {
+            var state = Manager.GetState();
+            var rewards = Manager.Config.Rewards;
+
+            if (m_DayItems == null || rewards == null) return;
+
+            for (int i = 0; i < m_DayItems.Length && i < rewards.Length; i++)
+            {
+                if (m_DayItems[i] == null) continue;
+                m_DayItems[i].RefreshState(GetDayDisplayStateInternal(i, state));
+            }
+
+            RefreshStatusTextInternal(state);
+            RefreshCountdownInternal(state);
+        }
+
+        private DayDisplayState GetDayDisplayStateInternal(int dayIndex, DailySignInState state)
+        {
+            // 1. Hari yang SUDAH di-claim
             if (dayIndex < state.CurrentDay)
                 return DayDisplayState.Claimed;
 
+            // 2. Hari saat ini (target berikutnya)
             if (dayIndex == state.CurrentDay)
             {
-                if (state.CycleComplete) return DayDisplayState.Complete;
-                if (state.CanClaimToday) return DayDisplayState.Available;
-                return DayDisplayState.Claimed;
+                // Kalau cycle selesai
+                if (state.CycleComplete)
+                    return DayDisplayState.Complete;
+
+                // Kalau boleh claim sekarang
+                if (state.CanClaimToday)
+                    return DayDisplayState.Available;
+
+                // ❗ FIX UTAMA:
+                // Kalau belum waktunya → HARUS LOCKED (bukan Claimed)
+                return DayDisplayState.Locked;
             }
 
+            // 3. Hari ke depan (belum nyampe)
             return state.CycleComplete
                 ? DayDisplayState.Complete
                 : DayDisplayState.Locked;
-        }
-
-        private void RefreshClaimButtonInternal(DailySignInState state)
-        {
-            if (m_ClaimButton == null) return;
-            m_ClaimButton.interactable = state.CanClaimToday;
-
-            if (m_ClaimButtonText != null)
-            {
-                m_ClaimButtonText.text = state.CycleComplete
-                    ? "Completed"
-                    : state.CanClaimToday ? "Claim" : "Come back tomorrow";
-            }
         }
 
         private void RefreshStatusTextInternal(DailySignInState state)
@@ -133,7 +142,7 @@ namespace Rush
             else if (state.CanClaimToday)
                 m_StatusText.text = $"Day {state.CurrentDay + 1} reward is ready!";
             else
-                m_StatusText.text = $"Day {state.CurrentDay} claimed. Next reward tomorrow.";
+                m_StatusText.text = $"Day {state.CurrentDay} claimed. Next reward in: ";
         }
 
         private void RefreshCountdownInternal(DailySignInState state)
@@ -148,11 +157,12 @@ namespace Rush
 
         // ── Callbacks ─────────────────────────────────────────────────────────
 
-        private void OnClaimClickedInternal() => Manager.Claim();
+        // Called by whichever DayItemUI is in Available state
+        private void OnItemClaimClickedInternal() => Manager.Claim();
 
         private void OnClaimSuccessInternal(CollectibleResultData result)
         {
-            RefreshViewInternal();
+            RefreshDayStatesInternal();
         }
 
         private void OnClaimFailedInternal(string message) =>

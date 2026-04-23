@@ -94,6 +94,7 @@ namespace Rush
 
             m_ModuleContext = new ModuleContext(unit, gameObject);
             m_OnInitialized?.Invoke(m_ModuleContext);
+            ShowInternal();
         }
 
         public void FlipX(bool left)

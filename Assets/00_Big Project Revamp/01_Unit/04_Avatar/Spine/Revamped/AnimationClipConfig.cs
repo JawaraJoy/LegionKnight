@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Animation Clip", menuName = "Rush/Spine/Animation")]
+    [CreateAssetMenu(fileName = "Clip_", menuName = "Rush/Spine/Animation")]
     public partial class AnimationClipConfig : Configuration
     {
         [SerializeField]

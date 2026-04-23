@@ -27,7 +27,21 @@ namespace Rush
 
             int currentDay = m_Tracker.GetCurrentDay(m_Config);
             bool cycleComplete = currentDay >= m_Config.TotalDays;
-            bool canClaim = !cycleComplete && !HasClaimedTodayInternal();
+
+            bool canClaim = false;
+
+            if (!cycleComplete)
+            {
+                DateTime now = DateTime.Now;
+                DateTime? lastClaimed = m_Tracker.GetLastClaimedTime(m_Config);
+
+                DateTime currentReset = GetCurrentResetBoundaryInternal(now);
+
+                // hanya bisa claim kalau:
+                // - belum pernah claim
+                // - atau sudah masuk reset berikutnya
+                canClaim = !lastClaimed.HasValue || lastClaimed.Value < currentReset;
+            }
             DateTime nextReset = GetNextResetTimeInternal();
 
             // If loop is on and cycle is complete, it was already reset above
@@ -37,21 +51,36 @@ namespace Rush
 
         public void Claim()
         {
-            var state = GetState();
-
-            if (state.CycleComplete && !m_Config.LoopOnComplete)
-            {
-                m_OnClaimFailed?.Invoke("Sign-in cycle is complete.");
-                return;
-            }
-
-            if (!state.CanClaimToday)
-            {
-                m_OnClaimFailed?.Invoke("Already claimed today.");
-                return;
-            }
+            CheckAndApplyResetInternal();
 
             int currentDay = m_Tracker.GetCurrentDay(m_Config);
+
+            // Safety: prevent out of range
+            if (currentDay >= m_Config.TotalDays)
+            {
+                if (!m_Config.LoopOnComplete)
+                {
+                    m_OnClaimFailed?.Invoke("Sign-in cycle is complete.");
+                    return;
+                }
+            }
+
+            DateTime now = DateTime.Now;
+            DateTime? lastClaimed = m_Tracker.GetLastClaimedTime(m_Config);
+
+            // 🔒 VALIDASI: tidak boleh claim lebih dari sekali dalam 1 "hari reset"
+            if (lastClaimed.HasValue)
+            {
+                DateTime currentReset = GetCurrentResetBoundaryInternal(now);
+
+                if (lastClaimed.Value >= currentReset)
+                {
+                    m_OnClaimFailed?.Invoke("Already claimed today.");
+                    return;
+                }
+            }
+
+            // Ambil reward
             var entry = m_Config.Rewards[currentDay];
 
             // Give reward
@@ -60,12 +89,25 @@ namespace Rush
             var result = new CollectibleResultData();
             result.AddEntry(entry.Collectible, entry.Amount);
 
-            // Advance to next day
+            // Advance day
             m_Tracker.SaveCurrentDay(m_Config, currentDay + 1);
-            m_Tracker.SaveLastClaimedTime(m_Config, DateTime.Now);
+            m_Tracker.SaveLastClaimedTime(m_Config, now);
 
             m_OnClaimSuccess?.Invoke(result);
         }
+        private DateTime GetCurrentResetBoundaryInternal(DateTime now)
+        {
+            DateTime todayReset = new DateTime(
+                now.Year, now.Month, now.Day,
+                m_Config.ResetHour, m_Config.ResetMinute, 0);
+
+            // Kalau sekarang belum lewat jam reset,
+            // berarti masih dihitung sebagai "hari sebelumnya"
+            if (now < todayReset)
+                return todayReset.AddDays(-1);
+
+            return todayReset;
+        }   
 
         // ── Reset ─────────────────────────────────────────────────────────────
 
