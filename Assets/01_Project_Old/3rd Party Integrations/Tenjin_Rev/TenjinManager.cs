@@ -275,16 +275,6 @@ namespace LegionKnight
             Instance.SendEvent("event_ad_shown", isIntersitial? "1" : "0");
         }
 
-        public void SendEventToMissionComplete(TaskDefinition task)
-        {
-            if(task)
-            {
-                string eventName = "event_" + (task.MissionCategory == MissionCategory.Daily ? "daily" : "weekly") + "_mission_completed_" + task.name.Replace(" ", "_");
-
-                Instance.SendEvent(eventName);    
-            }
-        }
-
         private void OnEnable()
         {
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
