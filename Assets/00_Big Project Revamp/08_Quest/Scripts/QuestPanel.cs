@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using LegionKnight;
 
@@ -7,13 +6,11 @@ namespace Rush
 {
     public class QuestPanel : PanelView
     {
-        [SerializeField] private QuestTaskItemPool m_TaskItemPool;
+        [SerializeField] private TabGroup m_TabGroup;
+        [SerializeField] private QuestCatalogTabEntry[] m_CatalogTabEntries;
         [SerializeField] private Button m_CloseButton;
 
         private QuestManager Manager => RushPlayer.Instance.QuestManager;
-
-        // Keep reference to active items for targeted refresh
-        private readonly List<QuestTaskItemUI> m_ActiveItems = new();
 
         protected override void ShowInternal()
         {
@@ -25,7 +22,8 @@ namespace Rush
             Manager.OnTaskClaimed.AddListener(OnTaskClaimedInternal);
             Manager.OnTaskReset.AddListener(OnTaskResetInternal);
 
-            PopulateTasksInternal();
+            PopulateTabsInternal();
+            m_TabGroup?.Show();
         }
 
         protected override void HideInternal()
@@ -37,60 +35,45 @@ namespace Rush
             Manager.OnTaskClaimed.RemoveListener(OnTaskClaimedInternal);
             Manager.OnTaskReset.RemoveListener(OnTaskResetInternal);
 
-            m_TaskItemPool?.ReturnAll();
-            m_ActiveItems.Clear();
+            m_TabGroup?.Hide();
             base.HideInternal();
         }
 
         // ── Populate ──────────────────────────────────────────────────────────
 
-        private void PopulateTasksInternal()
+        private void PopulateTabsInternal()
         {
-            if (m_TaskItemPool == null) return;
-            m_TaskItemPool.ReturnAll();
-            m_ActiveItems.Clear();
+            var catalogs = Manager.Catalogs;
+            if (catalogs == null || m_CatalogTabEntries == null) return;
 
-            var states = Manager.GetAllTaskStates();
-            foreach (var state in states)
-            {
-                var item = m_TaskItemPool.Rent();
-                item.Setup(state);
-                m_ActiveItems.Add(item);
-            }
-        }
-
-        // Refresh only the item that matches the task — no full repopulate
-        private void RefreshTaskItemInternal(QuestTaskConfig task)
-        {
-            if (m_ActiveItems == null || Manager.Catalog?.Tasks == null) return;
-
-            for (int i = 0; i < Manager.Catalog.Tasks.Length; i++)
-            {
-                if (Manager.Catalog.Tasks[i] != task) continue;
-                if (i >= m_ActiveItems.Count) break;
-
-                var state = Manager.GetTaskState(task);
-                m_ActiveItems[i].Refresh(state);
-                break;
-            }
+            for (int i = 0; i < m_CatalogTabEntries.Length && i < catalogs.Length; i++)
+                m_CatalogTabEntries[i].Populate(catalogs[i]);
         }
 
         // ── Callbacks ─────────────────────────────────────────────────────────
 
         private void OnTaskProgressUpdatedInternal(QuestTaskConfig task) =>
-            RefreshTaskItemInternal(task);
+            RefreshTaskInAllTabsInternal(task);
 
         private void OnTaskCompletedInternal(QuestTaskConfig task) =>
-            RefreshTaskItemInternal(task);
+            RefreshTaskInAllTabsInternal(task);
 
         private void OnTaskClaimedInternal(QuestTaskConfig task, CollectibleResultData result)
         {
-            RefreshTaskItemInternal(task);
+            RefreshTaskInAllTabsInternal(task);
             var resultPanel = CanvasManager.Instance.GetPanel<CollectibleResultPanel>();
             resultPanel?.Show(result);
         }
 
         private void OnTaskResetInternal(QuestTaskConfig task) =>
-            RefreshTaskItemInternal(task);
+            RefreshTaskInAllTabsInternal(task);
+
+        // Only the visible tab will actually refresh — others are hidden
+        private void RefreshTaskInAllTabsInternal(QuestTaskConfig task)
+        {
+            if (m_CatalogTabEntries == null) return;
+            foreach (var entry in m_CatalogTabEntries)
+                entry.RefreshTaskIfVisible(task);
+        }
     }
 }

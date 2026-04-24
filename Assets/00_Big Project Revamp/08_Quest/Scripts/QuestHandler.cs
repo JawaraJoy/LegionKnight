@@ -7,7 +7,8 @@ namespace Rush
 {
     public class QuestHandler : MonoBehaviour
     {
-        [SerializeField] private QuestCatalogConfig m_Catalog;
+        // Array of catalogs — e.g. [0] = Daily Quest, [1] = Weekly Quest
+        [SerializeField] private QuestCatalogConfig[] m_Catalogs;
         [SerializeField] private QuestTracker m_Tracker;
         [SerializeField] private CollectibleControl m_CollectibleControl;
 
@@ -17,7 +18,7 @@ namespace Rush
         [SerializeField] private UnityEvent<string> m_OnClaimFailed;
         [SerializeField] private UnityEvent<QuestTaskConfig> m_OnTaskReset;
 
-        public QuestCatalogConfig Catalog => m_Catalog;
+        public QuestCatalogConfig[] Catalogs => m_Catalogs;
         public UnityEvent<QuestTaskConfig> OnTaskProgressUpdated => m_OnTaskProgressUpdated;
         public UnityEvent<QuestTaskConfig> OnTaskCompleted => m_OnTaskCompleted;
         public UnityEvent<QuestTaskConfig, CollectibleResultData> OnTaskClaimed => m_OnTaskClaimed;
@@ -26,8 +27,6 @@ namespace Rush
 
         // ── Public ────────────────────────────────────────────────────────────
 
-        // Call this from anywhere in the game when relevant action happens
-        // e.g. after killing a monster: questHandler.AddTaskCount(monsterKillTask, 1)
         public void AddTaskCount(QuestTaskConfig task, int amount = 1)
         {
             if (task == null || amount <= 0) return;
@@ -35,8 +34,6 @@ namespace Rush
             CheckAndApplyResetInternal(task);
 
             var state = GetTaskState(task);
-
-            // Already complete or claimed — ignore additional progress
             if (state.IsComplete || state.IsClaimed) return;
 
             int current = m_Tracker.GetCount(task);
@@ -60,16 +57,13 @@ namespace Rush
 
             if (!state.CanClaim)
             {
-                if (!state.IsComplete)
-                    m_OnClaimFailed?.Invoke("Task is not completed yet.");
-                else
-                    m_OnClaimFailed?.Invoke("Reward already claimed.");
+                m_OnClaimFailed?.Invoke(!state.IsComplete
+                    ? "Task is not completed yet."
+                    : "Reward already claimed.");
                 return;
             }
 
-            m_CollectibleControl?.AddCollectible(
-                task.RewardCollectible, task.RewardAmount);
-
+            m_CollectibleControl?.AddCollectible(task.RewardCollectible, task.RewardAmount);
             m_Tracker.SaveClaimed(task, true);
 
             var result = new CollectibleResultData();
@@ -84,16 +78,17 @@ namespace Rush
             int count = m_Tracker.GetCount(task);
             bool complete = count >= task.TargetCount;
             bool claimed = m_Tracker.IsClaimed(task);
-            DateTime nextReset = GetNextResetTimeInternal(task);
+            DateTime next = GetNextResetTimeInternal(task);
 
-            return new QuestTaskState(task, count, complete, claimed, nextReset);
+            return new QuestTaskState(task, count, complete, claimed, next);
         }
 
-        public List<QuestTaskState> GetAllTaskStates()
+        // Get all task states for a specific catalog
+        public List<QuestTaskState> GetTaskStates(QuestCatalogConfig catalog)
         {
             var list = new List<QuestTaskState>();
-            if (m_Catalog?.Tasks == null) return list;
-            foreach (var task in m_Catalog.Tasks)
+            if (catalog?.Tasks == null) return list;
+            foreach (var task in catalog.Tasks)
                 if (task != null) list.Add(GetTaskState(task));
             return list;
         }
@@ -108,7 +103,6 @@ namespace Rush
                 ? GetNextResetTimeInternal(task, lastReset.Value)
                 : DateTime.MinValue;
 
-            // First time or past reset time
             if (!lastReset.HasValue || now >= nextReset)
             {
                 m_Tracker.ResetTask(task);
@@ -136,7 +130,6 @@ namespace Rush
 
         private DateTime GetNextDailyResetInternal(QuestTaskConfig task, DateTime from)
         {
-            // Next occurrence of reset time after 'from'
             DateTime candidate = new DateTime(
                 from.Year, from.Month, from.Day,
                 task.ResetHour, task.ResetMinute, 0);
@@ -157,7 +150,6 @@ namespace Rush
                 from.Year, from.Month, from.Day,
                 task.ResetHour, task.ResetMinute, 0);
 
-            // Advance until we hit the target day after 'from'
             while (candidate.DayOfWeek != target || candidate <= from)
                 candidate = candidate.AddDays(1);
 
