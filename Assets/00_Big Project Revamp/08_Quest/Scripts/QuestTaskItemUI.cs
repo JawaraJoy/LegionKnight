@@ -4,12 +4,12 @@ using TMPro;
 
 namespace Rush
 {
-    public class QuestTaskItemUI : MonoBehaviour, IUpdater
+    public class QuestTaskItemUI : MonoBehaviour
     {
         [Header("Task Info")]
         [SerializeField] private TextMeshProUGUI m_TaskNameText;
         [SerializeField] private TextMeshProUGUI m_TaskDescText;
-        [SerializeField] private TextMeshProUGUI m_ProgressText;  // e.g. "3/5"
+        [SerializeField] private TextMeshProUGUI m_ProgressText;   // e.g. "3/5"
         [SerializeField] private Slider m_ProgressSlider;
 
         [Header("Reward")]
@@ -22,38 +22,10 @@ namespace Rush
 
         [Header("States")]
         [SerializeField] private GameObject m_StateInProgress;
-        [SerializeField] private GameObject m_StateComplete;   // complete, not yet claimed
-        [SerializeField] private GameObject m_StateClaimed;    // reward claimed
-
-        [Header("Reset Countdown")]
-        [SerializeField] private GameObject m_CountdownGroup;
-        [SerializeField] private TextMeshProUGUI m_CountdownText;
+        [SerializeField] private GameObject m_StateComplete;  // complete, not yet claimed
+        [SerializeField] private GameObject m_StateClaimed;   // reward claimed
 
         private QuestTaskConfig m_Task;
-        private bool m_ShowCountdown;
-
-        // ── IUpdater ──────────────────────────────────────────────────────────
-
-        public bool IsActive => gameObject.activeInHierarchy && m_ShowCountdown;
-
-        public void Tick()
-        {
-            var state = RushPlayer.Instance.QuestManager.GetTaskState(m_Task);
-            RefreshCountdownInternal(state);
-        }
-
-        // ── Lifecycle ─────────────────────────────────────────────────────────
-
-        private void OnEnable()
-        {
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
-        }
-
-        private void OnDisable()
-        {
-            m_ShowCountdown = false;
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
-        }
 
         // ── Setup ─────────────────────────────────────────────────────────────
 
@@ -67,7 +39,6 @@ namespace Rush
             RefreshRewardInternal(state.Config);
             RefreshProgressInternal(state);
             RefreshStateInternal(state);
-            RefreshCountdownInternal(state);
 
             if (m_ClaimButton != null)
             {
@@ -80,7 +51,6 @@ namespace Rush
         {
             RefreshProgressInternal(state);
             RefreshStateInternal(state);
-            RefreshCountdownInternal(state);
         }
 
         // ── Refresh ───────────────────────────────────────────────────────────
@@ -127,30 +97,9 @@ namespace Rush
                 m_ClaimButtonText.text = state.IsClaimed ? "Claimed" : "Claim";
         }
 
-        private void RefreshCountdownInternal(QuestTaskState state)
-        {
-            // Show countdown only after claimed — tells player when task resets
-            m_ShowCountdown = state.IsClaimed && state.SecondsUntilReset > 0;
-
-            if (m_CountdownGroup != null) m_CountdownGroup.SetActive(m_ShowCountdown);
-            if (!m_ShowCountdown || m_CountdownText == null) return;
-
-            m_CountdownText.text = FormatCountdownInternal(state.SecondsUntilReset);
-        }
-
         // ── Callbacks ─────────────────────────────────────────────────────────
 
         private void OnClaimClickedInternal() =>
             RushPlayer.Instance.QuestManager.Claim(m_Task);
-
-        // ── Helpers ───────────────────────────────────────────────────────────
-
-        private static string FormatCountdownInternal(double totalSeconds)
-        {
-            var span = System.TimeSpan.FromSeconds(totalSeconds);
-            return span.Hours > 0
-                ? $"{span.Hours:D2}:{span.Minutes:D2}:{span.Seconds:D2}"
-                : $"{span.Minutes:D2}:{span.Seconds:D2}";
-        }
     }
 }

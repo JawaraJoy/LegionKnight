@@ -11,7 +11,7 @@ namespace LegionKnight
         }
         public void PlayBGM(AudioClip clip)
         {
-            GameSetting.Instance.AudioSetting.BGMPlayer.Play(clip);
+            GameSetting.Instance.AudioSetting.BGMPlayer.Play(clip, true);
         }
         public void StopBGM()
         {

@@ -118,6 +118,8 @@ namespace Rush
         public UnityEvent<int> OnRebornStart => m_OnRebornStart;
         public UnityEvent OnRebornDone => m_OnRebornDone;
 
+        private bool m_DeathTriggered = false;
+
         public void Init(Unit unitOwner)
         {
             m_ModuleContext = new ModuleContext(unitOwner, gameObject);
@@ -154,6 +156,7 @@ namespace Rush
         }
         private void ReborInternal(RebornConfig rebornConfig)
         {
+           m_DeathTriggered = false;
            RushGameManager.Instance.StartCoroutine(RebornDelayRoutine(rebornConfig));
         }
         private void OnTriggerEnter2D(Collider2D collision)
@@ -364,6 +367,7 @@ namespace Rush
         }
         private void OnDeathInvoke(IAbilityContext context)
         {
+            if (m_DeathTriggered) return;
             Unit unitTaker = m_ModuleContext.Unit;
             if (unitTaker.HasBind(out SkillController hasSkill))
             {
@@ -382,6 +386,8 @@ namespace Rush
                 //UnityService.Instance.ShowRewardedAd(() => InvisibleForWhileInternal(5));
             }
             unitTaker.Config.OnDeath(unitKiller.Config.BaseInfo.Id);
+
+            m_DeathTriggered = true;
         }
         protected virtual void SetCurrentDamageTakeInternal(int damage)
         {

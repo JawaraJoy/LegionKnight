@@ -21,5 +21,15 @@ namespace Rush
             if (m_CatalogView == null || !m_CatalogView.IsShow) return;
             m_CatalogView.RefreshTask(task);
         }
+
+        // Called when the entire catalog resets — refresh all tasks in this view
+        public void RefreshAllIfVisible()
+        {
+            if (m_CatalogView == null || !m_CatalogView.IsShow) return;
+            m_CatalogView.RefreshAllTasks();
+        }
+
+        public bool BelongsToCatalog(QuestCatalogConfig catalog) =>
+            m_CatalogConfig == catalog;
     }
 }

@@ -24,6 +24,8 @@ namespace Rush
         [SerializeField]
         private UnityEvent<Unit> m_OnBossDespawn;
         [SerializeField]
+        private UnityEvent<Unit> m_OnEnemyDespawn;
+        [SerializeField]
         private UnityEvent<int> m_OnCurrentScoreChanged;
         public UnityEvent<EnemyWaveConfig> OnWaveSetCleared => m_OnWaveSetCleared;
         private int m_CurrenWaveIndex = -1;
@@ -192,7 +194,7 @@ namespace Rush
             if (unit.HasBind(out Damageable damageable))
             {
                 //damageable.OnDeath.RemoveListener((context) => DespawnUnitInternal(unit));
-                damageable.OnDeath.AddListener((context) => DespawnUnitInternal(unit));
+                //damageable.OnDeath.AddListener((context) => DespawnUnitInternal(unit));
             }
 
             unit.gameObject.SetActive(false);
@@ -219,6 +221,7 @@ namespace Rush
             GetOrCreatePool(enemyCfg).Enqueue(unit);
             m_ActiveEnemies.Remove(unit);
             DespawnBoss(unit);
+            m_OnEnemyDespawn?.Invoke(unit);
         }
 
         private void SpawnBoss(Unit bossUnit)
@@ -241,7 +244,6 @@ namespace Rush
 
                 m_OnWaveSetCleared?.Invoke(m_CurrentEnemyWave);
                 m_OnBossDespawn?.Invoke(bossUnit);
-                
             }
         }
         /// <summary>

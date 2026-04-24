@@ -120,6 +120,7 @@ namespace Rush
             if (cycleStart == null)
             {
                 m_Tracker.SaveCycleStartTime(m_Config, DateTime.Now);
+                m_OnCycleReset?.Invoke();
                 return;
             }
 

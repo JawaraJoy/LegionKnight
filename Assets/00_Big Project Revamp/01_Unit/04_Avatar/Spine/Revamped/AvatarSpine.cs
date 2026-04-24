@@ -2,6 +2,7 @@
 using MoreMountains.Tools;
 using Spine;
 using Spine.Unity;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,10 +18,12 @@ namespace Rush
 
         [SerializeField]
         private ClipEventField[] m_Events;
+        [SerializeField]
+        private SpineClipTrigger[] m_SpineClipTriggers;
 
         [SerializeField]
         private UnityEvent<ModuleContext> m_OnInitialized;
-
+    
         [SerializeField]
         private UnityEvent<AnimationClipConfig> m_OnClipStart = new();
 
@@ -36,6 +39,21 @@ namespace Rush
 
         private ModuleContext m_ModuleContext;
         public IModuleContext ModuleContext => m_ModuleContext;
+
+        private SpineClipTrigger GetSpineClipTrigger(string animationId)
+        {
+            SpineClipTrigger spineClipTrigger = m_SpineClipTriggers.FirstOrDefault(x => x.ClipConfig.BaseInfo.Id == animationId);
+            if (spineClipTrigger == null)
+            {
+                return null;
+            }
+            return spineClipTrigger;
+        }
+        private bool HasSpineClipTriggerInternal(string animationId, out SpineClipTrigger clipTrigger)
+        {
+            clipTrigger = GetSpineClipTrigger(animationId);
+            return (clipTrigger != null);
+        }
 
         private void OnDestroy()
         {
@@ -130,6 +148,7 @@ namespace Rush
             m_CurrentClip = clipConfig;
             m_SkeletonAnimation.loop = clipConfig.Loop;
             m_OnClipStart?.Invoke(clipConfig);
+            SpineClipOnStartInvoke(clipConfig);
 
             Debug.Log($"[Spine] Queue Animation: {animName}");
         }
@@ -237,6 +256,22 @@ namespace Rush
         {
             Debug.Log($"[Spine] Animation Done: {clipConfig.BaseInfo.Name}");
             m_OnClipDone?.Invoke(clipConfig);
+            SpineClipOnDoneInvoke(clipConfig);
+        }
+
+        private void SpineClipOnStartInvoke(AnimationClipConfig clipConfig)
+        {
+            if (HasSpineClipTriggerInternal(clipConfig.BaseInfo.Id, out SpineClipTrigger clipTrigger))
+            {
+                clipTrigger.OnStartInvoke(clipConfig);
+            }
+        }
+        private void SpineClipOnDoneInvoke(AnimationClipConfig clipConfig)
+        {
+            if (HasSpineClipTriggerInternal(clipConfig.BaseInfo.Id, out SpineClipTrigger clipTrigger))
+            {
+                clipTrigger.OnDoneInvoke(clipConfig);
+            }
         }
     }
 }

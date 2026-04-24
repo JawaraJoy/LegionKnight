@@ -20,7 +20,7 @@ namespace Rush
             Manager.OnTaskProgressUpdated.AddListener(OnTaskProgressUpdatedInternal);
             Manager.OnTaskCompleted.AddListener(OnTaskCompletedInternal);
             Manager.OnTaskClaimed.AddListener(OnTaskClaimedInternal);
-            Manager.OnTaskReset.AddListener(OnTaskResetInternal);
+            Manager.OnCatalogReset.AddListener(OnCatalogResetInternal);
 
             PopulateTabsInternal();
             m_TabGroup?.Show();
@@ -33,13 +33,11 @@ namespace Rush
             Manager.OnTaskProgressUpdated.RemoveListener(OnTaskProgressUpdatedInternal);
             Manager.OnTaskCompleted.RemoveListener(OnTaskCompletedInternal);
             Manager.OnTaskClaimed.RemoveListener(OnTaskClaimedInternal);
-            Manager.OnTaskReset.RemoveListener(OnTaskResetInternal);
+            Manager.OnCatalogReset.RemoveListener(OnCatalogResetInternal);
 
             m_TabGroup?.Hide();
             base.HideInternal();
         }
-
-        // ── Populate ──────────────────────────────────────────────────────────
 
         private void PopulateTabsInternal()
         {
@@ -53,23 +51,30 @@ namespace Rush
         // ── Callbacks ─────────────────────────────────────────────────────────
 
         private void OnTaskProgressUpdatedInternal(QuestTaskConfig task) =>
-            RefreshTaskInAllTabsInternal(task);
+            RefreshTaskInTabsInternal(task);
 
         private void OnTaskCompletedInternal(QuestTaskConfig task) =>
-            RefreshTaskInAllTabsInternal(task);
+            RefreshTaskInTabsInternal(task);
 
         private void OnTaskClaimedInternal(QuestTaskConfig task, CollectibleResultData result)
         {
-            RefreshTaskInAllTabsInternal(task);
-            var resultPanel = CanvasManager.Instance.GetPanel<CollectibleResultPanel>();
+            RefreshTaskInTabsInternal(task);
+            var resultPanel = CanvasManager.Instance.GetPanel<ShopResultPanel>();
             resultPanel?.Show(result);
         }
 
-        private void OnTaskResetInternal(QuestTaskConfig task) =>
-            RefreshTaskInAllTabsInternal(task);
+        // When a catalog resets, refresh all tasks in the matching tab only
+        private void OnCatalogResetInternal(QuestCatalogConfig catalog)
+        {
+            if (m_CatalogTabEntries == null) return;
+            foreach (var entry in m_CatalogTabEntries)
+            {
+                if (entry.BelongsToCatalog(catalog))
+                    entry.RefreshAllIfVisible();
+            }
+        }
 
-        // Only the visible tab will actually refresh — others are hidden
-        private void RefreshTaskInAllTabsInternal(QuestTaskConfig task)
+        private void RefreshTaskInTabsInternal(QuestTaskConfig task)
         {
             if (m_CatalogTabEntries == null) return;
             foreach (var entry in m_CatalogTabEntries)

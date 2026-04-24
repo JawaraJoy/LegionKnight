@@ -163,6 +163,8 @@ namespace Rush
         private void OnClaimSuccessInternal(CollectibleResultData result)
         {
             RefreshDayStatesInternal();
+            var resultPanel = CanvasManager.Instance.GetPanel<ShopResultPanel>();
+            resultPanel?.Show(result);
         }
 
         private void OnClaimFailedInternal(string message) =>

@@ -172,7 +172,9 @@ namespace Rush
 
             ITargetable target = ResolveTarget(targetIndex, targets);
 
+            
             ammo.gameObject.SetActive(true);
+            ammo.transform.localScale = Vector3.one;
             ammo.Shot(target);
 
             if (!m_ActiveProjectiles.Contains(ammo))

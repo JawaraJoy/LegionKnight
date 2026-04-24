@@ -1,3 +1,4 @@
+using MoreMountains.Tools;
 using UnityEngine;
 
 namespace Rush
@@ -12,18 +13,21 @@ namespace Rush
         [SerializeField] private CollectibleConfig m_RewardCollectible;
         [SerializeField] private int m_RewardAmount = 1;
 
-        [Header("Reset")]
-        [SerializeField] private QuestResetCycle m_ResetCycle = QuestResetCycle.Daily;
-        [SerializeField, Range(0, 23)] private int m_ResetHour = 0;
-        [SerializeField, Range(0, 59)] private int m_ResetMinute = 0;
-        [SerializeField] private SignInDayOfWeek m_WeeklyResetDay = SignInDayOfWeek.Monday;
+        [SerializeField, MMReadOnly]
+        private QuestCatalogConfig m_QuestCatalogConfig;
 
         public int TargetCount => m_TargetCount;
         public CollectibleConfig RewardCollectible => m_RewardCollectible;
         public int RewardAmount => m_RewardAmount;
-        public QuestResetCycle ResetCycle => m_ResetCycle;
-        public int ResetHour => m_ResetHour;
-        public int ResetMinute => m_ResetMinute;
-        public SignInDayOfWeek WeeklyResetDay => m_WeeklyResetDay;
+
+        public void SetCatalog(QuestCatalogConfig QuestCatalogConfig)
+        {
+            m_QuestCatalogConfig = QuestCatalogConfig;
+        }
+
+        public void AddTaskCount(int amount)
+        {
+            RushPlayer.Instance.QuestManager.AddTaskCount(this, amount);
+        }
     }
 }

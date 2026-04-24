@@ -7,7 +7,6 @@ namespace Rush
 {
     public class QuestHandler : MonoBehaviour
     {
-        // Array of catalogs — e.g. [0] = Daily Quest, [1] = Weekly Quest
         [SerializeField] private QuestCatalogConfig[] m_Catalogs;
         [SerializeField] private QuestTracker m_Tracker;
         [SerializeField] private CollectibleControl m_CollectibleControl;
@@ -16,14 +15,14 @@ namespace Rush
         [SerializeField] private UnityEvent<QuestTaskConfig> m_OnTaskCompleted;
         [SerializeField] private UnityEvent<QuestTaskConfig, CollectibleResultData> m_OnTaskClaimed;
         [SerializeField] private UnityEvent<string> m_OnClaimFailed;
-        [SerializeField] private UnityEvent<QuestTaskConfig> m_OnTaskReset;
+        [SerializeField] private UnityEvent<QuestCatalogConfig> m_OnCatalogReset;
 
         public QuestCatalogConfig[] Catalogs => m_Catalogs;
         public UnityEvent<QuestTaskConfig> OnTaskProgressUpdated => m_OnTaskProgressUpdated;
         public UnityEvent<QuestTaskConfig> OnTaskCompleted => m_OnTaskCompleted;
         public UnityEvent<QuestTaskConfig, CollectibleResultData> OnTaskClaimed => m_OnTaskClaimed;
         public UnityEvent<string> OnClaimFailed => m_OnClaimFailed;
-        public UnityEvent<QuestTaskConfig> OnTaskReset => m_OnTaskReset;
+        public UnityEvent<QuestCatalogConfig> OnCatalogReset => m_OnCatalogReset;
 
         // ── Public ────────────────────────────────────────────────────────────
 
@@ -31,7 +30,9 @@ namespace Rush
         {
             if (task == null || amount <= 0) return;
 
-            CheckAndApplyResetInternal(task);
+            // Find which catalog this task belongs to and check reset
+            var catalog = FindCatalogForTaskInternal(task);
+            if (catalog != null) CheckAndApplyResetInternal(catalog);
 
             var state = GetTaskState(task);
             if (state.IsComplete || state.IsClaimed) return;
@@ -43,15 +44,15 @@ namespace Rush
             m_Tracker.SaveCount(task, newCount);
             m_OnTaskProgressUpdated?.Invoke(task);
 
-            if (completed)
-                m_OnTaskCompleted?.Invoke(task);
+            if (completed) m_OnTaskCompleted?.Invoke(task);
         }
 
         public void Claim(QuestTaskConfig task)
         {
             if (task == null) return;
 
-            CheckAndApplyResetInternal(task);
+            var catalog = FindCatalogForTaskInternal(task);
+            if (catalog != null) CheckAndApplyResetInternal(catalog);
 
             var state = GetTaskState(task);
 
@@ -73,19 +74,15 @@ namespace Rush
 
         public QuestTaskState GetTaskState(QuestTaskConfig task)
         {
-            CheckAndApplyResetInternal(task);
-
             int count = m_Tracker.GetCount(task);
             bool complete = count >= task.TargetCount;
             bool claimed = m_Tracker.IsClaimed(task);
-            DateTime next = GetNextResetTimeInternal(task);
-
-            return new QuestTaskState(task, count, complete, claimed, next);
+            return new QuestTaskState(task, count, complete, claimed);
         }
 
-        // Get all task states for a specific catalog
         public List<QuestTaskState> GetTaskStates(QuestCatalogConfig catalog)
         {
+            CheckAndApplyResetInternal(catalog);
             var list = new List<QuestTaskState>();
             if (catalog?.Tasks == null) return list;
             foreach (var task in catalog.Tasks)
@@ -93,46 +90,53 @@ namespace Rush
             return list;
         }
 
+        public QuestCatalogState GetCatalogState(QuestCatalogConfig catalog)
+        {
+            CheckAndApplyResetInternal(catalog);
+            DateTime nextReset = GetNextResetTimeInternal(catalog);
+            return new QuestCatalogState(catalog, nextReset);
+        }
+
         // ── Reset ─────────────────────────────────────────────────────────────
 
-        private void CheckAndApplyResetInternal(QuestTaskConfig task)
+        private void CheckAndApplyResetInternal(QuestCatalogConfig catalog)
         {
-            DateTime? lastReset = m_Tracker.GetLastResetTime(task);
+            DateTime? lastReset = m_Tracker.GetLastResetTime(catalog);
             DateTime now = DateTime.Now;
             DateTime nextReset = lastReset.HasValue
-                ? GetNextResetTimeInternal(task, lastReset.Value)
+                ? GetNextResetTimeInternal(catalog, lastReset.Value)
                 : DateTime.MinValue;
 
             if (!lastReset.HasValue || now >= nextReset)
             {
-                m_Tracker.ResetTask(task);
-                m_OnTaskReset?.Invoke(task);
+                m_Tracker.ResetCatalog(catalog);
+                m_OnCatalogReset?.Invoke(catalog);
             }
         }
 
         // ── Time Helpers ──────────────────────────────────────────────────────
 
-        private DateTime GetNextResetTimeInternal(QuestTaskConfig task)
+        private DateTime GetNextResetTimeInternal(QuestCatalogConfig catalog)
         {
-            DateTime? lastReset = m_Tracker.GetLastResetTime(task);
-            return GetNextResetTimeInternal(task, lastReset ?? DateTime.Now);
+            DateTime? lastReset = m_Tracker.GetLastResetTime(catalog);
+            return GetNextResetTimeInternal(catalog, lastReset ?? DateTime.Now);
         }
 
-        private DateTime GetNextResetTimeInternal(QuestTaskConfig task, DateTime from)
+        private DateTime GetNextResetTimeInternal(QuestCatalogConfig catalog, DateTime from)
         {
-            return task.ResetCycle switch
+            return catalog.ResetCycle switch
             {
-                QuestResetCycle.Daily => GetNextDailyResetInternal(task, from),
-                QuestResetCycle.Weekly => GetNextWeeklyResetInternal(task, from),
-                _ => GetNextDailyResetInternal(task, from)
+                QuestResetCycle.Daily => GetNextDailyResetInternal(catalog, from),
+                QuestResetCycle.Weekly => GetNextWeeklyResetInternal(catalog, from),
+                _ => GetNextDailyResetInternal(catalog, from)
             };
         }
 
-        private DateTime GetNextDailyResetInternal(QuestTaskConfig task, DateTime from)
+        private DateTime GetNextDailyResetInternal(QuestCatalogConfig catalog, DateTime from)
         {
             DateTime candidate = new DateTime(
                 from.Year, from.Month, from.Day,
-                task.ResetHour, task.ResetMinute, 0);
+                catalog.ResetHour, catalog.ResetMinute, 0);
 
             if (candidate <= from)
                 candidate = candidate.AddDays(1);
@@ -140,20 +144,34 @@ namespace Rush
             return candidate;
         }
 
-        private DateTime GetNextWeeklyResetInternal(QuestTaskConfig task, DateTime from)
+        private DateTime GetNextWeeklyResetInternal(QuestCatalogConfig catalog, DateTime from)
         {
-            int targetDow = (int)task.WeeklyResetDay;
+            int targetDow = (int)catalog.WeeklyResetDay;
             DayOfWeek target = targetDow == 7
                 ? DayOfWeek.Sunday : (DayOfWeek)targetDow;
 
             DateTime candidate = new DateTime(
                 from.Year, from.Month, from.Day,
-                task.ResetHour, task.ResetMinute, 0);
+                catalog.ResetHour, catalog.ResetMinute, 0);
 
             while (candidate.DayOfWeek != target || candidate <= from)
                 candidate = candidate.AddDays(1);
 
             return candidate;
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────────────
+
+        private QuestCatalogConfig FindCatalogForTaskInternal(QuestTaskConfig task)
+        {
+            if (m_Catalogs == null) return null;
+            foreach (var catalog in m_Catalogs)
+            {
+                if (catalog?.Tasks == null) continue;
+                foreach (var t in catalog.Tasks)
+                    if (t == task) return catalog;
+            }
+            return null;
         }
     }
 }

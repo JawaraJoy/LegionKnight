@@ -8,10 +8,10 @@ namespace Rush
     {
         private const string KeyCount = "Quest_Count_";
         private const string KeyClaimed = "Quest_Claimed_";
-        private const string KeyLastReset = "Quest_LastReset_";
+        private const string KeyLastReset = "Quest_CatalogReset_";  // per catalog
         private const string DateFormat = "yyyy-MM-dd HH:mm:ss";
 
-        // ── Count ─────────────────────────────────────────────────────────────
+        // ── Task Count ────────────────────────────────────────────────────────
 
         public int GetCount(QuestTaskConfig task)
         {
@@ -23,7 +23,7 @@ namespace Rush
         public void SaveCount(QuestTaskConfig task, int count) =>
             UnityService.Instance.SaveData(KeyCount + task.BaseInfo.Id, count);
 
-        // ── Claimed ───────────────────────────────────────────────────────────
+        // ── Task Claimed ──────────────────────────────────────────────────────
 
         public bool IsClaimed(QuestTaskConfig task)
         {
@@ -35,11 +35,11 @@ namespace Rush
         public void SaveClaimed(QuestTaskConfig task, bool claimed) =>
             UnityService.Instance.SaveData(KeyClaimed + task.BaseInfo.Id, claimed);
 
-        // ── Last Reset ────────────────────────────────────────────────────────
+        // ── Catalog Reset Time ────────────────────────────────────────────────
 
-        public DateTime? GetLastResetTime(QuestTaskConfig task)
+        public DateTime? GetLastResetTime(QuestCatalogConfig catalog)
         {
-            string key = KeyLastReset + task.BaseInfo.Id;
+            string key = KeyLastReset + catalog.BaseInfo.Id;
             if (!UnityService.Instance.HasData(key)) return null;
             string raw = UnityService.Instance.GetData<string>(key);
             return DateTime.TryParseExact(raw, DateFormat,
@@ -48,18 +48,23 @@ namespace Rush
                 ? dt : (DateTime?)null;
         }
 
-        public void SaveLastResetTime(QuestTaskConfig task, DateTime time) =>
+        public void SaveLastResetTime(QuestCatalogConfig catalog, DateTime time) =>
             UnityService.Instance.SaveData(
-                KeyLastReset + task.BaseInfo.Id,
+                KeyLastReset + catalog.BaseInfo.Id,
                 time.ToString(DateFormat));
 
-        // ── Reset ─────────────────────────────────────────────────────────────
+        // ── Reset all tasks in catalog ────────────────────────────────────────
 
-        public void ResetTask(QuestTaskConfig task)
+        public void ResetCatalog(QuestCatalogConfig catalog)
         {
-            SaveCount(task, 0);
-            SaveClaimed(task, false);
-            SaveLastResetTime(task, DateTime.Now);
+            if (catalog.Tasks == null) return;
+            foreach (var task in catalog.Tasks)
+            {
+                if (task == null) continue;
+                SaveCount(task, 0);
+                SaveClaimed(task, false);
+            }
+            SaveLastResetTime(catalog, DateTime.Now);
         }
     }
 }
