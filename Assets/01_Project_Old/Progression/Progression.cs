@@ -103,6 +103,7 @@ namespace LegionKnight
                 {"levelupdate", levelupDate.ToString()},
             };
             AppsFlyer.sendEvent(AFEventName.OnPlayerLevelUp, eventValues);
+            GetCurrentExpTable(m_Level - 1)?.RewardLevelReached.DirectTakeLoots();
         }
         public void AddOnCurrentExpChange(UnityAction<int> action)
         {

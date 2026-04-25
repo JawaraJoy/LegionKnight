@@ -32,10 +32,5 @@ namespace Rush
         public LevelFormulaConfig LevelFormulaConfig => m_LevelFormulaConfig;
         public BreakThroughFormulaConfig BreakThroughFormulaConfig => m_BreakThroughFormulaConfig;
         public Currency ItemDuplicateConverter => m_ItemDuplicateConverter;
-
-        public void OnOwned()
-        {
-
-        }
     }
 }

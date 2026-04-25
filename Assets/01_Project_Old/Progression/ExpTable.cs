@@ -20,5 +20,10 @@ namespace LegionKnight
             m_CurrentMaxExp = currentMaxExp;
             m_RewardLevelReached = rewardLevelReached;
         }
+
+        public void TakeLoots()
+        {
+
+        }
     }
 }
