@@ -64,7 +64,8 @@ namespace Rush
             var banner = Manager.ActiveBanner;
             if (banner == null) return;
 
-            if (m_BannerImage != null) m_BannerImage.sprite = banner.BannerSplashSprite;
+            if (m_BannerImage != null)
+                m_BannerImage.sprite = banner.BannerSplashSprite;
 
             if (m_PityProgressText != null)
                 m_PityProgressText.text =
@@ -123,8 +124,8 @@ namespace Rush
         private void OnDrawCompleteInternal(CollectibleResultData result)
         {
             RefreshViewInternal();
-            var resultPanel = CanvasManager.Instance.GetPanel<GachaResultPanel>();
-            resultPanel?.Show(result);
+            var previewPanel = CanvasManager.Instance.GetPanel<GachaPreviewPanel>();
+            previewPanel?.Show(result);
         }
 
         private void OnDrawFailedInternal(string message) =>
