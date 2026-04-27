@@ -8,6 +8,7 @@ namespace Rush
     public class IAPBundleItemUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI m_NameText;
+        [SerializeField] private TextMeshProUGUI m_DescriptionText;
 
         [Header("Visual")]
         [SerializeField] private Button m_Button;
@@ -28,6 +29,7 @@ namespace Rush
             m_Bundle = bundle;
 
             if (m_NameText != null) m_NameText.text = bundle.BaseInfo.Name;
+            if (m_DescriptionText != null) m_DescriptionText.text = bundle.BaseInfo.Description;
             if (m_BundleImage != null) m_BundleImage.sprite = bundle.BundleSprite;
             if (m_PriceText != null) m_PriceText.text = localizedPrice;
 
