@@ -8,7 +8,6 @@ namespace Rush
     public class IAPBundleItemUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI m_NameText;
-        [SerializeField] private TextMeshProUGUI m_DescriptionText;
 
         [Header("Visual")]
         [SerializeField] private Button m_Button;
@@ -24,12 +23,11 @@ namespace Rush
         private IAPBundleConfig m_Bundle;
 
         public void Setup(IAPBundleConfig bundle, string localizedPrice,
-            bool isFirstPurchase, Action<IAPBundleConfig> onClicked)
+            bool isFirstPurchase, bool canPurchase, Action<IAPBundleConfig> onClicked)
         {
             m_Bundle = bundle;
 
             if (m_NameText != null) m_NameText.text = bundle.BaseInfo.Name;
-            if (m_DescriptionText != null) m_DescriptionText.text = bundle.BaseInfo.Description;
             if (m_BundleImage != null) m_BundleImage.sprite = bundle.BundleSprite;
             if (m_PriceText != null) m_PriceText.text = localizedPrice;
 
@@ -39,8 +37,10 @@ namespace Rush
 
             if (m_Button != null)
             {
+                m_Button.interactable = canPurchase;
                 m_Button.onClick.RemoveAllListeners();
-                m_Button.onClick.AddListener(() => onClicked?.Invoke(m_Bundle));
+                if (canPurchase)
+                    m_Button.onClick.AddListener(() => onClicked?.Invoke(m_Bundle));
             }
         }
     }

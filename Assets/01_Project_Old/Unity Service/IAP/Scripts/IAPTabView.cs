@@ -20,8 +20,9 @@ namespace Rush
                 if (bundle == null) continue;
                 string localizedPrice = iap.GetLocalizedPrice(bundle);
                 bool isFirst = iap.IsFirstPurchase(bundle);
+                bool canPurchase = iap.CanPurchase(bundle);
                 var item = m_BundlePool.Rent();
-                item.Setup(bundle, localizedPrice, isFirst, onBundleClicked);
+                item.Setup(bundle, localizedPrice, isFirst, canPurchase, onBundleClicked);
             }
         }
 

@@ -18,10 +18,8 @@ namespace LegionKnight
         [SerializeField] private UnityEvent m_OnStoreConnected;
         [SerializeField] private UnityEvent<string> m_OnStoreConnectFailed;
 
-        // IAP v5 — StoreController replaces IStoreController + IDetailedStoreListener
         private StoreController m_StoreController;
 
-        // Quick lookup: productId → config
         private readonly Dictionary<string, Rush.IAPBundleConfig> m_ProductMap = new();
 
         public Rush.IAPCatalogConfig Catalog => m_Catalog;
@@ -47,15 +45,12 @@ namespace LegionKnight
                 return;
             }
 
-            // v5: Get StoreController from UnityIAPServices
             m_StoreController = UnityIAPServices.StoreController();
 
-            // Attach purchase handlers BEFORE connecting
             m_StoreController.OnPurchasePending += OnPurchasePendingInternal;
             m_StoreController.OnPurchaseFailed += OnPurchaseFailedInternal;
             m_StoreController.OnStoreDisconnected += OnStoreDisconnectedInternal;
 
-            // Build product map and product list from catalog
             var products = new List<ProductDefinition>();
             foreach (var tab in m_Catalog.Tabs)
             {
@@ -68,10 +63,8 @@ namespace LegionKnight
                 }
             }
 
-            // v5: Connect async — replaces UnityPurchasing.Initialize()
             await m_StoreController.Connect();
 
-            // v5: Fetch products — replaces ConfigurationBuilder.AddProduct()
             m_StoreController.OnProductsFetched += OnProductsFetchedInternal;
             m_StoreController.OnProductsFetchFailed += OnProductsFetchFailedInternal;
             m_StoreController.FetchProducts(products);
@@ -81,11 +74,9 @@ namespace LegionKnight
 
         private void OnProductsFetchedInternal(List<Product> products)
         {
-            // Products are ready — fetch existing purchases to restore entitlements
             m_StoreController.OnPurchasesFetched += OnPurchasesFetchedInternal;
             m_StoreController.OnPurchasesFetchFailed += OnPurchasesFetchFailedInternal;
             m_StoreController.FetchPurchases();
-
             m_OnStoreConnected?.Invoke();
         }
 
@@ -95,7 +86,6 @@ namespace LegionKnight
             m_OnStoreConnectFailed?.Invoke(failure.FailureReason.ToString());
         }
 
-        // Called for restored purchases on FetchPurchases
         private void OnPurchasesFetchedInternal(Orders orders)
         {
             // No action needed — entitlements already granted on first purchase
@@ -107,7 +97,6 @@ namespace LegionKnight
             Debug.LogWarning($"[IAP] Purchases fetch failed: {failure.message}");
         }
 
-        // v5 equivalent of ProcessPurchase — called for new purchases
         private void OnPurchasePendingInternal(PendingOrder order)
         {
             var item = order.CartOrdered.Items()?.FirstOrDefault();
@@ -130,8 +119,6 @@ namespace LegionKnight
 
             GiveItemsInternal(bundle);
             m_OnPurchaseSuccess?.Invoke(bundle);
-
-            // v5: Must explicitly confirm purchase
             m_StoreController.ConfirmPurchase(order);
         }
 
@@ -139,11 +126,8 @@ namespace LegionKnight
         {
             var item = order.CartOrdered.Items()?.FirstOrDefault();
             string productId = item?.Product.definition.storeSpecificId;
-
             m_ProductMap.TryGetValue(productId ?? string.Empty, out var bundle);
-
             string reason = order.FailureReason.ToString();
-
             Debug.LogWarning($"[IAP] Purchase failed: {productId} — {reason}");
             m_OnPurchaseFailed?.Invoke(bundle, reason);
         }
@@ -166,6 +150,13 @@ namespace LegionKnight
 
             if (bundle == null || string.IsNullOrEmpty(bundle.ProductId)) return;
 
+            // Check purchase limit before initiating store flow
+            if (!m_PurchaseTracker.CanPurchase(bundle))
+            {
+                Debug.LogWarning($"[IAP] Bundle not available: {bundle.BaseInfo.Name}");
+                return;
+            }
+
             Product product = m_StoreController.GetProductById(bundle.ProductId);
 
             if (product == null)
@@ -182,7 +173,9 @@ namespace LegionKnight
         private void GiveItemsInternal(Rush.IAPBundleConfig bundle)
         {
             var result = new Rush.CollectibleResultData();
-            bool isFirst = !m_PurchaseTracker.HasPurchased(bundle);
+            // Use IsFirstPurchase (not HasPurchased) so bonus works correctly
+            // regardless of purchase limit type
+            bool isFirst = m_PurchaseTracker.IsFirstPurchase(bundle);
 
             if (bundle.Entries != null)
             {
@@ -211,8 +204,6 @@ namespace LegionKnight
         public string GetLocalizedPrice(Rush.IAPBundleConfig bundle)
         {
             if (!IsInitialized || bundle == null) return string.Empty;
-
-            // v5: GetProducts() returns List<Product>
             var products = m_StoreController.GetProducts();
             foreach (var p in products)
             {
@@ -222,8 +213,12 @@ namespace LegionKnight
             return string.Empty;
         }
 
+        // Kept for backward compatibility — delegates to tracker
         public bool IsFirstPurchase(Rush.IAPBundleConfig bundle) =>
-            !m_PurchaseTracker.HasPurchased(bundle);
+            m_PurchaseTracker.IsFirstPurchase(bundle);
+
+        public bool CanPurchase(Rush.IAPBundleConfig bundle) =>
+            m_PurchaseTracker.CanPurchase(bundle);
 
         // ── Cleanup ───────────────────────────────────────────────────────────
 
