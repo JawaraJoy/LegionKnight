@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using LegionKnight;
+using UnityEngine.Events;
 
 namespace Rush
 {
@@ -19,7 +20,8 @@ namespace Rush
 
         [Header("Pity Notice")]
         [SerializeField] private GameObject m_PityNoticeObject;
-
+        [SerializeField]
+        private UnityEvent m_OnNextClicked; // Optional event for additional logic when Next is clicked (e.g. play sound)
         private CollectibleResultData m_Result;
         private List<CollectibleResultEntry> m_Entries;
         private int m_CurrentIndex;
@@ -55,7 +57,7 @@ namespace Rush
         private void ShowEntryInternal(int index)
         {
             if (m_Entries == null || index >= m_Entries.Count) return;
-
+            m_OnNextClicked?.Invoke();
             var entry = m_Entries[index];
 
             // Update preview item UI with splash image
@@ -104,6 +106,7 @@ namespace Rush
             if (m_CurrentIndex < m_Entries.Count)
             {
                 ShowEntryInternal(m_CurrentIndex);
+                
             }
             else
             {
@@ -115,7 +118,7 @@ namespace Rush
         private void FinishPreviewInternal()
         {
             Hide();
-            var resultPanel = CanvasManager.Instance.GetPanel<CollectibleResultPanel>();
+            var resultPanel = CanvasManager.Instance.GetPanel<GachaResultPanel>();
             resultPanel?.Show(m_Result);
         }
 

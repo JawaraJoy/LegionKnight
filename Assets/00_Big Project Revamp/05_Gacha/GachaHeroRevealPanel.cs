@@ -15,10 +15,12 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_HeroNameText;
         [SerializeField] private TextMeshProUGUI m_RarityText;
         [SerializeField] private Image m_RarityFrame;
+        [SerializeField] private AvatarSpineUI m_AuraEffectspine;
 
         [Header("Reveal Clip")]
         // Clip to play when hero is revealed — configure in inspector
         [SerializeField] private AnimationClipConfig m_RevealClip;
+        [SerializeField] private AnimationClipConfig m_EffectClip;
 
         [Header("Button")]
         [SerializeField] private Button m_CloseButton;
@@ -69,12 +71,15 @@ namespace Rush
                 if (m_RarityText != null) m_RarityText.gameObject.SetActive(false);
                 if (m_RarityFrame != null) m_RarityFrame.gameObject.SetActive(false);
             }
-
-            Show();
+            if (m_AuraEffectspine != null)
+                m_AuraEffectspine.PlayClip(m_EffectClip);
+                m_AuraEffectspine.SetColor(rarity.Color);
+            ShowInternal();
 
             // Play reveal animation after panel is shown
             if (m_RevealClip != null && m_AvatarSpineUI != null)
                 m_AvatarSpineUI.PlayClip(m_RevealClip);
+            
         }
 
         private void OnCloseClickedInternal()
