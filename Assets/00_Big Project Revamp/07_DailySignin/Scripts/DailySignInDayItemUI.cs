@@ -33,7 +33,7 @@ namespace Rush
 
             if (m_AmountText != null)
             {
-                bool show = entry.Amount >= 2;
+                bool show = entry.Amount >= 1;
                 m_AmountText.gameObject.SetActive(show);
                 if (show) m_AmountText.text = $"x{entry.Amount}";
             }

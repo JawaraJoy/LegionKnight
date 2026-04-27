@@ -153,7 +153,17 @@ namespace LegionKnight
             // Check purchase limit before initiating store flow
             if (!m_PurchaseTracker.CanPurchase(bundle))
             {
-                Debug.LogWarning($"[IAP] Bundle not available: {bundle.BaseInfo.Name}");
+                string message = bundle.PurchaseLimit switch
+                {
+                    Rush.ShopBundlePurchaseLimit.OneTime =>
+                        "This bundle can only be purchased once.",
+                    Rush.ShopBundlePurchaseLimit.Daily =>
+                        "This bundle can only be purchased once per day. Come back tomorrow!",
+                    _ => "This bundle is not available right now."
+                };
+
+                var popup = LegionKnight.CanvasManager.Instance.GetPanel<TextPopUpPanel>();
+                popup?.ShowText(message);
                 return;
             }
 

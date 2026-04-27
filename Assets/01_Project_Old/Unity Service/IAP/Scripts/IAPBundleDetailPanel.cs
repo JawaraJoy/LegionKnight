@@ -31,8 +31,7 @@ namespace Rush
 
         private IAPBundleConfig m_Bundle;
 
-        private IAPManager IAPManager =>
-            UnityService.Instance.IAPManager;
+        private IAPManager IAPManager => UnityService.Instance.IAPManager;
 
         protected override void ShowInternal()
         {
@@ -67,12 +66,12 @@ namespace Rush
             if (m_BundleNameText != null) m_BundleNameText.text = m_Bundle.BaseInfo.Name;
             if (m_BundleDescText != null) m_BundleDescText.text = m_Bundle.BaseInfo.Description;
 
-            // Localized price from store
             if (m_PriceText != null)
                 m_PriceText.text = IAPManager.GetLocalizedPrice(m_Bundle);
 
             PopulateContentsInternal();
             RefreshBonusSectionInternal();
+            RefreshBuyButtonInternal();
         }
 
         private void PopulateContentsInternal()
@@ -84,7 +83,6 @@ namespace Rush
             foreach (var entry in m_Bundle.Entries)
             {
                 var item = Instantiate(m_ContentItemPrefab, m_ContentsContainer);
-                // Reuse ShopBundleContentUI by wrapping entry data
                 item.SetupFromIAP(entry);
             }
         }
@@ -93,10 +91,10 @@ namespace Rush
         {
             bool isFirst = IAPManager.IsFirstPurchase(m_Bundle);
             bool hasBonus = m_Bundle.HasFirstPurchaseBonus;
-            bool showBonus = isFirst && hasBonus;
+            bool show = isFirst && hasBonus;
 
-            if (m_BonusSection != null) m_BonusSection.SetActive(showBonus);
-            if (!showBonus || m_BonusContainer == null || m_BonusItemPrefab == null) return;
+            if (m_BonusSection != null) m_BonusSection.SetActive(show);
+            if (!show || m_BonusContainer == null || m_BonusItemPrefab == null) return;
 
             foreach (Transform child in m_BonusContainer) Destroy(child.gameObject);
             foreach (var entry in m_Bundle.FirstPurchaseBonusEntries)
@@ -106,11 +104,43 @@ namespace Rush
             }
         }
 
+        private void RefreshBuyButtonInternal()
+        {
+            if (m_BuyButton == null) return;
+            bool canPurchase = IAPManager.CanPurchase(m_Bundle);
+            m_BuyButton.interactable = canPurchase;
+        }
+
         // ── Callbacks ─────────────────────────────────────────────────────────
 
-        private void OnBuyClickedInternal() => IAPManager.Purchase(m_Bundle);
+        private void OnBuyClickedInternal()
+        {
+            if (!IAPManager.CanPurchase(m_Bundle))
+            {
+                ShowUnavailableMessageInternal();
+                return;
+            }
 
-        // Refresh bonus badge after purchase (bonus won't show next time)
+            IAPManager.Purchase(m_Bundle);
+        }
+
+        private void ShowUnavailableMessageInternal()
+        {
+            var popup = CanvasManager.Instance.GetPanel<TextPopUpPanel>();
+            if (popup == null) return;
+
+            string message = m_Bundle.PurchaseLimit switch
+            {
+                ShopBundlePurchaseLimit.OneTime =>
+                    "This bundle can only be purchased once.",
+                ShopBundlePurchaseLimit.Daily =>
+                    "This bundle can only be purchased once per day. Come back tomorrow!",
+                _ => "This bundle is not available right now."
+            };
+
+            popup.ShowText(message);
+        }
+
         private void OnPurchaseSuccessInternal(IAPBundleConfig bundle)
         {
             if (m_Bundle != bundle) return;
