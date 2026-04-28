@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+﻿using MoreMountains.Tools;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,7 +20,21 @@ namespace Rush
 
         [SerializeField]
         private CategorySkillController[] m_CategorySkillControllers;
+
+        [Header("Casting Global Events")]
+        [SerializeField] 
+        private UnityEvent<Skill> m_OnAnyCastingStart;
+        [SerializeField] 
+        private UnityEvent<float> m_OnAnyCastingUpdate;
+        [SerializeField]
+        private UnityEvent<int, int> m_OnCastingInterruptUpdate;
+        [SerializeField] 
+        private UnityEvent<Skill> m_OnAnyCastingSuccess;
+        [SerializeField] 
+        private UnityEvent<Skill> m_OnAnyCastingFail;
         public IReadOnlyList<Skill> Skills => m_Skills;
+
+        private Skill m_CurrentCastingSkill;
 
         public IModuleContext ModuleContext => m_ModuleContext;
         [SerializeField]
@@ -31,6 +45,12 @@ namespace Rush
         private UnityEvent<Skill> m_OnSkillRemoved;
         [SerializeField]
         private UnityEvent m_OnResetProgress;
+
+        private readonly Dictionary<Skill, UnityAction> m_StartListeners = new();
+        private readonly Dictionary<Skill, UnityAction<float>> m_UpdateListeners = new();
+        private readonly Dictionary<Skill, UnityAction<int, int>> m_InterruptListeners = new();
+        private readonly Dictionary<Skill, UnityAction> m_SuccessListeners = new();
+        private readonly Dictionary<Skill, UnityAction> m_FailListeners = new();
 
         public void Init(Unit unitOwner)
         {
@@ -215,6 +235,7 @@ namespace Rush
         private void RegisterSkillInternal(SkillConfig skillConfig)
         {
             Skill newSkill = null;
+
             if (m_RemovedSkills.Any(x => x.SkillConfig.BaseInfo.Id == skillConfig.BaseInfo.Id))
             {
                 newSkill = m_RemovedSkills.Find(x => x.SkillConfig.BaseInfo.Id == skillConfig.BaseInfo.Id);
@@ -224,12 +245,58 @@ namespace Rush
                 newSkill = Instantiate(skillConfig.ActivatorPrefab, m_SkillSpawnPost, false);
                 newSkill.Init(skillConfig, m_ModuleContext);
             }
+
             if (newSkill != null)
             {
                 m_Skills.Add(newSkill);
                 m_RemovedSkills.Remove(newSkill);
+
+                RegisterCastingEvents(newSkill); // 🔥 TAMBAHAN
+
                 m_OnSkillAdded?.Invoke(newSkill);
             }
+        }
+        private void RegisterCastingEvents(Skill skill)
+        {
+            void startAction()
+            {
+                m_OnAnyCastingStart?.Invoke(skill);
+                m_CurrentCastingSkill = skill;
+                Debug.Log($"Start Casting: {skill.SkillConfig.name}");
+            }
+
+            void updateAction(float progress)
+            {
+                m_OnAnyCastingUpdate?.Invoke(progress);
+            }
+            void interuptAction(int current, int max)
+            {
+                m_OnCastingInterruptUpdate?.Invoke(current, max);
+            }
+
+            void successAction()
+            {
+                m_OnAnyCastingSuccess?.Invoke(skill);
+                m_CurrentCastingSkill = null;
+            }
+
+            void failAction()
+            {
+                m_OnAnyCastingFail?.Invoke(skill);
+                m_CurrentCastingSkill = null;
+            }
+
+            skill.OnCastingStartEvent.AddListener(startAction);
+            skill.OnCastingUpdateEvent.AddListener(updateAction);
+            skill.OnCastingInterruptEvent.AddListener(interuptAction);
+            skill.OnCastingSuccessEvent.AddListener(successAction);
+            skill.OnCastingFailEvent.AddListener(failAction);
+
+            m_StartListeners[skill] = startAction;
+            m_UpdateListeners[skill] = updateAction;
+            m_InterruptListeners[skill] = interuptAction;
+            m_SuccessListeners[skill] = successAction;
+            m_FailListeners[skill] = failAction;
         }
         private void UnregisterSkillInternal(Skill skill)
         {
@@ -239,7 +306,51 @@ namespace Rush
                 m_Skills.Remove(skill);
                 m_RemovedSkills.Add(skill);
                 m_OnSkillRemoved?.Invoke(skill);
+                UnregisterCastingEvents(skill);
             }
+        }
+        private void UnregisterCastingEvents(Skill skill)
+        {
+            if (m_StartListeners.TryGetValue(skill, out var start))
+            {
+                skill.OnCastingStartEvent.RemoveListener(start);
+                m_StartListeners.Remove(skill);
+            }
+
+            if (m_UpdateListeners.TryGetValue(skill, out var update))
+            {
+                skill.OnCastingUpdateEvent.RemoveListener(update);
+                m_UpdateListeners.Remove(skill);
+            }
+            if (m_InterruptListeners.TryGetValue(skill, out var interupt))
+            {
+                skill.OnCastingInterruptEvent.RemoveListener(interupt);
+                m_InterruptListeners.Remove(skill);
+            }
+
+            if (m_SuccessListeners.TryGetValue(skill, out var success))
+            {
+                skill.OnCastingSuccessEvent.RemoveListener(success);
+                m_SuccessListeners.Remove(skill);
+            }
+
+            if (m_FailListeners.TryGetValue(skill, out var fail))
+            {
+                skill.OnCastingFailEvent.RemoveListener(fail);
+                m_FailListeners.Remove(skill);
+            }
+        }
+
+        private void TakeInteruptDamageInternal(int damage)
+        {
+            if (m_CurrentCastingSkill != null)
+            {
+                m_CurrentCastingSkill.TakeInteruptDamage(damage);
+            }
+        }
+        public void TakeInteruptDamage(int damage)
+        {
+            TakeInteruptDamageInternal(damage);
         }
         public void AddCharges(SkillConfig[] skillConfigs, int chargeAmount)
         {

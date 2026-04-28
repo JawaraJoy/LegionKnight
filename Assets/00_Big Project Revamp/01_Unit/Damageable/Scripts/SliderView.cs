@@ -19,24 +19,39 @@ namespace Rush
         protected float m_CurrentDuration = -1f;
         protected float m_MaxDuration;
         public bool IsActive => IsShowInternal;
-
+        [SerializeField]
+        private bool m_UseDuration = true;
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            if (m_UseDuration)
+            {
+                UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            }
         }
         protected override void HideInternal()
         {
             base.HideInternal();
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            if (m_UseDuration)
+            {
+                UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            }
         }
         public virtual void SetSlider(int current, int max)
+        {
+            SetSliderInternal(current, max);
+        }
+        protected virtual void SetSliderInternal(int current, int max)
         {
             m_ValueText.text = $"{current}/{max}";
             m_Rate = (float)current / max;
             m_Slider.value = m_Rate;
         }
         public virtual void SetDuration(float value)
+        {
+            SetDurationInternal(value);
+        }
+        protected virtual void SetDurationInternal(float value)
         {
             if (!IsHasDuration(value))
             {

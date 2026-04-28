@@ -53,7 +53,7 @@ namespace Rush
             if (skill.SkillConfig.Category == m_SkillCategoryConfig)
             {
                 m_Skills.Add(skill);
-                skill.OnActivate.AddListener(OnSkillActivatedInvoke);
+                skill.OnTryActivate.AddListener(OnSkillActivatedInvoke);
                 skill.OnChargeUpdate.AddListener(OnChargeSkillInvoke);
                 m_OnSkillAdded.Invoke(skill);
             }

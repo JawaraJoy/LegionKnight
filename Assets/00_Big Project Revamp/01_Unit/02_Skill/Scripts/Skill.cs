@@ -41,6 +41,8 @@ namespace Rush
         [SerializeField]
         private UnityEvent<IAbilityContext> m_OnActivateIndividu;
         [SerializeField]
+        private UnityEvent<Skill> m_OnTryActivate;
+        [SerializeField]
         private UnityEvent<Skill> m_OnActivates;
         [SerializeField]
         private UnityEvent<int, int> m_OnChargeUpdate;
@@ -51,6 +53,10 @@ namespace Rush
         public SkillContext SkillContext => m_SkillContext;
         public IReadOnlyList<AbilityDeliver> Delivers => m_Delivers;
         public UnityEvent<Unit> OnAbilityDelivered => m_OnAbilityDelivered;
+        public UnityEvent OnCastingStartEvent => m_OnCastingStart;
+        public UnityEvent<float> OnCastingUpdateEvent => m_OnCastingDurationUpdate;
+        public UnityEvent OnCastingSuccessEvent => m_OnCastingSuccess;
+        public UnityEvent OnCastingFailEvent => m_OnCastingFail;
 
         public bool IsActive => gameObject.activeInHierarchy;
 
@@ -74,8 +80,14 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private int m_MaxInterruptCount;
 
+        public float RemainingCastTime => m_RemainingCastTime;
+        public int CurrentInterruptCount => m_CurrentInterruptCount;
+        public int MaxInterruptCount => m_MaxInterruptCount;
+
+        public UnityEvent<Skill> OnTryActivate => m_OnTryActivate;
         public UnityEvent<Skill> OnActivate => m_OnActivates;
         public UnityEvent<int, int> OnChargeUpdate => m_OnChargeUpdate;
+        public UnityEvent<int, int> OnCastingInterruptEvent => m_OnCastingInterruptUpdate;
 
         public float RemainingCharge => m_RemainingCharge;
         private AbilityDeliver GetAbilityDeliverInternal(string id)
@@ -217,6 +229,7 @@ namespace Rush
             if (!CanActivate())
                 return;
 
+            m_OnTryActivate?.Invoke(this);
             if (m_SkillConfig.Casting.CastDuration > 0f)
             {
                 StartCasting();
@@ -251,7 +264,7 @@ namespace Rush
             }
         }
 
-        public void InterruptCasting(int amount)
+        public void TakeInteruptDamage(int amount)
         {
             if (m_State != SkillActivationState.Casting)
                 return;

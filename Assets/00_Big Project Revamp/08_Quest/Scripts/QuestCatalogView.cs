@@ -39,8 +39,8 @@ namespace Rush
         protected override void HideInternal()
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
-            m_TaskItemPool?.ReturnAll();
-            m_ActiveItems.Clear();
+            //m_TaskItemPool?.ReturnAll();
+            //m_ActiveItems.Clear();
             base.HideInternal();
         }
 

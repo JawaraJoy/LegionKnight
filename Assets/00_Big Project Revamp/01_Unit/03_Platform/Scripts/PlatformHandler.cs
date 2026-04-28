@@ -177,7 +177,7 @@ namespace Rush
 
         public void Resume()
         {
-            RushGameManager.Instance.StartCoroutine(Resuming(0.4f));
+            RushGameManager.Instance.StartCoroutine(Resuming(0.8f));
         }
         private IEnumerator Resuming(float delay)
         {

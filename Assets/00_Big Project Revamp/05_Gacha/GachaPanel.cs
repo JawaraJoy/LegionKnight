@@ -7,6 +7,7 @@ namespace Rush
 {
     public class GachaPanel : PanelView
     {
+        [SerializeField] private TextMeshProUGUI m_BannerNameText;
         [SerializeField] private Image m_BannerImage;
         [SerializeField] private GachaDrawButtonUI m_DrawSingleButtonUI;
         [SerializeField] private GachaDrawButtonUI m_DrawMultiButtonUI;
@@ -14,6 +15,7 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_PityProgressText;
         [SerializeField] private Transform m_BannerButtonContainer;
         [SerializeField] private GachaBannerButtonUI m_BannerButtonPrefab;
+        
 
         private GachaManager Manager => RushPlayer.Instance.GachaManager;
 
@@ -63,7 +65,8 @@ namespace Rush
         {
             var banner = Manager.ActiveBanner;
             if (banner == null) return;
-
+            if (m_BannerNameText != null)
+                m_BannerNameText.text = banner.BaseInfo.Name;
             if (m_BannerImage != null)
                 m_BannerImage.sprite = banner.BannerSplashSprite;
 

@@ -357,6 +357,14 @@ namespace Rush
             if (unitTaker.HasBind(out SkillController hasSkill))
             {
                 AbilityUltility.OnSkillEventActivates(hasSkill, ForceActiveState.OnDamageTaken);
+                AbilityConfig damageConfig = context.AbilityDeliver.AbilityConfig;
+                if (damageConfig != null) 
+                {
+                    if (damageConfig is DamageAbilityConfig damageAbility)
+                    {
+                        hasSkill.TakeInteruptDamage(damageAbility.InteruptDamage);
+                    }
+                }
             }
 
             if (m_Health <= 0)
