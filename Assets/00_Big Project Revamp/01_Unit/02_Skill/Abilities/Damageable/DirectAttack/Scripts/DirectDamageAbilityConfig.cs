@@ -12,7 +12,10 @@ namespace Rush
         
         [SerializeField]
         private float m_AttackDelay = 0f;
+        [SerializeField]
+        private float m_DecayDelay = 0f;
         public float AttackDelay => m_AttackDelay;
+        public float DecayDelay => m_DecayDelay;
         
         protected override int GetDamageInternal(IAbilityContext context)
         {

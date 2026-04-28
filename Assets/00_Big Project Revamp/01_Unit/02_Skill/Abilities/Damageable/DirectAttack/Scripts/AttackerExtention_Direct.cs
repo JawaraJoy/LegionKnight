@@ -14,8 +14,9 @@ namespace Rush
         /// </summary>
         public void DirectAttack(ITargetable target, float delay)
         {
+            gameObject.SetActive(true);
             OnAttackStartInvoke();
-            StartCoroutine(DirectAttacking(target, delay));
+            RushGameManager.Instance.StartCoroutine(DirectAttacking(target, delay));
         }
         private IEnumerator DirectAttacking(ITargetable target, float delay)
         {

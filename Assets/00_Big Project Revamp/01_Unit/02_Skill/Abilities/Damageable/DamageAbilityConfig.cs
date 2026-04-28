@@ -4,6 +4,10 @@ namespace Rush
 {
     public abstract class DamageAbilityConfig : AbilityConfig
     {
+        // some casting has concentrate point, if the concentrate point is interrupted by damage, the casting will be interupted,
+        // and the skill will not be delivered,
+        [SerializeField, Tooltip("The point to apply interupt enemy casting")]
+        private int m_InteruptDamage = 0;
         [SerializeField]
         private bool m_CanCriticalHit = false;
         [SerializeField]
@@ -17,6 +21,7 @@ namespace Rush
         
         [SerializeField]
         protected TargetDistributeMode m_TargetDistributeMode;
+        public int InteruptDamage => m_InteruptDamage;
         public SpawnSetupField SpawningSetup => m_SpawningSetup;
         public TargetDistributeMode TargetDistributeMode => m_TargetDistributeMode;
         public bool DeliverLookAtTargetOnActivate => m_DeliverLookAtTargetOnActivate;

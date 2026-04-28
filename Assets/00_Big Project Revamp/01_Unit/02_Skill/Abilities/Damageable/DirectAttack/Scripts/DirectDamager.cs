@@ -214,8 +214,13 @@ namespace Rush
 
         private void ReturnToPool(Attacker attacker)
         {
+            RushGameManager.Instance.StartCoroutine(ReturnToPoolAfterDelay(attacker, m_DirectDamageAbilityConfig.DecayDelay));
+        }
+        private IEnumerator ReturnToPoolAfterDelay(Attacker attacker, float delay)
+        {
+            yield return new WaitForSeconds(delay);
             if (attacker == null)
-                return;
+                yield break;
 
             //projectile.OnDespawned();
             attacker.gameObject.SetActive(false);

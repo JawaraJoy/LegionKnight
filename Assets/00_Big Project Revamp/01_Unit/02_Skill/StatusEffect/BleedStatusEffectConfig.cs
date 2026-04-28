@@ -62,12 +62,14 @@ namespace Rush
 
         public override void OnEffectEnded(StatusEffectContext context)
         {
-            TakeBleedDamage(context, m_DamageOnDoneToInfected);
+            if (m_DamageOnDoneToInfected != null)
+                TakeBleedDamage(context, m_DamageOnDoneToInfected);
         }
 
         public override void OnStackAdded(StatusEffectContext context)
         {
-            TakeBleedDamage(context, m_DamageOnStackAddedToInfected);
+            if (m_DamageOnStackAddedToInfected != null)
+                TakeBleedDamage(context, m_DamageOnStackAddedToInfected);
         }
 
         public override void OnStackRemoved(StatusEffectContext context)

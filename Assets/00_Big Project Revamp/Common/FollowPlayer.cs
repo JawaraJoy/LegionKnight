@@ -207,21 +207,20 @@ namespace Rush
 
         private Vector3 ApplyAxisConstraint(Vector3 target)
         {
-            if (m_AxisConstraint == FollowAxisConstraint.None)
-                return target;
-
-            Vector3 result = target;
-
+            Vector3 result = transform.position;
             Vector3 delta = target - transform.position;
 
-            if (!AllowAxis(delta.x, FollowAxisConstraint.XUp, FollowAxisConstraint.XDown))
-                result.x = transform.position.x;
+            // X Axis
+            if (AllowAxis(delta.x, FollowAxisConstraint.XUp, FollowAxisConstraint.XDown))
+                result.x = target.x;
 
-            if (!AllowAxis(delta.y, FollowAxisConstraint.YUp, FollowAxisConstraint.YDown))
-                result.y = transform.position.y;
+            // Y Axis
+            if (AllowAxis(delta.y, FollowAxisConstraint.YUp, FollowAxisConstraint.YDown))
+                result.y = target.y;
 
-            if (!AllowAxis(delta.z, FollowAxisConstraint.ZUp, FollowAxisConstraint.ZDown))
-                result.z = transform.position.z;
+            // Z Axis
+            if (AllowAxis(delta.z, FollowAxisConstraint.ZUp, FollowAxisConstraint.ZDown))
+                result.z = target.z;
 
             return result;
         }
@@ -231,8 +230,9 @@ namespace Rush
             bool allowUp = (m_AxisConstraint & up) != 0;
             bool allowDown = (m_AxisConstraint & down) != 0;
 
+            // ❗ kalau axis ini tidak di-flag sama sekali → jangan gerak
             if (!allowUp && !allowDown)
-                return true;
+                return false;
 
             if (delta > 0 && allowUp)
                 return true;
