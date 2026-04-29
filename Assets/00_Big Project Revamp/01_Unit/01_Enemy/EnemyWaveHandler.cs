@@ -189,7 +189,7 @@ namespace Rush
         private Unit CreateUnit(EnemyUnitConfig enemyConfig)
         {
             Unit unit = Instantiate(enemyConfig.UnitPrefab, m_EnemyWavePost.PostToSpawn, false);
-            unit.transform.localScale = enemyConfig.UnitScale;
+            //unit.transform.localScale = enemyConfig.UnitScale;
             unit.Init(enemyConfig);
             if (unit.HasBind(out Damageable damageable))
             {
