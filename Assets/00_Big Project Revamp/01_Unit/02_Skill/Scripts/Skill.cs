@@ -1,3 +1,4 @@
+using LegionKnight;
 using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
@@ -58,7 +59,32 @@ namespace Rush
         public UnityEvent OnCastingSuccessEvent => m_OnCastingSuccess;
         public UnityEvent OnCastingFailEvent => m_OnCastingFail;
 
-        public bool IsActive => gameObject.activeInHierarchy;
+        public bool IsActive => !CardPanel.IsShow || !PausePanel.IsShow;
+
+        private RogueLikeCardPanel m_CardPanel;
+        private RogueLikeCardPanel CardPanel
+        {
+            get
+            {
+                if (m_CardPanel == null)
+                {
+                    m_CardPanel = CanvasManager.Instance.GetPanel<RogueLikeCardPanel>();
+                }
+                return m_CardPanel;
+            }
+        }
+        private PausePanel m_PausePanel;
+        private PausePanel PausePanel
+        {
+            get
+            {
+                if (m_PausePanel == null)
+                {
+                    m_PausePanel = CanvasManager.Instance.GetPanel<PausePanel>();
+                }
+                return m_PausePanel;
+            }
+        }
 
         [Header("State")]
         [SerializeField, MMReadOnly]
@@ -109,9 +135,21 @@ namespace Rush
 
         private void Start()
         {
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            CardPanel.OnShow.AddListener(UnregisterCasting);
+            CardPanel.OnHide.AddListener(RegisterCasting);
+
+            PausePanel.OnShow.AddListener(UnregisterCasting);
+            PausePanel.OnHide.AddListener(RegisterCasting);
         }
 
+        private void RegisterCasting()
+        {
+            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+        }
+        private void UnregisterCasting()
+        {
+            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+        }
 
         #endregion
 
@@ -229,6 +267,7 @@ namespace Rush
             if (!CanActivate())
                 return;
 
+            RegisterCasting();
             m_OnTryActivate?.Invoke(this);
             if (m_SkillConfig.Casting.CastDuration > 0f)
             {
@@ -354,6 +393,7 @@ namespace Rush
             {
                 ChangeState(SkillActivationState.Idle);
             }
+            UnregisterCasting();
         }
         public void ForceActivateAll()
         {

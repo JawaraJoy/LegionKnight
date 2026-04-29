@@ -1,11 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using LegionKnight;
 
 namespace Rush
 {
-    public abstract class GachaCollectableItemUI : UIView
+    public abstract class GachaCollectableItemUI : MonoBehaviour
     {
         [SerializeField] private Image m_Icon;
         [SerializeField] private TextMeshProUGUI m_NameText;
@@ -13,21 +12,32 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_RarityText;
         [SerializeField] private Image m_RarityFrame;
 
-        // Overload untuk CollectibleConfig langsung (dipakai result panel & shop)
+        // ── SetupBase overloads ───────────────────────────────────────────────
+
+        // Full setup dari CollectibleConfig
         protected void SetupBase(CollectibleConfig collectible, int amount)
         {
-            if (m_Icon != null) m_Icon.sprite = collectible.CollectibleField?.Icon;
-            if (m_NameText != null) m_NameText.text = collectible.BaseInfo.Name;
-
-            RefreshAmountInternal(amount);
+            SetupBase(collectible.CollectibleField?.Icon,
+                collectible.BaseInfo.Name, amount);
             RefreshRarityInternal(collectible.CollectibleField?.RarityConfig);
         }
 
-        // Overload untuk GachaCollectableConfig (dipakai rate item)
+        // Setup dari GachaCollectableConfig
         protected void SetupBase(GachaCollectableConfig collectable)
         {
             SetupBase(collectable.Collect, collectable.Amount);
         }
+
+        // Bare minimum — hanya icon, name, amount
+        // Dipakai saat flip agar tidak overwrite rarity
+        protected void SetupBase(Sprite icon, string name, int amount)
+        {
+            if (m_Icon != null) m_Icon.sprite = icon;
+            if (m_NameText != null) m_NameText.text = name;
+            RefreshAmountInternal(amount);
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────────────
 
         private void RefreshAmountInternal(int amount)
         {
@@ -60,9 +70,6 @@ namespace Rush
             }
         }
 
-        protected virtual void OnSetupComplete(CollectibleConfig collectible, int amount) 
-        {
-            ShowInternal();
-        }
+        protected virtual void OnSetupComplete(CollectibleConfig collectible, int amount) { }
     }
 }

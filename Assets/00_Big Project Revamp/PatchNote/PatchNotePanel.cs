@@ -23,7 +23,7 @@ namespace Rush
                 return m_CurrentPatchNote;
             }
         }
-        private void ShowPatchNote(PatchNoteConfig patchNote)
+        private void ShowPatchNoteInternal(PatchNoteConfig patchNote)
         {
             m_TitlePatchText.text = patchNote.BaseInfo.Name;
             m_DescriptionPatchText.text = patchNote.BaseInfo.Description;
@@ -31,7 +31,12 @@ namespace Rush
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            ShowPatchNote(CurrentPatchNoteInternal);
+            ShowPatchNoteInternal(CurrentPatchNoteInternal);
+        }
+
+        public void Refresh()
+        {
+            ShowPatchNoteInternal(CurrentPatchNoteInternal);
         }
     }
 }

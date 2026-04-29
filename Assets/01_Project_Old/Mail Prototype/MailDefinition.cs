@@ -13,7 +13,7 @@ namespace LegionKnight.Prototype
         private string m_Label;
         [SerializeField]
         private bool m_IsSaidPlayerNameInDescription = false;
-        [SerializeField, TextArea]
+        [SerializeField, TextArea(3, 10)]
         private string m_Description;
         [SerializeField]
         private MailState m_StartingState = MailState.Hide;

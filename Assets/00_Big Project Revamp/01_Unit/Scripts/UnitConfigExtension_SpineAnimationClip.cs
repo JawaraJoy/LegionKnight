@@ -11,6 +11,8 @@ namespace Rush
     {
         [Header("Animation")]
         [SerializeField]
+        private AnimationClipConfig m_Entrance;
+        [SerializeField]
         private AnimationClipConfig m_Idle;
         [SerializeField]
         private AnimationClipConfig m_Attack;
@@ -26,7 +28,10 @@ namespace Rush
         private AnimationClipConfig m_Emote;
 
         public AnimationClipConfig Idle => m_Idle;
-
+        public void PlayEntrance(Unit unit)
+        {
+            Play(unit, unit.Config.m_Entrance);
+        }
         public void PlayIdle(Unit unit)
         {
              Play(unit, unit.Config.m_Idle);

@@ -18,7 +18,7 @@ namespace Rush
 
         protected float m_CurrentDuration = -1f;
         protected float m_MaxDuration;
-        public bool IsActive => IsShowInternal;
+        public virtual bool IsActive => IsShowInternal;
         [SerializeField]
         private bool m_UseDuration = true;
         protected override void ShowInternal()

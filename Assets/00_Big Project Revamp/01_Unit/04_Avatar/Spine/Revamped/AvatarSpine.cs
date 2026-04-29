@@ -108,6 +108,8 @@ namespace Rush
 
                 state.Event += OnSpineEvent;
                 state.Complete += OnSpineComplete;
+
+                //m_Content.transform.localScale = unit.Config.UnitScale;
             }
 
             m_ModuleContext = new ModuleContext(unit, gameObject);
