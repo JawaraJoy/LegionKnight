@@ -131,7 +131,6 @@ namespace Rush
         public void Prepare(PlatformHandlerConfig config)
         {
             if (config == null) return;
-            if (config == m_Config) return;
 
             m_CurrentStackedPlatformsCount = 0;
             ClearPreparedPlatformConfigsInternal();

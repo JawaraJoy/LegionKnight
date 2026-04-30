@@ -37,7 +37,7 @@ namespace LegionKnight
         }
         private void OnDestroy()
         {
-            Player.Instance.CustomProfile.RemoveProfilePictView(this);
+            //Player.Instance.CustomProfile.RemoveProfilePictView(this);
         }
         public void SetProfileIcon(Sprite val)
         {

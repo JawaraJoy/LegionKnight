@@ -93,7 +93,7 @@ namespace LegionKnight
         }
         private void OnDisable()
         {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            //UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
         public void SetJumpForce(float set)

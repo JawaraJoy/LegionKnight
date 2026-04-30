@@ -16,16 +16,14 @@ namespace Rush
 
         public void SetSkill(Skill skill)
         {
-            if (skill == null)
+            if (skill != null)
             {
-                Debug.LogError("Skill is null.");
-                return;
+                m_SkillNameText.text = skill.SkillConfig.BaseInfo.Name;
+                m_SkillIcon.sprite = skill.SkillConfig.CollectibleField.Icon;
+                int currentCharge = Mathf.RoundToInt(skill.RemainingCharge);
+                int maxCharge = Mathf.RoundToInt(skill.SkillConfig.Activation.Charge);
+                SetFillInternal(currentCharge, maxCharge);
             }
-            m_SkillNameText.text = skill.SkillConfig.BaseInfo.Name;
-            m_SkillIcon.sprite = skill.SkillConfig.CollectibleField.Icon;
-            int currentCharge = Mathf.RoundToInt(skill.RemainingCharge);
-            int maxCharge = Mathf.RoundToInt(skill.SkillConfig.Activation.Charge);
-            SetFillInternal(currentCharge, maxCharge);
         }
         public void SetFill(int current, int max)
         {

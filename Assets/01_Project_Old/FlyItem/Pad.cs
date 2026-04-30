@@ -29,7 +29,7 @@ namespace LegionKnight
         }
         private void OnDisable()
         {
-            Manager.UnregisterPad(this);
+            //Manager.UnregisterPad(this);
         }
     }
 }

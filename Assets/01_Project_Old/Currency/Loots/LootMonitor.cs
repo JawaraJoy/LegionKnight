@@ -42,13 +42,16 @@ namespace LegionKnight
         {
             SetupStorageReferenceInternal();
 
-            m_DoubleLootButton.onClick.RemoveListener(ShowAdToDoubleLoot);
-            m_DoubleLootButton.onClick.AddListener(ShowAdToDoubleLoot);
+            //m_DoubleLootButton.onClick.RemoveListener(ShowAdToDoubleLoot);
+
+            if (m_DoubleLootButton != null)
+                m_DoubleLootButton.onClick.AddListener(ShowAdToDoubleLoot);
         }
         protected override void OnShowInvoke()
         {
             base.OnShowInvoke();
-            m_DoubleLootButton.gameObject.SetActive(true);
+            if (m_DoubleLootButton != null)
+                m_DoubleLootButton.gameObject.SetActive(true);
         }
         protected override void OnHideInvoke()
         {
@@ -77,7 +80,8 @@ namespace LegionKnight
         protected virtual void DoubleLoot()
         {
             m_LootStorageManager.StartDoubleStoredLoots();
-            m_DoubleLootButton.gameObject.SetActive(false);
+            if (m_DoubleLootButton != null)
+                m_DoubleLootButton.gameObject.SetActive(false);
         }
         protected virtual void TakeLoots()
         {

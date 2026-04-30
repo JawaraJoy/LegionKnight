@@ -60,13 +60,13 @@ namespace Rush
 
         private void OnDisable()
         {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            //UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
         private void OnDestroy()
         {
-            Handler.OnBoostStart.RemoveListener(OnBoostStartInternal);
-            Handler.OnBoostEnd.RemoveListener(OnBoostEndInternal);
+            //Handler.OnBoostStart.RemoveListener(OnBoostStartInternal);
+            //Handler.OnBoostEnd.RemoveListener(OnBoostEndInternal);
         }
 
         // --- IUpdater ---

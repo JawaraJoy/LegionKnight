@@ -62,7 +62,7 @@ namespace Rush
 
         private void OnDisable()
         {
-            UpdateBank.Instance.UnregisterLateUpdateTick(gameObject);
+           // UpdateBank.Instance.UnregisterLateUpdateTick(gameObject);
         }
 
         private void ApplyConfig()
