@@ -65,5 +65,7 @@ namespace Rush
         {
             StartCoroutine(RefreshInitInternal());
         }
+
+
     }
 }

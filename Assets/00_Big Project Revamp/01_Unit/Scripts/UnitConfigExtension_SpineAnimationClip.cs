@@ -62,6 +62,11 @@ namespace Rush
         }
         private void Play(Unit unit, AnimationClipConfig config) 
         {
+            if (config == null)
+            {
+                Debug.LogWarning($"No animation clip config for {config.BaseInfo.Name} in unit {unit.name}");
+                return;
+            }
             if (unit.HasBind(out AvatarSpine avatarSpine))
             {
                 avatarSpine.PlayClipInterrupt(config);

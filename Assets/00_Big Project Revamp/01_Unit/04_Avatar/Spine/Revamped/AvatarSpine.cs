@@ -90,6 +90,16 @@ namespace Rush
             }
         }
 
+        protected override void ShowInternal()
+        {
+            base.ShowInternal();
+            m_ModuleContext.Unit.Config.PlayEntrance(m_ModuleContext.Unit);
+            if (m_ModuleContext.Unit.HasBind(out SFXController sfxController))
+            {
+                sfxController.PlayEntranceSFX();
+            }
+        }
+
         [ContextMenu("Initialize Spine")]
         public void Init(Unit unit)
         {
@@ -156,6 +166,11 @@ namespace Rush
         }
 
         public void PlayClipInterrupt(AnimationClipConfig clipConfig)
+        {
+            PlayClipInterruptInternal(clipConfig);
+        }
+
+        private void PlayClipInterruptInternal(AnimationClipConfig clipConfig)
         {
             if (clipConfig == null) return;
 
