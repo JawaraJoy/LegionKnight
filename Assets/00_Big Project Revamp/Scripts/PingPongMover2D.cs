@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Rush
 {
@@ -8,36 +8,41 @@ namespace Rush
         [SerializeField] private float m_Distance = 2f;
         [SerializeField] private float m_Speed = 2f;
         [SerializeField] private Vector2 m_Direction = Vector2.right;
+
+        [Header("Phase Settings (IMPORTANT)")]
+        [SerializeField] private bool m_RandomizePhase = true;
+        [SerializeField] private float m_PhaseOffset;
+
+        [Header("Spawn Randomization (Optional)")]
+        [SerializeField] private bool m_RandomizeOnEnable = false;
         [SerializeField] private float m_RandomSpawnRadius = 2f;
-        [SerializeField] private bool m_RandomizeOnEnable = true;
-        [SerializeField] private bool m_KeepZ = true; // untuk 2D (biar ga geser depth)
-        [SerializeField] private Camera m_TargetCamera;
-        [SerializeField] private bool m_ClampInsideCamera = true;
-        [SerializeField] private float m_EdgePadding = 0.5f;
 
         [Header("Optional")]
         [SerializeField] private bool m_UseLocalSpace = false;
+        [SerializeField] private bool m_KeepZ = true;
 
         private Vector3 m_StartPosition;
         private Vector3 m_NormalizedDirection;
 
         public bool IsActive => gameObject.activeInHierarchy;
 
+        // =========================
+        // UNITY LIFECYCLE
+        // =========================
         private void OnEnable()
         {
             Vector3 basePosition = m_UseLocalSpace ? transform.localPosition : transform.position;
 
+            // Optional random reposition
             if (m_RandomizeOnEnable)
             {
-                Vector2 randomOffset2D = Random.insideUnitCircle * m_RandomSpawnRadius;
-                Vector3 randomOffset = new Vector3(randomOffset2D.x, randomOffset2D.y, 0f);
+                Vector2 offset2D = Random.insideUnitCircle * m_RandomSpawnRadius;
+                Vector3 offset = new Vector3(offset2D.x, offset2D.y, 0f);
 
                 if (m_KeepZ)
-                {
-                    randomOffset.z = 0f;
-                }
+                    offset.z = 0f;
 
-                basePosition += randomOffset;
+                basePosition += offset;
 
                 if (m_UseLocalSpace)
                     transform.localPosition = basePosition;
@@ -47,16 +52,25 @@ namespace Rush
 
             m_StartPosition = basePosition;
 
-            // Normalize sekali saja
+            // Normalize once
             m_NormalizedDirection = m_Direction.normalized;
 
-            ClampMovementInsideCamera();
+            // 🔥 KEY FIX: random phase biar tidak sync
+            if (m_RandomizePhase)
+            {
+                m_PhaseOffset = Random.Range(0f, 100f);
+            }
 
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
         }
+
+        // =========================
+        // UPDATE LOOP
+        // =========================
         public void Tick()
         {
-            float pingPong = Mathf.PingPong(Time.time * m_Speed, m_Distance);
+            float time = (Time.time + m_PhaseOffset) * m_Speed;
+            float pingPong = Mathf.PingPong(time, m_Distance);
 
             Vector3 offset = m_NormalizedDirection * pingPong;
 
@@ -70,47 +84,16 @@ namespace Rush
             }
         }
 
-        private Bounds GetCameraBounds()
+        // =========================
+        // DEBUG
+        // =========================
+        private void OnDrawGizmosSelected()
         {
-            Camera cam = m_TargetCamera != null ? m_TargetCamera : Camera.main;
-
-            float height = cam.orthographicSize * 2f;
-            float width = height * cam.aspect;
-
-            Vector3 center = cam.transform.position;
-
-            return new Bounds(center, new Vector3(width, height, 0f));
-        }
-        private void ClampMovementInsideCamera()
-        {
-            if (!m_ClampInsideCamera) return;
-
-            Bounds camBounds = GetCameraBounds();
-
-            Vector3 dir = m_NormalizedDirection;
-
-            // Hitung max distance ke tiap sisi
-            float maxDistance = m_Distance;
-
-            if (Mathf.Abs(dir.x) > 0.001f)
-            {
-                float limitX = dir.x > 0
-                    ? camBounds.max.x - m_StartPosition.x - m_EdgePadding
-                    : m_StartPosition.x - camBounds.min.x - m_EdgePadding;
-
-                maxDistance = Mathf.Min(maxDistance, Mathf.Abs(limitX));
-            }
-
-            if (Mathf.Abs(dir.y) > 0.001f)
-            {
-                float limitY = dir.y > 0
-                    ? camBounds.max.y - m_StartPosition.y - m_EdgePadding
-                    : m_StartPosition.y - camBounds.min.y - m_EdgePadding;
-
-                maxDistance = Mathf.Min(maxDistance, Mathf.Abs(limitY));
-            }
-
-            m_Distance = Mathf.Max(0f, maxDistance);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(
+                m_UseLocalSpace ? transform.parent?.position ?? transform.position : transform.position,
+                m_RandomSpawnRadius
+            );
         }
     }
 }

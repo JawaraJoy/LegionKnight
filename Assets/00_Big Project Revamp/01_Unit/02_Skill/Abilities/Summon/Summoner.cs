@@ -58,7 +58,7 @@ namespace Rush
 
         private void OnDisable()
         {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            //UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
         public override void Init(AbilityConfig config, ISkillContext context)

@@ -97,6 +97,10 @@ namespace Rush
         {
             m_OnNormalTouchDown.AddListener(callback);
         }
+        public void UnregisterNormalLandingCallback(UnityEngine.Events.UnityAction<ISkillContext> callback)
+        {
+            m_OnNormalTouchDown.RemoveListener(callback);
+        }
 
         /// <summary>
         /// Reset state perfect count dan streak. Dipanggil saat platform di-spawn ulang.

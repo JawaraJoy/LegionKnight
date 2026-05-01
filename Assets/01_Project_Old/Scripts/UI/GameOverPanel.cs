@@ -44,7 +44,7 @@ namespace LegionKnight
         }
         private void OnDisable()
         {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            //UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
         private void ResetTimerInternal()
         {

@@ -155,6 +155,9 @@ namespace Rush
             if (config.BoostField != null)
                 SetBoostStockInternal(config.BoostField.MaxBoostStock);
 
+            m_TouchDownCheckField.UnregisterPerfectLandingCallback(OnGlobalPerfectLanding);
+            m_TouchDownCheckField.UnregisterNormalLandingCallback(OnGlobalNormalLanding);
+
             m_TouchDownCheckField.RegisterPerfectLandingCallback(OnGlobalPerfectLanding);
             m_TouchDownCheckField.RegisterNormalLandingCallback(OnGlobalNormalLanding);
 

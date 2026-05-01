@@ -406,7 +406,8 @@ namespace Rush
                 return;
 
             float delay = m_SkillConfig.Activation.IntervalEachAbilityActive;
-            RushGameManager.Instance.StartCoroutine(ForceActivateAllWithDelay(delay));
+            if (gameObject.activeInHierarchy)
+                RushGameManager.Instance.StartCoroutine(ForceActivateAllWithDelay(delay));
         }
         private IEnumerator ForceActivateAllWithDelay(float delay)
         {

@@ -22,7 +22,7 @@ namespace LegionKnight
         }
         private void OnDestroy()
         {
-            GameManager.Instance.RemoveOnSlideChanged(ShowSlide);
+            //GameManager.Instance.RemoveOnSlideChanged(ShowSlide);
         }
 
         private void OnEnable()
