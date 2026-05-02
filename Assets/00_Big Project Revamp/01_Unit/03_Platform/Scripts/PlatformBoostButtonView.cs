@@ -65,12 +65,12 @@ namespace Rush
 
         private void OnDestroy()
         {
-            m_BoostButton.onClick.RemoveListener(OnBoostButtonClickedInternal);
-            Handler.OnBoostEnabled.RemoveListener(OnBoostEnabledInternal);
-            Handler.OnBoostDisabled.RemoveListener(OnBoostDisabledInternal);
-            Handler.OnCurrentBoostStockChanged.RemoveListener(OnBoostStockChangedInternal);
-            Handler.OnPrepare.RemoveListener(OnPrepareInternal);
-            Handler.OnPerfectCountChanged.RemoveListener(OnPerfectCountChangedInternal);
+            //m_BoostButton.onClick.RemoveListener(OnBoostButtonClickedInternal);
+            //Handler.OnBoostEnabled.RemoveListener(OnBoostEnabledInternal);
+            //Handler.OnBoostDisabled.RemoveListener(OnBoostDisabledInternal);
+            //Handler.OnCurrentBoostStockChanged.RemoveListener(OnBoostStockChangedInternal);
+            //Handler.OnPrepare.RemoveListener(OnPrepareInternal);
+            //Handler.OnPerfectCountChanged.RemoveListener(OnPerfectCountChangedInternal);
         }
 
         // --- Button Click ---

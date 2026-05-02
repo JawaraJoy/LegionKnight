@@ -20,7 +20,11 @@ namespace Rush
         protected override int GetDamageInternal(IAbilityContext context)
         {
             float damage = AbilityUltility.GetFinalPowerAmount(context);
-            return Mathf.RoundToInt(damage);
+            if (damage > 0)
+            {
+                return Mathf.RoundToInt(damage);
+            }
+            return 0;   
         }
     }
 }

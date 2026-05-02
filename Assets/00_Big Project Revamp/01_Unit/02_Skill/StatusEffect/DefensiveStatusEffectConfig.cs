@@ -5,19 +5,13 @@ namespace Rush
     [CreateAssetMenu(fileName = "Defensive", menuName = "Rush/Combat/StatusEff/Defensive", order = 1)]
     public class DefensiveStatusEffectConfig : StatusEffectConfig
     {
-        [Header("Sources")]
         [SerializeField]
         private int m_RebornCount;
-        [SerializeField]
-        private int m_Shield;
-        [SerializeField]
-        private float m_ShieldBasedDefendRate;
-        [SerializeField]
-        private int m_Barrier;
 
-        [Header("Stats")]
         [SerializeField]
-        private float m_DamageReductionRate;
+        private DefensiveStatusField m_Base;
+        [SerializeField]
+        private DefensiveStatusField m_GrowthPerLevel;
 
         [Header("States")]
         [SerializeField]
@@ -65,23 +59,36 @@ namespace Rush
         {
             if (context.Infected.HasBind(out Damageable damageable))
             {
+                int statuslevel = context.AbilityContext.SkillContext.Skill.Progression.Level;
+
                 damageable.AddRemainingRebornCount(m_RebornCount, true);
-                damageable.AddShield(m_Shield, true);
-                damageable.AddShieldBasedOnDefendRate(m_ShieldBasedDefendRate, true);
-                damageable.AddBarrier(m_Barrier, true);
-                damageable.AddDamageReductionRate(m_DamageReductionRate);
+                damageable.AddShield(GetFinalValue(m_Base.Shield, m_GrowthPerLevel.Shield, statuslevel), true);
+                damageable.AddShieldBasedOnDefendRate(GetFinalValue(m_Base.ShieldBasedDefendRate, m_GrowthPerLevel.ShieldBasedDefendRate, statuslevel), true);
+                damageable.AddBarrier(GetFinalValue(m_Base.Barrier, m_GrowthPerLevel.Barrier, statuslevel), true);
+                damageable.AddDamageReductionRate(GetFinalValue(m_Base.DamageReductionRate, m_GrowthPerLevel.DamageReductionRate, statuslevel));
             }
         }
         public override void OnStackRemoved(StatusEffectContext context)
         {
             if (context.Infected.HasBind(out Damageable damageable))
             {
+                int statuslevel = context.AbilityContext.SkillContext.Skill.Progression.Level;
+
                 damageable.AddRemainingRebornCount(-m_RebornCount, false);
-                damageable.AddShield(-m_Shield, false);
-                damageable.AddShieldBasedOnDefendRate(-m_ShieldBasedDefendRate, false);
-                damageable.AddBarrier(-m_Barrier, false);
-                damageable.AddDamageReductionRate(-m_DamageReductionRate);
+                damageable.AddShield(-GetFinalValue(m_Base.Shield, m_GrowthPerLevel.Shield, statuslevel), false);
+                damageable.AddShieldBasedOnDefendRate(-GetFinalValue(m_Base.ShieldBasedDefendRate, m_GrowthPerLevel.ShieldBasedDefendRate, statuslevel), false);
+                damageable.AddBarrier(-GetFinalValue(m_Base.Barrier, m_GrowthPerLevel.Barrier, statuslevel), false);
+                damageable.AddDamageReductionRate(-GetFinalValue(m_Base.DamageReductionRate, m_GrowthPerLevel.DamageReductionRate, statuslevel));
             }
+        }
+
+        private int GetFinalValue(int baseValue, int growthPerLevel, int level)
+        {
+            return baseValue + growthPerLevel * (level - 1);
+        }
+        private float GetFinalValue(float baseValue, float growthPerLevel, int level)
+        {
+            return baseValue + growthPerLevel * (level - 1);
         }
     }
 }
