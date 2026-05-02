@@ -9,6 +9,13 @@ namespace Rush
 {
     public class AetherStateComboView : UIView, IUpdater
     {
+        [System.Serializable]
+        public enum SpawnShape
+        {
+            Circle,
+            Square
+        }
+
         [SerializeField]
         private ComboButtonView m_ComboButtonPrefab;
         [SerializeField]
@@ -18,7 +25,12 @@ namespace Rush
         [SerializeField]
         private int m_PrewarmCount = 3;
         [SerializeField]
+        private SpawnShape m_SpawnShape = SpawnShape.Circle;
+
+        [SerializeField]
         private Slider m_ComboStateDurationSlider;
+        [SerializeField]
+        private Image m_ComboStateDurationFillImage;
         [SerializeField]
         private TextMeshProUGUI m_ComboStateCountText;
         [SerializeField]
@@ -60,13 +72,13 @@ namespace Rush
 
         private void OnDisable()
         {
-            //UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            // UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
         private void OnDestroy()
         {
-            //Handler.OnBoostStart.RemoveListener(OnBoostStartInternal);
-            //Handler.OnBoostEnd.RemoveListener(OnBoostEndInternal);
+            // Handler.OnBoostStart.RemoveListener(OnBoostStartInternal);
+            // Handler.OnBoostEnd.RemoveListener(OnBoostEndInternal);
         }
 
         // --- IUpdater ---
@@ -88,7 +100,7 @@ namespace Rush
             if (boostField == null) return;
 
             int overflow = Mathf.Max(0, comboCount - boostField.BoostThreshold);
-            int buttonCount = boostField.CalculateComboCount(overflow); // 1 + overflow
+            int buttonCount = boostField.CalculateComboCount(overflow);
 
             m_PressedCombo = 0;
             m_BoostDuration = duration;
@@ -99,7 +111,6 @@ namespace Rush
             SetComboTextInternal(m_PressedCombo);
             ShowInternal();
 
-            // Spawn sejumlah button sekaligus, semuanya aktif sampai boost selesai
             SpawnActiveButtonsInternal(buttonCount);
         }
 
@@ -173,7 +184,6 @@ namespace Rush
             SetComboTextInternal(m_PressedCombo);
             m_OnComboButtonPressed?.Invoke();
 
-            // Reposisi button yang ditekan — tetap aktif, tidak disembunyikan
             RepositionButtonInternal(pressedButton);
         }
 
@@ -181,23 +191,47 @@ namespace Rush
 
         private void RepositionButtonInternal(ComboButtonView button)
         {
-            Vector2 randomOffset = Random.insideUnitCircle * m_ComboButtonSpawnRadius;
+            Vector2 offset;
+
+            if (m_SpawnShape == SpawnShape.Circle)
+            {
+                offset = Random.insideUnitCircle * m_ComboButtonSpawnRadius;
+            }
+            else // Square
+            {
+                offset = new Vector2(
+                    Random.Range(-m_ComboButtonSpawnRadius, m_ComboButtonSpawnRadius),
+                    Random.Range(-m_ComboButtonSpawnRadius, m_ComboButtonSpawnRadius)
+                );
+            }
+
             button.transform.position = m_ComboButtonSpawnPoint.position
-                + new Vector3(randomOffset.x, randomOffset.y, 0f);
+                + new Vector3(offset.x, offset.y, 0f);
         }
 
         private void SetupSliderInternal(float totalDuration)
         {
             if (m_ComboStateDurationSlider == null) return;
+
             m_ComboStateDurationSlider.minValue = 0f;
             m_ComboStateDurationSlider.maxValue = totalDuration;
             m_ComboStateDurationSlider.value = totalDuration;
+
+            if (m_ComboStateDurationFillImage != null)
+                m_ComboStateDurationFillImage.fillAmount = 1f;
         }
 
         private void SetSliderValueInternal(float remaining)
         {
-            if (m_ComboStateDurationSlider == null) return;
-            m_ComboStateDurationSlider.value = remaining;
+            if (m_ComboStateDurationSlider != null)
+            {
+                m_ComboStateDurationSlider.value = remaining;
+            }
+
+            if (m_ComboStateDurationFillImage != null)
+            {
+                m_ComboStateDurationFillImage.fillAmount = remaining;
+            }
         }
 
         private void SetComboTextInternal(int pressed)
