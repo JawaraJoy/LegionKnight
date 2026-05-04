@@ -2,7 +2,7 @@
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Stat Modifier", menuName = "Rush/Combat/Ability/Stat Modifier", order = 1)]
+    [CreateAssetMenu(fileName = "Abi_SM_", menuName = "Rush/Combat/Ability/Stat Modifier", order = 1)]
     public class StatModifierConfig : AbilityConfig
     {
         [SerializeField]

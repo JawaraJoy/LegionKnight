@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "SummonAbilityConfig", menuName = "Rush/Combat/Ability/Summon")]
+    [CreateAssetMenu(fileName = "Abi_Summon_", menuName = "Rush/Combat/Ability/Summon")]
     public class SummonAbilityConfig : AbilityConfig
     {
         [SerializeField]

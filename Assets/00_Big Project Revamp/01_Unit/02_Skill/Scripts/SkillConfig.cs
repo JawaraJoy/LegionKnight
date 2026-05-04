@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Skill", menuName = "Rush/Combat/Skill", order = 1)]
+    [CreateAssetMenu(fileName = "Skill_", menuName = "Rush/Combat/Skill", order = 1)]
     public partial class SkillConfig : CollectibleConfig
     {
         // Passive/Ultimate/BasicAttack, dll

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    [CreateAssetMenu(fileName = "Shot Ability", menuName = "Rush/Combat/Ability/Shot")]
+    [CreateAssetMenu(fileName = "Shot_", menuName = "Rush/Combat/Ability/Shot")]
     public class ShooterAbilityConfig : DamageAbilityConfig
     {
         [SerializeField]
