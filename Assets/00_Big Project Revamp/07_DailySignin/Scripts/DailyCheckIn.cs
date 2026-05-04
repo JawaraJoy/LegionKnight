@@ -1,24 +1,22 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using LegionKnight;
 
 namespace Rush
 {
     public class DailyCheckIn : MonoBehaviour
     {
+
         [Header("Reset Time (24h Format)")]
-        [SerializeField] private int m_ResetHour = 4; // Jam reset (contoh: 4 = jam 04:00)
+        [SerializeField] private int m_ResetHour = 4;
         [SerializeField] private int m_ResetMinute = 0;
 
         [Header("Events")]
         [SerializeField] private UnityEvent m_OnFirstCheckInToday;
 
-        private const string PREF_KEY = "DAILY_CHECK_IN_LAST_TIME";
+        private const string SAVE_KEY = "DAILY_CHECK_IN_LAST_TIME";
 
-        private void Start()
-        {
-            CheckIn();
-        }
 
         public void CheckIn()
         {
@@ -28,19 +26,16 @@ namespace Rush
 
             DateTime todayResetTime = GetTodayResetTime(now);
 
-            // Kalau sekarang masih sebelum reset hari ini, berarti reset terakhir itu kemarin
+            // Kalau sekarang masih sebelum reset hari ini → reset terakhir adalah kemarin
             if (now < todayResetTime)
             {
                 todayResetTime = todayResetTime.AddDays(-1);
             }
 
-            // Jika last check-in sebelum reset terakhir → berarti belum check-in hari ini
+            // Jika belum check-in hari ini
             if (lastCheckInTime < todayResetTime)
             {
-                // Trigger event
                 m_OnFirstCheckInToday?.Invoke();
-
-                // Save waktu check-in sekarang
                 SaveCheckInTime(now);
             }
         }
@@ -59,16 +54,16 @@ namespace Rush
 
         private void SaveCheckInTime(DateTime time)
         {
-            PlayerPrefs.SetString(PREF_KEY, time.ToString("o")); // ISO format
-            PlayerPrefs.Save();
+            // simpan sebagai string ISO
+            UnityService.Instance.SaveData(SAVE_KEY, time.ToString("o"));
         }
 
         private DateTime GetLastCheckInTime()
         {
-            if (!PlayerPrefs.HasKey(PREF_KEY))
+            if (!UnityService.Instance.HasData(SAVE_KEY))
                 return DateTime.MinValue;
 
-            string saved = PlayerPrefs.GetString(PREF_KEY);
+            string saved = UnityService.Instance.GetData<string>(SAVE_KEY);
 
             if (DateTime.TryParse(saved, out DateTime result))
                 return result;

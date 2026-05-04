@@ -194,7 +194,16 @@ namespace LegionKnight
 
                 // Restore used list dari save data
                 if (unit.IsAdded && !m_UsedCards.Contains(unit))
-                    m_UsedCards.Add(unit);
+                {
+                    bool isEnoughToAdd = unit.Amount > 0;
+                    if (isEnoughToAdd)
+                    {
+                        m_UsedCards.Add(unit);
+                        RushGameManager.Instance.RogueLikeManager.AddCustomCard(unit.CardConfig);
+                    }
+                    
+                    RushGameManager.Instance.RogueLikeManager.AddCustomCard(unit.CardConfig);
+                }
 
                 PreparationPanel.CardTabView.SpawnCardSelect(unit);
                 

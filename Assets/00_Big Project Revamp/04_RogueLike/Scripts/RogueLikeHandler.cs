@@ -45,15 +45,26 @@ namespace Rush
         public UnityEvent<CardConfig> OnCardCollected => m_OnCardCollected;
         public List<CardConfig> CustomCards => m_CustomCards;
 
-        public List<CardConfig> GetDifferenceCardRandom(int amount)
+        public List<CardConfig> GetRandomAvailableCards(int amount)
         {
             List<CardConfig> pool = new List<CardConfig>();
 
             // Pool dari hero deck
             if (m_CurrentHero != null && m_CurrentHero.HeroDeckConfig != null)
+            {
                 pool.AddRange(m_CurrentHero.HeroDeckConfig.CardConfigs);
+            }
 
-            // Random pick
+            // Tambahkan custom cards (hindari duplikat)
+            foreach (var card in m_CustomCards)
+            {
+                if (!pool.Contains(card))
+                {
+                    pool.Add(card);
+                }
+            }
+
+            // Random pick tanpa duplikat
             List<CardConfig> result = new List<CardConfig>();
             for (int i = 0; i < amount && pool.Count > 0; i++)
             {
