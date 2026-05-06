@@ -6,6 +6,8 @@ namespace Rush
     [CreateAssetMenu(fileName = "CardConfig", menuName = "Rush/RogueLike/Card", order = 2)]
     public class CardConfig : CollectibleConfig
     {
+        [SerializeField, TextArea(3, 10)]
+        private string m_SimpleDescription;
         [SerializeField]
         private CardSkillField[] m_SkillConfigs;
         [SerializeField]
@@ -16,6 +18,7 @@ namespace Rush
         private Currency m_GetCurrency;
         [SerializeField]
         private int m_GetAetherEssence;
+        public string SimpleDescription => m_SimpleDescription;
 
         public CardSkillField[] SkillConfigs => m_SkillConfigs;
 
