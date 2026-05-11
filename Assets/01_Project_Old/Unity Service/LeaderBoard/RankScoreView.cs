@@ -13,6 +13,14 @@ namespace LegionKnight
         [SerializeField]
         private TextMeshProUGUI m_ScoreText;
 
+        private int m_Rank;
+
+        /*protected virtual void SetMyRankScore(Currency currency)
+        {
+            string playername = Player.Instance.PlayerName;
+            SetRankScore(entry, entry.Rank);
+        }*/
+
         public void SetRankScore(LeaderboardEntry entry, int rank)
         {
             if (entry == null)
@@ -23,7 +31,8 @@ namespace LegionKnight
             }
             else
             {
-                m_RankText.text = $"#{rank}";
+                m_Rank = rank;
+                m_RankText.text = $"#{m_Rank}";
                 m_NameText.text = entry.PlayerName;
                 m_ScoreText.text = entry.Score.ToString();
             }

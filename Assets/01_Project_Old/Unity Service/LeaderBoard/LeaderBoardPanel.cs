@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Rush;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Services.Authentication;
@@ -27,7 +28,7 @@ namespace LegionKnight
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            StartCoroutine(ShowLeaderboardCoroutine());
+            RushGameManager.Instance.StartCoroutine(ShowLeaderboardCoroutine());
         }
 
         protected override void HideInternal()
