@@ -34,9 +34,17 @@ namespace Rush
         public void ShowCard(CardConfig cardConfig)
         {
             m_CardConfig = cardConfig;
-
+            bool isCardCollected = RushGameManager.Instance.RogueLikeManager.HasCollectedCard(m_CardConfig.BaseInfo.Id, out cardConfig);
+            if (isCardCollected)
+            {
+                m_CardDescriptionText.text = m_CardConfig.SimpleDescription;
+            }
+            else
+            {
+                m_CardDescriptionText.text = m_CardConfig.BaseInfo.Description;
+            }
             m_CardNameText.text = m_CardConfig.BaseInfo.Name;
-            m_CardDescriptionText.text = m_CardConfig.SimpleDescription;
+            
             m_CardIcon.sprite = m_CardConfig.CollectibleField.Icon;
             Color rarityColor = m_CardConfig.CollectibleField.RarityConfig.Color;
             m_CardRarityColorOutline.color = rarityColor;

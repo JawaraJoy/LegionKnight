@@ -18,6 +18,8 @@ namespace Rush
         private HeroUnitConfig m_CurrentHero;
         [SerializeField, MMReadOnly]
         private List<CardConfig> m_CustomCards = new();
+        [SerializeField, MMReadOnly]
+        private List<CardConfig> m_CollectedCards = new();
 
         [SerializeField]
         private UnityEvent<int, int> m_OnForPlayerExperienceAdded;
@@ -44,7 +46,40 @@ namespace Rush
         public UnityEvent<int> OnForBossLevelUp => m_OnForBossLevelUp;
         public UnityEvent<CardConfig> OnCardCollected => m_OnCardCollected;
         public List<CardConfig> CustomCards => m_CustomCards;
+        public List<CardConfig> CollectedCards => m_CollectedCards;
 
+        private CardConfig GetCollectedCard(string cardID)
+        {
+            return m_CollectedCards.Find(card => card.BaseInfo.Id == cardID);
+        }
+        private bool HasCollectedCardInternal(string cardID, out CardConfig collectedCard)
+        {
+            collectedCard = GetCollectedCard(cardID);
+            return collectedCard != null;
+        }
+        public bool HasCollectedCard(string cardID, out CardConfig collectedCard)
+        {
+            return HasCollectedCardInternal(cardID, out collectedCard);
+        }
+        public void AddCollectedCard(CardConfig cardConfig)
+        {
+            if (!HasCollectedCardInternal(cardConfig.BaseInfo.Id, out _))
+            {
+                m_CollectedCards.Add(cardConfig);
+                OnCardCollected.Invoke(cardConfig);
+            }
+        }
+        public void RemoveCollectedCard(CardConfig cardConfig)
+        {
+            if (HasCollectedCardInternal(cardConfig.BaseInfo.Id, out _))
+            {
+                m_CollectedCards.Remove(cardConfig);
+            }
+        }
+        private void ClearCollectedCards()
+        {
+            m_CollectedCards.Clear();
+        }   
         public List<CardConfig> GetRandomAvailableCards(int amount)
         {
             List<CardConfig> pool = new List<CardConfig>();
@@ -128,6 +163,8 @@ namespace Rush
             SetForPlayerLevel(1);
             SetForPlayerExperience(0);
             OnForPlayerExperienceAddedInvoke(m_ForPlayerCurrentExperience);
+            //ClearCustomCardsInternal();
+            ClearCollectedCards();
         }
         public void AddForPlayerExperience(int amount)
         {

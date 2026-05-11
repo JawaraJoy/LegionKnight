@@ -6,8 +6,11 @@ namespace Rush
     [CreateAssetMenu(fileName = "CardConfig", menuName = "Rush/RogueLike/Card", order = 2)]
     public class CardConfig : CollectibleConfig
     {
-        [SerializeField, TextArea(3, 10)]
+        
+        [SerializeField, TextArea(3, 10)]   
         private string m_SimpleDescription;
+        [SerializeField, TextArea(3, 10)]
+        private string m_UpgradeDescription;
         [SerializeField]
         private CardSkillField[] m_SkillConfigs;
         [SerializeField]
@@ -19,11 +22,13 @@ namespace Rush
         [SerializeField]
         private int m_GetAetherEssence;
         public string SimpleDescription => m_SimpleDescription;
+        public string UpgradeDescription => m_UpgradeDescription;
 
         public CardSkillField[] SkillConfigs => m_SkillConfigs;
 
         public void Collect()
         {
+            RushGameManager.Instance.RogueLikeManager.AddCollectedCard(this);
             Unit player = RushPlayer.Instance.Unit;
             if (player.HasBind(out SkillController skillController))
             {
