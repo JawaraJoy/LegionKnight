@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
+    // the field of the collectible item, it contains the rarity, uniqueness, icon and splash image of the collectible item
     [System.Serializable]
     public class CollectibleField : IHasIcon, IHasSplashImage, IHasUnique, IHasRarityConfig
     {

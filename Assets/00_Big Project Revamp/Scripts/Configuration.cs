@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
+    // the base all scriptable object configuration should inherit from, it contains the basic info of the configuration, such as id, name and description
     public abstract partial class Configuration : ScriptableObject
     {
         [SerializeField]

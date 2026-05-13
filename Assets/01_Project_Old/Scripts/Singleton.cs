@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
+    // A generic singleton class for MonoBehaviours. It ensures that only one instance of the class exists and provides a global access point to it. It also handles the case when the application is quitting to prevent creating new instances.
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T m_Instance;
