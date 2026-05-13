@@ -14,10 +14,15 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private int m_Score = 0;
         [SerializeField]
+        private int m_ExpFromHalvedScore = 0;
+        [SerializeField]
         private UnityEvent<int> m_OnScoreChanged;
         [SerializeField]
         private UnityEvent<Currency> m_OnScoreCurrencyChanged;
-        public UnityEvent<Currency> OnScoreCurrencyChanged => OnScoreCurrencyChanged;
+        [SerializeField]
+        private UnityEvent<int> m_OnExpFromHalvedScoreChanged;
+        public UnityEvent<Currency> OnScoreCurrencyChanged => m_OnScoreCurrencyChanged;
+        public UnityEvent<int> OnExpFromHalvedScoreChanged => m_OnExpFromHalvedScoreChanged;
 
         private Currency m_ScoreCurrency;
 
@@ -41,17 +46,25 @@ namespace Rush
             }
         }
 
-        private void AddPlayerExpInternal(int exp)
+        private void SetExpInternal(int exp)
         {
-            Player.Instance.AddPlayerExperience(exp);
+            m_ExpFromHalvedScore = exp;
+            m_OnExpFromHalvedScoreChanged?.Invoke(m_ExpFromHalvedScore);
         }
-        public void AddPlayerExp(int exp)
+        private void AddPlayerExpFromHalvedScoreInternal(int score)
         {
-            AddPlayerExpInternal(exp);
+            int halvedScore = Mathf.FloorToInt(m_Score / 2f);
+            int halvedScoreToAdd = Mathf.FloorToInt(score / 2f);
+            SetExpInternal(halvedScore);
+            Player.Instance.AddPlayerExperience(halvedScoreToAdd);
+        }
+        public void AddPlayerExpFromHalvedScore(int exp)
+        {
+            AddPlayerExpFromHalvedScoreInternal(exp);
         }
         private void AddScoreInternal(int score)
         {
-            AddPlayerExpInternal(score);
+            AddPlayerExpFromHalvedScoreInternal(score);
             StageConfig currenStage = RushGameManager.Instance.StageManager.UsedStageConfig;
             if (currenStage.StageMode != StageMode.Collosal) return;
             m_Score += score;

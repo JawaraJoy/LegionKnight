@@ -1,4 +1,4 @@
-using LegionKnight;
+    using LegionKnight;
 using UnityEngine;
 
 namespace Rush

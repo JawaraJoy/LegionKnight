@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
+    // Base class for all views that are used in the UI. Mainly used to have a unique id for each view, so that we can easily find them in the hierarchy and manage them.
     public partial class UIView : View
     {
         [SerializeField]

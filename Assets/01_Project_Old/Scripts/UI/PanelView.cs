@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace LegionKnight
 {
+    // Base class for all panels that are used in the UI. Mainly used to have a list of bindings, which are the views that are used in the panel, so that we can easily find them in the hierarchy and manage them.
     public partial class PanelView : UIView
     {
 
