@@ -182,12 +182,12 @@ namespace LegionKnight
             m_OnClaim?.Invoke(m_SelectedReward);
             m_SelectedReward = null;
 
-            Dictionary<string, string> eventValues = new Dictionary<string, string>
+            /*Dictionary<string, string> eventValues = new Dictionary<string, string>
             {
                 {"source", "spin"},
                 {"bundlename", m_SelectedReward.name},
             };
-            AppsFlyer.sendEvent(AFEventName.OnGetRewards, eventValues);
+            AppsFlyer.sendEvent(AFEventName.OnGetRewards, eventValues);*/
         }
         [ContextMenu(nameof(TryClaim))]
         private void TryClaim()
