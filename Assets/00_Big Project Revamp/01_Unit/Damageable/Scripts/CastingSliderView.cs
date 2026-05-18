@@ -7,37 +7,10 @@ namespace Rush
     {
         [SerializeField]
         private InteruptSliderview m_InteruptSliderview;
-        private RogueLikeCardPanel m_CardPanel;
-        private RogueLikeCardPanel CardPanel
-        {
-            get
-            {
-                if (m_CardPanel == null)
-                {
-                    m_CardPanel = CanvasManager.Instance.GetPanel<RogueLikeCardPanel>();
-                }
-                return m_CardPanel;
-            }
-        }
-        private PausePanel m_PausePanel;
-        private PausePanel PausePanel
-        {
-            get
-            {
-                if (m_PausePanel == null)
-                {
-                    m_PausePanel = CanvasManager.Instance.GetPanel<PausePanel>();
-                }
-                return m_PausePanel;
-            }
-        }
-        private void Start()
-        {
-            CardPanel.OnShow.AddListener(UnregisterCasting);
-            CardPanel.OnHide.AddListener(RegisterCasting);
 
-            PausePanel.OnShow.AddListener(UnregisterCasting);
-            PausePanel.OnHide.AddListener(RegisterCasting);
+        private void OnEnable()
+        {
+            RegisterCasting();
         }
 
         private void RegisterCasting()
