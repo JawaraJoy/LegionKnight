@@ -20,7 +20,7 @@ namespace Rush
 
         // ── IUpdater ──────────────────────────────────────────────────────────
 
-        public bool IsActive => IsShow && m_Catalog != null;
+        public bool IsActive => IsShown && m_Catalog != null;
 
         public void Tick()
         {

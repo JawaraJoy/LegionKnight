@@ -26,7 +26,7 @@ namespace LegionKnight
         }
         public bool IsShowPanel(string uniqueId)
         {
-            return GetPanelInternal(uniqueId).IsShow;
+            return GetPanelInternal(uniqueId).IsShown;
         }
         public void ShowMainCanvas()
         {

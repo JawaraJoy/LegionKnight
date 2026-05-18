@@ -20,7 +20,7 @@ namespace LegionKnight
         private UnityEvent m_OnHide = new();
         protected bool IsShowInternal => m_Content.activeSelf;
         public GameObject Content => m_Content;
-        public bool IsShow => IsShowInternal;
+        public bool IsShown => IsShowInternal;
         public UnityEvent OnShow => m_OnShow;
         public UnityEvent OnHide => m_OnHide;
         public virtual void Show()

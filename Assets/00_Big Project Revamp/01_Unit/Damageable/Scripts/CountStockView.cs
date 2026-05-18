@@ -67,7 +67,7 @@ namespace Rush
                 // 🔥 Hide from the latest active (reverse order)
                 for (int i = m_Spawneds.Count - 1; i >= 0 && currentActive > count; i--)
                 {
-                    if (m_Spawneds[i].IsShow)
+                    if (m_Spawneds[i].IsShown)
                     {
                         m_Spawneds[i].HideDelay();
                         currentActive--;
@@ -79,7 +79,7 @@ namespace Rush
                 // Show from earliest hidden
                 for (int i = 0; i < m_Spawneds.Count && currentActive < count; i++)
                 {
-                    if (!m_Spawneds[i].IsShow)
+                    if (!m_Spawneds[i].IsShown)
                     {
                         m_Spawneds[i].Show();
                         currentActive++;
@@ -97,7 +97,7 @@ namespace Rush
             int count = 0;
             for (int i = 0; i < m_Spawneds.Count; i++)
             {
-                if (m_Spawneds[i].IsShow)
+                if (m_Spawneds[i].IsShown)
                     count++;
             }
             return count;

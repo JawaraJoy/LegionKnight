@@ -59,7 +59,7 @@ namespace Rush
         public UnityEvent OnCastingSuccessEvent => m_OnCastingSuccess;
         public UnityEvent OnCastingFailEvent => m_OnCastingFail;
 
-        public bool IsActive => !CardPanel.IsShow || !PausePanel.IsShow;
+        public bool IsActive => !CardPanel.IsShown || !PausePanel.IsShown;
 
         private RogueLikeCardPanel m_CardPanel;
         private RogueLikeCardPanel CardPanel

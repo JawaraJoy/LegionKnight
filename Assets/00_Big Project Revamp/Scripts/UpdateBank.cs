@@ -1,3 +1,4 @@
+using LegionKnight;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,6 +15,12 @@ namespace Rush
         private bool m_StopFixedTicks = false;
         private bool m_StopUpdateTicks = false;
         private bool m_StopLateUpdateTicks = false;
+
+        private void Start()
+        {
+            CanvasManager.Instance.MainCanvas.OnAnyMainPanelShow.AddListener(() => StopAllTicks(true));
+            CanvasManager.Instance.MainCanvas.OnNoMainPanelShow.AddListener(() => StopAllTicks(false));
+        }
         private void FixedUpdate()
         {
             ProcessFixedActionTick();

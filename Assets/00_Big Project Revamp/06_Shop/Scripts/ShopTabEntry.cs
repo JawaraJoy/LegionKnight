@@ -19,7 +19,7 @@ namespace Rush
 
         public void RepopulateIfVisible(System.Action<ShopBundleConfig> onBuyClicked)
         {
-            if (m_ShopTabView == null || !m_ShopTabView.IsShow) return;
+            if (m_ShopTabView == null || !m_ShopTabView.IsShown) return;
             m_ShopTabView.Populate(m_TabConfig, onBuyClicked);
         }
     }

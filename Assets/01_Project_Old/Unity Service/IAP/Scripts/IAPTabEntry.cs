@@ -18,7 +18,7 @@ namespace Rush
 
         public void RepopulateIfVisible(Action<IAPBundleConfig> onBundleClicked)
         {
-            if (m_IAPTabView == null || !m_IAPTabView.IsShow) return;
+            if (m_IAPTabView == null || !m_IAPTabView.IsShown) return;
             m_IAPTabView.Populate(m_TabConfig, onBundleClicked);
         }
     }

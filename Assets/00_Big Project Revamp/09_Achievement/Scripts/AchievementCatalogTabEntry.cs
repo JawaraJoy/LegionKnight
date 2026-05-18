@@ -18,7 +18,7 @@ namespace Rush
 
         public void RefreshTaskIfVisible(AchievementTaskConfig task)
         {
-            if (m_CatalogView == null || !m_CatalogView.IsShow) return;
+            if (m_CatalogView == null || !m_CatalogView.IsShown) return;
             m_CatalogView.RefreshTask(task);
         }
     }
