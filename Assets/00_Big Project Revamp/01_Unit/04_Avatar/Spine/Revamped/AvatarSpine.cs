@@ -2,6 +2,7 @@
 using MoreMountains.Tools;
 using Spine;
 using Spine.Unity;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -288,6 +289,32 @@ namespace Rush
             {
                 clipTrigger.OnDoneInvoke(clipConfig);
             }
+        }
+
+        private void ChangeColorInternal(Color color)
+        {
+            m_SkeletonAnimation.Skeleton.SetColor(color);
+        }
+
+        private Coroutine m_FlashCoroutine;
+        public void FlashDamage()
+        {
+            if (m_FlashCoroutine != null)
+            {
+                RushGameManager.Instance.StopCoroutine(m_FlashCoroutine);
+                ChangeColorInternal(Color.white);
+            }
+            m_FlashCoroutine = RushGameManager.Instance.StartCoroutine(DamageColoring(Color.red, 0.1f));
+        }
+
+        private IEnumerator DamageColoring(Color damageColor, float duration)
+        {
+            if (m_SkeletonAnimation == null || m_SkeletonAnimation.Skeleton == null) yield break;
+            var skeleton = m_SkeletonAnimation.Skeleton;
+            var originalColor = skeleton.GetColor();
+            ChangeColorInternal(damageColor);
+            yield return new WaitForSeconds(duration);
+            ChangeColorInternal(originalColor);
         }
     }
 }
