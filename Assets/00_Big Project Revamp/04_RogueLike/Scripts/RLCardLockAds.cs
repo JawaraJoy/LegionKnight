@@ -8,12 +8,15 @@ namespace Rush
     {
         [SerializeField]
         private Button m_ButtonAds;
+        [SerializeField]
+        private Button m_ButtonCard;
 
         private void Start()
         {
             m_ButtonAds.onClick.AddListener(WatchAds);
 
             RushGameManager.Instance.StageManager.OnStageStart.AddListener((x) => ShowInternal());
+            m_ButtonCard.interactable = false;
         }
         private void WatchAds()
         {
@@ -23,6 +26,13 @@ namespace Rush
         private void OnAdWatched()
         {
             HideInternal();
+            m_ButtonCard.interactable = true;
+        }
+
+        protected override void ShowInternal()
+        {
+            base.ShowInternal();
+            m_ButtonCard.interactable = false;
         }
     }
 }

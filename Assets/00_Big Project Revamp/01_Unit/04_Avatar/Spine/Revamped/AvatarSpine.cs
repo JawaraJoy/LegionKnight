@@ -297,24 +297,42 @@ namespace Rush
         }
 
         private Coroutine m_FlashCoroutine;
+        private Color m_OriginalColor = Color.white;
+
         public void FlashDamage()
         {
+            if (m_SkeletonAnimation == null || m_SkeletonAnimation.Skeleton == null)
+                return;
+
             if (m_FlashCoroutine != null)
             {
                 RushGameManager.Instance.StopCoroutine(m_FlashCoroutine);
-                ChangeColorInternal(Color.white);
+
+                // restore previous base color
+                ChangeColorInternal(m_OriginalColor);
             }
-            m_FlashCoroutine = RushGameManager.Instance.StartCoroutine(DamageColoring(Color.red, 0.1f));
+
+            m_FlashCoroutine = RushGameManager.Instance.StartCoroutine(
+                DamageColoring(Color.red, 0.1f)
+            );
         }
 
         private IEnumerator DamageColoring(Color damageColor, float duration)
         {
-            if (m_SkeletonAnimation == null || m_SkeletonAnimation.Skeleton == null) yield break;
             var skeleton = m_SkeletonAnimation.Skeleton;
-            var originalColor = skeleton.GetColor();
+
+            // cache current color
+            m_OriginalColor = skeleton.GetColor();
+
+            // apply flash
             ChangeColorInternal(damageColor);
+
             yield return new WaitForSeconds(duration);
-            ChangeColorInternal(originalColor);
+
+            // restore
+            ChangeColorInternal(m_OriginalColor);
+
+            m_FlashCoroutine = null;
         }
     }
 }
