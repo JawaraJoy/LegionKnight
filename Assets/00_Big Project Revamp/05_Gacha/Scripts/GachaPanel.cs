@@ -60,7 +60,7 @@ namespace Rush
             if (m_DetailButton != null)
                 m_DetailButton.onClick.RemoveListener(OnDetailClickedInternal);
         }
-
+        public void RefreshView() => RefreshViewInternal();
         private void RefreshViewInternal()
         {
             var banner = Manager.ActiveBanner;
