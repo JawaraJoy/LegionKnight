@@ -15,8 +15,6 @@ namespace LegionKnight
         private int m_FreeSpinAmountEachDay = 1;
         [SerializeField]
         private int m_FreeDrawWatchAmount = 3;
-        [SerializeField]
-        private TimerDefinition m_FreeDrawResetTime;
 
         [Header("Spin Animation")]
         [SerializeField, Min(8)]
@@ -37,7 +35,6 @@ namespace LegionKnight
         public SpinRewardDefinition[] Rewards => m_Rewards;
         public int FreeSpinAmountEachDay => m_FreeSpinAmountEachDay;
         public int FreeDrawWatchAmount => m_FreeDrawWatchAmount;
-        public TimerDefinition FreeDrawResetTime => m_FreeDrawResetTime;
         public int MinSpinStep => m_MinSpinStep;
         public int MinAdditionalSpinStep => m_MinAdditionalSpinStep;
         public int MaxAdditionalSpinStep => m_MaxAdditionalSpinStep;

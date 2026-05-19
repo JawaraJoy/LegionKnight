@@ -5,7 +5,7 @@ using LegionKnight;
 
 namespace Rush
 {
-    public class DailyCheckIn : MonoBehaviour
+    public class DailyCheckIn : MonoBehaviour   
     {
 
         [Header("Reset Time (24h Format)")]
@@ -14,7 +14,7 @@ namespace Rush
 
         [Header("Events")]
         [SerializeField] private UnityEvent m_OnFirstCheckInToday;
-
+        public UnityEvent OnFirstCheckInToday => m_OnFirstCheckInToday;
         private const string SAVE_KEY = "DAILY_CHECK_IN_LAST_TIME";
 
 

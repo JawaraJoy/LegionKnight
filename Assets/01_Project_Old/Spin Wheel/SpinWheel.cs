@@ -1,15 +1,12 @@
 ﻿// SpinWheel.cs
 using System.Collections;
 using MoreMountains.Tools;
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace LegionKnight
 {
-    /// <summary>
-    /// Core spin wheel logic. Handles spin state, step animation, free-watch tracking,
-    /// and reward claiming. Does NOT depend on UI — drives it through UnityEvents.
-    /// </summary>
     public class SpinWheel : MonoBehaviour
     {
         // ── Definition ────────────────────────────────────────────────────────────
@@ -24,7 +21,7 @@ namespace LegionKnight
         private Currency m_SpinDraw;
         public Currency SpinDraw => m_SpinDraw;
 
-        // ── Runtime state (read-only in Inspector) ────────────────────────────────
+        // ── Runtime state ─────────────────────────────────────────────────────────
 
         [SerializeField, MMReadOnly]
         private int m_FreeDrawWatch;
@@ -48,37 +45,92 @@ namespace LegionKnight
 
         [SerializeField] private UnityEvent m_OnInitialized;
         [SerializeField] private UnityEvent m_OnSpinStart;
-        [SerializeField] private UnityEvent<SpinRewardDefinition> m_OnStepChanged;
+
+        /// <summary>
+        /// Param 1: index slot yang aktif di m_Definition.Rewards[].
+        /// Param 2: definisi reward di slot tersebut.
+        /// SpinWheelPanel pakai index ini untuk highlight view yang tepat.
+        /// </summary>
+        [SerializeField] private UnityEvent<int, SpinRewardDefinition> m_OnStepChanged;
+
         [SerializeField] private UnityEvent m_OnSpinEnd;
         [SerializeField] private UnityEvent<SpinRewardDefinition> m_OnClaim;
+
+        public UnityEvent<int, SpinRewardDefinition> OnStepChanged => m_OnStepChanged;
+        public UnityEvent<SpinRewardDefinition> OnClaim => m_OnClaim;
+        public UnityEvent OnSpinStart => m_OnSpinStart;
+        public UnityEvent OnSpinEnd => m_OnSpinEnd;
 
         // ── Persistence ───────────────────────────────────────────────────────────
 
         private const string FreeDrawWatchKey = "spinwatchfree";
 
+        // ── Result panel cache ────────────────────────────────────────────────────
+
+        private ShopResultPanel m_ResultPanel;
+        private ShopResultPanel ResultPanel
+        {
+            get
+            {
+                if (m_ResultPanel == null)
+                    m_ResultPanel = CanvasManager.Instance.GetPanel<ShopResultPanel>();
+                return m_ResultPanel;
+            }
+        }
+
         // ── Lifecycle ─────────────────────────────────────────────────────────────
 
         private void Start()
         {
-            ValidateDefinition();
+            UnityService.Instance.DailyCheckIn.OnFirstCheckInToday.AddListener(ResetSpinKeyEachDay);
+            UnityService.Instance.DailyCheckIn.OnFirstCheckInToday.AddListener(ResetFreeDrawWatch);
         }
 
-        /// <summary>
-        /// Call this after the Player and currency system are ready.
-        /// </summary>
         public void Init()
         {
-            if (!ValidateDefinition()) return;
+
+            ResolveSpinDrawFromPlayer();
+            SubscribeToPlayerCurrency();
 
             LoadFreeDrawWatch();
-            HandleDailyReset();
 
+            m_OnInitialized?.Invoke();
+        }
+
+        // ── Currency sync ─────────────────────────────────────────────────────────
+
+        private void ResolveSpinDrawFromPlayer()
+        {
+            if (m_SpinDraw == null)
+            {
+                Debug.LogError("[SpinWheel] m_SpinDraw belum di-assign di Inspector.");
+                return;
+            }
+
+            if (!Player.Instance.CurrencyControl.HasCurrency(m_SpinDraw.ItemConfig, out Currency playerCurrency))
+            {
+                Debug.LogError($"[SpinWheel] Currency '{m_SpinDraw.ItemConfig.BaseInfo.Id}' " +
+                               $"tidak ditemukan di PlayerCurrencyControl.");
+                return;
+            }
+
+            m_SpinDraw = playerCurrency;
+        }
+
+        private void SubscribeToPlayerCurrency()
+        {
+            Player.Instance.CurrencyControl.OnCurrencyChanged.RemoveListener(OnPlayerCurrencyChanged);
+            Player.Instance.CurrencyControl.OnCurrencyChanged.AddListener(OnPlayerCurrencyChanged);
+        }
+
+        private void OnPlayerCurrencyChanged(Currency currency)
+        {
+            if (currency.ItemConfig.BaseInfo.Id != m_SpinDraw.ItemConfig.BaseInfo.Id) return;
             m_OnInitialized?.Invoke();
         }
 
         // ── Public API ────────────────────────────────────────────────────────────
 
-        /// <summary>Spend one spin ticket and spin.</summary>
         public bool TrySpin(UnityAction onConsumed = null)
         {
             if (!CanSpin(SpinBlockReason.Ticket)) return false;
@@ -89,7 +141,6 @@ namespace LegionKnight
             return true;
         }
 
-        /// <summary>Spend one free-watch charge and spin (after showing an ad).</summary>
         public bool TryFreeWatchSpin(UnityAction onConsumed = null)
         {
             if (!CanSpin(SpinBlockReason.FreeWatch)) return false;
@@ -100,15 +151,6 @@ namespace LegionKnight
                 onConsumed?.Invoke();
                 StartCoroutine(RunSpin());
             });
-            return true;
-        }
-
-        /// <summary>Claim the pending reward. Safe to call only when CanClaim() is true.</summary>
-        public bool TryClaim()
-        {
-            if (!CanClaim()) return false;
-
-            ClaimRewardInternal();
             return true;
         }
 
@@ -130,15 +172,12 @@ namespace LegionKnight
             m_OnSpinStart?.Invoke();
 
             int rewardCount = m_Definition.Rewards.Length;
-            int minStep = m_Definition.MinSpinStep;
             int extra = Random.Range(m_Definition.MinAdditionalSpinStep, m_Definition.MaxAdditionalSpinStep + 1);
 
-            // Align total steps so the cursor lands exactly on the target index.
-            int rawTotal = minStep + extra;
+            int rawTotal = m_Definition.MinSpinStep + extra;
             int stepsToTarget = (m_TargetRewardIndex - m_CurrentStepIndex + rewardCount) % rewardCount;
             if (stepsToTarget == 0) stepsToTarget = rewardCount;
 
-            // Round up to nearest multiple that lands on target.
             int fullLaps = Mathf.CeilToInt((float)(rawTotal - stepsToTarget) / rewardCount);
             int finalSteps = fullLaps * rewardCount + stepsToTarget;
 
@@ -150,25 +189,21 @@ namespace LegionKnight
 
                 float progress = (float)i / finalSteps;
                 float delay = baseDelay;
+                if (progress > 0.85f) delay += m_Definition.MidDelayGrowth;
+                if (progress > 0.93f) delay += m_Definition.EndDelayGrowth;
 
-                if (progress > 0.85f)
-                    delay += m_Definition.MidDelayGrowth;
-                if (progress > 0.93f)
-                    delay += m_Definition.EndDelayGrowth;
-
-                m_OnStepChanged?.Invoke(m_Definition.Rewards[m_CurrentStepIndex]);
+                // Broadcast index agar panel highlight view di posisi yang benar
+                m_OnStepChanged?.Invoke(m_CurrentStepIndex, m_Definition.Rewards[m_CurrentStepIndex]);
 
                 yield return new WaitForSeconds(delay);
             }
 
-            // Cursor is now exactly on the target.
             m_SelectedReward = m_Definition.Rewards[m_TargetRewardIndex];
             m_IsBusy = false;
             m_OnSpinEnd?.Invoke();
 
             yield return new WaitForSeconds(m_Definition.ClaimDelay);
 
-            // Auto-claim after delay (can be changed to manual if preferred).
             ClaimRewardInternal();
         }
 
@@ -177,10 +212,14 @@ namespace LegionKnight
             if (m_SelectedReward == null) return;
 
             SpinRewardDefinition reward = m_SelectedReward;
-            reward.Rewards.DirectTakeLoots();
+
+            CollectibleResultData resultData = reward.BuildResultData();
+            ResultPanel.Show(resultData);
 
             m_OnClaim?.Invoke(reward);
             m_SelectedReward = null;
+
+            CollectibleControl.AddCollectibleStatic("spin", reward.Collectible, reward.Amount);
         }
 
         // ── Free draw watch ───────────────────────────────────────────────────────
@@ -193,24 +232,14 @@ namespace LegionKnight
                 m_FreeDrawWatch = m_Definition.FreeDrawWatchAmount;
         }
 
-        private void HandleDailyReset()
+        private void ResetSpinKeyEachDay()
         {
-            TimerDefinition timer = m_Definition.FreeDrawResetTime;
-
-            if (!UnityService.Instance.HasData(timer.TimerId))
-            {
-                timer.StartTimer();
-                return;
-            }
-
-            if (!timer.IsTimeToReset()) return;
-
-            Player.Instance.CurrencyControl.AddCurrencyAmount(
-                m_SpinDraw.ItemConfig, m_Definition.FreeSpinAmountEachDay);
-
+            Player.Instance.CurrencyControl.AddCurrencyAmount(m_SpinDraw.ItemConfig, m_Definition.FreeSpinAmountEachDay);
+        }
+        private void ResetFreeDrawWatch()
+        {
             m_FreeDrawWatch = m_Definition.FreeDrawWatchAmount;
             SaveFreeDrawWatch();
-            timer.StartTimer();
         }
 
         private void ConsumeFreeDrawWatch()
@@ -235,25 +264,21 @@ namespace LegionKnight
                 Debug.LogWarning("[SpinWheel] Spin ignored: already spinning.");
                 return false;
             }
-
             if (m_SelectedReward != null)
             {
                 Debug.LogWarning("[SpinWheel] Spin ignored: unclaimed reward pending.");
                 return false;
             }
-
             if (reason == SpinBlockReason.Ticket && m_SpinDraw.Amount <= 0)
             {
                 Debug.LogWarning("[SpinWheel] Spin ignored: no tickets.");
                 return false;
             }
-
             if (reason == SpinBlockReason.FreeWatch && m_FreeDrawWatch <= 0)
             {
                 Debug.LogWarning("[SpinWheel] Spin ignored: no free watch spins.");
                 return false;
             }
-
             return true;
         }
 
@@ -264,24 +289,20 @@ namespace LegionKnight
                 Debug.LogError("[SpinWheel] SpinWheelDefinition is not assigned.");
                 return false;
             }
-
             if (m_Definition.Rewards == null || m_Definition.Rewards.Length == 0)
             {
                 Debug.LogError("[SpinWheel] SpinWheelDefinition has no rewards.");
                 return false;
             }
-
             return true;
         }
-
-        // ── Editor helpers ────────────────────────────────────────────────────────
 
 #if UNITY_EDITOR
         [ContextMenu("Debug / Force Spin")]
         private void DebugForceSpin() => StartCoroutine(RunSpin());
 
         [ContextMenu("Debug / Force Claim")]
-        private void DebugForceClaim() => TryClaim();
+        private void DebugForceClaim() => ClaimRewardInternal();
 
         [ContextMenu("Debug / Reset Free Watch")]
         private void DebugResetFreeWatch()

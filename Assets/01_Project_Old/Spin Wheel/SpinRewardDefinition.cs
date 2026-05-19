@@ -8,18 +8,29 @@ namespace LegionKnight
     public class SpinRewardDefinition : Configuration
     {
         [SerializeField, Range(1, 100)]
-        private int m_Weight = 10; // higher = more likely to land
+        private int m_Weight = 10;
 
         [SerializeField]
-        private LootChestDefinition m_Rewards;
+        private CollectibleConfig m_Collectible;
 
         [SerializeField]
-        private Sprite m_Icon;
+        private int m_Amount = 1;
 
         public int Weight => m_Weight;
-        public LootChestDefinition Rewards => m_Rewards;
-        public Sprite Icon => m_Icon;
+        public CollectibleConfig Collectible => m_Collectible;
+        public int Amount => m_Amount;
         public string Id => m_BaseInfo.Id;
         public string DisplayName => m_BaseInfo.Name;
+
+        /// <summary>
+        /// Buat CollectibleResultData dari reward ini,
+        /// siap di-pass ke CollectibleResultPanel.Show().
+        /// </summary>
+        public CollectibleResultData BuildResultData()
+        {
+            var data = new CollectibleResultData();
+            data.AddEntry(m_Collectible, m_Amount);
+            return data;
+        }
     }
 }

@@ -1,3 +1,4 @@
+using Rush;
 using System;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
@@ -10,13 +11,15 @@ namespace LegionKnight
     {
         [SerializeField]
         private string m_EnvironmentName = "production"; // Set your environment name here
-
+        [SerializeField]
+        private DailyCheckIn m_DailyCheckIn;
         [SerializeField]
         private UnityEvent m_OnInitialized = new();
         [SerializeField]
         private UnityEvent<string> m_OnInitializationFailed = new();
 
         private bool m_IsInitialized = false;
+        public DailyCheckIn DailyCheckIn => m_DailyCheckIn;
         public bool IsInitialized => m_IsInitialized;
         async void Start()
         {

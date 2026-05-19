@@ -1,4 +1,4 @@
-﻿// SpinWheelPanel.cs  (replaces SpinWheelMonitor — inherits PanelView like the rest of your UI)
+﻿// SpinWheelPanel.cs
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,22 +7,19 @@ namespace LegionKnight
 {
     public class SpinWheelPanel : PanelView
     {
-        // ── HUD ──────────────────────────────────────────────────────────────────
+        // ── HUD ───────────────────────────────────────────────────────────────────
 
         [Header("HUD")]
         [SerializeField] private TextMeshProUGUI m_SpinAmountText;
         [SerializeField] private TextMeshProUGUI m_FreeWatchAmountText;
 
         // ── Reward grid ───────────────────────────────────────────────────────────
+        // Urutan array ini HARUS sama dengan urutan m_Definition.Rewards di SpinWheelDefinition.
+        // Index 0 di sini = index 0 di Rewards[], dst.
 
         [Header("Reward grid")]
-        [SerializeField] private SpinRewardView[] m_RewardViews;   // assign 8 in Inspector
+        [SerializeField] private SpinRewardView[] m_RewardViews;
         [SerializeField] private SpinRewardView m_SelectedRewardPreview;
-
-        // ── Loot result ───────────────────────────────────────────────────────────
-
-        [Header("Loot result")]
-        [SerializeField] private LootMonitor m_LootMonitor;
 
         // ── Buttons ───────────────────────────────────────────────────────────────
 
@@ -35,17 +32,23 @@ namespace LegionKnight
 
         private SpinWheelManager Manager => Player.Instance.SpinWheelManager;
 
+        private int m_CurrentHighlightIndex = -1;
+
         // ── Lifecycle ─────────────────────────────────────────────────────────────
 
         private void Start()
         {
             m_SpinButton.onClick.AddListener(OnSpinClicked);
             m_FreeWatchButton.onClick.AddListener(OnFreeWatchClicked);
+            Manager.OnStepChanged.AddListener(OnStepChanged);
+            Manager.OnSpinEnd.AddListener(OnSpinEnd);
+            Manager.OnClaim.AddListener(OnClaim);
         }
 
         protected override void ShowInternal()
         {
             base.ShowInternal();
+            ClearHighlight();
             RefreshHUD();
             RefreshButtonState();
         }
@@ -68,44 +71,52 @@ namespace LegionKnight
             SetButtonsBusy(true);
         }
 
-        // ── SpinWheel event receivers (wire these up in Inspector) ────────────────
+        // ── SpinWheel event receivers (wire di Inspector) ─────────────────────────
 
-        /// <summary>Wire to SpinWheel.m_OnStepChanged</summary>
-        public void OnStepChanged(SpinRewardDefinition reward)
+        /// <summary>
+        /// Wire ke SpinWheel.m_OnStepChanged (int index, SpinRewardDefinition reward).
+        /// Highlight view di index tersebut, matikan sisanya.
+        /// </summary>
+        private void OnStepChanged(int index, SpinRewardDefinition reward)
         {
-            HighlightReward(reward);
-            m_SelectedRewardPreview.Init(reward);
+            // Matikan highlight sebelumnya
+            if (m_CurrentHighlightIndex >= 0 && m_CurrentHighlightIndex < m_RewardViews.Length)
+                m_RewardViews[m_CurrentHighlightIndex].SetHighlight(false);
+
+            // Nyalakan highlight di index baru
+            m_CurrentHighlightIndex = index;
+            if (m_CurrentHighlightIndex >= 0 && m_CurrentHighlightIndex < m_RewardViews.Length)
+                m_RewardViews[m_CurrentHighlightIndex].SetHighlight(true);
+
+            // Update preview tengah
+            if (m_SelectedRewardPreview != null)
+                m_SelectedRewardPreview.Init(reward);
         }
 
-        /// <summary>Wire to SpinWheel.m_OnSpinEnd</summary>
-        public void OnSpinEnd()
+        /// <summary>Wire ke SpinWheel.m_OnSpinEnd</summary>
+        private void OnSpinEnd()
         {
             SetButtonsBusy(false);
             RefreshButtonState();
         }
 
-        /// <summary>Wire to SpinWheel.m_OnClaim</summary>
-        public void OnClaim(SpinRewardDefinition reward)
+        /// <summary>Wire ke SpinWheel.m_OnClaim</summary>
+        private void OnClaim(SpinRewardDefinition reward)
         {
-            ShowLootResult(reward);
+            ClearHighlight();
             RefreshHUD();
             RefreshButtonState();
+            
+            Debug.Log($"Claimed reward: {reward.DisplayName} x{reward.Amount}");
         }
 
-        // ── Reward highlighting ───────────────────────────────────────────────────
+        // ── Highlight helpers ─────────────────────────────────────────────────────
 
-        private void HighlightReward(SpinRewardDefinition reward)
+        private void ClearHighlight()
         {
             foreach (var view in m_RewardViews)
-                view.SetSelected(view.Definition == reward ? reward : null);
-        }
-
-        // ── Loot result ───────────────────────────────────────────────────────────
-
-        private void ShowLootResult(SpinRewardDefinition reward)
-        {
-            m_LootMonitor.ClearAllLootViews();
-            m_LootMonitor.Show();
+                view.SetHighlight(false);
+            m_CurrentHighlightIndex = -1;
         }
 
         // ── HUD & button state ────────────────────────────────────────────────────
@@ -122,7 +133,7 @@ namespace LegionKnight
 
         private void RefreshButtonState()
         {
-            bool idle = !Manager.IsBusy && Manager.SelectedReward == null;
+            bool idle = !Manager.IsBusy;
             m_SpinButton.interactable = idle && Manager.SpinDraw.Amount > 0;
             m_FreeWatchButton.interactable = idle && Manager.FreeDrawWatch > 0;
             m_CloseButton.interactable = idle;

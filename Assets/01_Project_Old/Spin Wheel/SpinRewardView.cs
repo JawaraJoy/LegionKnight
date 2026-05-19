@@ -1,3 +1,4 @@
+﻿// SpinRewardView.cs
 using Rush;
 using TMPro;
 using UnityEngine;
@@ -18,7 +19,6 @@ namespace LegionKnight
         private Image m_Item;
         [SerializeField]
         private TextMeshProUGUI m_AmountText;
-        private bool m_Selected = false;
 
         [SerializeField]
         private UnityEvent m_OnSelected;
@@ -26,6 +26,9 @@ namespace LegionKnight
         private UnityEvent m_OnNotSelected;
 
         public SpinRewardDefinition Definition => m_Definition;
+
+        // ── Init ──────────────────────────────────────────────────────────────────
+
         public void Init(SpinRewardDefinition defi)
         {
             m_Definition = defi;
@@ -39,73 +42,53 @@ namespace LegionKnight
 
         private void Refresh()
         {
-            LootField firstLoot = m_Definition.Rewards.LootFields[0];
-            CurrencyApplier(firstLoot.ItemLoot, firstLoot.Amount);
-            CharacterApplier(firstLoot.ItemLoot);
-            StandbyPlatformApplier(firstLoot.ItemLoot, firstLoot.Amount);
-            EnergyApplier(firstLoot.ItemLoot, firstLoot.Amount);
+            if (m_Definition == null || m_Definition.Collectible == null) return;
+
+            CollectibleConfig collectible = m_Definition.Collectible;
+            int amount = m_Definition.Amount;
+            m_FrameBack.color = collectible.CollectibleField.RarityConfig.Color;
+            if (collectible is ItemConfig currency)
+                InitInternal(currency.CollectibleField.Icon, amount);
+            else if (collectible is HeroUnitConfig character)
+                InitInternal(character.CollectibleField.Icon, 0);
+            else if (collectible is PlatformConfig platform)
+                InitInternal(platform.CollectibleField.Icon, amount);
+            else if (collectible is EnergyConfig energy)
+                InitInternal(energy.CollectibleField.Icon, amount);
+            else if (collectible is CardConfig card)
+                InitInternal(card.CollectibleField.Icon, amount);
         }
+
         protected override void ShowInternal()
         {
             base.ShowInternal();
             Refresh();
         }
 
-        public void SetSelected(SpinRewardDefinition selectedDefi)
+        // ── Highlight ─────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Dipanggil oleh SpinWheelPanel setiap step spin.
+        /// true  = slot ini sedang disorot oleh jarum spin.
+        /// false = slot ini tidak aktif.
+        /// </summary>
+        public void SetHighlight(bool active)
         {
-            m_Selected = selectedDefi == m_Definition;
-            if (m_Selected)
-            {
+            if (m_FrameHighlight != null)
+                m_FrameHighlight.gameObject.SetActive(active);
+
+            if (active)
                 m_OnSelected?.Invoke();
-            }
             else
-            {
                 m_OnNotSelected?.Invoke();
-            }
-            m_FrameHighlight.enabled = m_Selected;
         }
 
-
+        // ── Private ───────────────────────────────────────────────────────────────
 
         private void InitInternal(Sprite sprite, int amount)
         {
             m_Item.sprite = sprite;
-            if (amount > 0)
-            {
-                m_AmountText.text = amount.ToString();
-            }
-            else
-            {
-                m_AmountText.text = string.Empty;
-            }
-        }
-        private void CurrencyApplier(ScriptableObject defi, int amount)
-        {
-            if (defi is ItemConfig currency)
-            {
-                InitInternal(currency.CollectibleField.Icon, amount);
-            }
-        }
-        private void CharacterApplier(ScriptableObject defi)
-        {
-            if (defi is HeroUnitConfig character)
-            {
-                InitInternal(character.CollectibleField.Icon, 0);
-            }
-        }
-        private void StandbyPlatformApplier(ScriptableObject defi, int amount)
-        {
-            if (defi is PlatformConfig platform)
-            {
-                InitInternal(platform.CollectibleField.Icon, amount);
-            }
-        }
-        private void EnergyApplier(ScriptableObject defi, int amount)
-        {
-            if (defi is EnergyConfig energy)
-            {
-                InitInternal(energy.CollectibleField.Icon, amount);
-            }
+            m_AmountText.text = amount > 0 ? amount.ToString() : string.Empty;
         }
     }
 }
