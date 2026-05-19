@@ -39,7 +39,6 @@ namespace LegionKnight
 
         private void Refresh()
         {
-            m_FrameBack.color = m_Definition.FrameColor;
             LootField firstLoot = m_Definition.Rewards.LootFields[0];
             CurrencyApplier(firstLoot.ItemLoot, firstLoot.Amount);
             CharacterApplier(firstLoot.ItemLoot);

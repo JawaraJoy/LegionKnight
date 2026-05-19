@@ -1,21 +1,25 @@
+// SpinRewardDefinition.cs
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
 {
-    [CreateAssetMenu(fileName = "Spin Reward", menuName = "Legion Knight/SpinWheel/SpinReward")]
-    public class SpinRewardDefinition : ScriptableObject
+    [CreateAssetMenu(fileName = "SpinReward_", menuName = "Legion Knight/SpinWheel/Spin Reward")]
+    public class SpinRewardDefinition : Configuration
     {
-        [SerializeField]
-        private string m_Id;
-        [SerializeField]
-        private Color m_FrameColor = Color.white;
+        [SerializeField, Range(1, 100)]
+        private int m_Weight = 10; // higher = more likely to land
+
         [SerializeField]
         private LootChestDefinition m_Rewards;
-        public string Id => m_Id;
-        public Color FrameColor => m_FrameColor;
+
+        [SerializeField]
+        private Sprite m_Icon;
+
+        public int Weight => m_Weight;
         public LootChestDefinition Rewards => m_Rewards;
-
-        
-
+        public Sprite Icon => m_Icon;
+        public string Id => m_BaseInfo.Id;
+        public string DisplayName => m_BaseInfo.Name;
     }
 }
