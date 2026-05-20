@@ -23,6 +23,8 @@ namespace LegionKnight
         private void Start()
         {
             m_UseButton.onClick.AddListener(Use);
+            m_WatchToUTryOnceButton.onClick.AddListener(WatchToTryOnce);
+            UnityService.Instance.LoadRewardedAd();
         }
         public void Init(HeroUnitConfig heroConfig)
         {
@@ -34,11 +36,13 @@ namespace LegionKnight
         {
             bool isHeroUnlocked = m_HeroUnit.Owned;
             bool isCharacterUsed = m_HeroUnit.IsUsed;
+            bool isOnTrial = m_HeroUnit.OnTrial;
             m_UseButton.interactable = !isCharacterUsed && isHeroUnlocked;
 
             m_UseText.text = isCharacterUsed ? "Used" : "Use";
             m_WatchToUTryOnceButton.gameObject.SetActive(!isHeroUnlocked);
-            m_WatchToTryOnceText.text = !isHeroUnlocked ? "Try" : "";
+            m_WatchToTryOnceText.text = !isOnTrial ? "Watch to Try" : "Used";
+            m_WatchToUTryOnceButton.interactable = !isOnTrial;
         }
         private void Use()
         {
@@ -47,12 +51,13 @@ namespace LegionKnight
         }
         private void WatchToTryOnce()
         {
-
+            UnityService.Instance.ShowRewardedAd(UnlockHero);
         }
 
         private void UnlockHero()
         {
             m_HeroUnit.SetTrial(true);
+            Use();
         }
     }
 }
