@@ -51,7 +51,7 @@ namespace LegionKnight
             m_HeroConfig = unit.HeroConfig;
             m_HeroView = heroView;
             m_LockIcon.SetActive(!unit.Owned);
-            m_SelectButton.interactable = unit.Owned;
+            //m_SelectButton.interactable = unit.Owned;
             m_UnitIcon.sprite = unit.HeroConfig.CollectibleField.Icon;
             if (!m_ButtonalreadyListen)
             {

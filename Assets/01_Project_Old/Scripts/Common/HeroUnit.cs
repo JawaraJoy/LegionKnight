@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using Rush;
+using MoreMountains.Tools;
 
 namespace LegionKnight
 {
@@ -15,6 +16,9 @@ namespace LegionKnight
         private int m_Exp;
 
         [SerializeField] private bool m_IsUsed = false;
+        [SerializeField, MMReadOnly]
+        private bool m_OnTrial = false;
+        public bool OnTrial => m_OnTrial;
 
         [SerializeField] private UnityEvent<HeroUnit> m_OnCharacterStarUp = new();
         [SerializeField] private UnityEvent<HeroUnit> m_OnCharacterShardUpdate = new();
@@ -44,7 +48,10 @@ namespace LegionKnight
         // =========================
         // PROGRESSION CORE
         // =========================
-
+        public void SetTrial(bool onTrial)
+        {
+            m_OnTrial = onTrial;
+        }
         public int GetMaxLevelByStar()
         {
             return m_HeroConfig.BreakThroughFormulaConfig.GetLevelNeeded(m_Star);

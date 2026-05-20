@@ -397,6 +397,19 @@ namespace Rush
 
             m_DeathTriggered = true;
         }
+
+        private void CheckIfHeroIsTrial()
+        {
+            HeroUnitConfig usedHeroConfig = Player.Instance.HeroesCollection.UsedHero;
+            HeroUnit usedHeroUnit = Player.Instance.HeroesCollection.GetHeroUnit(usedHeroConfig);
+            if (usedHeroUnit.OnTrial)
+            {
+                usedHeroUnit.SetTrial(false);
+                HeroUnitConfig defaultHero = Player.Instance.HeroesCollection.DefaultHero;
+                Player.Instance.HeroesCollection.SetSelectedHero(defaultHero);
+                Player.Instance.HeroesCollection.SetUsedHero();
+            }
+        }
         protected virtual void SetCurrentDamageTakeInternal(int damage)
         {
             m_CurrentDamageTaken = damage;
