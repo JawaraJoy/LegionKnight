@@ -63,6 +63,9 @@ namespace LegionKnight
             ApplyUI(state);
 
             m_OnInit?.Invoke(heroConfig);
+
+            bool isHeroUnlocked = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig).Owned;
+            m_UpgradeButton.interactable = isHeroUnlocked;
         }
 
         private void ApplyUI(LevelUpState state)
