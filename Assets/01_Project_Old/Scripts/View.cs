@@ -31,8 +31,7 @@ namespace LegionKnight
         {
             HideInternal();
         }
-
-        public virtual void SetContentActive(bool set)
+        protected virtual void SetContentActiveInternal(bool set)
         {
             if (set)
             {
@@ -42,6 +41,10 @@ namespace LegionKnight
             {
                 HideInternal();
             }
+        }
+        public void SetContentActive(bool set)
+        {
+            SetContentActiveInternal(set);
         }
 
         [ContextMenu("Show")]

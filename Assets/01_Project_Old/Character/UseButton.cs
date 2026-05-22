@@ -118,6 +118,8 @@ namespace LegionKnight
             Use();
 
             Refresh();
+
+            CanvasManager.Instance.GetPanel<TextPopUpPanel>().ShowText("You can now try the hero!");
         }
 
         private void SaveCurrentTime()

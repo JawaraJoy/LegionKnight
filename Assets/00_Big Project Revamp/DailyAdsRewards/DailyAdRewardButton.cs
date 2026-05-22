@@ -13,7 +13,7 @@ namespace LegionKnight
     /// - Hanya bisa ditekan 1x per hari (reset tengah malam)
     /// - Setelah iklan selesai, beri reward dan tampilkan CollectibleResultPanel
     /// </summary>
-    public class DailyAdRewardButton : MonoBehaviour
+    public class DailyAdRewardButton : UIView
     {
         // ── Config ────────────────────────────────────────────────────────────────
 
@@ -90,7 +90,7 @@ namespace LegionKnight
         {
             bool ready = IsReadyToday();
 
-            m_Button.interactable = ready;
+            SetContentActiveInternal(ready);
 
             if (m_ReadyState != null) m_ReadyState.SetActive(ready);
             if (m_CooldownState != null) m_CooldownState.SetActive(!ready);
@@ -110,15 +110,17 @@ namespace LegionKnight
 
         private void OnAdCompleted()
         {
+            if (m_Collectible != null)
+            {
+                // Beri reward ke player
+                CollectibleControl.AddCollectibleStatic(gameObject.name, m_Collectible, m_Amount);
+
+                // Tampilkan result panel
+                CollectibleResultData data = BuildResultData();
+                ResultPanel.Show(data);
+            }
             // Catat waktu klaim
             SaveClaimTime();
-
-            // Beri reward ke player
-            CollectibleControl.AddCollectibleStatic("ad_reward_button", m_Collectible, m_Amount);
-
-            // Tampilkan result panel
-            CollectibleResultData data = BuildResultData();
-            ResultPanel.Show(data);
 
             // Update UI button
             RefreshState();

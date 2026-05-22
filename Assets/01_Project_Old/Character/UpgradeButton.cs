@@ -13,6 +13,8 @@ namespace LegionKnight
 
         [SerializeField] private Button m_UpgradeButton;
         [SerializeField] private Button m_QuickAccessButton;
+        [SerializeField]
+        private DailyAdRewardButton m_DailyAdRewardButton; // opsional — bisa aktif saat upgrade tidak tersedia
 
         private HeroUnit m_CharacterUnit;
 
@@ -66,6 +68,8 @@ namespace LegionKnight
 
             bool isHeroUnlocked = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig).Owned;
             m_UpgradeButton.interactable = isHeroUnlocked;
+                if (m_DailyAdRewardButton != null)
+                    m_DailyAdRewardButton.gameObject.SetActive(!state.CanUpgrade && isHeroUnlocked);
         }
 
         private void ApplyUI(LevelUpState state)

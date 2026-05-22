@@ -15,7 +15,18 @@ namespace Rush
                 HeroUnitConfig defaultHero = Player.Instance.HeroesCollection.DefaultHero;
                 Player.Instance.HeroesCollection.SetSelectedHero(defaultHero);
                 Player.Instance.HeroesCollection.SetUsedHero();
+
+                CanvasManager.Instance.GetPanel<TextPopUpPanel>().ShowText("Trial Hero End");
             }
+        }
+
+        public void LevelUpHero()
+        {
+            HeroUnitConfig selected = Player.Instance.HeroesCollection.SelectedHero;
+            HeroUnit selectHero = Player.Instance.HeroesCollection.GetHeroUnit(selected);
+            selectHero.AddLevel(1);
+
+            CanvasManager.Instance.GetPanel<TextPopUpPanel>().ShowText("Level Up!");
         }
     }
 }
