@@ -42,7 +42,24 @@ namespace Rush
                 KeyLastClaimed + config.BaseInfo.Id,
                 time.ToString(DateFormat));
         }
+        public bool IsMissedDayClaimed(DailySignInConfig config, int dayIndex)
+        {
+            string key = $"{config.BaseInfo.Id}_missed_{dayIndex}";
 
+            if (!UnityService.Instance.HasData(key))
+                return false;
+
+            return UnityService.Instance.GetData<bool>(key);
+        }
+
+        public void SaveMissedDayClaimed(
+            DailySignInConfig config,
+            int dayIndex)
+        {
+            string key = $"{config.BaseInfo.Id}_missed_{dayIndex}";
+
+            UnityService.Instance.SaveData(key, true);
+        }
         public DateTime? GetCycleStartTime(DailySignInConfig config)
         {
             string key = KeyCycleStart + config.BaseInfo.Id;
@@ -65,6 +82,15 @@ namespace Rush
         {
             SaveCurrentDay(config, 0);
             SaveCycleStartTime(config, cycleStart);
+            for (int i = 0; i < config.TotalDays; i++)
+            {
+                string key = $"{config.BaseInfo.Id}_missed_{i}";
+
+                if (UnityService.Instance.HasData(key))
+                {
+                    UnityService.Instance.DeleteData(key);
+                }
+            }
             // LastClaimed intentionally not reset — prevents same-day double claim after reset
         }
     }

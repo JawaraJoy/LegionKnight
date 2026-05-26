@@ -79,12 +79,20 @@ namespace Rush
                     m_DayItems[i].gameObject.SetActive(true);
                     m_DayItems[i].Setup(i, rewards[i],
                         GetDayDisplayStateInternal(i, state),
-                        OnItemClaimClickedInternal);
+                        OnItemClaimClickedInternal,
+                        () => OnMissedClaimClickedInternal(i));
                 }
             }
 
             RefreshStatusTextInternal(state);
             RefreshCountdownInternal(state);
+        }
+        private void OnMissedClaimClickedInternal(int dayIndex)
+        {
+            UnityService.Instance.ShowRewardedAd(() =>
+            {
+                Manager.ClaimMissedDay(dayIndex);
+            });
         }
 
         // Only refresh states without re-assigning all data

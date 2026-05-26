@@ -48,7 +48,37 @@ namespace Rush
             return new DailySignInState(
                 currentDay, canClaim, cycleComplete, nextReset, m_Config.TotalDays);
         }
+        public void ClaimMissedDay(int dayIndex)
+        {
+            CheckAndApplyResetInternal();
 
+            int currentDay = m_Tracker.GetCurrentDay(m_Config);
+
+            // hanya boleh claim hari sebelumnya
+            if (dayIndex >= currentDay)
+            {
+                m_OnClaimFailed?.Invoke("Invalid missed reward.");
+                return;
+            }
+
+            // sudah pernah di-claim?
+            if (m_Tracker.IsMissedDayClaimed(m_Config, dayIndex))
+            {
+                m_OnClaimFailed?.Invoke("Reward already claimed.");
+                return;
+            }
+
+            var entry = m_Config.Rewards[dayIndex];
+
+            m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
+
+            var result = new CollectibleResultData();
+            result.AddEntry(entry.Collectible, entry.Amount);
+
+            m_Tracker.SaveMissedDayClaimed(m_Config, dayIndex);
+
+            m_OnClaimSuccess?.Invoke(result);
+        }
         public void Claim()
         {
             CheckAndApplyResetInternal();
