@@ -41,7 +41,7 @@ namespace Rush
             }
             else
             {
-                m_CardDescriptionText.text = m_CardConfig.BaseInfo.Description;
+                m_CardDescriptionText.text = m_CardConfig.UpgradeDescription;
             }
             m_CardNameText.text = m_CardConfig.BaseInfo.Name;
             

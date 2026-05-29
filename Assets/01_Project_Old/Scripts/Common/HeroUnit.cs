@@ -51,6 +51,7 @@ namespace LegionKnight
         public void SetTrial(bool onTrial)
         {
             m_OnTrial = onTrial;
+            UnityService.Instance.SaveData(m_HeroConfig.BaseInfo.Id + "OnTrial", m_OnTrial);
         }
         public int GetMaxLevelByStar()
         {
@@ -295,6 +296,8 @@ namespace LegionKnight
                 m_Level = UnityService.Instance.GetData<int>(m_HeroConfig.BaseInfo.Id + "Lv");
             if (UnityService.Instance.HasData(m_HeroConfig.BaseInfo.Id + "Star"))
                 m_Star = UnityService.Instance.GetData<int>(m_HeroConfig.BaseInfo.Id + "Star");
+            if (UnityService.Instance.HasData(m_HeroConfig.BaseInfo.Id + "OnTrial"))
+                m_OnTrial = UnityService.Instance.GetData<bool>(m_HeroConfig.BaseInfo.Id + "OnTrial");
 
             if (m_HeroConfig.OwnedAtFirst)
                 SetOwned(true);
