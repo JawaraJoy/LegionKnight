@@ -104,7 +104,7 @@ namespace Rush
 
             foreach (var hit in hits)
             {
-                if (!hit.collider.TryGetComponent(out ITargetable target))
+                if (!hit.collider.TryGetComponent(out Damageable target))
                     continue;
 
                 if (!AbilityUltility.IsTargetAllowedByTargetObject(
@@ -112,11 +112,12 @@ namespace Rush
                     target))
                     continue;
 
-                target.Notify(m_AbilityContext);
-
+                target.TakeDamage(m_AbilityContext);
+                m_OnHit.Invoke(target.gameObject);
                 if (!m_BeamConfig.Piercing)
                     break;
             }
+            
         }
 
         protected override void DisableAmmo()
