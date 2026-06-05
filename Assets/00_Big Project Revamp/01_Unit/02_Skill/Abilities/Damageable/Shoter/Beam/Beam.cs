@@ -56,7 +56,8 @@ namespace Rush
             base.Shot(targetable);
 
             FaceTarget(targetable);
-
+            Transform parent = m_AbilityContext.AbilityDeliver.DeliverTransform;
+            transform.SetParent(parent);
             m_OnBeamStart?.Invoke();
             m_Line.enabled = true;
         }
@@ -199,6 +200,8 @@ namespace Rush
             m_Line.enabled = false;
 
             m_OnBeamEnd?.Invoke();
+            Transform parent = m_AbilityContext.AbilityDeliver.DeliverTransform;
+            transform.SetParent(parent);
             base.DisableAmmo();
         }
 

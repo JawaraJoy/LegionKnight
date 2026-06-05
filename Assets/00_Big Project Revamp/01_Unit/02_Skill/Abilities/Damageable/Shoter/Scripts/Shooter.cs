@@ -235,7 +235,7 @@ namespace Rush
         /// Ambil ammo dari pool dalam kondisi masih inactive.
         /// State reset dan transform placement dilakukan sebelum SetActive(true).
         /// </summary>
-        private Ammo GetFromPoolInactive()
+        protected virtual Ammo GetFromPoolInactive()
         {
             Ammo ammo = m_ProjectilePool.Count > 0
                 ? m_ProjectilePool.Dequeue()
