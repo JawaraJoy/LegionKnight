@@ -71,7 +71,6 @@ namespace Rush
         {
             if (collectibleConfig is HeroUnitConfig heroConfig)
             {
-                
                 bool owned = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig).Owned;
                 if (owned)
                 {

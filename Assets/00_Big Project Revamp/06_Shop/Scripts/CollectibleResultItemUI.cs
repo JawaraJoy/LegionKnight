@@ -44,7 +44,7 @@ namespace Rush
 
                 m_FlipCoroutine = StartCoroutine(FlipRoutine());
             }
-
+            CollectibleControl.AddCollectibleStatic(gameObject.name, entry.Collectible, entry.Amount);
             OnSetupComplete(entry.Collectible, entry.Amount);
         }
 

@@ -106,7 +106,7 @@ namespace Rush
 
                 result.AddEntry(item.Collect, item.Amount);
                 result.SetSpecialDrop(m_DrawResolver.LastDrawWasPity);
-                m_CollectibleControl?.AddCollectible(item.Collect, item.Amount);
+                //m_CollectibleControl.AddCollectible(item.Collect, item.Amount);
             }
             return result;
         }
