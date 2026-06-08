@@ -38,8 +38,8 @@ namespace Rush
                 m_HeroIcon = entry.Collectible.CollectibleField?.Icon;
                 m_HeroName = entry.Collectible.BaseInfo.Name;
                 m_HeroAmount = entry.Amount;
-                m_ConverterIcon = converter.ItemConfig?.CollectibleField?.Icon;
-                m_ConverterName = converter.ItemConfig?.BaseInfo.Name ?? "-";
+                m_ConverterIcon = converter.ItemConfig.CollectibleField?.Icon;
+                m_ConverterName = converter.ItemConfig.BaseInfo.Name ?? "-";
                 m_ConverterAmount = converter.Amount;
 
                 m_FlipCoroutine = StartCoroutine(FlipRoutine());

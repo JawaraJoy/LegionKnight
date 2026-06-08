@@ -37,11 +37,11 @@ namespace Rush
             bool isCardCollected = RushGameManager.Instance.RogueLikeManager.HasCollectedCard(m_CardConfig.BaseInfo.Id, out cardConfig);
             if (isCardCollected)
             {
-                m_CardDescriptionText.text = m_CardConfig.SimpleDescription;
+                m_CardDescriptionText.text = m_CardConfig.UpgradeDescription;
             }
             else
             {
-                m_CardDescriptionText.text = m_CardConfig.UpgradeDescription;
+                m_CardDescriptionText.text = m_CardConfig.SimpleDescription;
             }
             m_CardNameText.text = m_CardConfig.BaseInfo.Name;
             

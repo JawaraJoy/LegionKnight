@@ -67,11 +67,11 @@ namespace Rush
                 Player.Instance.CurrencyControl.AddCurrencyAmount(itemConfig, amount);
             }
         }
-
         private static void CharacterApplierInternal(CollectibleConfig collectibleConfig)
         {
             if (collectibleConfig is HeroUnitConfig heroConfig)
             {
+                
                 bool owned = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig).Owned;
                 if (owned)
                 {
