@@ -70,7 +70,7 @@ namespace Rush
 
             var entry = m_Config.Rewards[dayIndex];
 
-            m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
+            //m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
 
             var result = new CollectibleResultData();
             result.AddEntry(entry.Collectible, entry.Amount);
@@ -114,7 +114,7 @@ namespace Rush
             var entry = m_Config.Rewards[currentDay];
 
             // Give reward
-            m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
+            //m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
 
             var result = new CollectibleResultData();
             result.AddEntry(entry.Collectible, entry.Amount);

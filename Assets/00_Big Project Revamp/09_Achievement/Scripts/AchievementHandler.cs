@@ -56,7 +56,7 @@ namespace Rush
                 return;
             }
 
-            m_CollectibleControl?.AddCollectible(task.RewardCollectible, task.RewardAmount);
+            //m_CollectibleControl?.AddCollectible(task.RewardCollectible, task.RewardAmount);
             m_Tracker.SaveClaimed(task, true);
 
             var result = new CollectibleResultData();

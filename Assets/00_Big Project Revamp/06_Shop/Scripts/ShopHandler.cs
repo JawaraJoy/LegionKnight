@@ -96,7 +96,10 @@ namespace Rush
         {
             if (bundle.Entries == null) return;
             foreach (var entry in bundle.Entries)
-                m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
+            {
+                //m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
+            }
+               
         }
 
         private CollectibleResultData BuildResultInternal(ShopBundleConfig bundle)

@@ -191,7 +191,7 @@ namespace LegionKnight
             {
                 foreach (var entry in bundle.Entries)
                 {
-                    m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
+                    //m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
                     result.AddEntry(entry.Collectible, entry.Amount);
                 }
             }
@@ -200,7 +200,7 @@ namespace LegionKnight
             {
                 foreach (var entry in bundle.FirstPurchaseBonusEntries)
                 {
-                    m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
+                    //m_CollectibleControl?.AddCollectible(entry.Collectible, entry.Amount);
                     result.AddEntry(entry.Collectible, entry.Amount);
                 }
             }

@@ -100,8 +100,7 @@ namespace Rush
         private void RefreshPriceInternal(ShopBundleConfig bundle, ShopCostBreakdown breakdown)
         {
             bool isFree = breakdown.IsFree;
-            bool hasDiscount = !isFree
-                && breakdown.MainCurrencyAmount < breakdown.OriginalPrice;
+            bool hasDiscount = !isFree && breakdown.MainCurrencyAmount < breakdown.OriginalPrice;
 
             if (m_FreeLabel != null) m_FreeLabel.SetActive(isFree);
             if (m_PriceGroup != null) m_PriceGroup.SetActive(!isFree);
@@ -127,8 +126,7 @@ namespace Rush
 
                 if (m_DiscountPercentText != null && hasDiscount && breakdown.OriginalPrice > 0)
                 {
-                    float pct = (1f - (float)breakdown.MainCurrencyAmount
-                                 / breakdown.OriginalPrice) * 100f;
+                    float pct = (1f - (float)breakdown.MainCurrencyAmount / breakdown.OriginalPrice) * 100f;
                     m_DiscountPercentText.text = $"-{pct:F0}%";
                 }
             }
@@ -137,8 +135,7 @@ namespace Rush
                 m_FirstPurchaseBadge.SetActive(breakdown.IsFirstPurchaseDiscount);
 
             if (m_DailyBadge != null)
-                m_DailyBadge.SetActive(
-                    bundle.PurchaseLimit == ShopBundlePurchaseLimit.Daily);
+                m_DailyBadge.SetActive(bundle.PurchaseLimit == ShopBundlePurchaseLimit.Daily);
         }
 
         private void RefreshButtonInternal(ShopCostBreakdown breakdown,

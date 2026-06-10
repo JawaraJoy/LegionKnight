@@ -12,6 +12,7 @@ namespace Rush
         [Header("Visual")]
         [SerializeField] private Button m_Button;
         [SerializeField] private Image m_BundleImage;
+        [SerializeField] private TextMeshProUGUI m_AmountText;
 
         [Header("Price")]
         [SerializeField] private GameObject m_FreeLabel;
@@ -79,6 +80,15 @@ namespace Rush
 
             if (m_NameText != null) m_NameText.text = bundle.BaseInfo.Name;
             if (m_BundleImage != null) m_BundleImage.sprite = bundle.BundleSprite;
+            if (m_AmountText != null)
+            {
+                int total = 0;
+                foreach (ShopBundleEntry bundleEntry in bundle.Entries)
+                {
+                    total += bundleEntry.Amount;
+                }
+                m_AmountText.text = "x" + total.ToString();
+            }
 
             RefreshPriceInternal(bundle, breakdown);
             RefreshBadgesInternal(bundle, breakdown);
