@@ -25,6 +25,9 @@ namespace Rush
         public UnityEvent<int> OnExpFromHalvedScoreChanged => m_OnExpFromHalvedScoreChanged;
 
         private Currency m_ScoreCurrency;
+        public Currency ScoreCurrency => m_ScoreCurrency;
+        public int Score => m_Score;
+        public int ExpFromHalvedScore => m_ExpFromHalvedScore;
 
         private List<CurrentScoreView> m_CurrentScoreViews = new List<CurrentScoreView>();
 
@@ -50,17 +53,17 @@ namespace Rush
         {
             m_ExpFromHalvedScore = exp;
             m_OnExpFromHalvedScoreChanged?.Invoke(m_ExpFromHalvedScore);
+            Debug.Log(gameObject.name + m_ExpFromHalvedScore);
         }
         private void AddPlayerExpFromHalvedScoreInternal(int score)
         {
-            int halvedScore = Mathf.FloorToInt(m_Score / 2f);
-            int halvedScoreToAdd = Mathf.FloorToInt(score / 2f);
-            SetExpInternal(halvedScore);
+            int halvedScoreToAdd = Mathf.FloorToInt(score / 2f + 1);
+            SetExpInternal(m_ExpFromHalvedScore + halvedScoreToAdd);
             Player.Instance.AddPlayerExperience(halvedScoreToAdd);
         }
-        public void AddPlayerExpFromHalvedScore(int exp)
+        public void AddPlayerExpFromHalvedScore(int score)
         {
-            AddPlayerExpFromHalvedScoreInternal(exp);
+            AddPlayerExpFromHalvedScoreInternal(score);
         }
         private void AddScoreInternal(int score)
         {
@@ -98,6 +101,7 @@ namespace Rush
 
         private void SetHighScoreInternal(int score)
         {
+            SetExpInternal(score);
             m_Score = score;
             m_OnScoreChanged?.Invoke(m_Score);
         }

@@ -23,6 +23,10 @@ namespace LegionKnight
         private GameStateConfig m_GameStateConfig;
         [SerializeField]
         private GameStateConfig m_HomeStateConfig;
+        [SerializeField]
+        private PlayerExpView m_PlayerExpView;
+        [SerializeField]
+        private CurrentScoreView m_CurrentScoreView;
 
         [SerializeField]
         private LootMonitor m_LootMonitor;
@@ -41,11 +45,14 @@ namespace LegionKnight
         private void OnEnable()
         {
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            
         }
         private void OnDisable()
         {
             //UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
+
+
         private void ResetTimerInternal()
         {
             m_CurrentCountDownTime = m_CountDownDuration;
@@ -64,7 +71,20 @@ namespace LegionKnight
         {
             if (IsShowInternal) return;
             base.ShowInternal();
-
+            StageMode stageMode = RushGameManager.Instance.StageManager.UsedStageConfig.StageMode;
+            switch (stageMode)
+            {
+                case StageMode.Classic:
+                    m_PlayerExpView.Show();
+                    m_CurrentScoreView.Hide();
+                    break;
+                case StageMode.Adventure:
+                    break;
+                case StageMode.Collosal:
+                    m_PlayerExpView.Show();
+                    m_CurrentScoreView.Show();
+                    break;
+            }
             m_LootMonitor.Show();
 
             ResetTimerInternal(); // <-- tambahin ini
@@ -81,7 +101,7 @@ namespace LegionKnight
             }
             else
             {
-                UnityService.Instance.ShowInterstitialAd();
+                //UnityService.Instance.ShowInterstitialAd();
             }
         }
         private void TryPlayAgain()
