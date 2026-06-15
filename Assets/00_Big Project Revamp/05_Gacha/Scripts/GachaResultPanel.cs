@@ -4,6 +4,20 @@ namespace Rush
     // Override IsSpecialEntryInternal untuk cek apakah entry berasal dari guarantee array
     public class GachaResultPanel : CollectibleResultPanel
     {
+        private void Awake()
+        {
+            m_OnResultDone.AddListener(() => SetActiveCloseButton(true));
+        }
+
+        protected override void ShowInternal()
+        {
+            base.ShowInternal();
+            SetActiveCloseButton(false);
+        }
+        private void SetActiveCloseButton(bool act)
+        {
+            m_CloseButton.interactable = act;
+        }
         protected override bool IsSpecialEntryInternal(CollectibleResultEntry entry)
         {
             var banner = RushPlayer.Instance.GachaManager.ActiveBanner;

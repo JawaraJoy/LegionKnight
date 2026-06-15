@@ -13,17 +13,17 @@ namespace Rush
         [Header("Events")]
         // true = showing hero, false = showing converter
         [SerializeField] private UnityEvent<bool> m_OnFlip;
+        
 
         private Coroutine m_FlipCoroutine;
 
         // Cached data for flip
-        private UnityEngine.Sprite m_HeroIcon;
+        private Sprite m_HeroIcon;
         private string m_HeroName;
         private int m_HeroAmount;
-        private UnityEngine.Sprite m_ConverterIcon;
+        private Sprite m_ConverterIcon;
         private string m_ConverterName;
         private int m_ConverterAmount;
-
         private void OnDisable() => StopFlipInternal();
 
         public void Setup(CollectibleResultEntry entry)

@@ -1,15 +1,16 @@
-using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using LegionKnight;
+using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Rush
 {
     public class CollectibleResultPanel : PanelView
     {
         [SerializeField] private CollectibleResultItemPool m_ItemPool;
-        [SerializeField] private Button m_CloseButton;
+        [SerializeField] protected Button m_CloseButton;
         [SerializeField] private TextMeshProUGUI m_SpecialDropNoticeText;
 
         [Header("Spawn Sequence")]
@@ -22,6 +23,10 @@ namespace Rush
         [SerializeField] private AudioClip m_SpecialSpawnSfx;
 
         private Coroutine m_SpawnCoroutine;
+
+        [SerializeField]
+        protected UnityEvent m_OnResultDone;
+        public UnityEvent OnResultDone => m_OnResultDone;
 
         protected override void ShowInternal()
         {
@@ -69,6 +74,8 @@ namespace Rush
             }
 
             m_SpawnCoroutine = null;
+            yield return new WaitForSeconds(1f);
+            m_OnResultDone?.Invoke();
         }
 
         private void SpawnEntryInternal(CollectibleResultEntry entry)

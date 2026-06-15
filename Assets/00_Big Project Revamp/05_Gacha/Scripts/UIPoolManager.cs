@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Rush
 {
@@ -13,6 +14,9 @@ namespace Rush
 
         private readonly Queue<T> m_Pool = new();
         private readonly List<T> m_Active = new();
+
+        [SerializeField]
+        private UnityEvent m_OnResultDone;
 
         public IReadOnlyList<T> Active => m_Active;
 
