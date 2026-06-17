@@ -32,7 +32,7 @@ namespace Rush
 
             skill.OnCastingFailEvent.AddListener(() => EndCastingInternal(skill));
             skill.OnCastingSuccessEvent.AddListener(() => EndCastingInternal(skill));
-            bool canInterupt = skill.SkillConfig.Casting.MaxInterruptCount > 0;
+            bool canInterupt = skill.SkillConfig.Casting.MaxInteruptResist > 0;
             if (canInterupt)
             {
                 m_InteruptSliderview.StartInterupt(skill);

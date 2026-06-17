@@ -47,12 +47,12 @@ namespace Rush
         [SerializeField]
         private float m_CastDuration;
         [SerializeField]
-        private int m_MaxInteruptCount;
+        private float m_MaxInteruptResist; // untuk menentukan jumlah maxinteruptdamage taken, formula maxhealth * this resist
         [SerializeField]
         private bool m_CooldownOnCastFail;
 
         public float CastDuration => m_CastDuration;
-        public int MaxInterruptCount => m_MaxInteruptCount;
+        public float MaxInteruptResist => m_MaxInteruptResist;
         public bool CooldownOnCastFail => m_CooldownOnCastFail;
     }
 }

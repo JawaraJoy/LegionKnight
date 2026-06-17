@@ -102,13 +102,13 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private float m_RemainingCastTime;
         [SerializeField, MMReadOnly]
-        private int m_CurrentInterruptCount;
+        private int m_CurrentInterruptDamage;
         [SerializeField, MMReadOnly]
-        private int m_MaxInterruptCount;
+        private int m_MaxInterruptDamage;
 
         public float RemainingCastTime => m_RemainingCastTime;
-        public int CurrentInterruptCount => m_CurrentInterruptCount;
-        public int MaxInterruptCount => m_MaxInterruptCount;
+        public int CurrentInterruptCount => m_CurrentInterruptDamage;
+        public int MaxInterruptCount => m_MaxInterruptDamage;
 
         public UnityEvent<Skill> OnTryActivate => m_OnTryActivate;
         public UnityEvent<Skill> OnActivate => m_OnActivates;
@@ -287,8 +287,16 @@ namespace Rush
             ChangeState(SkillActivationState.Casting);
 
             m_RemainingCastTime = m_SkillConfig.Casting.CastDuration;
-            m_CurrentInterruptCount = 0;
-            m_MaxInterruptCount = m_SkillConfig.Casting.MaxInterruptCount;
+            m_CurrentInterruptDamage = 0;
+
+            Unit unit = m_SkillContext.ModuleContext.Unit;
+            if (unit.HasBind(out Damageable damageable))
+            {
+                int finalHealth = damageable.MaxHealth;
+                float rate = m_SkillConfig.Casting.MaxInteruptResist;
+                m_MaxInterruptDamage = Mathf.RoundToInt(finalHealth * rate);
+            }
+            
 
             m_OnCastingStart?.Invoke();
         }
@@ -308,13 +316,11 @@ namespace Rush
             if (m_State != SkillActivationState.Casting)
                 return;
 
-            m_CurrentInterruptCount += amount;
+            m_CurrentInterruptDamage += amount;
 
-            m_OnCastingInterruptUpdate?.Invoke(
-                m_CurrentInterruptCount,
-                m_MaxInterruptCount);
+            m_OnCastingInterruptUpdate?.Invoke(m_CurrentInterruptDamage, m_MaxInterruptDamage);
 
-            if (m_CurrentInterruptCount >= m_MaxInterruptCount)
+            if (m_CurrentInterruptDamage >= m_MaxInterruptDamage)
             {
                 FailCasting();
             }
@@ -345,8 +351,8 @@ namespace Rush
         private void ResetCastingData()
         {
             m_RemainingCastTime = 0f;
-            m_CurrentInterruptCount = 0;
-            m_MaxInterruptCount = 0;
+            m_CurrentInterruptDamage = 0;
+            m_MaxInterruptDamage = 0;
         }
 
         #endregion

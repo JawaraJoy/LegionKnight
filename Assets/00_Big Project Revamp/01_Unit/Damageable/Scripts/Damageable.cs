@@ -362,7 +362,8 @@ namespace Rush
                 {
                     if (damageConfig is DamageAbilityConfig damageAbility)
                     {
-                        hasSkill.TakeInteruptDamage(damageAbility.InteruptDamage);
+                        //hasSkill.TakeInteruptDamage(damageAbility.InteruptDamage);
+                        hasSkill.TakeInteruptDamage(finalAmount);
                     }
                 }
             }
