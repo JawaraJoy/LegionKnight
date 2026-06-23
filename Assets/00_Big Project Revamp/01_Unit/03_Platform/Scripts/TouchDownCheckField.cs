@@ -21,6 +21,8 @@ namespace Rush
         private UnityEvent<int> m_OnStayPerfectCountChange;
         public bool IsStayPerfect => m_IsStayPerfect;
         public int StayPerfectCount => m_StayPerfectCount;
+        public UnityEvent<ISkillContext> OnNormalTouchDown => m_OnNormalTouchDown;
+        public UnityEvent<ISkillContext> OnPerfectTouchDown => m_OnPerfectTouchDown;
         private void SetIsStayPerfectInternal(bool value, ISkillContext context)
         {
             m_IsStayPerfect = value;

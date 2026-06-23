@@ -12,6 +12,9 @@ namespace Rush
         private DirectDamageAbilityConfig m_DamageOnStackAddedToInfected;
         [SerializeField]
         private DirectDamageAbilityConfig m_DamageOnDoneToInfected;
+
+        [SerializeField]
+        private SkillConfig m_OnEffectDoneActivateSkillTarget;
         public override void OnEffectStarted(StatusEffectContext context)
         {
             
@@ -63,7 +66,22 @@ namespace Rush
         public override void OnEffectEnded(StatusEffectContext context)
         {
             if (m_DamageOnDoneToInfected != null)
+            {
                 TakeBleedDamage(context, m_DamageOnDoneToInfected);
+                
+                Unit target = context.Infected;
+                if (target.HasBind(out SkillController controller))
+                {
+                    if (m_OnEffectDoneActivateSkillTarget != null)
+                    {
+                        controller.ForceActive(m_OnEffectDoneActivateSkillTarget);
+                    }
+                    
+                }
+            }
+               
+                
+          
         }
 
         public override void OnStackAdded(StatusEffectContext context)

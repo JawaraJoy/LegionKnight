@@ -16,9 +16,24 @@ namespace Rush
         public void Init(Unit unit)
         {
             m_ModuleContext = new ModuleContext(unit, gameObject);
+
+            if (unit.Config is BossUnitConfig)
+            {
+                PlatformHandler handler = RushGameManager.Instance.StageManager.PlatformHandler;
+                handler.TouchDownCheckField.OnNormalTouchDown.RemoveListener((skill) => AddChargeToSummonInternal(1));
+                handler.TouchDownCheckField.OnPerfectTouchDown.RemoveListener((skill) => AddChargeToSummonInternal(1));
+
+                handler.TouchDownCheckField.OnNormalTouchDown.AddListener((skill) => AddChargeToSummonInternal(10));
+                handler.TouchDownCheckField.OnPerfectTouchDown.AddListener((skill) => AddChargeToSummonInternal(10));
+            }
         }
 
         public void AddChargeToSummon(int chargeAmount)
+        {
+            AddChargeToSummonInternal(chargeAmount);
+        }
+
+        private void AddChargeToSummonInternal(int chargeAmount)
         {
             foreach (var summon in m_Summoners)
             {
