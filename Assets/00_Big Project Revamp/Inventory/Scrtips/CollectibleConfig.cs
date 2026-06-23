@@ -8,12 +8,25 @@ namespace Rush
     public abstract partial class CollectibleConfig : Configuration
     {
         [SerializeField]
-        private CollectibleField m_CollectibleField;
+        protected CollectibleField m_CollectibleField;
+        [SerializeField]
+        private Currency m_SellConfig;
         public CollectibleField CollectibleField => m_CollectibleField;
 
         public void OnCollect(string source, int amount)
         {
             TenjinManager.Instance.SendEvent("Collected",$"{m_BaseInfo.Id}x{amount} from {source}");
+        }
+        public Currency GetSellValue(int amount)
+        {
+            float rarityRate = m_CollectibleField.RarityConfig.ValueRate;
+            int sellValue = m_SellConfig.Amount;
+
+            int totaValue = Mathf.RoundToInt(sellValue * rarityRate);
+            totaValue *= amount;
+
+            Currency finalSellValue = new Currency(m_SellConfig.ItemConfig, totaValue);
+            return finalSellValue;
         }
     }
 }

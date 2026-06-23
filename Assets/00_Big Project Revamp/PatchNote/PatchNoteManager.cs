@@ -1,3 +1,4 @@
+using LegionKnight.Prototype;
 using UnityEngine;
 
 namespace Rush
@@ -5,8 +6,8 @@ namespace Rush
     public partial class PatchNoteManager : MonoBehaviour
     {
         [SerializeField]
-        private PatchNoteConfig m_CurrentPatchNote;
-        public PatchNoteConfig CurrentPatchNote => m_CurrentPatchNote;
+        private MailDefinition m_CurrentPatchNote;
+        public MailDefinition CurrentPatchNote => m_CurrentPatchNote;
     }
 }
 

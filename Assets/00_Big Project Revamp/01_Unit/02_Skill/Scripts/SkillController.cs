@@ -1,6 +1,7 @@
 ﻿using MoreMountains.Tools;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,6 +23,8 @@ namespace Rush
         private CategorySkillController[] m_CategorySkillControllers;
 
         [Header("Casting Global Events")]
+        [SerializeField]
+        private UnityEvent<int> m_OnCharge;
         [SerializeField] 
         private UnityEvent<Skill> m_OnAnyCastingStart;
         [SerializeField] 
@@ -45,6 +48,7 @@ namespace Rush
         private UnityEvent<Skill> m_OnSkillRemoved;
         [SerializeField]
         private UnityEvent m_OnResetProgress;
+        public UnityEvent<int> OnCharge => m_OnCharge;
 
         private readonly Dictionary<Skill, UnityAction> m_StartListeners = new();
         private readonly Dictionary<Skill, UnityAction<float>> m_UpdateListeners = new();
@@ -362,6 +366,7 @@ namespace Rush
             {
                 AddChargeInternal(config, chargeAmount);
             }
+            m_OnCharge?.Invoke(chargeAmount);
         }
         private void AddChargeInternal(SkillConfig skillConfig, int chargeAmount)
         {

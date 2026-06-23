@@ -9,7 +9,10 @@ namespace Rush
         private Color m_Color = Color.white;
         public Color Color => m_Color;
         [SerializeField]
-        private int m_SacrificeCost = 0;
-        public int SacrificeCost => m_SacrificeCost;
+        private float m_ValueRate = 1;
+        [SerializeField]
+        private int m_Value = 0;
+        public int Value => m_Value;
+        public float ValueRate => m_ValueRate;
     }
 }

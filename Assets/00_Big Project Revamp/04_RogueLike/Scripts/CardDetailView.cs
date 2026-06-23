@@ -17,7 +17,11 @@ namespace LegionKnight
         [SerializeField] private TextMeshProUGUI m_CardDescriptionText;
         [SerializeField] private Image m_CardIcon;
         [SerializeField] private Button m_AddOrRemoveToDeckButton;
+        
         [SerializeField] private TextMeshProUGUI m_AddOrRemoveText;
+
+        [SerializeField]
+        private Button m_SellButton;
 
         private CardUnit m_SelectedCard;
         private CardDetailMode m_Mode = CardDetailMode.Normal;
@@ -27,8 +31,19 @@ namespace LegionKnight
             Player.Instance.PlayerCardDeck.OnSelectedCard.AddListener(OnCardSelected);
             Player.Instance.PlayerCardDeck.OnUsedCardsChanged.AddListener(_ => RefreshButtonState());
             m_AddOrRemoveToDeckButton.onClick.AddListener(OnAddOrRemoveClicked);
+
+            m_SellButton.onClick.AddListener(OpenSell);
         }
 
+        private void SellCard(int remove)
+        {
+            Player.Instance.PlayerCardDeck.AddCardAmount(m_SelectedCard.CardConfig, -remove);
+        }
+        private void OpenSell()
+        {
+            SellPanel sellPanel = CanvasManager.Instance.GetPanel<SellPanel>();
+            sellPanel.OpenSell(m_SelectedCard.CardConfig, m_SelectedCard.Amount, SellCard);
+        }
         // ── Show normal mode (dari CardSelectView / CardSlotView) ─────────────
         private void OnCardSelected(CardUnit cardUnit)
         {
@@ -52,7 +67,9 @@ namespace LegionKnight
             m_CardDescriptionText.text = cardUnit.CardConfig.BaseInfo.Description;
 
             // Sembunyikan button di read-only mode
+
             m_AddOrRemoveToDeckButton.gameObject.SetActive(mode == CardDetailMode.Normal);
+            m_SellButton.gameObject.SetActive(mode == CardDetailMode.Normal);
 
             if (mode == CardDetailMode.Normal)
                 RefreshButtonState();
@@ -67,8 +84,7 @@ namespace LegionKnight
             if (m_Mode == CardDetailMode.ReadOnly) return;
 
             bool isAdded = m_SelectedCard.IsAdded;
-            bool isFull = Player.Instance.PlayerCardDeck.GetUsedCards().Count
-                           >= Player.Instance.PlayerCardDeck.GetMaxUsedCardCount();
+            bool isFull = Player.Instance.PlayerCardDeck.GetUsedCards().Count >= Player.Instance.PlayerCardDeck.GetMaxUsedCardCount();
             bool isOwned = m_SelectedCard.IsOwned;
 
             m_AddOrRemoveText.text = isAdded ? "Remove" : "Add";

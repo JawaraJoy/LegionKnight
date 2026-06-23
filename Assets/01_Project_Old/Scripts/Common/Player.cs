@@ -5,6 +5,9 @@ using UnityEngine.Events;
 
 namespace LegionKnight
 {
+    // use rushplayer in the future
+    // migrate all fields, and related component to Rushplayer, then delete this after all finished
+    [System.Obsolete("Use RushPlayer in the Future")]
     public partial class Player : Singleton<Player>
     {
         [SerializeField, MMReadOnly]

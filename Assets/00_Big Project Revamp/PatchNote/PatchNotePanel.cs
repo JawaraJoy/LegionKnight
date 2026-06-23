@@ -1,4 +1,5 @@
 using LegionKnight;
+using LegionKnight.Prototype;
 using TMPro;
 using UnityEngine;
 namespace Rush
@@ -10,9 +11,9 @@ namespace Rush
         [SerializeField]
         private TextMeshProUGUI m_DescriptionPatchText;
 
-        private PatchNoteConfig m_CurrentPatchNote;
+        private MailDefinition m_CurrentPatchNote;
 
-        private PatchNoteConfig CurrentPatchNoteInternal
+        private MailDefinition CurrentPatchNoteInternal
         {
             get
             {
@@ -23,10 +24,10 @@ namespace Rush
                 return m_CurrentPatchNote;
             }
         }
-        private void ShowPatchNoteInternal(PatchNoteConfig patchNote)
+        private void ShowPatchNoteInternal(MailDefinition patchNote)
         {
-            m_TitlePatchText.text = patchNote.BaseInfo.Name;
-            m_DescriptionPatchText.text = patchNote.BaseInfo.Description;
+            m_TitlePatchText.text = patchNote.Label;
+            m_DescriptionPatchText.text = patchNote.Description;
         }
         protected override void ShowInternal()
         {

@@ -21,6 +21,8 @@ namespace Rush
         private Currency m_GetCurrency;
         [SerializeField]
         private int m_GetAetherEssence;
+
+        
         public string SimpleDescription => m_SimpleDescription;
         public string UpgradeDescription => m_UpgradeDescription;
 

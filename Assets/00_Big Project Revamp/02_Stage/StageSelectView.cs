@@ -101,12 +101,9 @@ namespace LegionKnight
             }
 
             // Ada energy cost → cek apakah player mampu
-            bool canAfford = Player.Instance.EnergyController
-                .GetEnergy(m_StageConfig.EnergyConfig)
-                ?.CanPay(m_StageConfig.EnergyAmountToPay) ?? false;
+            bool canAfford = Player.Instance.EnergyController.GetEnergy(m_StageConfig.EnergyConfig)?.CanPay(m_StageConfig.EnergyAmountToPay) ?? false;
 
-            EnergyConfirmationPanel panel = CanvasManager.Instance
-                .GetPanel<EnergyConfirmationPanel>();
+            EnergyConfirmationPanel panel = CanvasManager.Instance.GetPanel<EnergyConfirmationPanel>();
 
             if (panel == null)
             {
@@ -133,8 +130,7 @@ namespace LegionKnight
             else
             {
                 // Tidak cukup → hitung kekurangan lalu tampilkan warning
-                Energy currentEnergy = Player.Instance.EnergyController
-                    .GetEnergy(m_StageConfig.EnergyConfig);
+                Energy currentEnergy = Player.Instance.EnergyController.GetEnergy(m_StageConfig.EnergyConfig);
 
                 int missing = m_StageConfig.EnergyAmountToPay - (currentEnergy?.Amount ?? 0);
 
