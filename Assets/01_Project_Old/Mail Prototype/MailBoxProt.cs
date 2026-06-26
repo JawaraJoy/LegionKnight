@@ -167,7 +167,13 @@ namespace LegionKnight.Prototype
         }
         public void TryToRedeem(string code, UnityAction<MailField> onSuccess, UnityAction<MailField> onFail)
         {
-            bool codeIsEqual = code == GetReedemCode();
+            bool hasSpecific = m_Definition.ForSpecificPlayer;
+            string finalCode = code;
+            if (hasSpecific)
+            {
+                finalCode = $"{code}{UnityService.Instance.PlayerId}";
+            }
+            bool codeIsEqual = finalCode == GetReedemCode();
             if (codeIsEqual)
             {
                 onSuccess.Invoke(this);
