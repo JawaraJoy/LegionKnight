@@ -17,7 +17,9 @@ namespace Rush
         private const string c_Review = "reviewed";
 
         private ReviewPanel m_Panel;
-
+        [SerializeField]
+        private Currency m_Reward;
+        public Currency Reward => m_Reward;
         private ReviewPanel Panel
         {
             get
@@ -25,14 +27,11 @@ namespace Rush
                 if (m_Panel == null)
                 {
                     m_Panel =
-                        CanvasManager.Instance
-                        .GetPanel<ReviewPanel>();
+                        CanvasManager.Instance.GetPanel<ReviewPanel>();
                 }
-
                 return m_Panel;
             }
         }
-
         public void Init()
         {
             bool hasReview =
@@ -75,6 +74,10 @@ namespace Rush
             };
 
             m_ReviewService.SubmitReview(request);
+
+            string json = JsonUtility.ToJson(request);
+
+            Debug.Log($"Review JSON: {json}");
         }
 
         public void OnReviewSubmitted(ReviewResponse response)
@@ -82,11 +85,23 @@ namespace Rush
             m_IsReviewed = true;
 
             UnityService.Instance.SaveData(c_Review, true);
+            CollectibleResultData collectibleResultData = new CollectibleResultData();
+            collectibleResultData.AddEntry(m_Reward.ItemConfig, m_Reward.Amount);
+
+
+            ShopResultPanel resultPanel = CanvasManager.Instance.GetPanel<ShopResultPanel>();
+            resultPanel.Show(collectibleResultData);
+            CollectibleControl.AddCollectibleStatic("Review", m_Reward.ItemConfig, m_Reward.Amount);
+            CanvasManager.Instance.GetPanel<TextPopUpPanel>().ShowText($"Review was sent");
+
+            m_Panel.Hide();
         }
 
         public void OnReviewRejected(string reason)
         {
             Debug.Log($"Review rejected : {reason}");
+
+            CanvasManager.Instance.GetPanel<TextPopUpPanel>().ShowText(reason);
         }
     }
 
@@ -95,8 +110,7 @@ namespace Rush
         [SerializeField]
         private ReviewManager m_ReviewManager;
 
-        public ReviewManager ReviewManager
-            => m_ReviewManager;
+        public ReviewManager ReviewManager => m_ReviewManager;
     }
 
 }

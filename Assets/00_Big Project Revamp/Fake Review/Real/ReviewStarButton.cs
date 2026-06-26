@@ -37,9 +37,7 @@ namespace Rush
                 m_Panel.Stars[i].SetActive(true);
             }
 
-            RushGameManager.Instance
-                .ReviewManager
-                .SetStar(m_StarValue);
+            RushGameManager.Instance.ReviewManager.SetStar(m_StarValue);
 
             m_Panel.SetSubmitButton(true);
         }
