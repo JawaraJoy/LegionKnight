@@ -1,4 +1,3 @@
-using LegionKnight;
 using UnityEngine;
 
 namespace Rush
@@ -8,7 +7,8 @@ namespace Rush
         [SerializeField]
         private FirestoreReviewApi m_Api;
 
-        public void SubmitReview(ReviewRequest request)
+        public void SubmitReview(
+            ReviewRequest request)
         {
             if (!ReviewValidator.Validate(
                 request,
@@ -23,20 +23,24 @@ namespace Rush
 
             m_Api.SubmitReview(
                 request,
-                OnReviewResponse);
+                OnReviewSubmitted);
         }
 
-        public void OnReviewApproved()
+        private void OnReviewSubmitted(
+            ReviewResponse response)
         {
-            m_IsReviewed = true;
-
-            UnityService.Instance.SaveData(
-                c_Review,
-                true);
-
-            CurrencyManager.Instance.AddCurrency(
-                CurrencyType.Diamond,
-                200);
+            if (response.Success)
+            {
+                RushGameManager.Instance
+                    .ReviewManager
+                    .OnReviewSubmitted(response);
+            }
+            else
+            {
+                RushGameManager.Instance
+                    .ReviewManager
+                    .OnReviewRejected(response.Message);
+            }
         }
     }
 }

@@ -77,13 +77,11 @@ namespace Rush
             m_ReviewService.SubmitReview(request);
         }
 
-        public void OnReviewApproved()
+        public void OnReviewSubmitted(ReviewResponse response)
         {
             m_IsReviewed = true;
 
             UnityService.Instance.SaveData(c_Review, true);
-
-            //CurrencyManager.Instance.AddCurrency(CurrencyType.Diamond,200);
         }
 
         public void OnReviewRejected(string reason)
