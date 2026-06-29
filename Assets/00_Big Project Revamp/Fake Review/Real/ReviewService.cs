@@ -1,3 +1,4 @@
+using LegionKnight;
 using UnityEngine;
 
 namespace Rush
@@ -7,39 +8,27 @@ namespace Rush
         [SerializeField]
         private GoogleSheetReviewApi m_Api;
 
-        public void SubmitReview(
-            ReviewRequest request)
+        public void SubmitReview(ReviewRequest request)
         {
-            if (!ReviewValidator.Validate(
-                request,
-                out string error))
+            if (!ReviewValidator.Validate(request, out string error))
             {
-                RushGameManager.Instance
-                    .ReviewManager
-                    .OnReviewRejected(error);
-
+                RushGameManager.Instance.ReviewManager.OnReviewRejected(error);
                 return;
             }
 
             if (m_Api == null)
             {
-                RushGameManager.Instance
-                    .ReviewManager
-                    .OnReviewRejected(
-                        "Review API is not assigned.");
+                RushGameManager.Instance.ReviewManager.OnReviewRejected("Review API is not assigned.");
 
                 return;
             }
 
-            m_Api.SubmitReview(
-                request,
-                OnReviewSubmitted);
+            m_Api.SubmitReview(request,OnReviewSubmitted);
         }
 
         private void OnReviewSubmitted(ReviewResponse response)
         {
-            Debug.Log(
-                $"Review Response | Success:{response.Success} | Message:{response.Message}");
+            Debug.Log($"Review Response | Success:{response.Success} | Message:{response.Message}");
 
             if (response.Success)
             {
@@ -49,6 +38,7 @@ namespace Rush
             {
                 RushGameManager.Instance.ReviewManager.OnReviewRejected(response.Message);
             }
+            CanvasManager.Instance.GetPanel<ReviewPanel>().SetSubmitButton(true);
         }
     }
 }

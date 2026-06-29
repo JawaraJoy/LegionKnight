@@ -50,12 +50,17 @@ namespace Rush
 
         public void SetSubmitButton(bool active)
         {
+            SetSubmitButtonInternal(active);
+        }
+        private void SetSubmitButtonInternal(bool active)
+        {
             m_SubmitButton.interactable = active;
         }
 
         private void SubmitReview()
         {
             RushGameManager.Instance.ReviewManager.SubmitReview(m_ReviewInput.text);
+            SetSubmitButtonInternal(false);
         }
     }
 }
