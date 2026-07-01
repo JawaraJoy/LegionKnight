@@ -1,3 +1,4 @@
+using LegionKnight;
 using MoreMountains.Tools;
 using TMPro;
 using UnityEngine;
@@ -21,15 +22,32 @@ namespace Rush
         [SerializeField]
         private UnityEvent<SkillConfig> m_OnDetailView;
 
-        [SerializeField]
-        private HeroSkillDescription m_HeroSkillDescription;
+        [SerializeField, MMReadOnly]
+        private SkillDescriptionPanel m_HeroSkillDescription;
+
+        public SkillDescriptionPanel HeroSkillDescription
+        {
+            get
+            {
+                if (m_HeroSkillDescription == null)
+                {
+                    m_HeroSkillDescription = CanvasManager.Instance.GetPanel<SkillDescriptionPanel>();  
+                }
+                return m_HeroSkillDescription;
+            }
+        }
         private void InitInternal(UnitConfig unitConfig)
         {
             m_UnitConfig = unitConfig;
             SkillConfig[] skillConfigs = unitConfig.GetSkillsByCategory(m_SkillCategoryConfig);
-            if (skillConfigs.Length >= 0)
+            if (skillConfigs.Length > 0)
             {
                 SkillConfig skillConfig = skillConfigs[0];
+                if (skillConfig == null)
+                {
+                    Debug.LogError($"SkillConfig is null for unit {unitConfig.name} and category {m_SkillCategoryConfig.name}");
+                    return;
+                }
                 m_Icon.sprite = skillConfig.CollectibleField.Icon;
                 m_Button.onClick.RemoveAllListeners();
                 m_Button.onClick.AddListener(() => DetailView(skillConfig));
@@ -43,7 +61,7 @@ namespace Rush
 
         private void DetailView(SkillConfig skillConfig)
         {
-            m_HeroSkillDescription.ShowDetail(skillConfig);
+            HeroSkillDescription.ShowDetail(skillConfig);
             m_OnDetailView.Invoke(skillConfig);
         }
     }

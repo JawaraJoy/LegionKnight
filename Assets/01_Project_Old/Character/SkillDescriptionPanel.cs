@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Rush
 {
-    public class HeroSkillDescription : UIView
+    public class SkillDescriptionPanel : PanelView
     {
         [SerializeField]
         private Image m_SkillIcon;
