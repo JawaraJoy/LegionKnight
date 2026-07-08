@@ -48,7 +48,6 @@ namespace Rush
         public UnityEvent<int, int> OnCurrentThresholdRateChanged => m_OnCurrentThresholdRateChanged;
         public UnityEvent<Sprite> OnWaveIconChanged => m_OnWaveIconChanged;
         public EnemyWaveSpawnPost EnemyWavePost => m_EnemyWavePost;
-        public Unit BossUnitExisten => m_BossUnitExisten;
         [SerializeField]
         private UnityEvent<int> m_OnWaveLevelChanged;
         private void AddWaveLevelInternal(int amount)
@@ -232,8 +231,6 @@ namespace Rush
             if (bossUnit.Config is BossUnitConfig)
             {
                 m_BossUnitExisten = bossUnit;
-                GameplayPanel gameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
-                gameplayPanel.ShowBossDetailContent(true);
                 m_OnBossSpawn?.Invoke(bossUnit);
                 AddWaveLevelInternal(1);
             }
@@ -244,8 +241,7 @@ namespace Rush
             if (bossUnit.Config is BossUnitConfig)
             {
                 m_BossUnitExisten = null;
-                GameplayPanel gameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
-                gameplayPanel.ShowBossDetailContent(false);
+
                 m_OnWaveSetCleared?.Invoke(m_CurrentEnemyWave);
                 m_OnBossDespawn?.Invoke(bossUnit);
             }

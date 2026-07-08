@@ -59,7 +59,6 @@ namespace LegionKnight
         [ContextMenu("Hide")]
         protected virtual void HideInternal()
         {
-            if (!m_Content) return;
             m_Content.SetActive(false);
             OnHideInvoke();
         }
