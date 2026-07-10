@@ -42,6 +42,8 @@ namespace Rush
         private Sprite m_CurrentWaveIcon;
         private int m_CurrentMaxThreshold;
 
+        public Unit BossUnitExisten => m_BossUnitExisten;
+
         [SerializeField, MMReadOnly]
         private int m_WaveLevel = 1;
         public Sprite CurrentWaveIcon => m_CurrentWaveIcon;
@@ -231,6 +233,8 @@ namespace Rush
             if (bossUnit.Config is BossUnitConfig)
             {
                 m_BossUnitExisten = bossUnit;
+                GameplayPanel gameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
+                gameplayPanel.ShowBossDetailContent(true);
                 m_OnBossSpawn?.Invoke(bossUnit);
                 AddWaveLevelInternal(1);
             }
@@ -241,7 +245,8 @@ namespace Rush
             if (bossUnit.Config is BossUnitConfig)
             {
                 m_BossUnitExisten = null;
-
+                GameplayPanel gameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
+                gameplayPanel.ShowBossDetailContent(false);
                 m_OnWaveSetCleared?.Invoke(m_CurrentEnemyWave);
                 m_OnBossDespawn?.Invoke(bossUnit);
             }

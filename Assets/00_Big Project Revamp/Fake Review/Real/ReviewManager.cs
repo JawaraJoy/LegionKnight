@@ -34,13 +34,11 @@ namespace Rush
         }
         public void Init()
         {
-            bool hasReview =
-                UnityService.Instance.HasData(c_Review);
+            bool hasReview = UnityService.Instance.HasData(c_Review);
 
             if (hasReview)
             {
-                m_IsReviewed =
-                    UnityService.Instance.GetData<bool>(c_Review);
+                m_IsReviewed = UnityService.Instance.GetData<bool>(c_Review);
             }
         }
 
@@ -102,6 +100,7 @@ namespace Rush
             Debug.Log($"Review rejected : {reason}");
 
             CanvasManager.Instance.GetPanel<TextPopUpPanel>().ShowText(reason);
+            CanvasManager.Instance.GetPanel<ReviewPanel>().SetSubmitButton(true);
         }
     }
 

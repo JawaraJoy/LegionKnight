@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Rush
 {
-    public class AbilityView : MonoBehaviour
+    public class AbilityView : UIView
     {
         [SerializeField]
         private SkillCategoryConfig m_SkillCategoryConfig;
@@ -23,20 +23,20 @@ namespace Rush
         private UnityEvent<SkillConfig> m_OnDetailView;
 
         [SerializeField, MMReadOnly]
-        private SkillDescriptionPanel m_HeroSkillDescription;
+        private SkillDescriptionPanel m_SkillDescription;
 
-        public SkillDescriptionPanel HeroSkillDescription
+        public SkillDescriptionPanel SkillDescription
         {
             get
             {
-                if (m_HeroSkillDescription == null)
+                if (m_SkillDescription == null)
                 {
-                    m_HeroSkillDescription = CanvasManager.Instance.GetPanel<SkillDescriptionPanel>();  
+                    m_SkillDescription = CanvasManager.Instance.GetPanel<SkillDescriptionPanel>();  
                 }
-                return m_HeroSkillDescription;
+                return m_SkillDescription;
             }
         }
-        private void InitInternal(UnitConfig unitConfig)
+        private void InitByCategory(UnitConfig unitConfig)
         {
             m_UnitConfig = unitConfig;
             SkillConfig[] skillConfigs = unitConfig.GetSkillsByCategory(m_SkillCategoryConfig);
@@ -52,16 +52,29 @@ namespace Rush
                 m_Button.onClick.RemoveAllListeners();
                 m_Button.onClick.AddListener(() => DetailView(skillConfig));
             }
+            else
+            {
+                HideInternal();
+            }
             
+        }
+        private void InitInternal(SkillConfig skill)
+        {
+            m_Icon.sprite = skill.CollectibleField.Icon;
+            m_Button.onClick.RemoveAllListeners();
+            m_Button.onClick.AddListener(() => DetailView(skill));
         }
         public void Init(UnitConfig unitConfig)
         {
-            InitInternal(unitConfig);
+            InitByCategory(unitConfig);
         }
-
+        public void Init(SkillConfig skill)
+        {
+            InitInternal(skill);
+        }
         private void DetailView(SkillConfig skillConfig)
         {
-            HeroSkillDescription.ShowDetail(skillConfig);
+            SkillDescription.ShowDetail(skillConfig);
             m_OnDetailView.Invoke(skillConfig);
         }
     }
