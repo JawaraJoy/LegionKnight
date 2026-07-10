@@ -277,9 +277,7 @@ namespace LegionKnight
             m_Cache.Clear();
 
             string indexJson = PlayerPrefs.GetString(m_KeyPrefix + "__index__", "");
-            var index = string.IsNullOrEmpty(indexJson)
-                ? new StringSet()
-                : JsonUtility.FromJson<StringSet>(indexJson);
+            var index = string.IsNullOrEmpty(indexJson)? new StringSet() : JsonUtility.FromJson<StringSet>(indexJson);
 
             if (index.keys == null)
                 index.keys = new List<string>();
