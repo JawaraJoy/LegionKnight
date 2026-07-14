@@ -23,25 +23,10 @@ namespace LegionKnight
         private GameStateConfig m_GameStateConfig;
         [SerializeField]
         private GameStateConfig m_HomeStateConfig;
-        [SerializeField]
-        private PlayerExpView m_PlayerExpView;
-        [SerializeField]
-        private CurrentScoreView m_CurrentScoreView;
-
-        [SerializeField]
-        private LootMonitor m_LootMonitor;
-        [SerializeField]
-        private PreviousEnergyCost m_PreviousEnergyCost;
 
         private float m_CurrentCountDownTime;
         public bool IsActive => IsShowInternal;
 
-        private void Awake()
-        {
-            m_RebornAdsButton.onClick.AddListener(ShowRebornAds);
-            m_PlayAgainButton.onClick.AddListener(TryPlayAgain);
-            m_HomeButton.onClick.AddListener(BackHome);
-        }
         private void OnEnable()
         {
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
@@ -71,21 +56,6 @@ namespace LegionKnight
         {
             if (IsShowInternal) return;
             base.ShowInternal();
-            StageMode stageMode = RushGameManager.Instance.StageManager.UsedStageConfig.StageMode;
-            switch (stageMode)
-            {
-                case StageMode.Classic:
-                    m_PlayerExpView.Show();
-                    m_CurrentScoreView.Hide();
-                    break;
-                case StageMode.Adventure:
-                    break;
-                case StageMode.Collosal:
-                    m_PlayerExpView.Show();
-                    m_CurrentScoreView.Show();
-                    break;
-            }
-            m_LootMonitor.Show();
 
             ResetTimerInternal(); // <-- tambahin ini
             RebornButtonStateCheck();
@@ -104,18 +74,10 @@ namespace LegionKnight
                 //UnityService.Instance.ShowInterstitialAd();
             }
         }
-        private void TryPlayAgain()
-        {
-            m_PreviousEnergyCost.TryPay();
-        }
         private void BackHome()
         {
             RushGameManager.Instance.GameStateManager.ChangeState(m_HomeStateConfig);
             HideInternal();
-        }
-        private void ShowRebornAds()
-        {
-            UnityService.Instance.ShowRewardedAd(RebornAds);
         }
         private void RebornAds()
         {

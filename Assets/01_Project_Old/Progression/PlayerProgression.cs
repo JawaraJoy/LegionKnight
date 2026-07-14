@@ -28,6 +28,7 @@ namespace LegionKnight
         }
         public void AddPlayerExperience(int exp)
         {
+            if (m_PlayerProgression == null) return;
             m_PlayerProgression.AddExperience(exp);
         }
         public void AddExperienceSlowly(int exp, float growSpeed = 50f)

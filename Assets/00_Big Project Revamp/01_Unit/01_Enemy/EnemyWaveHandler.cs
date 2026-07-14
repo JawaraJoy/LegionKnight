@@ -216,7 +216,6 @@ namespace Rush
                 return;
             }
             RushGameManager.Instance.RogueLikeManager.AddForPlayerExperience(enemyCfg.ExpReward);
-            RushPlayer.Instance.PlayerScore.AddScore(enemyCfg.ScoreReward);
             unit.gameObject.SetActive(false);
             unit.transform.SetParent(m_EnemyWavePost.PostToSpawn, false);
 
@@ -233,8 +232,6 @@ namespace Rush
             if (bossUnit.Config is BossUnitConfig)
             {
                 m_BossUnitExisten = bossUnit;
-                GameplayPanel gameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
-                gameplayPanel.ShowBossDetailContent(true);
                 m_OnBossSpawn?.Invoke(bossUnit);
                 AddWaveLevelInternal(1);
             }
@@ -245,8 +242,6 @@ namespace Rush
             if (bossUnit.Config is BossUnitConfig)
             {
                 m_BossUnitExisten = null;
-                GameplayPanel gameplayPanel = CanvasManager.Instance.GetPanel<GameplayPanel>();
-                gameplayPanel.ShowBossDetailContent(false);
                 m_OnWaveSetCleared?.Invoke(m_CurrentEnemyWave);
                 m_OnBossDespawn?.Invoke(bossUnit);
             }

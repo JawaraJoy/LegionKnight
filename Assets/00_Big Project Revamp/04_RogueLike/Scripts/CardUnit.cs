@@ -34,23 +34,16 @@ namespace Rush
         public void AddAmount(int add)
         {
             m_Amount += add;
-            UnityService.Instance.SaveData(AmountKey, m_Amount);
             m_IsOwned = m_Amount > 0;
         }
 
         public void SetIsAdded(bool set)
         {
             m_IsAdded = set;
-            UnityService.Instance.SaveData(UsedKey, m_IsAdded);
         }
 
         public void Init()
         {
-            if (UnityService.Instance.HasData(AmountKey))
-                m_Amount = UnityService.Instance.GetData<int>(AmountKey);
-
-            if (UnityService.Instance.HasData(UsedKey))
-                m_IsAdded = UnityService.Instance.GetData<bool>(UsedKey);
 
             m_IsOwned = m_Amount > 0;
         }

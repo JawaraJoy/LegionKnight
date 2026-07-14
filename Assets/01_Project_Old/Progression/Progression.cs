@@ -57,23 +57,7 @@ namespace LegionKnight
         }
         private void InitInternal()
         {
-            if (UnityService.Instance.HasData(m_CurrentLevelKey))
-            {
-                m_Level = UnityService.Instance.GetData<int>(m_CurrentLevelKey);
-            }
-            else
-            {
-                m_Level = 1;
-            }
-            if (UnityService.Instance.HasData(m_CurrentExperienceKey))
-            {
-                m_CurrentExp = UnityService.Instance.GetData<int>(m_CurrentExperienceKey);
-            }
-            else
-            {
-                m_CurrentExp = 0;
-            }
-            CanvasManager.Instance.InitLevelView();
+
         }
         public void Init()
         {
@@ -94,16 +78,6 @@ namespace LegionKnight
             SetLevelUpTriggeredInternal(true);
 
             GetCurrentOnLevelUpEnter()?.Invoke();
-
-            DateTime levelupDate = DateTime.Now;
-            Dictionary<string, string> eventValues = new Dictionary<string, string>
-            {
-                {"playerid", UnityService.Instance.PlayerId},
-                {"tolevel", m_Level.ToString()},
-                {"levelupdate", levelupDate.ToString()},
-            };
-            AppsFlyer.sendEvent(AFEventName.OnPlayerLevelUp, eventValues);
-            GetCurrentExpTable(m_Level - 1)?.RewardLevelReached.DirectTakeLoots();
         }
         public void AddOnCurrentExpChange(UnityAction<int> action)
         {
@@ -125,7 +99,6 @@ namespace LegionKnight
         private void OnCurrentExoRateChangeInvoke(float val)
         {
             m_OnCurrentExpRateChange?.Invoke(val);
-            CanvasManager.Instance.InitLevelView();
         }
         public void AddOnLevelUp(UnityAction<int> action)
         {
@@ -138,7 +111,6 @@ namespace LegionKnight
         private void OnCurrentExpChangeInvoke()
         {
             m_OnCurrentExpChange?.Invoke(m_CurrentExp);
-            CanvasManager.Instance.InitLevelView();
         }
 
 #if UNITY_EDITOR
@@ -169,7 +141,6 @@ namespace LegionKnight
             {
                 LevelUp();
             }
-            UnityService.Instance.SaveData(m_CurrentExperienceKey, m_CurrentExp);
             OnCurrentExpChangeInvoke();
             Debug.Log($"Current Exp: {m_CurrentExp}, Level: {m_Level}");
         }
@@ -180,8 +151,6 @@ namespace LegionKnight
             {
                 m_CurrentExp -= GetCurrentMaxExperience();
                 m_Level++;
-                
-                UnityService.Instance.SaveData(m_CurrentLevelKey, m_Level);
                 OnLevelUpInvoke();
             }
             else
@@ -231,7 +200,7 @@ namespace LegionKnight
             int exp = m_FirstLevelExp;
             for (int i = 0; i < m_MaxLevel; i++)
             {
-                ExpTable expTable = new(exp, null);
+                ExpTable expTable = new(exp);
                 m_ExpTable.Add(expTable);
                 exp = Mathf.FloorToInt(exp * m_ExponentialGrowth);
             }
@@ -244,7 +213,7 @@ namespace LegionKnight
             {
                 int currentLevel = i + 1;
                 exp = Mathf.RoundToInt(10 * currentLevel * currentLevel + 490);
-                ExpTable expTable = new(exp, null);
+                ExpTable expTable = new(exp);
                 m_ExpTable.Add(expTable);
             }
         }
@@ -277,8 +246,6 @@ namespace LegionKnight
 
                 m_CurrentExp += addThisFrame;
                 expToAdd -= addThisFrame;
-
-                UnityService.Instance.SaveData(m_CurrentExperienceKey, m_CurrentExp);
                 OnCurrentExpChangeInvoke();
                 OnCurrentExoRateChangeInvoke(GetLevelProgressionRateInternal());
 

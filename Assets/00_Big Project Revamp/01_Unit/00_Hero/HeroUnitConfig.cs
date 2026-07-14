@@ -14,10 +14,6 @@ namespace Rush
         [SerializeField]
         private LevelFormulaConfig m_LevelFormulaConfig;
         [SerializeField]
-        private BreakThroughFormulaConfig m_BreakThroughFormulaConfig;
-        [SerializeField]
-        private Currency m_ItemDuplicateConverter;
-        [SerializeField]
         private DeckConfig m_HeroDeckConfig;
         [SerializeField]
         private bool m_UseAsDefault = false;
@@ -30,7 +26,5 @@ namespace Rush
         public bool OwnedAtFirst => m_OwnedAtFirst;
         public DeckConfig HeroDeckConfig => m_HeroDeckConfig;
         public LevelFormulaConfig LevelFormulaConfig => m_LevelFormulaConfig;
-        public BreakThroughFormulaConfig BreakThroughFormulaConfig => m_BreakThroughFormulaConfig;
-        public Currency ItemDuplicateConverter => m_ItemDuplicateConverter;
     }
 }

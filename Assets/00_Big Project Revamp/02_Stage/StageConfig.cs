@@ -12,8 +12,6 @@ namespace Rush
         [SerializeField]
         private StageState m_StartingStageState = StageState.Locked;
         [SerializeField]
-        private EnergyConfig m_EnergyConfig;
-        [SerializeField]
         private int m_EnergyAmountToPay;
         [SerializeField]
         private Sprite m_SplashImage;
@@ -29,7 +27,6 @@ namespace Rush
         public StageState StartingStageState => m_StartingStageState;  
         public EnemyWaveConfig[] EnemyWaveConfigs => m_EnemyWaveConfigs;
         public PlatformHandlerConfig PlatformHandlerConfig => m_PlatformHandlerConfig;
-        public EnergyConfig EnergyConfig => m_EnergyConfig;
         public int EnergyAmountToPay => m_EnergyAmountToPay;
 
         private DateTime m_PlayStartTime;
@@ -54,8 +51,6 @@ namespace Rush
             float duration = (float)durationSpan.TotalSeconds;
 
             string game = gameover ? "GameOver" : "Slay the Boss";
-
-            TenjinManager.Instance.SendEvent($"{game} in {duration:F2}s");
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Rush
         private int m_ForPlayerCurrentLevel = 1;
         [SerializeField, MMReadOnly]
         private int m_ForPlayerCurrentExperience;
-        [SerializeField, MMReadOnly]
+        [SerializeField]
         private HeroUnitConfig m_CurrentHero;
         [SerializeField, MMReadOnly]
         private List<CardConfig> m_CustomCards = new();

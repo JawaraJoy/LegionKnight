@@ -9,16 +9,12 @@ namespace LegionKnight
         [SerializeField]
         private int m_CurrentMaxExp;
         [SerializeField]
-        private LootChestDefinition m_RewardLevelReached;
-        [SerializeField]
         private UnityEvent m_OnLevelUpEnter;
         public int CurrentMaxExp => m_CurrentMaxExp;
-        public LootChestDefinition RewardLevelReached => m_RewardLevelReached;
         public UnityEvent OnLevelUpEnter => m_OnLevelUpEnter;
-        public ExpTable(int currentMaxExp, LootChestDefinition rewardLevelReached)
+        public ExpTable(int currentMaxExp)
         {
             m_CurrentMaxExp = currentMaxExp;
-            m_RewardLevelReached = rewardLevelReached;
         }
 
         public void TakeLoots()

@@ -21,22 +21,12 @@ namespace Rush
         }
         public void Init()
         {
-            bool hasStateData = UnityService.Instance.HasData(StateKey);
-            if (hasStateData)
-            {
-                StageState loadState = UnityService.Instance.GetData<StageState>(StateKey);
-                SetStageStateInternal(loadState);
-            }
-            else
-            {
-                SetStageStateInternal(m_StageConfig.StartingStageState);
-            }
+            SetStageStateInternal(m_StageConfig.StartingStageState);
         }
 
         private void SetStageStateInternal(StageState state)
         {
             m_StageState = state;
-            UnityService.Instance.SaveData(StateKey, state);
         }
         public void SetStageState(StageState state)
         {

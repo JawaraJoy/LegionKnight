@@ -59,7 +59,7 @@ namespace Rush
         public UnityEvent OnCastingSuccessEvent => m_OnCastingSuccess;
         public UnityEvent OnCastingFailEvent => m_OnCastingFail;
 
-        public bool IsActive => !CardPanel.IsShown || !PausePanel.IsShown;
+        public bool IsActive => !CardPanel.IsShown;
 
         private RogueLikeCardPanel m_CardPanel;
         private RogueLikeCardPanel CardPanel
@@ -71,18 +71,6 @@ namespace Rush
                     m_CardPanel = CanvasManager.Instance.GetPanel<RogueLikeCardPanel>();
                 }
                 return m_CardPanel;
-            }
-        }
-        private PausePanel m_PausePanel;
-        private PausePanel PausePanel
-        {
-            get
-            {
-                if (m_PausePanel == null)
-                {
-                    m_PausePanel = CanvasManager.Instance.GetPanel<PausePanel>();
-                }
-                return m_PausePanel;
             }
         }
 
@@ -131,17 +119,6 @@ namespace Rush
             return HasAbilityInternal(id, out abilityDeliver);
         }
 
-        #region Unity Lifecycle
-
-        private void Start()
-        {
-            CardPanel.OnShow.AddListener(UnregisterCasting);
-            CardPanel.OnHide.AddListener(RegisterCasting);
-
-            PausePanel.OnShow.AddListener(UnregisterCasting);
-            PausePanel.OnHide.AddListener(RegisterCasting);
-        }
-
         private void RegisterCasting()
         {
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
@@ -150,8 +127,6 @@ namespace Rush
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
-
-        #endregion
 
         #region Init
 

@@ -16,6 +16,8 @@ namespace LegionKnight
         [SerializeField]
         private CardUnit m_SelectedCard;
         [SerializeField]
+        private HeroUnitConfig m_UsedHero;
+        [SerializeField]
         private List<CardUnit> m_CardCollections = new();
 
         [SerializeField] private UnityEvent m_OnInitialized = new();
@@ -29,8 +31,7 @@ namespace LegionKnight
         {
             get
             {
-                HeroUnitConfig usedHero = Player.Instance.HeroesCollection.UsedHero;
-                return usedHero.HeroDeckConfig;
+                return m_UsedHero.HeroDeckConfig;
             }
         }
         public DeckConfig UsedHeroDeck => UsedHeroDeckInternal;
@@ -58,18 +59,6 @@ namespace LegionKnight
         {
             var card = GetCardOwnedInternal(cardConfig);
             return card != null && card.IsOwned;
-        }
-
-        // ── PreparationPanel lazy ref ─────────────────────────────────────────
-        private PreparationPanel m_PreparationPanel;
-        private PreparationPanel PreparationPanel
-        {
-            get
-            {
-                if (m_PreparationPanel == null)
-                    m_PreparationPanel = CanvasManager.Instance.GetPanel<PreparationPanel>();
-                return m_PreparationPanel;
-            }
         }
 
         // ── Equip state ───────────────────────────────────────────────────────
@@ -204,13 +193,9 @@ namespace LegionKnight
                     
                     RushGameManager.Instance.RogueLikeManager.AddCustomCard(unit.CardConfig);
                 }
-
-                PreparationPanel.CardTabView.SpawnCardSelect(unit);
                 
                 m_OnInitializedUnit?.Invoke(unit);
             }
-            PreparationPanel.CardTabView.CardDeckSlotBarView.Init();
-            PreparationPanel.CardTabView.DefaultCardDeckView.Init();
         }
 
         // ── Events ────────────────────────────────────────────────────────────

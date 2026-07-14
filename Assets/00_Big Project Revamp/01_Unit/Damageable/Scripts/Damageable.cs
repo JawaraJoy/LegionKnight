@@ -394,23 +394,9 @@ namespace Rush
                 // just for test, will be replaced with revive item or something like that
                 //UnityService.Instance.ShowRewardedAd(() => InvisibleForWhileInternal(5));
             }
-            unitTaker.Config.OnDeath(unitKiller.Config.BaseInfo.Id);
-
             m_DeathTriggered = true;
         }
 
-        private void CheckIfHeroIsTrial()
-        {
-            HeroUnitConfig usedHeroConfig = Player.Instance.HeroesCollection.UsedHero;
-            HeroUnit usedHeroUnit = Player.Instance.HeroesCollection.GetHeroUnit(usedHeroConfig);
-            if (usedHeroUnit.OnTrial)
-            {
-                usedHeroUnit.SetTrial(false);
-                HeroUnitConfig defaultHero = Player.Instance.HeroesCollection.DefaultHero;
-                Player.Instance.HeroesCollection.SetSelectedHero(defaultHero);
-                Player.Instance.HeroesCollection.SetUsedHero();
-            }
-        }
         protected virtual void SetCurrentDamageTakeInternal(int damage)
         {
             m_CurrentDamageTaken = damage;

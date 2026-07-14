@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,8 +9,9 @@ namespace Rush
         [SerializeField]
         private UnityEvent m_OnStart;
 
-        private void Start()
+        IEnumerator Start()
         {
+            yield return new WaitForSeconds(1f);
             m_OnStart?.Invoke();
         }
     }

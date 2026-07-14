@@ -24,8 +24,6 @@ namespace LegionKnight
         [SerializeField]
         private UnityEvent<string> m_OnNameChanged = new();
 
-        private PlayerInfoPanel m_CustomProfilePanel;
-
         private string PlayerNameKey => "playerName";
 
         private string PlayerDefaultName
@@ -38,14 +36,6 @@ namespace LegionKnight
             }
         }
         private int RandomTagNumber => 1000000;
-        private PlayerInfoPanel GetProfileInfoPanel()
-        {
-            if (m_CustomProfilePanel == null)
-            {
-                m_CustomProfilePanel = CanvasManager.Instance.GetPanel<PlayerInfoPanel>();
-            }
-            return m_CustomProfilePanel;
-        }
         public void SetCanUseResurrectionAds(bool set)
         {
             m_CanUseResurrectionAds = set;
@@ -57,16 +47,7 @@ namespace LegionKnight
         }
         private void OnInitInvoke()
         {
-            m_OnStart?.Invoke();
-            bool hasEditedName = UnityService.Instance.HasData(PlayerNameKey);
-            string getName = PlayerDefaultName;
-            if (hasEditedName)
-            {
-                getName = UnityService.Instance.GetData<string>(PlayerNameKey);
-            }
-            SetPlayerNameInternal(getName);
-            Debug.Log($"Player name: {m_PlayerName}");
-            CanvasManager.Instance.SetPlayerNameView(m_PlayerName);
+
         }
         public void SetPlayerName(string playerName)
         {
@@ -78,8 +59,6 @@ namespace LegionKnight
         {
             m_PlayerName = playerName;
             m_OnNameChanged?.Invoke(m_PlayerName);
-            UnityService.Instance.SaveData(PlayerNameKey, m_PlayerName);
-            GetProfileInfoPanel().GetBinding<LevelView>().SetNameText(m_PlayerName);
             SetPlayerNameAsync(m_PlayerName);
         }
 

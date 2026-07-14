@@ -42,7 +42,7 @@ namespace Rush
 
         public void WatchAds()
         {
-            UnityService.Instance.ShowRewardedAd(RefreshCardsInternal);
+            RefreshCardsInternal();
         }
         public void RefreshCards()
         {

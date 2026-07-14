@@ -18,8 +18,6 @@ namespace Rush
         [SerializeField]
         private PlatformConfig[] m_PlatformToAdds;
         [SerializeField]
-        private Currency m_GetCurrency;
-        [SerializeField]
         private int m_GetAetherEssence;
 
         
@@ -75,11 +73,6 @@ namespace Rush
             }
             RogueLikeManager manager = RushGameManager.Instance.RogueLikeManager;
             manager.OnCardCollected?.Invoke(this);
-
-            if (m_GetCurrency.ItemConfig != null && m_GetCurrency.Amount > 0)
-            {
-                Player.Instance.CurrencyControl.AddCurrencyAmount(m_GetCurrency.ItemConfig, m_GetCurrency.Amount);
-            }
         }
     }
 }

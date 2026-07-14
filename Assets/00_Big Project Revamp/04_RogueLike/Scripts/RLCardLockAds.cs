@@ -20,7 +20,7 @@ namespace Rush
         }
         private void WatchAds()
         {
-            UnityService.Instance.ShowRewardedAd(OnAdWatched);
+            OnAdWatched();
         }
 
         private void OnAdWatched()
