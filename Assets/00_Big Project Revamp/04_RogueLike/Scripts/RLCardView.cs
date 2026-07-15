@@ -1,6 +1,5 @@
 using UnityEngine;
 using LegionKnight;
-using MoreMountains.Tools;
 using TMPro;
 using UnityEngine.UI;
 
@@ -8,7 +7,6 @@ namespace Rush
 {
     public class RLCardView : UIView
     {
-        [SerializeField, MMReadOnly]
         private CardConfig m_CardConfig;
 
         [SerializeField]

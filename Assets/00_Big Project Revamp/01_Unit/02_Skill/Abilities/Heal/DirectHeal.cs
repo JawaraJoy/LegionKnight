@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,14 +11,10 @@ namespace Rush
         private Healer m_HealerPrefab;
         public Healer HealerPrefab => m_HealerPrefab;
 
-        [SerializeField, MMReadOnly]
         private List<Healer> m_ActiveHealer = new();
         public List<Healer> ActiveHealer => m_ActiveHealer;
-
-        [SerializeField, MMReadOnly]
         private Queue<Healer> m_HealerPool = new();
 
-        [SerializeField, MMReadOnly]
         private DirectHealAbilityConfig m_HealConfig;
         public DirectHealAbilityConfig HealConfig => m_HealConfig;
 

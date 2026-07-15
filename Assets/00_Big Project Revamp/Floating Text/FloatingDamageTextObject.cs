@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using TMPro;
 using UnityEngine;
 
@@ -15,8 +15,6 @@ namespace Rush
         private Vector3 m_BaseScale;
 
         public bool IsActive => gameObject.activeInHierarchy;
-
-        [SerializeField, MMReadOnly]
         private PhysicsMode m_PhysicMode = PhysicsMode.Physics2D;
 
         private void Start()

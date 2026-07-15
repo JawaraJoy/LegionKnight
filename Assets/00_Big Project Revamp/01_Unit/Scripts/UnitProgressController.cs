@@ -1,11 +1,10 @@
-using MoreMountains.Tools;
+
 using UnityEngine;
 
 namespace Rush
 {
     public class UnitProgressController : MonoBehaviour, IUnitExtension
     {
-        [SerializeField, MMReadOnly]
         private ModuleContext m_ModuleContext;
         public IModuleContext ModuleContext => m_ModuleContext;
         public void Init(Unit unit)

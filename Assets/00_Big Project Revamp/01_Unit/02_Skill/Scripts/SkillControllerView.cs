@@ -1,6 +1,5 @@
 using UnityEngine;
 using LegionKnight;
-using MoreMountains.Tools;
 using System.Collections.Generic;
 
 namespace Rush
@@ -15,7 +14,6 @@ namespace Rush
         private SkillView m_SkillViewPrefab;
 
         private CategorySkillController m_SkillController;
-        [SerializeField, MMReadOnly]
         private List<SkillView> m_SpawnedSkillViews = new List<SkillView>();    
 
         public virtual void AddSkillView(Skill skill)

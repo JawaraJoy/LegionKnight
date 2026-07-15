@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using UnityEngine;
 
 namespace Rush
@@ -6,9 +6,7 @@ namespace Rush
     [System.Serializable]
     public partial class ModuleContext : IModuleContext
     {
-        [SerializeField, MMReadOnly]
         private Unit m_Unit;
-        [SerializeField, MMReadOnly]
         private GameObject m_Module;
         public GameObject Module => m_Module;
         public Unit Unit => m_Unit;

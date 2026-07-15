@@ -1,3 +1,4 @@
+using LegionKnight;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,8 +12,11 @@ namespace Rush
 
         IEnumerator Start()
         {
+            CanvasManager.Instance.GetPanel<NewGameplayPanel>().Hide();
+            Application.targetFrameRate = 60;
             yield return new WaitForSeconds(1f);
             m_OnStart?.Invoke();
+            CanvasManager.Instance.GetPanel<NewGameplayPanel>().Show();
         }
     }
 }

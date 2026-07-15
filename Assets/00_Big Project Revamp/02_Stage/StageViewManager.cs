@@ -1,13 +1,11 @@
 
 using UnityEngine;
 using Rush;
-using MoreMountains.Tools;
 
 namespace LegionKnight
 {
     public class StageViewManager : MonoBehaviour
     {
-        [SerializeField, MMReadOnly]
         private StageView m_StageView;
 
         public void Initialize(StageConfig stageConfig)

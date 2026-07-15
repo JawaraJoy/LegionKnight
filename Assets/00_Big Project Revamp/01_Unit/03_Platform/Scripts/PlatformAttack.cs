@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,7 +9,6 @@ namespace Rush
     {
         [SerializeField]
         private Platform2D m_MainPlatform;
-        [SerializeField, MMReadOnly]
         private AttackerField m_AttackerField;
 
         private AbilityContext m_AbilityContext;

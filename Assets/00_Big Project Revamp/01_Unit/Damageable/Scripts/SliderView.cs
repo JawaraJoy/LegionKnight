@@ -2,7 +2,6 @@ using UnityEngine;
 using LegionKnight;
 using UnityEngine.UI;
 using TMPro;
-using MoreMountains.Tools;
 
 namespace Rush
 {
@@ -13,7 +12,6 @@ namespace Rush
         [SerializeField]
         protected TextMeshProUGUI m_ValueText;
 
-        [SerializeField, MMReadOnly]
         protected float m_Rate;
 
         protected float m_CurrentDuration = -1f;

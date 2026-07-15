@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,7 +7,6 @@ namespace Rush
 {
     public class GameStateHandler : MonoBehaviour
     {
-        [SerializeField, MMReadOnly]
         private GameStateField m_CurrentState;
         [SerializeField]
         private GameStateField[] m_StateFields;

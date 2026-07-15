@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,13 +10,10 @@ namespace LegionKnight
     [System.Obsolete("Use RushPlayer in the Future")]
     public partial class Player : Singleton<Player>
     {
-        [SerializeField, MMReadOnly]
         private string m_PlayerName;
 
         [SerializeField]
         private UnityEvent m_OnStart = new();
-
-        [SerializeField, MMReadOnly]
         private bool m_CanUseResurrectionAds = true;
         public bool CanUseResurrectionAds => m_CanUseResurrectionAds;
         public string PlayerName => m_PlayerName;

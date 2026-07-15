@@ -1,7 +1,4 @@
-using AppsFlyerSDK;
-using MoreMountains.Tools;
-using NaughtyAttributes;
-using System;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,8 +41,6 @@ namespace LegionKnight
         private UnityEvent<int> m_OnLevelUp = new ();
         [SerializeField]
         private UnityEvent<ExpTable> m_OnLevelUpExpTable = new ();
-
-        [SerializeField, MMReadOnly]
         private bool m_LevelUpTriggered = false;
 
         public bool LevelUpTrigerred => m_LevelUpTriggered;

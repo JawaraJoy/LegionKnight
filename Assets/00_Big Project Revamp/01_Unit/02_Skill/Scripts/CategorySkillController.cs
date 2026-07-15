@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
@@ -18,7 +18,6 @@ namespace Rush
 
         private int m_QueueIndex;
 
-        [SerializeField, MMReadOnly]
         private List<Skill> m_Skills = new();
         [SerializeField]
         private UnityEvent<int> m_OnQueueChanged;

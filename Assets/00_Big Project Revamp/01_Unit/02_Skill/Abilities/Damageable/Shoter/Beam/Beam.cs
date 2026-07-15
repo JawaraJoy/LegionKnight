@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,10 +7,8 @@ namespace Rush
     [RequireComponent(typeof(LineRenderer))]
     public class Beam : Ammo
     {
-        [SerializeField, MMReadOnly]
         private LineRenderer m_Line;
 
-        [SerializeField, MMReadOnly]
         private BeamConfig m_BeamConfig;
         [SerializeField]
         private UnityEvent m_OnBeamStart;

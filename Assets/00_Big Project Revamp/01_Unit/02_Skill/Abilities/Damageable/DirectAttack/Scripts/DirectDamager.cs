@@ -1,4 +1,3 @@
-using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,13 +9,12 @@ namespace Rush
         [SerializeField]
         private Attacker m_AttackerPrefab;
         public Attacker AttackerPrefab => m_AttackerPrefab;
-        [SerializeField, MMReadOnly, Tooltip("List of currently active projectiles in the scene.")]
+        
         private List<Attacker> m_ActiveAttacker = new();
         public List<Attacker> ActiveAttacker => m_ActiveAttacker;
 
-        [SerializeField, MMReadOnly, Tooltip("Queue of inactive projectiles ready to be reused.")]
         private Queue<Attacker> m_AttackerPool = new();
-        [SerializeField, MMReadOnly, Tooltip("Cached shot ability configuration used by this shooter.")]
+        
         private DirectDamageAbilityConfig m_DirectDamageAbilityConfig;
 
         public override void Init(AbilityConfig config, ISkillContext context)

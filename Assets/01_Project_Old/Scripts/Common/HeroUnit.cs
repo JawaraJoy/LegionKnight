@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using Rush;
-using MoreMountains.Tools;
 
 namespace LegionKnight
 {
@@ -16,7 +15,6 @@ namespace LegionKnight
         private int m_Exp;
 
         [SerializeField] private bool m_IsUsed = false;
-        [SerializeField, MMReadOnly]
         private bool m_OnTrial = false;
         public bool OnTrial => m_OnTrial;
 

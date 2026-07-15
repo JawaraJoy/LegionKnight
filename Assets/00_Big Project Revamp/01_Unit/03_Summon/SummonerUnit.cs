@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -6,10 +6,7 @@ namespace Rush
 {
     public class SummonerUnit : Unit, IUpdater
     {
-
-        [SerializeField, MMReadOnly]
         private Summoner m_Summoner;
-        [SerializeField, MMReadOnly]
         private float m_RemainingLifeTime = 1.0f;
         public bool IsActive => gameObject.activeSelf;
         public Summoner Summoner => m_Summoner;

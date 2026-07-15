@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,9 +6,7 @@ namespace Rush
 {
     public partial class PlatformController : MonoBehaviour, IUnitExtension, IHasSkills, IReseter
     {
-        [SerializeField, MMReadOnly]
         private List<PlatformConfig> m_PlatformConfigs = new();
-        [SerializeField, MMReadOnly]
         private ModuleContext m_ModuleContext;
 
         public List<PlatformConfig> PlatformConfigs => m_PlatformConfigs;

@@ -1,5 +1,4 @@
 ﻿using LegionKnight;
-using MoreMountains.Tools;
 using Spine;
 using Spine.Unity;
 using System.Collections;
@@ -11,7 +10,6 @@ namespace Rush
 {
     public class AvatarSpine : View, IUnitExtension, IAvatarSpine
     {
-        [SerializeField, MMReadOnly]
         private SkeletonDataAsset m_SkeletonDataAsset;
 
         [SerializeField]

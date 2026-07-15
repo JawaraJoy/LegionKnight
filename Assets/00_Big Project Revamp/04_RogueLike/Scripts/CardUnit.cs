@@ -1,5 +1,4 @@
 using LegionKnight;
-using MoreMountains.Tools;
 using UnityEngine;
 
 namespace Rush
@@ -7,9 +6,7 @@ namespace Rush
     [System.Serializable]
     public partial class CardUnit
     {
-        [SerializeField, MMReadOnly]
         private bool m_IsOwned;
-        [SerializeField, MMReadOnly]
         private bool m_IsAdded;
         [SerializeField]
         private int m_Amount;

@@ -1,6 +1,5 @@
 ﻿
 using LegionKnight;
-using MoreMountains.Tools;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,7 +11,6 @@ namespace Rush
         [SerializeField]
         private bool m_IsTargeted;
 
-        [SerializeField, MMReadOnly]
         private int m_RemainingReborn;
 
         [SerializeField]
@@ -28,9 +26,7 @@ namespace Rush
         [SerializeField]
         private float m_DamageReductionRate;
 
-        [SerializeField, MMReadOnly]
         private int m_CurrentDamageTaken;
-        [SerializeField, MMReadOnly]
         private int m_TotalDamageTaken;
         [SerializeField]
         private bool m_IsImmortal = false;

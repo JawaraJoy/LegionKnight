@@ -1,11 +1,9 @@
-using MoreMountains.Tools;
 using UnityEngine;
 
 namespace Rush
 {
     public class PlayerTouchDown : MonoBehaviour
     {
-        [SerializeField, MMReadOnly]
         private PlatformSkillField m_PlatformSkillField;
         public void ForceSkillActivate(bool isPerfect, ISkillContext context)
         {

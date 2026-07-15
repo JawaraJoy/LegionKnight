@@ -1,11 +1,10 @@
-using MoreMountains.Tools;
+
 using UnityEngine;
 
 namespace Rush
 {
     public partial class StatModifierDeliver : AbilityDeliver, IStatModifierDeliver
     {
-        [SerializeField, MMReadOnly]
         private StatModifierConfig m_InfluencerConfig;
         public StatModifierConfig ModifierConfig
         {

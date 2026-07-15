@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,7 +9,6 @@ namespace Rush
     {
         [SerializeField]
         protected AbilityConfig m_AbilityConfig;
-        [SerializeField, MMReadOnly]
         protected AbilityContext m_AbilityContext;
         [SerializeField]
         protected Transform m_DeliverTransform;
@@ -20,10 +19,7 @@ namespace Rush
         public AbilityConfig AbilityConfig => m_AbilityConfig;
         public IAbilityContext AbilityContext => m_AbilityContext;
         public Transform DeliverTransform => m_DeliverTransform;
-
-        [SerializeField, MMReadOnly]
         private List<StatusEffectConfig> m_CustomStatusEffectOnDelivered;
-        [SerializeField, MMReadOnly]
         private List<StatusEffectConfig> m_CustomStatusEffectOnSelf;
         public List<StatusEffectConfig> GetStatusEffectsOnDelivered()
         {

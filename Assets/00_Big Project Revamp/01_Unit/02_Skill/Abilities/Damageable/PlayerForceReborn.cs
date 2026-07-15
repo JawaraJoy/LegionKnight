@@ -1,5 +1,4 @@
 using LegionKnight;
-using MoreMountains.Tools;
 using System.Collections;
 using UnityEngine;
 
@@ -7,7 +6,6 @@ namespace Rush
 {
     public class PlayerForceReborn : MonoBehaviour, IReseter
     {
-        [SerializeField, MMReadOnly]
         private Unit m_PlayerHerounit;
 
         private bool m_CanForceReborn;

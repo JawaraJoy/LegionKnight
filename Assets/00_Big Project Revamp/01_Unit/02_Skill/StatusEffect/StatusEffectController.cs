@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,9 +7,7 @@ namespace Rush
 {
     public partial class StatusEffectController : MonoBehaviour, IUnitExtension, IReseter
     {
-        [SerializeField, MMReadOnly]
         private List<StatusEffector> m_Effectors = new();
-        [SerializeField, MMReadOnly]
         private List<StatusEffector> m_RemovedEffectors = new();
         [SerializeField]
         private UnityEvent<StatusEffector> m_OnApplied;

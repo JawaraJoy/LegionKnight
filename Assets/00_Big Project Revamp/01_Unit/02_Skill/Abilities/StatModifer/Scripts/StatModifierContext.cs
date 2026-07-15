@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using UnityEngine;
 
 namespace Rush
@@ -6,9 +6,7 @@ namespace Rush
     [System.Serializable]
     public partial class StatModifierContext
     {
-        [SerializeField, MMReadOnly]
         private AbilityContext m_AbilityContext;
-        [SerializeField, MMReadOnly]
         private StatModifier m_Influencer;
         public AbilityContext AbilityContext => m_AbilityContext;
         public StatModifier Influencer => m_Influencer;

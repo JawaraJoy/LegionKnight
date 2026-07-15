@@ -1,5 +1,4 @@
 using LegionKnight;
-using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,10 +17,7 @@ namespace Rush
         [SerializeField]
         private Transform m_DeliverSpawnPost;
 
-        [Header("Runtime")]
-        [SerializeField, MMReadOnly]
         private SkillContext m_SkillContext;
-        [SerializeField, MMReadOnly]
         private List<AbilityDeliver> m_Delivers = new();
 
         [Header("Events")]
@@ -74,24 +70,14 @@ namespace Rush
             }
         }
 
-        [Header("State")]
-        [SerializeField, MMReadOnly]
         private SkillActivationState m_State = SkillActivationState.Idle;
 
-        [Header("Charge")]
-        [SerializeField, MMReadOnly]
         private float m_RemainingCharge;
 
-        [Header("Cooldown")]
-        [SerializeField, MMReadOnly]
         private float m_RemainingCooldown;
 
-        [Header("Casting")]
-        [SerializeField, MMReadOnly]
         private float m_RemainingCastTime;
-        [SerializeField, MMReadOnly]
         private int m_CurrentInterruptDamage;
-        [SerializeField, MMReadOnly]
         private int m_MaxInterruptDamage;
 
         public float RemainingCastTime => m_RemainingCastTime;

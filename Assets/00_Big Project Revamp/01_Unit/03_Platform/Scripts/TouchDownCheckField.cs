@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,9 +7,7 @@ namespace Rush
     [System.Serializable]
     public class TouchDownCheckField : IReseter
     {
-        [SerializeField, MMReadOnly]
         private bool m_IsStayPerfect;
-        [SerializeField, MMReadOnly]
         private int m_StayPerfectCount;
         [SerializeField]
         private UnityEvent<bool, ISkillContext> m_OnTouchDown;

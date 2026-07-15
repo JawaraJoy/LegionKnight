@@ -1,5 +1,4 @@
 
-using MoreMountains.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,15 +9,11 @@ namespace Rush
     {
         [SerializeField]
         private RogueLikeConfig m_Config;
-        [SerializeField, MMReadOnly]
         private int m_ForPlayerCurrentLevel = 1;
-        [SerializeField, MMReadOnly]
         private int m_ForPlayerCurrentExperience;
         [SerializeField]
         private HeroUnitConfig m_CurrentHero;
-        [SerializeField, MMReadOnly]
         private List<CardConfig> m_CustomCards = new();
-        [SerializeField, MMReadOnly]
         private List<CardConfig> m_CollectedCards = new();
 
         [SerializeField]

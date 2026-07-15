@@ -1,4 +1,4 @@
-﻿using MoreMountains.Tools;
+﻿
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,11 +17,10 @@ namespace Rush
         [SerializeField] private UnityEvent<float> m_OnStackDurationUpdated;
         [SerializeField] private UnityEvent<StatusEffectContext> m_OnDone;
 
-        [Header("Runtime")]
-        [SerializeField, MMReadOnly] private int m_CurrentStack;
-        [SerializeField, MMReadOnly] private float m_RemainingMainDuration;
-        [SerializeField, MMReadOnly] private float m_RemainingStackDuration;
-        [SerializeField, MMReadOnly] private bool m_IsActive;
+        private int m_CurrentStack;
+        private float m_RemainingMainDuration; 
+        private float m_RemainingStackDuration;
+        private bool m_IsActive;
 
         private StatusEffectContext m_Context;
 

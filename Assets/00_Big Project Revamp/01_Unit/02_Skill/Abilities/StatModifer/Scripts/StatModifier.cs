@@ -1,4 +1,4 @@
-﻿using MoreMountains.Tools;
+﻿
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -6,17 +6,11 @@ namespace Rush
 {
     public partial class StatModifier : MonoBehaviour, IUpdater
     {
-        [SerializeField, MMReadOnly]
         private float m_TotalDuration = 0f;
-        [SerializeField, MMReadOnly]
         private float m_RemainingDuration = 1f;
-        [SerializeField, MMReadOnly]
         private float m_TotalStackUpdateDuration = 10f;
-        [SerializeField, MMReadOnly]
         private float m_RemainingStackUpdateDuration = 0f;
-        [SerializeField, MMReadOnly]
         private int m_StackCount = 0;
-        [SerializeField, MMReadOnly]
         private StatModifierContext m_Context;
         [SerializeField]
         private UnityEvent<StatModifierContext> m_OnActive;
@@ -44,8 +38,6 @@ namespace Rush
         public StatModifierContext Context => m_Context;
         public bool IsActive => gameObject.activeInHierarchy;
 
-
-        [SerializeField, MMReadOnly]
         private StatModifierConfig m_Config;
         public StatModifierConfig Config => m_Config;
 

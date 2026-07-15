@@ -1,5 +1,4 @@
 ﻿using LegionKnight;
-using MoreMountains.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -44,7 +43,6 @@ namespace Rush
 
         public Unit BossUnitExisten => m_BossUnitExisten;
 
-        [SerializeField, MMReadOnly]
         private int m_WaveLevel = 1;
         public Sprite CurrentWaveIcon => m_CurrentWaveIcon;
         public UnityEvent<int, int> OnCurrentThresholdRateChanged => m_OnCurrentThresholdRateChanged;

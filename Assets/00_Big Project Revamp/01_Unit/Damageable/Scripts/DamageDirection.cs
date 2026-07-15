@@ -1,4 +1,3 @@
-using MoreMountains.Tools;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,7 +6,6 @@ namespace Rush
 {
     public class DamageDirection : MonoBehaviour
     {
-        [SerializeField, MMReadOnly]
         private PlatformDirection m_Direction = PlatformDirection.Left;
         [SerializeField]
         private UnityEvent m_OnLeft;

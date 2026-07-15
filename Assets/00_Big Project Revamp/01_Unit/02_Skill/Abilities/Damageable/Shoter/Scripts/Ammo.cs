@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,10 +8,8 @@ namespace Rush
 {
     public abstract class Ammo : Bindable, IUpdater
     {
-        [SerializeField, MMReadOnly]
         protected AmmoConfig m_Config;
 
-        [SerializeField, MMReadOnly]
         private bool m_CanMove = false;
 
         [SerializeField]

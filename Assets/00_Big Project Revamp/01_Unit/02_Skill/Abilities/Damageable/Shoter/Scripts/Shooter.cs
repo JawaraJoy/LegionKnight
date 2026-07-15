@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,15 +15,11 @@ namespace Rush
         [SerializeField]
         private AmmoConfig m_AmmoConfig;
 
-        [Header("Runtime (Read Only)")]
-        [SerializeField, MMReadOnly]
         private List<Ammo> m_ActiveProjectiles = new();
         public List<Ammo> ActiveProjectiles => m_ActiveProjectiles;
 
-        [SerializeField, MMReadOnly]
         private Queue<Ammo> m_ProjectilePool = new();
 
-        [SerializeField, MMReadOnly]
         private ShooterAbilityConfig m_ShooterAbilityConfig;
         public ShooterAbilityConfig ShooterAbilityConfig => m_ShooterAbilityConfig;
 

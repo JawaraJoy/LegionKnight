@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using UnityEngine;
 
 namespace Rush
@@ -9,8 +9,6 @@ namespace Rush
     }
     public partial class Skill
     {
-
-        [SerializeField, MMReadOnly]
         private SkillActivationState m_PreSilenceState = SkillActivationState.Idle;
         public void EnterSilence()
         {

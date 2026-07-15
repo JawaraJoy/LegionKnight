@@ -1,4 +1,4 @@
-﻿using MoreMountains.Tools;
+﻿
 using Rush;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,8 +8,6 @@ namespace LegionKnight
 {
     public partial class CardDeck : MonoBehaviour
     {
-        
-        [SerializeField, MMReadOnly]
         private List<CardUnit> m_UsedCards = new();
         [SerializeField]
         private int m_MaxUsedCardCount = 5;

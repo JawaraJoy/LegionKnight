@@ -1,5 +1,4 @@
 using LegionKnight;
-using MoreMountains.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,11 +9,7 @@ namespace Rush
         [Header("Config")]
         [SerializeField] 
         private VerticalBackgroundConfig m_Config;
-
-        [Header("References")]
-        [SerializeField, MMReadOnly] 
         private Transform m_Player;
-        [SerializeField, MMReadOnly] 
         private Camera m_Camera;
 
         [Header("Scene References")]

@@ -1,12 +1,10 @@
-﻿using MoreMountains.Tools;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace Rush
 {
     public class Platform2D : MonoBehaviour, IUpdater, ISkill
     {
-        [SerializeField, MMReadOnly]
         private PlatformConfig m_PlatformConfig;
         [SerializeField]
         private ParticleSystem m_PersonalityVFX;
@@ -24,16 +22,10 @@ namespace Rush
         private ProgressField m_Progression;
         [SerializeField]
         private TouchDownCheckField m_TouchDownCheck;
-
-        [SerializeField, MMReadOnly]
         private PlatformDirection m_Direction = PlatformDirection.Left;
-        [SerializeField, MMReadOnly]
         private SkillContext m_SkillContext;
-        [SerializeField, MMReadOnly]
         private Vector2 m_FinalDestination;
-        [SerializeField, MMReadOnly]
         private float m_OffSiteReachHorizontalPost;
-        [SerializeField, MMReadOnly]
         private float m_FinalSpeed = 1.0f;
         [SerializeField]
         private UnityEvent m_OnReachDestination;

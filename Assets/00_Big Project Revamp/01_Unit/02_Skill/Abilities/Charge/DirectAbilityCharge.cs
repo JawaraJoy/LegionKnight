@@ -1,4 +1,3 @@
-using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,14 +10,11 @@ namespace Rush
         private Charger m_ChargePrefab;
         public Charger ChargerPrefab => m_ChargePrefab;
 
-        [SerializeField, MMReadOnly]
         private List<Charger> m_ActiveCharger = new();
         public List<Charger> ActiveCharge => m_ActiveCharger;
 
-        [SerializeField, MMReadOnly]
         private Queue<Charger> m_HealerPool = new();
 
-        [SerializeField, MMReadOnly]
         private DirectChargeAbilityConfig m_ChargeConfig;
         public DirectChargeAbilityConfig ChargeConfig => m_ChargeConfig;
 

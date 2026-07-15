@@ -1,4 +1,4 @@
-using MoreMountains.Tools;
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +9,6 @@ namespace Rush
     {
         [SerializeField]
         private Transform m_ModifierPost;
-        [SerializeField, MMReadOnly]
         private List<StatModifier> m_Modifiers = new ();
         public Transform ModifierPost => m_ModifierPost;
         public List<StatModifier> StatModifiers => m_Modifiers;

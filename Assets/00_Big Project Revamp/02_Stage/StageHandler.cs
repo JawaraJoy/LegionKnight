@@ -1,5 +1,4 @@
 ﻿using LegionKnight;
-using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,7 +12,6 @@ namespace Rush
         private StageConfig m_SelectedStageConfig;
         [SerializeField]
         private GameStateConfig m_GameStateConfig;
-        [SerializeField, MMReadOnly]
         private VerticalLoopView m_VerticalLoopView;
         [SerializeField]
         private StageSelectionField[] m_StageSelections;
@@ -41,7 +39,6 @@ namespace Rush
         public StageConfig SelectedStageConfig => m_SelectedStageConfig;
         public StageSelectionField[] StageSelections => m_StageSelections;
 
-        [SerializeField, MMReadOnly]
         private int m_CurrentWaveIndex = 0;
         public int CurrentWaveIndex => m_CurrentWaveIndex;
 

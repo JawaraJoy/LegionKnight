@@ -1,4 +1,4 @@
-﻿using MoreMountains.Tools;
+﻿
 using UnityEngine;
 
 namespace Rush
@@ -20,8 +20,6 @@ namespace Rush
         [Header("Target")]
         [SerializeField]
         private FollowPostOnPlayer m_PostTypeToFollow = FollowPostOnPlayer.EnemyPost;
-
-        [SerializeField, MMReadOnly]
         private Transform m_PostToFollow;
 
         [Header("Follow")]

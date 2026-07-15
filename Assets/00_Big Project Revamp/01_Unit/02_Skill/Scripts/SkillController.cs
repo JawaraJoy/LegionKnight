@@ -1,4 +1,4 @@
-﻿using MoreMountains.Tools;
+﻿
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
@@ -11,12 +11,9 @@ namespace Rush
     {
         [SerializeField]
         private Transform m_SkillSpawnPost;
-        [SerializeField, MMReadOnly]
         private ModuleContext m_ModuleContext;
-        [SerializeField, MMReadOnly]
         private List<Skill> m_Skills = new();
 
-        [SerializeField, MMReadOnly]
         private List<Skill> m_RemovedSkills = new();
 
         [SerializeField]

@@ -1,5 +1,4 @@
 using LegionKnight;
-using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,25 +8,17 @@ namespace Rush
 {
     public class PlatformHandler : MonoBehaviour, IReseter
     {
-        [SerializeField, MMReadOnly]
         private PlatformHandlerConfig m_Config;
         [SerializeField]
         private bool m_IsPaused = false;
-        [SerializeField, MMReadOnly]
         private List<PlatformConfig> m_PreparedPlatformConfigs = new();
         [SerializeField]
         private List<PlatformConfig> m_WaitingListPlatformConfigs = new();
-        [SerializeField, MMReadOnly]
         private Platform2D m_CurrentNewDisplayedPlatform;
-        [SerializeField, MMReadOnly]
         private Platform2D m_CurrentTouchedPlatform;
-        [SerializeField, MMReadOnly]
         private float m_ActiveBoostDuration;
-        [SerializeField, MMReadOnly]
         private float m_ActiveBoostElapsed;
-        [SerializeField, MMReadOnly]
         private Platform2D m_CurrentLastDisplayedPlatform;
-        [SerializeField, MMReadOnly]
         private Queue<Platform2D> m_StackedPlatforms = new();
 
         [SerializeField]
@@ -63,13 +54,9 @@ namespace Rush
         public UnityEvent<int> OnBoostEnabled => m_OnBoostEnabled;
         public UnityEvent OnBoostDisabled => m_OnBoostDisabled;
 
-        [SerializeField, MMReadOnly]
         private bool m_IsSpawningNextPlatform = false;
-        [SerializeField, MMReadOnly]
         private bool m_IsBoostActive = false;
-        [SerializeField, MMReadOnly]
         private int m_GlobalPerfectCount = 0;
-        [SerializeField, MMReadOnly]
         private int m_CurrentBoostStock = 0;
 
         // Pool instance per platform ID
@@ -81,15 +68,10 @@ namespace Rush
         public TouchDownCheckField TouchDownCheckField => m_TouchDownCheckField;
         public PlatformHandlerConfig Config => m_Config;
 
-        [SerializeField, MMReadOnly]
         private int m_CurrentStackedPlatformsCount;
-        [SerializeField]
         private float m_MinGlobalSpeedRate = 1.0f;
-        [SerializeField, MMReadOnly]
         private float m_MaxGlobalSpeedRate = 1f;
-        [SerializeField, MMReadOnly]
         private float m_GlobalPerfectTouchRange = 0.3f;
-        [SerializeField, MMReadOnly]
         private Vector2 m_LastContactPoint = Vector2.zero;
 
         public bool IsPaused => m_IsPaused;

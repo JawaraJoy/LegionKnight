@@ -1,54 +1,40 @@
 using System.Collections.Generic;
 using LegionKnight;
-using MoreMountains.Tools;
 using UnityEngine;
 
 namespace Rush
 {
     public class Summoner : AbilityDeliver, IUpdater, IReseter
     {
-        [SerializeField, MMReadOnly]
         private SummonAbilityConfig m_SummonConfig;
         public SummonAbilityConfig SummonConfig => m_SummonConfig;
 
         public bool IsActive => gameObject.activeSelf;
 
-        [SerializeField, MMReadOnly]
         private List<Unit> m_ActiveSummonedUnits = new();
 
-        [SerializeField, MMReadOnly]
         private Queue<Unit> m_SummonedUnitPool = new();
 
         private UnitConfig m_SummonedConfig;
 
-        [SerializeField, MMReadOnly]
         private float m_FireTimer;
 
-        [SerializeField, MMReadOnly]
         private float m_BurstTimer;
 
-        [SerializeField, MMReadOnly]
         private int m_BurstRemaining;
 
-        [SerializeField, MMReadOnly]
         private bool m_IsSpawning;
 
-        [SerializeField, MMReadOnly]
         private bool m_LoopForward = true;
 
-        [SerializeField, MMReadOnly]
         private int m_CurrentIndex;
 
-        [SerializeField, MMReadOnly]
         private int m_TotalJobs;
 
-        [SerializeField, MMReadOnly]
         private int m_ExecutedJobs;
 
-        [SerializeField, MMReadOnly]
         private Queue<SummonJob> m_SummonJobs = new();
 
-        [SerializeField, MMReadOnly]
         private List<SummonJob> m_LoopJobs = new();
         public List<Unit> ActiveSummonedUnits => m_ActiveSummonedUnits;
         private void OnEnable()
