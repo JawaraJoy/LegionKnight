@@ -54,7 +54,16 @@ namespace Rush
             base.Activate();
         }
 
-        
+        public override void ActiveOverrideTarget(List<ITargetable> overrideTargets)
+        {
+            if (m_ShooterAbilityConfig != null && m_ShooterAbilityConfig.DeliverLookAtTargetOnActivate)
+                LookAtTargetInternal(overrideTargets);
+
+            StopAllCoroutines();
+            StartCoroutine(AttackRoutine(overrideTargets));
+
+            base.ActiveOverrideTarget(overrideTargets);
+        }
 
         private IEnumerator AttackRoutine(List<ITargetable> targets)
         {

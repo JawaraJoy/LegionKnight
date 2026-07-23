@@ -72,9 +72,17 @@ namespace Rush
         }
         public virtual void Activate()
         {
+            ActivateInternal();
+        }
+        protected virtual void ActivateInternal()
+        {
             m_OnActivate?.Invoke(m_AbilityContext);
         }
-
+        public virtual void ActiveOverrideTarget(List<ITargetable> overrideTargets)
+        {
+            // overide then change the target here
+            m_OnActivate?.Invoke(m_AbilityContext);
+        }
 
     }
 }

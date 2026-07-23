@@ -405,6 +405,10 @@ namespace Rush
         {
             ForceActivateAllInternal();
         }
+        public void ForceActivateAllOverrideTargets(List<ITargetable> targets)
+        {
+            ForceActivateOverrideTargetsAllInternal(targets);
+        }
 
         private void ForceActivateAllInternal()
         {
@@ -415,6 +419,15 @@ namespace Rush
             if (gameObject.activeInHierarchy)
                 RushGameManager.Instance.StartCoroutine(ForceActivateAllWithDelay(delay));
         }
+        private void ForceActivateOverrideTargetsAllInternal(List<ITargetable> targetables)
+        {
+            if(m_State == SkillActivationState.Silenced)
+                return;
+
+            float delay = m_SkillConfig.Activation.IntervalEachAbilityActive;
+            if (gameObject.activeInHierarchy)
+                RushGameManager.Instance.StartCoroutine(ForceActivateOverrideTargetsAllWithDelay(delay, targetables));
+        }
         private IEnumerator ForceActivateAllWithDelay(float delay)
         {
             for (int i = 0; i < m_Delivers.Count; i++)
@@ -424,9 +437,22 @@ namespace Rush
             }
             m_OnActivates?.Invoke(this);
         }
+        private IEnumerator ForceActivateOverrideTargetsAllWithDelay(float delay, List<ITargetable> targetables)
+        {
+            for (int i = 0; i < m_Delivers.Count; i++)
+            {
+                ForceActivateOverrideTargetInternal(m_Delivers[i].AbilityConfig, targetables);
+                yield return new WaitForSeconds(delay);
+            }
+            m_OnActivates?.Invoke(this);
+        }
         public void ForceActivate(AbilityConfig config)
         {
             ForceActivateInternal(config);
+        }
+        public void ForceActivateOverrideTarget(AbilityConfig config, List<ITargetable> targetables)
+        {
+            ForceActivateOverrideTargetInternal(config, targetables);
         }
         private void ForceActivateInternal(AbilityConfig config)
         {
@@ -435,6 +461,15 @@ namespace Rush
             if (HasAbilityInternal(config.BaseInfo.Id, out var ability))
             {
                 ActivateInternal(ability);
+            }
+        }
+        private void ForceActivateOverrideTargetInternal(AbilityConfig config, List<ITargetable> targetables)
+        {
+            if (m_State == SkillActivationState.Silenced)
+                return;
+            if (HasAbilityInternal(config.BaseInfo.Id, out var ability))
+            {
+                ActiveOverrideTargetInternal(ability, targetables);
             }
         }
         public void ForceActivate(int index)
@@ -446,6 +481,11 @@ namespace Rush
         private void ActivateInternal(AbilityDeliver abilityDeliver)
         {
             abilityDeliver.Activate();
+            m_OnActivateIndividu?.Invoke(abilityDeliver.AbilityContext);
+        }
+        private void ActiveOverrideTargetInternal(AbilityDeliver abilityDeliver, List<ITargetable> targets)
+        {
+            abilityDeliver.ActiveOverrideTarget(targets);
             m_OnActivateIndividu?.Invoke(abilityDeliver.AbilityContext);
         }
 

@@ -48,8 +48,8 @@ namespace Rush
                     damageable.SetImmortal(false);
                 }
             }
-            Unit infected = context.Infected;
-            if (infected.HasBind(out SkillController skillController))
+            Unit owner = context.AbilityContext.SkillContext.ModuleContext.Unit;
+            if (owner.HasBind(out SkillController skillController))
             {
                 skillController.ForceActives(m_InfectorSkillToOnEffectDone);
             }

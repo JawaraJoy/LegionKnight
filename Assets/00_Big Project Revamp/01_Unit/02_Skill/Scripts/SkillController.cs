@@ -382,6 +382,13 @@ namespace Rush
                 ForceActiveInternal(config);
             }
         }
+        public void ForceActivesOverrideTargets(SkillConfig[] skillConfigs, List<ITargetable> targetables)
+        {
+            foreach(SkillConfig config in skillConfigs)
+            {
+                ForceActivateOverrideTargetInternal(config, targetables);
+            }
+        }
         public void ForceActiveByIndex(int index)
         {
             Skill skill = GetSkillByIndex(index);
@@ -406,6 +413,25 @@ namespace Rush
                 if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skillAdded))
                 {
                     skillAdded.ForceActivateAll();
+                }
+            }
+        }
+        public void ForceActiveOverrideTarget(SkillConfig skillConfig, List<ITargetable> targetables)
+        {
+            ForceActivateOverrideTargetInternal(skillConfig, targetables);
+        }
+        private void ForceActivateOverrideTargetInternal(SkillConfig skillConfig, List<ITargetable> targets)
+        {
+            if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skill))
+            {
+                skill.ForceActivateAllOverrideTargets(targets);
+            }
+            else
+            {
+                AddNewSkillInternal(skillConfig);
+                if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skillAdded))
+                {
+                    skillAdded.ForceActivateAllOverrideTargets(targets);
                 }
             }
         }

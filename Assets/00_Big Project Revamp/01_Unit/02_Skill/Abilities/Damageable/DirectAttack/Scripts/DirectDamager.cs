@@ -29,21 +29,19 @@ namespace Rush
 
             PreWarm();
         }
-        public override void Activate()
+        protected override void ActivateInternal()
         {
             List<ITargetable> targets = new(GetTargetsInternal());
 
             StopAllCoroutines();
             StartCoroutine(AttackRoutine(targets));
-
-            base.Activate();
+            base.ActivateInternal();
         }
-        public void ActiveOverrideTarget(List<ITargetable> overrideTargets)
+        public override void ActiveOverrideTarget(List<ITargetable> overrideTargets)
         {
             StopAllCoroutines();
             StartCoroutine(AttackRoutine(overrideTargets));
-
-            base.Activate();
+            base.ActiveOverrideTarget(overrideTargets);
         }
         private IEnumerator AttackRoutine(List<ITargetable> targets)
         {

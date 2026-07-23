@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Rush
 {
+    // we want use it to spawn partycle system for UI
     public class CanvasWorldCameraSetter : MonoBehaviour
     {
         [SerializeField]

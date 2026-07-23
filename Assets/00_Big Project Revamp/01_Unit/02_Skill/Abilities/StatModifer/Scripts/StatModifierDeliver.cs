@@ -1,4 +1,5 @@
 using MoreMountains.Tools;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rush
@@ -35,6 +36,17 @@ namespace Rush
                 }
             }
             base.Activate();
+        }
+        public override void ActiveOverrideTarget(List<ITargetable> overrideTargets)
+        {
+            foreach (var target in overrideTargets)
+            {
+                if (target.ModuleContext.Unit.HasBind(out StatController statController))
+                {
+                    statController.AddModifier(m_AbilityContext, statController);
+                }
+            }
+            base.ActiveOverrideTarget(overrideTargets);
         }
     }
 }

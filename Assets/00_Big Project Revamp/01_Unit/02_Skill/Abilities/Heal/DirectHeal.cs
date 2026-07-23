@@ -43,6 +43,12 @@ namespace Rush
 
             base.Activate();
         }
+        public override void ActiveOverrideTarget(List<ITargetable> overrideTargets)
+        {
+            StopAllCoroutines();
+            StartCoroutine(HealRoutine(overrideTargets));
+            base.ActiveOverrideTarget(overrideTargets);
+        }
 
         private IEnumerator HealRoutine(List<ITargetable> targets)
         {
