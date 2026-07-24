@@ -12,6 +12,8 @@ namespace LegionKnight
         [SerializeField]
         private string m_EnvironmentName = "production"; // Set your environment name here
         [SerializeField]
+        private InitCondition m_InitCondition = InitCondition.Editor;
+        [SerializeField]
         private DailyCheckIn m_DailyCheckIn;
         [SerializeField]
         private UnityEvent m_OnInitialized = new();
@@ -30,6 +32,19 @@ namespace LegionKnight
                 await UnityServices.InitializeAsync(options);
                 // Notify that Unity Services have been initialized successfully.
                 m_OnInitialized.Invoke();
+
+                switch(m_InitCondition)
+                {
+                    case InitCondition.Editor:
+                        m_AuthenticationManager.SignInAnonymously();
+                        break;
+                    case InitCondition.Build:
+                        m_InAppUpdate.CheckUpdate();
+                        break;
+                    default:
+                        Debug.LogWarning("Fail to init");
+                        break;
+                }
                 m_IsInitialized = true;
                 Debug.Log("Unity Services initialized successfully.");
             }
@@ -42,5 +57,11 @@ namespace LegionKnight
                 m_OnInitializationFailed.Invoke(errorMessage);
             }
         }
+    }
+
+    public enum InitCondition
+    {
+        Editor,
+        Build,
     }
 }
