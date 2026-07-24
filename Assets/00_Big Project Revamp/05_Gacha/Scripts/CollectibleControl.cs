@@ -5,7 +5,6 @@ namespace Rush
     // Stub — extend sesuai inventory system yang sudah ada
     public class CollectibleControl : MonoBehaviour
     {
-        
         public static void AddCollectibleStatic(string source, CollectibleConfig config, int amount)
         {
             if (config == null) return;

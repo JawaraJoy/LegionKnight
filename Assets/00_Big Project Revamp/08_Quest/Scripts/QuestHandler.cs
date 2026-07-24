@@ -44,7 +44,11 @@ namespace Rush
             m_Tracker.SaveCount(task, newCount);
             m_OnTaskProgressUpdated?.Invoke(task);
 
-            if (completed) m_OnTaskCompleted?.Invoke(task);
+            if (completed) 
+            {
+                m_OnTaskCompleted?.Invoke(task);
+                AnalyticService.Instance.MissionCompleted(task.BaseInfo.Name, task.QuestCatalogConfig.BaseInfo.Name);
+            }
         }
 
         public void Claim(QuestTaskConfig task)

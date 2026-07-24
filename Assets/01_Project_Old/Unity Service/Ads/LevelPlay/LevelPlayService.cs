@@ -1,3 +1,4 @@
+using Rush;
 using Unity.Services.LevelPlay;
 using UnityEngine;
 using UnityEngine.Events;
@@ -65,4 +66,11 @@ public partial class LevelPlaySample
     protected UnityEvent m_OnRewardedAdDone;
     [SerializeField]
     protected UnityEvent m_OnInterstitialAdDone;
+
+    protected virtual void OnRewardedAdDoneInvoke(LevelPlayAdInfo adInfo, LevelPlayReward reward)
+    {
+        m_OnRewardedAdDone?.Invoke();
+        double revenue = adInfo.Revenue.Value;
+        AnalyticService.Instance.WatchAds(adInfo.PlacementName, revenue);
+    }
 }

@@ -206,7 +206,7 @@ public partial class LevelPlaySample : MonoBehaviour
     void RewardedVideoOnAdRewardedEvent(LevelPlayAdInfo adInfo, LevelPlayReward reward)
     {
         Debug.Log($"[LevelPlaySample] Received RewardedVideoOnAdRewardedEvent With AdInfo: {adInfo} and Reward: {reward}");
-        m_OnRewardedAdDone?.Invoke();
+        OnRewardedAdDoneInvoke(adInfo, reward);
         string adNetwork = adInfo.AdNetwork;
         string adRevenue = adInfo.Revenue.ToString();
         string adCountry = adInfo.Country;

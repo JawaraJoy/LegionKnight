@@ -18,6 +18,7 @@ namespace Rush
 
         public int TargetCount => m_TargetCount;
         public CollectibleConfig RewardCollectible => m_RewardCollectible;
+        public QuestCatalogConfig QuestCatalogConfig => m_QuestCatalogConfig;
         public int RewardAmount => m_RewardAmount;
 
         public void SetCatalog(QuestCatalogConfig QuestCatalogConfig)

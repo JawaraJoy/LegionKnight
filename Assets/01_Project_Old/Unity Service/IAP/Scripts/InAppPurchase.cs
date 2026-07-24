@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Rush;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -120,6 +121,7 @@ namespace LegionKnight
             GiveItemsInternal(bundle);
             m_OnPurchaseSuccess?.Invoke(bundle);
             m_StoreController.ConfirmPurchase(order);
+
         }
 
         private void OnPurchaseFailedInternal(FailedOrder order)
