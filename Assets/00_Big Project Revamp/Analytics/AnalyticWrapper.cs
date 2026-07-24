@@ -29,5 +29,9 @@ namespace Rush
             FirebaseAnalytics.LogEvent(eventName, parameter, value);
             //write down the others plugins analytic here
         }
+        public static void LogEvent(string eventName, params Parameter[] parameters)
+        {
+            FirebaseAnalytics.LogEvent(eventName, parameters);
+        }
     }
 }

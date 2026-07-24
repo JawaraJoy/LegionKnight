@@ -79,13 +79,18 @@ namespace Rush
             base.Activate();
         }
 
+        public override void ActiveOverrideTarget(List<ITargetable> overrideTargets)
+        {
+            Summon();
+            base.ActiveOverrideTarget(overrideTargets);
+        }
+
         private void Summon()
         {
-            if (m_SummonConfig == null ||
-                m_SummonConfig.SpawnShape == null ||
-                m_SummonConfig.UnitToSpawn == null ||
-                m_SummonConfig.SpawnSetup == null)
+            if (m_SummonConfig == null || m_SummonConfig.SpawnShape == null)
                 return;
+
+            m_SummonedConfig = m_SummonConfig.UnitToSpawn;
 
             var setup = m_SummonConfig.SpawnSetup;
 
