@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿#if UNITY_ANDROID
+using UnityEngine;
+
 using Google.Play.AppUpdate;
-using Google.Play.Common;
 using System.Collections;
 using UnityEngine.Events;
 
@@ -147,3 +148,4 @@ namespace LegionKnight
         }
     }
 }
+#endif

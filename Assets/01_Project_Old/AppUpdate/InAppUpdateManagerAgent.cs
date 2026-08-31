@@ -1,4 +1,4 @@
-using Google.Play.AppUpdate;
+#if UNITY_ANDROID
 using UnityEngine;
 
 namespace LegionKnight
@@ -25,3 +25,4 @@ namespace LegionKnight
         }
     }
 }
+#endif

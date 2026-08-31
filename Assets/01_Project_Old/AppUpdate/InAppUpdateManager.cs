@@ -1,3 +1,4 @@
+#if UNITY_ANDROID
 using UnityEngine;
 
 namespace LegionKnight
@@ -15,3 +16,4 @@ namespace LegionKnight
         public InAppUpdateManager InAppUpdateManager => m_InAppUpdate;
     }
 }
+#endif

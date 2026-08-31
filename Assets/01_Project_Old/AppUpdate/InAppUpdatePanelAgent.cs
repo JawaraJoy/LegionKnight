@@ -1,4 +1,6 @@
+#if UNITY_ANDROID
 using Google.Play.AppUpdate;
+#endif
 using UnityEngine;
 
 namespace LegionKnight
@@ -52,10 +54,12 @@ namespace LegionKnight
         {
             GetPanel().Hide();
         }
+#if UNITY_ANDROID
         public void SetAvailableInfo(AppUpdateInfo info)
         {
             GetPanel().GetBinding<InAppUpdateAvailable>().SetAvailableInfo(info);
         }
+#endif
         public void SetCheckText(string text)
         {
             GetPanel().GetBinding<InAppUpdateCheckText>().SetCheckText(text);

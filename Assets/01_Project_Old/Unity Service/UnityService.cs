@@ -39,7 +39,12 @@ namespace LegionKnight
                         m_AuthenticationManager.SignInAnonymously();
                         break;
                     case InitCondition.Build:
+#if UNITY_ANDROID
                         m_InAppUpdate.CheckUpdate();
+#endif
+#if UNITY_IOS
+                        m_AuthenticationManager.SignInAnonymously();
+#endif
                         break;
                     default:
                         Debug.LogWarning("Fail to init");
