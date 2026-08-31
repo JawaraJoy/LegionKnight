@@ -5,7 +5,6 @@ namespace Rush
 {
     public static class AnalyticWrapper
     {
-
         public static void LogEvent(string eventName)
         {
             FirebaseAnalytics.LogEvent(eventName);
@@ -32,6 +31,11 @@ namespace Rush
         public static void LogEvent(string eventName, params Parameter[] parameters)
         {
             FirebaseAnalytics.LogEvent(eventName, parameters);
+            //write down the others plugins analytic here
+            // nah trus function analitycnya panggil di sini aja
+            // jadi ga perlu tiap ada analitic baru kita cari function gameplaynya lagi
+            // tinggal tambahkan function baru disini, otomatis dapat event yang sama
+            // karena sudah terpasang
         }
     }
 }
