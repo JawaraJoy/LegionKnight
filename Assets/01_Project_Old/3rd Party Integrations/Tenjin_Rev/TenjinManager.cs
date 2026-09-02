@@ -108,8 +108,16 @@ namespace LegionKnight
             baseTenjin = Tenjin.getInstance("AEY4UUZVJHZ32RSTWM2CHQHWVSA1UWVI");
             baseTenjin.SetCustomerUserId(Player.Instance.PlayerName);
 
-            // Sends install/open event to Tenjin
-            baseTenjin.Connect();
+            // iOS 14.5+ requires an explicit App Tracking Transparency prompt before
+            // IDFA-based attribution works. On Android this callback resolves immediately
+            // with no prompt, so it's safe to call on every platform.
+            baseTenjin.RequestTrackingAuthorizationWithCompletionHandler((status) =>
+            {
+                Debug.Log("***** TENJIN ATT STATUS: " + status + " *****");
+
+                // Sends install/open event to Tenjin
+                baseTenjin.Connect();
+            });
 
             Debug.Log("***** TENJIN START *****");
         }
