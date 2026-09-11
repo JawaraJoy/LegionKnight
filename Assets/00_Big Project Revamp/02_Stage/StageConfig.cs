@@ -55,7 +55,7 @@ namespace Rush
 
             string game = gameover ? "GameOver" : "Slay the Boss";
 
-            TenjinManager.Instance.SendEvent($"{game} in {duration:F2}s");
+            //TenjinManager.Instance.SendEvent($"{game} in {duration:F2}s");
         }
     }
 }

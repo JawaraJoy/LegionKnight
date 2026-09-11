@@ -11,7 +11,7 @@ public static class AdConfig
         //return "85460dcd";
         return "239bf6d6d"; // from LevelPlay
 #elif UNITY_IOS
-        return "8545d445";
+        return "280655d5d"; // from levelPlay
 #else
         return "unexpected_platform";
 #endif
@@ -34,7 +34,7 @@ public static class AdConfig
 #if UNITY_ANDROID
         return "ykhibcrv1rkn2gv4";
 #elif UNITY_IOS
-        return "wmgt0712uuux8ju4";
+        return "kiew4inrk9856hmf";
 #else
         return "unexpected_platform";
 #endif
@@ -46,7 +46,7 @@ public static class AdConfig
         //return "76yy3nay3ceui2a3";
         return "2idc0jgbu3bxhqvv"; // from LevelPlay
 #elif UNITY_IOS
-        return "qwouvdrkuwivay5q";
+        return "u6ezekqscengmg9o";
 #else
         return "unexpected_platform";
 #endif

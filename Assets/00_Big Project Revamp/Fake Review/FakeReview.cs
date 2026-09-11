@@ -59,7 +59,7 @@ namespace Rush
             string playerName = Player.Instance.PlayerName;
             string review = $"{playerName}<Star({m_SelectedStar}>; {desc})";
 
-            TenjinManager.Instance.SendEvent("review", review);
+            //TenjinManager.Instance.SendEvent("review", review);
             m_IsReviewed = true;
             UnityService.Instance.SaveData(c_Review, m_IsReviewed);
         }

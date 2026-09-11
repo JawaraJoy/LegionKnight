@@ -1,5 +1,4 @@
 using UnityEngine;
-using Firebase.Analytics;
 
 namespace Rush
 {
@@ -7,35 +6,35 @@ namespace Rush
     {
         public static void LogEvent(string eventName)
         {
-            FirebaseAnalytics.LogEvent(eventName);
+            //FirebaseAnalytics.LogEvent(eventName);
             //write down the others plugins analytic here
         }
 
         //use for integer
         public static void LogEvent(string eventName, string parameter, int value)
         {
-            FirebaseAnalytics.LogEvent(eventName, parameter, value);
+            //FirebaseAnalytics.LogEvent(eventName, parameter, value);
             //write down the others plugins analytic here
         }
         // use for decimal
         public static void LogEvent(string eventName, string parameter, double value)
         {
-            FirebaseAnalytics.LogEvent(eventName, parameter, value);
+            //FirebaseAnalytics.LogEvent(eventName, parameter, value);
             //write down the others plugins analytic here
         }
         public static void LogEvent(string eventName, string parameter, string value)
         {
-            FirebaseAnalytics.LogEvent(eventName, parameter, value);
+            //FirebaseAnalytics.LogEvent(eventName, parameter, value);
             //write down the others plugins analytic here
         }
-        public static void LogEvent(string eventName, params Parameter[] parameters)
+        /*public static void LogEvent(string eventName, params Parameter[] parameters)
         {
-            FirebaseAnalytics.LogEvent(eventName, parameters);
+            //FirebaseAnalytics.LogEvent(eventName, parameters);
             //write down the others plugins analytic here
             // nah trus function analitycnya panggil di sini aja
             // jadi ga perlu tiap ada analitic baru kita cari function gameplaynya lagi
             // tinggal tambahkan function baru disini, otomatis dapat event yang sama
             // karena sudah terpasang
-        }
+        }*/
     }
 }

@@ -23,7 +23,7 @@ namespace Rush
 
         public void OnDeath(string killerName)
         {
-            TenjinManager.Instance.SendEvent("Death", $"{m_BaseInfo.Id} killed by {killerName}");
+            //TenjinManager.Instance.SendEvent("Death", $"{m_BaseInfo.Id} killed by {killerName}");
             if (this is HeroUnitConfig)
             {
                 AnalyticService.Instance.HeroDefeated(m_BaseInfo.Name, killerName);

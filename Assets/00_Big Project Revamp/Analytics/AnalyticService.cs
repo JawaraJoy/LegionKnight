@@ -1,19 +1,18 @@
-using Firebase.Analytics;
 using UnityEngine;
 
 namespace Rush
 {
     public partial class AnalyticService : Singleton<AnalyticService>
     {
-        [SerializeField]
-        private FirebaseAnalytic m_FirebaseAnalytic;
+        //[SerializeField]
+        //private FirebaseAnalytic m_FirebaseAnalytic;
         // wrap other analytic component here
         // misalnya kaya tenjin dll
 
         protected override void Awake()
         {
             base.Awake();
-            m_FirebaseAnalytic.Init();
+            //m_FirebaseAnalytic.Init();
             // init other analytic here
             // setelah buat componentnya, init di sini
         }
@@ -40,11 +39,11 @@ namespace Rush
         }
 
         // kalo bisa pake ini saja, karena global bisa tulis apa saja
-        public void CustomEvent(string eventName, params Parameter[] parameters)
+        /*public void CustomEvent(string eventName, params Parameter[] parameters)
         {
             AnalyticWrapper.LogEvent(eventName, parameters);
         }
 
-        // klo function kurang bisa tambah lagi disini
+        // klo function kurang bisa tambah lagi disini*/
     }
 }

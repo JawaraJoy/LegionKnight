@@ -1,5 +1,3 @@
-using AppsFlyerSDK;
-using LegionKnight;
 using System.Collections.Generic;
 using Unity.Services.LevelPlay;
 using UnityEngine;
@@ -223,7 +221,6 @@ public partial class LevelPlaySample : MonoBehaviour
             {"adnetwork", adNetwork},
             {"adrevenue", adRevenue } 
         };
-        AppsFlyer.sendEvent(AFEventName.OnAdWatched, eventValues);
     }
 
     void RewardedVideoOnAdClickedEvent(LevelPlayAdInfo adInfo)

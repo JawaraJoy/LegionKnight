@@ -1,6 +1,4 @@
-using AppsFlyerSDK;
 using MoreMountains.Tools;
-using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -102,7 +100,6 @@ namespace LegionKnight
                 {"tolevel", m_Level.ToString()},
                 {"levelupdate", levelupDate.ToString()},
             };
-            AppsFlyer.sendEvent(AFEventName.OnPlayerLevelUp, eventValues);
             GetCurrentExpTable(m_Level - 1)?.RewardLevelReached.DirectTakeLoots();
         }
         public void AddOnCurrentExpChange(UnityAction<int> action)
