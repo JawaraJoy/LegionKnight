@@ -1,7 +1,6 @@
 using UnityEngine;
 using LegionKnight;
 using UnityEngine.UI;
-using UnityEditor;
 
 namespace Rush
 {

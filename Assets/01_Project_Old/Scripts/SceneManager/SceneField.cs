@@ -1,6 +1,5 @@
-﻿using Rush;
+using Rush;
 using System.Collections;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
