@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -202,7 +202,7 @@ namespace Spine.Unity.Editor {
 		protected virtual void HandleSelect (object menuItemObject) {
 			SpineDrawerValuePair clickedItem = (SpineDrawerValuePair)menuItemObject;
 			SerializedProperty serializedProperty = clickedItem.property;
-			if (serializedProperty.serializedObject.isEditingMultipleObjects) serializedProperty.stringValue = "oaifnoiasf��123526"; // HACK: to trigger change on multi-editing.
+			if (serializedProperty.serializedObject.isEditingMultipleObjects) serializedProperty.stringValue = "oaifnoiasf°ñ123526"; // HACK: to trigger change on multi-editing.
 			serializedProperty.stringValue = clickedItem.stringValue;
 			serializedProperty.serializedObject.ApplyModifiedProperties();
 		}
@@ -591,17 +591,17 @@ namespace Spine.Unity.Editor {
 					List<Skin.SkinEntry> skinEntries = new List<Skin.SkinEntry>();
 					skin.GetAttachments(i, skinEntries);
 					foreach (Skin.SkinEntry entry in skinEntries) {
-						attachmentNames.Add(entry.Name);
+						attachmentNames.Add(entry.Placeholder);
 					}
 
 					if (skin != defaultSkin) {
 						foreach (Skin.SkinEntry entry in skinEntries) {
-							placeholderNames.Add(entry.Name);
+							placeholderNames.Add(entry.Placeholder);
 						}
 						skinEntries.Clear();
 						defaultSkin.GetAttachments(i, skinEntries);
 						foreach (Skin.SkinEntry entry in skinEntries) {
-							attachmentNames.Add(entry.Name);
+							attachmentNames.Add(entry.Placeholder);
 						}
 					}
 
@@ -651,7 +651,7 @@ namespace Spine.Unity.Editor {
 					BoneData iterator = bone;
 					while ((iterator = iterator.Parent) != null) {
 #if MENU_REQUIRES_DIFFERENT_NESTED_NAME
-						jointName = string.Format("{0} /{1}", iterator.Name, jointName);
+						jointName = string.Format("{0}\u00A0/{1}", iterator.Name, jointName);
 #else
 						jointName = string.Format("{0}/{1}", iterator.Name, jointName);
 #endif

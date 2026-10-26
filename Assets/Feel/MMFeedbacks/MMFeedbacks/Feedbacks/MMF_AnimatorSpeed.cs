@@ -12,6 +12,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you change the speed of a target animator, either once, or instantly and then reset it, or interpolate it over time")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("Animation/Animator Speed")]
 	public class MMF_AnimatorSpeed : MMF_Feedback 
 	{
@@ -59,6 +60,16 @@ namespace MoreMountains.Feedbacks
 		protected Coroutine _coroutine;
 		protected float _initialSpeed;
 		protected float _startedAt;
+
+		protected override void CustomInitialization(MMF_Player owner)
+		{
+			base.CustomInitialization(owner);
+			
+			if (!TargetExists(BoundAnimator, nameof(BoundAnimator)))
+			{
+				return;
+			}
+		}
         
 		/// <summary>
 		/// On Play, checks if an animator is bound and triggers parameters
@@ -74,7 +85,6 @@ namespace MoreMountains.Feedbacks
 
 			if (BoundAnimator == null)
 			{
-				Debug.LogWarning("[Animator Speed Feedback] The animator speed feedback on "+Owner.name+" doesn't have a BoundAnimator, it won't work. You need to specify one in its inspector.");
 				return;
 			}
 

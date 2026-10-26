@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -31,15 +31,78 @@ using System;
 
 namespace Spine {
 
-	/// <summary>
-	/// The applied pose for a bone. This is the <see cref="Bone"/> pose with constraints applied and the world transform computed by
-	/// <see cref="Skeleton.UpdateWorldTransform(Physics)"/>.
+	/// <summary>The applied local pose and world transform for a bone. This is the <see cref="Bone.Pose"/> with constraints applied and the
+	/// world transform computed by <see cref="Skeleton.UpdateWorldTransform(Physics)"/> and <see cref="UpdateWorldTransform(Skeleton)"/>.
+	/// <para>
+	/// If the world transform is changed, call <see cref="UpdateLocalTransform(Skeleton)"/> before using the local transform. The local
+	/// transform may be needed by other code (eg to apply another constraint).</para>
+	/// <para>
+	/// After changing the world transform, call <see cref="UpdateWorldTransform(Skeleton)"/> on every descendant bone. It may be more
+	/// convenient to modify the local transform instead, then call <see cref="Skeleton.UpdateWorldTransform(Physics)"/> to update the world
+	/// transforms for all bones and apply constraints.</para>
 	/// </summary>
-	public class BonePose : BoneLocal, IUpdate {
+	public class BonePose : IPose<BonePose>, IUpdate {
 		public Bone bone;
+
+		internal float x, y, rotation, scaleX, scaleY, shearX, shearY;
+		internal Inherit inherit;
+
 		internal float a, b, worldX;
 		internal float c, d, worldY;
 		internal int world, local;
+
+		public void Set (BonePose pose) {
+			if (pose == null) throw new ArgumentNullException("pose", "pose cannot be null.");
+			x = pose.x;
+			y = pose.y;
+			rotation = pose.rotation;
+			scaleX = pose.scaleX;
+			scaleY = pose.scaleY;
+			shearX = pose.shearX;
+			shearY = pose.shearY;
+			inherit = pose.inherit;
+		}
+
+		/// <summary>The local X translation.</summary>
+		public float X { get { return x; } set { x = value; } }
+		/// <summary>The local Y translation.</summary>
+		public float Y { get { return y; } set { y = value; } }
+
+		/// <summary>Sets local x and y translation.</summary>
+		public void SetPosition (float x, float y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		/// <summary>The local rotation.</summary>
+		public float Rotation { get { return rotation; } set { rotation = value; } }
+
+		/// <summary>The local scaleX.</summary>
+		public float ScaleX { get { return scaleX; } set { scaleX = value; } }
+
+		/// <summary>The local scaleY.</summary>
+		public float ScaleY { get { return scaleY; } set { scaleY = value; } }
+
+		/// <summary>Sets local scaleX and scaleY.</summary>
+		public void SetScale (float scaleX, float scaleY) {
+			this.scaleX = scaleX;
+			this.scaleY = scaleY;
+		}
+
+		/// <summary>Sets local scaleX and scaleY to the same value.</summary>
+		public void SetScale (float scale) {
+			scaleX = scale;
+			scaleY = scale;
+		}
+
+		/// <summary>The local shearX.</summary>
+		public float ShearX { get { return shearX; } set { shearX = value; } }
+
+		/// <summary>The local shearY.</summary>
+		public float ShearY { get { return shearY; } set { shearY = value; } }
+
+		/// <summary>Determines how parent world transforms affect this bone.</summary>
+		public Inherit Inherit { get { return inherit; } set { inherit = value; } }
 
 		/// <summary>
 		/// Called by <see cref="Skeleton.UpdateCache()"/> to compute the world transform, if needed.
@@ -48,7 +111,8 @@ namespace Spine {
 			if (world != skeleton.update) UpdateWorldTransform(skeleton);
 		}
 
-		/// <summary>Computes the world transform using the parent bone's applied pose and this pose. Child bones are not updated.
+		/// <summary>Computes the world transform using the parent bone's world transform and this applied local pose. Child bones are not
+		/// updated.
 		/// <para>
 		/// See <a href="http://esotericsoftware.com/spine-runtime-skeletons#World-transforms">World transforms</a> in the Spine
 		/// Runtimes Guide.</para></summary>
@@ -71,7 +135,7 @@ namespace Spine {
 				return;
 			}
 
-			BonePose parent = bone.parent.applied;
+			BonePose parent = bone.parent.appliedPose;
 			float pa = parent.a, pb = parent.b, pc = parent.c, pd = parent.d;
 			worldX = pa * x + pb * y + parent.worldX;
 			worldY = pc * x + pd * y + parent.worldY;
@@ -88,174 +152,204 @@ namespace Spine {
 				b = pa * lb + pb * ld;
 				c = pc * la + pd * lc;
 				d = pc * lb + pd * ld;
-				return;
+				break;
 			}
 			case Inherit.OnlyTranslation: {
+				float sx = skeleton.scaleX, sy = skeleton.ScaleY;
 				float rx = (rotation + shearX) * MathUtils.DegRad;
 				float ry = (rotation + 90 + shearY) * MathUtils.DegRad;
-				a = (float)Math.Cos(rx) * scaleX;
-				b = (float)Math.Cos(ry) * scaleY;
-				c = (float)Math.Sin(rx) * scaleX;
-				d = (float)Math.Sin(ry) * scaleY;
+				a = (float)Math.Cos(rx) * scaleX * sx;
+				b = (float)Math.Cos(ry) * scaleY * sx;
+				c = (float)Math.Sin(rx) * scaleX * sy;
+				d = (float)Math.Sin(ry) * scaleY * sy;
 				break;
 			}
 			case Inherit.NoRotationOrReflection: {
-				float sx = 1 / skeleton.scaleX, sy = 1 / skeleton.ScaleY;
-				pa *= sx;
-				pc *= sy;
-				float s = pa * pa + pc * pc, prx;
-				if (s > 0.0001f) {
-					s = Math.Abs(pa * pd * sy - pb * sx * pc) / s;
+				float sx = skeleton.scaleX, sy = skeleton.ScaleY, sxi = 1 / sx, syi = 1 / sy;
+				pa *= sxi;
+				pc *= syi;
+				float s = pa * pa + pc * pc, r;
+				if (s > MathUtils.EpsilonSq) {
+					s = Math.Abs(pa * pd * syi - pb * sxi * pc) / s;
 					pb = pc * s;
 					pd = pa * s;
-					prx = MathUtils.Atan2Deg(pc, pa);
+					r = rotation - MathUtils.Atan2Deg(pc, pa);
 				} else {
 					pa = 0;
 					pc = 0;
-					prx = 90 - MathUtils.Atan2Deg(pd, pb);
+					r = rotation - 90 + MathUtils.Atan2Deg(pd, pb);
 				}
-				float rx = (rotation + shearX - prx) * MathUtils.DegRad;
-				float ry = (rotation + shearY - prx + 90) * MathUtils.DegRad;
+				float rx = (r + shearX) * MathUtils.DegRad;
+				float ry = (r + shearY + 90) * MathUtils.DegRad;
 				float la = (float)Math.Cos(rx) * scaleX;
 				float lb = (float)Math.Cos(ry) * scaleY;
 				float lc = (float)Math.Sin(rx) * scaleX;
 				float ld = (float)Math.Sin(ry) * scaleY;
-				a = pa * la - pb * lc;
-				b = pa * lb - pb * ld;
-				c = pc * la + pd * lc;
-				d = pc * lb + pd * ld;
+				a = (pa * la - pb * lc) * sx;
+				b = (pa * lb - pb * ld) * sx;
+				c = (pc * la + pd * lc) * sy;
+				d = (pc * lb + pd * ld) * sy;
 				break;
 			}
 			case Inherit.NoScale:
 			case Inherit.NoScaleOrReflection: {
+				float sx = skeleton.scaleX, sy = skeleton.ScaleY, sxi = 1 / sx, syi = 1 / sy;
 				float r = rotation * MathUtils.DegRad, cos = (float)Math.Cos(r), sin = (float)Math.Sin(r);
-				float za = (pa * cos + pb * sin) / skeleton.scaleX;
-				float zc = (pc * cos + pd * sin) / skeleton.ScaleY;
-				float s = (float)Math.Sqrt(za * za + zc * zc);
-				if (s > 0.00001f) s = 1 / s;
+				float za = (pa * cos + pb * sin) * sxi;
+				float zc = (pc * cos + pd * sin) * syi;
+				float s = 1 / (float)Math.Sqrt(za * za + zc * zc);
 				za *= s;
 				zc *= s;
-				s = (float)Math.Sqrt(za * za + zc * zc);
-				if (inherit == Inherit.NoScale && (pa * pd - pb * pc < 0) != (skeleton.scaleX < 0 != skeleton.ScaleY < 0)) s = -s;
-				r = MathUtils.PI / 2 + MathUtils.Atan2(zc, za);
-				float zb = (float)Math.Cos(r) * s;
-				float zd = (float)Math.Sin(r) * s;
+				float zb = -zc, zd = za;
+				if (inherit == Inherit.NoScale && pa * pd - pb * pc < 0 != (sx < 0 != sy < 0)) {
+					zb = -zb;
+					zd = -zd;
+				}
 				float rx = shearX * MathUtils.DegRad;
 				float ry = (90 + shearY) * MathUtils.DegRad;
 				float la = (float)Math.Cos(rx) * scaleX;
 				float lb = (float)Math.Cos(ry) * scaleY;
 				float lc = (float)Math.Sin(rx) * scaleX;
 				float ld = (float)Math.Sin(ry) * scaleY;
-				a = za * la + zb * lc;
-				b = za * lb + zb * ld;
-				c = zc * la + zd * lc;
-				d = zc * lb + zd * ld;
+				a = (za * la + zb * lc) * sx;
+				b = (za * lb + zb * ld) * sx;
+				c = (zc * la + zd * lc) * sy;
+				d = (zc * lb + zd * ld) * sy;
 				break;
 			}
 			}
-			a *= skeleton.scaleX;
-			b *= skeleton.scaleX;
-			c *= skeleton.ScaleY;
-			d *= skeleton.ScaleY;
 		}
 
 		/// <summary>
 		/// Computes the local transform values from the world transform.
 		/// <para>
-		/// If the world transform is modified (by a constraint, <see cref="RotateWorld(float)"/>, etc) then this method should be called so
-		/// the local transform matches the world transform. The local transform may be needed by other code (eg to apply another
-		/// constraint). </para>
-		/// <para>
-		/// Some information is ambiguous in the world transform, such as - 1,-1 scale versus 180 rotation.The local transform after
+		/// Some information is ambiguous in the world transform, such as -1,-1 scale versus 180 rotation. The local transform after
 		/// calling this method is equivalent to the local transform used to compute the world transform, but may not be identical.
 		/// </para></summary>
 		public void UpdateLocalTransform (Skeleton skeleton) {
 			local = 0;
 			world = skeleton.update;
 
+			float sx = skeleton.scaleX, sy = skeleton.ScaleY;
 			if (bone.parent == null) {
-				x = worldX - skeleton.x;
-				y = worldY - skeleton.y;
-				float a = this.a, b = this.b, c = this.c, d = this.d;
-				rotation = MathUtils.Atan2Deg(c, a);
-				scaleX = (float)Math.Sqrt(a * a + c * c);
-				scaleY = (float)Math.Sqrt(b * b + d * d);
-				shearX = 0;
-				shearY = MathUtils.Atan2Deg(a * b + c * d, a * d - b * c);
+				float sxi = 1 / sx, syi = 1 / sy;
+				x = (worldX - skeleton.x) * sxi;
+				y = (worldY - skeleton.y) * syi;
+				Set(a * sxi, b * sxi, c * syi, d * syi, 0);
 				return;
 			}
 
-			BonePose parent = bone.parent.applied;
+			BonePose parent = bone.parent.appliedPose;
 			float pa = parent.a, pb = parent.b, pc = parent.c, pd = parent.d;
-			float pid = 1 / (pa * pd - pb * pc);
+			float pad = pa * pd - pb * pc, pid = 1 / pad;
 			float ia = pd * pid, ib = pb * pid, ic = pc * pid, id = pa * pid;
 			float dx = worldX - parent.worldX, dy = worldY - parent.worldY;
-			x = (dx * ia - dy * ib);
-			y = (dy * id - dx * ic);
+			x = dx * ia - dy * ib;
+			y = dy * id - dx * ic;
 
-			float ra, rb, rc, rd;
-			if (inherit == Inherit.OnlyTranslation) {
-				ra = a;
-				rb = b;
-				rc = c;
-				rd = d;
-			} else {
-				switch (inherit) {
-				case Inherit.NoRotationOrReflection: {
-					float s = Math.Abs(pa * pd - pb * pc) / (pa * pa + pc * pc);
-					pb = -pc * skeleton.scaleX * s / skeleton.ScaleY;
-					pd = pa * skeleton.ScaleY * s / skeleton.scaleX;
-					pid = 1 / (pa * pd - pb * pc);
-					ia = pd * pid;
-					ib = pb * pid;
-					break;
-				}
-				case Inherit.NoScale:
-				case Inherit.NoScaleOrReflection: {
-					float r = rotation * MathUtils.DegRad, cos = (float)Math.Cos(r), sin = (float)Math.Sin(r);
-					pa = (pa * cos + pb * sin) / skeleton.scaleX;
-					pc = (pc * cos + pd * sin) / skeleton.ScaleY;
-					float s = (float)Math.Sqrt(pa * pa + pc * pc);
-					if (s > 0.00001f) s = 1 / s;
-					pa *= s;
-					pc *= s;
-					s = (float)Math.Sqrt(pa * pa + pc * pc);
-					if (inherit == Inherit.NoScale && pid < 0 != (skeleton.scaleX < 0 != skeleton.ScaleY < 0)) s = -s;
-					r = MathUtils.PI / 2 + MathUtils.Atan2(pc, pa);
-					pb = (float)Math.Cos(r) * s;
-					pd = (float)Math.Sin(r) * s;
-					pid = 1 / (pa * pd - pb * pc);
-					ia = pd * pid;
-					ib = pb * pid;
-					ic = pc * pid;
-					id = pa * pid;
-					break;
-				}
-				}
-				ra = ia * a - ib * c;
-				rb = ia * b - ib * d;
-				rc = id * c - ic * a;
-				rd = id * d - ic * b;
+			switch (inherit) {
+			case Inherit.Normal: {
+				Set(ia * a - ib * c, ia * b - ib * d, id * c - ic * a, id * d - ic * b, 0);
+				break;
 			}
+			case Inherit.OnlyTranslation: {
+				float sxi = 1 / sx, syi = 1 / sy;
+				Set(a * sxi, b * sxi, c * syi, d * syi, 0);
+				break;
+			}
+			case Inherit.NoRotationOrReflection: {
+				float sxi = 1 / sx, syi = 1 / sy;
+				pa *= sxi;
+				pc *= syi;
+				float wa = a * sxi, wb = b * sxi, wc = c * syi, wd = d * syi;
+				float s = 1 / (pa * pa + pc * pc), det = 1 / Math.Abs(pad * sxi * syi);
+				Set((pa * wa + pc * wc) * s, (pa * wb + pc * wd) * s, (pa * wc - pc * wa) * det, (pa * wd - pc * wb) * det,
+					MathUtils.Atan2Deg(pc, pa));
+				break;
+			}
+			case Inherit.NoScale:
+			case Inherit.NoScaleOrReflection: {
+				float sxi = 1 / sx, syi = 1 / sy;
+				float wa = a * sxi, wb = b * sxi, wc = c * syi, wd = d * syi;
+				float tx = pd * a - pb * c, ty = pa * c - pc * a;
+				if (pad < 0) {
+					tx = -tx;
+					ty = -ty;
+				}
+				float r = MathUtils.Atan2Deg(ty, tx);
+				rotation = r;
+				r *= MathUtils.DegRad;
+				float cos = (float)Math.Cos(r), sin = (float)Math.Sin(r);
+				float za = (pa * cos + pb * sin) * sxi;
+				float zc = (pc * cos + pd * sin) * syi;
+				float s = 1 / (float)Math.Sqrt(za * za + zc * zc);
+				za *= s;
+				zc *= s;
+				float si = inherit == Inherit.NoScale && pad < 0 != (sx < 0 != sy < 0) ? -1 : 1;
+				Set(za * wa + zc * wc, za * wb + zc * wd, (za * wc - zc * wa) * si, (za * wd - zc * wb) * si);
+				break;
+			}
+			}
+		}
 
+		private void Set (float ra, float rb, float rc, float rd) {
+			float x = ra * ra + rc * rc, y = rb * rb + rd * rd;
+			if (x > MathUtils.EpsilonSq) {
+				shearX = MathUtils.Atan2Deg(rc, ra);
+				scaleX = (float)Math.Sqrt(x);
+			} else {
+				shearX = 0;
+				scaleX = 0;
+			}
+			scaleY = (float)Math.Sqrt(y);
+			if (y > MathUtils.EpsilonSq) {
+				shearY = MathUtils.Atan2Deg(rd, rb);
+				if (ra * rd - rb * rc < 0) {
+					scaleY = -scaleY;
+					shearY += 90;
+				} else
+					shearY -= 90;
+				if (shearY > 180)
+					shearY -= 360;
+				else if (shearY <= -180) //
+					shearY += 360;
+			} else
+				shearY = 0;
+		}
+
+		private void Set (float ra, float rb, float rc, float rd, float ro) {
 			shearX = 0;
-			scaleX = (float)Math.Sqrt(ra * ra + rc * rc);
-			if (scaleX > 0.0001f) {
-				float det = ra * rd - rb * rc;
-				scaleY = det / scaleX;
-				shearY = -MathUtils.Atan2Deg(ra * rb + rc * rd, det);
-				rotation = MathUtils.Atan2Deg(rc, ra);
+			float x = ra * ra + rc * rc, y = rb * rb + rd * rd;
+			if (x > MathUtils.EpsilonSq) {
+				float r = MathUtils.Atan2Deg(rc, ra);
+				rotation = r + ro;
+				scaleX = (float)Math.Sqrt(x);
+				scaleY = (float)Math.Sqrt(y);
+				if (y > MathUtils.EpsilonSq) {
+					shearY = MathUtils.Atan2Deg(rd, rb);
+					if (ra * rd - rb * rc < 0) {
+						scaleY = -scaleY;
+						shearY += 90 - r;
+					} else
+						shearY -= 90 + r;
+					if (shearY > 180)
+						shearY -= 360;
+					else if (shearY <= -180) //
+						shearY += 360;
+				} else
+					shearY = 0;
 			} else {
 				scaleX = 0;
-				scaleY = (float)Math.Sqrt(rb * rb + rd * rd);
+				scaleY = (float)Math.Sqrt(y);
 				shearY = 0;
-				rotation = 90 - MathUtils.Atan2Deg(rd, rb);
+				rotation = y > MathUtils.EpsilonSq ? MathUtils.Atan2Deg(rd, rb) - 90 + ro : ro;
 			}
 		}
 
 		/// <summary>
-		/// If the world transform has been modified and the local transform no longer matches, <see cref="UpdateLocalTransform(Skeleton)"/>
-		/// is called.
+		/// If the world transform has been modified by constraints and the local transform no longer matches,
+		/// <see cref="UpdateLocalTransform(Skeleton)"/> is called. Call this after <see cref="Skeleton.UpdateWorldTransform(Physics)"/> before
+		/// using the applied local transform.
 		/// </summary>
 		public void ValidateLocalTransform (Skeleton skeleton) {
 			if (local == skeleton.update) UpdateLocalTransform(skeleton);
@@ -264,41 +358,43 @@ namespace Spine {
 		internal void ModifyLocal (Skeleton skeleton) {
 			if (local == skeleton.update) UpdateLocalTransform(skeleton);
 			world = 0;
-			ResetWorld(skeleton.update);
+			ResetWorld(skeleton, skeleton.update);
 		}
 
-		internal void ModifyWorld (int update) {
+		internal void ModifyWorld (Skeleton skeleton) {
+			int update = skeleton.update;
 			local = update;
 			world = update;
-			ResetWorld(update);
+			ResetWorld(skeleton, update);
 		}
 
-		internal void ResetWorld (int update) {
+		private void ResetWorld (Skeleton skeleton, int update) {
 			Bone[] children = bone.children.Items;
 			for (int i = 0, n = bone.children.Count; i < n; i++) {
-				BonePose child = children[i].applied;
+				BonePose child = children[i].appliedPose;
 				if (child.world == update) {
+					if (child.local == update) child.UpdateLocalTransform(skeleton);
 					child.world = 0;
-					child.local = 0;
-					child.ResetWorld(update);
+					child.ResetWorld(skeleton, update);
 				}
 			}
 		}
 
-		/// <summary>Part of the world transform matrix for the X axis. If changed, <see cref="UpdateLocalTransform(Skeleton)"/> should be called.</summary>
+		/// <summary>The world transform <c>[a b][c d]</c> x-axis x component.</summary>
 		public float A { get { return a; } set { a = value; } }
-		/// <summary>Part of the world transform matrix for the Y axis. If changed, <see cref="UpdateLocalTransform(Skeleton)"/> should be called.</summary>
+		/// <summary>The world transform <c>[a b][c d]</c> y-axis x component.</summary>
 		public float B { get { return b; } set { b = value; } }
-		/// <summary>Part of the world transform matrix for the X axis. If changed, <see cref="UpdateLocalTransform(Skeleton)"/> should be called.</summary>
+		/// <summary>The world transform <c>[a b][c d]</c> x-axis y component.</summary>
 		public float C { get { return c; } set { c = value; } }
-		/// <summary>Part of the world transform matrix for the Y axis. If changed, <see cref="UpdateLocalTransform(Skeleton)"/> should be called.</summary>
+		/// <summary>The world transform <c>[a b][c d]</c> y-axis y component.</summary>
 		public float D { get { return d; } set { d = value; } }
 
-		/// <summary>The world X position. If changed, <see cref="UpdateLocalTransform(Skeleton)"/> should be called.</summary>
+		/// <summary>The world X position.</summary>
 		public float WorldX { get { return worldX; } set { worldX = value; } }
-		/// <summary>The world Y position. If changed, <see cref="UpdateLocalTransform(Skeleton)"/> should be called.</summary>
+		/// <summary>The world Y position.</summary>
 		public float WorldY { get { return worldY; } set { worldY = value; } }
-		/// <summary>The world rotation for the X axis, calculated using <see cref="a"/> and <see cref="c"/>.</summary>
+		/// <summary>The world rotation for the X axis, calculated using <see cref="a"/> and <see cref="c"/>. This is the direction the
+		/// bone is pointing.</summary>
 		public float WorldRotationX { get { return MathUtils.Atan2Deg(c, a); } }
 		/// <summary>The world rotation for the Y axis, calculated using <see cref="b"/> and <see cref="d"/>.</summary>
 		public float WorldRotationY { get { return MathUtils.Atan2Deg(d, b); } }
@@ -329,7 +425,7 @@ namespace Spine {
 				parentX = worldX;
 				parentY = worldY;
 			} else {
-				bone.parent.applied.WorldToLocal(worldX, worldY, out parentX, out parentY);
+				bone.parent.appliedPose.WorldToLocal(worldX, worldY, out parentX, out parentY);
 			}
 		}
 
@@ -339,7 +435,7 @@ namespace Spine {
 				worldX = parentX;
 				worldY = parentY;
 			} else {
-				bone.parent.applied.LocalToWorld(parentX, parentY, out worldX, out worldY);
+				bone.parent.appliedPose.LocalToWorld(parentX, parentY, out worldX, out worldY);
 			}
 		}
 
@@ -357,12 +453,7 @@ namespace Spine {
 			return MathUtils.Atan2Deg(cos * c + sin * d, cos * a + sin * b);
 		}
 
-		/// <summary>
-		/// Rotates the world transform the specified amount.
-		/// <para>
-		/// After changes are made to the world transform, <see cref="UpdateLocalTransform(Skeleton)"/> should be called on this bone and any
-		/// child bones, recursively.
-		/// </para></summary>
+		/// <summary>Rotates the world transform the specified amount.</summary>
 		public void RotateWorld (float degrees) {
 			degrees *= MathUtils.DegRad;
 			float sin = (float)Math.Sin(degrees), cos = (float)Math.Cos(degrees);

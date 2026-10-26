@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -276,7 +276,7 @@ namespace Spine.Unity.Editor {
 		public static void DrawPaths (Transform transform, Skeleton skeleton) {
 			if (UnityEngine.Event.current.type != EventType.Repaint) return;
 
-			foreach (Slot s in skeleton.DrawOrder) {
+			foreach (Slot s in skeleton.DrawOrder.AppliedPose) {
 				PathAttachment p = s.AppliedPose.Attachment as PathAttachment;
 				if (p != null) SpineHandles.DrawPath(skeleton, s, p, transform, true);
 			}
@@ -552,7 +552,51 @@ namespace Spine.Unity.Editor {
 				Undo.RecordObject(skeletonGraphic, "Change Offset to Pivot");
 				Vector3 localScaledOffset = skeletonGraphic.transform.InverseTransformPoint(newWorldSpacePosition);
 				skeletonGraphic.SetScaledPivotOffset(localScaledOffset);
-				skeletonGraphic.UpdateMeshToInstructions();
+
+				skeletonGraphic.UpdateBuffersToInstructions(true);
+				skeletonGraphic.UpdateMeshAndMaterialsToBuffers();
+			}
+			Handles.DrawSolidDisc(newWorldSpacePosition, skeletonGraphic.transform.forward, discSize);
+			Handles.color = savedColor;
+		}
+
+		public static void DrawPivotHandle (SkeletonGraphic skeletonGraphic, Color color) {
+			// Note: not limiting to current.type == EventType.Repaint because the FreeMoveHandle requires interaction.
+
+			float handleSize = HandleUtility.GetHandleSize(skeletonGraphic.transform.position);
+			float controlSize = handleSize * 0.15f;
+			float discSize = handleSize * 0.05f;
+			Vector3 snap = Vector3.zero;
+			Color savedColor = Handles.color;
+
+			Handles.color = color;
+			Vector3 worldSpacePivot = skeletonGraphic.rectTransform.position;
+			EditorGUI.BeginChangeCheck();
+
+#if FREE_MOVE_HANDLE_HAS_NO_ROTATION_PARAM
+			Vector3 newWorldSpacePosition = Handles.FreeMoveHandle(worldSpacePivot, controlSize, snap, Handles.CircleHandleCap);
+#else
+			Vector3 newWorldSpacePosition = Handles.FreeMoveHandle(worldSpacePivot, Quaternion.identity, controlSize, snap, Handles.CircleHandleCap);
+#endif
+			if (EditorGUI.EndChangeCheck()) {
+				RectTransform rectTransform = skeletonGraphic.rectTransform;
+				Undo.RecordObjects(new UnityEngine.Object[] { skeletonGraphic, rectTransform }, "Change Pivot");
+				Vector3 localPivot = rectTransform.InverseTransformPoint(newWorldSpacePosition);
+
+				Rect rect = rectTransform.rect;
+				Vector2 oldPivot = rectTransform.pivot;
+				Vector2 clampedPivot = Rect.PointToNormalized(rect, localPivot);
+				Vector2 localMovement = Vector2.Scale(clampedPivot - oldPivot, rect.size);
+				rectTransform.pivot = clampedPivot;
+				rectTransform.position = worldSpacePivot + rectTransform.TransformVector(localMovement);
+				newWorldSpacePosition = rectTransform.position;
+
+				Vector2 scaledOffset = skeletonGraphic.GetScaledPivotOffset();
+				scaledOffset -= localMovement;
+				skeletonGraphic.SetScaledPivotOffset(scaledOffset);
+
+				skeletonGraphic.UpdateBuffersToInstructions(true);
+				skeletonGraphic.UpdateMeshAndMaterialsToBuffers();
 			}
 			Handles.DrawSolidDisc(newWorldSpacePosition, skeletonGraphic.transform.forward, discSize);
 			Handles.color = savedColor;

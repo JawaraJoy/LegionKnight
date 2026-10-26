@@ -11,6 +11,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you apply forces and torques (relative or not) to a Rigidbody.")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("GameObject/Rigidbody")]
 	public class MMF_Rigidbody : MMF_Feedback
 	{
@@ -24,8 +25,11 @@ namespace MoreMountains.Feedbacks
 		public override string RequiresSetupText { get { return "This feedback requires that a TargetRigidbody be set to be able to work properly. You can set one below."; } }
 		#endif
 		public enum Modes { AddForce, AddRelativeForce, AddTorque, AddRelativeTorque }
+		public enum Spaces { World, Local }
 		public override bool HasAutomatedTargetAcquisition => true;
 		protected override void AutomateTargetAcquisition() => TargetRigidbody = FindAutomatedTarget<Rigidbody>();
+		public override bool HasAutomatedMultipleTargetAcquisition => true;
+		protected override void AutomateMultipleTargetAcquisition() => ExtraTargetRigidbodies = FindAutomatedTargets<Rigidbody>(ExtraTargetRigidbodies, TargetRigidbody);
 
 		[MMFInspectorGroup("Rigidbody", true, 61, true)]
 		/// the rigidbody to target on play
@@ -37,6 +41,9 @@ namespace MoreMountains.Feedbacks
 		/// the selected mode for this feedback
 		[Tooltip("the selected mode for this feedback")]
 		public Modes Mode = Modes.AddForce;
+		/// the selected space for this feedback
+		[Tooltip("the selected space for this feedback")]
+		public Spaces Space = Spaces.World;
 		/// the min force or torque to apply
 		[Tooltip("the min force or torque to apply")]
 		public Vector3 MinForce;
@@ -49,6 +56,9 @@ namespace MoreMountains.Feedbacks
 		/// if this is true, the velocity of the rigidbody will be reset before applying the new force
 		[Tooltip("if this is true, the velocity of the rigidbody will be reset before applying the new force")]
 		public bool ResetVelocityOnPlay = false;
+		/// if this is true, the angular velocity of the rigidbody will be reset before applying the new force
+		[Tooltip("if this is true, the angular velocity of the rigidbody will be reset before applying the new force")]
+		public bool ResetAngularVelocityOnPlay = false;
 		/// if this is true, the magnitude of the min/max force will be applied in the target transform's forward direction
 		[Tooltip("if this is true, the magnitude of the min/max force will be applied in the target transform's forward direction")] 
 		public bool ForwardForce = false;
@@ -97,9 +107,19 @@ namespace MoreMountains.Feedbacks
 				rb.linearVelocity = Vector3.zero;
 			}
 
+			if (ResetAngularVelocityOnPlay)
+			{
+				rb.angularVelocity = Vector3.zero;
+			}
+
 			if (ForwardForce)
 			{
 				_force = _force.magnitude * rb.transform.forward;
+			}
+
+			if (Space == Spaces.Local)
+			{
+				_force = rb.transform.TransformDirection(_force);
 			}
 			
 			switch (Mode)

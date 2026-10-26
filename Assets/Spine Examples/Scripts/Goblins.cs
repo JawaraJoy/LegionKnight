@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -47,7 +47,7 @@ namespace Spine.Unity.Examples {
 		}
 
 		// This is called after the animation is applied to the skeleton and can be used to adjust the bones dynamically.
-		public void UpdateLocal (ISkeletonAnimation skeletonRenderer) {
+		public void UpdateLocal (ISkeletonRenderer skeletonRenderer) {
 			headBone.Pose.Rotation += extraRotation;
 		}
 

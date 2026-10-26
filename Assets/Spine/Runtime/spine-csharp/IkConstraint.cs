@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -30,11 +30,10 @@
 using System;
 
 namespace Spine {
-
 	/// <summary>
 	/// <para>
-	/// Stores the current pose for an IK constraint. An IK constraint adjusts the rotation of 1 or 2 constrained bones so the tip of
-	/// the last bone is as close to the target bone as possible.</para>
+	/// Adjusts the local rotation of 1 or 2 constrained bones so the world position of the tip of the last bone is as close to the
+	/// target bone as possible.</para>
 	/// <para>
 	/// See <a href="http://esotericsoftware.com/spine-ik-constraints">IK constraints</a> in the Spine User Guide.</para>
 	/// </summary>
@@ -48,7 +47,7 @@ namespace Spine {
 
 			bones = new ExposedList<BonePose>(data.bones.Count);
 			foreach (BoneData boneData in data.bones)
-				bones.Add(skeleton.bones.Items[boneData.index].constrained);
+				bones.Add(skeleton.bones.Items[boneData.index].constrainedPose);
 
 			target = skeleton.bones.Items[data.target.index];
 		}
@@ -61,16 +60,16 @@ namespace Spine {
 
 		/// <summary>Applies the constraint to the constrained bones.</summary>
 		override public void Update (Skeleton skeleton, Physics physics) {
-			IkConstraintPose p = applied;
+			IkConstraintPose p = appliedPose;
 			if (p.mix == 0) return;
-			BonePose target = this.target.applied;
+			BonePose target = this.target.appliedPose;
 			BonePose[] bones = this.bones.Items;
 			switch (this.bones.Count) {
 			case 1:
-				Apply(skeleton, bones[0], target.worldX, target.worldY, p.compress, p.stretch, data.uniform, p.mix);
+				Apply(skeleton, bones[0], target.worldX, target.worldY, p.compress, p.stretch, data.scaleY, p.mix);
 				break;
 			case 2:
-				Apply(skeleton, bones[0], bones[1], target.worldX, target.worldY, p.bendDirection, p.stretch, data.uniform,
+				Apply(skeleton, bones[0], bones[1], target.worldX, target.worldY, p.bendDirection, p.stretch, data.scaleY,
 					p.softness, p.mix);
 				break;
 			}
@@ -102,10 +101,10 @@ namespace Spine {
 
 		/// <summary>Applies 1 bone IK. The target is specified in the world coordinate system.</summary>
 		static public void Apply (Skeleton skeleton, BonePose bone, float targetX, float targetY, bool compress, bool stretch,
-			bool uniform, float mix) {
+			ScaleYMode scaleY, float mix) {
 			if (bone == null) throw new ArgumentNullException("bone", "bone cannot be null.");
 			bone.ModifyLocal(skeleton);
-			BonePose p = bone.bone.parent.applied;
+			BonePose p = bone.bone.parent.appliedPose;
 
 			float pa = p.a, pb = p.b, pc = p.c, pd = p.d;
 			float rotationIK = -bone.shearX - bone.rotation, tx, ty;
@@ -115,7 +114,7 @@ namespace Spine {
 				ty = (targetY - bone.worldY) * Math.Sign(skeleton.ScaleY);
 				break;
 			case Inherit.NoRotationOrReflection: {
-				float s = Math.Abs(pa * pd - pb * pc) / Math.Max(0.0001f, pa * pa + pc * pc);
+				float s = Math.Abs(pa * pd - pb * pc) / Math.Max(MathUtils.Epsilon, pa * pa + pc * pc);
 				float sa = pa / skeleton.scaleX;
 				float sc = pc / skeleton.ScaleY;
 				pb = -sc * s * skeleton.scaleX;
@@ -126,7 +125,7 @@ namespace Spine {
 			default: {
 				float x = targetX - p.worldX, y = targetY - p.worldY;
 				float d = pa * pd - pb * pc;
-				if (Math.Abs(d) <= 0.0001f) {
+				if (Math.Abs(d) <= MathUtils.Epsilon) {
 					tx = 0;
 					ty = 0;
 				} else {
@@ -141,7 +140,7 @@ namespace Spine {
 			if (bone.scaleX < 0) rotationIK += 180;
 			if (rotationIK > 180)
 				rotationIK -= 360;
-			else if (rotationIK < -180) //
+			else if (rotationIK <= -180) //
 				rotationIK += 360;
 			bone.rotation += rotationIK * mix;
 			if (compress || stretch) {
@@ -153,12 +152,19 @@ namespace Spine {
 					break;
 				}
 				float b = bone.bone.data.length * bone.scaleX;
-				if (b > 0.0001f) {
+				if (b > MathUtils.Epsilon) {
 					float dd = tx * tx + ty * ty;
 					if ((compress && dd < b * b) || (stretch && dd > b * b)) {
 						float s = ((float)Math.Sqrt(dd) / b - 1) * mix + 1;
 						bone.scaleX *= s;
-						if (uniform) bone.scaleY *= s;
+						switch (scaleY) {
+						case ScaleYMode.Uniform:
+							bone.scaleY *= s;
+							break;
+						case ScaleYMode.Volume:
+							bone.scaleY /= s < 0.7f ? 0.25f + 0.642857f * s : s;
+							break;
+						}
 					}
 				}
 			}
@@ -167,7 +173,7 @@ namespace Spine {
 		/// <summary>Applies 2 bone IK. The target is specified in the world coordinate system.</summary>
 		/// <param name="child">A direct descendant of the parent bone.</param>
 		static public void Apply (Skeleton skeleton, BonePose parent, BonePose child, float targetX, float targetY, int bendDir,
-			bool stretch, bool uniform, float softness, float mix) {
+			bool stretch, ScaleYMode scaleY, float softness, float mix) {
 			if (parent == null) throw new ArgumentNullException("parent", "parent cannot be null.");
 			if (child == null) throw new ArgumentNullException("child", "child cannot be null.");
 			if (parent.inherit != Inherit.Normal || child.inherit != Inherit.Normal) return;
@@ -193,7 +199,7 @@ namespace Spine {
 			} else
 				os2 = 0;
 			float cwx, cwy, a = parent.a, b = parent.b, c = parent.c, d = parent.d;
-			bool u = Math.Abs(psx - psy) <= 0.0001f;
+			bool u = Math.Abs(psx - psy) <= MathUtils.Epsilon;
 			if (!u || stretch) {
 				child.y = 0;
 				cwx = a * child.x + parent.worldX;
@@ -202,17 +208,17 @@ namespace Spine {
 				cwx = a * child.x + b * child.y + parent.worldX;
 				cwy = c * child.x + d * child.y + parent.worldY;
 			}
-			BonePose pp = parent.bone.parent.applied;
+			BonePose pp = parent.bone.parent.appliedPose;
 			a = pp.a;
 			b = pp.b;
 			c = pp.c;
 			d = pp.d;
 			float id = a * d - b * c, x = cwx - pp.worldX, y = cwy - pp.worldY;
-			id = Math.Abs(id) <= 0.0001f ? 0 : 1 / id;
+			id = Math.Abs(id) <= MathUtils.Epsilon ? 0 : 1 / id;
 			float dx = (x * d - y * b) * id - px, dy = (y * a - x * c) * id - py;
 			float l1 = (float)Math.Sqrt(dx * dx + dy * dy), l2 = child.bone.data.length * csx, a1, a2;
-			if (l1 < 0.0001f) {
-				Apply(skeleton, parent, targetX, targetY, false, stretch, false, mix);
+			if (l1 < MathUtils.Epsilon) {
+				Apply(skeleton, parent, targetX, targetY, false, stretch, ScaleYMode.None, mix);
 				child.rotation = 0;
 				return;
 			}
@@ -243,7 +249,14 @@ namespace Spine {
 					if (stretch) {
 						a = ((float)Math.Sqrt(dd) / (l1 + l2) - 1) * mix + 1;
 						parent.scaleX *= a;
-						if (uniform) parent.scaleY *= a;
+						switch (scaleY) {
+						case ScaleYMode.Uniform:
+							parent.scaleY *= a;
+							break;
+						case ScaleYMode.Volume:
+							parent.scaleY /= a < 0.7f ? 0.25f + 0.642857f * a : a;
+							break;
+						}
 					}
 				} else
 					a2 = (float)Math.Acos(cos) * bendDir;
@@ -305,13 +318,13 @@ namespace Spine {
 			a1 = (a1 - os) * MathUtils.RadDeg + os1 - parent.rotation;
 			if (a1 > 180)
 				a1 -= 360;
-			else if (a1 < -180)
+			else if (a1 <= -180)
 				a1 += 360;
 			parent.rotation += a1 * mix;
 			a2 = ((a2 + os) * MathUtils.RadDeg - child.shearX) * s2 + os2 - child.rotation;
 			if (a2 > 180)
 				a2 -= 360;
-			else if (a2 < -180)
+			else if (a2 <= -180)
 				a2 += 360;
 			child.rotation += a2 * mix;
 		}

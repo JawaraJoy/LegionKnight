@@ -18,6 +18,7 @@ namespace MoreMountains.Feedbacks
 	[ExecuteAlways]
 	[AddComponentMenu("")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks.MMTools")]
+	[System.Serializable]
 	[FeedbackPath("Audio/MMSoundManager Sound")]
 	[FeedbackHelp("This feedback will let you play a sound via the MMSoundManager. You will need a game object in your scene with a MMSoundManager object on it for this to work.")]
 	public class MMF_MMSoundManagerSound : MMF_Feedback
@@ -32,7 +33,7 @@ namespace MoreMountains.Feedbacks
 		public override bool EvaluateRequiresSetup()
 		{
 			bool requiresSetup = false;
-			if (Sfx == null)
+			if ((Sfx == null) && (AudioResourceToPlay == null))
 			{
 				requiresSetup = true;
 			}
@@ -127,6 +128,10 @@ namespace MoreMountains.Feedbacks
 		/// the track on which to play the sound. Pick the one that matches the nature of your sound
 		[Tooltip("the track on which to play the sound. Pick the one that matches the nature of your sound")]
 		public MMSoundManager.MMSoundManagerTracks MmSoundManagerTrack = MMSoundManager.MMSoundManagerTracks.Sfx;
+		/// if MmSoundManagerTrack is set to Other, the custom track SO to route through
+		[Tooltip("if MmSoundManagerTrack is set to Other, the custom track SO to route through")]
+		[MMFEnumCondition("MmSoundManagerTrack", (int)MMSoundManager.MMSoundManagerTracks.Other)]
+		public MMSoundManagerCustomTrackSO CustomTrack;
 		/// the ID of the sound. This is useful if you plan on using sound control feedbacks on it afterwards. 
 		[Tooltip("the ID of the sound. This is useful if you plan on using sound control feedbacks on it afterwards.")]
 		public int ID = 0;
@@ -145,6 +150,9 @@ namespace MoreMountains.Feedbacks
 		/// whether or not this sound should play if the same sound clip is already playing
 		[Tooltip("whether or not this sound should play if the same sound clip is already playing")]
 		public bool DoNotPlayIfClipAlreadyPlaying = false;
+		/// the maximum amount of instances of this sound allowed to play at once. use -1 for unlimited concurrent plays 
+		[Tooltip("the maximum amount of instances of this sound allowed to play at once. use -1 for unlimited concurrent plays")]
+		public int MaximumConcurrentInstances = 3;
 		/// if this is true, this sound will stop playing when stopping the feedback
 		[Tooltip("if this is true, this sound will stop playing when stopping the feedback")]
 		public bool StopSoundOnFeedbackStop = false;
@@ -320,7 +328,7 @@ namespace MoreMountains.Feedbacks
 		{
 			base.CustomInitialization(owner);
 			HandleSO();
-
+			
 			_lastPlayedClip = null;
 
 			if (RandomSfx == null)
@@ -455,23 +463,31 @@ namespace MoreMountains.Feedbacks
 			PlaybackTime = SoundDataSO.PlaybackTime;
 			PlaybackDuration = SoundDataSO.PlaybackDuration;
 			MmSoundManagerTrack = SoundDataSO.MmSoundManagerTrack;
+			CustomTrack = SoundDataSO.CustomTrack;
 			ID = SoundDataSO.ID;
 			AudioGroup = SoundDataSO.AudioGroup;
 			RecycleAudioSource = SoundDataSO.RecycleAudioSource;
 			Loop = SoundDataSO.Loop;
 			Persistent = SoundDataSO.Persistent;
 			DoNotPlayIfClipAlreadyPlaying = SoundDataSO.DoNotPlayIfClipAlreadyPlaying;
+			MaximumConcurrentInstances = SoundDataSO.MaximumConcurrentInstances;
 			StopSoundOnFeedbackStop = SoundDataSO.StopSoundOnFeedbackStop;
-			FadeIn = SoundDataSO.Fade;
-			FadeInInitialVolume = SoundDataSO.FadeInitialVolume;
-			FadeInDuration = SoundDataSO.FadeDuration;
-			FadeInTween = SoundDataSO.FadeTween;
+			FadeIn = SoundDataSO.FadeIn;
+			FadeInInitialVolume = SoundDataSO.FadeInInitialVolume;
+			FadeInDuration = SoundDataSO.FadeInDuration;
+			FadeInTween = SoundDataSO.FadeInTween;
+			FadeOutOnStop = SoundDataSO.FadeOutOnStop;
+			FadeOutDuration = SoundDataSO.FadeOutDuration;
+			FadeOutTween = SoundDataSO.FadeOutTween;
 			SoloSingleTrack = SoundDataSO.SoloSingleTrack;
 			SoloAllTracks = SoundDataSO.SoloAllTracks;
 			AutoUnSoloOnEnd = SoundDataSO.AutoUnSoloOnEnd;
 			PanStereo = SoundDataSO.PanStereo;
 			SpatialBlend = SoundDataSO.SpatialBlend;
-			AttachToTransform = SoundDataSO.AttachToTransform;
+			if (AttachToTransform == null)
+			{
+				AttachToTransform = SoundDataSO.AttachToTransform;	
+			}
 			BypassEffects = SoundDataSO.BypassEffects;
 			BypassListenerEffects = SoundDataSO.BypassListenerEffects;
 			BypassReverbZones = SoundDataSO.BypassReverbZones;
@@ -517,6 +533,14 @@ namespace MoreMountains.Feedbacks
 					return;
 				}
 			}
+
+			if (MaximumConcurrentInstances >= 0)
+			{
+				if (MMSoundManager.Instance.CurrentlyPlayingCount(sfx) >= MaximumConcurrentInstances)
+				{
+					return;
+				}
+			}
             
 			float volume = Random.Range(MinVolume, MaxVolume);
             
@@ -532,6 +556,7 @@ namespace MoreMountains.Feedbacks
 
 			_options.AudioResourceToPlay = audioResource;
 			_options.MmSoundManagerTrack = MmSoundManagerTrack;
+			_options.CustomTrack = CustomTrack;
 			_options.Location = position;
 			_options.Loop = Loop;
 			_options.Volume = volume;

@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -30,17 +30,14 @@
 using System;
 
 namespace Spine {
-
 	/// <summary>
 	/// <para>
-	/// Stores the current pose for a path constraint. A path constraint adjusts the rotation, translation, and scale of the
-	/// constrained bones so they follow a <see cref="PathAttachment"/>.</para>
+	/// Adjusts the rotation, translation, and scale of the constrained bones so they follow a <see cref="PathAttachment"/>.</para>
 	/// <para>
 	/// See <a href="http://esotericsoftware.com/spine-path-constraints">Path constraints</a> in the Spine User Guide.</para>
 	/// </summary>
 	public class PathConstraint : Constraint<PathConstraint, PathConstraintData, PathConstraintPose> {
 		const int NONE = -1, BEFORE = -2, AFTER = -3;
-		const float Epsilon = 0.00001f;
 
 		internal readonly ExposedList<BonePose> bones;
 		internal Slot slot;
@@ -55,7 +52,7 @@ namespace Spine {
 
 			bones = new ExposedList<BonePose>(data.Bones.Count);
 			foreach (BoneData boneData in data.bones)
-				bones.Add(skeleton.bones.Items[boneData.index].constrained);
+				bones.Add(skeleton.bones.Items[boneData.index].constrainedPose);
 
 			slot = skeleton.slots.Items[data.slot.index];
 		}
@@ -72,10 +69,10 @@ namespace Spine {
 		}
 
 		override public void Update (Skeleton skeleton, Physics physics) {
-			PathAttachment pathAttachment = slot.applied.Attachment as PathAttachment;
+			PathAttachment pathAttachment = slot.appliedPose.Attachment as PathAttachment;
 			if (pathAttachment == null) return;
 
-			PathConstraintPose p = applied;
+			PathConstraintPose p = appliedPose;
 			float mixRotate = p.mixRotate, mixX = p.mixX, mixY = p.mixY;
 			if (mixRotate == 0 && mixX == 0 && mixY == 0) return;
 
@@ -83,7 +80,7 @@ namespace Spine {
 			bool tangents = data.rotateMode == RotateMode.Tangent, scale = data.rotateMode == RotateMode.ChainScale;
 			int boneCount = this.bones.Count, spacesCount = tangents ? boneCount : boneCount + 1;
 			BonePose[] bonesItems = this.bones.Items;
-			float[] spaces = this.spaces.Resize(spacesCount).Items, lengths = scale ? this.lengths.Resize(boneCount).Items : null;
+			float[] spaces = this.spaces.EnsureSize(spacesCount).Items, lengths = scale ? this.lengths.EnsureSize(boneCount).Items : null;
 			float spacing = p.spacing;
 			switch (data.spacingMode) {
 			case SpacingMode.Percent:
@@ -102,7 +99,7 @@ namespace Spine {
 				for (int i = 0, n = spacesCount - 1; i < n;) {
 					BonePose bone = bonesItems[i];
 					float setupLength = bone.bone.data.length;
-					if (setupLength < Epsilon) {
+					if (setupLength < MathUtils.Epsilon) {
 						if (scale) lengths[i] = 0;
 						spaces[++i] = spacing;
 					} else {
@@ -125,7 +122,7 @@ namespace Spine {
 				for (int i = 0, n = spacesCount - 1; i < n;) {
 					BonePose bone = bonesItems[i];
 					float setupLength = bone.bone.data.length;
-					if (setupLength < PathConstraint.Epsilon) {
+					if (setupLength < MathUtils.Epsilon) {
 						if (scale) lengths[i] = 0;
 						spaces[++i] = spacing;
 					} else {
@@ -146,17 +143,18 @@ namespace Spine {
 				tip = data.rotateMode == RotateMode.Chain;
 			} else {
 				tip = false;
-				BonePose bone = slot.bone.applied;
+				BonePose bone = slot.bone.appliedPose;
 				offsetRotation *= bone.a * bone.d - bone.b * bone.c > 0 ? MathUtils.DegRad : -MathUtils.DegRad;
 			}
-			for (int i = 0, ip = 3, u = skeleton.update; i < boneCount; i++, ip += 3) {
+			for (int i = 0, ip = 3; i < boneCount; i++, ip += 3) {
 				BonePose bone = bonesItems[i];
+				bone.ModifyWorld(skeleton);
 				bone.worldX += (boneX - bone.worldX) * mixX;
 				bone.worldY += (boneY - bone.worldY) * mixY;
 				float x = positions[ip], y = positions[ip + 1], dx = x - boneX, dy = y - boneY;
 				if (scale) {
 					float length = lengths[i];
-					if (length >= Epsilon) {
+					if (length >= MathUtils.Epsilon) {
 						float s = ((float)Math.Sqrt(dx * dx + dy * dy) / length - 1) * mixRotate + 1;
 						bone.a *= s;
 						bone.c *= s;
@@ -168,7 +166,7 @@ namespace Spine {
 					float a = bone.a, b = bone.b, c = bone.c, d = bone.d, r, cos, sin;
 					if (tangents)
 						r = positions[ip - 1];
-					else if (spaces[i + 1] < Epsilon)
+					else if (spaces[i + 1] < MathUtils.Epsilon)
 						r = positions[ip + 2];
 					else
 						r = MathUtils.Atan2(dy, dx);
@@ -193,14 +191,13 @@ namespace Spine {
 					bone.c = sin * a + cos * c;
 					bone.d = sin * b + cos * d;
 				}
-				bone.ModifyWorld(u);
 			}
 		}
 
 		float[] ComputeWorldPositions (Skeleton skeleton, PathAttachment path, int spacesCount, bool tangents) {
 			Slot slot = this.slot;
-			float position = applied.position;
-			float[] spaces = this.spaces.Items, output = this.positions.Resize(spacesCount * 3 + 2).Items, world;
+			float position = appliedPose.position;
+			float[] spaces = this.spaces.Items, output = this.positions.EnsureSize(spacesCount * 3 + 2).Items, world;
 			bool closed = path.Closed;
 			int verticesLength = path.WorldVerticesLength, curveCount = verticesLength / 6, prevCurve = NONE;
 
@@ -224,7 +221,7 @@ namespace Spine {
 					break;
 				}
 
-				world = this.world.Resize(8).Items;
+				world = this.world.EnsureSize(8).Items;
 				for (int i = 0, o = 0, curve = 0; i < spacesCount; i++, o += 3) {
 					float space = spaces[i] * multiplier;
 					position += space;
@@ -271,7 +268,7 @@ namespace Spine {
 							path.ComputeWorldVertices(skeleton, slot, curve * 6 + 2, 8, world, 0, 2);
 					}
 					AddCurvePosition(p, world[0], world[1], world[2], world[3], world[4], world[5], world[6], world[7], output, o,
-						tangents || (i > 0 && space < Epsilon));
+						tangents || (i > 0 && space < MathUtils.Epsilon));
 				}
 				return output;
 			}
@@ -279,7 +276,7 @@ namespace Spine {
 			// World vertices.
 			if (closed) {
 				verticesLength += 2;
-				world = this.world.Resize(verticesLength).Items;
+				world = this.world.EnsureSize(verticesLength).Items;
 				path.ComputeWorldVertices(skeleton, slot, 2, verticesLength - 4, world, 0, 2);
 				path.ComputeWorldVertices(skeleton, slot, 0, 2, world, verticesLength - 4, 2);
 				world[verticesLength - 2] = world[0];
@@ -287,12 +284,12 @@ namespace Spine {
 			} else {
 				curveCount--;
 				verticesLength -= 4;
-				world = this.world.Resize(verticesLength).Items;
+				world = this.world.EnsureSize(verticesLength).Items;
 				path.ComputeWorldVertices(skeleton, slot, 2, verticesLength, world, 0, 2);
 			}
 
 			// Curve lengths.
-			float[] curves = this.curves.Resize(curveCount).Items;
+			float[] curves = this.curves.EnsureSize(curveCount).Items;
 			pathLength = 0;
 			float x1 = world[0], y1 = world[1], cx1 = 0, cy1 = 0, cx2 = 0, cy2 = 0, x2 = 0, y2 = 0;
 			float tmpx, tmpy, dddfx, dddfy, ddfx, ddfy, dfx, dfy;
@@ -429,7 +426,7 @@ namespace Spine {
 					}
 					break;
 				}
-				AddCurvePosition(p * 0.1f, x1, y1, cx1, cy1, cx2, cy2, x2, y2, output, o, tangents || (i > 0 && space < PathConstraint.Epsilon));
+				AddCurvePosition(p * 0.1f, x1, y1, cx1, cy1, cx2, cy2, x2, y2, output, o, tangents || (i > 0 && space < MathUtils.Epsilon));
 			}
 			return output;
 		}
@@ -450,7 +447,7 @@ namespace Spine {
 
 		static void AddCurvePosition (float p, float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2,
 			float[] output, int o, bool tangents) {
-			if (p < PathConstraint.Epsilon || float.IsNaN(p)) {
+			if (p < MathUtils.Epsilon || float.IsNaN(p)) {
 				output[o] = x1;
 				output[o + 1] = y1;
 				output[o + 2] = (float)Math.Atan2(cy1 - y1, cx1 - x1);

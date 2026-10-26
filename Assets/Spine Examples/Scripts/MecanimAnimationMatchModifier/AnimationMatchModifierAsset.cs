@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -60,33 +60,33 @@ namespace Spine.Unity.Examples {
 
 				// Build a reference collection of timelines to match
 				// and a collection of dummy timelines that can be used to fill-in missing items.
-				Dictionary<string, Timeline> timelineDictionary = new Dictionary<string, Spine.Timeline>();
+				var timelineDictionary = new Dictionary<ulong, Spine.Timeline>();
 				foreach (Animation animation in animations) {
 					foreach (Timeline timeline in animation.Timelines) {
 						if (timeline is EventTimeline) continue;
 
-						foreach (string propertyId in timeline.PropertyIds) {
+						foreach (ulong propertyId in timeline.PropertyIds) {
 							if (!timelineDictionary.ContainsKey(propertyId)) {
 								timelineDictionary.Add(propertyId, GetFillerTimeline(timeline, skeletonData));
 							}
 						}
 					}
 				}
-				List<string> idsToMatch = new List<string>(timelineDictionary.Keys);
+				List<ulong> idsToMatch = new List<ulong>(timelineDictionary.Keys);
 
 				// For each animation in the list, check for and add missing timelines.
-				HashSet<string> currentAnimationIDs = new HashSet<string>();
+				var currentAnimationIDs = new HashSet<ulong>();
 				foreach (Animation animation in animations) {
 					currentAnimationIDs.Clear();
 					foreach (Timeline timeline in animation.Timelines) {
 						if (timeline is EventTimeline) continue;
-						foreach (string propertyId in timeline.PropertyIds) {
+						foreach (ulong propertyId in timeline.PropertyIds) {
 							currentAnimationIDs.Add(propertyId);
 						}
 					}
 
 					ExposedList<Timeline> animationTimelines = animation.Timelines;
-					foreach (string propertyId in idsToMatch) {
+					foreach (ulong propertyId in idsToMatch) {
 						if (!currentAnimationIDs.Contains(propertyId))
 							animationTimelines.Add(timelineDictionary[propertyId]);
 					}

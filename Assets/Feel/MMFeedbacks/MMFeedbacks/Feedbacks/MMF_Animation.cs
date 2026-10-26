@@ -11,6 +11,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will allow you to send to an animator (bound in its inspector) a bool, int, float or trigger parameter, allowing you to trigger an animation, with or without randomness.")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("Animation/Animation Parameter")]
 	public class MMF_Animation : MMF_Feedback 
 	{
@@ -36,6 +37,8 @@ namespace MoreMountains.Feedbacks
 		public override bool HasRandomness => true;
 		public override bool HasAutomatedTargetAcquisition => true;
 		protected override void AutomateTargetAcquisition() => BoundAnimator = FindAutomatedTarget<Animator>();
+		public override bool HasAutomatedMultipleTargetAcquisition => true;
+		protected override void AutomateMultipleTargetAcquisition() => ExtraBoundAnimators = FindAutomatedTargets<Animator>(ExtraBoundAnimators, BoundAnimator);
 
 		[MMFInspectorGroup("Animation", true, 12, true)]
 		/// the animator whose parameters you want to update
@@ -180,6 +183,11 @@ namespace MoreMountains.Feedbacks
 		{
 			base.CustomInitialization(owner);
 			
+			if (!TargetExists(BoundAnimator, nameof(BoundAnimator)))
+			{
+				return;
+			}
+			
 			_triggerParameter = Animator.StringToHash(TriggerParameterName);
 			_boolParameter = Animator.StringToHash(BoolParameterName);
 			_intParameter = Animator.StringToHash(IntParameterName);
@@ -225,10 +233,10 @@ namespace MoreMountains.Feedbacks
 			{
 				return;
 			}
+			
 
 			if (BoundAnimator == null)
 			{
-				Debug.LogWarning("[Animation Feedback] The animation feedback on "+Owner.name+" doesn't have a BoundAnimator, it won't work. You need to specify one in its inspector.");
 				return;
 			}
 

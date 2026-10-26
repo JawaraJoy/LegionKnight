@@ -11,6 +11,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback allows you to destroy a target gameobject, either via Destroy, DestroyImmediate, or SetActive:False")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("GameObject/Destroy")]
 	public class MMF_Destroy : MMF_Feedback
 	{
@@ -25,6 +26,8 @@ namespace MoreMountains.Feedbacks
 		#endif
 		public override bool HasAutomatedTargetAcquisition => true;
 		protected override void AutomateTargetAcquisition() => TargetGameObject = FindAutomatedTargetGameObject();
+		public override bool HasAutomatedMultipleTargetAcquisition => true;
+		protected override void AutomateMultipleTargetAcquisition() => ExtraTargetGameObjects = FindAutomatedTargetGameObjects(ExtraTargetGameObjects, TargetGameObject);
 
 		/// the possible ways to destroy an object
 		public enum Modes { Destroy, DestroyImmediate, Disable }
@@ -55,9 +58,12 @@ namespace MoreMountains.Feedbacks
 				return;
 			}
 			ProceedWithDestruction(TargetGameObject);
-			foreach (GameObject go in ExtraTargetGameObjects)
+			if (ExtraTargetGameObjects != null)
 			{
-				ProceedWithDestruction(go);
+				foreach (GameObject go in ExtraTargetGameObjects)
+				{
+					ProceedWithDestruction(go);
+				}	
 			}
 		}
         

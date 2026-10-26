@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -51,15 +51,21 @@ namespace Spine {
 			return new Slider(this, skeleton);
 		}
 
+		/// <summary>The animation the slider will apply.</summary>
 		public Animation Animation { get { return animation; } set { animation = value; } }
+		/// <summary>When true, the animation is applied by adding it to the current pose rather than overwriting it.</summary>
 		public bool Additive { get { return additive; } set { additive = value; } }
+		/// <summary>When true, the animation repeats after its duration, otherwise the last frame is used.</summary>
 		public bool Loop { get { return loop; } set { loop = value; } }
-		/// <summary>May be null.</summary>
+		/// <summary>When set, the bone's transform property is used to set the slider's <see cref="SliderPose.Time"/>. May be null.</summary>
 		public BoneData Bone { get { return bone; } set { bone = value; } }
-		/// <summary>May be null.</summary>
+		/// <summary>When a bone is set, the specified transform property is used to set the slider's <see cref="SliderPose.Time"/>. May be null.</summary>
 		public FromProperty Property { get { return property; } set { property = value; } }
+		/// <summary>When a bone is set, the offset is added to the property.</summary>
 		public float Offset { get { return offset; } set { offset = value; } }
+		/// <summary>When a bone is set, this is the scale of the <see cref="Property"/> value in relation to the slider time.</summary>
 		public float Scale { get { return scale; } set { scale = value; } }
+		/// <summary>When true and a bone is set, the bone's local transform property is read instead of its world transform.</summary>
 		public bool Local { get { return local; } set { local = value; } }
 	}
 }

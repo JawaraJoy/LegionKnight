@@ -11,6 +11,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you control the texture scale of a target material over time.")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("Renderer/Texture Scale")]
 	public class MMF_TextureScale : MMF_Feedback
 	{
@@ -94,9 +95,8 @@ namespace MoreMountains.Feedbacks
 		{
 			base.CustomInitialization(owner);
 			
-			if (TargetRenderer == null)
+			if (!TargetExists(TargetRenderer, nameof(TargetRenderer)))
 			{
-				Debug.LogWarning("[Texture Scale Feedback] The texture scale feedback on "+Owner.name+" doesn't have a target renderer, it won't work. You need to specify a renderer in its inspector.");
 				return;
 			}
 			

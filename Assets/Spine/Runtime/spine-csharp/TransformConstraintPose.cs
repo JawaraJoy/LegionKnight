@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -48,17 +48,17 @@ namespace Spine {
 			mixShearY = pose.mixShearY;
 		}
 
-		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained rotation.</summary>
+		/// <summary>A percentage (unbounded) that controls the mix between the constrained and unconstrained rotation.</summary>
 		public float MixRotate { get { return mixRotate; } set { mixRotate = value; } }
-		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained translation X.</summary>
+		/// <summary>A percentage (unbounded) that controls the mix between the constrained and unconstrained translation X.</summary>
 		public float MixX { get { return mixX; } set { mixX = value; } }
-		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained translation Y.</summary>
+		/// <summary>A percentage (unbounded) that controls the mix between the constrained and unconstrained translation Y.</summary>
 		public float MixY { get { return mixY; } set { mixY = value; } }
-		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained scale X.</summary>
+		/// <summary>A percentage (unbounded) that controls the mix between the constrained and unconstrained scale X.</summary>
 		public float MixScaleX { get { return mixScaleX; } set { mixScaleX = value; } }
-		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained scale Y.</summary>
+		/// <summary>A percentage (unbounded) that controls the mix between the constrained and unconstrained scale Y.</summary>
 		public float MixScaleY { get { return mixScaleY; } set { mixScaleY = value; } }
-		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained shear Y.</summary>
+		/// <summary>A percentage (unbounded) that controls the mix between the constrained and unconstrained shear Y.</summary>
 		public float MixShearY { get { return mixShearY; } set { mixShearY = value; } }
 	}
 }

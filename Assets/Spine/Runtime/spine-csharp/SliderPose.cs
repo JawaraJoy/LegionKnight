@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -39,7 +39,9 @@ namespace Spine {
 			mix = pose.mix;
 		}
 
+		/// <summary>The time in the <see cref="SliderData.Animation"/> to apply the animation.</summary>
 		public float Time { get { return time; } set { time = value; } }
+		/// <summary>A percentage (unbounded) that controls the mix between the constrained and unconstrained poses.</summary>
 		public float Mix { get { return mix; } set { mix = value; } }
 	}
 }

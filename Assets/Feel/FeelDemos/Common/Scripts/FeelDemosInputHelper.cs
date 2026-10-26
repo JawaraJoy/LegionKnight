@@ -7,6 +7,7 @@ namespace MoreMountains.Feel
 {
 	/// <summary>
 	/// This class contains a number of helper methods that will check for input in both the old and the new input system.
+	/// With the new input system, if no keyboard or mouse is connected (on mobile, consoles, or in batch mode), these return no input instead of throwing.
 	/// </summary>
 	public static class FeelDemosInputHelper
 	{
@@ -20,8 +21,8 @@ namespace MoreMountains.Feel
 			bool input = false;
 			
 			#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-			input = Keyboard.current.spaceKey.wasPressedThisFrame
-			        || Mouse.current.leftButton.wasPressedThisFrame
+			input = (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+			        || (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
 					|| ScriptInput;
 			#else
 			input = (Input.GetKeyDown(KeyCode.Space) 
@@ -38,8 +39,8 @@ namespace MoreMountains.Feel
 			bool input = false;
 			
 			#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-			input = Keyboard.current.spaceKey.isPressed
-			        || Mouse.current.leftButton.isPressed;
+			input = (Keyboard.current != null && Keyboard.current.spaceKey.isPressed)
+			        || (Mouse.current != null && Mouse.current.leftButton.isPressed);
 			#else
 			input = (Input.GetKey(KeyCode.Space) 
 			         || Input.GetKey(KeyCode.Joystick1Button0) 
@@ -55,8 +56,8 @@ namespace MoreMountains.Feel
 			bool input = false;
 			
 			#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-			input = Keyboard.current.spaceKey.wasReleasedThisFrame
-			        || Mouse.current.leftButton.wasReleasedThisFrame;
+			input = (Keyboard.current != null && Keyboard.current.spaceKey.wasReleasedThisFrame)
+			        || (Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame);
 			#else
 			input = (Input.GetKeyUp(KeyCode.Space) 
 			         || Input.GetKeyUp(KeyCode.Joystick1Button0) 
@@ -71,7 +72,7 @@ namespace MoreMountains.Feel
 			bool input = false;
 			
 			#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-			input = Keyboard.current.enterKey.wasPressedThisFrame;
+			input = (Keyboard.current != null) && Keyboard.current.enterKey.wasPressedThisFrame;
 			#else
 			input = (Input.GetKeyDown(KeyCode.Return));
 			#endif
@@ -84,7 +85,7 @@ namespace MoreMountains.Feel
 			bool input = false;
 			
 			#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-				input = Mouse.current.leftButton.wasReleasedThisFrame;
+				input = (Mouse.current != null) && Mouse.current.leftButton.wasReleasedThisFrame;
 			#else
 			input = Input.GetMouseButtonUp(0);
 			#endif
@@ -95,7 +96,7 @@ namespace MoreMountains.Feel
 		public static Vector2 MousePosition()
 		{
 			#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-				return Mouse.current.position.ReadValue();
+				return (Mouse.current != null) ? Mouse.current.position.ReadValue() : Vector2.zero;
 			#else
 			return Input.mousePosition;
 			#endif
@@ -106,6 +107,10 @@ namespace MoreMountains.Feel
 			direction.x = 0f;
 			direction.y = 0f;
 			#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+				if (Keyboard.current == null)
+				{
+					return direction;
+				}
 				if (Keyboard.current.leftArrowKey.isPressed)
 				{
 					direction.x = -1f;
@@ -135,6 +140,10 @@ namespace MoreMountains.Feel
 			bool input = false;
 			
 			#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+				if (Keyboard.current == null)
+				{
+					return false;
+				}
 				switch(alpha)
 				{
 					case 1:

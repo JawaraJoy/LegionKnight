@@ -13,6 +13,7 @@ namespace MoreMountains.FeedbacksForThirdParty
 	/// with Depth of Field active, and a MMDepthOfFieldShaker_URP component.
 	/// </summary>
 	[AddComponentMenu("")]
+	[System.Serializable]
 	[FeedbackHelp("This feedback allows you to control URP depth of field focus distance, aperture and focal length over time. " +
 	              "It requires you have in your scene an object with a Volume " +
 	              "with Depth of Field active, and a MMDepthOfFieldShaker_URP component.")]
@@ -51,6 +52,9 @@ namespace MoreMountains.FeedbacksForThirdParty
 		public bool ResetTargetValuesAfterShake = true;
 
 		[MMFInspectorGroup("Focus Distance", true, 50)]
+		/// whether or not this feedback should modify focus distance
+		[Tooltip("whether or not this feedback should modify focus distance")]
+		public bool ModifyFocusDistance = true;
 		/// the curve used to animate the focus distance value on
 		[Tooltip("the curve used to animate the focus distance value on")]
 		public AnimationCurve ShakeFocusDistance = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0));
@@ -62,6 +66,9 @@ namespace MoreMountains.FeedbacksForThirdParty
 		public float RemapFocusDistanceOne = 3f;
 
 		[MMFInspectorGroup("Aperture", true, 51)]
+		/// whether or not this feedback should modify aperture
+		[Tooltip("whether or not this feedback should modify aperture")]
+		public bool ModifyAperture = true;
 		/// the curve used to animate the aperture value on
 		[Tooltip("the curve used to animate the aperture value on")]
 		public AnimationCurve ShakeAperture = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0));
@@ -75,6 +82,9 @@ namespace MoreMountains.FeedbacksForThirdParty
 		public float RemapApertureOne = 32f;
 
 		[MMFInspectorGroup("Focal Length", true, 20)]
+		/// whether or not this feedback should modify focal length
+		[Tooltip("whether or not this feedback should modify focal length")]
+		public bool ModifyFocalLength = true;
 		/// the curve used to animate the focal length value on
 		[Tooltip("the curve used to animate the focal length value on")]
 		public AnimationCurve ShakeFocalLength = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0));
@@ -102,7 +112,8 @@ namespace MoreMountains.FeedbacksForThirdParty
 			MMDepthOfFieldShakeEvent_URP.Trigger(ShakeFocusDistance, FeedbackDuration, RemapFocusDistanceZero, RemapFocusDistanceOne,
 				ShakeAperture, RemapApertureZero, RemapApertureOne,
 				ShakeFocalLength, RemapFocalLengthZero, RemapFocalLengthOne,
-				RelativeValues, intensityMultiplier, ChannelData, ResetShakerValuesAfterShake, ResetTargetValuesAfterShake, NormalPlayDirection, ComputedTimescaleMode);
+				RelativeValues, intensityMultiplier, ChannelData, ResetShakerValuesAfterShake, ResetTargetValuesAfterShake, NormalPlayDirection, ComputedTimescaleMode,
+				modifyFocusDistance: ModifyFocusDistance, modifyAperture: ModifyAperture, modifyFocalLength: ModifyFocalLength);
             
 		}
         

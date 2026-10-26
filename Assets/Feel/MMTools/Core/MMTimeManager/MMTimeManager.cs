@@ -74,11 +74,11 @@ namespace MoreMountains.Feedbacks
 		static public void Register(Delegate callback) { OnEvent += callback; }
 		static public void Unregister(Delegate callback) { OnEvent -= callback; }
 
-		public delegate void Delegate(float duration);
+		public delegate void Delegate(float duration, float minimumTimescaleThreshold);
 
-		static public void Trigger(float duration)
+		static public void Trigger(float duration, float minimumTimescaleThreshold)
 		{
-			OnEvent?.Invoke(duration);
+			OnEvent?.Invoke(duration, minimumTimescaleThreshold);
 		}
 	}
 
@@ -222,11 +222,16 @@ namespace MoreMountains.Feedbacks
 				else if (_currentProperty.TimeScaleLerpMode == MMTimeScaleLerpModes.Duration)
 				{
 					float timeSinceStart = Time.unscaledTime - _startedAt;
-					float progress = MMMaths.Remap(timeSinceStart, 0f, _currentProperty.TimeScaleLerpDuration, 0f, 1f);
-					float delta = _currentProperty.TimeScaleLerpCurve.Evaluate(progress);
-					float newValue = MMMaths.Remap(delta, 0f, 1f, _initialTimeScale, TargetTimeScale);
-					ApplyTimeScale(newValue);
-					if (timeSinceStart > _currentProperty.TimeScaleLerpDuration)
+
+					if (timeSinceStart < _currentProperty.TimeScaleLerpDuration)
+					{
+						float progress = MMMaths.Remap(timeSinceStart, 0f, _currentProperty.TimeScaleLerpDuration, 0f,
+							1f);
+						float delta = _currentProperty.TimeScaleLerpCurve.Evaluate(progress);
+						float newValue = MMMaths.Remap(delta, 0f, 1f, _initialTimeScale, TargetTimeScale);
+						ApplyTimeScale(newValue);
+					}
+					else 
 					{
 						ApplyTimeScale(TargetTimeScale);
 						if (_lerpingBackToNormal)
@@ -254,6 +259,8 @@ namespace MoreMountains.Feedbacks
 			{
 				return;
 			}
+
+			newValue = Mathf.Clamp(newValue,0f, 100f);
 			
 			if (UpdateTimescale)
 			{
@@ -384,8 +391,12 @@ namespace MoreMountains.Feedbacks
 		/// When getting a freeze frame event we stop the time
 		/// </summary>
 		/// <param name="freezeFrameEvent">Freeze frame event.</param>
-		public virtual void OnMMFreezeFrameEvent(float duration)
+		public virtual void OnMMFreezeFrameEvent(float duration, float minimumTimescaleThreshold)
 		{
+			if (Time.timeScale < minimumTimescaleThreshold)
+			{
+				return;
+			}
 			TimeScaleProperties properties = new TimeScaleProperties();
 			properties.Duration = duration;
 			properties.TimeScaleLerp = false;

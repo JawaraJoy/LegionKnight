@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -38,11 +38,7 @@ namespace Spine {
 	using Color32F = UnityEngine.Color;
 #endif
 
-	/// <summary>
-	/// Stores a slot's pose. Slots organize attachments for <see cref="Skeleton.DrawOrder"/> purposes and provide a place to store state
-	/// for an attachment. State cannot be stored in an attachment itself because attachments are stateless and may be shared across
-	/// multiple skeletons.
-	/// </summary>
+	/// <summary>Stores a slot's pose.</summary>
 	public class SlotPose : IPose<SlotPose> {
 		// Color is a struct, thus set to protected to prevent
 		// Color color = slot.color; color.a = 0.5; modifying just a copy of the struct instead of the original
@@ -80,7 +76,7 @@ namespace Spine {
 
 		/// <summary>Clamps the <see cref="GetColor()">color</see> used to tint the slot's attachment to the 0-1 range.</summary>
 		public void ClampColor () {
-			color.Clamp();
+			color = color.Clamp();
 		}
 
 		/// <returns>A copy of the dark color used to tint the slot's attachment for two color tinting, or null if two color tinting is not used. The dark
@@ -93,6 +89,13 @@ namespace Spine {
 		/// color's alpha is not used.</summary>
 		public void SetDarkColor (Color32F? darkColor) {
 			this.darkColor = darkColor;
+		}
+
+		/// <summary>Whether two color tinting is used and dark color is set.</summary>
+		public bool HasDarkColor {
+			get {
+				return darkColor.HasValue;
+			}
 		}
 
 		/// <summary>Clamps the <see cref="GetDarkColor()">dark color</see> used to tint the slot's attachment to the 0-1 range.</summary>

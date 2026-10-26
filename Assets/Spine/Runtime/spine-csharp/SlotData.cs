@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -51,7 +51,7 @@ namespace Spine {
 			this.boneData = boneData;
 		}
 
-		/// <summary>The index of the slot in <see cref="Skeleton.Slots"/>.</summary>
+		/// <summary>The <see cref="Skeleton.Slots"/> index.</summary>
 		public int Index { get { return index; } }
 
 		/// <summary>The bone this slot belongs to.</summary>

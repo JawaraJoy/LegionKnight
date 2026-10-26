@@ -11,6 +11,7 @@ namespace MoreMountains.Feedbacks
 {
 	[ExecuteAlways]
 	[AddComponentMenu("")]
+	[System.Serializable]
 	[FeedbackPath("Audio/Sound")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks.MMTools")]
 	[FeedbackHelp("WARNING: this is a very simple feedback, that will let you play a sound. Nothing wrong with it being simple of course, but if you want more features, you'll want to look at the MMSoundManager Sound feedback.\n\nThis feedback lets you play the specified AudioClip, either via event (you'll need something in your scene to catch a MMSfxEvent, for example a MMSoundManager), or cached (AudioSource gets created on init, and is then ready to be played), or on demand (instantiated on Play). For all these methods you can define a random volume between min/max boundaries (just set the same value in both fields if you don't want randomness), random pitch, and an optional AudioMixerGroup.")]
@@ -377,7 +378,14 @@ namespace MoreMountains.Feedbacks
 					AudioSource audioSource = temporaryAudioHost.AddComponent<AudioSource>() as AudioSource;
 					PlayAudioSource(audioSource, sfx, volume, pitch, timeSamples, SfxAudioMixerGroup, Priority);
 					// we destroy the host after the clip has played
-					Owner.ProxyDestroy(temporaryAudioHost, sfx.length * Time.timeScale);
+					if (Application.isPlaying)
+					{
+						Owner.ProxyDestroy(temporaryAudioHost, sfx.length * Time.timeScale);	
+					}
+					else
+					{
+						Owner.ProxyDestroyImmediate(temporaryAudioHost);
+					}
 					break;
 				case PlayMethods.Pool:
 					_tempAudioSource = GetAudioSourceFromPool();

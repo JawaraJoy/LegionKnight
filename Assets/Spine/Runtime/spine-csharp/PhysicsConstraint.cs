@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -30,9 +30,8 @@
 using System;
 
 namespace Spine {
-
 	/// <summary>
-	/// Stores the current pose for a physics constraint. A physics constraint applies physics to bones.
+	/// Applies physics to a bone.
 	/// <para>
 	/// See <a href="http://esotericsoftware.com/spine-physics-constraints">Physics constraints</a> in the Spine User Guide.</para>
 	/// </summary>
@@ -52,7 +51,7 @@ namespace Spine {
 			: base(data, new PhysicsConstraintPose(), new PhysicsConstraintPose()) {
 			if (skeleton == null) throw new ArgumentNullException("skeleton", "skeleton cannot be null.");
 
-			bone = skeleton.bones.Items[data.bone.index].constrained;
+			bone = skeleton.bones.Items[data.bone.index].constrainedPose;
 		}
 
 		override public IConstraint Copy (Skeleton skeleton) {
@@ -61,6 +60,8 @@ namespace Spine {
 			return copy;
 		}
 
+		/// <summary>Resets all physics state that was the result of previous movement. Use this after moving a bone to prevent physics
+		/// from reacting to the movement.</summary>
 		public void Reset (Skeleton skeleton) {
 			remaining = 0;
 			lastTime = skeleton.time;
@@ -80,7 +81,7 @@ namespace Spine {
 		}
 
 		/// <summary>
-		/// Translates the physics constraint so next <see cref="Update(Skeleton, Physics)"/> forces are applied as if the bone moved an
+		/// Translates the physics constraint so the next <see cref="Update(Skeleton, Physics)"/> forces are applied as if the bone moved an
 		/// additional amount in world space.
 		/// </summary>
 		public void Translate (float x, float y) {
@@ -91,7 +92,7 @@ namespace Spine {
 		}
 
 		/// <summary>
-		/// Rotates the physics constraint so next <see cref="Update(Skeleton, Physics)"/> forces are applied as if the bone rotated around
+		/// Rotates the physics constraint so the next <see cref="Update(Skeleton, Physics)"/> forces are applied as if the bone rotated around
 		/// the specified point in world space.
 		/// </summary>
 		public void Rotate (float x, float y, float degrees) {
@@ -102,17 +103,17 @@ namespace Spine {
 
 		/// <summary>Applies the constraint to the constrained bones.</summary>
 		override public void Update (Skeleton skeleton, Physics physics) {
-			PhysicsConstraintPose p = applied;
+			PhysicsConstraintPose p = appliedPose;
 			float mix = p.mix;
 			if (mix == 0) return;
 
 			bool x = data.x > 0, y = data.y > 0, rotateOrShearX = data.rotate > 0 || data.shearX > 0, scaleX = data.scaleX > 0;
 			BonePose bone = this.bone;
 			float l = bone.bone.data.length, t = data.step, z = 0;
+			if (physics == Physics.None) return;
+			bone.ModifyWorld(skeleton);
 
 			switch (physics) {
-			case Physics.None:
-				return;
 			case Physics.Reset:
 				Reset(skeleton);
 				goto case Physics.Update; // Fall through.
@@ -127,8 +128,8 @@ namespace Spine {
 					ux = bx;
 					uy = by;
 				} else {
-					float a = remaining, i = p.inertia, f = skeleton.data.referenceScale, d = -1, m = 0, e = 0, ax = 0, ay = 0,
-						qx = data.limit * delta, qy = qx * Math.Abs(skeleton.ScaleY);
+					float a = remaining, i = p.inertia, f = skeleton.data.referenceScale, d = -1, m = 0, e = 0, qx = data.limit * delta,
+						qy = qx * Math.Abs(skeleton.ScaleY);
 					qx *= Math.Abs(skeleton.ScaleX);
 
 					if (x || y) {
@@ -148,8 +149,8 @@ namespace Spine {
 							m = t * p.massInverse;
 							e = p.strength;
 							float w = f * p.wind, g = f * p.gravity;
-							ax = (w * skeleton.windX + g * skeleton.gravityX) * skeleton.scaleX;
-							ay = (w * skeleton.windY + g * skeleton.gravityY) * skeleton.ScaleY;
+							float ax = (w * skeleton.windX + g * skeleton.gravityX) * skeleton.scaleX;
+							float ay = (w * skeleton.windY + g * skeleton.gravityY) * skeleton.ScaleY;
 							do {
 								if (x) {
 									xVelocity += (ax - xOffset * e) * m;
@@ -204,10 +205,9 @@ namespace Spine {
 								d = (float)Math.Pow(p.damping, 60 * t);
 								m = t * p.massInverse;
 								e = p.strength;
-								float w = f * p.wind, g = f * p.gravity;
-								ax = (w * skeleton.windX + g * skeleton.gravityX) * skeleton.scaleX;
-								ay = (w * skeleton.windY + g * skeleton.gravityY) * skeleton.ScaleY;
 							}
+							float ax = p.wind * skeleton.windX + p.gravity * skeleton.gravityX;
+							float ay = p.wind * skeleton.windY + p.gravity * skeleton.gravityY;
 							float rs = rotateOffset, ss = scaleOffset, h = l / f;
 							if (Spine.Bone.yDown) ay = -ay;
 							while (true) {
@@ -279,12 +279,25 @@ namespace Spine {
 				float s = 1 + (scaleOffset - scaleLag * z) * mix * data.scaleX;
 				bone.a *= s;
 				bone.c *= s;
+				switch (data.scaleYMode) {
+				case ScaleYMode.Uniform: {
+					bone.b *= s;
+					bone.d *= s;
+					break;
+				}
+				case ScaleYMode.Volume: {
+					s = Math.Abs(s);
+					s = s >= 0.7f ? 1 / s : 4 - 3.67347f * s;
+					bone.b *= s;
+					bone.d *= s;
+					break;
+				}
+				}
 			}
 			if (physics != Physics.Pose) {
 				tx = l * bone.a;
 				ty = l * bone.c;
 			}
-			bone.ModifyWorld(skeleton.update);
 		}
 
 		override public void Sort (Skeleton skeleton) {

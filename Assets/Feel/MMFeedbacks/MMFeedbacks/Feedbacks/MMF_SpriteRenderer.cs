@@ -12,6 +12,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you change the color of a target sprite renderer over time, and flip it on X or Y. You can also use it to command one or many MMSpriteRendererShakers.")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("Renderer/SpriteRenderer")]
 	public class MMF_SpriteRenderer : MMF_Feedback
 	{
@@ -132,8 +133,13 @@ namespace MoreMountains.Feedbacks
 					Turn(false);
 				}
 			}
+			
+			if (!TargetExists(BoundSpriteRenderer, nameof(BoundSpriteRenderer)))
+			{
+				return;
+			}
 
-			if ((BoundSpriteRenderer != null) && (InitialColorMode == InitialColorModes.InitialColorOnInit))
+			if (InitialColorMode == InitialColorModes.InitialColorOnInit)
 			{
 				_initialColor = BoundSpriteRenderer.color;
 				_initialFlipX = BoundSpriteRenderer.flipX;
@@ -155,7 +161,6 @@ namespace MoreMountains.Feedbacks
 			
 			if (BoundSpriteRenderer == null)
 			{
-				Debug.LogWarning("[Sprite Renderer Feedback] The sprite renderer feedback on "+Owner.name+" doesn't have a BoundSpriteRenderer, it won't work. You need to specify one in its inspector.");
 				return;
 			}
             

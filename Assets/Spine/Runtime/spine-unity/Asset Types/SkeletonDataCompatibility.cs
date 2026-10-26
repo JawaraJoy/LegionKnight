@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -167,7 +167,14 @@ namespace Spine.Unity {
 				fileVersion.version = new[]{ int.Parse(versionSplit[0], CultureInfo.InvariantCulture),
 									int.Parse(versionSplit[1], CultureInfo.InvariantCulture) };
 			} catch (System.Exception e) {
-				problemDescription = string.Format("Failed to read version info at skeleton '{0}'. It is likely not a valid Spine SkeletonData file.\n{1}", asset.name, e);
+				if (fileVersion.rawVersion.Contains("-from-")) {
+					problemDescription = string.Format("Failed to import skeleton downgrade asset '{0}'. " +
+						"Lower-version exports like 4.2 from Spine 4.3 are only for project downgrades and can't be loaded by runtimes directly.\n" +
+						"Open in the matching Spine version and re-export for runtime use.\n", asset.name);
+				} else {
+					problemDescription = string.Format("Failed to read version info at skeleton '{0}'. It is likely not a valid Spine SkeletonData file.\n{1}", asset.name, e);
+				}
+
 				isSpineSkeletonData = false;
 				return null;
 			}
@@ -230,7 +237,9 @@ namespace Spine.Unity {
 		public static void DisplayCompatibilityProblem (string descriptionString, TextAsset spineJson) {
 			if (!wasVersionDialogShown) {
 				wasVersionDialogShown = true;
-				UnityEditor.EditorUtility.DisplayDialog("Version mismatch!", descriptionString, "OK");
+				UnityEditor.EditorUtility.DisplayDialog("Version mismatch!",
+					string.Format("Skeleton '{0}'\n\n{1}", spineJson.name, descriptionString), "OK");
+				UnityEditor.EditorGUIUtility.PingObject(spineJson);
 			}
 			Debug.LogError(string.Format("Error importing skeleton '{0}': {1}",
 				spineJson.name, descriptionString), spineJson);

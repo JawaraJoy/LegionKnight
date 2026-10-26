@@ -15,6 +15,8 @@ namespace Rush
         [SerializeField]
         private SkeletonGraphic m_SkeletonGraphic;
 
+        private SkeletonAnimation m_SkeletonAnimation;
+
         [SerializeField]
         private ClipEventField[] m_Events;
 
@@ -37,9 +39,11 @@ namespace Rush
         private ModuleContext m_ModuleContext;
         public IModuleContext ModuleContext => m_ModuleContext;
 
-        private void OnDestroy()
+private void OnDestroy()
         {
-            var state = m_SkeletonGraphic.AnimationState;
+            if (!EnsureSkeletonAnimationInternal()) return;
+
+            var state = m_SkeletonAnimation.AnimationState;
             if (state != null)
             {
                 state.Event -= OnSpineEvent;
@@ -73,12 +77,19 @@ namespace Rush
                 PlayClipInternal(next);
             }
         }
-        private void SetSkeletonDataAssetInternal(SkeletonDataAsset skeletonDataAsset)
+private void SetSkeletonDataAssetInternal(SkeletonDataAsset skeletonDataAsset)
         {
             m_SkeletonDataAsset = skeletonDataAsset;
-            m_SkeletonGraphic.skeletonDataAsset = m_SkeletonDataAsset;
 
+            if (!EnsureSkeletonAnimationInternal())
+            {
+                Debug.LogError("[Spine UI] AvatarSpineUI requires SkeletonGraphic and SkeletonAnimation components.", this);
+                return;
+            }
+
+            m_SkeletonGraphic.skeletonDataAsset = m_SkeletonDataAsset;
             m_SkeletonGraphic.Initialize(true);
+            m_SkeletonAnimation.Initialize(true);
             m_SkeletonGraphic.SetMaterialDirty();
         }
         public void SetSkeletonDataAsset(SkeletonDataAsset skeletonDataAsset)
@@ -91,7 +102,7 @@ namespace Rush
             {
                 SetSkeletonDataAssetInternal(hasSkeletonAsset.SkeletonDataAsset);
 
-                var state = m_SkeletonGraphic.AnimationState;
+                var state = m_SkeletonAnimation.AnimationState;
 
                 state.Event -= OnSpineEvent;
                 state.Complete -= OnSpineComplete;
@@ -127,9 +138,9 @@ namespace Rush
             if (clipConfig.BaseInfo == null) return;
 
             var animName = clipConfig.BaseInfo.Name;
-            var state = m_SkeletonGraphic.AnimationState;
+            var state = m_SkeletonAnimation.AnimationState;
             if (state == null) return;
-            bool hasCurrent = state.GetCurrent(clipConfig.Track) != null;
+            bool hasCurrent = state.GetTrack(clipConfig.Track) != null;
 
             TrackEntry entry = hasCurrent
             ? state.AddAnimation(clipConfig.Track, animName, clipConfig.Loop, clipConfig.Delay)
@@ -146,7 +157,7 @@ namespace Rush
         {
             if (clipConfig == null) return;
 
-            var state = m_SkeletonGraphic.AnimationState;
+            var state = m_SkeletonAnimation.AnimationState;
             if (state == null) return;
 
             var entry = state.SetAnimation(
@@ -163,7 +174,7 @@ namespace Rush
         {
             if (clipConfig == null) return;
 
-            var state = m_SkeletonGraphic.AnimationState;
+            var state = m_SkeletonAnimation.AnimationState;
             if (state == null) return;
 
             var entry = state.AddAnimation(
@@ -187,7 +198,7 @@ namespace Rush
             {
                 skeleton.SetSkin(skin);
                 skeleton.SetupPoseSlots();
-                m_SkeletonGraphic.Update(0f);
+                m_SkeletonAnimation.UpdateOncePerFrame(0f);
                 Debug.Log($"[Spine] Skin changed to: {skinName}");
             }
             else
@@ -198,9 +209,9 @@ namespace Rush
         public void Pause()
         {
             if (m_IsPaused) return;
-            if (m_SkeletonGraphic.AnimationState == null) return;
+            if (m_SkeletonAnimation.AnimationState == null) return;
 
-            var state = m_SkeletonGraphic.AnimationState;
+            var state = m_SkeletonAnimation.AnimationState;
 
             m_PreviousTimeScale = state.TimeScale;
             state.TimeScale = 0f;
@@ -211,9 +222,9 @@ namespace Rush
         public void Resume()
         {
             if (!m_IsPaused) return;
-            if (m_SkeletonGraphic.AnimationState == null) return;
+            if (m_SkeletonAnimation.AnimationState == null) return;
 
-            var state = m_SkeletonGraphic.AnimationState;
+            var state = m_SkeletonAnimation.AnimationState;
 
             state.TimeScale = m_PreviousTimeScale <= 0f ? 1f : m_PreviousTimeScale;
 
@@ -247,5 +258,19 @@ namespace Rush
             Debug.Log($"[Spine] Animation Done: {clipConfig.BaseInfo.Name}");
             m_OnClipDone?.Invoke(clipConfig);
         }
-    }
+    
+
+private bool EnsureSkeletonAnimationInternal()
+        {
+            if (m_SkeletonGraphic == null)
+            {
+                m_SkeletonGraphic = GetComponent<SkeletonGraphic>();
+            }
+
+            if (m_SkeletonGraphic == null) return false;
+            if (m_SkeletonAnimation != null) return true;
+
+            return m_SkeletonGraphic.TryGetComponent(out m_SkeletonAnimation);
+        }
+}
 }

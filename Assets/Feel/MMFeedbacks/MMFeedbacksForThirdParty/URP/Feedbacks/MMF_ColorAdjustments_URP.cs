@@ -13,6 +13,7 @@ namespace MoreMountains.FeedbacksForThirdParty
 	/// with Color Adjustments active, and a MMColorAdjustmentsShaker_URP component.
 	/// </summary>
 	[AddComponentMenu("")]
+	[System.Serializable]
 	[FeedbackHelp("This feedback allows you to control color adjustments' post exposure, hue shift, saturation and contrast over time. " +
 	              "It requires you have in your scene an object with a Volume " +
 	              "with Color Adjustments active, and a MMColorAdjustmentsShaker_URP component.")]
@@ -51,6 +52,9 @@ namespace MoreMountains.FeedbacksForThirdParty
 		public bool ResetTargetValuesAfterShake = true;
 
 		[MMFInspectorGroup("Post Exposure", true, 48)]
+		/// whether or not this feedback should modify post exposure
+		[Tooltip("whether or not this feedback should modify post exposure")]
+		public bool ModifyPostExposure = true;
 		/// the curve used to animate the focus distance value on
 		[Tooltip("the curve used to animate the focus distance value on")]
 		public AnimationCurve ShakePostExposure = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0));
@@ -62,6 +66,9 @@ namespace MoreMountains.FeedbacksForThirdParty
 		public float RemapPostExposureOne = 1f;
 
 		[MMFInspectorGroup("Hue Shift", true, 47)]
+		/// whether or not this feedback should modify hue shift
+		[Tooltip("whether or not this feedback should modify hue shift")]
+		public bool ModifyHueShift = true;
 		/// the curve used to animate the aperture value on
 		[Tooltip("the curve used to animate the aperture value on")]
 		public AnimationCurve ShakeHueShift = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0));
@@ -75,6 +82,9 @@ namespace MoreMountains.FeedbacksForThirdParty
 		public float RemapHueShiftOne = 180f;
 
 		[MMFInspectorGroup("Saturation", true, 46)]
+		/// whether or not this feedback should modify saturation
+		[Tooltip("whether or not this feedback should modify saturation")]
+		public bool ModifySaturation = true;
 		/// the curve used to animate the focal length value on
 		[Tooltip("the curve used to animate the focal length value on")]
 		public AnimationCurve ShakeSaturation = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0));
@@ -88,6 +98,9 @@ namespace MoreMountains.FeedbacksForThirdParty
 		public float RemapSaturationOne = 100f;
 
 		[MMFInspectorGroup("Contrast", true, 45)]
+		/// whether or not this feedback should modify contrast
+		[Tooltip("whether or not this feedback should modify contrast")]
+		public bool ModifyContrast = true;
 		/// the curve used to animate the focal length value on
 		[Tooltip("the curve used to animate the focal length value on")]
 		public AnimationCurve ShakeContrast = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0));
@@ -143,7 +156,8 @@ namespace MoreMountains.FeedbacksForThirdParty
 				ShakeContrast, RemapContrastZero, RemapContrastOne,
 				ColorFilterMode, ColorFilterGradient, ColorFilterDestination, ColorFilterCurve,
 				FeedbackDuration,
-				RelativeIntensity, intensityMultiplier, ChannelData, ResetShakerValuesAfterShake, ResetTargetValuesAfterShake, NormalPlayDirection, ComputedTimescaleMode);
+				RelativeIntensity, intensityMultiplier, ChannelData, ResetShakerValuesAfterShake, ResetTargetValuesAfterShake, NormalPlayDirection, ComputedTimescaleMode,
+				modifyPostExposure: ModifyPostExposure, modifyHueShift: ModifyHueShift, modifySaturation: ModifySaturation, modifyContrast: ModifyContrast);
             
 		}
         

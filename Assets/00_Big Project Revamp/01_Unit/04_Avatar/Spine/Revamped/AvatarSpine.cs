@@ -1,4 +1,4 @@
-﻿using LegionKnight;
+using LegionKnight;
 using MoreMountains.Tools;
 using Spine;
 using Spine.Unity;
@@ -149,7 +149,7 @@ namespace Rush
             var state = m_SkeletonAnimation.AnimationState;
             if (state == null) return;
 
-            bool hasCurrent = state.GetCurrent(clipConfig.Track) != null;
+            bool hasCurrent = state.GetTrack(clipConfig.Track) != null;
 
             TrackEntry entry = hasCurrent
                 ? state.AddAnimation(clipConfig.Track, animName, clipConfig.Loop, clipConfig.Delay)

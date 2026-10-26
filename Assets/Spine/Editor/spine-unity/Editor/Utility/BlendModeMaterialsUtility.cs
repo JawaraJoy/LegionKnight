@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -51,6 +51,8 @@ namespace Spine.Unity.Editor {
 		public const bool ShallUpgradeBlendModeMaterials = false;
 #endif
 		public static void UpgradeBlendModeMaterials (SkeletonDataAsset skeletonDataAsset) {
+			if (DisableBlendModeMaterialsIfNoAtlasAssets(skeletonDataAsset))
+				return;
 			SkeletonData skeletonData = skeletonDataAsset.GetSkeletonData(true);
 			if (skeletonData == null)
 				return;
@@ -58,6 +60,8 @@ namespace Spine.Unity.Editor {
 		}
 
 		public static void UpdateBlendModeMaterials (SkeletonDataAsset skeletonDataAsset) {
+			if (DisableBlendModeMaterialsIfNoAtlasAssets(skeletonDataAsset))
+				return;
 			SkeletonData skeletonData = skeletonDataAsset.GetSkeletonData(true);
 			if (skeletonData == null)
 				return;
@@ -66,6 +70,9 @@ namespace Spine.Unity.Editor {
 
 		public static void UpdateBlendModeMaterials (SkeletonDataAsset skeletonDataAsset, ref SkeletonData skeletonData,
 			bool upgradeFromModifierAssets = ShallUpgradeBlendModeMaterials) {
+
+			if (DisableBlendModeMaterialsIfNoAtlasAssets(skeletonDataAsset))
+				return;
 
 			TemplateMaterials templateMaterials = new TemplateMaterials();
 			bool anyMaterialsChanged = ClearUndesiredMaterialEntries(skeletonDataAsset);
@@ -95,6 +102,17 @@ namespace Spine.Unity.Editor {
 			if (anyMaterialsChanged)
 				ReloadSceneSkeletons(skeletonDataAsset);
 			AssetDatabase.SaveAssets();
+		}
+
+		internal static bool DisableBlendModeMaterialsIfNoAtlasAssets (SkeletonDataAsset skeletonDataAsset) {
+			if (skeletonDataAsset.atlasAssets != null) {
+				foreach (AtlasAssetBase atlasAsset in skeletonDataAsset.atlasAssets) {
+					if (atlasAsset != null)
+						return false;
+				}
+			}
+			skeletonDataAsset.blendModeMaterials.RequiresBlendModeMaterials = false;
+			return true;
 		}
 
 		protected static bool ClearUndesiredMaterialEntries (SkeletonDataAsset skeletonDataAsset) {

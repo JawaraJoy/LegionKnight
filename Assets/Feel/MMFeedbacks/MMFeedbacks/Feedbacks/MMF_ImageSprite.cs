@@ -13,6 +13,7 @@ namespace MoreMountains.Feedbacks
 	/// </summary>
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you change the sprite of a target Image.")]
+	[System.Serializable]
 	[FeedbackPath("UI/Image Sprite")]
 	public class MMF_ImageSprite : MMF_Feedback
 	{
@@ -57,9 +58,9 @@ namespace MoreMountains.Feedbacks
 
 			if (Active)
 			{
-				if (BoundImage == null)
+				if (!TargetExists(BoundImage, nameof(BoundImage)))
 				{
-					Debug.LogWarning("[Image Sprite Feedback] The Image Sprite feedback on "+Owner.name+" doesn't have a BoundImage, it won't work. You need to specify an Image in its inspector.");
+					return;
 				}
 				else
 				{

@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -158,7 +158,7 @@ namespace Spine.Unity.Editor {
 		SkeletonDataAsset FindSkeletonDataAsset (TextAsset skeletonDataFile) {
 			string path = AssetDatabase.GetAssetPath(skeletonDataFile);
 			path = path.Replace(".json", AssetUtility.SkeletonDataSuffix + ".asset");
-			path = path.Replace(".skel.bytes", AssetUtility.SkeletonDataSuffix + ".asset");
+			path = path.Replace(AssetUtility.SkeletonBinaryExtension, AssetUtility.SkeletonDataSuffix + ".asset");
 			if (System.IO.File.Exists(path)) {
 				return AssetDatabase.LoadAssetAtPath<SkeletonDataAsset>(path);
 			}

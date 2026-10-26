@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,6 +24,14 @@ namespace MoreMountains.Feedbacks
 		protected const int _initialPoolsListCapacity = 5;
         
 		static List<MMMiniObjectPool> _pools = new List<MMMiniObjectPool>(_initialPoolsListCapacity);
+
+		#if UNITY_EDITOR
+		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+		private static void InitializeStatics()
+		{
+			_pools = new List<MMMiniObjectPool>(_initialPoolsListCapacity);
+		}
+		#endif
 
 		/// <summary>
 		/// Adds a pooler to the static list if needed
@@ -82,7 +91,7 @@ namespace MoreMountains.Feedbacks
             
 			if (_pools.Count == 0)
 			{
-				var pools = FindObjectsByType<MMMiniObjectPool>(FindObjectsSortMode.None);
+				var pools = FindObjectsByType<MMMiniObjectPool>();
 				if (pools.Length > 0)
 				{
 					_pools.AddRange(pools);
@@ -201,10 +210,8 @@ namespace MoreMountains.Feedbacks
 				Debug.LogWarning("The " + gameObject.name + " ObjectPooler doesn't have any GameObjectToPool defined.", gameObject);
 				return null;
 			}
-			bool objectWasActive = GameObjectToPool.gameObject.activeSelf;
-			GameObjectToPool.gameObject.SetActive(false);
-			GameObject newGameObject = (GameObject)Instantiate(GameObjectToPool);
-			GameObjectToPool.gameObject.SetActive(objectWasActive);
+			
+			GameObject newGameObject = (GameObject)MMGameObjectExtensions.MMInstantiateDisabled(GameObjectToPool);
 			SceneManager.MoveGameObjectToScene(newGameObject, this.gameObject.scene);
 			if (NestWaitingPool)
 			{

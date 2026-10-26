@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
 namespace MoreMountains.Tools
 {
@@ -23,8 +26,36 @@ namespace MoreMountains.Tools
 		/// Creates the temporary scene
 		/// </summary>
 		/// <param name="sceneToLoadName"></param>
+		/// <param name="antiSpillSceneName"></param>
 		public virtual void PrepareAntiFill(string sceneToLoadName, string antiSpillSceneName = "")
 		{
+			PrepareAntiFill(sceneToLoadName, antiSpillSceneName, false);
+		}
+
+		/// <summary>
+		/// Creates the temporary scene
+		/// </summary>
+		/// <param name="sceneToLoadName"></param>
+		/// <param name="antiSpillSceneName"></param>
+		/// <param name="editorMode">if true, when in the editor, a custom anti spill scene will be loaded via EditorSceneManager.LoadSceneInPlayMode, and doesn't need to be in the build settings</param>
+		public virtual void PrepareAntiFill(string sceneToLoadName, string antiSpillSceneName, bool editorMode)
+		{			
+			var sourceSkybox = RenderSettings.skybox;
+			var sourceAmbientMode = RenderSettings.ambientMode;
+			var sourceAmbientLight = RenderSettings.ambientLight;
+			var sourceAmbientSkyColor = RenderSettings.ambientSkyColor;
+			var sourceAmbientEquatorColor = RenderSettings.ambientEquatorColor;
+			var sourceAmbientGroundColor = RenderSettings.ambientGroundColor;
+			var sourceFog = RenderSettings.fog;
+			var sourceFogColor = RenderSettings.fogColor;
+			var sourceFogMode = RenderSettings.fogMode;
+			var sourceFogDensity = RenderSettings.fogDensity;
+			var sourceFogStartDistance = RenderSettings.fogStartDistance;
+			var sourceFogEndDistance = RenderSettings.fogEndDistance;
+			var sourceLightmapsMode = LightmapSettings.lightmapsMode;
+			var sourceLightProbes = LightmapSettings.lightProbes;
+			var sourceLightmaps = LightmapSettings.lightmaps;
+			
 			_destinationScene = default; 
 			_sceneToLoadName = sceneToLoadName;
 			
@@ -36,19 +67,67 @@ namespace MoreMountains.Tools
 			}
 			else
 			{
-				_scenesInBuild = MMScene.GetScenesInBuild();
-				if (!_scenesInBuild.Contains(antiSpillSceneName))
+				if (!LoadAntiSpillScene(antiSpillSceneName, editorMode))
 				{
-					Debug.LogError("MMSceneLoadingAntiSpill : impossible to load the '"+antiSpillSceneName+"' scene, " +
-					               "there is no such scene in the project's build settings.");
 					return;
 				}
-				
-				SceneManager.LoadScene(antiSpillSceneName, LoadSceneMode.Additive);
-				_antiSpillScene = SceneManager.GetSceneByName(antiSpillSceneName);
-				_antiSpillSceneName = _antiSpillScene.name;
 				SceneManager.sceneLoaded += PrepareAntiFillOnSceneLoaded;
 			}
+			
+			RenderSettings.skybox = sourceSkybox;
+			RenderSettings.ambientMode = sourceAmbientMode;
+			RenderSettings.ambientLight = sourceAmbientLight;
+			RenderSettings.ambientSkyColor = sourceAmbientSkyColor;
+			RenderSettings.ambientEquatorColor = sourceAmbientEquatorColor;
+			RenderSettings.ambientGroundColor = sourceAmbientGroundColor;
+			RenderSettings.fog = sourceFog;
+			RenderSettings.fogColor = sourceFogColor;
+			RenderSettings.fogMode = sourceFogMode;
+			RenderSettings.fogDensity = sourceFogDensity;
+			RenderSettings.fogStartDistance = sourceFogStartDistance;
+			RenderSettings.fogEndDistance = sourceFogEndDistance;
+			LightmapSettings.lightmapsMode = sourceLightmapsMode;
+			LightmapSettings.lightProbes = sourceLightProbes;
+			LightmapSettings.lightmaps = sourceLightmaps;
+		}
+
+		/// <summary>
+		/// Loads the specified custom anti spill scene additively, via EditorSceneManager.LoadSceneInPlayMode if in editor mode, via the regular SceneManager otherwise
+		/// Returns false if the scene couldn't be found
+		/// </summary>
+		/// <param name="antiSpillSceneName"></param>
+		/// <param name="editorMode"></param>
+		/// <returns></returns>
+		protected virtual bool LoadAntiSpillScene(string antiSpillSceneName, bool editorMode)
+		{
+			#if UNITY_EDITOR
+				if (editorMode)
+				{
+					string antiSpillScenePath = MMScene.GetEditorScenePath(antiSpillSceneName);
+					if (string.IsNullOrEmpty(antiSpillScenePath))
+					{
+						Debug.LogError("MMSceneLoadingAntiSpill : impossible to load the '"+antiSpillSceneName+"' scene, " +
+						               "there is no such scene in the project.");
+						return false;
+					}
+					_antiSpillScene = EditorSceneManager.LoadSceneInPlayMode(antiSpillScenePath, new LoadSceneParameters(LoadSceneMode.Additive));
+					_antiSpillSceneName = System.IO.Path.GetFileNameWithoutExtension(antiSpillScenePath);
+					return true;
+				}
+			#endif
+
+			_scenesInBuild = MMScene.GetScenesInBuild();
+			if (!_scenesInBuild.Contains(antiSpillSceneName))
+			{
+				Debug.LogError("MMSceneLoadingAntiSpill : impossible to load the '"+antiSpillSceneName+"' scene, " +
+				               "there is no such scene in the project's build settings.");
+				return false;
+			}
+
+			SceneManager.LoadScene(antiSpillSceneName, LoadSceneMode.Additive);
+			_antiSpillScene = SceneManager.GetSceneByName(antiSpillSceneName);
+			_antiSpillSceneName = _antiSpillScene.name;
+			return true;
 		}
 
 		/// <summary>

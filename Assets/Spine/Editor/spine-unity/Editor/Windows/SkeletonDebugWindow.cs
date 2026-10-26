@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -403,7 +403,7 @@ namespace Spine.Unity.Editor {
 										EditorGUILayout.LabelField(SpineInspectorUtility.TempContent(ikConstraint.Data.Name, Icons.constraintIK));
 										FalseDropDown("Goal", ikConstraint.Target.Data.Name, Icons.bone, true);
 										using (new EditorGUI.DisabledGroupScope(true)) {
-											EditorGUILayout.Toggle(SpineInspectorUtility.TempContent("Data.Uniform", tooltip: "Uniformly scales a bone when Ik stretches or compresses."), ikConstraint.Data.Uniform);
+											EditorGUILayout.EnumPopup(SpineInspectorUtility.TempContent("Data.ScaleY", tooltip: "Determines how BonePose scaleY changes when IkConstraintPose compress or stretch sets BonePose scaleX."), ikConstraint.Data.ScaleY);
 										}
 
 										EditorGUI.BeginChangeCheck();
@@ -520,7 +520,7 @@ namespace Spine.Unity.Editor {
 							const string SeparatorString = "------------- v SEPARATOR v -------------";
 
 							if (Application.isPlaying) {
-								foreach (Slot slot in skeleton.DrawOrder) {
+								foreach (Slot slot in skeleton.DrawOrder.AppliedPose) {
 									if (skeletonRenderer.separatorSlots.Contains(slot)) EditorGUILayout.LabelField(SeparatorString);
 
 									using (new EditorGUI.DisabledScope(!slot.Bone.Active)) {
@@ -528,7 +528,7 @@ namespace Spine.Unity.Editor {
 									}
 								}
 							} else {
-								foreach (Slot slot in skeleton.DrawOrder) {
+								foreach (Slot slot in skeleton.DrawOrder.AppliedPose) {
 									string[] slotNames = SkeletonRendererInspector.GetSeparatorSlotNames(skeletonRenderer);
 									for (int i = 0, n = slotNames.Length; i < n; i++) {
 										if (string.Equals(slotNames[i], slot.Data.Name, System.StringComparison.Ordinal)) {

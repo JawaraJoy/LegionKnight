@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -29,6 +29,10 @@
 
 #if UNITY_2018_3 || UNITY_2019 || UNITY_2018_3_OR_NEWER
 #define NEW_PREFAB_SYSTEM
+#endif
+
+#if UNITY_2023_1_OR_NEWER
+#define USE_COLLIDER_COMPOSITE_OPERATION
 #endif
 
 using System.Collections.Generic;
@@ -80,7 +84,7 @@ namespace Spine.Unity {
 			Initialize();
 		}
 
-		void HandleRebuild (SkeletonGraphic sr) {
+		void HandleRebuild (ISkeletonRenderer sr) {
 			//if (BoundingBoxFollowerGraphic.DebugMessages) Debug.Log("Skeleton was rebuilt. Repopulating BoundingBoxFollowerGraphic.");
 			Initialize();
 		}
@@ -151,7 +155,7 @@ namespace Spine.Unity {
 			skin.GetAttachments(slotIndex, skinEntries);
 
 			foreach (Skin.SkinEntry entry in skinEntries) {
-				Attachment attachment = skin.GetAttachment(slotIndex, entry.Name);
+				Attachment attachment = skin.GetAttachment(slotIndex, entry.Placeholder);
 				BoundingBoxAttachment boundingBoxAttachment = attachment as BoundingBoxAttachment;
 
 				if (BoundingBoxFollowerGraphic.DebugMessages && attachment != null && boundingBoxAttachment == null)
@@ -165,11 +169,16 @@ namespace Spine.Unity {
 						SkeletonUtility.SetColliderPointsLocal(bbCollider, skeleton, slot, boundingBoxAttachment, scale);
 						bbCollider.isTrigger = isTrigger;
 						bbCollider.usedByEffector = usedByEffector;
+#if USE_COLLIDER_COMPOSITE_OPERATION
+						bbCollider.compositeOperation = usedByComposite ?
+							Collider2D.CompositeOperation.Merge : Collider2D.CompositeOperation.None;
+#else
 						bbCollider.usedByComposite = usedByComposite;
+#endif
 						bbCollider.enabled = false;
 						bbCollider.hideFlags = HideFlags.NotEditable;
 						colliderTable.Add(boundingBoxAttachment, bbCollider);
-						nameTable.Add(boundingBoxAttachment, entry.Name);
+						nameTable.Add(boundingBoxAttachment, entry.Placeholder);
 					}
 				}
 			}
@@ -211,8 +220,9 @@ namespace Spine.Unity {
 		}
 
 		void LateUpdate () {
-			var slotPose = slot.AppliedPose;
-			if (slot != null && (slotPose.Attachment != currentAttachment || skinBoneEnabled != slot.Bone.Active)) {
+			if (slot == null) return;
+			SlotPose slotPose = slot.AppliedPose;
+			if (slotPose.Attachment != currentAttachment || skinBoneEnabled != slot.Bone.Active) {
 				skinBoneEnabled = slot.Bone.Active;
 				MatchAttachment(slotPose.Attachment);
 			}

@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -30,7 +30,9 @@
 using System;
 
 namespace Spine {
+	/// <summary>An interface for an object representing a pose.</summary>
 	public interface IPose<P> {
+		/// <summary>Sets this pose to the specified pose.</summary>
 		void Set (P pose);
 	}
 }

@@ -13,6 +13,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback lets you control the color and intensity of a Light in your scene for a certain duration (or instantly).")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("Lights/Light")]
 	public class MMF_Light : MMF_Feedback
 	{
@@ -32,6 +33,8 @@ namespace MoreMountains.Feedbacks
 		public override bool HasRandomness => true;
 		public override bool HasAutomatedTargetAcquisition => true;
 		protected override void AutomateTargetAcquisition() => BoundLight = FindAutomatedTarget<Light>();
+		public override bool HasAutomatedMultipleTargetAcquisition => true;
+		protected override void AutomateMultipleTargetAcquisition() => ExtraLights = FindAutomatedTargets<Light>(ExtraLights, BoundLight);
 
 		/// the possible modes for this feedback
 		public enum Modes { OverTime, Instant, ShakerEvent, ToDestination }

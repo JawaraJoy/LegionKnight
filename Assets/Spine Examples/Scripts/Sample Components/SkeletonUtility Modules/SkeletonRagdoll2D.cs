@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -31,6 +31,10 @@
 
 #if UNITY_2019_2 || UNITY_2019_3 || UNITY_2019_4 || UNITY_2020_1 || UNITY_2020_2 // note: 2020.3+ uses old bahavior again
 #define HINGE_JOINT_2019_BEHAVIOUR
+#endif
+
+#if UNITY_2023_1_OR_NEWER
+#define USE_COLLIDER_COMPOSITE_OPERATION
 #endif
 
 using System.Collections;
@@ -63,7 +67,7 @@ namespace Spine.Unity.Examples {
 		[Tooltip("Default rotational limit value. Min is negative this value, Max is this value.")]
 		public float rotationLimit = 20;
 		public float rootMass = 20;
-		[Tooltip("If your ragdoll seems unstable or uneffected by limits, try lowering this value.")]
+		[Tooltip("If your ragdoll seems unstable or unaffected by limits, try lowering this value.")]
 		[Range(0.01f, 1f)]
 		public float massFalloffFactor = 0.4f;
 		[Tooltip("The layer assigned to all of the rigidbody parts.")]
@@ -74,7 +78,7 @@ namespace Spine.Unity.Examples {
 		public bool oldRagdollBehaviour = false;
 		#endregion
 
-		ISkeletonAnimation targetSkeletonComponent;
+		ISkeletonRenderer targetSkeletonComponent;
 		Skeleton skeleton;
 		struct BoneFlipEntry {
 			public BoneFlipEntry (bool flipX, bool flipY) {
@@ -100,10 +104,8 @@ namespace Spine.Unity.Examples {
 				parentSpaceHelper = (new GameObject("Parent Space Helper")).transform;
 			}
 
-			targetSkeletonComponent = GetComponent<SkeletonRenderer>() as ISkeletonAnimation;
-			if (targetSkeletonComponent == null) Debug.LogError("Attached Spine component does not implement ISkeletonAnimation. This script is not compatible.");
+			targetSkeletonComponent = GetComponent<ISkeletonRenderer>();
 			skeleton = targetSkeletonComponent.Skeleton;
-
 			if (applyOnStart) {
 				yield return null;
 				Apply();
@@ -140,7 +142,11 @@ namespace Spine.Unity.Examples {
 			RecursivelyCreateBoneProxies(startingBone);
 
 			RootRigidbody = boneTable[startingBone].GetComponent<Rigidbody2D>();
+#if USE_COLLIDER_COMPOSITE_OPERATION
+			RootRigidbody.bodyType = pinStartBone ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
+#else
 			RootRigidbody.isKinematic = pinStartBone;
+#endif
 			RootRigidbody.mass = rootMass;
 			List<Collider2D> boneColliders = new List<Collider2D>();
 			foreach (KeyValuePair<Bone, Transform> pair in boneTable) {
@@ -343,7 +349,7 @@ namespace Spine.Unity.Examples {
 		}
 
 		/// <summary>Performed every skeleton animation update to translate Unity Transforms positions into Spine bone transforms.</summary>
-		void UpdateSpineSkeleton (ISkeletonAnimation animatedSkeleton) {
+		void UpdateSpineSkeleton (ISkeletonRenderer skeletonRenderer) {
 			bool parentFlipX;
 			bool parentFlipY;
 			Bone startingBone = this.StartingBone;
@@ -444,7 +450,7 @@ namespace Spine.Unity.Examples {
 					foreach (Skin.SkinEntry entry in skinEntries) {
 						BoundingBoxAttachment bbAttachment = entry.Attachment as BoundingBoxAttachment;
 						if (bbAttachment != null) {
-							if (!entry.Name.ToLower().Contains(AttachmentNameMarker))
+							if (!entry.Placeholder.ToLower().Contains(AttachmentNameMarker))
 								continue;
 
 							bbAttachmentAdded = true;

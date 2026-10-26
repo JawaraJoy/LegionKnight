@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -144,7 +144,7 @@ namespace Spine {
 						}
 						var data = new BoneData(skeletonData.Bones.Count, (string)boneMap["name"], parent);
 						data.length = GetFloat(boneMap, "length", 0) * scale;
-						BoneLocal setup = data.setup;
+						BonePose setup = data.setupPose;
 						setup.x = GetFloat(boneMap, "x", 0) * scale;
 						setup.y = GetFloat(boneMap, "y", 0) * scale;
 						setup.rotation = GetFloat(boneMap, "rotation", 0);
@@ -171,12 +171,12 @@ namespace Spine {
 
 						if (slotMap.ContainsKey("color")) {
 							string color = (string)slotMap["color"];
-							data.setup.SetColor(ToColor32(color, 8));
+							data.setupPose.SetColor(ToColor32(color, 8));
 						}
 
 						if (slotMap.ContainsKey("dark")) {
 							string color2 = (string)slotMap["dark"];
-							data.setup.SetDarkColor(ToColor24(color2, 6)); // expectedLength = 6. ie. "RRGGBB"
+							data.setupPose.SetDarkColor(ToColor24(color2, 6)); // expectedLength = 6. ie. "RRGGBB"
 						}
 
 						data.attachmentName = GetString(slotMap, "attachment", null);
@@ -212,8 +212,9 @@ namespace Spine {
 							data.target = skeletonData.FindBone(targetName);
 							if (data.target == null) throw new Exception("IK target bone not found: " + targetName);
 
-							data.uniform = GetBoolean(constraintMap, "uniform", false);
-							IkConstraintPose setup = data.setup;
+							string scaleY = GetString(constraintMap, "scaleY", null);
+							if (scaleY != null) data.scaleY = (ScaleYMode)Enum.Parse(typeof(ScaleYMode), scaleY, true);
+							IkConstraintPose setup = data.setupPose;
 							setup.mix = GetFloat(constraintMap, "mix", 1);
 							setup.softness = GetFloat(constraintMap, "softness", 0) * scale;
 							setup.bendDirection = GetBoolean(constraintMap, "bendPositive", true) ? 1 : -1;
@@ -297,7 +298,7 @@ namespace Spine {
 											}
 											to.offset = GetFloat(toEntry, "offset", 0) * toScale;
 											to.max = GetFloat(toEntry, "max", 1) * toScale;
-											to.scale = GetFloat(toEntry, "scale") * (toScale / fromScale);
+											to.scale = GetFloat(toEntry, "scale", 1) * (toScale / fromScale);
 											from.to.Add(to);
 										}
 									}
@@ -312,7 +313,7 @@ namespace Spine {
 							data.offsets[TransformConstraintData.SCALEY] = GetFloat(constraintMap, "scaleY", 0);
 							data.offsets[TransformConstraintData.SHEARY] = GetFloat(constraintMap, "shearY", 0);
 
-							TransformConstraintPose setup = data.setup;
+							TransformConstraintPose setup = data.setupPose;
 							if (rotate) setup.mixRotate = GetFloat(constraintMap, "mixRotate", 1);
 							if (x) setup.mixX = GetFloat(constraintMap, "mixX", 1);
 							if (y) setup.mixY = GetFloat(constraintMap, "mixY", setup.mixX);
@@ -343,7 +344,7 @@ namespace Spine {
 							data.spacingMode = (SpacingMode)Enum.Parse(typeof(SpacingMode), GetString(constraintMap, "spacingMode", "length"), true);
 							data.rotateMode = (RotateMode)Enum.Parse(typeof(RotateMode), GetString(constraintMap, "rotateMode", "tangent"), true);
 							data.offsetRotation = GetFloat(constraintMap, "rotation", 0);
-							PathConstraintPose setup = data.setup;
+							PathConstraintPose setup = data.setupPose;
 							setup.position = GetFloat(constraintMap, "position", 0);
 							if (data.positionMode == PositionMode.Fixed) setup.position *= scale;
 							setup.spacing = GetFloat(constraintMap, "spacing", 0);
@@ -367,10 +368,14 @@ namespace Spine {
 							data.y = GetFloat(constraintMap, "y", 0);
 							data.rotate = GetFloat(constraintMap, "rotate", 0);
 							data.scaleX = GetFloat(constraintMap, "scaleX", 0);
+
+							string scaleY = GetString(constraintMap, "scaleY", null);
+							if (scaleY != null) data.scaleYMode = (ScaleYMode)Enum.Parse(typeof(ScaleYMode), scaleY, true);
+
 							data.shearX = GetFloat(constraintMap, "shearX", 0);
 							data.limit = GetFloat(constraintMap, "limit", 5000) * scale;
 							data.step = 1f / GetInt(constraintMap, "fps", 60);
-							PhysicsConstraintPose setup = data.setup;
+							PhysicsConstraintPose setup = data.setupPose;
 							setup.inertia = GetFloat(constraintMap, "inertia", 0.5f);
 							setup.strength = GetFloat(constraintMap, "strength", 100);
 							setup.damping = GetFloat(constraintMap, "damping", 0.85f);
@@ -395,8 +400,7 @@ namespace Spine {
 
 							data.additive = GetBoolean(constraintMap, "additive", false);
 							data.loop = GetBoolean(constraintMap, "loop", false);
-							data.setup.time = GetFloat(constraintMap, "time", 0);
-							data.setup.mix = GetFloat(constraintMap, "mix", 1);
+							data.setupPose.mix = GetFloat(constraintMap, "mix", 1);
 
 							string boneName = GetString(constraintMap, "bone", null);
 							if (boneName != null) {
@@ -408,8 +412,10 @@ namespace Spine {
 								data.property.offset = GetFloat(constraintMap, "from", 0) * propertyScale;
 								data.offset = GetFloat(constraintMap, "to", 0);
 								data.scale = GetFloat(constraintMap, "scale", 1) / propertyScale;
+								//data.max = constraintMap.getFloat("max", 0); // non-essential
 								data.local = GetBoolean(constraintMap, "local", false);
-							}
+							} else
+								data.setupPose.time = GetFloat(constraintMap, "time", 0);
 
 							skeletonData.constraints.Add(data);
 							break;
@@ -469,7 +475,9 @@ namespace Spine {
 						skin.constraints.TrimExcess();
 						if (skinMap.ContainsKey("attachments")) {
 							foreach (KeyValuePair<string, Object> slotEntry in (Dictionary<string, Object>)skinMap["attachments"]) {
-								int slotIndex = FindSlotIndex(skeletonData, slotEntry.Key);
+								SlotData slot = skeletonData.FindSlot(slotEntry.Key);
+								if (slot == null) throw new Exception("Skin slot not found: " + slotEntry.Key);
+								int slotIndex = slot.Index;
 								foreach (KeyValuePair<string, Object> entry in ((Dictionary<string, Object>)slotEntry.Value)) {
 									try {
 										Attachment attachment = ReadAttachment((Dictionary<string, Object>)entry.Value, skin, slotIndex, entry.Key, skeletonData);
@@ -490,11 +498,23 @@ namespace Spine {
 					LinkedMesh linkedMesh = linkedMeshes[i];
 					Skin skin = linkedMesh.skin == null ? skeletonData.defaultSkin : skeletonData.FindSkin(linkedMesh.skin);
 					if (skin == null) throw new Exception("Slot not found: " + linkedMesh.skin);
-					Attachment parent = skin.GetAttachment(linkedMesh.slotIndex, linkedMesh.parent);
-					if (parent == null) throw new Exception("Parent mesh not found: " + linkedMesh.parent);
-					linkedMesh.mesh.TimelineAttachment = linkedMesh.inheritTimelines ? (VertexAttachment)parent : linkedMesh.mesh;
-					linkedMesh.mesh.ParentMesh = (MeshAttachment)parent;
-					if (linkedMesh.mesh.Region != null) linkedMesh.mesh.UpdateRegion();
+					Attachment source = skin.GetAttachment(linkedMesh.sourceIndex, linkedMesh.source);
+					if (source == null) throw new Exception("Source mesh not found: " + linkedMesh.source);
+					linkedMesh.mesh.TimelineAttachment = linkedMesh.inheritTimelines ? source : linkedMesh.mesh;
+					linkedMesh.mesh.SourceMesh = (MeshAttachment)source;
+					linkedMesh.mesh.UpdateSequence();
+
+					//outer:
+					if (linkedMesh.inheritTimelines && linkedMesh.slotIndex != linkedMesh.sourceIndex) {
+						int[] slots = source.TimelineSlots;
+						foreach (int existing in slots)
+							if (existing == linkedMesh.slotIndex) { goto goto_outer; }
+						int[] newSlots = new int[slots.Length + 1];
+						Array.Copy(slots, newSlots, slots.Length);
+						newSlots[slots.Length] = linkedMesh.slotIndex;
+						source.TimelineSlots = newSlots;
+					}
+					goto_outer:;
 				}
 				linkedMeshes.Clear();
 
@@ -503,13 +523,14 @@ namespace Spine {
 					foreach (KeyValuePair<string, Object> entry in (Dictionary<string, Object>)root["events"]) {
 						Dictionary<string, object> entryMap = (Dictionary<string, Object>)entry.Value;
 						var data = new EventData(entry.Key);
-						data.Int = GetInt(entryMap, "int", 0);
-						data.Float = GetFloat(entryMap, "float", 0);
-						data.String = GetString(entryMap, "string", string.Empty);
+						Event setup = data.setupPose;
+						setup.intValue = GetInt(entryMap, "int", 0);
+						setup.floatValue = GetFloat(entryMap, "float", 0);
+						setup.stringValue = GetString(entryMap, "string", string.Empty);
 						data.AudioPath = GetString(entryMap, "audio", null);
 						if (data.AudioPath != null) {
-							data.Volume = GetFloat(entryMap, "volume", 1);
-							data.Balance = GetFloat(entryMap, "balance", 0);
+							setup.volume = GetFloat(entryMap, "volume", 1);
+							setup.balance = GetFloat(entryMap, "balance", 0);
 						}
 						skeletonData.events.Add(data);
 					}
@@ -561,7 +582,7 @@ namespace Spine {
 			case "scaleY": return new FromScaleY();
 			case "shearY": return new FromShearY();
 			default: throw new Exception("Invalid from property: " + type);
-			};
+			}
 		}
 
 		private float PropertyScale (String type, float scale) {
@@ -570,12 +591,12 @@ namespace Spine {
 			case "y":
 				return scale;
 			default: return 1;
-			};
+			}
 		}
 
-		private Attachment ReadAttachment (Dictionary<string, Object> map, Skin skin, int slotIndex, string name, SkeletonData skeletonData) {
+		private Attachment ReadAttachment (Dictionary<string, Object> map, Skin skin, int slotIndex, string placeholder, SkeletonData skeletonData) {
 			float scale = this.scale;
-			name = GetString(map, "name", name);
+			string name = GetString(map, "name", placeholder);
 
 			string typeName = GetString(map, "type", "region");
 			AttachmentType type = (AttachmentType)Enum.Parse(typeof(AttachmentType), typeName, true);
@@ -586,7 +607,7 @@ namespace Spine {
 				object sequenceJson;
 				map.TryGetValue("sequence", out sequenceJson);
 				Sequence sequence = ReadSequence(sequenceJson);
-				RegionAttachment region = attachmentLoader.NewRegionAttachment(skin, name, path, sequence);
+				RegionAttachment region = attachmentLoader.NewRegionAttachment(skin, placeholder, name, path, sequence);
 				if (region == null) return null;
 				region.Path = path;
 				region.x = GetFloat(map, "x", 0) * scale;
@@ -596,18 +617,17 @@ namespace Spine {
 				region.rotation = GetFloat(map, "rotation", 0);
 				region.width = GetFloat(map, "width") * scale;
 				region.height = GetFloat(map, "height") * scale;
-				region.sequence = sequence;
 
 				if (map.ContainsKey("color")) {
 					string color = (string)map["color"];
 					region.SetColor(ToColor32(color, 8));
 				}
 
-				if (region.Region != null) region.UpdateRegion();
+				region.UpdateSequence();
 				return region;
 			}
 			case AttachmentType.Boundingbox:
-				BoundingBoxAttachment box = attachmentLoader.NewBoundingBoxAttachment(skin, name);
+				BoundingBoxAttachment box = attachmentLoader.NewBoundingBoxAttachment(skin, placeholder, name);
 				if (box == null) return null;
 				ReadVertices(map, box, GetInt(map, "vertexCount", 0) << 1);
 				return box;
@@ -617,7 +637,7 @@ namespace Spine {
 				object sequenceJson;
 				map.TryGetValue("sequence", out sequenceJson);
 				Sequence sequence = ReadSequence(sequenceJson);
-				MeshAttachment mesh = attachmentLoader.NewMeshAttachment(skin, name, path, sequence);
+				MeshAttachment mesh = attachmentLoader.NewMeshAttachment(skin, placeholder, name, path, sequence);
 				if (mesh == null) return null;
 				mesh.Path = path;
 
@@ -628,11 +648,18 @@ namespace Spine {
 
 				mesh.Width = GetFloat(map, "width", 0) * scale;
 				mesh.Height = GetFloat(map, "height", 0) * scale;
-				mesh.Sequence = sequence;
 
-				string parent = GetString(map, "parent", null);
-				if (parent != null) {
-					linkedMeshes.Add(new LinkedMesh(mesh, GetString(map, "skin", null), slotIndex, parent, GetBoolean(map, "timelines", true)));
+				string source = GetString(map, "source", null);
+				if (source != null) {
+					int sourceIndex = slotIndex;
+					String slot = GetString(map, "slot", null);
+					if (slot != null) {
+						SlotData sourceSlot = skeletonData.FindSlot(slot);
+						if (sourceSlot == null) throw new SerializationException("Source mesh slot not found: " + slot);
+						sourceIndex = sourceSlot.index;
+					}
+					linkedMeshes.Add(new LinkedMesh(mesh, GetString(map, "skin", null), slotIndex, sourceIndex, source,
+						GetBoolean(map, "timelines", true)));
 					return mesh;
 				}
 
@@ -640,14 +667,14 @@ namespace Spine {
 				ReadVertices(map, mesh, uvs.Length);
 				mesh.triangles = GetIntArray(map, "triangles");
 				mesh.regionUVs = uvs;
-				if (mesh.Region != null) mesh.UpdateRegion();
 
 				if (map.ContainsKey("hull")) mesh.HullLength = GetInt(map, "hull", 0) << 1;
 				if (map.ContainsKey("edges")) mesh.Edges = GetIntArray(map, "edges");
+				mesh.UpdateSequence();
 				return mesh;
 			}
 			case AttachmentType.Path: {
-				PathAttachment pathAttachment = attachmentLoader.NewPathAttachment(skin, name);
+				PathAttachment pathAttachment = attachmentLoader.NewPathAttachment(skin, placeholder, name);
 				if (pathAttachment == null) return null;
 				pathAttachment.closed = GetBoolean(map, "closed", false);
 				pathAttachment.constantSpeed = GetBoolean(map, "constantSpeed", true);
@@ -660,7 +687,7 @@ namespace Spine {
 				return pathAttachment;
 			}
 			case AttachmentType.Point: {
-				PointAttachment point = attachmentLoader.NewPointAttachment(skin, name);
+				PointAttachment point = attachmentLoader.NewPointAttachment(skin, placeholder, name);
 				if (point == null) return null;
 				point.x = GetFloat(map, "x", 0) * scale;
 				point.y = GetFloat(map, "y", 0) * scale;
@@ -671,7 +698,7 @@ namespace Spine {
 				return point;
 			}
 			case AttachmentType.Clipping: {
-				ClippingAttachment clip = attachmentLoader.NewClippingAttachment(skin, name);
+				ClippingAttachment clip = attachmentLoader.NewClippingAttachment(skin, placeholder, name);
 				if (clip == null) return null;
 
 				string end = GetString(map, "end", null);
@@ -680,6 +707,9 @@ namespace Spine {
 					if (slot == null) throw new Exception("Clipping end slot not found: " + end);
 					clip.EndSlot = slot;
 				}
+
+				clip.Convex = GetBoolean(map, "convex", false);
+				clip.Inverse = GetBoolean(map, "inverse", false);
 
 				ReadVertices(map, clip, GetInt(map, "vertexCount", 0) << 1);
 
@@ -693,8 +723,8 @@ namespace Spine {
 
 		public static Sequence ReadSequence (object sequenceJson) {
 			Dictionary<string, object> map = sequenceJson as Dictionary<string, Object>;
-			if (map == null) return null;
-			var sequence = new Sequence(GetInt(map, "count"));
+			if (map == null) return new Sequence(1, false);
+			var sequence = new Sequence(GetInt(map, "count"), true);
 			sequence.start = GetInt(map, "start", 1);
 			sequence.digits = GetInt(map, "digits", 0);
 			sequence.setupIndex = GetInt(map, "setup", 0);
@@ -730,13 +760,6 @@ namespace Spine {
 			attachment.vertices = weights.ToArray();
 		}
 
-		private int FindSlotIndex (SkeletonData skeletonData, string slotName) {
-			SlotData[] slots = skeletonData.slots.Items;
-			for (int i = 0, n = skeletonData.slots.Count; i < n; i++)
-				if (slots[i].name == slotName) return i;
-			throw new Exception("Slot not found: " + slotName);
-		}
-
 		private void ReadAnimation (Dictionary<string, Object> map, string name, SkeletonData skeletonData) {
 			float scale = this.scale;
 			var timelines = new ExposedList<Timeline>();
@@ -745,7 +768,9 @@ namespace Spine {
 			if (map.ContainsKey("slots")) {
 				foreach (KeyValuePair<string, Object> entry in (Dictionary<string, Object>)map["slots"]) {
 					string slotName = entry.Key;
-					int slotIndex = FindSlotIndex(skeletonData, slotName);
+					SlotData slot = skeletonData.FindSlot(slotName);
+					if (slot == null) throw new SerializationException("Slot not found: " + slotName);
+					int slotIndex = slot.Index;
 					Dictionary<string, object> timelineMap = (Dictionary<string, Object>)entry.Value;
 					foreach (KeyValuePair<string, Object> timelineEntry in timelineMap) {
 						List<object> values = (List<Object>)timelineEntry.Value;
@@ -754,7 +779,7 @@ namespace Spine {
 						string timelineName = (string)timelineEntry.Key;
 						switch (timelineName) {
 						case "attachment": {
-							var timeline = new AttachmentTimeline(frames, slotIndex);
+							var timeline = new AttachmentTimeline(frames, slot.Index);
 							int frame = 0;
 							foreach (Dictionary<string, Object> keyMap in values) {
 								timeline.SetFrame(frame++, GetFloat(keyMap, "time", 0), GetString(keyMap, "name", null));
@@ -970,11 +995,17 @@ namespace Spine {
 			}
 
 			// Bone timelines.
-			if (map.ContainsKey("bones")) {
+			ExposedList<int> bones = null;
+			if (!map.ContainsKey("bones")) {
+				bones = new ExposedList<int>(0);
+			} else {
+				int bonesCount = ((Dictionary<string, Object>)map["bones"]).Count;
+				bones = new ExposedList<int>(bonesCount);
 				foreach (KeyValuePair<string, Object> entry in (Dictionary<string, Object>)map["bones"]) {
 					string boneName = entry.Key;
 					BoneData bone = skeletonData.FindBone(boneName);
 					if (bone == null) throw new Exception("Bone not found: " + boneName);
+					bones.Add(bone.index);
 					Dictionary<string, object> timelineMap = (Dictionary<string, Object>)entry.Value;
 					foreach (KeyValuePair<string, Object> timelineEntry in timelineMap) {
 						List<object> values = (List<Object>)timelineEntry.Value;
@@ -1278,7 +1309,7 @@ namespace Spine {
 					Skin skin = skeletonData.FindSkin(attachmentsMap.Key);
 					foreach (KeyValuePair<string, Object> slotMap in (Dictionary<string, Object>)attachmentsMap.Value) {
 						SlotData slot = skeletonData.FindSlot(slotMap.Key);
-						if (slot == null) throw new Exception("Slot not found: " + slotMap.Key);
+						if (slot == null) throw new Exception("Attachment slot not found: " + slotMap.Key);
 						foreach (KeyValuePair<string, Object> attachmentMap in (Dictionary<string, Object>)slotMap.Value) {
 							Attachment attachment = skin.GetAttachment(slot.index, attachmentMap.Key);
 							if (attachment == null) throw new Exception("Timeline attachment not found: " + attachmentMap.Key);
@@ -1360,39 +1391,40 @@ namespace Spine {
 
 			// Draw order timeline.
 			if (map.ContainsKey("drawOrder")) {
-				List<object> values = (List<Object>)map["drawOrder"];
-				var timeline = new DrawOrderTimeline(values.Count);
-				int slotCount = skeletonData.slots.Count;
-				int frame = 0;
-				foreach (Dictionary<string, Object> keyMap in values) {
-					int[] drawOrder = null;
-					if (keyMap.ContainsKey("offsets")) {
-						drawOrder = new int[slotCount];
-						for (int i = slotCount - 1; i >= 0; i--)
-							drawOrder[i] = -1;
-						List<object> offsets = (List<Object>)keyMap["offsets"];
-						int[] unchanged = new int[slotCount - offsets.Count];
-						int originalIndex = 0, unchangedIndex = 0;
-						foreach (Dictionary<string, Object> offsetMap in offsets) {
-							int slotIndex = FindSlotIndex(skeletonData, (string)offsetMap["slot"]);
-							// Collect unchanged items.
-							while (originalIndex != slotIndex)
-								unchanged[unchangedIndex++] = originalIndex++;
-							// Set changed items.
-							int index = originalIndex + (int)(float)offsetMap["offset"];
-							drawOrder[index] = originalIndex++;
-						}
-						// Collect remaining unchanged items.
-						while (originalIndex < slotCount)
-							unchanged[unchangedIndex++] = originalIndex++;
-						// Fill in unchanged items.
-						for (int i = slotCount - 1; i >= 0; i--)
-							if (drawOrder[i] == -1) drawOrder[i] = unchanged[--unchangedIndex];
-					}
-					timeline.SetFrame(frame, GetFloat(keyMap, "time", 0), drawOrder);
-					++frame;
+				List<object> drawOrderMap = (List<object>)map["drawOrder"];
+				var timeline = new DrawOrderTimeline(drawOrderMap.Count);
+				int slotCount = skeletonData.slots.Count, frame = 0;
+				foreach (Dictionary<string, object> keyMap in drawOrderMap) {
+					timeline.SetFrame(frame, GetFloat(keyMap, "time", 0), ReadDrawOrder(skeletonData, keyMap, slotCount, null));
+					frame++;
 				}
 				timelines.Add(timeline);
+			}
+
+			// Draw order folder timelines.
+			if (map.ContainsKey("drawOrderFolder")) {
+				List<object> drawOrderFolderMap = (List<object>)map["drawOrderFolder"];
+				foreach (Dictionary<string, object> timelineMap in drawOrderFolderMap) {
+					List<object> slotEntries = (List<object>)timelineMap["slots"];
+					var folderSlots = new int[slotEntries.Count];
+					int ii = 0;
+					foreach (string slotEntry in slotEntries) {
+						SlotData slot = skeletonData.FindSlot(slotEntry);
+						if (slot == null) throw new SerializationException("Draw order folder slot not found: " + slotEntry);
+						folderSlots[ii] = slot.index;
+						ii++;
+					}
+
+					List<object> keys = (List<object>)timelineMap["keys"];
+					var timeline = new DrawOrderFolderTimeline(keys.Count, folderSlots, skeletonData.slots.Count);
+					int frame = 0;
+					foreach (Dictionary<string, object> keyMap in keys) {
+						timeline.SetFrame(frame, GetFloat(keyMap, "time", 0),
+							ReadDrawOrder(skeletonData, keyMap, folderSlots.Length, folderSlots));
+						frame++;
+					}
+					timelines.Add(timeline);
+				}
 			}
 
 			// Event timeline.
@@ -1401,16 +1433,17 @@ namespace Spine {
 				var timeline = new EventTimeline(eventsMap.Count);
 				int frame = 0;
 				foreach (Dictionary<string, Object> keyMap in eventsMap) {
-					EventData eventData = skeletonData.FindEvent((string)keyMap["name"]);
-					if (eventData == null) throw new Exception("Event not found: " + keyMap["name"]);
-					var e = new Event(GetFloat(keyMap, "time", 0), eventData) {
-						intValue = GetInt(keyMap, "int", eventData.Int),
-						floatValue = GetFloat(keyMap, "float", eventData.Float),
-						stringValue = GetString(keyMap, "string", eventData.String)
+					EventData data = skeletonData.FindEvent((string)keyMap["name"]);
+					if (data == null) throw new Exception("Event not found: " + keyMap["name"]);
+					Event setup = data.setupPose;
+					var e = new Event(GetFloat(keyMap, "time", 0), data) {
+						intValue = GetInt(keyMap, "int", setup.intValue),
+						floatValue = GetFloat(keyMap, "float", setup.floatValue),
+						stringValue = GetString(keyMap, "string", setup.stringValue)
 					};
 					if (e.data.AudioPath != null) {
-						e.volume = GetFloat(keyMap, "volume", eventData.Volume);
-						e.balance = GetFloat(keyMap, "balance", eventData.Balance);
+						e.volume = GetFloat(keyMap, "volume", setup.volume);
+						e.balance = GetFloat(keyMap, "balance", setup.balance);
 					}
 					timeline.SetFrame(frame, e);
 					++frame;
@@ -1422,7 +1455,11 @@ namespace Spine {
 			Timeline[] items = timelines.Items;
 			for (int i = 0, n = timelines.Count; i < n; i++)
 				duration = Math.Max(duration, items[i].Duration);
-			skeletonData.animations.Add(new Animation(name, timelines, duration));
+
+			Animation animation = new Animation(name);
+			animation.SetTimelines(timelines, bones);
+			animation.Duration = duration;
+			skeletonData.animations.Add(animation);
 		}
 
 		static void ReadTimeline (ref ExposedList<Timeline> timelines, ref List<object>.Enumerator keyMapEnumerator, CurveTimeline1 timeline, float defaultValue,
@@ -1477,6 +1514,48 @@ namespace Spine {
 				value2 = nvalue2;
 				keyMap = nextMap;
 			}
+		}
+
+		/// <param name="folderSlots">
+		/// Slot names are resolved to positions within this array. If null, slot indices are used as positions.</param>
+		private int[] ReadDrawOrder (SkeletonData skeletonData, Dictionary<string, object> keyMap, int slotCount, int[] folderSlots) {
+			if (!keyMap.ContainsKey("offsets")) return null; // Setup draw order.
+			List<object> changes = (List<object>)keyMap["offsets"];
+			var drawOrder = new int[slotCount];
+			for (int ii = slotCount - 1; ii >= 0; ii--)
+				drawOrder[ii] = -1;
+			var unchanged = new int[slotCount - changes.Count];
+			int originalIndex = 0, unchangedIndex = 0;
+
+			foreach (Dictionary<string, object> offsetMap in changes) {
+				SlotData slot = skeletonData.FindSlot((string)offsetMap["slot"]);
+				if (slot == null) throw new SerializationException("Draw order slot not found: " + (string)offsetMap["slot"]);
+				int index;
+				if (folderSlots == null)
+					index = slot.index;
+				else {
+					index = -1;
+					for (int i = 0; i < slotCount; i++) {
+						if (folderSlots[i] == slot.index) {
+							index = i;
+							break;
+						}
+					}
+					if (index == -1) throw new SerializationException("Slot not in folder: " + (string)offsetMap["slot"]);
+				}
+				// Collect unchanged items.
+				while (originalIndex != index)
+					unchanged[unchangedIndex++] = originalIndex++;
+				// Set changed items.
+				drawOrder[originalIndex + GetInt(offsetMap, "offset")] = originalIndex++;
+			}
+			// Collect remaining unchanged items.
+			while (originalIndex < slotCount)
+				unchanged[unchangedIndex++] = originalIndex++;
+			// Fill in unchanged items.
+			for (int i = slotCount - 1; i >= 0; i--)
+				if (drawOrder[i] == -1) drawOrder[i] = unchanged[--unchangedIndex];
+			return drawOrder;
 		}
 
 		static int ReadCurve (object curve, CurveTimeline timeline, int bezier, int frame, int value, float time1, float time2,
@@ -1581,16 +1660,18 @@ namespace Spine {
 		}
 
 		private class LinkedMesh {
-			internal string parent, skin;
-			internal int slotIndex;
+			internal string source, skin;
+			internal int slotIndex, sourceIndex;
 			internal MeshAttachment mesh;
 			internal bool inheritTimelines;
 
-			public LinkedMesh (MeshAttachment mesh, string skin, int slotIndex, string parent, bool inheritTimelines) {
+			public LinkedMesh (MeshAttachment mesh, string skin, int slotIndex, int sourceIndex, string source,
+				bool inheritTimelines) {
 				this.mesh = mesh;
 				this.skin = skin;
 				this.slotIndex = slotIndex;
-				this.parent = parent;
+				this.sourceIndex = sourceIndex;
+				this.source = source;
 				this.inheritTimelines = inheritTimelines;
 			}
 		}

@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -59,6 +59,7 @@ namespace Spine.Unity.Editor {
 			int maxIndex = 0;
 			for (int i = 0; i < targets.Length; ++i) {
 				SkeletonMecanim skeletonMecanim = ((SkeletonMecanimRootMotion)targets[i]).SkeletonMecanim;
+				if (skeletonMecanim.Translator == null) continue;
 				int count = skeletonMecanim.Translator.MecanimLayerCount;
 				if (count > maxLayerCount) {
 					maxLayerCount = count;

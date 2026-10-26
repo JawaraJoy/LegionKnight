@@ -12,6 +12,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you change the color of a target Graphic over time.")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("UI/Graphic")]
 	public class MMF_Graphic : MMF_Feedback
 	{
@@ -86,9 +87,9 @@ namespace MoreMountains.Feedbacks
 					Turn(false);
 				}
 
-				if (TargetGraphic == null)
+				if (!TargetExists(TargetGraphic, nameof(TargetGraphic)))
 				{
-					Debug.LogWarning("[Graphic Feedback] The graphic feedback on "+Owner.name+" doesn't have a Target Graphic, it won't work. You need to specify a graphic in its inspector.");
+					return;
 				}
 				else
 				{

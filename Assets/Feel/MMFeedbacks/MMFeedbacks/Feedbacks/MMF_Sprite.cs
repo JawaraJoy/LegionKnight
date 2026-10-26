@@ -7,6 +7,7 @@ namespace MoreMountains.Feedbacks
 	/// </summary>
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will let you change the sprite of a target SpriteRenderer.")]
+	[System.Serializable]
 	[FeedbackPath("Renderer/Sprite")]
 	public class MMF_Sprite : MMF_Feedback
 	{
@@ -45,9 +46,9 @@ namespace MoreMountains.Feedbacks
 
 			if (Active)
 			{
-				if (BoundSpriteRenderer == null)
+				if (!TargetExists(BoundSpriteRenderer, nameof(BoundSpriteRenderer)))
 				{
-					Debug.LogWarning("[Sprite Feedback] The Sprite feedback on "+Owner.name+" doesn't have a BoundSpriteRenderer, it won't work. You need to specify a Sprite Renderer in its inspector.");
+					return;
 				}
 				else
 				{

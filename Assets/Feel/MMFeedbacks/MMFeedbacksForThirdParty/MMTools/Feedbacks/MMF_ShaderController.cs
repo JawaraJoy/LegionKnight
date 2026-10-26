@@ -13,6 +13,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback lets you trigger a one time play on a target ShaderController.")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks.MMTools")]
+	[System.Serializable]
 	[FeedbackPath("Renderer/ShaderController")]
 	public class MMF_ShaderController : MMF_Feedback
 	{
@@ -30,6 +31,8 @@ namespace MoreMountains.Feedbacks
 		public override bool HasRandomness => true;
 		public override bool HasAutomatedTargetAcquisition => true;
 		protected override void AutomateTargetAcquisition() => TargetShaderController = FindAutomatedTarget<ShaderController>();
+		public override bool HasAutomatedMultipleTargetAcquisition => true;
+		protected override void AutomateMultipleTargetAcquisition() => TargetShaderControllerList = FindAutomatedTargets<ShaderController>(TargetShaderControllerList, TargetShaderController);
 
 		[MMFInspectorGroup("Shader Controller", true, 37, true)]
 		/// the mode this controller is in

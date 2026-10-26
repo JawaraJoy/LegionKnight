@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -35,7 +35,7 @@ namespace Spine {
 	public class IkConstraintData : ConstraintData<IkConstraint, IkConstraintPose> {
 		internal ExposedList<BoneData> bones = new ExposedList<BoneData>(2);
 		internal BoneData target;
-		internal bool uniform;
+		internal ScaleYMode scaleY = ScaleYMode.None;
 
 		public IkConstraintData (string name)
 			: base(name, new IkConstraintPose()) {
@@ -57,12 +57,12 @@ namespace Spine {
 		}
 
 		/// <summary>
-		/// When true and <see cref="IkConstraintPose.Compress"/> or <see cref="IkConstraintPose.Stretch"/> is used, the bone is scaled
-		/// on both the X and Y axes.
+		/// Determines how the <see cref="BonePose.scaleY"/> changes when <see cref="IkConstraintPose.Compress"/> or
+		/// <see cref="IkConstraintPose.Stretch"/> set <see cref="BonePose.ScaleX"/>.
 		/// </summary>
-		public bool Uniform {
-			get { return uniform; }
-			set { uniform = value; }
+		public ScaleYMode ScaleY {
+			get { return scaleY; }
+			set { scaleY = value; }
 		}
 	}
 }

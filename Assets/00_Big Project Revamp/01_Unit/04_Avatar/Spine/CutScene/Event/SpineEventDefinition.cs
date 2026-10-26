@@ -41,10 +41,17 @@ namespace LegionKnight
             }
             Debug.Log($"[Spine Event] {e.Data.Name} at time {e.Time}");
         }
-        public void AddEventCallBack(SkeletonGraphic anim, GameObject sender)
+public void AddEventCallBack(SkeletonGraphic anim, GameObject sender)
         {
             m_EventSender = sender;
-            anim.AnimationState.Event += HandleSpineEvent;
+            if (anim != null && anim.TryGetComponent(out SkeletonAnimation skeletonAnimation))
+            {
+                skeletonAnimation.AnimationState.Event += HandleSpineEvent;
+            }
+            else
+            {
+                Debug.LogError("[Spine Event] SkeletonGraphic requires a SkeletonAnimation component.", anim);
+            }
         }
     }
 }

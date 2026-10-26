@@ -12,6 +12,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback allows you to change the state of the target gameobject from active to inactive (or the opposite), on init, play, stop or reset. For each of these you can specify if you want to force a state (active or inactive), or toggle it (active becomes inactive, inactive becomes active).")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("GameObject/Set Active")]
 	public class MMF_SetActive : MMF_Feedback
 	{
@@ -41,6 +42,8 @@ namespace MoreMountains.Feedbacks
 		#endif
 		public override bool HasAutomatedTargetAcquisition => true;
 		protected override void AutomateTargetAcquisition() => TargetGameObject = FindAutomatedTargetGameObject();
+		public override bool HasAutomatedMultipleTargetAcquisition => true;
+		protected override void AutomateMultipleTargetAcquisition() => ExtraTargetGameObjects = FindAutomatedTargetGameObjects(ExtraTargetGameObjects, TargetGameObject);
 
 		/// the possible effects the feedback can have on the target object's status 
 		public enum PossibleStates { Active, Inactive, Toggle }
@@ -289,9 +292,29 @@ namespace MoreMountains.Feedbacks
 				return;
 			}
 			TargetGameObject.SetActive(_initialState);
-			for (int i = 0; i < ExtraTargetGameObjects.Count; i++)
+			for (int i = 0; (i < ExtraTargetGameObjects.Count) && (i < _initialStates.Count); i++)
 			{
 				ExtraTargetGameObjects[i].SetActive(_initialStates[i]);
+			}
+		}
+
+		/// <summary>
+		/// When forcing target acquisition after initialization, we store the initial states of extra targets that may have been added (or of all of them if the list got replaced)
+		/// </summary>
+		public override void ForceAutomateTargetAcquisition()
+		{
+			base.ForceAutomateTargetAcquisition();
+			if (!_initialized || !AutomatedMultipleTargetAcquisitionActive || (_initialStates == null) || (ExtraTargetGameObjects == null))
+			{
+				return;
+			}
+			if (AutomatedMultipleTargetAcquisition.ListMode == MMFeedbackMultipleTargetAcquisition.ListModes.Replace)
+			{
+				_initialStates.Clear();
+			}
+			for (int i = _initialStates.Count; i < ExtraTargetGameObjects.Count; i++)
+			{
+				_initialStates.Add(ExtraTargetGameObjects[i].activeInHierarchy);
 			}
 		}
 	}

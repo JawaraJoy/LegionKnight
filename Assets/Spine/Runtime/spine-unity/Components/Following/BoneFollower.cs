@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -31,8 +31,13 @@
 #define NEW_PREFAB_SYSTEM
 #endif
 
+#if !SPINE_AUTO_UPGRADE_COMPONENTS_OFF
+#define AUTO_UPGRADE_TO_43_COMPONENTS
+#endif
+
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Spine.Unity {
 
@@ -44,7 +49,7 @@ namespace Spine.Unity {
 #endif
 	[AddComponentMenu("Spine/BoneFollower")]
 	[HelpURL("https://esotericsoftware.com/spine-unity-utility-components#BoneFollower")]
-	public class BoneFollower : MonoBehaviour {
+	public class BoneFollower : MonoBehaviour, IUpgradable {
 
 		#region Inspector
 		public SkeletonRenderer skeletonRenderer;
@@ -62,6 +67,7 @@ namespace Spine.Unity {
 
 		public bool followXYPosition = true;
 		public bool followZPosition = true;
+		public bool followAttachmentZSpacing = false;
 		public bool followBoneRotation = true;
 
 		[Tooltip("Follows the skeleton's flip state by controlling this Transform's local scale.")]
@@ -106,10 +112,15 @@ namespace Spine.Unity {
 		}
 
 		public void Awake () {
+#if UNITY_EDITOR && AUTO_UPGRADE_TO_43_COMPONENTS
+			if (!Application.isPlaying && !wasUpgradedTo43) {
+				UpgradeTo43();
+			}
+#endif
 			if (initializeOnAwake) Initialize();
 		}
 
-		public void HandleRebuildRenderer (SkeletonRenderer skeletonRenderer) {
+		public void HandleRebuildRenderer (ISkeletonRenderer skeletonRenderer) {
 			Initialize();
 		}
 
@@ -125,7 +136,6 @@ namespace Spine.Unity {
 
 			if (!string.IsNullOrEmpty(boneName))
 				bone = skeletonRenderer.skeleton.FindBone(boneName);
-
 #if UNITY_EDITOR
 			if (Application.isEditor)
 				LateUpdate();
@@ -184,9 +194,10 @@ namespace Spine.Unity {
 
 			if (skeletonTransformIsParent) {
 				// Recommended setup: Use local transform properties if Spine GameObject is the immediate parent
-				thisTransform.localPosition = new Vector3(followXYPosition ? bone.AppliedPose.WorldX : thisTransform.localPosition.x,
-														followXYPosition ? bone.AppliedPose.WorldY : thisTransform.localPosition.y,
-														followZPosition ? 0f : thisTransform.localPosition.z);
+				thisTransform.localPosition = new Vector3(
+					followXYPosition ? bone.AppliedPose.WorldX : thisTransform.localPosition.x,
+					followXYPosition ? bone.AppliedPose.WorldY : thisTransform.localPosition.y,
+					followZPosition ? (followAttachmentZSpacing ? GetAttachmentZPosition() : 0f) : thisTransform.localPosition.z);
 				if (followBoneRotation) {
 					float halfRotation = Mathf.Atan2(bone.AppliedPose.C, bone.AppliedPose.A) * 0.5f;
 					if (followLocalScale && bone.AppliedPose.ScaleX < 0) // Negate rotation from negative scaleX. Don't use negative determinant. local scaleY doesn't factor into used rotation.
@@ -199,9 +210,11 @@ namespace Spine.Unity {
 					q.w = Mathf.Cos(halfRotation);
 					thisTransform.localRotation = q;
 				}
-			} else {
-				// For special cases: Use transform world properties if transform relationship is complicated
-				Vector3 targetWorldPosition = skeletonTransform.TransformPoint(new Vector3(bone.AppliedPose.WorldX, bone.AppliedPose.WorldY, 0f));
+			} else { // For special cases: Use transform world properties if transform relationship is complicated
+				if (!skeletonTransform) return;
+
+				float z0Position = (followZPosition && followAttachmentZSpacing) ? GetAttachmentZPosition() : 0f;
+				Vector3 targetWorldPosition = skeletonTransform.TransformPoint(new Vector3(bone.AppliedPose.WorldX, bone.AppliedPose.WorldY, z0Position));
 				if (!followZPosition) targetWorldPosition.z = thisTransform.position.z;
 				if (!followXYPosition) {
 					targetWorldPosition.x = thisTransform.position.x;
@@ -238,5 +251,29 @@ namespace Spine.Unity {
 												* skeletonLossyScale.y * parentLossyScale.y);
 			}
 		}
+
+		float GetAttachmentZPosition () {
+			var drawOrderPose = skeletonRenderer.Skeleton.DrawOrder.Pose;
+			int boneIndex = drawOrderPose.FindIndex(slot => slot.Bone == bone);
+			if (boneIndex < 0) return 0f;
+			return skeletonRenderer.zSpacing * boneIndex;
+		}
+
+		#region Transfer of Deprecated Fields
+#if UNITY_EDITOR && AUTO_UPGRADE_TO_43_COMPONENTS
+		public virtual void UpgradeTo43 () {
+			wasUpgradedTo43 = true;
+			if (skeletonRenderer == null) {
+				Component previousReference = previousSkeletonRenderer != null ? previousSkeletonRenderer : this;
+				skeletonRenderer = previousReference.GetComponent<SkeletonRenderer>();
+				if (skeletonRenderer == null)
+					Debug.LogError("Please manually re-assign SkeletonRenderer at BoneFollower, " +
+						"automatic upgrade failed.", this);
+			}
+		}
+		[SerializeField, HideInInspector, FormerlySerializedAs("skeletonRenderer")] Component previousSkeletonRenderer;
+		[SerializeField] protected bool wasUpgradedTo43 = false;
+#endif
+		#endregion
 	}
 }

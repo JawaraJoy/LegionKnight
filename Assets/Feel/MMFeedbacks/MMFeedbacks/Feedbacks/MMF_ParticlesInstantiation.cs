@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MoreMountains.Tools;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using UnityEngine.Scripting.APIUpdating;
 
@@ -14,6 +12,7 @@ namespace MoreMountains.Feedbacks
 	[AddComponentMenu("")]
 	[FeedbackHelp("This feedback will instantiate the specified ParticleSystem at the specified position on Start or on Play, optionally nesting them.")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
+	[System.Serializable]
 	[FeedbackPath("Particles/Particles Instantiation")]
 	public class MMF_ParticlesInstantiation : MMF_Feedback
 	{
@@ -99,6 +98,10 @@ namespace MoreMountains.Feedbacks
 		[Tooltip("the position at which to spawn this particle system")]
 		[MMFEnumCondition("PositionMode", (int)PositionModes.Transform)]
 		public Transform InstantiateParticlesPosition;
+		/// in Transform mode, whether or not to parent / attach the spawned particle system to the InstantiateParticlePosition transform on play
+		[Tooltip("in Transform mode, whether or not to parent / attach the spawned particle system to the InstantiateParticlePosition transform on play")]
+		[MMFEnumCondition("PositionMode", (int)PositionModes.Transform)]
+		public bool ParentParticleSystemOnPlay = false;
 		/// the world position to move to when in WorldPosition mode 
 		[Tooltip("the world position to move to when in WorldPosition mode")]
 		[MMFEnumCondition("PositionMode", (int)PositionModes.WorldPosition)]
@@ -278,7 +281,7 @@ namespace MoreMountains.Feedbacks
 		protected virtual void InstantiateParticleSystem()
 		{
 			Transform newParent = null;
-            
+			
 			if (NestParticles)
 			{
 				if (PositionMode == PositionModes.FeedbackPosition)
@@ -329,6 +332,7 @@ namespace MoreMountains.Feedbacks
 				{
 					SceneManager.MoveGameObjectToScene(_instantiatedParticleSystem.gameObject, Owner.gameObject.scene);    
 				}
+				_instantiatedParticleSystem.gameObject.SetActive(false);
 			}
 			
 			if (_instantiatedParticleSystem != null)
@@ -353,6 +357,11 @@ namespace MoreMountains.Feedbacks
 				{
 					InstantiateParticlesPosition = Owner.transform;
 				}
+			}
+
+			if (ParentParticleSystemOnPlay)
+			{
+				system.transform.SetParent(InstantiateParticlesPosition);
 			}
 
 			if (system != null)
@@ -452,7 +461,6 @@ namespace MoreMountains.Feedbacks
 			{
 				return;
 			}
-
 			_scriptPosition = position;
 			
 			if (Mode == Modes.Pool)
@@ -511,7 +519,6 @@ namespace MoreMountains.Feedbacks
 			{
 				foreach (ParticleSystem system in _instantiatedRandomParticleSystems)
 				{
-                    
 					if (ForceSetActiveOnPlay)
 					{
 						system.gameObject.SetActive(true);

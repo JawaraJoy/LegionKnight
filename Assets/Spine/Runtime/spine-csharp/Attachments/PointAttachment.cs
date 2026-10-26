@@ -2,7 +2,7 @@
  * Spine Runtimes License Agreement
  * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2026, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -39,8 +39,11 @@ namespace Spine {
 	/// </summary>
 	public class PointAttachment : Attachment {
 		internal float x, y, rotation;
+		/// <summary>The local x position.</summary>
 		public float X { get { return x; } set { x = value; } }
+		/// <summary>The local y position.</summary>
 		public float Y { get { return y; } set { y = value; } }
+		/// <summary>The local rotation in degrees, counter clockwise.</summary>
 		public float Rotation { get { return rotation; } set { rotation = value; } }
 
 		public PointAttachment (string name)
@@ -55,10 +58,12 @@ namespace Spine {
 			rotation = other.rotation;
 		}
 
+		/// <summary>Computes the world position from the local position.</summary>
 		public void ComputeWorldPosition (BonePose bone, out float ox, out float oy) {
 			bone.LocalToWorld(this.x, this.y, out ox, out oy);
 		}
 
+		/// <summary>Computes the world rotation from the local rotation.</summary>
 		public float ComputeWorldRotation (BonePose bone) {
 			float r = rotation * MathUtils.DegRad, cos = (float)Math.Cos(r), sin = (float)Math.Sin(r);
 			float x = cos * bone.a + sin * bone.b;
