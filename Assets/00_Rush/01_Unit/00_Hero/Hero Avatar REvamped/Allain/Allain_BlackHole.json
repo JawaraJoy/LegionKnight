@@ -1,0 +1,116 @@
+{
+  "skeleton": {
+    "hash": "",
+    "spine": "4.3.0",
+    "x": -150,
+    "y": -114.5,
+    "width": 300,
+    "height": 229
+  },
+  "bones": [
+    {
+      "name": "root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "blackhole",
+      "bone": "root",
+      "attachment": "blackhole"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "blackhole": {
+          "blackhole": {
+            "width": 300,
+            "height": 229
+          }
+        }
+      }
+    }
+  ],
+  "events": {
+    "blackhole_initial_hit": {
+      "string": ""
+    },
+    "blackhole_dot_tick": {
+      "string": ""
+    },
+    "blackhole_end": {
+      "string": ""
+    }
+  },
+  "animations": {
+    "blackhole": {
+      "bones": {
+        "root": {
+          "rotate": [
+            {},
+            {
+              "time": 4,
+              "value": 360
+            }
+          ],
+          "scale": [
+            {
+              "x": 0.02,
+              "y": 0.02
+            },
+            {
+              "time": 0.2
+            },
+            {
+              "time": 1,
+              "x": 1.08,
+              "y": 1.08
+            },
+            {
+              "time": 2
+            },
+            {
+              "time": 3,
+              "x": 1.08,
+              "y": 1.08
+            },
+            {
+              "time": 3.8
+            },
+            {
+              "time": 4,
+              "x": 0.01,
+              "y": 0.01
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "name": "blackhole_initial_hit"
+        },
+        {
+          "time": 1,
+          "name": "blackhole_dot_tick"
+        },
+        {
+          "time": 2,
+          "name": "blackhole_dot_tick"
+        },
+        {
+          "time": 3,
+          "name": "blackhole_dot_tick"
+        },
+        {
+          "time": 4,
+          "name": "blackhole_dot_tick"
+        },
+        {
+          "time": 4,
+          "name": "blackhole_end"
+        }
+      ]
+    }
+  }
+}

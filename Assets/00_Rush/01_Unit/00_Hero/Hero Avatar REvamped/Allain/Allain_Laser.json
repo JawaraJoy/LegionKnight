@@ -1,0 +1,60 @@
+{
+  "skeleton": {
+    "hash": "",
+    "spine": "4.3.0",
+    "x": -200,
+    "y": -38,
+    "width": 400,
+    "height": 76
+  },
+  "bones": [
+    {
+      "name": "root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "laser",
+      "bone": "root",
+      "attachment": "laser"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "laser": {
+          "laser": {
+            "width": 400,
+            "height": 76
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "laser": {
+      "bones": {
+        "root": {
+          "scale": [
+            {
+              "x": 0.05,
+              "y": 0.5
+            },
+            {
+              "time": 0.05
+            },
+            {
+              "time": 0.2,
+              "y": 0.8
+            },
+            {
+              "time": 0.3,
+              "y": 0.01
+            }
+          ]
+        }
+      }
+    }
+  }
+}
