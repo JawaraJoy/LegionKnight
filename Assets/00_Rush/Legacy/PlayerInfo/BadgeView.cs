@@ -84,10 +84,12 @@ namespace LegionKnight
 
         private void ClaimReward()
         {
-            if (GetBadgeManager().HasBadge(m_Definition, out BadgeContent content))
+            if (GetBadgeManager().HasBadge(m_Definition, out BadgeContent content) && content.UnClaimedReward > 0)
             {
+                // Claiming can advance the badge to its next reward tier.
+                var rewards = BadgeHandler.RewardOnUnlock(content);
                 content.ClaimReward();
-                GetLootedPanel().ShowLoot(BadgeHandler.RewardOnUnlock(content));
+                GetLootedPanel().ShowLoot(rewards);
                 Init(m_Definition);
             }
         }

@@ -24,8 +24,8 @@ namespace Rush
 
         
         public string Description => GameplayDescription.Card(this);
-        public string SimpleDescription => GameplayDescription.Card(this);
-        public string UpgradeDescription => GameplayDescription.Card(this, null, true);
+        public string SimpleDescription => GameplayDescription.NormalCard(this);
+        public string UpgradeDescription => GameplayDescription.UpgradeCard(this);
         public PlatformConfig[] PlatformToAdds => m_PlatformToAdds;
         public CardSkillCategoryModification[] SkillCategoryModifications => m_SkillCategoryModifications;
         public Currency CurrencyReward => m_GetCurrency;

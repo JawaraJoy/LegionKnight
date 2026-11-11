@@ -7,6 +7,36 @@ namespace Rush
     public class QuestTaskItemUI : MonoBehaviour
     {
 
+        [System.Serializable]
+        private sealed class ArtField
+        {
+            [SerializeField] private Image m_Objective;
+            [SerializeField] private Sprite m_DefaultObjective;
+            [SerializeField] private Image m_RewardFrame;
+            [SerializeField] private Image m_ProgressFill;
+            [SerializeField] private Color m_InProgressColor;
+            [SerializeField] private Color m_CompleteColor;
+
+            public void SetTask(QuestTaskConfig task)
+            {
+                if (m_Objective != null)
+                    m_Objective.sprite = task.ObjectiveIcon != null ? task.ObjectiveIcon : m_DefaultObjective;
+
+                var rarity = task.RewardCollectible?.CollectibleField?.RarityConfig;
+                if (m_RewardFrame != null)
+                    m_RewardFrame.color = rarity != null ? rarity.Color : Color.white;
+            }
+
+            public void SetCompletion(bool complete)
+            {
+                if (m_ProgressFill != null)
+                    m_ProgressFill.color = complete ? m_CompleteColor : m_InProgressColor;
+            }
+        }
+
+        [SerializeField] private ArtField m_Art = new();
+        private const string c_QuantityPrefix = "\u00D7";
+
         [SerializeField] private TextMeshProUGUI m_TaskNameText;
         [SerializeField] private TextMeshProUGUI m_TaskDescText;
         [SerializeField] private TextMeshProUGUI m_ProgressText;   // e.g. "3/5"
@@ -23,6 +53,7 @@ namespace Rush
         [SerializeField] private GameObject m_StateClaimed;   // reward claimed
 
         private QuestTaskConfig m_Task;
+        public QuestTaskConfig Task => m_Task;
 
         // ── Setup ─────────────────────────────────────────────────────────────
 
@@ -33,6 +64,7 @@ namespace Rush
             if (m_TaskNameText != null) m_TaskNameText.text = state.Config.BaseInfo.Name;
             if (m_TaskDescText != null) m_TaskDescText.text = state.Config.BaseInfo.Description;
 
+            m_Art.SetTask(state.Config);
             RefreshRewardInternal(state.Config);
             RefreshProgressInternal(state);
             RefreshStateInternal(state);
@@ -55,18 +87,22 @@ namespace Rush
         private void RefreshRewardInternal(QuestTaskConfig config)
         {
             if (m_RewardIcon != null)
+            {
                 m_RewardIcon.sprite = config.RewardCollectible?.CollectibleField?.Icon;
+                m_RewardIcon.enabled = m_RewardIcon.sprite != null;
+            }
 
             if (m_RewardAmountText != null)
             {
                 bool show = config.RewardAmount >= 2;
                 m_RewardAmountText.gameObject.SetActive(show);
-                if (show) m_RewardAmountText.text = $"x{config.RewardAmount}";
+                if (show) m_RewardAmountText.text = c_QuantityPrefix + config.RewardAmount;
             }
         }
 
         private void RefreshProgressInternal(QuestTaskState state)
         {
+            m_Art.SetCompletion(state.IsComplete);
             if (m_ProgressText != null)
                 m_ProgressText.text = $"{state.CurrentCount}/{state.TargetCount}";
 
@@ -100,12 +136,12 @@ namespace Rush
             RushPlayer.Instance.QuestManager.Claim(m_Task);
     
 
-private void OnDestroy()
+        private void OnDestroy()
         {
             if (m_ClaimButton != null)
             {
                 m_ClaimButton.onClick.RemoveListener(OnClaimClickedInternal);
             }
         }
-}
+    }
 }

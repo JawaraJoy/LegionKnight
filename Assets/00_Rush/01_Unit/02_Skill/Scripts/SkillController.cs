@@ -34,6 +34,8 @@ namespace Rush
         private UnityEvent<Skill> m_OnAnyCastingSuccess;
         [SerializeField] 
         private UnityEvent<Skill> m_OnAnyCastingFail;
+        public UnityEvent<Skill> OnSkillAdded => m_OnSkillAdded;
+        public UnityEvent<Skill> OnSkillRemoved => m_OnSkillRemoved;
         public IReadOnlyList<Skill> Skills => m_Skills;
 
         private Skill m_CurrentCastingSkill;

@@ -9,6 +9,7 @@ namespace Rush
     public class QuestCatalogView : UIView, IUpdater
     {
         [SerializeField] private QuestTaskItemPool m_TaskItemPool;
+        [SerializeField] private ScrollRect m_Scroll;
 
         [SerializeField] private GameObject m_CountdownGroup;
         [SerializeField] private TextMeshProUGUI m_CountdownText;
@@ -33,13 +34,14 @@ namespace Rush
         {
             base.ShowInternal();
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            if (m_Catalog == null) return;
+            RefreshCountdownInternal(RushPlayer.Instance.QuestManager.GetCatalogState(m_Catalog));
+            RefreshAllTasksInternal();
         }
 
         protected override void HideInternal()
         {
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
-            //m_TaskItemPool?.ReturnAll();
-            //m_ActiveItems.Clear();
             base.HideInternal();
         }
 
@@ -50,29 +52,30 @@ namespace Rush
             m_Catalog = catalog;
             RepopulateInternal();
             RefreshResetLabelInternal();
+            if (m_Catalog != null)
+                RefreshCountdownInternal(RushPlayer.Instance.QuestManager.GetCatalogState(m_Catalog));
+            if (m_Scroll != null && m_Scroll.content != null)
+            {
+                m_Scroll.StopMovement();
+                m_Scroll.content.anchoredPosition = Vector2.zero;
+            }
         }
 
         public void RefreshTask(QuestTaskConfig task)
         {
-            if (m_Catalog?.Tasks == null) return;
-            for (int i = 0; i < m_Catalog.Tasks.Length; i++)
+            foreach (var item in m_ActiveItems)
             {
-                if (m_Catalog.Tasks[i] != task) continue;
-                if (i >= m_ActiveItems.Count) break;
-                var state = RushPlayer.Instance.QuestManager.GetTaskState(task);
-                m_ActiveItems[i].Refresh(state);
-                break;
+                if (item.Task != task) continue;
+                item.Refresh(RushPlayer.Instance.QuestManager.GetTaskState(task));
             }
         }
 
-        public void RefreshAllTasks()
+        public void RefreshAllTasks() => RefreshAllTasksInternal();
+
+        private void RefreshAllTasksInternal()
         {
-            if (m_Catalog?.Tasks == null) return;
-            for (int i = 0; i < m_Catalog.Tasks.Length && i < m_ActiveItems.Count; i++)
-            {
-                var state = RushPlayer.Instance.QuestManager.GetTaskState(m_Catalog.Tasks[i]);
-                m_ActiveItems[i].Refresh(state);
-            }
+            foreach (var item in m_ActiveItems)
+                item.Refresh(RushPlayer.Instance.QuestManager.GetTaskState(item.Task));
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -87,6 +90,7 @@ namespace Rush
             foreach (var state in states)
             {
                 var item = m_TaskItemPool.Rent();
+                item.transform.SetAsLastSibling();
                 item.Setup(state);
                 m_ActiveItems.Add(item);
             }
@@ -98,7 +102,7 @@ namespace Rush
             m_ResetCycleLabel.text = m_Catalog.ResetCycle switch
             {
                 QuestResetCycle.Daily => "Resets Daily",
-                QuestResetCycle.Weekly => $"Resets Weekly ({m_Catalog.WeeklyResetDay})",
+                QuestResetCycle.Weekly => $"Resets {m_Catalog.WeeklyResetDay}",
                 _ => string.Empty
             };
         }
@@ -115,6 +119,7 @@ namespace Rush
         private static string FormatCountdownInternal(double totalSeconds)
         {
             var span = System.TimeSpan.FromSeconds(totalSeconds);
+            if (span.Days > 0) return $"{span.Days}d {span.Hours:D2}:{span.Minutes:D2}:{span.Seconds:D2}";
             return span.Hours > 0
                 ? $"{span.Hours:D2}:{span.Minutes:D2}:{span.Seconds:D2}"
                 : $"{span.Minutes:D2}:{span.Seconds:D2}";

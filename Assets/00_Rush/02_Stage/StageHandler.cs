@@ -30,6 +30,10 @@ namespace Rush
         private UnityEvent<StageConfig> m_OnStageOver;
         [SerializeField]
         private UnityEvent<StageConfig> m_OnStageCompleted;
+        [SerializeField] private UnityEvent<BossUnitConfig> m_OnBossDefeated;
+        [SerializeField] private UnityEvent m_OnEncounterReset;
+        [SerializeField] private int m_ClassicCycleAetherStock = 1;
+
         public UnityEvent<StageConfig> OnSelectStage => m_OnSelectStage;
         public UnityEvent<StageConfig> OnStageStart => m_OnStageStart;
         public UnityEvent<StageConfig> OnStageOver => m_OnStageOver;
@@ -132,7 +136,7 @@ private StageSelectionField FindStageSelection(StageConfig stageConfig)
             if (m_CurrentWaveIndex >= waves.Length)
                 m_CurrentWaveIndex = waves.Length - 1;
 
-            m_EnemyWaveHandler.SetNewWave(waves[m_CurrentWaveIndex]);
+            m_EnemyWaveHandler.SetNewWave(waves[m_CurrentWaveIndex], m_UsedStageConfig.StageMode != StageMode.Classic);
         }
 
         /// <summary>
@@ -156,6 +160,10 @@ private StageSelectionField FindStageSelection(StageConfig stageConfig)
 
             m_CurrentWaveIndex++;
             int len = waves.Length;
+            if (m_UsedStageConfig.StageMode == StageMode.Classic)
+                m_PlatformHandler?.AddBoostStock(m_ClassicCycleAetherStock);
+            else if (m_CurrentWaveIndex < len || IsLoopMode)
+                OnBossDefeatedInvoke(waveConfig.BossWaveField?.BossConfig);
 
             if (m_CurrentWaveIndex >= len)
             {
@@ -244,8 +252,12 @@ private StageSelectionField FindStageSelection(StageConfig stageConfig)
         }
 
         // ── Reset ─────────────────────────────────────────────────────────────
+        private void OnBossDefeatedInvoke(BossUnitConfig boss) => m_OnBossDefeated?.Invoke(boss);
+        private void OnEncounterResetInvoke() => m_OnEncounterReset?.Invoke();
+
         public void ResetProgression()
         {
+            OnEncounterResetInvoke();
             m_PlatformHandler.ResetProgression();
             m_EnemyWaveHandler.ResetProgression();
         }

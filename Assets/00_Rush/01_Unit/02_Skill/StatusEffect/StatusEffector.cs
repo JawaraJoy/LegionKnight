@@ -408,6 +408,12 @@ namespace Rush
         {
             if (!m_IsActive)
                 return;
+            if ((m_Config.RemoveWhenStacksEmpty && m_CurrentStack <= 0) ||
+                (m_Config.RemoveWhenDurationExpires && m_Config.UseMainDuration && m_RemainingMainDuration <= 0f))
+            {
+                CompleteEffect();
+                return;
+            }
 
             switch (m_Config.RemoveRule)
             {

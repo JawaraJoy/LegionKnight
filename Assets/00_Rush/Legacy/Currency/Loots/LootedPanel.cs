@@ -1,27 +1,6 @@
-using System.Linq;
-using UnityEngine;
-using Rush;
-
 namespace LegionKnight
 {
-    public class LootedPanel : PanelView
+    public class LootedPanel : Rush.RewardPopupPanel
     {
-        private LootMonitor m_LootMonitor;
-
-        private LootMonitor GetLootMonitor()
-        {
-            if (m_LootMonitor == null)
-            {
-                m_LootMonitor = GetBindingInternal<LootMonitor>();
-            }
-            return m_LootMonitor;
-        }
-        public void ShowLoot(LootField[] loots)
-        {
-            Show();
-            GetLootMonitor().ClearAllLootViews();
-            GetLootMonitor().AddLootsView(loots.ToList());
-        }
-        
     }
 }

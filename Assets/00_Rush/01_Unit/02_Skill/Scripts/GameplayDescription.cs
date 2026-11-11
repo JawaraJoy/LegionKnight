@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Rush
 {
     /// <summary>Read-only descriptions built from the same configuration and level evaluators as combat.</summary>
-    public static class GameplayDescription
+    public static partial class GameplayDescription
     {
         private const int c_MaxDepth = 8;
         private const float c_Percent = 100f;

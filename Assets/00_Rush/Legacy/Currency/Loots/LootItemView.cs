@@ -209,7 +209,8 @@ namespace LegionKnight
                 return;
             }
 
-            m_Frame.color = collectibleConfig.CollectibleField.RarityConfig.Color;
+            var rarity = collectibleConfig.CollectibleField?.RarityConfig;
+            m_Frame.color = rarity != null ? rarity.Color : Color.white;
         }
     }
 }

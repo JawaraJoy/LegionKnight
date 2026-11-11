@@ -5,6 +5,8 @@ description: Buat atau revamp hero AetherJump (Unity LegionKnight) dengan alur A
 
 # Membuat hero AetherJump
 
+Untuk ilustrasi dan revisi visual karakter, terapkan [gaya karakter AetherJump](../aetherjump-art-style/SKILL.md) dengan referensi Allain dan Vesper yang disetujui.
+
 Mulai dari brief terbaru dan aset yang sudah diterima pengguna. Untuk permintaan satu tahap, kerjakan hasil yang diminta, misalnya portrait chibi saja. Untuk permintaan sampai playable, lanjutkan hingga hero dapat dipilih dan dimainkan dari Home. Saat bekerja lewat Unity MCP, periksa nama dan path proyek pada instance yang aktif. Lokasi aset dan titik pendaftarannya ada di [peta proyek LegionKnight](references/legionknight.md).
 
 ## Skala produksi hero Epic dan Legendary

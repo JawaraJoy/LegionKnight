@@ -13,6 +13,7 @@ namespace Rush
 
         [SerializeField, MMReadOnly]
         private bool m_CanMove = false;
+        private BossEnergyVfx m_BossEnergyTrail;
 
         [SerializeField]
         protected UnityEvent<AbilityContext> m_OnShot;
@@ -68,6 +69,16 @@ namespace Rush
                 m_Shooter = shooter;
 
             CacheMoveDirection();
+            if (this is Projectile)
+            {
+                var visuals = BossAbilityVisuals.ForUnit(context.SkillContext.ModuleContext.Unit);
+                if (visuals != null)
+                {
+                    if (m_BossEnergyTrail == null) m_BossEnergyTrail = visuals.CreateProjectileVisual(transform);
+                    else visuals.ConfigureProjectileVisual(m_BossEnergyTrail, transform);
+                }
+                else if (m_BossEnergyTrail != null) m_BossEnergyTrail.Stop();
+            }
         }
 
         // -------------------------------------------------------------------------

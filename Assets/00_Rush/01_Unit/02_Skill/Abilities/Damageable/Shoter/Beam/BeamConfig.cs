@@ -16,6 +16,7 @@ namespace Rush
 
         [Header("Beam Collision")]
         [SerializeField] private bool m_Piercing = false;
+        [SerializeField] private bool m_DamageOnlyShotTarget;
         [SerializeField] private float m_DamageInterval = 0.2f;
 
         public float MaxLength => m_MaxLength;
@@ -24,6 +25,7 @@ namespace Rush
         public float ExpandTime => m_ExpandTime;
         public float ShrinkTime => m_ShrinkTime;
         public bool Piercing => m_Piercing;
+        public bool DamageOnlyShotTarget => m_DamageOnlyShotTarget;
         public float DamageInterval => m_DamageInterval;
     }
 }

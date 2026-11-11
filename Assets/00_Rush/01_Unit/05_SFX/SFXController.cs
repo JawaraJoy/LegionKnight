@@ -16,7 +16,7 @@ namespace Rush
         public void PlayEntranceSFX()
         {
             // Play entrance SFX here
-            AudioClip entranceClip = m_ModuleContext.Unit.Config.DefaultAudio.Entrance;
+            AudioClip entranceClip = m_ModuleContext.Unit.Config.DefaultAudio?.Entrance;
             if (entranceClip != null && m_AudioToPlay != null)
             {
                 m_AudioToPlay.PlayOneShot(entranceClip);

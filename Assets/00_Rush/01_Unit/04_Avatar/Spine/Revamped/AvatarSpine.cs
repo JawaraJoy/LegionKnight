@@ -79,11 +79,15 @@ namespace Rush
             // 🔑 samakan dengan UI → hanya track 0 yang trigger selesai
             if (entry.TrackIndex != 0) return;
             if (m_CurrentClip == null) return;
+            if (m_ModuleContext?.Unit.Config is BossUnitConfig &&
+                (entry != m_SkeletonAnimation.AnimationState.GetTrack(entry.TrackIndex) ||
+                 entry.Animation.Name != m_CurrentClip.BaseInfo.Name)) return;
 
-            OnAnimationDoneInvoke(m_CurrentClip);
-
-            var next = m_CurrentClip.NextAnimation;
+            var completed = m_CurrentClip;
             m_CurrentClip = null;
+            OnAnimationDoneInvoke(completed);
+            if (m_CurrentClip != null || !gameObject.activeInHierarchy) return;
+            var next = completed.NextAnimation;
 
             if (next != null)
             {
@@ -124,7 +128,7 @@ namespace Rush
 
             m_ModuleContext = new ModuleContext(unit, gameObject);
             m_OnInitialized?.Invoke(m_ModuleContext);
-            ShowInternal();
+            if (unit.Config is not BossUnitConfig || !unit.TryGetComponent<BossBattlePresentation>(out _)) ShowInternal();
         }
 
         public void FlipX(bool left)

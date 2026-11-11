@@ -31,6 +31,10 @@ namespace Rush
 
         [Header("Remove Rule")]
         [SerializeField] private StatusRemoveRule m_RemoveRule = StatusRemoveRule.OnStackZero;
+        [SerializeField] private bool m_RemoveWhenStacksEmpty;
+        [SerializeField] private bool m_RemoveWhenDurationExpires;
+        public bool RemoveWhenStacksEmpty => m_RemoveWhenStacksEmpty;
+        public bool RemoveWhenDurationExpires => m_RemoveWhenDurationExpires;
         public Sprite Icon => m_Icon;
         public ModifierType ModifierType => m_ModifierType;
         public StatusEffector EffectorPrefab => m_EffectorPrefab;

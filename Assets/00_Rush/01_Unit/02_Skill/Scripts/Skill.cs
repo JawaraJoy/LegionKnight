@@ -53,6 +53,7 @@ namespace Rush
         public SkillConfig SkillConfig => m_SkillConfig;
         public SkillContext SkillContext => m_SkillContext;
         public IReadOnlyList<AbilityDeliver> Delivers => m_Delivers;
+        public UnityEvent<IAbilityContext> OnActivateIndividu => m_OnActivateIndividu;
         public UnityEvent<Unit> OnAbilityDelivered => m_OnAbilityDelivered;
         public UnityEvent OnCastingStartEvent => m_OnCastingStart;
         public UnityEvent<float> OnCastingUpdateEvent => m_OnCastingDurationUpdate;

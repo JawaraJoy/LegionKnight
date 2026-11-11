@@ -1,203 +1,161 @@
 using System;
+using LegionKnight;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using LegionKnight;
 
 namespace Rush
 {
     public class DailySignInPanel : PanelView, IUpdater
     {
         [SerializeField] private DailySignInDayItemUI[] m_DayItems;
-
         [SerializeField] private Button m_CloseButton;
-
         [SerializeField] private TextMeshProUGUI m_StatusText;
         [SerializeField] private TextMeshProUGUI m_CountdownText;
         [SerializeField] private GameObject m_CountdownGroup;
+        [SerializeField] private TextMeshProUGUI m_ClaimedCount;
+        [SerializeField] private RectTransform m_Dialog;
 
-        private int m_LastDisplayedDay = -1;
-        private bool m_LastCanClaim;
-
-        private DailySignInManager Manager => RushPlayer.Instance.DailySignInManager;
-
-        // ── IUpdater ──────────────────────────────────────────────────────────
+        private DailySignInManager m_Manager;
+        private DailySignInState m_Displayed;
+        private long m_LastSecond = -1;
 
         public bool IsActive => IsShown;
 
         public void Tick()
         {
-            var state = Manager.GetState();
-            if (state.CurrentDay != m_LastDisplayedDay || state.CanClaimToday != m_LastCanClaim)
+            long second = DateTime.Now.Ticks / TimeSpan.TicksPerSecond;
+            if (second == m_LastSecond || m_Manager == null) return;
+            m_LastSecond = second;
+            DailySignInState state = m_Manager.GetState();
+            if (m_Displayed == null || state.CycleStartTime != m_Displayed.CycleStartTime
+                || state.CurrentDay != m_Displayed.CurrentDay || state.CanClaimToday != m_Displayed.CanClaimToday)
             {
-                m_LastDisplayedDay = state.CurrentDay;
-                m_LastCanClaim = state.CanClaimToday;
-                RefreshDayStatesInternal();
+                RefreshViewInternal(state);
+                return;
             }
             RefreshCountdownInternal(state);
         }
-
-        // ── Lifecycle ─────────────────────────────────────────────────────────
 
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
-
-            if (m_CloseButton != null) m_CloseButton.onClick.AddListener(Hide);
-
-            Manager.OnClaimSuccess.AddListener(OnClaimSuccessInternal);
-            Manager.OnClaimFailed.AddListener(OnClaimFailedInternal);
-            Manager.OnCycleReset.AddListener(OnCycleResetInternal);
-
-            RefreshViewInternal();
+            if (!IsShown) return;
+            if (m_Manager == null)
+            {
+                m_Manager = RushPlayer.Instance.DailySignInManager;
+                m_Manager.OnClaimSuccess.AddListener(OnClaimSuccessInternal);
+                m_Manager.OnClaimFailed.AddListener(OnClaimFailedInternal);
+                m_Manager.OnCycleReset.AddListener(OnCycleResetInternal);
+                if (m_CloseButton != null) m_CloseButton.onClick.AddListener(Hide);
+                UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
+            }
+            FitDialogInternal();
+            RefreshViewInternal(m_Manager.GetState());
         }
 
         protected override void HideInternal()
         {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
-
-            if (m_CloseButton != null) m_CloseButton.onClick.RemoveListener(Hide);
-
-            Manager.OnClaimSuccess.RemoveListener(OnClaimSuccessInternal);
-            Manager.OnClaimFailed.RemoveListener(OnClaimFailedInternal);
-            Manager.OnCycleReset.RemoveListener(OnCycleResetInternal);
-
+            if (m_Manager != null)
+            {
+                UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+                DisconnectInternal();
+            }
             base.HideInternal();
         }
 
-        // ── View ──────────────────────────────────────────────────────────────
+        private void OnDestroy() => DisconnectInternal();
 
-        private void RefreshViewInternal()
+        private void DisconnectInternal()
         {
-            var state = Manager.GetState();
-            var rewards = Manager.Config.Rewards;
+            if (m_CloseButton != null) m_CloseButton.onClick.RemoveListener(Hide);
+            if (m_Manager == null) return;
+            m_Manager.OnClaimSuccess.RemoveListener(OnClaimSuccessInternal);
+            m_Manager.OnClaimFailed.RemoveListener(OnClaimFailedInternal);
+            m_Manager.OnCycleReset.RemoveListener(OnCycleResetInternal);
+            m_Manager = null;
+            m_Displayed = null;
+        }
 
-            if (m_DayItems != null && rewards != null)
+        private void OnRectTransformDimensionsChange() => FitDialogInternal();
+
+        private void FitDialogInternal()
+        {
+            if (m_Dialog == null || !(m_Dialog.parent is RectTransform stage)) return;
+            // Leave room for the pennant above the dialog and the dismiss hint below it.
+            float scale = Mathf.Min(1f, stage.rect.width / 420f, stage.rect.height / 710f);
+            if (scale > 0f) m_Dialog.localScale = new Vector3(scale, scale, 1f);
+        }
+
+        private void RefreshViewInternal(DailySignInState state)
+        {
+            m_Displayed = state;
+            DailySignInRewardEntry[] rewards = m_Manager.Config.Rewards;
+            int claimedCount = 0;
+            for (int i = 0; i < state.TotalDays; i++)
             {
-                for (int i = 0; i < m_DayItems.Length; i++)
-                {
-                    if (m_DayItems[i] == null) continue;
-
-                    if (i >= rewards.Length)
-                    {
-                        m_DayItems[i].gameObject.SetActive(false);
-                        continue;
-                    }
-
-                    m_DayItems[i].gameObject.SetActive(true);
-                    int dayIndex = i;
-                    m_DayItems[i].Setup(dayIndex, rewards[i],
-                        GetDayDisplayStateInternal(i, state),
-                        OnItemClaimClickedInternal,
-                        () => OnMissedClaimClickedInternal(dayIndex));
-                }
+                bool claimed = m_Manager.IsDayClaimed(i);
+                if (claimed) claimedCount++;
+                if (i >= m_DayItems.Length || m_DayItems[i] == null) continue;
+                DailySignInDayItemUI item = m_DayItems[i];
+                item.gameObject.SetActive(true);
+                DayDisplayState display = DayDisplayState.Locked;
+                if (claimed) display = DayDisplayState.Claimed;
+                else if (i < state.CurrentDay) display = DayDisplayState.Missed;
+                else if (i == state.CurrentDay && state.CanClaimToday) display = DayDisplayState.Available;
+                int day = i;
+                DailySignInManager manager = m_Manager;
+                DateTime cycleStart = state.CycleStartTime;
+                item.Setup(day, rewards[i], display,
+                    () => manager.Claim(day, cycleStart),
+                    () => OnMissedClaimClickedInternal(manager, day, cycleStart));
+            }
+            for (int i = state.TotalDays; i < m_DayItems.Length; i++)
+            {
+                if (m_DayItems[i] != null) m_DayItems[i].gameObject.SetActive(false);
             }
 
-            RefreshStatusTextInternal(state);
+            if (m_ClaimedCount != null) m_ClaimedCount.text = $"{claimedCount} / {state.TotalDays}";
+            if (m_StatusText != null)
+            {
+                if (state.CanClaimToday) m_StatusText.text = $"Day {state.CurrentDay + 1} reward is ready!";
+                else m_StatusText.text = state.CycleComplete ? "Next cycle" : "Next check-in";
+            }
             RefreshCountdownInternal(state);
         }
-        private void OnMissedClaimClickedInternal(int dayIndex)
+
+        private static void OnMissedClaimClickedInternal(DailySignInManager manager, int day, DateTime cycleStart)
         {
-            DateTime cycleEnd = Manager.GetState().NextResetTime;
+            DailySignInState state = manager.GetState();
+            if (state.CycleStartTime != cycleStart || day >= state.CurrentDay || manager.IsDayClaimed(day)) return;
             UnityService.Instance.ShowRewardedAd(() =>
             {
-                if (Manager.GetState().NextResetTime == cycleEnd) Manager.ClaimMissedDay(dayIndex);
+                if (manager != null) manager.ClaimMissedDay(day, cycleStart);
             });
-        }
-
-        // Only refresh states without re-assigning all data
-        private void RefreshDayStatesInternal()
-        {
-            var state = Manager.GetState();
-            var rewards = Manager.Config.Rewards;
-
-            if (m_DayItems == null || rewards == null) return;
-
-            for (int i = 0; i < m_DayItems.Length && i < rewards.Length; i++)
-            {
-                if (m_DayItems[i] == null) continue;
-                m_DayItems[i].RefreshState(GetDayDisplayStateInternal(i, state));
-            }
-
-            RefreshStatusTextInternal(state);
-            RefreshCountdownInternal(state);
-        }
-
-        private DayDisplayState GetDayDisplayStateInternal(int dayIndex, DailySignInState state)
-        {
-            if (Manager.IsDayClaimed(dayIndex)) return DayDisplayState.Claimed;
-            if (dayIndex < state.CurrentDay) return DayDisplayState.Missed;
-
-            // 2. Hari saat ini (target berikutnya)
-            if (dayIndex == state.CurrentDay)
-            {
-                // Kalau cycle selesai
-                if (state.CycleComplete)
-                    return DayDisplayState.Complete;
-
-                // Kalau boleh claim sekarang
-                if (state.CanClaimToday)
-                    return DayDisplayState.Available;
-
-                // ❗ FIX UTAMA:
-                // Kalau belum waktunya → HARUS LOCKED (bukan Claimed)
-                return DayDisplayState.Locked;
-            }
-
-            // 3. Hari ke depan (belum nyampe)
-            return state.CycleComplete
-                ? DayDisplayState.Complete
-                : DayDisplayState.Locked;
-        }
-
-        private void RefreshStatusTextInternal(DailySignInState state)
-        {
-            if (m_StatusText == null) return;
-
-            if (state.CycleComplete && !Manager.Config.LoopOnComplete)
-                m_StatusText.text = "All rewards claimed! See you next cycle.";
-            else if (state.CanClaimToday)
-                m_StatusText.text = $"Day {state.CurrentDay + 1} reward is ready!";
-            else
-                m_StatusText.text = $"Day {state.CurrentDay} claimed. Next reward in: ";
         }
 
         private void RefreshCountdownInternal(DailySignInState state)
         {
-            bool showCountdown = !state.CanClaimToday && state.SecondsUntilReset > 0;
-
-            if (m_CountdownGroup != null) m_CountdownGroup.SetActive(showCountdown);
-            if (!showCountdown || m_CountdownText == null) return;
-
-            m_CountdownText.text = FormatCountdownInternal(state.SecondsUntilReset);
+            if (m_CountdownGroup != null) m_CountdownGroup.SetActive(!state.CanClaimToday);
+            if (state.CanClaimToday || m_CountdownText == null) return;
+            double seconds = Math.Max(0, Math.Ceiling((state.NextRewardTime - DateTime.Now).TotalSeconds));
+            TimeSpan span = TimeSpan.FromSeconds(seconds);
+            string clock = $"{span.Hours:D2}:{span.Minutes:D2}:{span.Seconds:D2}";
+            m_CountdownText.text = span.Days > 0 ? $"{span.Days}d {clock}" : clock;
         }
-
-        // ── Callbacks ─────────────────────────────────────────────────────────
-
-        // Called by whichever DayItemUI is in Available state
-        private void OnItemClaimClickedInternal() => Manager.Claim();
 
         private void OnClaimSuccessInternal(CollectibleResultData result)
         {
-            RefreshDayStatesInternal();
-            var resultPanel = CanvasManager.Instance.GetPanel<ShopResultPanel>();
-            resultPanel?.Show(result);
+            RefreshViewInternal(m_Manager.GetState());
+            CanvasManager.Instance.GetPanel<ShopResultPanel>()?.Show(result);
         }
 
-        private void OnClaimFailedInternal(string message) =>
-            Debug.LogWarning($"[DailySignIn] {message}");
-
-        private void OnCycleResetInternal() => RefreshViewInternal();
-
-        // ── Helpers ───────────────────────────────────────────────────────────
-
-        private static string FormatCountdownInternal(double totalSeconds)
+        private void OnClaimFailedInternal(string message)
         {
-            var span = System.TimeSpan.FromSeconds(totalSeconds);
-            return span.Hours > 0
-                ? $"{span.Hours:D2}:{span.Minutes:D2}:{span.Seconds:D2}"
-                : $"{span.Minutes:D2}:{span.Seconds:D2}";
+            Debug.LogWarning($"[DailySignIn] {message}");
+            RefreshViewInternal(m_Manager.GetState());
         }
+
+        private void OnCycleResetInternal() => m_Displayed = null;
     }
 }

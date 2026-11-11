@@ -484,6 +484,7 @@ namespace Rush
 
             abilityOwner.SkillContext.Skill.OnAbilityDelivered?.Invoke(unitDeliver);
             ApplyStatusEffect(abilityOwner, unitReceiver);
+            BossAbilityVisuals.ForUnit(unitDeliver)?.Impact(abilityOwner, unitReceiver);
         }
 
         private static void ApplyStatusEffect(IAbilityContext senderContext, Unit unitTarget)
@@ -499,6 +500,7 @@ namespace Rush
                     foreach (var effect in statusEffectsOnDelivered)
                     {
                         controller.ApplyEffector(effect, senderContext, unitTarget);
+                        BossAbilityVisuals.ForUnit(senderContext.SkillContext.ModuleContext.Unit)?.StatusApplied(effect, unitTarget);
                     }
                 }
             }

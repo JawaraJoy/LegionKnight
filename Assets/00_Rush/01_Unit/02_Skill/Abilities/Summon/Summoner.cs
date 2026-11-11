@@ -334,6 +334,7 @@ namespace Rush
             m_ActiveSummonedUnits.Add(unit);
             unit.transform.SetParent(null, true);
             unit.gameObject.SetActive(true);
+            BossAbilityVisuals.ForUnit(m_AbilityContext.SkillContext.ModuleContext.Unit)?.SummonAt(unit);
         }
 
         private void PreWarm()

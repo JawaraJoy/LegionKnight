@@ -7,6 +7,7 @@ namespace Rush
     public class QuestTaskConfig : Configuration
     {
 
+        [SerializeField] private Sprite m_ObjectiveIcon;
         [SerializeField] private int m_TargetCount = 1;
 
         [SerializeField] private CollectibleConfig m_RewardCollectible;
@@ -15,6 +16,7 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private QuestCatalogConfig m_QuestCatalogConfig;
 
+        public Sprite ObjectiveIcon => m_ObjectiveIcon;
         public int TargetCount => m_TargetCount;
         public CollectibleConfig RewardCollectible => m_RewardCollectible;
         public QuestCatalogConfig QuestCatalogConfig => m_QuestCatalogConfig;

@@ -29,25 +29,35 @@ namespace Rush
             bool canClaim = !complete && (!lastClaim.HasValue || lastClaim.Value < DailyBoundaryInternal(now))
                 && !m_Tracker.IsDayClaimed(m_Config, currentDay);
             DateTime cycleStart = m_Tracker.GetCycleStartTime(m_Config) ?? now;
-            return new DailySignInState(currentDay, canClaim, complete,
-                NextCycleResetInternal(cycleStart), m_Config.TotalDays);
+            DateTime cycleEnd = NextCycleResetInternal(cycleStart);
+            DateTime nextDay = DailyBoundaryInternal(now).AddDays(1);
+            bool waitsForCalendar = complete && (!m_Config.LoopOnComplete || !AllDaysClaimedInternal());
+            DateTime nextReward = waitsForCalendar || cycleEnd < nextDay ? cycleEnd : nextDay;
+            return new DailySignInState(currentDay, canClaim, complete, cycleEnd, m_Config.TotalDays,
+                cycleStart, nextReward);
         }
 
         public bool IsDayClaimed(int dayIndex) => m_Tracker.IsDayClaimed(m_Config, dayIndex);
 
-        public void Claim() => ClaimInternal(DateTime.Now);
+        public void Claim() => ClaimInternal(DateTime.Now, null, null);
 
-        private void ClaimInternal(DateTime now)
+        public void Claim(int dayIndex, DateTime cycleStart) => ClaimInternal(DateTime.Now, dayIndex, cycleStart);
+
+        private void ClaimInternal(DateTime now, int? expectedDay, DateTime? expectedCycle)
         {
             var state = StateInternal(now);
+            if ((expectedCycle.HasValue && expectedCycle.Value != state.CycleStartTime)
+                || (expectedDay.HasValue && expectedDay.Value != state.CurrentDay))
+            {
+                OnClaimFailedInvoke("This sign-in day has changed.");
+                return;
+            }
             if (!state.CanClaimToday)
             {
                 OnClaimFailedInvoke(state.CycleComplete ? "Sign-in cycle is complete." : "Already claimed today.");
                 return;
             }
-            var entry = m_Config.Rewards[state.CurrentDay];
-            var result = new CollectibleResultData();
-            result.AddEntry(entry.Collectible, entry.Amount);
+            if (!TryBuildRewardInternal(state.CurrentDay, out CollectibleResultData result)) return;
             UnityService.Instance.LocalSave.ExecuteTransaction(() =>
             {
                 result.GrantRewards(m_Config.BaseInfo.Id);
@@ -58,10 +68,19 @@ namespace Rush
             OnClaimSuccessInvoke(result);
         }
 
-        public void ClaimMissedDay(int dayIndex)
+        public void ClaimMissedDay(int dayIndex) => ClaimMissedDayInternal(dayIndex, null, DateTime.Now);
+
+        public void ClaimMissedDay(int dayIndex, DateTime cycleStart) =>
+            ClaimMissedDayInternal(dayIndex, cycleStart, DateTime.Now);
+
+        private void ClaimMissedDayInternal(int dayIndex, DateTime? expectedCycle, DateTime now)
         {
-            DateTime now = DateTime.Now;
             var state = StateInternal(now);
+            if (expectedCycle.HasValue && expectedCycle.Value != state.CycleStartTime)
+            {
+                OnClaimFailedInvoke("This sign-in cycle has ended.");
+                return;
+            }
             if (dayIndex < 0 || dayIndex >= m_Config.TotalDays || dayIndex >= state.CurrentDay)
             {
                 OnClaimFailedInvoke("Invalid missed reward.");
@@ -72,16 +91,37 @@ namespace Rush
                 OnClaimFailedInvoke("Reward already claimed.");
                 return;
             }
-            var entry = m_Config.Rewards[dayIndex];
-            var result = new CollectibleResultData();
-            result.AddEntry(entry.Collectible, entry.Amount);
+            if (!TryBuildRewardInternal(dayIndex, out CollectibleResultData result)) return;
             UnityService.Instance.LocalSave.ExecuteTransaction(() =>
             {
                 result.GrantRewards(m_Config.BaseInfo.Id);
                 m_Tracker.SaveDayClaimed(m_Config, dayIndex);
                 m_Tracker.SaveMissedDayClaimed(m_Config, dayIndex);
+                if (m_Config.LoopOnComplete && state.CycleComplete && AllDaysClaimedInternal())
+                    m_Tracker.SaveLastClaimedTime(m_Config, now);
             });
             OnClaimSuccessInvoke(result);
+        }
+
+        private bool TryBuildRewardInternal(int dayIndex, out CollectibleResultData result)
+        {
+            result = null;
+            DailySignInRewardEntry entry = m_Config.Rewards[dayIndex];
+            if (entry == null || entry.Collectible == null || entry.Amount <= 0)
+            {
+                OnClaimFailedInvoke("This reward is unavailable.");
+                return false;
+            }
+            result = new CollectibleResultData();
+            result.AddEntry(entry.Collectible, entry.Amount);
+            return true;
+        }
+
+        private bool AllDaysClaimedInternal()
+        {
+            for (int i = 0; i < m_Config.TotalDays; i++)
+                if (!m_Tracker.IsDayClaimed(m_Config, i)) return false;
+            return m_Config.TotalDays > 0;
         }
 
         private int CurrentDayInternal(DateTime now)
@@ -109,8 +149,8 @@ namespace Rush
             }
             DateTime? last = m_Tracker.GetLastClaimedTime(m_Config);
             if (m_Config.LoopOnComplete && m_Config.TotalDays > 0
-                && m_Tracker.GetCurrentDay(m_Config) >= m_Config.TotalDays
-                && last.HasValue && last.Value < DailyBoundaryInternal(now))
+                && last.HasValue && last.Value < DailyBoundaryInternal(now)
+                && CurrentDayInternal(now) >= m_Config.TotalDays && AllDaysClaimedInternal())
             {
                 m_Tracker.ResetCycle(m_Config, now);
                 OnCycleResetInvoke();

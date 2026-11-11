@@ -42,6 +42,10 @@ Untuk hero baru, susun kartu basic/passive di deck defaultnya. Daftarkan kartu p
 
 Deskripsi kartu dan skill harus mengikuti konfigurasi efek serta level runtime yang ditampilkan. Gunakan jalur `GameplayDescription` dan properti deskripsi konfigurasi; teks manual `m_Description`, `m_SimpleDescription`, atau `m_UpgradeDescription` bukan sumber angka gameplay. Uji preview unlock, upgrade, dan MAX ketika mengubah jalur deskripsi.
 
+Pertahankan **dua versi deskripsi ringkas**. `NormalCard` / `SimpleDescription` menjelaskan efek awal saat ability baru dipelajari. `UpgradeCard` / `UpgradeDescription` menjelaskan **tambahan dari level saat ini ke level berikutnya**, misalnya damage `+15% ATK`, bukan hanya total damage level berikutnya. Hitung selisih memakai evaluator konfigurasi gameplay, termasuk pembulatan, stat summon, dan efek turunan. `BattleCard` memilih per skill berdasarkan kepemilikan runtime pada SkillController, bukan kepemilikan inventory atau riwayat kartu terkumpul. Jika satu kartu memuat skill baru sekaligus skill yang sudah dimiliki, bedakan unlock dan upgrade. Reward Activation tetap menjelaskan bonus yang benar-benar ditambahkan; platform berulang menjelaskan peningkatan frekuensi kemunculan tanpa mengarang kenaikan efek tetap. MAX tidak menjanjikan bonus skill lanjutan.
+
+Kedua versi battle harus singkat dan terbaca pada ukuran font yang tetap. Dahulukan efek utama yang utuh saat ruang terbatas; jangan mengecilkan huruf untuk memuat semua rincian. Pertahankan `Description` lengkap untuk panel detail.
+
 Jika mengubah nilai growth, baca [aetherjump-balancing](../aetherjump-balancing/SKILL.md). Jika membuat atau merombak hero, gunakan [aetherjump-create-hero](../aetherjump-create-hero/SKILL.md) untuk alur produksinya.
 
 ## Verifikasi perubahan

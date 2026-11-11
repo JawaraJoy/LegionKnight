@@ -1,5 +1,6 @@
 using LegionKnight;
 using System;
+using System.Globalization;
 using UnityEngine;
 
 namespace Rush
@@ -28,19 +29,14 @@ namespace Rush
         public DateTime? GetLastClaimedTime(DailySignInConfig config)
         {
             string key = KeyLastClaimed + config.BaseInfo.Id;
-            if (!UnityService.Instance.HasData(key)) return null;
-            string raw = UnityService.Instance.GetData<string>(key);
-            return DateTime.TryParseExact(raw, DateFormat,
-                System.Globalization.CultureInfo.InvariantCulture,
-                System.Globalization.DateTimeStyles.None, out var dt)
-                ? dt : (DateTime?)null;
+            return ReadTimeInternal(key);
         }
 
         public void SaveLastClaimedTime(DailySignInConfig config, DateTime time)
         {
             UnityService.Instance.SaveData(
                 KeyLastClaimed + config.BaseInfo.Id,
-                time.ToString(DateFormat));
+                time.ToString(DateFormat, CultureInfo.InvariantCulture));
         }
         public bool IsMissedDayClaimed(DailySignInConfig config, int dayIndex)
         {
@@ -63,19 +59,25 @@ namespace Rush
         public DateTime? GetCycleStartTime(DailySignInConfig config)
         {
             string key = KeyCycleStart + config.BaseInfo.Id;
+            return ReadTimeInternal(key);
+        }
+
+        private static DateTime? ReadTimeInternal(string key)
+        {
             if (!UnityService.Instance.HasData(key)) return null;
             string raw = UnityService.Instance.GetData<string>(key);
-            return DateTime.TryParseExact(raw, DateFormat,
-                System.Globalization.CultureInfo.InvariantCulture,
-                System.Globalization.DateTimeStyles.None, out var dt)
-                ? dt : (DateTime?)null;
+            if (DateTime.TryParseExact(raw, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime value)
+                || DateTime.TryParseExact(raw, DateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out value)
+                || DateTime.TryParseExact(raw, "yyyy-MM-dd HH'.'mm'.'ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out value))
+                return value;
+            return null;
         }
 
         public void SaveCycleStartTime(DailySignInConfig config, DateTime time)
         {
             UnityService.Instance.SaveData(
                 KeyCycleStart + config.BaseInfo.Id,
-                time.ToString(DateFormat));
+                time.ToString(DateFormat, CultureInfo.InvariantCulture));
         }
 
         private string ClaimedDaysKey(DailySignInConfig config) => "SignIn_ClaimedDays_" + config.BaseInfo.Id;

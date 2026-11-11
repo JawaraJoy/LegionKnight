@@ -45,6 +45,10 @@ namespace Rush
         private Transform m_PoolRoot;
         private int m_SpawnGeneration;
         private bool m_IsResetting;
+        private bool m_IncludeBoss = true;
+        private int m_WaveVersion;
+        private const int c_ClassicDifficultyPerCycle = 1;
+        public bool IncludesBoss => m_IncludeBoss;
         [SerializeField]
         private int m_RecentSpawnCount = 8;
         private readonly List<Vector3> m_RecentMinionSpawnPositions = new();
@@ -160,11 +164,20 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
         }
         public void SetNewWave(EnemyWaveConfig waveConfig)
         {
-            SetNewWaveInternal(waveConfig);
+            SetNewWaveInternal(waveConfig, true);
         }
-        private void SetNewWaveInternal(EnemyWaveConfig waveConfig)
+
+        public void SetNewWave(EnemyWaveConfig waveConfig, bool includeBoss)
+        {
+            SetNewWaveInternal(waveConfig, includeBoss);
+        }
+
+        private void SetNewWaveInternal(EnemyWaveConfig waveConfig, bool includeBoss)
         {
             if (waveConfig == null) return;
+            if (m_IncludeBoss != includeBoss) ResetProgressionInternal();
+            m_IncludeBoss = includeBoss;
+            ++m_WaveVersion;
             m_CurrentEnemyWave = waveConfig;
             PrewarmUnitCurrentWave(waveConfig);
             m_CurrentMaxThreshold = waveConfig.RestThreshold;
@@ -200,15 +213,13 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
         }
         private EnemyUnitConfig[] GetAllEnemyWaves(EnemyWaveConfig waveConfig)
         {
-            BossUnitConfig bossConfig = waveConfig.BossWaveField.BossConfig;
-            List<MinionUnitConfig> minionConfigs = new List<MinionUnitConfig>();
-            foreach (MinionWaveField minionWave in waveConfig.MinionWaveFields)
-            {
-                minionConfigs.AddRange(minionWave.MinionConfigs);
-            }
-            List<EnemyUnitConfig> enemyConfigs = new List<EnemyUnitConfig>{bossConfig};
-            enemyConfigs.AddRange(minionConfigs);
-            return enemyConfigs.ToArray();
+            var configs = new List<EnemyUnitConfig>();
+            if (m_IncludeBoss && waveConfig.BossWaveField?.BossConfig != null)
+                configs.Add(waveConfig.BossWaveField.BossConfig);
+            if (waveConfig.MinionWaveFields != null)
+                foreach (MinionWaveField wave in waveConfig.MinionWaveFields)
+                    if (wave?.MinionConfigs != null) configs.AddRange(wave.MinionConfigs);
+            return configs.ToArray();
         }
         private EnemyUnitConfig[] GetAllMinions(MinionWaveField waveField)
         {
@@ -258,6 +269,7 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
 
         private void SpawnUnitInternal(EnemyUnitConfig config, Vector3 position, Quaternion rotation, bool boss)
         {
+            if (boss && !m_IncludeBoss) return;
             AcquireUnitInternal(config, out Unit unit);
             if (unit == null) return;
             unit.transform.SetPositionAndRotation(position, rotation);
@@ -321,6 +333,7 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
         private void SpawnBoss(Unit bossUnit)
         {
             if (bossUnit == null || m_BossUnitExisten != bossUnit) return;
+            if (bossUnit.TryGetComponent(out BossBattlePresentation presentation)) presentation.Enter(bossUnit, this);
             SetBossDetailVisibleInternal(true);
             OnBossSpawnInvoke(bossUnit);
             AddWaveLevelInternal(1);
@@ -361,7 +374,8 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
                     }  
                     break;
                 case WaveState.Boss:
-                    SetCurrentWaveIcon(m_CurrentEnemyWave.BossWaveField.Icon);
+                    var wave = m_CurrentEnemyWave.BossWaveField;
+                    SetCurrentWaveIcon(wave.BossConfig?.CollectibleField.Icon ?? wave.Icon);
                     break;
             }
         }
@@ -410,6 +424,11 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
 
                     if (m_CurrenWaveIndex >= waveLength)
                     {
+                        if (!m_IncludeBoss)
+                        {
+                            CompleteMinionCycleInternal();
+                            return;
+                        }
                         SetWaveStateInternal(WaveState.Boss);
                         UpdateState();
                         return;
@@ -463,9 +482,28 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
             }
             m_CurrentThreshold -= currentMaxThreshold;
             AddCurrentWaveIndexInternal(1);
+            if (!m_IncludeBoss && m_CurrenWaveIndex >= m_CurrentEnemyWave.MinionWaveFields.Length)
+                CompleteMinionCycleInternal();
         }
+
+        private void CompleteMinionCycleInternal()
+        {
+            if (m_IncludeBoss || m_IsResetting || m_WaveState == WaveState.Cleared) return;
+            EnemyWaveConfig completed = m_CurrentEnemyWave;
+            int overflow = m_CurrentThreshold;
+            int version = m_WaveVersion;
+            SetWaveStateInternal(WaveState.Cleared);
+            SetCurrentThresholdInternal(0);
+            AddWaveLevelInternal(c_ClassicDifficultyPerCycle);
+            OnWaveSetClearedInvoke(completed);
+            // A stage listener may synchronously start the next cycle using the same config.
+            if (!m_IncludeBoss && m_WaveVersion != version && m_WaveState == WaveState.Rest)
+                m_CurrentThreshold += overflow;
+        }
+
         private void BossState(int currentMaxThreshold)
         {
+            if (!m_IncludeBoss) return;
             if (m_BossUnitExisten != null || m_CurrentThreshold < currentMaxThreshold) return;
             Transform origin = m_EnemyWavePost != null ? m_EnemyWavePost.PostToSpawn : null;
             if (origin == null) return;
@@ -506,7 +544,7 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
                 SetScoreInternal(0);
                 m_WaveLevel = 1;
                 OnWaveLevelChangedInvoke(m_WaveLevel);
-                if (m_CurrentEnemyWave == null || m_WaveState == WaveState.Cleared) return;
+                if (m_CurrentEnemyWave == null) return;
                 SetWaveStateInternal(WaveState.Rest);
                 m_CurrentMaxThreshold = m_CurrentEnemyWave.RestThreshold;
                 OnCurrentThresholdRateChangedInvoke(0, m_CurrentMaxThreshold);

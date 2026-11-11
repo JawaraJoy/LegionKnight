@@ -16,13 +16,22 @@ namespace Rush
         public DateTime NextResetTime => m_NextResetTime;
         public int TotalDays => m_TotalDays;
 
+        public DateTime CycleStartTime { get; }
+        public DateTime NextRewardTime { get; }
+
         // How many seconds until next reset
         public double SecondsUntilReset =>
             (m_NextResetTime - DateTime.Now).TotalSeconds;
 
         public DailySignInState(int currentDay, bool canClaimToday,
             bool cycleComplete, DateTime nextResetTime, int totalDays)
+            : this(currentDay, canClaimToday, cycleComplete, nextResetTime, totalDays, DateTime.MinValue, nextResetTime) { }
+
+        public DailySignInState(int currentDay, bool canClaimToday, bool cycleComplete,
+            DateTime nextResetTime, int totalDays, DateTime cycleStartTime, DateTime nextRewardTime)
         {
+            CycleStartTime = cycleStartTime;
+            NextRewardTime = nextRewardTime;
             m_CurrentDay = currentDay;
             m_CanClaimToday = canClaimToday;
             m_CycleComplete = cycleComplete;

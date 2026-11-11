@@ -409,6 +409,7 @@ namespace Rush
         private void OnDeathInvoke(IAbilityContext context)
         {
             if (m_DeathTriggered) return;
+            m_DeathTriggered = true;
             Unit unitTaker = m_ModuleContext.Unit;
             if (unitTaker.Config is EnemyUnitConfig && unitTaker.HasBind(out SummonController summons))
                 summons.ResetProgression();
@@ -434,8 +435,6 @@ namespace Rush
                 //UnityService.Instance.ShowRewardedAd(() => InvisibleForWhileInternal(5));
             }
             unitTaker.Config.OnDeath(unitKiller.Config.BaseInfo.Id);
-
-            m_DeathTriggered = true;
         }
 
         private void CheckIfHeroIsTrial()

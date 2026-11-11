@@ -87,6 +87,7 @@ namespace Rush
 
         public TouchDownCheckField TouchDownCheckField => m_TouchDownCheckField;
         public PlatformHandlerConfig Config => m_Config;
+        public IReadOnlyList<PlatformConfig> PreparedPlatformConfigs => m_PreparedPlatformConfigs;
 
         [SerializeField, MMReadOnly]
         private int m_CurrentStackedPlatformsCount;

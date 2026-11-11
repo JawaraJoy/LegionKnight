@@ -27,6 +27,8 @@ namespace Rush
         [SerializeField]
         private AnimationClipConfig m_Emote;
 
+        public AnimationClipConfig Entrance => m_Entrance;
+        public AnimationClipConfig Death => m_Death;
         public AnimationClipConfig Idle => m_Idle;
         public void PlayEntrance(Unit unit)
         {

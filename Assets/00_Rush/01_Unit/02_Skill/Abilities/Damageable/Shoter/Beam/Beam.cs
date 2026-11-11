@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,8 +21,10 @@ namespace Rush
         private float m_DamageTimer;
         private float m_CurrentWidth;
         private float m_CurrentBeamLength;
+        private Damageable m_ContactTarget;
+        private bool StopsAtShotTarget => m_BeamConfig.DamageOnlyShotTarget && !m_BeamConfig.Piercing;
 
-        private readonly RaycastHit2D[] m_Hits = new RaycastHit2D[64];
+        private readonly List<RaycastHit2D> m_Hits = new(64);
 
         public override void Init(AbilityContext context, AmmoConfig config)
         {
@@ -40,6 +43,7 @@ namespace Rush
             base.PrepareForSpawn(position, rotation);
 
             m_DamageTimer = 0f;
+            m_ContactTarget = null;
             m_CurrentBeamLength = m_BeamConfig.MaxLength;
 
             m_CurrentWidth = m_BeamConfig.AnimateWidth
@@ -58,12 +62,15 @@ namespace Rush
             FaceTarget(targetable);
             Transform parent = m_AbilityContext.AbilityDeliver.DeliverTransform;
             transform.SetParent(parent);
+            if (StopsAtShotTarget)
+                UpdateBeam();
             OnBeamStartInvoke();
             m_Line.enabled = true;
         }
 
         public override void Tick()
         {
+            if (!m_Line.enabled) return;
             UpdateBeam();
             UpdateDamage();
 
@@ -93,7 +100,11 @@ namespace Rush
             Vector3 origin = transform.position;
             Vector3 direction = transform.right;
 
-            if (m_BeamConfig.Piercing)
+            if (StopsAtShotTarget)
+            {
+                UpdateShotTargetContactInternal();
+            }
+            else if (m_BeamConfig.Piercing)
             {
                 m_CurrentBeamLength = m_BeamConfig.MaxLength;
             }
@@ -163,36 +174,66 @@ namespace Rush
 
             m_DamageTimer = m_BeamConfig.DamageInterval;
 
-            int hitCount = Physics2D.RaycastNonAlloc(
-                transform.position,
-                transform.right,
-                m_Hits,
-                m_CurrentBeamLength,
-                m_Config.TargetLayer);
+            if (StopsAtShotTarget)
+            {
+                if (m_ContactTarget != null)
+                    ApplyBeamDamageInternal(m_ContactTarget);
+                return;
+            }
 
+            int hitCount = RaycastHitsInternal(m_CurrentBeamLength);
             for (int i = 0; i < hitCount; i++)
             {
                 RaycastHit2D hit = m_Hits[i];
-
-                if (hit.collider == null)
+                if (!hit.collider.TryGetComponent(out Damageable damageable))
+                    continue;
+                if (m_BeamConfig.DamageOnlyShotTarget &&
+                    (!ReferenceEquals(damageable, m_Targetable) || !damageable.IsAlive))
+                    continue;
+                if (!AbilityUltility.IsTargetAllowedByTargetObject(m_AbilityContext.AbilityDeliver, damageable))
                     continue;
 
-                if (!hit.collider.TryGetComponent(
-                        out Damageable damageable))
-                    continue;
-
-                if (!AbilityUltility.IsTargetAllowedByTargetObject(
-                        m_AbilityContext.AbilityDeliver,
-                        damageable))
-                    continue;
-
-                damageable.TakeDamage(m_AbilityContext);
-
-                OnHitInvoke(damageable.gameObject);
-
-                if (!m_BeamConfig.Piercing)
+                ApplyBeamDamageInternal(damageable);
+                if (m_BeamConfig.DamageOnlyShotTarget || !m_BeamConfig.Piercing)
                     break;
             }
+        }
+
+        private void UpdateShotTargetContactInternal()
+        {
+            m_ContactTarget = null;
+            m_CurrentBeamLength = 0f;
+            if (!(m_Targetable is Damageable target) || target == null || !target.IsAlive ||
+                !AbilityUltility.IsTargetAllowedByTargetObject(m_AbilityContext.AbilityDeliver, target))
+                return;
+
+            int hitCount = RaycastHitsInternal(m_BeamConfig.MaxLength);
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit2D hit = m_Hits[i];
+                if (hit.collider.gameObject != target.gameObject) continue;
+                if (m_ContactTarget != null && hit.distance >= m_CurrentBeamLength) continue;
+                m_ContactTarget = target;
+                m_CurrentBeamLength = hit.distance;
+            }
+        }
+
+        private int RaycastHitsInternal(float distance)
+        {
+            var filter = new ContactFilter2D
+            {
+                useLayerMask = true,
+                layerMask = m_Config.TargetLayer,
+                useTriggers = Physics2D.queriesHitTriggers
+            };
+            return gameObject.scene.GetPhysicsScene2D().Raycast(
+                transform.position, transform.right, distance, filter, m_Hits);
+        }
+
+        private void ApplyBeamDamageInternal(Damageable damageable)
+        {
+            damageable.TakeDamage(m_AbilityContext);
+            OnHitInvoke(damageable.gameObject);
         }
 
         protected override void DisableAmmo()

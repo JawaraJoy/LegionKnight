@@ -48,7 +48,13 @@ namespace Rush
             if (cardConfig == null) { ClearCard(); return; }
             m_CardConfig = cardConfig;
             RushPlayer.Instance.Unit.HasBind(out SkillController controller);
-            m_CardDescriptionText.text = GameplayDescription.Card(m_CardConfig, controller, true);
+            PlatformHandler platformHandler = RushGameManager.Instance?.StageManager?.PlatformHandler;
+            string description = GameplayDescription.BattleCard(m_CardConfig, controller, platformHandler: platformHandler);
+            Rect textArea = m_CardDescriptionText.rectTransform.rect;
+            if (textArea.width > 0 && textArea.height > 0 &&
+                m_CardDescriptionText.GetPreferredValues(description, textArea.width, float.PositiveInfinity).y > textArea.height)
+                description = GameplayDescription.BattleCard(m_CardConfig, controller, 1, platformHandler);
+            m_CardDescriptionText.text = description;
             m_CardNameText.text = m_CardConfig.BaseInfo.Name;
             
             m_CardIcon.sprite = m_CardConfig.CollectibleField.Icon;
