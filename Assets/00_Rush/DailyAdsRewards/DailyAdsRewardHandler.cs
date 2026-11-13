@@ -74,7 +74,7 @@ namespace Rush
                 if (selected == null) continue;
                 used.Add(selected.BaseInfo.Id);
                 m_TodaySelectedBundle.Add(selected);
-                UnityService.Instance.SaveData(key, selected.BaseInfo.Id);
+                if (id != selected.BaseInfo.Id) UnityService.Instance.SaveData(key, selected.BaseInfo.Id);
             }
             OnBundlesUpdateInvoke();
         }
@@ -127,6 +127,12 @@ namespace Rush
 
         public void SetBundleClaimed(int index)
         {
+            SaveBundleClaimedInternal(index);
+            OnBundlesUpdateInvoke();
+        }
+
+        private void SaveBundleClaimedInternal(int index)
+        {
             UnityService.Instance.SaveData(BundleClaimKey(index), true);
         }
 
@@ -143,8 +149,9 @@ namespace Rush
             {
                 result.GrantRewards(source);
                 service.SaveData(receiptKey, true);
-                if (usesTodayQuota) service.SaveData(BundleClaimKey(index), true);
+                if (usesTodayQuota) SaveBundleClaimedInternal(index);
             });
+            if (usesTodayQuota) OnBundlesUpdateInvoke();
         }
 
         private string BundleClaimKey(int index) => $"{m_Key}_claimed_{index}";

@@ -129,6 +129,9 @@ namespace Rush
         public void SetCurrentHero(HeroUnitConfig heroConfig)
         {
             m_CurrentHero = heroConfig;
+            LegionKnight.Player player = LegionKnight.Player.Instance;
+            if (player != null && player.PlayerCardDeck != null)
+                player.PlayerCardDeck.PrepareUsedCards();
         }
         public void AddCustomCard(CardConfig cardConfig)
         {

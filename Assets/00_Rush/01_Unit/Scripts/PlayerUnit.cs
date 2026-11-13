@@ -16,9 +16,9 @@ namespace Rush
             var profile = collection.GetHeroUnit(heroConfig);
             if (profile == null)
                 return;
-            var bonus = heroConfig.BreakThroughFormulaConfig == null
+            var bonus = heroConfig.EvolutionConfig == null
                 ? StatField.Zero
-                : heroConfig.BreakThroughFormulaConfig.GetStatBonus(profile.Star);
+                : heroConfig.EvolutionConfig.GetStatBonus(profile.Star);
             SetProgressionInternal(profile.Level, bonus);
         }
     }

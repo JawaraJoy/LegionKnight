@@ -31,10 +31,6 @@ namespace LegionKnight
         [SerializeField]
         private UpgradeView m_UpgradeView;
         [SerializeField]
-        private UpgradeButton m_UpgradeButton;
-        [SerializeField]
-        private BreakThroughButton m_BreakThroughButton;
-        [SerializeField]
         private AvatarSpineUI m_AvatarSpineUI;
 
         [Header("Skills")]
@@ -105,8 +101,6 @@ namespace LegionKnight
             m_HeroStatusView.Init(config);
             m_UseButton.Init(config);
             m_UpgradeView.Init(Player.Instance.HeroesCollection.GetHeroUnit(config));
-            m_UpgradeButton.Init(config);
-            m_BreakThroughButton.Init(config);
             m_BasicAttack.Init(config);
             m_Skilll.Init(config);
             m_Platform.Init(config);
@@ -115,3 +109,4 @@ namespace LegionKnight
         }
     }
 }
+

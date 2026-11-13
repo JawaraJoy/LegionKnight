@@ -9,6 +9,9 @@ namespace Rush
         private readonly ISkillContext m_SkillContext;
         private readonly IAbilityDeliver m_AbilityDeliver;
 
+        public RarityConfig RarityConfig => m_AbilityDeliver?.AbilityConfig?.RarityConfig
+            ?? m_SkillContext?.Skill?.SkillConfig?.CollectibleField?.RarityConfig;
+
         public ISkillContext SkillContext => m_SkillContext;
         public IAbilityDeliver AbilityDeliver => m_AbilityDeliver;
         public bool Initialized => m_SkillContext.Initialized && m_AbilityDeliver != null;

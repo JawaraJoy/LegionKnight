@@ -40,7 +40,7 @@ namespace LegionKnight
         }
         public void SetScoreView(Currency currency)
         {
-            GetScoreView().SetView(currency);
+            if (m_BattleView == null) GetScoreView()?.SetView(currency);
         }
     }
     public partial class CanvasManager

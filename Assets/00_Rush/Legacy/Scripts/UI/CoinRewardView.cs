@@ -25,7 +25,7 @@ namespace LegionKnight
         }
         public void SetCoinReward(Currency currency)
         {
-            GetCurrencyView().SetView(currency);
+            if (m_BattleView == null) GetCurrencyView()?.SetView(currency);
         }
     }
     public partial class CanvasManager

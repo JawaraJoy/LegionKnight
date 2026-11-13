@@ -12,6 +12,7 @@ namespace Rush
         private Button m_ButtonCard;
 
         private StageManager m_StageManager;
+        private int m_RequestVersion;
 
 private void Start()
         {
@@ -22,24 +23,33 @@ private void Start()
         }
         private void WatchAds()
         {
-            UnityService.Instance.ShowRewardedAd(OnAdWatched);
+            if (!isActiveAndEnabled || !IsShown || m_ButtonCard.interactable) return;
+            int requestVersion = ++m_RequestVersion;
+            UnityService.Instance.ShowRewardedAd(() => OnAdWatchedInternal(requestVersion));
         }
 
-        private void OnAdWatched()
+        private void OnAdWatchedInternal(int requestVersion)
         {
+            if (this == null || !isActiveAndEnabled || requestVersion != m_RequestVersion || !IsShown) return;
+            InvalidateRewardRequestInternal();
             HideInternal();
             m_ButtonCard.interactable = true;
         }
 
         protected override void ShowInternal()
         {
+            InvalidateRewardRequestInternal();
             base.ShowInternal();
             m_ButtonCard.interactable = false;
         }
     
 
+        private void OnDisable() => InvalidateRewardRequestInternal();
+        private void InvalidateRewardRequestInternal() => m_RequestVersion++;
+
 private void OnDestroy()
         {
+            InvalidateRewardRequestInternal();
             if (m_ButtonAds != null)
             {
                 m_ButtonAds.onClick.RemoveListener(WatchAds);

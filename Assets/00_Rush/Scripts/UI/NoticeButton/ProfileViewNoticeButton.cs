@@ -20,7 +20,7 @@ namespace Rush
             {
                 list.Add(frame);
             }
-            bool hasNew = list.Any(x => x.Condition == ProductCondition.NewUnlocked);
+            bool hasNew = list.Any(x => x.Owned && x.Condition == ProductCondition.NewUnlocked);
             return hasNew;
         }
     }

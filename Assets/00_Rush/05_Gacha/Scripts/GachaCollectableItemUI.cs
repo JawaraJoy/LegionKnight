@@ -12,6 +12,10 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_RarityText;
         [SerializeField] private Image m_RarityFrame;
 
+        protected virtual bool ShowSingleAmount => false;
+        protected virtual bool TintRarityLabel => true;
+        protected virtual string AmountPrefix => "x";
+
         // ── SetupBase overloads ───────────────────────────────────────────────
 
         // Full setup dari CollectibleConfig
@@ -42,9 +46,9 @@ namespace Rush
         private void RefreshAmountInternal(int amount)
         {
             if (m_AmountText == null) return;
-            bool show = amount >= 2;
+            bool show = ShowSingleAmount || amount >= 2;
             m_AmountText.gameObject.SetActive(show);
-            if (show) m_AmountText.text = $"x{amount}";
+            if (show) m_AmountText.text = $"{AmountPrefix}{amount}";
         }
 
         private void RefreshRarityInternal(RarityConfig rarity)
@@ -60,7 +64,7 @@ namespace Rush
             {
                 m_RarityText.gameObject.SetActive(true);
                 m_RarityText.text = rarity.BaseInfo.Name ?? "-";
-                m_RarityText.color = rarity.Color;
+                if (TintRarityLabel) m_RarityText.color = rarity.Color;
             }
 
             if (m_RarityFrame != null)

@@ -29,10 +29,10 @@ namespace LegionKnight
         private List<ProfilePictView> m_ProfilePicts = new();
         public ImageContent[] Icons => m_Icons;
         public ImageContent[] Frames => m_Frames;
-        public CustomImageDefinition SelectedIcon => m_SelectedIcon;
-        public CustomImageDefinition UsedIcon => m_UsedIcon;
-        public CustomImageDefinition SelectedFrame => m_SelectedFrame;
-        public CustomImageDefinition UsedFrame => m_UsedFrame;
+        public CustomImageDefinition SelectedIcon => m_SelectedIcon != null ? m_SelectedIcon.ProfileAppearance : null;
+        public CustomImageDefinition UsedIcon => m_UsedIcon != null ? m_UsedIcon.ProfileAppearance : null;
+        public CustomImageDefinition SelectedFrame => m_SelectedFrame != null ? m_SelectedFrame.ProfileAppearance : null;
+        public CustomImageDefinition UsedFrame => m_UsedFrame != null ? m_UsedFrame.ProfileAppearance : null;
 
         private string SELECTED_ICON_KEY => $"selicon";
         private string USED_ICON_KEY => $"usedicon";
@@ -142,95 +142,26 @@ namespace LegionKnight
         }
         public void Init()
         {
-            bool hasSelectedIcon = UnityService.Instance.HasData(SELECTED_ICON_KEY);
-            bool hasSelectedFrame = UnityService.Instance.HasData(SELECTED_FRAME_KEY);
-            if (hasSelectedIcon)
-            {
-                string selectedIconId = UnityService.Instance.GetData<string>(SELECTED_ICON_KEY);
-                if (HasIconInternal(selectedIconId, out ImageContent content))
-                {
-                    m_SelectedIcon = content.Definition;
-                }
-                else
-                {
-                    m_SelectedIcon = m_DefaultIcon;
-                }
-                
-            }
-            else
-            {
-                m_SelectedIcon = m_DefaultIcon;
-            }
-            Debug.Log($"[profile] hasselectedicon{hasSelectedIcon}");
-            if (hasSelectedFrame)
-            {
-                string selectedFrameId = UnityService.Instance.GetData<string>(SELECTED_FRAME_KEY);
-                if (HasFrameInternal(selectedFrameId, out ImageContent content))
-                {
-                    m_SelectedFrame = content.Definition;
-                }
-                else
-                {
-                    m_SelectedFrame = m_DefaultFrame;
-                }
-            }
-            else
-            {
-                m_SelectedFrame = m_DefaultFrame;
-            }
+            foreach (var icon in m_Icons) icon.Init();
+            foreach (var frame in m_Frames) frame.Init();
 
-            bool hasUsedIcon = UnityService.Instance.HasData(USED_ICON_KEY);
-            bool hasUsedFrame = UnityService.Instance.HasData(USED_FRAME_KEY);
-            if (hasUsedIcon)
-            {
-                string usedIconId = UnityService.Instance.GetData<string>(USED_ICON_KEY);
-                if (HasIconInternal(usedIconId, out ImageContent content))
-                {
-                    m_UsedIcon = content.Definition;
-                }
-                else
-                {
-                    m_UsedIcon = m_DefaultIcon;
-                }
-            }
-            else
-            {
-                m_UsedIcon = m_DefaultIcon;
-            }
-            if (hasUsedFrame)
-            {
-                string usedFrameId = UnityService.Instance.GetData<string>(USED_FRAME_KEY);
-                if (HasFrameInternal(usedFrameId, out ImageContent content))
-                {
-                    m_UsedFrame = content.Definition;
-                }
-                else
-                {
-                    m_UsedFrame = m_DefaultFrame;
-                }
-            }
-            else
-            {
-                m_UsedFrame = m_DefaultFrame;
-            }
-
-            foreach (var icon in m_Icons)
-            {
-                icon.Init();
-            }
-
-            foreach (var frame in m_Frames)
-            {
-                frame.Init();
-            }
+            var save = UnityService.Instance;
+            m_UsedIcon = OwnedOrDefault(GetIconInternal(save.GetData<string>(USED_ICON_KEY)), m_DefaultIcon);
+            m_UsedFrame = OwnedOrDefault(GetFrame(save.GetData<string>(USED_FRAME_KEY)), m_DefaultFrame);
+            m_SelectedIcon = OwnedOrDefault(GetIconInternal(save.GetData<string>(SELECTED_ICON_KEY)), m_UsedIcon);
+            m_SelectedFrame = OwnedOrDefault(GetFrame(save.GetData<string>(SELECTED_FRAME_KEY)), m_UsedFrame);
             RefreshInternal();
         }
+        private static CustomImageDefinition OwnedOrDefault(ImageContent entry, CustomImageDefinition fallback) =>
+            entry != null && entry.Owned ? entry.Definition : fallback;
+
         public void Refres()
         {
             RefreshInternal();
         }
         private void RefreshInternal()
         {
+            m_ProfilePicts.RemoveAll(view => view == null);
             foreach (var pp in m_ProfilePicts)
             {
                 pp.Init();
@@ -256,37 +187,72 @@ namespace LegionKnight
             }
 
         }
-        public virtual void SetSelected(CustomImageDefinition defi)
+        // Ownership and save IDs belong to the original item. Multiple owned items can share one visible tile.
+        public ImageContent FindOwnedVariant(CustomImageDefinition definition)
         {
-            
-            switch(defi.Type)
+            if (definition == null) return null;
+            var entries = definition.Type == CustomImageType.Icon ? m_Icons : m_Frames;
+            ImageContent alternative = null;
+            foreach (var entry in entries)
             {
-                case CustomImageType.Frame:
-                    if (HasFrameInternal(defi, out var frame))
-                    {
-                        m_SelectedFrame = frame.Definition;
-                        UnityService.Instance.SaveData(SELECTED_ICON_KEY, m_SelectedIcon.BaseInfo.Id);
-                    }
-                    break;
-                case CustomImageType.Icon:
-                    if (HasIconInternal(defi, out var icon))
-                    {
-                        m_SelectedIcon = icon.Definition;
-                        UnityService.Instance.SaveData(SELECTED_FRAME_KEY, m_SelectedFrame.BaseInfo.Id);
-                    }
-                    break;
+                if (!entry.Owned || entry.Definition == null || entry.Definition.ProfileAppearance.BaseInfo.Id != definition.ProfileAppearance.BaseInfo.Id) continue;
+                if (entry.Definition.BaseInfo.Id == definition.BaseInfo.Id) return entry;
+                if (alternative == null) alternative = entry;
             }
-            RefreshInternal();  
+            return alternative;
+        }
+
+        public bool HasNewAppearance(CustomImageDefinition definition)
+        {
+            if (definition == null) return false;
+            var entries = definition.Type == CustomImageType.Icon ? m_Icons : m_Frames;
+            foreach (var entry in entries)
+            {
+                if (entry.Owned && entry.Condition == ProductCondition.NewUnlocked &&
+                    entry.Definition != null && entry.Definition.ProfileAppearance.BaseInfo.Id == definition.ProfileAppearance.BaseInfo.Id) return true;
+            }
+            return false;
+        }
+
+        public void AcknowledgeAppearance(CustomImageDefinition definition)
+        {
+            var entries = definition.Type == CustomImageType.Icon ? m_Icons : m_Frames;
+            foreach (var entry in entries)
+            {
+                if (entry.Owned && entry.Condition == ProductCondition.NewUnlocked &&
+                    entry.Definition != null && entry.Definition.ProfileAppearance.BaseInfo.Id == definition.ProfileAppearance.BaseInfo.Id)
+                    entry.ChangeCondition(ProductCondition.NoticeUnlocked);
+            }
+        }
+
+        public virtual void SetSelected(CustomImageDefinition definition)
+        {
+            var owned = FindOwnedVariant(definition);
+            if (owned == null) return;
+            bool icon = definition.Type == CustomImageType.Icon;
+            var previous = icon ? m_SelectedIcon : m_SelectedFrame;
+            // Keep the exact variant across reopening and equipping the same tile.
+            if (previous != null && definition == definition.ProfileAppearance && previous.ProfileAppearance == definition.ProfileAppearance)
+            {
+                var previousEntry = icon ? GetIconInternal(previous) : GetFrameInternal(previous);
+                if (previousEntry != null && previousEntry.Owned) owned = previousEntry;
+            }
+            if (icon) m_SelectedIcon = owned.Definition;
+            else m_SelectedFrame = owned.Definition;
+            UnityService.Instance.SaveData(icon ? SELECTED_ICON_KEY : SELECTED_FRAME_KEY, owned.Definition.BaseInfo.Id);
+            RefreshInternal();
         }
         public void SetUsed(CustomImageType typ)
         {
             switch(typ)
             {
                 case CustomImageType.Frame:
+                    if (m_SelectedFrame == null || GetFrameInternal(m_SelectedFrame)?.Owned != true) return;
                     m_UsedFrame = m_SelectedFrame;
                     UnityService.Instance.SaveData(USED_FRAME_KEY, m_UsedFrame.BaseInfo.Id);
                     break;
                 case CustomImageType.Icon:
+                    if (m_SelectedIcon == null || GetIconInternal(m_SelectedIcon)?.Owned != true) return;
                     m_UsedIcon = m_SelectedIcon;
                     UnityService.Instance.SaveData(USED_ICON_KEY, m_UsedIcon.BaseInfo.Id);
                     break;
@@ -329,6 +295,21 @@ namespace LegionKnight
 
         public void Init()
         {
+            // Both Valkyrie variants shared the static ID in older saves.
+            var save = UnityService.Instance;
+            const string migration = "Profile.ValkyrieSplit.v1";
+            if (m_Definition.BaseInfo.Id == "frvalky_animated" && !save.HasData(migration))
+            {
+                save.LocalSave.ExecuteTransaction(() =>
+                {
+                    if (!save.HasData(OWNED_KEY) && save.HasData("ownedfrvalky"))
+                    {
+                        save.SaveData(OWNED_KEY, save.GetData<bool>("ownedfrvalky"));
+                        if (save.HasData("confrvalky")) save.SaveData(CONDITION_KEY, save.GetData<ProductCondition>("confrvalky"));
+                    }
+                    save.SaveData(migration, true);
+                });
+            }
             bool hasOwnedData = UnityService.Instance.HasData(OWNED_KEY);
             bool hasConditionData = UnityService.Instance.HasData(CONDITION_KEY);
             if (hasOwnedData)
@@ -344,12 +325,12 @@ namespace LegionKnight
         {
             if (owned == true && m_Owned == false)
             {
-                CanvasManager.Instance.GetPanel<NewUnlockedPopUpPanel>().ShowPopUp(m_Definition);
+                CanvasManager.Instance.GetPanel<NewUnlockedPopUpPanel>().ShowPopUp(m_Definition.ProfileAppearance);
                 ChangeConditionInternal(ProductCondition.NewUnlocked);
-                Player.Instance.CustomProfile.Refres();
             }
             m_Owned = owned;
             UnityService.Instance.SaveData(OWNED_KEY, m_Owned);
+            Player.Instance.CustomProfile.Refres();
             
         }
     }

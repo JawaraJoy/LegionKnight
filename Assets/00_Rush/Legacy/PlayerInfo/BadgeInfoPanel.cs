@@ -20,21 +20,18 @@ namespace LegionKnight
             m_Definition = defi;
             if (Player.Instance.BadgeManager.HasBadge(defi, out var content))
             {
-                bool isUnlocked = content.IsUnlocked;
-                int currentLevel = content.CurrentUpgradeLevel;
-                if (content.IsUnlocked)
+                var tier = defi.Upgrade[content.DisplayLevel];
+                bool visible = content.IsUnlocked || content.CanClaim;
+                m_Icon.sprite = tier.Icon;
+                m_NameText.text = visible ? tier.Label : defi.BaseInfo.Name;
+                m_DescriptionText.text = visible ? tier.Description : defi.BaseInfo.Description;
+                if (content.CanClaim)
                 {
-                    m_Icon.sprite = defi.Upgrade[currentLevel].Icon;
-                    m_NameText.text = defi.Upgrade[currentLevel].Label;
-                    m_DescriptionText.text = defi.Upgrade[currentLevel].Description;
+                    string reward = string.Join(", ", System.Array.ConvertAll(tier.RewardOnUnlock,
+                        row => row.Amount + " " + row.ItemLoot.BaseInfo.Name));
+                    m_DescriptionText.text = "Ready to claim: " + reward;
                 }
-                else
-                {
-                    m_Icon.sprite = defi.Upgrade[0].Icon;
-                    m_NameText.text = defi.BaseInfo.Name;
-                    m_DescriptionText.text = defi.BaseInfo.Description;
-                }
-                m_Icon.color = isUnlocked ? Color.white : Color.gray;
+                m_Icon.color = visible ? Color.white : Color.gray;
                 
             }
             else

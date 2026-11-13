@@ -12,12 +12,19 @@ namespace Rush
         public GachaCostBreakdown Breakdown => m_Breakdown;
         public bool IsMulti => m_IsMulti;
 
-        public GachaConfirmData(GachaBannerConfig banner,
-            GachaCostBreakdown breakdown, bool isMulti)
+        internal bool RequiresConfirmation { get; }
+        internal bool Accepted { get; private set; }
+        internal void MarkAccepted() => Accepted = true;
+
+        public GachaConfirmData(GachaBannerConfig banner, GachaCostBreakdown breakdown, bool isMulti)
+            : this(banner, breakdown, isMulti, false) { }
+
+        internal GachaConfirmData(GachaBannerConfig banner, GachaCostBreakdown breakdown, bool isMulti, bool requiresConfirmation)
         {
             m_Banner = banner;
             m_Breakdown = breakdown;
             m_IsMulti = isMulti;
+            RequiresConfirmation = requiresConfirmation;
         }
 
         // ── IConfirmData ──────────────────────────────────────────────────────

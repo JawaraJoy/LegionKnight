@@ -21,8 +21,16 @@ namespace Rush
         public StatsField MainStats => m_MainStats;
         public Vector3 UnitScale => m_UnitScale;
 
+        public static event System.Action BossKilled;
+        public static event System.Action<BossUnitConfig> BossDefeated;
+
         public void OnDeath(string killerName)
         {
+            if (this is BossUnitConfig boss)
+            {
+                BossDefeated?.Invoke(boss);
+                BossKilled?.Invoke();
+            }
             TenjinManager.Instance.SendEvent("Death", $"{m_BaseInfo.Id} killed by {killerName}");
             if (this is HeroUnitConfig)
             {

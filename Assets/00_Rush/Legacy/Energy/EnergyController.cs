@@ -393,11 +393,14 @@ namespace LegionKnight
             return m_Amount >= cost;
         }
 
+        public static event System.Action<int> EnergySpent;
+
         public void Pay(int cost)
         {
             if (!CanPay(cost)) return;
 
             AddInternal(-cost);
+            if (cost > 0) EnergySpent?.Invoke(cost);
             m_OnAmountSpend?.Invoke(cost);
         }
 

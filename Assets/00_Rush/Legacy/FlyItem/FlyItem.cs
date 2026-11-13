@@ -1,5 +1,4 @@
-﻿using Rush;
-using System.Collections;
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
@@ -9,99 +8,80 @@ namespace LegionKnight
         [SerializeField] private SpriteRenderer m_Renderer;
         [SerializeField] private PadDefinition m_PadDefinition;
 
-        private Pad m_Pad;
-
-        // Flight state
-        private bool isFlying = false;
-        private float flySpeed;
-        private float lerpT;
-        private Vector3 startPos;
-        private Vector3 targetPos;
-
-        private Pad TargetPad
-        {
-            get
-            {
-                if (m_Pad == null)
-                {
-                    m_Pad = RushGameManager.Instance.FlyCollectManager.GetPadByDefinition(m_PadDefinition);
-                }
-                return m_Pad;
-            }
-        }
-
+        private const float c_DropDistance = .85f;
+        private const float c_DropDuration = .32f;
+        private Transform m_Target;
+        private Vector3 m_Origin;
+        private Vector3 m_FlightStart;
+        private float m_Elapsed;
+        private bool m_IsBossDrop;
         public bool IsActive => gameObject.activeInHierarchy;
 
-        private void OnEnable()
-        {
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
-        }
+        private void OnEnable() => UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
         private void OnDisable()
         {
+            m_Target = null;
             UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
-        public void Init(CollectibleConfig defi, PadDefinition paddefi)
+
+        public void Init(CollectibleConfig item, PadDefinition pad) => Init(item, pad, null, false);
+
+        public void Init(CollectibleConfig item, PadDefinition pad, Transform hero, bool bossDrop)
         {
-            m_PadDefinition = paddefi;
-            m_Renderer.sprite = defi.CollectibleField.Icon;
-
-            // RESET STATE (PENTING untuk pooling)
-            isFlying = false;
-            lerpT = 0f;
-
-            flySpeed = TargetPad.Definition.FlySpeed;
-
-            RushGameManager.Instance.StartCoroutine(StartFlightAfterDelay());
-        }
-
-        private IEnumerator StartFlightAfterDelay()
-        {
-            yield return new WaitForSeconds(m_PadDefinition.DelayBeforeFly);
-
-            startPos = transform.position;
-            targetPos = GetTargetWorldPosition(TargetPad.transform);
-
-            isFlying = true;
-        }
-
-        // -------------------------
-        // UNIVERSAL POSITION HANDLER
-        // -------------------------
-        private Vector3 GetTargetWorldPosition(Transform target)
-        {
-            // If the target is UI (RectTransform) convert to world position
-            if (target is RectTransform rect)
+            m_PadDefinition = pad;
+            m_IsBossDrop = bossDrop;
+            m_Target = hero;
+            if (!bossDrop && pad != null)
             {
-                Vector3 screenPos = RectTransformUtility.WorldToScreenPoint(null, rect.position);
-                Vector3 worldPos = PlayerCamera.Instance.Camera.ScreenToWorldPoint(screenPos);
-                worldPos.z = 0; // Ensure 2D plane
-                return worldPos;
+                var targetPad = RushGameManager.Instance.FlyCollectManager.GetPadByDefinition(pad);
+                m_Target = targetPad != null ? targetPad.transform : null;
             }
-
-            // Normal world object
-            Vector3 pos = target.position;
-            pos.z = 0;
-            return pos;
+            if (m_Target == null || pad == null || item == null)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+            m_Renderer.sprite = item.CollectibleField.Icon;
+            m_Origin = transform.position;
+            m_FlightStart = bossDrop ? m_Origin + Vector3.down * c_DropDistance : m_Origin;
+            m_Elapsed = 0f;
         }
 
+        private Vector3 GetTargetWorldPosition()
+        {
+            if (m_Target is RectTransform rect)
+            {
+                var screen = RectTransformUtility.WorldToScreenPoint(null, rect.position);
+                var world = PlayerCamera.Instance.Camera.ScreenToWorldPoint(screen);
+                world.z = 0f;
+                return world;
+            }
+            var position = m_Target.position;
+            position.z = 0f;
+            return position;
+        }
 
         public void Tick()
         {
-            if (!isFlying)
-                return;
-
-            // Update target every frame (UI may move)
-            targetPos = GetTargetWorldPosition(TargetPad.transform);
-
-            lerpT += Time.deltaTime * flySpeed;
-            transform.position = Vector3.Lerp(startPos, targetPos, lerpT);
-
-            // End
-            if (lerpT >= 1f)
+            if (m_Target == null || !m_Target.gameObject.activeInHierarchy)
             {
-                isFlying = false;
                 gameObject.SetActive(false);
+                return;
             }
+            m_Elapsed += Time.deltaTime;
+            float delay = m_IsBossDrop ? c_DropDuration : m_PadDefinition.DelayBeforeFly;
+            if (m_Elapsed < delay)
+            {
+                if (m_IsBossDrop)
+                {
+                    float t = m_Elapsed / c_DropDuration;
+                    transform.position = Vector3.Lerp(m_Origin, m_FlightStart, t * t);
+                }
+                return;
+            }
+            float progress = Mathf.Clamp01((m_Elapsed - delay) * m_PadDefinition.FlySpeed);
+            transform.position = Vector3.Lerp(m_FlightStart, GetTargetWorldPosition(), progress);
+            if (progress >= 1f) gameObject.SetActive(false);
         }
     }
 }

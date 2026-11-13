@@ -38,6 +38,23 @@ namespace Rush
         public float FirstPurchaseDiscount => m_FirstPurchaseDiscount;
         public int MinimumPriceForDiscount => m_MinimumPriceForDiscount;
         public ShopBundlePurchaseLimit PurchaseLimit => m_PurchaseLimit;
+        public string ContentsLabel
+        {
+            get
+            {
+                if (m_Entries == null || m_Entries.Length == 0) return string.Empty;
+                long total = 0;
+                bool cards = true;
+                foreach (var entry in m_Entries)
+                {
+                    total += entry?.Amount ?? 0;
+                    cards &= entry?.Collectible is CardConfig;
+                }
+                if (cards) return $"{total:N0} cards";
+                return m_Entries.Length == 1 ? $"{total:N0} {m_Entries[0]?.Collectible?.BaseInfo.Name}" : $"{total:N0} items";
+            }
+        }
+
         public Sprite BundleSprite => m_BundleSprite;
     }
 }

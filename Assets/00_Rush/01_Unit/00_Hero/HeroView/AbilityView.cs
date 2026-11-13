@@ -38,72 +38,49 @@ namespace Rush
                 return m_SkillDescription;
             }
         }
-        private void InitByCategory(UnitConfig unitConfig)
+        private Skill m_RuntimeSkill;
+
+        public void Init(UnitConfig unitConfig)
         {
-            m_UnitConfig = unitConfig;
-            SkillConfig[] skillConfigs = unitConfig.GetSkillsByCategory(m_SkillCategoryConfig);
-            if (skillConfigs.Length > 0)
+            SkillConfig[] skills = unitConfig.GetSkillsByCategory(m_SkillCategoryConfig);
+            if (skills.Length == 0 || skills[0] == null)
             {
-                SkillConfig skillConfig = skillConfigs[0];
-                if (skillConfig == null)
-                {
-                    Debug.LogError($"SkillConfig is null for unit {unitConfig.name} and category {m_SkillCategoryConfig.name}");
-                    return;
-                }
-                if (m_Content != null && !m_Content.activeSelf) ShowInternal();
-                m_Icon.sprite = skillConfig.CollectibleField.Icon;
-                m_SelectedSkill = skillConfig;
-                m_Button.onClick.RemoveListener(OnButtonClickedInternal);
-                m_Button.onClick.AddListener(OnButtonClickedInternal);
-            }
-            else
-            {
+                m_SelectedSkill = null;
+                m_RuntimeSkill = null;
                 HideInternal();
+                return;
             }
-            
+            Bind(skills[0], unitConfig, null);
+            if (!IsShown) ShowInternal();
         }
-        private void InitInternal(SkillConfig skill)
+
+        public void Init(SkillConfig skill) => Bind(skill, null, null);
+
+        public void InitRuntime(Skill skill, UnitConfig owner) => Bind(skill.SkillConfig, owner, skill);
+
+        public void InitPreview(SkillConfig skill, UnitConfig owner) => Bind(skill, owner, null);
+
+        private void Bind(SkillConfig config, UnitConfig owner, Skill runtime)
         {
-            m_Icon.sprite = skill.CollectibleField.Icon;
-            m_SelectedSkill = skill;
+            m_UnitConfig = owner;
+            m_SelectedSkill = config;
+            m_RuntimeSkill = runtime;
+            m_Icon.sprite = config.CollectibleField.Icon;
             m_Button.onClick.RemoveListener(OnButtonClickedInternal);
             m_Button.onClick.AddListener(OnButtonClickedInternal);
         }
-        public void Init(UnitConfig unitConfig)
-        {
-            InitByCategory(unitConfig);
-        }
-        public void Init(SkillConfig skill)
-        {
-            InitInternal(skill);
-        }
-private void DetailView(SkillConfig skillConfig)
-        {
-            SkillDescription.ShowDetail(skillConfig);
-            OnDetailViewInvoke(skillConfig);
-        }
 
-private void OnDetailViewInvoke(SkillConfig skillConfig)
+        private void OnButtonClickedInternal()
         {
-            m_OnDetailView?.Invoke(skillConfig);
-        }
-
-    
-
-private void OnButtonClickedInternal()
-        {
-            if (m_SelectedSkill != null)
-            {
-                DetailView(m_SelectedSkill);
-            }
+            if (m_SelectedSkill == null) return;
+            if (m_RuntimeSkill != null) SkillDescription.ShowRuntimeDetail(m_RuntimeSkill);
+            else SkillDescription.ShowPreview(m_SelectedSkill, m_UnitConfig);
+            m_OnDetailView?.Invoke(m_SelectedSkill);
         }
 
         private void OnDestroy()
         {
-            if (m_Button != null)
-            {
-                m_Button.onClick.RemoveListener(OnButtonClickedInternal);
-            }
+            if (m_Button != null) m_Button.onClick.RemoveListener(OnButtonClickedInternal);
         }
-}
+    }
 }

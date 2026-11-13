@@ -15,11 +15,43 @@ namespace Rush
         private const string c_NumberFormat = "0.###";
         private const string c_NumericPattern = @"[-+]?\d+(?:\.\d+)?";
 
-        public static string Skill(SkillConfig config, int level, SkillController controller = null)
+        public sealed class SkillDetails
+        {
+            public string Description { get; internal set; }
+            public string DamageLabel { get; internal set; }
+            public string Damage { get; internal set; }
+            public string Charge { get; internal set; }
+            public string Range { get; internal set; }
+        }
+
+        public static SkillDetails ForSkillPanel(SkillConfig config, int level, SkillController controller = null)
+        {
+            var details = new SkillDetails();
+            details.Description = BuildSkill(config, level, controller, details);
+            return details;
+        }
+
+        public static string Skill(SkillConfig config, int level, SkillController controller = null) =>
+            BuildSkill(config, level, controller, null);
+
+        private static string BuildSkill(SkillConfig config, int level, SkillController controller, SkillDetails details)
         {
             if (config == null) return string.Empty;
             Func<SkillConfig, int> levels = skill => CurrentLevel(skill, controller);
-            return DescribeSkill(config, ClampLevel(config, level), levels, new HashSet<Configuration>(), 0, true);
+            int displayLevel = ClampLevel(config, level);
+            string description = DescribeSkill(config, displayLevel, levels, new HashSet<Configuration>(), 0, true, details);
+            AllStatusEffectConfig mark = config.OnHitMarkForDescription;
+            if (mark == null) return description;
+
+            var lines = new List<string> { description };
+            foreach (StatusEffecSkill action in mark.SkillsOnDone)
+            {
+                SkillConfig strike = action?.SkillConfig;
+                if (strike == null) continue;
+                int strikeLevel = controller == null ? ClampLevel(strike, displayLevel) : Mathf.Max(1, levels(strike));
+                lines.AddRange(BattleSkillEffects(strike, strikeLevel, levels, new HashSet<Configuration> { config }, 1));
+            }
+            return string.Join("\n", lines.Distinct());
         }
 
         public static string Card(CardConfig config, SkillController controller = null, bool preview = false)
@@ -158,25 +190,55 @@ namespace Rush
         }
 
         private static string DescribeSkill(SkillConfig skill, int level, Func<SkillConfig, int> levels,
-            HashSet<Configuration> path, int depth, bool activation)
+            HashSet<Configuration> path, int depth, bool activation, SkillDetails details = null)
         {
             if (skill == null) return string.Empty;
             if (depth >= c_MaxDepth || path.Contains(skill)) return skill.BaseInfo.Name;
+            AllStatusEffectConfig mark = skill.OnHitMarkForDescription;
+            if (mark != null)
+            {
+                string perHit = mark.StackPerApply == 1 ? "1 stack" : mark.StackPerApply + " stacks";
+                return (skill.BaseInfo.Description + " Each hit adds " + perHit + ". " + DescribeMarkTrigger(mark)).Trim();
+            }
             var visited = new HashSet<Configuration>(path) { skill };
             var parts = new List<string>();
             if (activation && skill.Activation != null)
             {
                 string trigger = Trigger(skill.Activation);
-                if (trigger.Length > 0) parts.Add(trigger);
+                if (details != null && skill.Activation.ForceActiveState == ForceActiveState.OnChargeFull && skill.Activation.Charge > 0)
+                    details.Charge = Number(skill.Activation.Charge);
+                else if (trigger.Length > 0) parts.Add(trigger);
                 if (skill.Casting != null && skill.Casting.CastDuration > 0)
                     parts.Add("Cast " + Number(skill.Casting.CastDuration) + "s.");
             }
             foreach (AbilityConfig ability in skill.AbilitySets ?? Array.Empty<AbilityConfig>())
             {
-                string effect = DescribeAbility(ability, level, levels, visited, depth + 1);
+                string effect = DescribeAbility(ability, level, levels, visited, depth + 1,
+                    skill.AbilitySets.Length == 1 ? details : null);
                 if (effect.Length > 0) parts.Add(effect);
             }
             return string.Join(" ", parts.Distinct());
+        }
+
+        private static string DescribeMarkTrigger(AllStatusEffectConfig mark)
+        {
+            string condition;
+            switch (mark.RemoveRule)
+            {
+                case StatusRemoveRule.OnStackExceedMax:
+                    condition = "At " + mark.MaxStackCount + " stacks on an enemy, the next mark consumes them all";
+                    break;
+                case StatusRemoveRule.OnStackReachMax:
+                    condition = "Reaching " + mark.MaxStackCount + " stacks consumes all marks";
+                    break;
+                default:
+                    condition = "The mark ends";
+                    break;
+            }
+            var followUps = mark.SkillsOnDone.Where(action => action?.SkillConfig != null)
+                .Select(action => action.SkillConfig.BaseInfo.Name).Distinct();
+            string names = string.Join(" and ", followUps);
+            return names.Length == 0 ? condition + "." : condition + " and automatically triggers " + names + ".";
         }
 
         private static string Trigger(ActivationTriggerField activation)
@@ -204,7 +266,7 @@ namespace Rush
         }
 
         private static string DescribeAbility(AbilityConfig ability, int level, Func<SkillConfig, int> levels,
-            HashSet<Configuration> path, int depth)
+            HashSet<Configuration> path, int depth, SkillDetails details = null)
         {
             if (ability == null) return string.Empty;
             if (depth >= c_MaxDepth || path.Contains(ability)) return ability.BaseInfo.Name;
@@ -242,9 +304,19 @@ namespace Rush
                 string count = !(damage is AnomalyPulseConfig) && damage.SpawningSetup != null && damage.SpawningSetup.FireCount > 1
                     ? (damage.UseAllTargetsInRange ? "Up to " : string.Empty) + Number(damage.SpawningSetup.FireCount) +
                         (damage is ShooterAbilityConfig ? " projectiles; " : " hits; ") : string.Empty;
-                parts.Add(count + power + type + " per hit.");
+                if (details == null)
+                    parts.Add(count + power + type + " per hit.");
+                else
+                {
+                    details.Damage = power;
+                    details.DamageLabel = char.ToUpperInvariant(type[1]) + type.Substring(2) + " per hit";
+                    if (count.Length > 0) parts.Add(count.TrimEnd(' ', ';') + ".");
+                }
                 if (!(damage is AnomalyPulseConfig) && damage.UseAllTargetsInRange)
-                    parts.Add("Targets within " + Number(damage.Range) + "m.");
+                {
+                    if (details == null) parts.Add("Targets within " + Number(damage.Range) + "m.");
+                    else details.Range = Number(damage.Range) + " m";
+                }
                 else if (!(damage is AnomalyPulseConfig) && damage.MaxTargetCount > 1)
                     parts.Add("Up to " + damage.MaxTargetCount + " targets within " + Number(damage.Range) + "m.");
                 if (damage is AnomalyPulseConfig pulse)

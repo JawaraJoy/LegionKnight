@@ -1,202 +1,103 @@
-using MoreMountains.Tools;
-using Rush;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
 namespace LegionKnight
 {
     public class CustomProfilePanel : PanelView
     {
-        [SerializeField]
-        private AssetReferenceGameObject m_ImageViewAsset;
-        [SerializeField]
-        private Transform m_ImageViewContainer;
-        [SerializeField]
-        private Button m_IconTabButton;
-        [SerializeField]
-        private Button m_FrameTabButton;
-        [SerializeField]
-        private Button m_UseButton;
+        [SerializeField] private AssetReferenceGameObject m_ImageViewAsset;
+        [SerializeField] private Transform m_ImageViewContainer;
+        [SerializeField] private Button m_IconTabButton;
+        [SerializeField] private Button m_FrameTabButton;
+        [SerializeField] private Button m_UseButton;
+        [SerializeField] private CustomImageType m_CurrentSelectedType = CustomImageType.Icon;
+        private readonly Dictionary<CustomImageDefinition, ImageView> m_Views = new();
+        private bool m_Loading;
+        private PlayerCustomProfile Profile => Player.Instance.CustomProfile;
 
-        private readonly List<ImageView> m_SpawnedImageViews = new();
-
-        [SerializeField, MMReadOnly]
-        private CustomImageType m_CurrentSelectedType = CustomImageType.Icon;
-
-        private PlayerCustomProfile m_CustomProfile;
-        private PlayerCustomProfile GetCustomProfile()
+        private void Awake()
         {
-            if (m_CustomProfile == null)
-            {
-                m_CustomProfile = Player.Instance.CustomProfile;
-            }
-            return m_CustomProfile;
-        }
-
-        private void Start()
-        {
-            
-            m_IconTabButton.onClick.RemoveAllListeners();
             m_IconTabButton.onClick.AddListener(ShowIcon);
-
-            m_FrameTabButton.onClick.RemoveAllListeners();
             m_FrameTabButton.onClick.AddListener(ShowFrame);
+            m_UseButton.onClick.AddListener(EquipSelection);
+        }
 
-            m_UseButton.onClick.RemoveAllListeners();
-            m_UseButton.onClick.AddListener(() => SetUsed());
-        }
-        private void SetCurrentSelectedTypeInternal(CustomImageType type)
+        private void EquipSelection()
         {
-            m_CurrentSelectedType = type;
-        }
-        public void SetCurrentSelectedType(CustomImageType type)
-        {
-            SetCurrentSelectedTypeInternal(type);
+            Profile.SetUsed(m_CurrentSelectedType);
+            HideInternal();
         }
 
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            RefreshInternal();
-        }
-        public void Refresh()
-        {
-            RefreshInternal();
-        }
-        private void RefreshInternal()
-        {
-            StartCoroutine(RefreshingCustomImageViews());
-        }
-        private void ShowIconInternal()
-        {
-            CloseAllView();
-            GetTypeImageViews(CustomImageType.Icon).ForEach(x => x.Show());
-
-            m_FrameTabButton.image.color = Color.gray;
-            m_IconTabButton.image.color = Color.white;
-            m_IconTabButton.interactable = false;
-            m_FrameTabButton.interactable = true;
-
-            SetCurrentSelectedTypeInternal(CustomImageType.Icon);
-        }
-        public void ShowIcon()
-        {
-            ShowIconInternal();
-        }
-        public void ShowFrame()
-        {
-            CloseAllView();
-            GetTypeImageViews(CustomImageType.Frame).ForEach(x => x.Show());
-
-            m_FrameTabButton.image.color = Color.white;
-            m_IconTabButton.image.color = Color.gray;
-            m_IconTabButton.interactable = true;
-            m_FrameTabButton.interactable = false;
-
-            SetCurrentSelectedTypeInternal(CustomImageType.Frame);
+            Refresh();
         }
 
-        private ImageView GetImageView(CustomImageDefinition defi)
+        public async void Refresh()
         {
-            return m_SpawnedImageViews.Find(x => x.Definition == defi);
-        }
-
-        private bool HasImageView(CustomImageDefinition defi, out ImageView view)
-        {
-            view = GetImageView(defi);
-            return GetImageView(defi) != null;
-        }
-
-        private List<ImageView> GetTypeImageViews(CustomImageType typ)
-        {
-            return m_SpawnedImageViews.FindAll(x => x.Definition.Type == typ);
-        }
-
-        private void CloseAllView()
-        {
-            m_SpawnedImageViews.ForEach(x => x.Hide());
-        }
-
-        private void SetUsed()
-        {
-            GetCustomProfile().SetUsed(m_CurrentSelectedType);
-        }
-        private IEnumerator RefreshingCustomImageViews()
-        {
-            ImageContent[] icons = GetCustomProfile().Icons;
-            ImageContent[] frames = GetCustomProfile().Frames;
-
-            for (int i = 0; i < icons.Length; i++)
+            ApplyTab();
+            if (m_Loading) return;
+            m_Loading = true;
+            try
             {
-                CustomImageDefinition defi = icons[i].Definition;
-                if (HasImageView(defi, out var view))
-                {
-                    view.Init(defi);
-                }
-                else
-                {
-                    yield return StartCoroutine(SpawningCustomImageView(defi));
-                }
+                await LoadEntries(Profile.Icons);
+                if (this) await LoadEntries(Profile.Frames);
             }
-            yield return new WaitForEndOfFrame();
-            for (int i = 0; i < frames.Length; i++)
-            {
-                CustomImageDefinition defi = frames[i].Definition;
-                if (HasImageView(defi, out var view))
-                {
-                    view.Init(defi);
-                }
-                else
-                {
-                    yield return StartCoroutine(SpawningCustomImageView(defi));
-                }
-            }
-            
-            yield return new WaitForEndOfFrame();
-            ShowIconInternal();
+            catch (System.Exception ex) { Debug.LogWarning($"Profile collection could not load: {ex.Message}"); }
+            finally { m_Loading = false; }
+            if (this) ApplyTab();
         }
-        private IEnumerator SpawningCustomImageView(CustomImageDefinition defi)
+
+        private async Task LoadEntries(ImageContent[] entries)
         {
-            var handle = m_ImageViewAsset.InstantiateAsync(m_ImageViewContainer, false);
-            yield return handle;
-            if (handle.Status == AsyncOperationStatus.Succeeded)
+            foreach (var entry in entries)
             {
-                GameObject result = handle.Result;
-                if (result.TryGetComponent(out ImageView view))
-                {
-                    view.Init(defi);
-                    m_SpawnedImageViews.Add(view);
-                    /*ImageViewNoticeButton noticeButton = view.NoticeButton;
-                    if (noticeButton != null)
-                    {
-                        noticeButton.SetDefinition(defi);
-                        noticeButton.NoticeCheck();
-                    }*/
-                }
-            }
-            
-        }
-        private void UnSelectectAllViews()
-        {
-            foreach(var view in m_SpawnedImageViews)
-            {
-                view.UnSelected();
+                var definition = entry.Definition?.ProfileAppearance;
+                if (definition == null || m_Views.ContainsKey(definition)) continue;
+                var handle = m_ImageViewAsset.InstantiateAsync(m_ImageViewContainer, false);
+                var instance = await handle.Task;
+                if (!this || !instance) { if (handle.IsValid()) Addressables.ReleaseInstance(handle); return; }
+                if (!instance.TryGetComponent<ImageView>(out var view)) { Addressables.ReleaseInstance(instance); continue; }
+                view.Init(definition);
+                m_Views.Add(definition, view);
+                instance.SetActive(definition.Type == m_CurrentSelectedType);
+                if (instance.activeSelf) view.Show();
             }
         }
-        private void RefreshAllViewsInternal()
+
+        public void SetCurrentSelectedType(CustomImageType type) { m_CurrentSelectedType = type; ApplyTab(); }
+        public void ShowIcon() => SetCurrentSelectedType(CustomImageType.Icon);
+        public void ShowFrame() => SetCurrentSelectedType(CustomImageType.Frame);
+
+        private void ApplyTab()
         {
-            foreach(var view in m_SpawnedImageViews)
+            bool icons = m_CurrentSelectedType == CustomImageType.Icon;
+            m_IconTabButton.interactable = !icons;
+            m_FrameTabButton.interactable = icons;
+            foreach (var pair in m_Views)
             {
-                view.Refresh();
+                bool visible = pair.Key.Type == m_CurrentSelectedType;
+                pair.Value.gameObject.SetActive(visible);
+                if (visible) pair.Value.Show();
             }
+            RefreshAllViews();
         }
+
         public void RefreshAllViews()
         {
-            RefreshAllViewsInternal();
+            foreach (var view in m_Views.Values) view.Refresh();
+            var profile = Profile;
+            var selected = m_CurrentSelectedType == CustomImageType.Icon ? profile.SelectedIcon : profile.SelectedFrame;
+            m_UseButton.interactable = profile.FindOwnedVariant(selected) != null;
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var view in m_Views.Values) if (view) Addressables.ReleaseInstance(view.gameObject);
         }
     }
 }

@@ -234,10 +234,7 @@ namespace Rush
         private void OnDrawRequestedInternal(GachaConfirmData data)
         {
             var confirmPanel = CanvasManager.Instance.GetPanel<CurrencyConfirmationPanel>();
-            System.Action executeAction = data.IsMulti
-                ? Manager.ExecuteDrawMulti
-                : Manager.ExecuteDrawSingle;
-            confirmPanel?.ShowConfirmation(data, executeAction);
+            confirmPanel?.ShowConfirmation(data, () => Manager.ConfirmDraw(data));
         }
 
         private void OnDetailClickedInternal()

@@ -17,6 +17,7 @@ namespace Rush
         [SerializeField] private UnityEvent<string> m_OnDrawFailed;
         [SerializeField] private UnityEvent<GachaConfirmData> m_OnDrawRequested;
 
+        private bool m_Committing;
         private GachaBannerConfig m_ActiveBanner;
 
         public GachaBannerConfig ActiveBanner => m_ActiveBanner;
@@ -25,6 +26,13 @@ namespace Rush
         public UnityEvent<CollectibleResultData> OnDrawComplete => m_OnDrawComplete;
         public UnityEvent<string> OnDrawFailed => m_OnDrawFailed;
         public UnityEvent<GachaConfirmData> OnDrawRequested => m_OnDrawRequested;
+
+        internal GachaBannerConfig ResolveResultBanner(string source)
+        {
+            foreach (var banner in m_Banners)
+                if (banner != null && banner.BaseInfo.Id == source) return banner;
+            return m_ActiveBanner;
+        }
 
         public void Init()
         {
@@ -71,40 +79,64 @@ namespace Rush
 
         // ── Execute Draw (post-confirm) ───────────────────────────────────────
 
-        public void ExecuteDrawSingle()
-        {
-            if (!ValidateBannerInternal()) return;
-            bool isDaily = m_CostResolver.IsDailyFirstDraw(m_ActiveBanner, false);
-            var breakdown = BuildBreakdownInternal(false);
-            if (!breakdown.CanAfford) { OnDrawFailedInvoke("Mata uang tidak cukup."); return; }
+        public void ExecuteDrawSingle() => ExecuteOfferInternal(false, null);
+        public void ExecuteDrawMulti() => ExecuteOfferInternal(true, null);
 
-            CollectibleResultData result = null;
-            UnityService.Instance.LocalSave.ExecuteTransaction(() =>
-            {
-                m_CostResolver.DeductCost(m_ActiveBanner, GetCurrencyInternal(), breakdown);
-                if (isDaily) m_CostResolver.MarkDailyDrawUsed(m_ActiveBanner, false);
-                result = ExecuteDrawsInternal(1);
-                result.GrantRewards(m_ActiveBanner.BaseInfo.Id);
-            });
-            OnDrawCompleteInvoke(result);
+        public void ConfirmDraw(GachaConfirmData offer)
+        {
+            if (offer == null || offer.Accepted) return;
+            offer.MarkAccepted();
+            if (offer.Banner == m_ActiveBanner)
+                ExecuteOfferInternal(offer.IsMulti, offer);
         }
 
-        public void ExecuteDrawMulti()
+        private async void ExecuteOfferInternal(bool multi, GachaConfirmData offer)
         {
-            if (!ValidateBannerInternal()) return;
-            bool isDaily = m_CostResolver.IsDailyFirstDraw(m_ActiveBanner, true);
-            var breakdown = BuildBreakdownInternal(true);
-            if (!breakdown.CanAfford) { OnDrawFailedInvoke("Mata uang tidak cukup."); return; }
-
-            CollectibleResultData result = null;
-            UnityService.Instance.LocalSave.ExecuteTransaction(() =>
+            if (m_Committing || !ValidateBannerInternal()) return;
+            bool isDaily = m_CostResolver.IsDailyFirstDraw(m_ActiveBanner, multi);
+            var breakdown = m_CostResolver.CalculateBreakdown(m_ActiveBanner, GetCurrencyInternal(), multi, isDaily);
+            if (!breakdown.CanAfford)
             {
-                m_CostResolver.DeductCost(m_ActiveBanner, GetCurrencyInternal(), breakdown);
-                if (isDaily) m_CostResolver.MarkDailyDrawUsed(m_ActiveBanner, true);
-                result = ExecuteDrawsInternal(m_ActiveBanner.MultiDrawCount);
-                result.GrantRewards(m_ActiveBanner.BaseInfo.Id);
-            });
-            OnDrawCompleteInvoke(result);
+                OnDrawFailedInvoke("Mata uang tidak cukup.");
+                return;
+            }
+            if (offer != null && (offer.MainCurrencyAmount != breakdown.MainDeductAmount ||
+                                  offer.AltCurrencyAmount != breakdown.AltDeductAmount))
+            {
+                OnDrawRequestedInvoke(new GachaConfirmData(m_ActiveBanner, breakdown, multi, true));
+                return;
+            }
+
+            var banner = m_ActiveBanner;
+            var wallet = GetCurrencyInternal();
+            int diamonds = (PaidDiamondWallet.IsDiamond(banner.DrawCostCurrency) ? breakdown.MainDeductAmount : 0) +
+                (PaidDiamondWallet.IsDiamond(banner.AltCostCurrency) ? breakdown.AltDeductAmount : 0);
+            bool StillValid()
+            {
+                if (!this || m_ActiveBanner != banner || isDaily != m_CostResolver.IsDailyFirstDraw(banner, multi)) return false;
+                var price = m_CostResolver.CalculateBreakdown(banner, wallet, multi, isDaily);
+                return price.CanAfford && price.MainDeductAmount == breakdown.MainDeductAmount &&
+                    price.AltDeductAmount == breakdown.AltDeductAmount;
+            }
+            m_Committing = true;
+            try
+            {
+                CollectibleResultData result = null;
+                await wallet.CommitWithDiamondsAsync(diamonds, StillValid, () =>
+                {
+                    m_CostResolver.DeductCost(banner, wallet, breakdown);
+                    if (isDaily) m_CostResolver.MarkDailyDrawUsed(banner, multi);
+                    result = ExecuteDrawsInternal(multi ? banner.MultiDrawCount : 1);
+                    result.GrantRewards(banner.BaseInfo.Id);
+                });
+                OnDrawCompleteInvoke(result);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning("[Summon] Draw could not complete: " + ex.GetType().Name);
+                OnDrawFailedInvoke("Draw unavailable. Check your balance and connection, then try again.");
+            }
+            finally { m_Committing = false; }
         }
 
         private CollectibleResultData ExecuteDrawsInternal(int count)
@@ -129,12 +161,10 @@ namespace Rush
             var list = new List<GachaRateInfo>();
             if (banner?.Collectables == null) return list;
 
-            float total = 0f;
-            foreach (var c in banner.Collectables) total += c.Chance;
-            if (total <= 0f) return list;
-
-            foreach (var c in banner.Collectables)
-                list.Add(new GachaRateInfo(c, c.Chance / total));
+            float total = GachaRateInfo.TotalWeight(banner.Collectables);
+            foreach (var entry in banner.Collectables)
+                if (GachaRateInfo.IsEligible(entry))
+                    list.Add(new GachaRateInfo(entry, entry.Chance / total));
             return list;
         }
 
@@ -153,7 +183,12 @@ namespace Rush
 
         private bool ValidateBannerInternal()
         {
-            if (m_ActiveBanner != null) return true;
+            if (m_ActiveBanner != null)
+            {
+                if (GachaRateInfo.TotalWeight(m_ActiveBanner.Collectables) > 0f) return true;
+                OnDrawFailedInvoke("Banner tidak memiliki reward yang tersedia.");
+                return false;
+            }
             OnDrawFailedInvoke("Tidak ada banner aktif.");
             return false;
         }
@@ -176,3 +211,4 @@ namespace Rush
         }
     }
 }
+

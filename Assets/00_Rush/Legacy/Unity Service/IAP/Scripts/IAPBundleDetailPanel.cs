@@ -1,150 +1,164 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using System.Collections.Generic;
+using System.Globalization;
 using LegionKnight;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Rush
 {
     public class IAPBundleDetailPanel : PanelView
     {
-        [Header("Info")]
         [SerializeField] private Image m_BundleImage;
         [SerializeField] private TextMeshProUGUI m_BundleNameText;
         [SerializeField] private TextMeshProUGUI m_BundleDescText;
-
-        [Header("Contents")]
         [SerializeField] private Transform m_ContentsContainer;
         [SerializeField] private ShopBundleContentUI m_ContentItemPrefab;
-
-        [Header("First Purchase Bonus")]
         [SerializeField] private GameObject m_BonusSection;
         [SerializeField] private Transform m_BonusContainer;
         [SerializeField] private ShopBundleContentUI m_BonusItemPrefab;
-
-        [Header("Price")]
         [SerializeField] private TextMeshProUGUI m_PriceText;
-
-        [Header("Buttons")]
         [SerializeField] private Button m_BuyButton;
         [SerializeField] private TextMeshProUGUI m_BuyButtonText;
         [SerializeField] private Button m_CancelButton;
 
-        private IAPBundleConfig m_Bundle;
+        [System.Serializable]
+        private class SummaryField
+        {
+            public TMP_Text Label => m_Label;
+            public TMP_Text Amount => m_Amount;
+            public Image Frame => m_Frame;
+            public ScrollRect Scroll => m_Scroll;
+            [SerializeField] private TMP_Text m_Label;
+            [SerializeField] private TMP_Text m_Amount;
+            [SerializeField] private Image m_Frame;
+            [SerializeField] private ScrollRect m_Scroll;
+        }
 
-        private IAPManager IAPManager => UnityService.Instance.IAPManager;
+        [SerializeField] private SummaryField m_Summary = new();
+        [SerializeField] private RechargeStoreView m_StoreView;
+        private IAPBundleConfig m_Bundle;
+        private IAPBundleConfig m_Displayed;
+        private bool m_DisplayedBonus;
+        private IAPManager Store => UnityService.Instance.IAPManager;
+
+        public void Show(IAPBundleConfig bundle)
+        {
+            if (bundle == null) return;
+            m_Bundle = bundle;
+            ShowInternal();
+            if (IsShown && m_Summary.Scroll != null)
+            {
+                Canvas.ForceUpdateCanvases();
+                m_Summary.Scroll.StopMovement();
+                m_Summary.Scroll.verticalNormalizedPosition = 1f;
+            }
+        }
 
         protected override void ShowInternal()
         {
-            base.ShowInternal();
-            if (m_BuyButton != null) m_BuyButton.onClick.AddListener(OnBuyClickedInternal);
-            if (m_CancelButton != null) m_CancelButton.onClick.AddListener(Hide);
-            IAPManager.OnPurchaseSuccess.AddListener(OnPurchaseSuccessInternal);
+            if (m_Bundle == null) return;
+            bool opened = IsShown;
+            if (!opened) base.ShowInternal();
+            if (!IsShown) return;
+            m_StoreView.Bind();
+            if (!opened)
+            {
+                m_StoreView.Changed += RefreshStoreInternal;
+                Store.OnPurchaseFailed.AddListener(OnPurchaseFailedInternal);
+                if (m_BuyButton != null) m_BuyButton.onClick.AddListener(OnBuyClickedInternal);
+                if (m_CancelButton != null) m_CancelButton.onClick.AddListener(HideInternal);
+            }
+            RefreshStoreInternal();
         }
 
         protected override void HideInternal()
         {
-            if (m_BuyButton != null) m_BuyButton.onClick.RemoveListener(OnBuyClickedInternal);
-            if (m_CancelButton != null) m_CancelButton.onClick.RemoveListener(Hide);
-            IAPManager.OnPurchaseSuccess.RemoveListener(OnPurchaseSuccessInternal);
+            if (IsShown)
+            {
+                m_StoreView.Changed -= RefreshStoreInternal;
+                Store.OnPurchaseFailed.RemoveListener(OnPurchaseFailedInternal);
+                if (m_BuyButton != null) m_BuyButton.onClick.RemoveListener(OnBuyClickedInternal);
+                if (m_CancelButton != null) m_CancelButton.onClick.RemoveListener(HideInternal);
+            }
             base.HideInternal();
         }
 
-        public void Show(IAPBundleConfig bundle)
+        private void RefreshContentsInternal()
         {
-            m_Bundle = bundle;
-            Show();
-            RefreshViewInternal();
-        }
-
-        // ── Refresh ───────────────────────────────────────────────────────────
-
-        private void RefreshViewInternal()
-        {
-            if (m_Bundle == null) return;
-
             if (m_BundleImage != null) m_BundleImage.sprite = m_Bundle.BundleSprite;
             if (m_BundleNameText != null) m_BundleNameText.text = m_Bundle.BaseInfo.Name;
             if (m_BundleDescText != null) m_BundleDescText.text = m_Bundle.BaseInfo.Description;
-
-            if (m_PriceText != null)
-                m_PriceText.text = IAPManager.GetLocalizedPrice(m_Bundle);
-
-            PopulateContentsInternal();
-            RefreshBonusSectionInternal();
-            RefreshBuyButtonInternal();
+            bool bonus = Store.IsFirstPurchase(m_Bundle) && m_Bundle.HasFirstPurchaseBonus;
+            var totals = new Dictionary<CollectibleConfig, long>();
+            PopulateInternal(m_ContentsContainer, m_ContentItemPrefab, m_Bundle.Entries, totals);
+            PopulateInternal(m_BonusContainer, m_BonusItemPrefab, bonus ? m_Bundle.FirstPurchaseBonusEntries : null, totals);
+            if (m_BonusSection != null) m_BonusSection.SetActive(bonus);
+            if (m_Summary.Frame != null && m_Bundle.Entries is { Length: > 0 })
+                m_Summary.Frame.color = m_Bundle.Entries[0]?.Collectible?.CollectibleField.RarityConfig?.Color ?? Color.white;
+            string label = "Reward types";
+            string amount = totals.Count.ToString(CultureInfo.InvariantCulture);
+            if (totals.Count == 1)
+            {
+                foreach (var pair in totals)
+                {
+                    label = "Total " + pair.Key.BaseInfo.Name;
+                    amount = pair.Value.ToString("N0", CultureInfo.InvariantCulture);
+                }
+            }
+            if (m_Summary.Label != null) m_Summary.Label.text = label;
+            if (m_Summary.Amount != null) m_Summary.Amount.text = amount;
         }
 
-        private void PopulateContentsInternal()
+        private void PopulateInternal(Transform container, ShopBundleContentUI prefab, IAPBundleEntry[] entries,
+            Dictionary<CollectibleConfig, long> totals)
         {
-            if (m_ContentsContainer == null || m_ContentItemPrefab == null) return;
-            foreach (Transform child in m_ContentsContainer) Destroy(child.gameObject);
-            if (m_Bundle.Entries == null) return;
-
-            foreach (var entry in m_Bundle.Entries)
+            if (container == null || prefab == null) return;
+            foreach (Transform child in container) { child.gameObject.SetActive(false); Destroy(child.gameObject); }
+            if (entries == null) return;
+            foreach (var entry in entries)
             {
-                var item = Instantiate(m_ContentItemPrefab, m_ContentsContainer);
-                item.SetupFromIAP(entry);
+                if (entry?.Collectible == null) continue;
+                Instantiate(prefab, container, false).SetupFromIAP(entry);
+                totals.TryGetValue(entry.Collectible, out long count);
+                totals[entry.Collectible] = count + entry.Amount;
             }
         }
 
-        private void RefreshBonusSectionInternal()
+        private void RefreshStoreInternal()
         {
-            bool isFirst = IAPManager.IsFirstPurchase(m_Bundle);
-            bool hasBonus = m_Bundle.HasFirstPurchaseBonus;
-            bool show = isFirst && hasBonus;
-
-            if (m_BonusSection != null) m_BonusSection.SetActive(show);
-            if (!show || m_BonusContainer == null || m_BonusItemPrefab == null) return;
-
-            foreach (Transform child in m_BonusContainer) Destroy(child.gameObject);
-            foreach (var entry in m_Bundle.FirstPurchaseBonusEntries)
+            if (m_Bundle == null || !IsShown) return;
+            bool bonus = Store.IsFirstPurchase(m_Bundle) && m_Bundle.HasFirstPurchaseBonus;
+            if (m_Displayed != m_Bundle || bonus != m_DisplayedBonus)
             {
-                var item = Instantiate(m_BonusItemPrefab, m_BonusContainer);
-                item.SetupFromIAP(entry);
+                m_Displayed = m_Bundle;
+                m_DisplayedBonus = bonus;
+                RefreshContentsInternal();
             }
+            bool eligible = Store.CanPurchase(m_Bundle);
+            bool available = m_StoreView.IsAvailable(m_Bundle);
+            bool waiting = m_StoreView.PurchaseInProgress;
+            if (m_BuyButton != null) m_BuyButton.interactable = eligible && available && !waiting;
+            string price = Store.GetLocalizedPrice(m_Bundle);
+            if (m_BuyButtonText != null) m_BuyButtonText.text = !eligible ? "Sold out" :
+                waiting ? "Processing..." : available ? "Buy - " + price :
+                m_StoreView.Offline || m_StoreView.HasProducts ? "Unavailable" : "Loading price...";
+            if (m_PriceText != null) m_PriceText.text = !eligible ? "Purchase limit reached." :
+                m_StoreView.Offline ? "Store unavailable." : "Price provided by your store.";
         }
 
-        private void RefreshBuyButtonInternal()
+        private void OnPurchaseFailedInternal(IAPBundleConfig bundle, string reason)
         {
-            if (m_BuyButton == null) return;
-            bool canPurchase = IAPManager.CanPurchase(m_Bundle);
-            m_BuyButton.interactable = canPurchase;
+            if (bundle != null && bundle != m_Bundle) return;
+            RefreshStoreInternal();
+            if (m_PriceText != null) m_PriceText.text = reason == "UserCancelled" ?
+                "Purchase canceled." : reason == "Your purchase is pending delivery." ? reason : "Purchase failed. Please try again.";
         }
-
-        // ── Callbacks ─────────────────────────────────────────────────────────
 
         private void OnBuyClickedInternal()
         {
-            if (!IAPManager.CanPurchase(m_Bundle))
-            {
-                ShowUnavailableMessageInternal();
-                return;
-            }
-
-            IAPManager.Purchase(m_Bundle);
-        }
-
-        private void ShowUnavailableMessageInternal()
-        {
-            var popup = CanvasManager.Instance.GetPanel<TextPopUpPanel>();
-            if (popup == null) return;
-
-            string message = m_Bundle.PurchaseLimit switch
-            {
-                ShopBundlePurchaseLimit.OneTime =>
-                    "This bundle can only be purchased once.",
-                ShopBundlePurchaseLimit.Daily =>
-                    "This bundle can only be purchased once per day. Come back tomorrow!",
-                _ => "This bundle is not available right now."
-            };
-
-            popup.ShowText(message);
-        }
-
-        private void OnPurchaseSuccessInternal(IAPBundleConfig bundle)
-        {
-            if (m_Bundle != bundle) return;
-            RefreshViewInternal();
+            if (m_Bundle != null && m_BuyButton.interactable) m_StoreView.RequestPurchase(m_Bundle);
         }
     }
 }
+

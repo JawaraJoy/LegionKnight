@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public class StatusEffector : MonoBehaviour, IUpdater
+    public class StatusEffector : MonoBehaviour, IUpdater, IHasRarityConfig
     {
         [Header("Config")]
         [SerializeField] private StatusEffectConfig m_Config;
@@ -28,6 +28,7 @@ namespace Rush
         private Queue<StatusEffectContext> m_AppliedStacks;
 
         public bool IsActive => m_IsActive;
+        public RarityConfig RarityConfig => m_Config?.RarityConfig ?? m_Context?.AbilityContext?.RarityConfig;
         public StatusEffectConfig Config => m_Config;
         public int CurrentStack => m_CurrentStack;
         public float RemainingMainDuration => m_RemainingMainDuration;

@@ -9,12 +9,11 @@ namespace Rush
     {
         [SerializeField, Min(0)]
         private int m_StartingStars;
-        [SerializeField, Min(0)]
-        private int m_MaxStars;
         [SerializeField]
         private LevelFormulaConfig m_LevelFormulaConfig;
         [SerializeField]
-        private BreakThroughFormulaConfig m_BreakThroughFormulaConfig;
+        [UnityEngine.Serialization.FormerlySerializedAs("m_BreakThroughFormulaConfig")]
+        private BreakThroughFormulaConfig m_EvolutionConfig;
         [SerializeField]
         private Currency m_ItemDuplicateConverter;
         [SerializeField]
@@ -25,12 +24,13 @@ namespace Rush
         private bool m_OwnedAtFirst = false;
 
         public int StartingStars => m_StartingStars;
-        public int MaxStars => m_MaxStars;
+        public int MaxStars => HeroEvolution.MaxStage;
         public bool UseAsDefault => m_UseAsDefault;
         public bool OwnedAtFirst => m_OwnedAtFirst;
         public DeckConfig HeroDeckConfig => m_HeroDeckConfig;
         public LevelFormulaConfig LevelFormulaConfig => m_LevelFormulaConfig;
-        public BreakThroughFormulaConfig BreakThroughFormulaConfig => m_BreakThroughFormulaConfig;
+        public BreakThroughFormulaConfig EvolutionConfig => m_EvolutionConfig;
         public Currency ItemDuplicateConverter => m_ItemDuplicateConverter;
     }
 }
+

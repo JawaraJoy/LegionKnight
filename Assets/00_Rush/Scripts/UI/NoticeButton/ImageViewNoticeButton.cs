@@ -14,20 +14,7 @@ namespace LegionKnight
         }
         protected override bool HasNewContent()
         {
-            CustomImageType imageType = m_Definition.Type;
-            ImageContent imageContent = Player.Instance.CustomProfile.GetIcon(m_Definition);
-            
-            switch (imageType)
-            {
-                case CustomImageType.Frame:
-                    imageContent = Player.Instance.CustomProfile.GetFrame(m_Definition);
-                    break;
-                case CustomImageType.Icon:
-                    imageContent = Player.Instance.CustomProfile.GetIcon(m_Definition);
-                    break;
-            }
-            ProductCondition condition = imageContent.Condition;
-            return condition == ProductCondition.NewUnlocked;
+            return Player.Instance.CustomProfile.HasNewAppearance(m_Definition);
         }
     }
 }

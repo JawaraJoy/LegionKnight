@@ -20,64 +20,47 @@ namespace Rush
         {
             LastDrawWasPity = false;
 
-            if (pity.ShouldTriggerFinalPity && HasGuarantees(banner.FinalPityGuarantees))
+            if (pity.ShouldTriggerFinalPity && GachaRateInfo.TotalWeight(banner.FinalPityGuarantees) > 0f)
             {
                 pity.ResetFinalPity();
                 LastDrawWasPity = true;
-                return ResolveRandomFromArrayInternal(banner.FinalPityGuarantees);
+                return RollWeighted(banner.FinalPityGuarantees);
             }
 
-            if (pity.ShouldTriggerSmallPity && HasGuarantees(banner.SmallPityGuarantees))
+            if (pity.ShouldTriggerSmallPity && GachaRateInfo.TotalWeight(banner.SmallPityGuarantees) > 0f)
             {
                 pity.ResetSmallPity();
                 LastDrawWasPity = true;
-                return ResolveRandomFromArrayInternal(banner.SmallPityGuarantees);
+                return RollWeighted(banner.SmallPityGuarantees);
             }
 
-            if (pity.ShouldTriggerFirstDraw && HasGuarantees(banner.FirstDrawGuarantees))
+            if (pity.ShouldTriggerFirstDraw && GachaRateInfo.TotalWeight(banner.FirstDrawGuarantees) > 0f)
             {
                 pity.MarkFirstDrawDone();
                 LastDrawWasPity = true;
-                return ResolveRandomFromArrayInternal(banner.FirstDrawGuarantees);
+                return RollWeighted(banner.FirstDrawGuarantees);
             }
 
-            return ResolveRandomInternal(banner);
+            return RollWeighted(banner.Collectables);
         }
 
-        private GachaCollectableConfig ResolveRandomFromArrayInternal(
-            GachaCollectableConfig[] guarantees)
+        private static GachaCollectableConfig RollWeighted(GachaCollectableConfig[] pool)
         {
-            float total = 0f;
-            foreach (var g in guarantees) total += g.Chance;
+            float total = GachaRateInfo.TotalWeight(pool);
+            if (total <= 0f) return null;
 
             float roll = Random.Range(0f, total);
             float cumulative = 0f;
-            foreach (var g in guarantees)
+            GachaCollectableConfig last = null;
+            foreach (var entry in pool)
             {
-                cumulative += g.Chance;
-                if (roll <= cumulative) return g;
+                if (!GachaRateInfo.IsEligible(entry)) continue;
+                last = entry;
+                cumulative += entry.Chance;
+                if (roll < cumulative) return entry;
             }
-            return guarantees[^1];
+            // Unity's floating-point Random.Range can also return its upper bound.
+            return last;
         }
-
-        private GachaCollectableConfig ResolveRandomInternal(GachaBannerConfig banner)
-        {
-            if (banner.Collectables == null || banner.Collectables.Length == 0) return null;
-
-            float total = 0f;
-            foreach (var c in banner.Collectables) total += c.Chance;
-
-            float roll = Random.Range(0f, total);
-            float cumulative = 0f;
-            foreach (var c in banner.Collectables)
-            {
-                cumulative += c.Chance;
-                if (roll <= cumulative) return c;
-            }
-            return banner.Collectables[^1];
-        }
-
-        private static bool HasGuarantees(GachaCollectableConfig[] arr) =>
-            arr is { Length: > 0 };
     }
 }

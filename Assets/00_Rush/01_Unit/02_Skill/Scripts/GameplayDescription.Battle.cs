@@ -156,6 +156,11 @@ namespace Rush
             HashSet<Configuration> path, int depth)
         {
             if (skill == null || depth >= c_MaxDepth || path.Contains(skill)) yield break;
+            if (skill.OnHitMarkForDescription != null)
+            {
+                yield return DescribeMarkTrigger(skill.OnHitMarkForDescription);
+                yield break;
+            }
             var visited = new HashSet<Configuration>(path) { skill };
             foreach (AbilityConfig ability in skill.AbilitySets ?? Array.Empty<AbilityConfig>())
                 foreach (string effect in BattleAbilityEffects(ability, level, levels, visited, depth + 1))

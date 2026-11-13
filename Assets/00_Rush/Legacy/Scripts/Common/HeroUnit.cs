@@ -11,7 +11,7 @@ namespace LegionKnight
         [SerializeField] private HeroUnitConfig m_HeroConfig;
         [SerializeField] private bool m_Owned;
 
-        [SerializeField] private int m_Star = 1;
+        [SerializeField] private int m_Star = 0;
         [SerializeField] private int m_Level = 1;
         private int m_Exp;
 
@@ -33,7 +33,7 @@ namespace LegionKnight
             {
                 if (m_PreparationPanel == null)
                 {
-                    m_PreparationPanel = CanvasManager.Instance.GetPanel<PreparationPanel>();
+                    m_PreparationPanel = CanvasManager.Instance?.GetPanel<PreparationPanel>();
                 }
                 return m_PreparationPanel;
             }
@@ -42,7 +42,10 @@ namespace LegionKnight
         public int Level => m_Level;
         public int Exp => m_Exp;
         public int Star => m_Star;
-        public int MaxStar => m_HeroConfig.MaxStars;
+        public int MaxStar => HeroEvolution.MaxStage;
+        public int EvolveCost => HeroEvolution.NextShardCost(m_Star);
+        public ItemConfig EvolveShard => m_HeroConfig.EvolutionConfig?.ShardConfig;
+        private bool m_ProgressPurchaseInFlight;
         public bool IsUsed => m_IsUsed;
 
         // =========================
@@ -53,24 +56,9 @@ namespace LegionKnight
             m_OnTrial = onTrial;
             UnityService.Instance.SaveData(m_HeroConfig.BaseInfo.Id + "OnTrial", m_OnTrial);
         }
-        public int GetMaxLevelByStar()
-        {
-            return m_HeroConfig.BreakThroughFormulaConfig.GetLevelNeeded(m_Star);
-        }
-
-        private int GetAllowedMaxLevel()
-        {
-            int globalMax = m_HeroConfig.LevelFormulaConfig.MaxLevel;
-            int starMax = GetMaxLevelByStar();
-
-            if (starMax <= 0) return globalMax;
-
-            return Mathf.Min(globalMax, starMax);
-        }
-
         private void ProcessLevelUp()
         {
-            int maxLevel = GetAllowedMaxLevel();
+            int maxLevel = HeroEvolution.MaxLevel;
 
             while (m_Level < maxLevel)
             {
@@ -99,7 +87,7 @@ namespace LegionKnight
             m_OnLevelUp?.Invoke(this);
             Player.Instance.HeroesCollection.OnCharacterLevelUp.Invoke(m_HeroConfig);
             Player.Instance.HeroesCollection.OnCharacterLevelUpAmount.Invoke(m_Level);
-            PreparationPanel.HeroTabView.Init();
+            PreparationPanel?.HeroTabView?.Init();
         }
 
         // =========================
@@ -108,7 +96,7 @@ namespace LegionKnight
 
         public void SetExp(int exp)
         {
-            m_Exp = exp;
+            m_Exp = Mathf.Max(0, exp);
             ProcessLevelUp();
             SaveExp();
             m_OnExpUpdate?.Invoke(this);
@@ -118,7 +106,7 @@ namespace LegionKnight
 
         public void AddExp(int exp)
         {
-            m_Exp += exp;
+            m_Exp = (int)System.Math.Max(0L, System.Math.Min(int.MaxValue, (long)m_Exp + exp));
             ProcessLevelUp();
             SaveExp();
             m_OnExpUpdate?.Invoke(this);
@@ -132,13 +120,9 @@ namespace LegionKnight
 
         public void AddLevel(int level)
         {
-            if (level <= 0) return;
+            if (level <= 0 || m_Level >= HeroEvolution.MaxLevel) return;
 
-            m_Level += level;
-
-            int maxAllowed = GetAllowedMaxLevel();
-            if (m_Level > maxAllowed)
-                m_Level = maxAllowed;
+            m_Level += Mathf.Min(level, HeroEvolution.MaxLevel - m_Level);
 
             SaveLevel();
             InvokeLevelUpEvents();
@@ -155,7 +139,7 @@ namespace LegionKnight
 
         private void LevelUpInternal(bool consumeExp = true)
         {
-            int maxLevel = GetAllowedMaxLevel();
+            int maxLevel = HeroEvolution.MaxLevel;
 
             if (m_Level >= maxLevel)
                 return;
@@ -166,6 +150,7 @@ namespace LegionKnight
                 if (m_Exp < requiredExp) return;
 
                 m_Exp -= requiredExp;
+                SaveExp();
             }
 
             m_Level++;
@@ -176,92 +161,47 @@ namespace LegionKnight
             Debug.Log($"[LEVEL UP] {HeroName} → {m_Level}");
         }
 
-        // =========================
-        // BREAKTHROUGH (STAR)
-        // =========================
-
-        public bool CanBreak()
+        public bool CanEvolve()
         {
-            return m_HeroConfig.BreakThroughFormulaConfig
-                .CanBreakByLevel(m_Star, m_Level);
+            return m_Owned && EvolveCost > 0 && EvolveShard != null &&
+                Player.Instance.CurrencyControl.GetCurrencyAmount(EvolveShard) >= EvolveCost;
         }
 
-        public bool TryBreak()
+        public bool TryEvolve()
         {
-            var config = m_HeroConfig.BreakThroughFormulaConfig;
-
-            if (!config.CanBreakByLevel(m_Star, m_Level))
+            if (!m_Owned || EvolveCost <= 0) return false;
+            int next = m_Star + 1;
+            return TryBuyProgress(EvolveShard, EvolveCost, "Star", next, () => m_Star = next, () =>
             {
-                Debug.Log("Break failed: level requirement not met");
-                return false;
-            }
-
-            if (!config.TryGetBreakCosts(m_Star, out int shardCost, out int coinCost))
-            {
-                Debug.Log("Break failed: invalid config");
-                return false;
-            }
-
-            var currencyControl = Player.Instance.CurrencyControl;
-
-            if (!currencyControl.HasCurrency(config.ShardConfig, out var shardCurrency))
-            {
-                Debug.Log("Break failed: shard currency not found");
-                return false;
-            }
-
-            if (!currencyControl.HasCurrency(config.CoinConfig, out var coinCurrency))
-            {
-                Debug.Log("Break failed: coin currency not found");
-                return false;
-            }
-
-            if (shardCurrency.Amount < shardCost)
-            {
-                Debug.Log("Break failed: not enough shard");
-                return false;
-            }
-
-            if (coinCurrency.Amount < coinCost)
-            {
-                Debug.Log("Break failed: not enough coin");
-                return false;
-            }
-
-            currencyControl.RemoveCurrencyAmount(config.ShardConfig, shardCost);
-            currencyControl.RemoveCurrencyAmount(config.CoinConfig, coinCost);
-
-            AddStar(1);
-
-            Debug.Log($"[BREAKTHROUGH] {HeroName} → ⭐{m_Star}");
-
-            return true;
+                m_OnCharacterStarUp?.Invoke(this);
+                Player.Instance.HeroesCollection.OnCharacterStarUp.Invoke(m_HeroConfig);
+                PreparationPanel?.HeroTabView?.Init();
+            });
         }
 
-        public void AddStar(int add)
+        public bool TryUpgradeLevel()
         {
-            AddStarInternal(add);
+            if (!m_Owned || m_Level >= HeroEvolution.MaxLevel) return false;
+            var formula = m_HeroConfig.LevelFormulaConfig;
+            int next = m_Level + 1;
+            return TryBuyProgress(formula.ItemRequirmentConfig, formula.GetCurrentMaxExperience(m_Level),
+                "Lv", next, () => m_Level = next, InvokeLevelUpEvents);
         }
 
-        private void AddStarInternal(int add)
+        private bool TryBuyProgress(ItemConfig item, int cost, string suffix, int next,
+            System.Action apply, System.Action notify)
         {
-            if (add <= 0) return;
-
-            m_Star += add;
-
-            if (m_Star > m_HeroConfig.MaxStars)
-                m_Star = m_HeroConfig.MaxStars;
-
-            UnityService.Instance.SaveData(m_HeroConfig.BaseInfo.Id + "Star", m_Star);
-
-            m_OnCharacterStarUp?.Invoke(this);
-            Player.Instance.HeroesCollection.OnCharacterStarUp.Invoke(m_HeroConfig);
-
-            //TenjinManager.Instance.SendEventToCharacterBreakthrough(m_Star);    
-
-            Debug.Log($"[STAR UP] {HeroName} → ⭐{m_Star}");
-
-            PreparationPanel.HeroTabView.Init();
+            if (m_ProgressPurchaseInFlight || item == null || cost <= 0) return false;
+            m_ProgressPurchaseInFlight = true;
+            try
+            {
+                return Player.Instance.CurrencyControl.TrySpendForHeroProgress(item, cost,
+                    m_HeroConfig.BaseInfo.Id + suffix, next, apply, notify);
+            }
+            finally
+            {
+                m_ProgressPurchaseInFlight = false;
+            }
         }
 
         // =========================
@@ -299,6 +239,11 @@ namespace LegionKnight
             if (UnityService.Instance.HasData(m_HeroConfig.BaseInfo.Id + "OnTrial"))
                 m_OnTrial = UnityService.Instance.GetData<bool>(m_HeroConfig.BaseInfo.Id + "OnTrial");
 
+            int savedLevel = m_Level;
+            m_Level = Mathf.Clamp(m_Level, 1, HeroEvolution.MaxLevel);
+            if (m_Level != savedLevel) SaveLevel();
+            m_Star = Mathf.Clamp(m_Star, 0, HeroEvolution.MaxStage);
+
             if (m_HeroConfig.OwnedAtFirst)
                 SetOwned(true);
 
@@ -319,14 +264,15 @@ namespace LegionKnight
         public StatField FinalStat()
         {
             var baseStat = m_HeroConfig.MainStats.GetFinalStat(m_Level);
-            var bonus = m_HeroConfig.BreakThroughFormulaConfig.GetStatBonus(m_Star);
+            var bonus = m_HeroConfig.EvolutionConfig?.GetStatBonus(m_Star) ?? StatField.Zero;
 
             return baseStat + bonus;
         }
 
         public StatField NextFinalStat()
         {
-            return m_HeroConfig.MainStats.GetFinalStat(Level + 1);
+            var bonus = m_HeroConfig.EvolutionConfig?.GetStatBonus(m_Star) ?? StatField.Zero;
+            return m_HeroConfig.MainStats.GetFinalStat(Mathf.Min(Level + 1, HeroEvolution.MaxLevel)) + bonus;
         }
     }
 }

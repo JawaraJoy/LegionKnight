@@ -1,4 +1,3 @@
-using Spine.Unity;
 using UnityEngine;
 using Rush;
 
@@ -11,7 +10,10 @@ namespace LegionKnight
         private RuntimeAnimatorController m_runtimeAnim;
         [SerializeField]
         private CustomImageType m_Type;
-        public RuntimeAnimatorController runtimeAnim => m_runtimeAnim;
+        [SerializeField] private CustomImageDefinition m_StaticVariant;
+        private const bool c_ShowAnimatedProfiles = false;
+        public CustomImageDefinition ProfileAppearance => !c_ShowAnimatedProfiles && m_StaticVariant != null ? m_StaticVariant : this;
+        public RuntimeAnimatorController runtimeAnim => c_ShowAnimatedProfiles ? m_runtimeAnim : null;
         public CustomImageType Type => m_Type;
 
         public void SetOwned(bool owned)

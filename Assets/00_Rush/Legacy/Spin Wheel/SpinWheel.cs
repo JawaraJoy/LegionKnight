@@ -63,6 +63,20 @@ namespace LegionKnight
 
         // ── Persistence ───────────────────────────────────────────────────────────
 
+        private const float c_FullCircle = 360f;
+        private const string c_SkipPreference = "spinwheel.skipAnimation";
+        private bool? m_SkipOverride;
+        public bool SkipAnimation => m_SkipOverride ?? m_Definition.SkipAnimationByDefault;
+        public float ClockwiseAngle { get; private set; }
+        public event System.Action<float> RotationChanged;
+
+        public void SetSkipAnimation(bool value)
+        {
+            if (value == SkipAnimation) return;
+            m_SkipOverride = value;
+            UnityService.Instance.SaveData(c_SkipPreference, value);
+        }
+
         private const string FreeDrawWatchKey = "spinwatchfree";
 
         // ── Result panel cache ────────────────────────────────────────────────────
@@ -93,6 +107,8 @@ namespace LegionKnight
             SubscribeToPlayerCurrency();
 
             LoadFreeDrawWatch();
+            m_SkipOverride = UnityService.Instance.HasData(c_SkipPreference)
+                ? UnityService.Instance.GetData<bool>(c_SkipPreference) : (bool?)null;
 
             m_OnInitialized?.Invoke();
         }
@@ -134,22 +150,20 @@ namespace LegionKnight
         public bool TrySpin(UnityAction onConsumed = null)
         {
             if (!CanSpin(SpinBlockReason.Ticket)) return false;
-
-            Player.Instance.CurrencyControl.RemoveCurrencyAmount(m_SpinDraw.ItemConfig, 1);
-            onConsumed?.Invoke();
-            StartCoroutine(RunSpin());
-            return true;
+            return BeginSpinInternal(SpinBlockReason.Ticket, onConsumed);
         }
 
         public bool TryFreeWatchSpin(UnityAction onConsumed = null)
         {
             if (!CanSpin(SpinBlockReason.FreeWatch)) return false;
 
+            bool handled = false;
             UnityService.Instance.ShowRewardedAd(() =>
             {
-                ConsumeFreeDrawWatch();
-                onConsumed?.Invoke();
-                StartCoroutine(RunSpin());
+                if (handled) return;
+                handled = true;
+                if (CanSpin(SpinBlockReason.FreeWatch))
+                    BeginSpinInternal(SpinBlockReason.FreeWatch, onConsumed);
             });
             return true;
         }
@@ -163,49 +177,87 @@ namespace LegionKnight
 
         // ── Spin logic ────────────────────────────────────────────────────────────
 
-        private IEnumerator RunSpin()
+        public static event System.Action SpinConsumed;
+
+        private bool BeginSpinInternal(SpinBlockReason source, UnityAction onConsumed)
         {
+            if (!ValidateDefinition()) return false;
+            var rewards = m_Definition.Rewards;
+            int target = m_Definition.PickWeightedRewardIndex();
+            if (target < 0 || target >= rewards.Length || rewards[target] == null) return false;
+
             m_IsBusy = true;
-            m_SelectedReward = null;
-            m_TargetRewardIndex = m_Definition.PickWeightedRewardIndex();
+            m_TargetRewardIndex = target;
+            bool skip = SkipAnimation;
+            if (source == SpinBlockReason.Ticket)
+                Player.Instance.CurrencyControl.RemoveCurrencyAmount(m_SpinDraw.ItemConfig, 1);
+            else if (source == SpinBlockReason.FreeWatch)
+                ConsumeFreeDrawWatch();
+            if (source != SpinBlockReason.Debug) SpinConsumed?.Invoke();
+            onConsumed?.Invoke();
+            OnSpinStartInvoke();
 
-            m_OnSpinStart?.Invoke();
-
-            int rewardCount = m_Definition.Rewards.Length;
-            int extra = Random.Range(m_Definition.MinAdditionalSpinStep, m_Definition.MaxAdditionalSpinStep + 1);
-
-            int rawTotal = m_Definition.MinSpinStep + extra;
-            int stepsToTarget = (m_TargetRewardIndex - m_CurrentStepIndex + rewardCount) % rewardCount;
-            if (stepsToTarget == 0) stepsToTarget = rewardCount;
-
-            int fullLaps = Mathf.CeilToInt((float)(rawTotal - stepsToTarget) / rewardCount);
-            int finalSteps = fullLaps * rewardCount + stepsToTarget;
-
-            float baseDelay = m_Definition.StartStepDelay;
-
-            for (int i = 0; i < finalSteps; i++)
+            float pitch = c_FullCircle / rewards.Length;
+            float landing = Mathf.Repeat(-target * pitch, c_FullCircle);
+            if (skip)
             {
-                m_CurrentStepIndex = (m_CurrentStepIndex + 1) % rewardCount;
+                LandInternal(landing, rewards);
+                ClaimRewardInternal();
+            }
+            else
+            {
+                StartCoroutine(RotateInternal(landing, rewards));
+            }
+            return true;
+        }
 
-                float progress = (float)i / finalSteps;
-                float delay = baseDelay;
-                if (progress > 0.85f) delay += m_Definition.MidDelayGrowth;
-                if (progress > 0.93f) delay += m_Definition.EndDelayGrowth;
-
-                // Broadcast index agar panel highlight view di posisi yang benar
-                m_OnStepChanged?.Invoke(m_CurrentStepIndex, m_Definition.Rewards[m_CurrentStepIndex]);
-
-                yield return new WaitForSeconds(delay);
+        private IEnumerator RotateInternal(float landing, SpinRewardDefinition[] rewards)
+        {
+            float start = ClockwiseAngle;
+            float travel = Mathf.Max(1, m_Definition.FullTurns) * c_FullCircle
+                         + Mathf.Repeat(landing - start, c_FullCircle);
+            float duration = m_Definition.SpinDuration;
+            double startedAt = Time.realtimeSinceStartupAsDouble;
+            double elapsed = 0d;
+            while (elapsed < duration)
+            {
+                float remaining = 1f - (float)(elapsed / duration);
+                float eased = 1f - remaining * remaining * remaining;
+                SetPoseInternal(start + travel * eased, rewards, false);
+                yield return null;
+                elapsed = Time.realtimeSinceStartupAsDouble - startedAt;
             }
 
-            m_SelectedReward = m_Definition.Rewards[m_TargetRewardIndex];
-            m_IsBusy = false;
-            m_OnSpinEnd?.Invoke();
-
-            yield return new WaitForSeconds(m_Definition.ClaimDelay);
-
+            LandInternal(landing, rewards);
+            if (m_Definition.ClaimDelay > 0f)
+                yield return new WaitForSecondsRealtime(m_Definition.ClaimDelay);
             ClaimRewardInternal();
         }
+
+        private void LandInternal(float landing, SpinRewardDefinition[] rewards)
+        {
+            SetPoseInternal(landing, rewards, true);
+            m_SelectedReward = rewards[m_TargetRewardIndex];
+            m_IsBusy = false;
+            OnSpinEndInvoke();
+        }
+
+        private void SetPoseInternal(float angle, SpinRewardDefinition[] rewards, bool landed)
+        {
+            ClockwiseAngle = Mathf.Repeat(angle, c_FullCircle);
+            RotationChanged?.Invoke(ClockwiseAngle);
+            // Slots are authored clockwise from twelve. A clockwise turn brings the opposite index up.
+            int index = landed ? m_TargetRewardIndex : Mathf.FloorToInt(
+                Mathf.Repeat(-ClockwiseAngle, c_FullCircle) * rewards.Length / c_FullCircle + .5f) % rewards.Length;
+            if (index == m_CurrentStepIndex && !landed) return;
+            m_CurrentStepIndex = index;
+            OnStepChangedInvoke(index, rewards[index]);
+        }
+
+        private void OnSpinStartInvoke() => m_OnSpinStart?.Invoke();
+        private void OnStepChangedInvoke(int index, SpinRewardDefinition reward) => m_OnStepChanged?.Invoke(index, reward);
+        private void OnSpinEndInvoke() => m_OnSpinEnd?.Invoke();
+        private void OnClaimInvoke(SpinRewardDefinition reward) => m_OnClaim?.Invoke(reward);
 
         private void ClaimRewardInternal()
         {
@@ -217,7 +269,7 @@ namespace LegionKnight
             UnityService.Instance.LocalSave.ExecuteTransaction(() => resultData.GrantRewards("spin"));
             m_SelectedReward = null;
             ResultPanel?.Show(resultData);
-            m_OnClaim?.Invoke(reward);
+            OnClaimInvoke(reward);
         }
 
         // ── Free draw watch ───────────────────────────────────────────────────────
@@ -253,7 +305,7 @@ namespace LegionKnight
 
         // ── Guard helpers ─────────────────────────────────────────────────────────
 
-        private enum SpinBlockReason { Ticket, FreeWatch }
+        private enum SpinBlockReason { Ticket, FreeWatch, Debug }
 
         private bool CanSpin(SpinBlockReason reason)
         {
@@ -297,10 +349,10 @@ namespace LegionKnight
 
 #if UNITY_EDITOR
         [ContextMenu("Debug / Force Spin")]
-        private void DebugForceSpin() => StartCoroutine(RunSpin());
-
-        [ContextMenu("Debug / Force Claim")]
-        private void DebugForceClaim() => ClaimRewardInternal();
+        private void DebugForceSpin()
+        {
+            if (CanSpin(SpinBlockReason.Debug)) BeginSpinInternal(SpinBlockReason.Debug, null);
+        }
 
         [ContextMenu("Debug / Reset Free Watch")]
         private void DebugResetFreeWatch()

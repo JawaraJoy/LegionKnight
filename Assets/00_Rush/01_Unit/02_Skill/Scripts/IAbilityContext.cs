@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public interface IAbilityContext
+    public interface IAbilityContext : IHasRarityConfig
     {
         ISkillContext SkillContext { get; }
         IAbilityDeliver AbilityDeliver { get; }

@@ -13,6 +13,7 @@ namespace LegionKnight
         private Image m_Icon;
         [SerializeField]
         private Image m_SelectedImage;
+        [SerializeField] private Image m_RarityFrame;
 
         private bool m_IsSelected = false;
         [SerializeField]
@@ -21,7 +22,6 @@ namespace LegionKnight
         private Animator m_Animator;
 
         private CustomImageDefinition m_Definition;
-        private ImageContent m_ImageContent;
 
         private PlayerCustomProfile m_Profile;
         public bool IsSelected => m_IsSelected;
@@ -51,10 +51,9 @@ namespace LegionKnight
         }
         public void Init(CustomImageDefinition defi)
         {
-            m_Definition = defi;
-            RefreshInternal();
+            m_Definition = defi.ProfileAppearance;
             m_NoticeButton.SetDefinition(m_Definition);
-            m_NoticeButton.NoticeCheck();
+            RefreshInternal();
         }
         
         public void Refresh()
@@ -63,6 +62,8 @@ namespace LegionKnight
         }
         private void RefreshInternal()
         {
+            var rarity = m_Definition.CollectibleField.RarityConfig;
+            if (m_RarityFrame != null && rarity != null) m_RarityFrame.color = rarity.Color;
             m_Icon.sprite = m_Definition.CollectibleField.Icon;
             bool hasAnim = m_Definition.runtimeAnim != null;
             m_Animator.enabled = hasAnim;
@@ -75,25 +76,16 @@ namespace LegionKnight
 
                 m_Animator.Play("Frame", 0, 0f);
             }
-            m_Icon.color = IsOwned() ? Color.white : Color.gray;
-            m_SelectButton.interactable = IsOwned();
+            bool owned = IsOwned();
+            m_Icon.color = owned ? Color.white : Color.gray;
+            m_SelectButton.interactable = owned;
+            m_NoticeButton.NoticeCheck();
             m_SelectedImage.gameObject.SetActive(IsSelectedInternal());
         }
         private void SelectectInternal()
         {
-            ImageContent imageContent = Player.Instance.CustomProfile.GetIcon(m_Definition);
-
-            switch (m_Definition.Type)
-            {
-                case CustomImageType.Frame:
-                    imageContent = Player.Instance.CustomProfile.GetFrame(m_Definition);
-                    break;
-                case CustomImageType.Icon:
-                    imageContent = Player.Instance.CustomProfile.GetIcon(m_Definition);
-                    break;
-            }
-            imageContent.ChangeCondition(ProductCondition.NoticeUnlocked);
-            m_NoticeButton.NoticeCheck();
+            if (!IsOwned()) return;
+            GetCustomProfile().AcknowledgeAppearance(m_Definition);
             m_OnSelected.Invoke();
             GetCustomProfile().SetSelected(m_Definition);
             m_SelectedImage.gameObject.SetActive(true);
@@ -109,24 +101,7 @@ namespace LegionKnight
             m_SelectedImage.gameObject.SetActive(false);
         }
 
-        private bool IsOwned()
-        {
-            if (m_Definition == null)
-            {
-                return false;
-            }
-            bool owned = false;
-            switch (m_Definition.Type)
-            {
-                case CustomImageType.Frame:
-                    owned = GetCustomProfile().HasFrame(m_Definition, out m_ImageContent) && m_ImageContent.Owned;
-                    break;
-                case CustomImageType.Icon:
-                    owned = GetCustomProfile().HasIcon(m_Definition, out m_ImageContent) && m_ImageContent.Owned;
-                    break;
-            }
-            return owned;
-        }
+        private bool IsOwned() => GetCustomProfile().FindOwnedVariant(m_Definition) != null;
 
         private bool IsSelectedInternal()
         {

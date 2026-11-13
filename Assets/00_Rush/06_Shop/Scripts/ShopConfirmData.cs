@@ -18,13 +18,16 @@ namespace Rush
 
         // ── IConfirmData ──────────────────────────────────────────────────────
 
-        public string DescriptionText => $"Buy {m_Bundle.BaseInfo.Name}?";
+        internal bool Accepted { get; private set; }
+        internal void MarkAccepted() => Accepted = true;
+
+        public string DescriptionText => $"{(IsFree ? "Claim" : "Buy")} {m_Bundle.BaseInfo.Name}?";
         public int MainCurrencyAmount => m_Breakdown.MainCurrencyAmount;
         public int OriginalCost => m_Breakdown.OriginalPrice;
         public bool HasDiscount => m_Breakdown.IsFirstPurchaseDiscount
                                             || m_Breakdown.MainCurrencyAmount < m_Breakdown.OriginalPrice;
         public string MainCurrencyName => m_Bundle.CostCurrency?.BaseInfo.Name;
-        public Sprite MainCurrencyIcon => m_Bundle.CostCurrency?.CollectibleField?.Icon;
+        public Sprite MainCurrencyIcon => IsFree ? null : m_Bundle.CostCurrency?.CollectibleField?.Icon;
         public bool IsFree => m_Breakdown.IsFree;
 
         // Shop tidak pakai alt currency
@@ -33,4 +36,4 @@ namespace Rush
         public string AltCurrencyName => string.Empty;
         public Sprite AltCurrencyIcon => null;
     }
-}   
+}

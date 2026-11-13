@@ -8,7 +8,7 @@ namespace Rush
         Y,
         Z
     }
-    public class AmmoConfig : Configuration
+    public class AmmoConfig : CombatEffectConfig
     {
         [SerializeField]
         private Ammo m_AmmoPrefab;

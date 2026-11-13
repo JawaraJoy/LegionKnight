@@ -13,6 +13,20 @@ namespace LegionKnight
         [SerializeField]
         private PlayerCurrencyControl m_CurrencyControl;
 
+        internal static PlayerCurrencyControl CurrentWallet { get; private set; }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            if (m_CurrencyControl != null && Instance == this) CurrentWallet = m_CurrencyControl;
+        }
+
+        protected override void OnDestroy()
+        {
+            if (CurrentWallet == m_CurrencyControl) CurrentWallet = null;
+            base.OnDestroy();
+        }
+
         public PlayerCurrencyControl CurrencyControl => m_CurrencyControl;
     }
 }

@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using MoreMountains.Tools;
 using Unity.Services.Authentication;
 using UnityEngine;
@@ -32,7 +35,7 @@ namespace LegionKnight
         {
             get
             {
-                int getrandomTag = Random.Range(0, RandomTagNumber);
+                int getrandomTag = UnityEngine.Random.Range(0, RandomTagNumber);
                 string defaultName = $"User[{getrandomTag}]";
                 return defaultName ;
             }
@@ -58,34 +61,77 @@ namespace LegionKnight
         private void OnInitInvoke()
         {
             m_OnStart?.Invoke();
-            bool hasEditedName = UnityService.Instance.HasData(PlayerNameKey);
-            string getName = PlayerDefaultName;
-            if (hasEditedName)
-            {
-                getName = UnityService.Instance.GetData<string>(PlayerNameKey);
-            }
-            SetPlayerNameInternal(getName);
-            Debug.Log($"Player name: {m_PlayerName}");
-            CanvasManager.Instance.SetPlayerNameView(m_PlayerName);
-        }
-        public void SetPlayerName(string playerName)
-        {
-            
-            //SetPlayerNameAsync(m_PlayerName);
-            SetPlayerNameInternal(playerName);
-        }
-        private void SetPlayerNameInternal(string playerName)
-        {
-            m_PlayerName = playerName;
-            m_OnNameChanged?.Invoke(m_PlayerName);
-            UnityService.Instance.SaveData(PlayerNameKey, m_PlayerName);
-            GetProfileInfoPanel().GetBinding<LevelView>().SetNameText(m_PlayerName);
-            SetPlayerNameAsync(m_PlayerName);
+            var cached = UnityService.Instance.GetData<string>(PlayerNameKey);
+            ApplyPlayerName(string.IsNullOrWhiteSpace(cached) ? PlayerDefaultName : cached);
+            m_NameInitialization = RestoreAccountNameAsync();
         }
 
-        private async void SetPlayerNameAsync(string playerName)
+        public const int MaxPlayerNameLength = 20;
+        private Task m_NameInitialization = Task.CompletedTask;
+        private bool m_IsRenaming;
+
+        public static bool IsValidPlayerName(string name) =>
+            !string.IsNullOrWhiteSpace(name) && name.Length <= MaxPlayerNameLength &&
+            !name.Any(c => char.IsWhiteSpace(c) || char.IsControl(c) || c == '<' || c == '>');
+
+        private static string DisplayName(string accountName)
         {
-            await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
+            int tag = accountName.LastIndexOf('#');
+            return tag > 0 && accountName.Length - tag == 5 && accountName.Substring(tag + 1).All(char.IsDigit)
+                ? accountName.Substring(0, tag) : accountName;
+        }
+
+        private async Task RestoreAccountNameAsync()
+        {
+            try
+            {
+                var service = AuthenticationService.Instance;
+                if (!service.IsAuthorized) return;
+                var name = await service.GetPlayerNameAsync(false);
+                if (!this || !service.IsAuthorized) return;
+                if (string.IsNullOrEmpty(name) && IsValidPlayerName(m_PlayerName))
+                    name = await service.UpdatePlayerNameAsync(m_PlayerName);
+                if (this && !string.IsNullOrEmpty(name)) ApplyPlayerName(DisplayName(name));
+            }
+            catch (Exception ex) { Debug.LogWarning($"Player name sync unavailable: {ex.Message}"); }
+        }
+
+        public async void SetPlayerName(string playerName)
+        {
+            try { await RenamePlayerAsync(playerName); }
+            catch (Exception ex) { Debug.LogWarning($"Rename failed: {ex.Message}"); }
+        }
+
+        public Task RenamePlayerAsync(string name) => RenamePlayerAsync(name, candidate =>
+        {
+            var service = AuthenticationService.Instance;
+            if (!service.IsAuthorized) throw new InvalidOperationException("Sign in to change your name.");
+            return service.UpdatePlayerNameAsync(candidate);
+        });
+
+        internal async Task RenamePlayerAsync(string name, Func<string, Task<string>> submit)
+        {
+            name = name?.Trim();
+            if (!IsValidPlayerName(name)) throw new ArgumentException("Enter 1–20 characters without spaces.");
+            if (m_IsRenaming) throw new InvalidOperationException("A rename is already in progress.");
+            m_IsRenaming = true;
+            try
+            {
+                await m_NameInitialization;
+                var confirmed = await submit(name);
+                if (string.IsNullOrWhiteSpace(confirmed)) throw new InvalidOperationException("Name was not confirmed.");
+                if (this) ApplyPlayerName(DisplayName(confirmed));
+            }
+            finally { m_IsRenaming = false; }
+        }
+
+        private void ApplyPlayerName(string name)
+        {
+            m_PlayerName = name;
+            UnityService.Instance.SaveData(PlayerNameKey, name);
+            GetProfileInfoPanel()?.GetBinding<LevelView>()?.SetNameText(name);
+            CanvasManager.Instance.SetPlayerNameView(name);
+            m_OnNameChanged?.Invoke(name);
         }
         public void AddOnStart(UnityAction action)
         {

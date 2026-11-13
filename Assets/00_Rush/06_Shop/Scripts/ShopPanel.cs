@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using LegionKnight;
+using UnityEngine;
 using UnityEngine.UI;
-using LegionKnight;
 
 namespace Rush
 {
@@ -10,88 +10,68 @@ namespace Rush
         [SerializeField] private ShopTabEntry[] m_ShopTabEntries;
         [SerializeField] private Button m_CloseButton;
 
-        private ShopManager Manager => RushPlayer.Instance.ShopManager;
+        private ShopManager m_Manager;
 
-        private void Awake()
+        private void Start() => BindManagerInternal();
+
+        private void BindManagerInternal()
         {
+            if (m_Manager != null) return;
+            m_Manager = RushPlayer.Instance.ShopManager;
+            if (m_Manager == null) return;
+            m_Manager.OnPurchaseRequested.AddListener(OnPurchaseRequestedInternal);
+            m_Manager.OnPurchaseComplete.AddListener(OnPurchaseCompleteInternal);
+            m_Manager.OnPurchaseFailed.AddListener(OnPurchaseFailedInternal);
             if (m_CloseButton != null) m_CloseButton.onClick.AddListener(HideInternal);
-            SubscribeEventsInternal();
         }
+
+        private void OnDestroy()
+        {
+            if (m_Manager == null) return;
+            m_Manager.OnPurchaseRequested.RemoveListener(OnPurchaseRequestedInternal);
+            m_Manager.OnPurchaseComplete.RemoveListener(OnPurchaseCompleteInternal);
+            m_Manager.OnPurchaseFailed.RemoveListener(OnPurchaseFailedInternal);
+        }
+
         protected override void ShowInternal()
         {
+            BindManagerInternal();
             base.ShowInternal();
-            
-            PopulateTabsInternal();
-            
+            if (!IsShown || m_Manager == null) return;
+            var tabs = m_Manager.ShopConfig?.Tabs;
+            if (tabs == null || m_ShopTabEntries == null) return;
+            for (int i = 0; i < m_ShopTabEntries.Length && i < tabs.Length; i++)
+                m_ShopTabEntries[i]?.Populate(tabs[i], OnBundleClickedInternal);
             m_TabGroup?.Show();
         }
 
         protected override void HideInternal()
         {
-            //UnsubscribeEventsInternal();
             m_TabGroup?.Hide();
             base.HideInternal();
         }
 
-        private void SubscribeEventsInternal()
-        {
-            Manager.OnPurchaseRequested.AddListener(OnPurchaseRequestedInternal);
-            Manager.OnPurchaseComplete.AddListener(OnPurchaseCompleteInternal);
-            Manager.OnPurchaseFailed.AddListener(OnPurchaseFailedInternal);
-        }
+        private void OnBundleClickedInternal(ShopBundleConfig bundle) =>
+            CanvasManager.Instance.GetPanel<ShopBundleDetailPanel>()?.Show(bundle);
 
-        private void UnsubscribeEventsInternal()
+        private void OnPurchaseRequestedInternal(ShopConfirmData offer)
         {
-            Manager.OnPurchaseRequested.RemoveListener(OnPurchaseRequestedInternal);
-            Manager.OnPurchaseComplete.RemoveListener(OnPurchaseCompleteInternal);
-            Manager.OnPurchaseFailed.RemoveListener(OnPurchaseFailedInternal);
-        }
-
-        private void PopulateTabsInternal()
-        {
-            var tabs = Manager.ShopConfig?.Tabs;
-            if (tabs == null || m_ShopTabEntries == null) return;
-
-            for (int i = 0; i < m_ShopTabEntries.Length && i < tabs.Length; i++)
-                m_ShopTabEntries[i].Populate(tabs[i], OnBundleClickedInternal);
-        }
-
-        // Bundle di-klik → buka detail panel
-        private void OnBundleClickedInternal(ShopBundleConfig bundle)
-        {
-            var detailPanel = CanvasManager.Instance.GetPanel<ShopBundleDetailPanel>();
-            detailPanel?.Show(bundle);
-        }
-
-        // Purchase request dari detail panel → buka confirm
-        private void OnPurchaseRequestedInternal(ShopConfirmData data)
-        {
-            var confirmPanel = CanvasManager.Instance.GetPanel<CurrencyConfirmationPanel>();
-            confirmPanel?.ShowConfirmation(data, () => Manager.ExecutePurchase(data.Bundle));
+            var confirm = CanvasManager.Instance.GetPanel<CurrencyConfirmationPanel>();
+            if (confirm != null) confirm.ShowConfirmation(offer, () => m_Manager.ConfirmPurchase(offer));
         }
 
         private void OnPurchaseCompleteInternal(CollectibleResultData result)
         {
-            // Refresh list badge (first purchase, unavailable) di semua tab
-            RefreshActiveTabInternal();
-
-            // Refresh detail panel jika masih terbuka
-            var detailPanel = CanvasManager.Instance.GetPanel<ShopBundleDetailPanel>();
-            // detail panel refresh dirinya sendiri via RefreshIfShowing
-
-            // Tampilkan result
-            var resultPanel = CanvasManager.Instance.GetPanel<ShopResultPanel>();
-            resultPanel?.Show(result);
+            if (m_ShopTabEntries != null)
+                foreach (var entry in m_ShopTabEntries) entry?.RepopulateIfVisible(OnBundleClickedInternal);
+            CanvasManager.Instance.GetPanel<ShopBundleDetailPanel>()?.RefreshOfferInternal();
+            CanvasManager.Instance.GetPanel<ShopResultPanel>()?.Show(result);
         }
 
-        private void OnPurchaseFailedInternal(string message) =>
-            UnityEngine.Debug.LogWarning($"[ShopPanel] {message}");
-
-        private void RefreshActiveTabInternal()
+        private void OnPurchaseFailedInternal(string message)
         {
-            if (m_ShopTabEntries == null) return;
-            foreach (var entry in m_ShopTabEntries)
-                entry.RepopulateIfVisible(OnBundleClickedInternal);
+            CanvasManager.Instance.GetPanel<ShopBundleDetailPanel>()?.ShowFailureInternal(message);
+            Debug.LogWarning($"[ShopPanel] {message}", this);
         }
     }
 }

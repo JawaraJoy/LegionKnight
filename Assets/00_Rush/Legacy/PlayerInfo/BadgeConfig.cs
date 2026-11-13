@@ -8,13 +8,12 @@ namespace LegionKnight
     {
         [SerializeField]
         private BadgeUpgrade[] m_Upgrade;
+        [SerializeField] private ProfileBadgeGoal m_Goal;
+        public ProfileBadgeGoal Goal => m_Goal;
         public BadgeUpgrade[] Upgrade => m_Upgrade;
 
         public void AddUnClaimedReward(int amount)
         {
-            Debug.Log("ttttt");
-            Debug.Log(amount);
-
             if (Player.Instance.BadgeManager.HasBadge(this, out var content))
             {
                 content.AddUnClaimedReward(amount);
@@ -22,9 +21,6 @@ namespace LegionKnight
         }
         public void SetUpgradeCurrentLevel(int level)
         {
-            Debug.Log("sssss");
-            Debug.Log(level);
-
             if (Player.Instance.BadgeManager.HasBadge(this, out var content))
             {
                 content.SetCurrentUpgradeLevel(level);
@@ -34,7 +30,7 @@ namespace LegionKnight
         {
             if (Player.Instance.BadgeManager.HasBadge(this, out var content))
             {
-                content.ClaimReward();
+                Player.Instance.BadgeManager.ClaimReward(this);
             }
         }
     }
@@ -50,6 +46,8 @@ namespace LegionKnight
         private Sprite m_Icon;
         [SerializeField]
         private LootField[] m_RewardOnUnlock;
+        [SerializeField] private int m_Target;
+        public int Target => m_Target;
         public string Label => m_Label;
         public string Description => m_Description;
         public Sprite Icon => m_Icon;

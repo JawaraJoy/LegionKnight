@@ -655,8 +655,12 @@ private void HandlePlatformBoostStart(float duration, int combo)
             platform.Boost(boostField, duration, comboCount);
         }
 
+        public static event System.Action<int> PerfectStreakReached;
+        private int m_ProfilePerfectStreak;
+
         private void OnGlobalPerfectLanding(ISkillContext context)
         {
+            PerfectStreakReached?.Invoke(++m_ProfilePerfectStreak);
             if (m_Config.BoostField == null) return;
             if (m_IsBoostActive) return;
 
@@ -674,6 +678,7 @@ private void HandlePlatformBoostStart(float duration, int combo)
 
         private void OnGlobalNormalLanding(ISkillContext context)
         {
+            m_ProfilePerfectStreak = 0;
             if (m_IsBoostActive || m_IsResetting) return;
             bool wasEnabled = m_Config.BoostField != null
                 && m_GlobalPerfectCount >= m_Config.BoostField.BoostThreshold;
@@ -781,6 +786,7 @@ private void HandlePlatformBoostStart(float duration, int combo)
 
         private void ResetProgressionInternal()
         {
+            m_ProfilePerfectStreak = 0;
             m_IsResetting = true;
             try
             {

@@ -30,9 +30,19 @@ namespace Rush
             {
                 ability.Hide();
             }
-            for (int i = 0; i < skills.Length; i++)
+            unit.HasBind(out SkillController controller);
+            for (int i = 0; i < Mathf.Min(skills.Length, m_AbilityViews.Length); i++)
             {
-                m_AbilityViews[i].Init(skills[i]);
+                var config = skills[i];
+                if (config == null) continue;
+                Skill runtime = null;
+                if (controller != null)
+                {
+                    foreach (var learned in controller.Skills)
+                        if (learned != null && learned.SkillConfig == config) { runtime = learned; break; }
+                }
+                if (runtime != null) m_AbilityViews[i].InitRuntime(runtime, unit.Config);
+                else m_AbilityViews[i].InitPreview(config, unit.Config);
                 m_AbilityViews[i].Show();
             }
             StatsField stats = unit.Config.MainStats;

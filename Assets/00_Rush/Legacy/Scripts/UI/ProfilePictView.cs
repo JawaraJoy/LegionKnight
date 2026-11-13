@@ -37,7 +37,7 @@ namespace LegionKnight
         }
         private void OnDestroy()
         {
-            //Player.Instance.CustomProfile.RemoveProfilePictView(this);
+            if (m_Profile != null) m_Profile.RemoveProfilePictView(this);
         }
         public void SetProfileIcon(Sprite val)
         {
@@ -59,8 +59,10 @@ namespace LegionKnight
 
         private void InitInternal()
         {
-            CustomImageDefinition icon = GetCustomProfile().UsedIcon;
-            CustomImageDefinition frame = GetCustomProfile().UsedFrame;
+            var profile = GetCustomProfile();
+            bool preview = GetComponentInParent<CustomProfilePanel>(true) != null;
+            CustomImageDefinition icon = preview ? profile.SelectedIcon : profile.UsedIcon;
+            CustomImageDefinition frame = preview ? profile.SelectedFrame : profile.UsedFrame;
             if (icon != null)
             {
                 if (icon.runtimeAnim == null)

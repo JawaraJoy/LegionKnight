@@ -21,36 +21,37 @@ namespace Rush
         [SerializeField] private Button m_CancelButton;
         [SerializeField] private Toggle m_DontShowAgainToggle;
 
+        [SerializeField] private CurrencyConfirmationOfferView m_OfferView;
         private System.Action m_ConfirmCallback;
         private bool m_DontShowAgain;
 
-        protected override void ShowInternal()
+        private void Awake()
         {
-            base.ShowInternal();
             if (m_ConfirmButton != null) m_ConfirmButton.onClick.AddListener(OnConfirmClickedInternal);
-            if (m_CancelButton != null) m_CancelButton.onClick.AddListener(OnCancelClickedInternal);
+            if (m_CancelButton != null) m_CancelButton.onClick.AddListener(HideInternal);
         }
 
         protected override void HideInternal()
         {
-            if (m_ConfirmButton != null) m_ConfirmButton.onClick.RemoveListener(OnConfirmClickedInternal);
-            if (m_CancelButton != null) m_CancelButton.onClick.RemoveListener(OnCancelClickedInternal);
+            m_ConfirmCallback = null;
             base.HideInternal();
         }
 
         public void ShowConfirmation(IConfirmData data, System.Action onConfirm)
         {
-            if (m_DontShowAgain)
+            if (data == null || onConfirm == null) return;
+            if (m_DontShowAgain && data is not GachaConfirmData { RequiresConfirmation: true })
             {
                 onConfirm?.Invoke();
                 return;
             }
 
             m_ConfirmCallback = onConfirm;
-            RefreshViewInternal(data);
+            if (m_OfferView != null) m_OfferView.Bind(data);
+            else RefreshViewInternal(data);
 
-            if (m_DontShowAgainToggle != null) m_DontShowAgainToggle.isOn = false;
-            Show();
+            if (m_DontShowAgainToggle != null) m_DontShowAgainToggle.SetIsOnWithoutNotify(false);
+            ShowInternal();
         }
 
         private void RefreshViewInternal(IConfirmData data)
@@ -90,18 +91,11 @@ namespace Rush
 
         private void OnConfirmClickedInternal()
         {
-            if (m_DontShowAgainToggle != null)
-                m_DontShowAgain = m_DontShowAgainToggle.isOn;
-
-            m_ConfirmCallback?.Invoke();
-            m_ConfirmCallback = null;
-            Hide();
-        }
-
-        private void OnCancelClickedInternal()
-        {
-            m_ConfirmCallback = null;
-            Hide();
+            if (!IsShown || m_ConfirmCallback == null) return;
+            var confirmed = m_ConfirmCallback;
+            if (m_DontShowAgainToggle != null) m_DontShowAgain = m_DontShowAgainToggle.isOn;
+            HideInternal();
+            confirmed();
         }
     }
 }

@@ -7,6 +7,7 @@ namespace LegionKnight
 {
     public partial class GameOverPanel : PanelView, IUpdater
     {
+        [SerializeField] private BattleGameOverView m_BattleView;
         [SerializeField]
         private Button m_PlayAgainButton;
         [SerializeField]
@@ -38,18 +39,20 @@ namespace LegionKnight
 
         private void Awake()
         {
+            if (m_BattleView != null) return;
             m_RebornAdsButton.onClick.AddListener(ShowRebornAds);
             m_PlayAgainButton.onClick.AddListener(TryPlayAgain);
             m_HomeButton.onClick.AddListener(BackHome);
         }
         private void OnEnable()
         {
+            if (m_BattleView != null) return;
             UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
             
         }
         private void OnDisable()
         {
-            //UpdateBank.Instance.UnregisterUpdateTick(gameObject);
+            if (m_BattleView == null && UpdateBank.Instance != null) UpdateBank.Instance.UnregisterUpdateTick(gameObject);
         }
 
 
@@ -71,6 +74,7 @@ namespace LegionKnight
         {
             if (IsShowInternal) return;
             base.ShowInternal();
+            if (m_BattleView != null || !IsShowInternal) return;
             StageMode stageMode = RushGameManager.Instance.StageManager.UsedStageConfig.StageMode;
             switch (stageMode)
             {
@@ -89,6 +93,12 @@ namespace LegionKnight
 
             ResetTimerInternal(); // <-- tambahin ini
             RebornButtonStateCheck();
+        }
+
+        protected override void HideInternal()
+        {
+            if (!IsShowInternal) return;
+            base.HideInternal();
         }
 
         private void RebornButtonStateCheck()

@@ -14,7 +14,7 @@ namespace LegionKnight
         [SerializeField] private Button m_UpgradeButton;
         [SerializeField] private Button m_QuickAccessButton;
         [SerializeField]
-        private DailyAdRewardButton m_DailyAdRewardButton; // opsional — bisa aktif saat upgrade tidak tersedia
+        private DailyAdRewardButton m_DailyAdRewardButton;
 
         private HeroUnit m_CharacterUnit;
 
@@ -66,18 +66,16 @@ namespace LegionKnight
 
             m_OnInit?.Invoke(heroConfig);
 
-            bool isHeroUnlocked = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig).Owned;
-            m_UpgradeButton.interactable = isHeroUnlocked;
-                if (m_DailyAdRewardButton != null)
-                    m_DailyAdRewardButton.gameObject.SetActive(!state.CanUpgrade && isHeroUnlocked);
+            m_UpgradeButton.interactable = m_CharacterUnit.Owned && !state.IsMaxLevel;
+            if (m_DailyAdRewardButton != null)
+                m_DailyAdRewardButton.gameObject.SetActive(m_CharacterUnit.Owned && !state.CanUpgrade && !state.IsMaxLevel);
         }
 
         private void ApplyUI(LevelUpState state)
         {
             m_ShardAmountNeed.SetView(m_CurrencyUsed);
 
-            m_UpgradeButton.interactable = state.CanUpgrade;
-            m_QuickAccessButton.gameObject.SetActive(!state.CanUpgrade);
+            m_QuickAccessButton.gameObject.SetActive(!state.CanUpgrade && !state.IsMaxLevel && m_CharacterUnit.Owned);
 
             ApplyText(state);
 
@@ -95,7 +93,7 @@ namespace LegionKnight
 
             Currency currency = new(config.ItemRequirmentConfig, cost);
 
-            bool isMaxLevel = unit.Level >= config.MaxLevel;
+            bool isMaxLevel = unit.Level >= HeroEvolution.MaxLevel;
 
             bool enough = Player.Instance.CurrencyControl.GetCurrencyAmount(config.ItemRequirmentConfig) >= cost;
 
@@ -113,10 +111,8 @@ namespace LegionKnight
         {
             if (state.IsMaxLevel)
                 m_UpgradeButtonText.text = "Max Level";
-            else if (state.CanUpgrade)
-                m_UpgradeButtonText.text = "Upgrade";
             else
-                m_UpgradeButtonText.text = "Not Enough";
+                m_UpgradeButtonText.text = "Upgrade";
         }
 
         private void ShowUpgradeView()

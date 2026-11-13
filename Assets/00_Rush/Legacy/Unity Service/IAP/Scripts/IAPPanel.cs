@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using LegionKnight;
 
@@ -10,11 +10,15 @@ namespace Rush
         [SerializeField] private IAPTabEntry[] m_IAPTabEntries;
         [SerializeField] private Button m_CloseButton;
 
+        [SerializeField] private RechargeStoreView m_StoreView;
         private IAPManager IAPManager => UnityService.Instance.IAPManager;
 
         protected override void ShowInternal()
         {
+            if (IsShown) return;
             base.ShowInternal();
+            if (!IsShown) return;
+            m_StoreView.Bind();
             SubscribeEventsInternal();
             PopulateTabsInternal();
             if (m_CloseButton != null) m_CloseButton.onClick.AddListener(Hide);
@@ -31,12 +35,14 @@ namespace Rush
 
         private void SubscribeEventsInternal()
         {
+            m_StoreView.Changed += RefreshActiveTabInternal;
             IAPManager.OnPurchaseComplete.AddListener(OnPurchaseCompleteInternal);
             IAPManager.OnPurchaseFailed.AddListener(OnPurchaseFailedInternal);
         }
 
         private void UnsubscribeEventsInternal()
         {
+            m_StoreView.Changed -= RefreshActiveTabInternal;
             IAPManager.OnPurchaseComplete.RemoveListener(OnPurchaseCompleteInternal);
             IAPManager.OnPurchaseFailed.RemoveListener(OnPurchaseFailedInternal);
         }
@@ -50,7 +56,7 @@ namespace Rush
                 m_IAPTabEntries[i].Populate(tabs[i], OnBundleClickedInternal);
         }
 
-        // Bundle clicked → open detail panel (no confirmation panel for IAP)
+        // Bundle clicked - open detail panel (no confirmation panel for IAP)
         private void OnBundleClickedInternal(IAPBundleConfig bundle)
         {
             var detailPanel = CanvasManager.Instance.GetPanel<IAPBundleDetailPanel>();
@@ -59,21 +65,20 @@ namespace Rush
 
         private void OnPurchaseCompleteInternal(CollectibleResultData result)
         {
-            // Refresh list so first purchase bonus badge disappears
-            RefreshActiveTabInternal();
+            CanvasManager.Instance.GetPanel<IAPBundleDetailPanel>()?.Hide();
 
             var resultPanel = CanvasManager.Instance.GetPanel<ShopResultPanel>();
             resultPanel?.Show(result);
         }
 
         private void OnPurchaseFailedInternal(IAPBundleConfig bundle, string reason) =>
-            Debug.LogWarning($"[IAPPanel] Purchase failed — {bundle?.BaseInfo.Name}: {reason}");
+            Debug.LogWarning($"[IAPPanel] Purchase failed - {bundle?.BaseInfo.Name}: {reason}");
 
         private void RefreshActiveTabInternal()
         {
             if (m_IAPTabEntries == null) return;
             foreach (var entry in m_IAPTabEntries)
-                entry.RepopulateIfVisible(OnBundleClickedInternal);
+                entry?.RefreshOffers(OnBundleClickedInternal);
         }
     }
 }

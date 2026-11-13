@@ -15,6 +15,8 @@ namespace Rush
         public int MaxLevel => m_MaxLevel;
         [SerializeField]
         private UnityEvent<int> m_OnLevelChanged;
+        public UnityEvent<int> OnLevelChanged => m_OnLevelChanged ??= new UnityEvent<int>();
+
         public int GetLevelScaleByOther(ProgressField other)
         {
             return Mathf.Max(1, LevelInternal + other.LevelInternal);

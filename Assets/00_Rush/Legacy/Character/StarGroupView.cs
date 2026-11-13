@@ -11,50 +11,21 @@ namespace LegionKnight
         public void Init(HeroUnitConfig heroConfig)
         {
             HeroUnit heroUnit = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
-            int maxStar = heroUnit.MaxStar;
-            int openedStar = heroUnit.Star;
-
-            foreach (StarView starView in m_StarViews)
+            if (m_StarViews == null || heroUnit == null) return;
+            for (int slot = 0; slot < m_StarViews.Length; slot++)
             {
-                starView.HideStar();
-            }
-            if (m_StarViews == null || m_StarViews.Length == 0)
-            {
-                Debug.LogWarning("Star views are not initialized.");
-                return;
-            }
-            for (int i = 0; i < maxStar; i++)
-            {
-                if (i < m_StarViews.Length)
+                var star = m_StarViews[slot];
+                if (star == null) continue;
+                if (slot >= HeroEvolution.StarSlots)
                 {
-                    m_StarViews[i].Show();
+                    star.Hide();
+                    continue;
                 }
-                else
-                {
-                    Debug.LogWarning($"Star view at index {i} does not exist.");
-                }
-            }
-            for (int i = 0; i < openedStar; i++)
-            {
-                if (i < m_StarViews.Length)
-                {
-                    m_StarViews[i].ShowStar();
-                }
-                else
-                {
-                    Debug.LogWarning($"Star view at index {i} does not exist.");
-                }
-            }
-            
-            if (openedStar >= maxStar)
-            {
-                Debug.Log("All stars are opened.");
-            }
-            else
-            {
-                Debug.Log($"Opened stars: {openedStar}, Max stars: {maxStar}");
+                star.Show();
+                star.SetTier(HeroEvolution.StarTier(heroUnit.Star, slot));
             }
         }
+
         public void ShowStar(int index)
         {
             if (index < 0 || index >= m_StarViews.Length)
@@ -75,3 +46,4 @@ namespace LegionKnight
         }
     }
 }
+

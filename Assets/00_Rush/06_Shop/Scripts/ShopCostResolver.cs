@@ -17,13 +17,13 @@ namespace Rush
             var breakdown = new ShopCostBreakdown();
 
             float discount = CalculateDiscountInternal(bundle, isFirstPurchase);
-            bool hasDiscount = discount > 0f;
+            
             int finalPrice = Mathf.Max(0, Mathf.RoundToInt(bundle.BasePrice * (1f - discount)));
 
             breakdown.SetOriginalPrice(bundle.BasePrice);
-            breakdown.SetHasDiscount(hasDiscount);
+            breakdown.SetHasDiscount(finalPrice < bundle.BasePrice);
             breakdown.SetFirstPurchaseDiscount(
-                isFirstPurchase && bundle.FirstPurchaseDiscount > 0f
+                isFirstPurchase && finalPrice < CalculateFinalPrice(bundle, false)
                 && bundle.BasePrice > bundle.MinimumPriceForDiscount);
 
             if (finalPrice <= 0)
@@ -36,7 +36,7 @@ namespace Rush
 
             breakdown.SetFree(false);
 
-            int held = bundle.CostCurrency != null
+            int held = bundle.CostCurrency != null && currencyControl != null
                 ? currencyControl.GetCurrencyAmount(bundle.CostCurrency) : 0;
 
             breakdown.SetMain(finalPrice);

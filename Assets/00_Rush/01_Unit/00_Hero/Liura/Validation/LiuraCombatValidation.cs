@@ -414,7 +414,7 @@ namespace Rush
 
             for (int stage = 0; stage < 4; stage++)
                 if (skill.SkillConfig == m_Hero.Skills[stage])
-                    return (33f + 1.1f * (stage + 1) * m_Owner.BaseStats.Attack) * factor;
+                    return (stage + 1) * m_Owner.BaseStats.Attack * factor;
 
             // Mana Charge and Mana Soul both deliver whole mana.
             return Mathf.RoundToInt(26f * factor);

@@ -1,6 +1,5 @@
 using Rush;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace LegionKnight
 {
@@ -25,76 +24,48 @@ namespace LegionKnight
         [SerializeField]
         private BreakThroughView m_BreakView;
 
-        [SerializeField]
-        private UnityEvent m_OnBreakAvaiable = new();
-        [SerializeField]
-        private UnityEvent m_OnBreakUnavailable = new();
+        private HeroUnitConfig m_ShownHero;
 
-        private void Start()
+        private void OnEnable()
         {
-            /*m_UpgradeView.OnShow.RemoveListener(ShowNextValueInternal);
-            m_UpgradeView.OnHide.RemoveListener(HideNextValueInternal);
-
-            m_BreakView.OnShow.RemoveListener(ShowNextValueInternal);
-            m_BreakView.OnHide.RemoveListener(HideNextValueInternal);
-
-            m_UpgradeView.OnShow.AddListener(ShowNextValueInternal);
-            m_UpgradeView.OnHide.AddListener(HideNextValueInternal);
-
-            m_BreakView.OnShow.AddListener(ShowNextValueInternal);
-            m_BreakView.OnHide.AddListener(HideNextValueInternal);*/
-
-            HideNextValueInternal();
+            m_UpgradeView.OnShow.AddListener(m_BreakView.Hide);
+            m_BreakView.OnShow.AddListener(m_UpgradeView.Hide);
         }
+
+        private void OnDisable()
+        {
+            m_UpgradeView.OnShow.RemoveListener(m_BreakView.Hide);
+            m_BreakView.OnShow.RemoveListener(m_UpgradeView.Hide);
+        }
+
+        private void Start() => HideNextValueInternal();
 
         public void Init(HeroUnitConfig heroConfig)
         {
-            HeroUnit characterUnit = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
-
-            bool isTimeToBreak = heroConfig.BreakThroughFormulaConfig.CanBreakByLevel(characterUnit.Star, characterUnit.Level);
-            //bool canBreak = Player.Instance.GetCurrencyAmount(breakShardDefi) >= breakShardAmount && 
-
-            if (isTimeToBreak)
+            var hero = Player.Instance.HeroesCollection.GetHeroUnit(heroConfig);
+            if (m_ShownHero != heroConfig)
             {
-                m_OnBreakAvaiable.Invoke();
-                m_BreakButton.Init(heroConfig);
-                m_BreakButton.Show();
-                m_UpgradeButton.Hide();
                 m_UpgradeView.Hide();
-                m_LevelView.SetNextValue(characterUnit.Level);
-            }
-            else
-            {
-                m_OnBreakUnavailable.Invoke();
-                m_UpgradeButton.Init(heroConfig);
-                m_UpgradeButton.Show();
-                m_BreakButton.Hide();
                 m_BreakView.Hide();
-                m_LevelView.SetNextValue(characterUnit.Level + 1);
+                m_ShownHero = heroConfig;
             }
+            if (!m_UpgradeButton.IsShown) m_UpgradeButton.Show();
+            if (!m_BreakButton.IsShown) m_BreakButton.Show();
+            m_UpgradeButton.Init(heroConfig);
+            m_BreakButton.Init(heroConfig);
 
-            bool isMaxLevel = characterUnit.Level >= heroConfig.Progression.MaxLevel;
-            BreakThroughStep currentBreakThroughStep = heroConfig.BreakThroughFormulaConfig.BreakThroughSteps[characterUnit.Star];
-
-            StatField bonusStat = currentBreakThroughStep.StatBonus * characterUnit.Star; // Assuming base stat is determined by breakthrough step and star
-            StatField finalStat = characterUnit.FinalStat();
-            StatField nextFinalStat = characterUnit.NextFinalStat();
-            if (isMaxLevel)
-            {   
-                nextFinalStat = finalStat; // If max level, next stat is same as final stat
-            }
-            m_LevelView.SetCurrentValue(characterUnit.Level);
-
-            m_AttackView.SetCurrentValue(finalStat.Attack + bonusStat.Attack);
-            m_AttackView.SetNextValue(nextFinalStat.Attack + bonusStat.Attack);
-
-            m_DefenseView.SetCurrentValue(finalStat.Defense + bonusStat.Defense);
-            m_DefenseView.SetNextValue(nextFinalStat.Defense + bonusStat.Defense);
-
-            m_HealthView.SetCurrentValue(finalStat.Health + bonusStat.Health);
-            m_HealthView.SetNextValue(nextFinalStat.Health + bonusStat.Health);
-            //HideNextValueInternal();
+            var current = hero.FinalStat();
+            var next = hero.NextFinalStat();
+            m_LevelView.SetCurrentValue(hero.Level);
+            m_LevelView.SetNextValue(Mathf.Min(hero.Level + 1, HeroEvolution.MaxLevel));
+            m_AttackView.SetCurrentValue(current.Attack);
+            m_AttackView.SetNextValue(next.Attack);
+            m_DefenseView.SetCurrentValue(current.Defense);
+            m_DefenseView.SetNextValue(next.Defense);
+            m_HealthView.SetCurrentValue(current.Health);
+            m_HealthView.SetNextValue(next.Health);
         }
+
         public void ShowNextValue()
         {
             ShowNextValueInternal();
@@ -120,3 +91,4 @@ namespace LegionKnight
         }
     }
 }
+

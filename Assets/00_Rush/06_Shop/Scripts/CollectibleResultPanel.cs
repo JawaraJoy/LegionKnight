@@ -23,6 +23,7 @@ namespace Rush
         private const float c_ResultDoneDelay = 1f;
         private Coroutine m_SpawnCoroutine;
         private int m_SpawnVersion;
+        protected bool ShowAllAtOnce { get; private set; }
 
         [SerializeField]
         protected UnityEvent m_OnResultDone;
@@ -46,9 +47,12 @@ namespace Rush
             base.HideInternal();
         }
 
-        public void Show(CollectibleResultData result)
+        public virtual void Show(CollectibleResultData result) => ShowResultInternal(result, false);
+
+        protected void ShowResultInternal(CollectibleResultData result, bool showAllAtOnce)
         {
             if (result == null) throw new System.ArgumentNullException(nameof(result));
+            ShowAllAtOnce = showAllAtOnce;
             StopSpawnInternal();
             m_ItemPool?.ReturnAll();
 
@@ -57,12 +61,21 @@ namespace Rush
 
             ShowInternal();
             if (!gameObject.activeInHierarchy || !IsShown) return;
+            if (showAllAtOnce)
+            {
+                foreach (var entry in result.Entries) SpawnEntryInternal(entry);
+                ShowSpecialDropInternal(result);
+                OnResultDoneInvoke();
+                return;
+            }
+
             m_SpawnCoroutine = StartCoroutine(SpawnSequenceRoutine(result, m_SpawnVersion));
         }
 
         private IEnumerator SpawnSequenceRoutine(CollectibleResultData result, int version)
         {
-            yield return new WaitForSecondsRealtime(m_DelayBeforeFirst);
+            if (m_DelayBeforeFirst > 0f)
+                yield return new WaitForSecondsRealtime(m_DelayBeforeFirst);
 
             for (int i = 0; i < result.Entries.Count; i++)
             {
@@ -73,8 +86,7 @@ namespace Rush
                 SpawnEntryInternal(entry);
                 PlaySfxInternal(entry);
 
-                if (isLast && result.WasSpecialDrop && m_SpecialDropNoticeText != null)
-                    m_SpecialDropNoticeText.gameObject.SetActive(true);
+                if (isLast) ShowSpecialDropInternal(result);
 
                 if (!isLast)
                     yield return new WaitForSecondsRealtime(m_SpawnInterval);
@@ -86,11 +98,18 @@ namespace Rush
             OnResultDoneInvoke();
         }
 
-        private void SpawnEntryInternal(CollectibleResultEntry entry)
+        private void ShowSpecialDropInternal(CollectibleResultData result)
+        {
+            if (result.WasSpecialDrop && m_SpecialDropNoticeText != null)
+                m_SpecialDropNoticeText.gameObject.SetActive(true);
+        }
+
+        protected virtual void SpawnEntryInternal(CollectibleResultEntry entry)
         {
             if (m_ItemPool == null) return;
             var ui = m_ItemPool.Rent();
-            ui.Setup(entry);
+            ui.transform.SetAsLastSibling();
+            ui.Setup(entry, !ShowAllAtOnce);
         }
 
         private void PlaySfxInternal(CollectibleResultEntry entry)

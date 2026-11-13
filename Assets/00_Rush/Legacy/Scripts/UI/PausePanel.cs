@@ -29,7 +29,7 @@ namespace LegionKnight
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            m_LootMonitor.Show();
+            m_LootMonitor?.Show();
         }
         private void ContinueButtonClick()
         {

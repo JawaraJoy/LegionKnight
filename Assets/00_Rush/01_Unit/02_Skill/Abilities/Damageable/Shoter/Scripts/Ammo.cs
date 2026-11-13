@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace Rush
 {
-    public abstract class Ammo : Bindable, IUpdater
+    public abstract class Ammo : Bindable, IUpdater, IHasRarityConfig
     {
         [SerializeField, MMReadOnly]
         protected AmmoConfig m_Config;
@@ -38,6 +38,7 @@ namespace Rush
 
         private readonly HashSet<ITargetable> m_HitTargets = new();
 
+        public RarityConfig RarityConfig => m_Config?.RarityConfig ?? m_AbilityContext?.RarityConfig;
         public bool IsActive => gameObject.activeSelf;
 
         // -------------------------------------------------------------------------

@@ -16,31 +16,17 @@ namespace LegionKnight
         [SerializeField]
         private int m_FreeDrawWatchAmount = 3;
 
-        [Header("Spin Animation")]
-        [SerializeField, Min(8)]
-        private int m_MinSpinStep = 40;
-        [SerializeField, Min(0)]
-        private int m_MinAdditionalSpinStep = 8;
-        [SerializeField, Min(1)]
-        private int m_MaxAdditionalSpinStep = 24;
-        [SerializeField, Min(0.01f)]
-        private float m_StartStepDelay = 0.06f;
-        [SerializeField, Min(0f)]
-        private float m_MidDelayGrowth = 0.04f;
-        [SerializeField, Min(0f)]
-        private float m_EndDelayGrowth = 0.12f;
-        [SerializeField, Min(0f)]
-        private float m_ClaimDelay = 1f;
+        [SerializeField, Min(1)] private int m_FullTurns = 3;
+        [SerializeField, Min(0.1f)] private float m_SpinDuration = 3f;
+        [SerializeField, Min(0f)] private float m_ClaimDelay = 0.35f;
+        [SerializeField] private bool m_SkipAnimationByDefault;
 
         public SpinRewardDefinition[] Rewards => m_Rewards;
         public int FreeSpinAmountEachDay => m_FreeSpinAmountEachDay;
         public int FreeDrawWatchAmount => m_FreeDrawWatchAmount;
-        public int MinSpinStep => m_MinSpinStep;
-        public int MinAdditionalSpinStep => m_MinAdditionalSpinStep;
-        public int MaxAdditionalSpinStep => m_MaxAdditionalSpinStep;
-        public float StartStepDelay => m_StartStepDelay;
-        public float MidDelayGrowth => m_MidDelayGrowth;
-        public float EndDelayGrowth => m_EndDelayGrowth;
+        public int FullTurns => m_FullTurns;
+        public float SpinDuration => m_SpinDuration;
+        public bool SkipAnimationByDefault => m_SkipAnimationByDefault;
         public float ClaimDelay => m_ClaimDelay;
 
         /// <summary>
@@ -56,19 +42,24 @@ namespace LegionKnight
             }
 
             int totalWeight = 0;
-            foreach (var r in m_Rewards)
-                totalWeight += r.Weight;
+            foreach (var reward in m_Rewards)
+            {
+                if (reward != null && reward.Weight > 0) totalWeight += reward.Weight;
+            }
+            if (totalWeight <= 0) return -1;
 
             int roll = Random.Range(0, totalWeight);
             int cumulative = 0;
             for (int i = 0; i < m_Rewards.Length; i++)
             {
-                cumulative += m_Rewards[i].Weight;
+                var reward = m_Rewards[i];
+                if (reward == null || reward.Weight <= 0) continue;
+                cumulative += reward.Weight;
                 if (roll < cumulative)
                     return i;
             }
 
-            return m_Rewards.Length - 1;
+            return -1;
         }
 
         public bool TryGetReward(string id, out SpinRewardDefinition reward)

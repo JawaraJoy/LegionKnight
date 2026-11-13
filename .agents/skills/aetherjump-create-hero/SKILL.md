@@ -1,13 +1,19 @@
 ---
 name: aetherjump-create-hero
-description: Buat atau revamp hero AetherJump (Unity LegionKnight) dengan alur Allain, dari blueprint dan portrait sampai rig, kit, deck, character selection, gacha, dan uji playable. Gunakan juga untuk satu tahap produksi atau untuk membedakan tampilan, mekanik, dan effort hero Epic dan Legendary.
+description: Buat hero AetherJump (Unity LegionKnight) dengan alur Allain, dari blueprint dan portrait sampai rig, kit, deck, character selection, gacha, dan uji playable. Gunakan juga untuk satu tahap produksi, perombakan dari blueprint, penyelarasan rarity aset, atau standar tampilan, mekanik, dan effort hero Epic dan Legendary.
 ---
 
 # Membuat hero AetherJump
 
+Untuk memperbarui ikon skill, indikator status, dan platform hero yang sudah playable, gunakan [alur revamp Kael dan Liura](../aetherjump-revamp-hero/SKILL.md).
+
 Untuk ilustrasi dan revisi visual karakter, terapkan [gaya karakter AetherJump](../aetherjump-art-style/SKILL.md) dengan referensi Allain dan Vesper yang disetujui.
 
 Mulai dari brief terbaru dan aset yang sudah diterima pengguna. Untuk permintaan satu tahap, kerjakan hasil yang diminta, misalnya portrait chibi saja. Untuk permintaan sampai playable, lanjutkan hingga hero dapat dipilih dan dimainkan dari Home. Saat bekerja lewat Unity MCP, periksa nama dan path proyek pada instance yang aktif. Lokasi aset dan titik pendaftarannya ada di [peta proyek LegionKnight](references/legionknight.md).
+
+## Rarity hero dan asetnya
+
+Saat merakit config, gunakan `HeroUnitConfig.CollectibleField.RarityConfig` sebagai acuan untuk semua skill, ability, platform, kartu deck, dan reward gacha khas hero. Terapkan [aturan rarity aset hero](references/rarity-hero.md) pada aset baru maupun duplikat, termasuk efek turunan dan summon.
 
 ## Skala produksi hero Epic dan Legendary
 
@@ -52,9 +58,10 @@ Jika pengguna meminta usulan nama atau konfirmasi mekanik, sajikan opsi bersama 
 
 - Rakit `HeroUnitConfig` dengan avatar, clip, stat, rarity, empat skill weapon, passive, aktif, dan platform unik. Telusuri setiap `SkillConfig` ke `AbilityConfig` dan prefab yang menyampaikan efek. Gunakan perilaku Rush yang sudah ada bila cocok. Untuk summon, tentukan faction, spawner, HP, health bar, aksi, dan animasi sesuai desain. Minion tanpa serangan seperti Anomaly Entity memakai idle dan death.
 - Buat icon hero, icon tiap skill, icon dan sprite platform, serta VFX/SFX sesuai aksi. Periksa ukuran icon di slot UI yang sebenarnya. Uji keterbacaan serangan, tanda di musuh, indikator stack, dan area efek di depan looping background. Jika ada heal, cocokkan teks pemulihan dengan HP yang benar-benar dipulihkan.
+- Untuk desain sprite platform, pencocokan ukuran dengan Allain, dan uji tumpukan di Play Mode, ikuti [redesign platform AetherJump](../aetherjump-redesign-platform/SKILL.md).
 - Rakit deck hero dan kartu khususnya. Untuk pola Allain, satu kartu weapon menaikkan keempat stage milik hero tersebut. Bedakan perubahan mekanik antar-stage dari kenaikan level lewat kartu. Ikuti [pedoman kartu Roguelike](../aetherjump-roguelike-cards/SKILL.md): kartu lintas hero hanya boleh mempelajari ultimate dan platform; basic attack serta passive hanya tersedia dari deck default hero aktif. Gunakan `$aetherjump-balancing` untuk besaran yang di-upgrade. Setiap level skill menambah 15% dari nilai efektif level 1. Teks kartu mengikuti bahasa Inggris seperti deck lain; deskripsi tampilan dan angka preview harus dibentuk dari konfigurasi melalui `GameplayDescription`, bukan mengandalkan teks manual serialized.
 - Daftarkan hero di character selection dan atur cara membukanya. Untuk perilisan seperti Allain, siapkan splash banner, item hadiah hero, reward pool, dan pity sesuai rarity serta desain banner. Sambungkan banner ke daftar yang dibaca Home.
 
 ## Kriteria playable
 
-Di Play Mode, pakai profil uji untuk memilih, memasang, dan memulai run dengan hero dari Home. Periksa empat weapon stage, pemicu passive, biaya dan aktivasi skill aktif, serta perfect landing kiri dan kanan. Ambil kartu lewat jalur gameplay dan cek efek pada level skill 1, 2, dan 3 dengan stat hero yang sama. Uji efek turunan, pergantian atau kedaluwarsa buff, dan reset run jika berlaku. Untuk hero gacha, cek tampilan banner dan pemberian hadiah pada profil uji. Laporkan stat dasar, ringkasan kit dan hasil uji, serta tandai jalur yang masih belum teruji.
+Di Play Mode, pakai profil uji untuk memilih, memasang, dan memulai run dengan hero dari Home. Periksa empat weapon stage, pemicu passive, biaya dan aktivasi skill aktif, serta perfect landing kiri dan kanan. Ambil kartu lewat jalur gameplay dan cek efek pada level skill 1, 2, dan 3 dengan stat hero yang sama. Uji efek turunan, pergantian atau kedaluwarsa buff, dan reset run jika berlaku. Cocokkan rarity pada detail skill dan kartu deck dengan config hero. Untuk hero gacha, cek tampilan banner serta identitas dan rarity hadiah yang diberikan pada profil uji. Laporkan stat dasar, ringkasan kit dan hasil uji, serta tandai jalur yang masih belum teruji.

@@ -16,61 +16,49 @@ namespace Rush
 
         private Coroutine m_FlipCoroutine;
 
-        // Cached data for flip
-        private Sprite m_HeroIcon;
-        private string m_HeroName;
-        private int m_HeroAmount;
-        private Sprite m_ConverterIcon;
-        private string m_ConverterName;
-        private int m_ConverterAmount;
-        private void OnDisable() => StopFlipInternal();
+        protected virtual void OnDisable() => StopFlipInternal();
 
-        public void Setup(CollectibleResultEntry entry)
+        public void Setup(CollectibleResultEntry entry) => BindEntryInternal(entry, true);
+        internal void Setup(CollectibleResultEntry entry, bool animateConversion) =>
+            BindEntryInternal(entry, animateConversion);
+
+        private void BindEntryInternal(CollectibleResultEntry entry, bool animateConversion)
         {
             StopFlipInternal();
-            SetupBase(entry.Collectible, entry.Amount);
+            BindOriginInternal(entry);
+            var converter = entry.WasDuplicateHero && entry.Collectible is HeroUnitConfig hero
+                ? hero.ItemDuplicateConverter : null;
+            if (converter?.ItemConfig == null)
+                BindFaceInternal(entry.Collectible, entry.Amount);
+            else if (animateConversion)
+                m_FlipCoroutine = StartCoroutine(FlipRoutine(entry, converter));
+            else
+                BindFaceInternal(converter.ItemConfig, converter.Amount);
 
-            if (entry.WasDuplicateHero && entry.Collectible is HeroUnitConfig heroConfig)
-            {
-                var converter = heroConfig.ItemDuplicateConverter;
-
-                m_HeroIcon = entry.Collectible.CollectibleField?.Icon;
-                m_HeroName = entry.Collectible.BaseInfo.Name;
-                m_HeroAmount = entry.Amount;
-                m_ConverterIcon = converter.ItemConfig?.CollectibleField?.Icon;
-                m_ConverterName = converter.ItemConfig?.BaseInfo.Name ?? "-";
-                m_ConverterAmount = converter.Amount;
-
-                m_FlipCoroutine = StartCoroutine(FlipRoutine());
-            }
             OnSetupComplete(entry.Collectible, entry.Amount);
         }
 
+        protected virtual void BindOriginInternal(CollectibleResultEntry entry) { }
+
+        protected virtual void BindFaceInternal(CollectibleConfig collectible, int amount) =>
+            SetupBase(collectible, amount);
+
         // ── Flip ──────────────────────────────────────────────────────────────
 
-        private IEnumerator FlipRoutine()
+        private IEnumerator FlipRoutine(CollectibleResultEntry entry, LegionKnight.Currency converter)
         {
             for (int i = 0; i < m_FlipCount; i++)
             {
                 bool showHero = i % 2 == 0;
-                ApplyFlipInternal(showHero);
+                BindFaceInternal(showHero ? entry.Collectible : converter.ItemConfig, showHero ? entry.Amount : converter.Amount);
                 OnFlipInvoke(showHero);
                 yield return new WaitForSecondsRealtime(m_FlipInterval);
             }
 
             // End on converter
-            ApplyFlipInternal(false);
+            BindFaceInternal(converter.ItemConfig, converter.Amount);
             OnFlipInvoke(false);
             m_FlipCoroutine = null;
-        }
-
-        // Swap data on the same fields from base class
-        private void ApplyFlipInternal(bool showHero)
-        {
-            if (showHero)
-                SetupBase(m_HeroIcon, m_HeroName, m_HeroAmount);
-            else
-                SetupBase(m_ConverterIcon, m_ConverterName, m_ConverterAmount);
         }
 
         private void StopFlipInternal()

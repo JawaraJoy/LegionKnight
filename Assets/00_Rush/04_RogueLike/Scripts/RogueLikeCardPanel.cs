@@ -8,6 +8,8 @@ namespace Rush
         [SerializeField] private RLCardView[] m_CardViews;
         private RogueLikeManager m_Handler;
         private bool m_IsSelecting;
+        private int m_SelectionVersion;
+        private StageManager m_StageManager;
         private RogueLikeManager Handler
         {
             get
@@ -22,11 +24,18 @@ namespace Rush
             foreach (RLCardView view in m_CardViews)
                 if (view != null) view.BindSelectionPanel(this);
             Handler.OnPlayerLevelChanged.AddListener(OnPlayerLevelChanged);
+            m_StageManager = RushGameManager.Instance.StageManager;
+            if (m_StageManager != null) m_StageManager.OnStageStart.AddListener(OnStageStartedInternal);
         }
+        private void OnDisable() => InvalidateRewardRequestInternal();
         private void OnDestroy()
         {
+            InvalidateRewardRequestInternal();
             if (m_Handler != null) m_Handler.OnPlayerLevelChanged.RemoveListener(OnPlayerLevelChanged);
+            if (m_StageManager != null) m_StageManager.OnStageStart.RemoveListener(OnStageStartedInternal);
         }
+        private void OnStageStartedInternal(StageConfig stage) => InvalidateRewardRequestInternal();
+        private void InvalidateRewardRequestInternal() => m_SelectionVersion++;
         private void OnPlayerLevelChanged(int level)
         {
             if (level == 1) HideInternal();
@@ -53,6 +62,7 @@ namespace Rush
         }
         protected override void HideInternal()
         {
+            InvalidateRewardRequestInternal();
             foreach (RLCardView view in m_CardViews)
                 if (view != null) view.ClearCard();
             base.HideInternal();
@@ -82,12 +92,20 @@ namespace Rush
         }
         public void WatchAds()
         {
-            if (IsShown) UnityService.Instance.ShowRewardedAd(RefreshCardsInternal);
+            if (!isActiveAndEnabled || !IsShown || Handler.PendingCardChoices <= 0 || m_IsSelecting) return;
+            int selectionVersion = ++m_SelectionVersion;
+            UnityService.Instance.ShowRewardedAd(() => ApplyRewardedRerollInternal(selectionVersion));
+        }
+        private void ApplyRewardedRerollInternal(int selectionVersion)
+        {
+            if (this == null || !isActiveAndEnabled || selectionVersion != m_SelectionVersion) return;
+            RefreshCardsInternal();
         }
         public void RefreshCards() => RefreshCardsInternal();
         private void RefreshCardsInternal()
         {
             if (!IsShown || Handler.PendingCardChoices <= 0) return;
+            InvalidateRewardRequestInternal();
             CardConfig[] configs = Handler.GetRandomAvailableCards(m_CardViews.Length).ToArray();
             ShowCards(configs);
             if (configs.Length == 0)

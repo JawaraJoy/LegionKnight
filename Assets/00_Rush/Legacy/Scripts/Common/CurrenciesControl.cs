@@ -27,6 +27,48 @@ namespace LegionKnight
         private UnityEvent<CollectibleConfig, int, int> m_OnSelectedSellChanged;
         public UnityEvent<CollectibleConfig, int, int> OnSelectedSellChanged => m_OnSelectedSellChanged;
 
+        private PaidDiamondWallet m_PaidDiamonds;
+        private Currency DiamondCurrency => m_Currencies.Find(c => PaidDiamondWallet.IsDiamond(c.ItemConfig));
+        internal int LocalDiamonds
+        {
+            get
+            {
+                var c = DiamondCurrency ?? throw new System.InvalidOperationException("Diamond currency is missing.");
+                var save = UnityService.Instance.LocalSave;
+                string key = AmountKey(c.ItemConfig);
+                return save.HasData(key) ? save.GetDataValue<int>(key) : c.Amount;
+            }
+        }
+
+        internal void ShowPaidDiamonds(PaidDiamondWallet paid)
+        {
+            m_PaidDiamonds = paid;
+            var currency = DiamondCurrency;
+            if (currency != null) m_OnCurrencyChanged?.Invoke(currency);
+        }
+
+        internal void StageLocalDiamondBalance(int amount)
+        {
+            var currency = DiamondCurrency ?? throw new System.InvalidOperationException("Missing Diamond currency.");
+            if (amount < 0) throw new System.InvalidOperationException("Insufficient local Diamonds.");
+            var save = UnityService.Instance.LocalSave;
+            save.SaveData(AmountKey(currency.ItemConfig), amount, callback: () =>
+            {
+                currency.SetAmount(amount);
+                m_OnCurrencyChanged?.Invoke(currency);
+            });
+        }
+
+        internal System.Threading.Tasks.Task CommitWithDiamondsAsync(int cost, System.Func<bool> valid, System.Action commit)
+        {
+            var save = UnityService.Instance.LocalSave;
+            if (cost > 0 && m_PaidDiamonds != null)
+                return m_PaidDiamonds.SpendAsync(this, save, cost, valid, commit);
+            if (!valid()) throw new System.InvalidOperationException("Offer changed.");
+            save.ExecuteTransaction(commit);
+            return System.Threading.Tasks.Task.CompletedTask;
+        }
+
         private bool m_IsSelling;
         public int SelectedSellAmount => m_SelectedSellAmount;
         private int SelectedSellMaximum
@@ -166,11 +208,50 @@ namespace LegionKnight
         public int GetCurrencyAmount(ItemConfig itemConfig)
         {
             var currency = GetCurrencyInternal(itemConfig);
+            if (currency != null && m_PaidDiamonds != null && PaidDiamondWallet.IsDiamond(itemConfig))
+                return (int)System.Math.Min(int.MaxValue, (long)LocalDiamonds + m_PaidDiamonds.Visible);
             return currency != null ? currency.Amount : 0;
         }
         public Currency GetCurrency(ItemConfig itemConfig)
         {
             return GetCurrencyInternal(itemConfig);
+        }
+
+        internal void StagePurchaseCredit(ItemConfig item, int amount)
+        {
+            var currency = GetCurrencyInternal(item);
+            if (currency == null || amount < 1)
+                throw new System.InvalidOperationException("The purchased currency is unavailable.");
+            var save = UnityService.Instance.LocalSave;
+            string key = AmountKey(item);
+            int current = save.HasData(key) ? save.GetDataValue<int>(key) : currency.Amount;
+            int total = checked(current + amount);
+            save.SaveData(key, total, callback: () =>
+            {
+                currency.SetAmount(total);
+                m_OnCurrencyChanged?.Invoke(currency);
+            });
+        }
+
+        public bool TrySpendForHeroProgress(ItemConfig item, int cost, string progressKey, int next,
+            System.Action applyProgress, System.Action notifyProgress)
+        {
+            if (item == null || cost <= 0 || !HasCurrency(item, out var balance) || balance.Amount < cost)
+                return false;
+
+            var save = UnityService.Instance.LocalSave;
+            int remaining = balance.Amount - cost;
+            save.ExecuteTransaction(() =>
+            {
+                save.SaveData(AmountKey(item), remaining);
+                save.SaveData(progressKey, next);
+            });
+
+            applyProgress();
+            balance.SetAmount(remaining);
+            m_OnCurrencyChanged?.Invoke(balance);
+            notifyProgress();
+            return true;
         }
 
         public void SetCurrencyAmount(ItemConfig itemConfig, int amount)
@@ -195,6 +276,11 @@ namespace LegionKnight
                 return;
             }
 
+            if (m_PaidDiamonds != null && PaidDiamondWallet.IsDiamond(itemConfig))
+            {
+                UnityService.Instance.LocalSave.ExecuteTransaction(() => StageLocalDiamondBalance(checked(LocalDiamonds + amount)));
+                return;
+            }
             currency.AddAmount(amount);
             OnCurrencyChangeInvoke(currency);
         }
@@ -208,8 +294,16 @@ namespace LegionKnight
                 return;
             }
 
+            if (m_PaidDiamonds != null && PaidDiamondWallet.IsDiamond(itemConfig))
+            {
+                int local = m_PaidDiamonds.ApplyToDebit(amount);
+                if (local > 0)
+                    UnityService.Instance.LocalSave.ExecuteTransaction(() => StageLocalDiamondBalance(checked(LocalDiamonds - local)));
+                return;
+            }
             currency.RemoveAmount(amount);
             OnCurrencyChangeInvoke(currency);
         }
     }
 }
+

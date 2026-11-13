@@ -1,128 +1,115 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using LegionKnight;
 using TMPro;
-using LegionKnight;
+using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Rush
 {
-    // Previews gacha results one by one
-    // If the result is a HeroUnitConfig → opens GachaHeroRevealPanel first
-    // After all results previewed → opens CollectibleResultPanel
     public class GachaPreviewPanel : PanelView
     {
         [SerializeField] private GachaPreviewItemUI m_PreviewItemUI;
-
         [SerializeField] private Button m_NextButton;
-        [SerializeField] private TextMeshProUGUI m_CounterText;   // e.g. "3 / 10"
-
+        [SerializeField] private Button m_SkipButton;
+        [SerializeField] private TextMeshProUGUI m_CounterText;
+        [SerializeField] private TextMeshProUGUI m_BannerText;
         [SerializeField] private GameObject m_PityNoticeObject;
-        [SerializeField]
-        private UnityEvent m_OnNextClicked; // Optional event for additional logic when Next is clicked (e.g. play sound)
+        [SerializeField] private UnityEvent m_OnNextClicked;
+
         private CollectibleResultData m_Result;
-        private List<CollectibleResultEntry> m_Entries;
+        private GachaBannerConfig m_Banner;
+        private GachaHeroRevealPanel m_Reveal;
         private int m_CurrentIndex;
 
-        // ── Lifecycle ─────────────────────────────────────────────────────────
+        public void Show(CollectibleResultData result)
+        {
+            if (result == null || result.Entries.Count == 0) return;
+            if (IsShown) HideInternal();
+            m_Result = result;
+            m_Banner = RushPlayer.Instance.GachaManager.ResolveResultBanner(result.Source);
+            m_CurrentIndex = 0;
+            ShowInternal();
+            if (IsShown) ShowEntryInternal();
+        }
 
         protected override void ShowInternal()
         {
             base.ShowInternal();
-            if (m_NextButton != null) m_NextButton.onClick.AddListener(OnNextClickedInternal);
+            if (!IsShown) return;
+            m_NextButton.onClick.RemoveListener(OnNextClickedInternal);
+            m_NextButton.onClick.AddListener(OnNextClickedInternal);
+            m_SkipButton.onClick.RemoveListener(SkipToResultsInternal);
+            m_SkipButton.onClick.AddListener(SkipToResultsInternal);
         }
 
         protected override void HideInternal()
         {
-            if (m_NextButton != null) m_NextButton.onClick.RemoveListener(OnNextClickedInternal);
+            m_NextButton.onClick.RemoveListener(OnNextClickedInternal);
+            m_SkipButton.onClick.RemoveListener(SkipToResultsInternal);
+            m_Result = null;
+            if (m_Reveal != null && m_Reveal.IsShown) m_Reveal.Hide();
+            m_Reveal = null;
             base.HideInternal();
         }
 
-        // ── Public ────────────────────────────────────────────────────────────
-
-        public void Show(CollectibleResultData result)
+        private void ShowEntryInternal()
         {
-            m_Result = result;
-            m_Entries = new List<CollectibleResultEntry>(result.Entries);
-            m_CurrentIndex = 0;
-
-            Show();
-            ShowEntryInternal(m_CurrentIndex);
-        }
-
-        // ── Entry Display ─────────────────────────────────────────────────────
-
-        private void ShowEntryInternal(int index)
-        {
-            if (m_Entries == null || index >= m_Entries.Count) return;
-            m_OnNextClicked?.Invoke();
-            var entry = m_Entries[index];
-
-            // Update preview item UI with splash image
-            m_PreviewItemUI?.Setup(entry);
-
-            // Update counter
-            if (m_CounterText != null)
-                m_CounterText.text = $"{index + 1} / {m_Entries.Count}";
-
-            // Pity notice only on last item
-            if (m_PityNoticeObject != null)
-                m_PityNoticeObject.SetActive(
-                    index == m_Entries.Count - 1 && m_Result.WasSpecialDrop);
-
-            // If this is a hero → open reveal panel first
-            // Next button is blocked until reveal panel is closed
-            if (entry.Collectible is HeroUnitConfig heroConfig)
+            var entry = m_Result.Entries[m_CurrentIndex];
+            m_BannerText.text = m_Banner != null ? m_Banner.BaseInfo.Name : string.Empty;
+            m_CounterText.text = $"{m_CurrentIndex + 1} / {m_Result.Entries.Count}";
+            m_PityNoticeObject.SetActive(m_CurrentIndex == m_Result.Entries.Count - 1 && m_Result.WasSpecialDrop);
+            m_NextButton.interactable = true;
+            if (entry.Collectible is HeroUnitConfig hero)
             {
-                SetNextButtonInteractableInternal(false);
-                OpenHeroRevealInternal(heroConfig);
+                m_PreviewItemUI.PrepareForReveal(entry);
+                m_Reveal = CanvasManager.Instance.GetPanel<GachaHeroRevealPanel>();
+                if (m_Reveal != null)
+                {
+                    m_NextButton.interactable = false;
+                    m_Reveal.Show(hero, m_Banner, OnHeroRevealClosedInternal, SkipToResultsInternal);
+                    if (!m_Reveal.IsShown) OnHeroRevealClosedInternal();
+                }
+                else m_PreviewItemUI.Setup(entry);
             }
-            else
-            {
-                SetNextButtonInteractableInternal(true);
-            }
-        }
-
-        private void OpenHeroRevealInternal(HeroUnitConfig heroConfig)
-        {
-            var revealPanel = CanvasManager.Instance.GetPanel<GachaHeroRevealPanel>();
-            revealPanel?.Show(heroConfig, OnHeroRevealClosedInternal);
+            else m_PreviewItemUI.Setup(entry);
+            OnNextClickedInvoke();
         }
 
         private void OnHeroRevealClosedInternal()
         {
-            // Hero reveal done — re-enable next button so player can continue
-            SetNextButtonInteractableInternal(true);
+            m_Reveal = null;
+            if (m_Result == null || !IsShown) return;
+            m_PreviewItemUI.Setup(m_Result.Entries[m_CurrentIndex]);
+            m_NextButton.interactable = true;
         }
 
-        // ── Next ──────────────────────────────────────────────────────────────
+        public void Advance() => OnNextClickedInternal();
 
         private void OnNextClickedInternal()
         {
-            m_CurrentIndex++;
-
-            if (m_CurrentIndex < m_Entries.Count)
+            if (m_Result == null || !m_NextButton.interactable) return;
+            if (++m_CurrentIndex < m_Result.Entries.Count)
             {
-                ShowEntryInternal(m_CurrentIndex);
-                
+                ShowEntryInternal();
+                return;
             }
-            else
-            {
-                // All entries previewed — show full result panel
-                FinishPreviewInternal();
-            }
+
+            FinishPreviewInternal(false);
         }
 
-        private void FinishPreviewInternal()
+        private void SkipToResultsInternal() => FinishPreviewInternal(true);
+
+        private void FinishPreviewInternal(bool showAllAtOnce)
         {
-            Hide();
-            var resultPanel = CanvasManager.Instance.GetPanel<GachaResultPanel>();
-            resultPanel?.Show(m_Result);
+            if (m_Result == null || !IsShown) return;
+            var summary = CanvasManager.Instance.GetPanel<GachaResultPanel>();
+            if (summary == null) return;
+            var result = m_Result;
+            HideInternal();
+            if (showAllAtOnce) summary.ShowAll(result);
+            else summary.Show(result);
         }
 
-        private void SetNextButtonInteractableInternal(bool interactable)
-        {
-            if (m_NextButton != null) m_NextButton.interactable = interactable;
-        }
+        private void OnNextClickedInvoke() => m_OnNextClicked?.Invoke();
     }
 }

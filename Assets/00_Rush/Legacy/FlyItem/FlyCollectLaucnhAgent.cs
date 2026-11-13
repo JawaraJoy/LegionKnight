@@ -94,7 +94,7 @@ namespace LegionKnight
             }
         }
 
-        private IEnumerator CreateNewItem(bool active, CollectibleConfig config = null, Vector3 spawnPos = default)
+        private IEnumerator CreateNewItem(bool active, CollectibleConfig config = null, Vector3 spawnPos = default, Transform hero = null, bool bossDrop = false)
         {
             var handle = m_FlyItemPrefab.InstantiateAsync(spawnPos, Quaternion.identity);
             yield return handle;
@@ -110,7 +110,7 @@ namespace LegionKnight
                     if (active && config != null)
                     {
                         item.transform.position = spawnPos;
-                        item.Init(config, m_TargetPad);
+                        item.Init(config, m_TargetPad, hero, bossDrop);
                     }
                 }
             }
@@ -120,30 +120,40 @@ namespace LegionKnight
         {
             foreach (var item in m_Pool)
             {
-                if (!item.IsActive) return item;
+                if (item != null && !item.IsActive) return item;
             }
             return null;
         }
 
-        // Overload tanpa parameter � pakai default count dari Inspector
+        // Overload tanpa parameter ï¿½ pakai default count dari Inspector
         public void SpawnFlyItem(CollectibleConfig config)
         {
             SpawnFlyItem(config, m_DefaultSpawnCount);
         }
 
         // Overload dengan jumlah custom
-        public void SpawnFlyItem(CollectibleConfig config, int count)
+        public void SpawnFlyItem(CollectibleConfig config, int count) =>
+            LaunchItems(config, count, null, false);
+
+        public void SpawnBossLoot(CollectibleConfig config)
+        {
+            var player = RushPlayer.Instance;
+            if (player != null && player.Unit != null)
+                LaunchItems(config, m_DefaultSpawnCount, player.Unit.transform, true);
+        }
+
+        private void LaunchItems(CollectibleConfig config, int count, Transform hero, bool bossDrop)
         {
             count = Mathf.Max(1, count);
             for (int i = 0; i < count; i++)
             {
                 Vector3 offset = GetSpreadOffset(i, count);
                 Vector3 spawnPos = transform.position + offset;
-                RushGameManager.Instance.StartCoroutine(SpawnRoutine(config, spawnPos));
+                RushGameManager.Instance.StartCoroutine(SpawnRoutine(config, spawnPos, hero, bossDrop));
             }
         }
 
-        private IEnumerator SpawnRoutine(CollectibleConfig config, Vector3 spawnPos)
+        private IEnumerator SpawnRoutine(CollectibleConfig config, Vector3 spawnPos, Transform hero, bool bossDrop)
         {
             FlyItem item = GetAvailableItem();
 
@@ -151,11 +161,11 @@ namespace LegionKnight
             {
                 item.gameObject.SetActive(true);
                 item.transform.position = spawnPos;
-                item.Init(config, m_TargetPad);
+                item.Init(config, m_TargetPad, hero, bossDrop);
             }
             else
             {
-                yield return CreateNewItem(true, config, spawnPos);
+                yield return CreateNewItem(true, config, spawnPos, hero, bossDrop);
             }
         }
     }

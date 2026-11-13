@@ -10,6 +10,7 @@ namespace Rush
         private bool m_RewardsGranted;
         public IReadOnlyList<CollectibleResultEntry> Entries => m_Entries;
         public bool WasSpecialDrop => m_WasSpecialDrop;
+        public string Source { get; private set; }
         public bool RewardsGranted => m_RewardsGranted;
 
         internal void AddEntry(CollectibleConfig collectible, int amount)
@@ -21,10 +22,17 @@ namespace Rush
 
         internal void SetSpecialDrop(bool value) => m_WasSpecialDrop |= value;
 
+        internal void MarkPurchaseDelivered(string source)
+        {
+            Source = source;
+            m_RewardsGranted = true;
+        }
+
         internal void GrantRewards(string source)
         {
             if (m_RewardsGranted) return;
             foreach (var entry in m_Entries) entry.GrantReward(source);
+            Source = source;
             m_RewardsGranted = true;
         }
     }
@@ -54,3 +62,4 @@ namespace Rush
         }
     }
 }
+

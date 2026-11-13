@@ -175,8 +175,15 @@ namespace Rush
         }
         private void ReborInternal(RebornConfig rebornConfig)
         {
-           m_DeathTriggered = false;
-           RushGameManager.Instance.StartCoroutine(RebornDelayRoutine(rebornConfig));
+            RushGameManager.Instance.StartCoroutine(BeginRebornInternal(rebornConfig));
+        }
+
+        internal IEnumerator RebornForRewardedRevive(RebornConfig config) => BeginRebornInternal(config);
+
+        private IEnumerator BeginRebornInternal(RebornConfig config)
+        {
+            m_DeathTriggered = false;
+            return RebornDelayRoutine(config);
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {

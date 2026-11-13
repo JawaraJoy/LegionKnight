@@ -1,3 +1,4 @@
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,132 +8,115 @@ namespace LegionKnight
     public class BreakThroughView : UIView
     {
         [SerializeField] private TextMeshProUGUI m_ShardNameText;
+        [SerializeField] private TextMeshProUGUI m_Title;
         [SerializeField] private CurrencyView m_ShardNeed;
         [SerializeField] private CurrencyView m_CoinNeed;
         [SerializeField] private CurrencyView m_ShardOwned;
         [SerializeField] private CurrencyView m_CoinOwned;
-
-        private HeroUnit m_HeroUnit;
-
         [SerializeField] private Button m_UpgradeButton;
         [SerializeField] private Button m_QuickAccessButton;
 
-        private Currency m_UsedUpgradeShard;
-        private Currency m_UsedUpgradeCoin;
-
-        private bool m_IsUpgradeAvailable = false;
-
-        [SerializeField] private StatView[] m_StatViews;
+        [SerializeField] private EvolveDetailsView m_Details;
+        private HeroUnit m_HeroUnit;
+        private CurrenciesControl m_Wallet;
+        private HeroesCollection m_Collection;
 
         private void OnEnable()
         {
-            m_UpgradeButton.onClick.AddListener(UpgradeHero);
+            m_UpgradeButton.onClick.AddListener(EvolveHero);
+            if (IsShown && m_HeroUnit != null) Listen();
         }
 
         private void OnDisable()
         {
-            m_UpgradeButton.onClick.RemoveListener(UpgradeHero);
+            m_UpgradeButton.onClick.RemoveListener(EvolveHero);
+            StopListening();
         }
 
         public void Init(HeroUnit unit)
         {
             m_HeroUnit = unit;
-            InitInternal();
+            Refresh();
         }
 
-        private void UpgradeHero()
+        private void EvolveHero()
         {
-            if (!m_IsUpgradeAvailable) return;
-
-            m_HeroUnit.AddStar(1);
-
-            ApplyCurrencyCost(m_UsedUpgradeShard);
-            ApplyCurrencyCost(m_UsedUpgradeCoin);
-
-            InitInternal();
-            HideInternal();
-        }
-
-        private void InitInternal()
-        {
-            var state = EvaluateState();
-
-            m_UsedUpgradeShard = state.ShardRequired;
-            m_UsedUpgradeCoin = state.CoinRequired;
-            m_IsUpgradeAvailable = state.CanBreak;
-
-            ApplyUI(state);
-        }
-
-        private BreakState EvaluateState()
-        {
-            var config = m_HeroUnit.HeroConfig.BreakThroughFormulaConfig;
-
-            int shardCost = config.GetShardCostToBreak(m_HeroUnit.Star);
-            int coinCost = config.GetCoinCostToBreak(m_HeroUnit.Star);
-
-            Currency shardReq = new(config.ShardConfig, shardCost);
-            Currency coinReq = new(config.CoinConfig, coinCost);
-
-            int ownedShard = Player.Instance.CurrencyControl.GetCurrencyAmount(config.ShardConfig);
-            int ownedCoin = Player.Instance.CurrencyControl.GetCurrencyAmount(config.CoinConfig);
-
-            bool enough = ownedShard >= shardCost && ownedCoin >= coinCost;
-            bool levelOk = config.CanBreakByLevel(m_HeroUnit.Star, m_HeroUnit.Level);
-            bool isMax = m_HeroUnit.Star >= m_HeroUnit.MaxStar;
-
-            return new BreakState
-            {
-                ShardRequired = shardReq,
-                CoinRequired = coinReq,
-                ShardOwned = new Currency(config.ShardConfig, ownedShard),
-                CoinOwned = new Currency(config.CoinConfig, ownedCoin),
-                CanBreak = enough && levelOk && !isMax,
-                IsEnoughCurrency = enough
-            };
-        }
-
-        private void ApplyUI(BreakState state)
-        {
-            m_UpgradeButton.interactable = state.CanBreak;
-            m_QuickAccessButton.gameObject.SetActive(!state.IsEnoughCurrency);
-
-            m_ShardNeed.SetView(state.ShardRequired);
-            m_CoinNeed.SetView(state.CoinRequired);
-
-            m_ShardOwned.SetView(state.ShardOwned);
-            m_CoinOwned.SetView(state.CoinOwned);
-
-            m_ShardNameText.text = "Owned:";
-        }
-
-        private void ApplyCurrencyCost(Currency cost)
-        {
-            int owned = Player.Instance.CurrencyControl.GetCurrencyAmount(cost.ItemConfig);
-            Player.Instance.CurrencyControl.SetCurrencyAmount(cost.ItemConfig, owned - cost.Amount);
+            if (m_HeroUnit == null) return;
+            if (m_HeroUnit.TryEvolve()) Hide();
+            else Refresh();
         }
 
         protected override void ShowInternal()
         {
+            // The tutorial can open this view directly, without passing through the Hero button.
+            var collection = Player.Instance.HeroesCollection;
+            if (collection.SelectedHero != null)
+                m_HeroUnit = collection.GetHeroUnit(collection.SelectedHero);
             base.ShowInternal();
-            foreach (var statView in m_StatViews)
-                statView.ShowNextValue();
+            Listen();
+        }
+
+        private void Listen()
+        {
+            StopListening();
+            m_Wallet = Player.Instance.CurrencyControl;
+            m_Wallet.OnCurrencyChanged.AddListener(CurrencyChanged);
+            m_Collection = Player.Instance.HeroesCollection;
+            m_Collection.OnSelectedCharacter.AddListener(SelectionChanged);
+            Refresh();
         }
 
         protected override void HideInternal()
         {
+            StopListening();
             base.HideInternal();
         }
 
-        private struct BreakState
+        private void StopListening()
         {
-            public Currency ShardRequired;
-            public Currency CoinRequired;
-            public Currency ShardOwned;
-            public Currency CoinOwned;
+            if (m_Wallet != null)
+            {
+                m_Wallet.OnCurrencyChanged.RemoveListener(CurrencyChanged);
+                if (m_Collection != null) m_Collection.OnSelectedCharacter.RemoveListener(SelectionChanged);
+            }
+            m_Collection = null;
+            m_Wallet = null;
+        }
 
-            public bool CanBreak;
-            public bool IsEnoughCurrency;
+        private void SelectionChanged(HeroUnitConfig config)
+        {
+            if (m_HeroUnit?.HeroConfig != config) Hide();
+        }
+
+        private void CurrencyChanged(Currency currency)
+        {
+            if (currency.ItemConfig == m_HeroUnit?.EvolveShard) Refresh();
+        }
+
+        private void Refresh()
+        {
+            if (m_HeroUnit == null) return;
+            var shard = m_HeroUnit.EvolveShard;
+            bool max = m_HeroUnit.Star >= HeroEvolution.MaxStage;
+            int owned = shard == null ? 0 : Player.Instance.CurrencyControl.GetCurrencyAmount(shard);
+            if (m_Details != null)
+            {
+                m_Details.Display(m_HeroUnit, owned, Player.Instance.BadgeManager?.GetAllBadges(), m_HeroUnit.CanEvolve());
+                return;
+            }
+            int cost = m_HeroUnit.EvolveCost;
+            if (m_Title != null)
+                m_Title.text = max ? "Evolve 12 / 12" : $"Evolve {m_HeroUnit.Star} → {m_HeroUnit.Star + 1}";
+            m_ShardNameText.text = max ? "Max Evolve" : $"Owned {shard?.BaseInfo.Name}";
+            m_UpgradeButton.interactable = m_HeroUnit.CanEvolve();
+            m_QuickAccessButton.gameObject.SetActive(!max && shard != null && owned < cost);
+            m_CoinOwned.gameObject.SetActive(false);
+            m_CoinNeed.gameObject.SetActive(false);
+            m_ShardOwned.gameObject.SetActive(shard != null && !max);
+            m_ShardNeed.gameObject.SetActive(shard != null && !max);
+            if (shard == null || max) return;
+            m_ShardOwned.SetView(new Currency(shard, owned));
+            m_ShardNeed.SetView(new Currency(shard, cost));
         }
     }
 }

@@ -47,6 +47,9 @@ namespace Rush
         private bool m_IsResetting;
         private bool m_IncludeBoss = true;
         private int m_WaveVersion;
+        private bool m_IsWaitingForBossClear;
+        private bool UsesSpawnPolicy => m_IncludeBoss && m_CurrentEnemyWave != null &&
+            m_CurrentEnemyWave.SpawnPolicy != null && m_CurrentEnemyWave.SpawnPolicy.MaxConcurrentMinions > 0;
         private const int c_ClassicDifficultyPerCycle = 1;
         public bool IncludesBoss => m_IncludeBoss;
         [SerializeField]
@@ -179,6 +182,7 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
             m_IncludeBoss = includeBoss;
             ++m_WaveVersion;
             m_CurrentEnemyWave = waveConfig;
+            m_IsWaitingForBossClear = UsesSpawnPolicy && waveConfig.SpawnPolicy.ClearMinionsBeforeBoss;
             PrewarmUnitCurrentWave(waveConfig);
             m_CurrentMaxThreshold = waveConfig.RestThreshold;
             OnCurrentThresholdRateChangedInvoke(m_CurrentThreshold, m_CurrentMaxThreshold);
@@ -316,6 +320,8 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
                 OnEnemyDespawnInvoke(unit);
             }
             DespawnBossInternal(unit, grantRewards);
+            if (!m_IsResetting && UsesSpawnPolicy && m_BossUnitExisten == null && m_WaveState != WaveState.Cleared)
+                UpdateState();
         }
 
         protected virtual void GrantDefeatRewardsInternal(EnemyUnitConfig config)
@@ -461,7 +467,7 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
             var wave = m_CurrentEnemyWave.MinionWaveFields[m_CurrenWaveIndex];
             var configs = GetAllMinions(wave);
             Transform origin = m_EnemyWavePost != null ? m_EnemyWavePost.PostToSpawn : null;
-            if (origin == null || configs == null) return;
+            if (origin == null || configs == null || !CanSpawnMinionBatchInternal(configs)) return;
             var occupied = new List<Vector3>(m_RecentMinionSpawnPositions);
             foreach (Unit unit in m_ReservedEnemies)
                 if (unit != null) occupied.Add(unit.transform.position);
@@ -482,8 +488,35 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
             }
             m_CurrentThreshold -= currentMaxThreshold;
             AddCurrentWaveIndexInternal(1);
-            if (!m_IncludeBoss && m_CurrenWaveIndex >= m_CurrentEnemyWave.MinionWaveFields.Length)
+            if (UsesSpawnPolicy)
+                UpdateState();
+            else if (!m_IncludeBoss && m_CurrenWaveIndex >= m_CurrentEnemyWave.MinionWaveFields.Length)
                 CompleteMinionCycleInternal();
+        }
+
+        private bool CanSpawnMinionBatchInternal(EnemyUnitConfig[] configs)
+        {
+            if (!UsesSpawnPolicy) return true;
+            EnemyWaveSpawnPolicyField policy = m_CurrentEnemyWave.SpawnPolicy;
+            int count = m_ReservedEnemies.Count;
+            int priorityCount = 0;
+            foreach (Unit unit in m_ReservedEnemies)
+                if (m_UnitConfigs.TryGetValue(unit, out EnemyUnitConfig reservedConfig) && IsPriorityMinionInternal(reservedConfig))
+                    priorityCount++;
+            foreach (EnemyUnitConfig config in configs)
+            {
+                if (config == null) continue;
+                count++;
+                if (IsPriorityMinionInternal(config)) priorityCount++;
+            }
+            return count <= policy.MaxConcurrentMinions &&
+                (policy.MaxConcurrentPriorityMinions <= 0 || priorityCount <= policy.MaxConcurrentPriorityMinions);
+        }
+
+        private bool IsPriorityMinionInternal(EnemyUnitConfig config)
+        {
+            MinionUnitConfig[] priorities = m_CurrentEnemyWave.SpawnPolicy.PriorityMinions;
+            return config is MinionUnitConfig minion && priorities != null && System.Array.IndexOf(priorities, minion) >= 0;
         }
 
         private void CompleteMinionCycleInternal()
@@ -504,7 +537,16 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
         private void BossState(int currentMaxThreshold)
         {
             if (!m_IncludeBoss) return;
-            if (m_BossUnitExisten != null || m_CurrentThreshold < currentMaxThreshold) return;
+            if (m_BossUnitExisten != null) return;
+            if (UsesSpawnPolicy && m_IsWaitingForBossClear)
+            {
+                // Preparation and the death animation still occupy a slot.
+                // The boss lead-in starts after every minion has returned.
+                SetCurrentThresholdInternal(0);
+                if (m_ReservedEnemies.Count > 0) return;
+                m_IsWaitingForBossClear = false;
+            }
+            if (m_CurrentThreshold < currentMaxThreshold) return;
             Transform origin = m_EnemyWavePost != null ? m_EnemyWavePost.PostToSpawn : null;
             if (origin == null) return;
             m_CurrentThreshold -= currentMaxThreshold;
@@ -543,6 +585,7 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
                 SetCurrentWaveIndexInternal(0);
                 SetScoreInternal(0);
                 m_WaveLevel = 1;
+                m_IsWaitingForBossClear = UsesSpawnPolicy && m_CurrentEnemyWave.SpawnPolicy.ClearMinionsBeforeBoss;
                 OnWaveLevelChangedInvoke(m_WaveLevel);
                 if (m_CurrentEnemyWave == null) return;
                 SetWaveStateInternal(WaveState.Rest);

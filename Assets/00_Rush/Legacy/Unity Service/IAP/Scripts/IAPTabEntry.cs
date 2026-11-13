@@ -16,6 +16,11 @@ namespace Rush
             m_IAPTabView?.Populate(config, onBundleClicked);
         }
 
+        public void RefreshOffers(Action<IAPBundleConfig> onBundleClicked)
+        {
+            m_IAPTabView?.Populate(m_TabConfig, onBundleClicked);
+        }
+
         public void RepopulateIfVisible(Action<IAPBundleConfig> onBundleClicked)
         {
             if (m_IAPTabView == null || !m_IAPTabView.IsShown) return;

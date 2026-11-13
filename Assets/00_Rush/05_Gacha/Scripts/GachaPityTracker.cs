@@ -21,9 +21,9 @@ namespace Rush
         public bool IsFirstDrawDone => m_FirstDrawDone;
 
         // Tepat di draw ke SmallPityCount → trigger
-        public bool ShouldTriggerSmallPity => m_SmallPityCounter >= m_Banner.SmallPityCount;
+        public bool ShouldTriggerSmallPity => m_Banner.SmallPityCount > 0 && m_SmallPityCounter >= m_Banner.SmallPityCount;
         // Tepat di draw ke FinalPityCount → trigger
-        public bool ShouldTriggerFinalPity => m_FinalPityCounter >= m_Banner.FinalPityCount;
+        public bool ShouldTriggerFinalPity => m_Banner.FinalPityCount > 0 && m_FinalPityCounter >= m_Banner.FinalPityCount;
         public bool ShouldTriggerFirstDraw =>
             m_Banner.HasFirstDrawGuarantee && !m_FirstDrawDone;
 
@@ -42,12 +42,24 @@ namespace Rush
         private void LoadInternal()
         {
             if (m_Banner == null) return;
-            m_SmallPityCounter = UnityService.Instance.HasData(SmallKey)
-                ? UnityService.Instance.GetData<int>(SmallKey) : 0;
-            m_FinalPityCounter = UnityService.Instance.HasData(FinalKey)
-                ? UnityService.Instance.GetData<int>(FinalKey) : 0;
-            m_FirstDrawDone = UnityService.Instance.HasData(FirstKey)
-                && UnityService.Instance.GetData<bool>(FirstKey);
+            (m_SmallPityCounter, m_FinalPityCounter, m_FirstDrawDone) = ReadSavedProgress(m_Banner);
+        }
+
+        internal (int Small, int Final, bool FirstDone) ProgressFor(GachaBannerConfig banner) =>
+            banner == m_Banner
+                ? (m_SmallPityCounter, m_FinalPityCounter, m_FirstDrawDone)
+                : ReadSavedProgress(banner);
+
+        private static (int Small, int Final, bool FirstDone) ReadSavedProgress(GachaBannerConfig banner)
+        {
+            var save = UnityService.Instance;
+            string prefix = KeyPrefix + banner.BaseInfo.Id;
+            string small = prefix + KeySmall;
+            string final = prefix + KeyFinal;
+            string first = prefix + KeyFirstDone;
+            return (save.HasData(small) ? save.GetData<int>(small) : 0,
+                save.HasData(final) ? save.GetData<int>(final) : 0,
+                save.HasData(first) && save.GetData<bool>(first));
         }
 
         private void SaveInternal()

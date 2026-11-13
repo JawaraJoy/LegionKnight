@@ -22,6 +22,7 @@ namespace Rush
         [SerializeField] private ScrollRect m_Scroll;
         [SerializeField] private RectTransform m_PlatformContent;
         [SerializeField] private PlatformAlbum m_Album;
+        [SerializeField] private HeroProgressFeedback m_ProgressFeedback;
         private bool m_Open;
         private const float c_ListBottom = 0.158f;
         private const float c_HeroListTop = 0.945f;
@@ -53,7 +54,9 @@ namespace Rush
             m_Rarity.text = collectible.RarityConfig.BaseInfo.Name.ToUpperInvariant();
             m_Rarity.color = collectible.RarityConfig.Color;
             m_SelectedIcon.sprite = collectible.Icon;
-            var unit = Player.Instance.HeroesCollection.GetHeroUnit(config);
+            var heroes = Player.Instance.HeroesCollection;
+            if (m_ProgressFeedback != null) m_ProgressFeedback.Bind(heroes);
+            var unit = heroes.GetHeroUnit(config);
             m_Level.text = $"Level {unit.Level}";
         }
 

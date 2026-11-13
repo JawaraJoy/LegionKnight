@@ -1,35 +1,34 @@
 using System;
-using UnityEngine;
 using LegionKnight;
+using TMPro;
+using UnityEngine;
 
 namespace Rush
 {
     public class IAPTabView : UIView
     {
         [SerializeField] private IAPBundlePool m_BundlePool;
+        [SerializeField] private TMP_Text m_Count;
 
-        public void Populate(IAPTabConfig tabConfig,
-            Action<IAPBundleConfig> onBundleClicked)
+        public void Populate(IAPTabConfig tab, Action<IAPBundleConfig> onSelect) =>
+            PopulateInternal(tab, onSelect);
+
+        private void PopulateInternal(IAPTabConfig tab, Action<IAPBundleConfig> onSelect)
         {
-            if (m_BundlePool == null || tabConfig?.Bundles == null) return;
+            if (m_BundlePool == null || tab?.Bundles == null) return;
             m_BundlePool.ReturnAll();
-
-            var iap = UnityService.Instance.IAPManager;
-            foreach (var bundle in tabConfig.Bundles)
+            var store = UnityService.Instance.IAPManager;
+            int count = 0;
+            foreach (var bundle in tab.Bundles)
             {
                 if (bundle == null) continue;
-                string localizedPrice = iap.GetLocalizedPrice(bundle);
-                bool isFirst = iap.IsFirstPurchase(bundle);
-                bool canPurchase = iap.CanPurchase(bundle);
                 var item = m_BundlePool.Rent();
-                item.Setup(bundle, localizedPrice, isFirst, canPurchase, onBundleClicked);
+                item.transform.SetAsLastSibling();
+                item.Setup(bundle, store.GetLocalizedPrice(bundle), store.IsFirstPurchase(bundle),
+                    store.CanPurchase(bundle), onSelect);
+                count++;
             }
-        }
-
-        protected override void HideInternal()
-        {
-            //m_BundlePool?.ReturnAll();
-            base.HideInternal();
+            if (m_Count != null) m_Count.text = count == 1 ? "1 pack" : $"{count} packs";
         }
     }
 }

@@ -21,6 +21,11 @@ namespace Rush
         private ProgressField m_LevelSet;
         [SerializeField]
         private AbilityConfig[] m_AbilitySets;
+        [SerializeField, Tooltip("Optional mark applied by other skills on hit. Its stack rule and follow-up supply this passive's description.")]
+        private AllStatusEffectConfig m_OnHitMarkForDescription;
+        public AllStatusEffectConfig OnHitMarkForDescription => m_OnHitMarkForDescription;
+        [SerializeField, TextArea] private string m_DetailSummary;
+        public string DetailSummary => m_DetailSummary;
         public string Description => GameplayDescription.Skill(this, m_LevelSet == null ? 1 : m_LevelSet.Level);
         public SkillCategoryConfig Category => m_Category;
         public ActivationTriggerField Activation => m_Activation;

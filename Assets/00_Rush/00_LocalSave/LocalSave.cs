@@ -231,6 +231,9 @@ namespace LegionKnight
             callback?.Invoke(exists);
         }
 
+        internal string[] KeysStartingWith(string prefix) =>
+            ReadIndexInternal().keys.FindAll(key => key.StartsWith(prefix, StringComparison.Ordinal)).ToArray();
+
         public void LoadAll()
         {
             LastLoadError = null;
@@ -344,3 +347,4 @@ namespace LegionKnight
         [Serializable] private class TransactionJournal { public List<JournalEntry> entries = new(); public string indexJson; }
     }
 }
+

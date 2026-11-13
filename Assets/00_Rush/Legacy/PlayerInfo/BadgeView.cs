@@ -14,6 +14,9 @@ namespace LegionKnight
         [SerializeField]
         private Button m_ClaimButton;
 
+        [SerializeField] private TMPro.TMP_Text m_Label;
+        [SerializeField] private TMPro.TMP_Text m_State;
+        [SerializeField] private Image m_RarityFrame;
         private BadgeInfoPanel m_InfoPanel;
         private LootedPanel m_LootedPanel;
         public BadgeConfig Definition => m_Definition;
@@ -61,14 +64,14 @@ namespace LegionKnight
             m_Definition = defi;
             if (GetBadgeManager().HasBadge(defi, out BadgeContent content))
             {
-                int currentLevel = content.CurrentUpgradeLevel;
-                bool isUnlocked = content.IsUnlocked;
-                bool canClaim = content.UnClaimedReward > 0;
-                m_Icon.sprite = defi.Upgrade[currentLevel].Icon;
-                m_Icon.color = isUnlocked ? Color.white : Color.gray;
-
-                bool hasMaxLevel = currentLevel >= defi.Upgrade.Length - 1;
-                m_ClaimButton.gameObject.SetActive(canClaim);
+                var tier = defi.Upgrade[content.DisplayLevel];
+                m_Icon.sprite = tier.Icon;
+                m_Icon.color = content.IsUnlocked || content.CanClaim ? Color.white : Color.gray;
+                m_ClaimButton.gameObject.SetActive(content.CanClaim);
+                if (m_Label != null) m_Label.text = content.IsUnlocked || content.CanClaim ? tier.Label : defi.BaseInfo.Name;
+                if (m_State != null) m_State.text = content.CanClaim ? "" : content.IsUnlocked ? "Earned" : "Locked";
+                if (m_RarityFrame != null && defi.CollectibleField.RarityConfig != null)
+                    m_RarityFrame.color = defi.CollectibleField.RarityConfig.Color;
             }
             else
             {
@@ -84,11 +87,8 @@ namespace LegionKnight
 
         private void ClaimReward()
         {
-            if (GetBadgeManager().HasBadge(m_Definition, out BadgeContent content) && content.UnClaimedReward > 0)
+            if (GetBadgeManager().TryClaimReward(m_Definition, out var rewards))
             {
-                // Claiming can advance the badge to its next reward tier.
-                var rewards = BadgeHandler.RewardOnUnlock(content);
-                content.ClaimReward();
                 GetLootedPanel().ShowLoot(rewards);
                 Init(m_Definition);
             }

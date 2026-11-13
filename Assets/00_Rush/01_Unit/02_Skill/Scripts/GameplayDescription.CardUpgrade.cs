@@ -55,6 +55,8 @@ namespace Rush
             Func<SkillConfig, int> before, Func<SkillConfig, int> after, HashSet<Configuration> path, int depth)
         {
             if (skill == null || depth >= c_MaxDepth || path.Contains(skill)) yield break;
+            // The card levels the follow-up separately. The mark's hit and stack rules are fixed.
+            if (skill.OnHitMarkForDescription != null) yield break;
             var visited = new HashSet<Configuration>(path) { skill };
             foreach (AbilityConfig ability in skill.AbilitySets ?? Array.Empty<AbilityConfig>())
                 foreach (string effect in BattleAbilityUpgradeEffects(ability, current, next, before, after, visited, depth + 1))

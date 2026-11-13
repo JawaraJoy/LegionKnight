@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rush
 {
-    public abstract partial class AbilityConfig : Configuration, IHasIcon
+    public abstract partial class AbilityConfig : CombatEffectConfig, IHasIcon
     {
         [SerializeField]
         private Sprite m_Icon;

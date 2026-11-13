@@ -16,6 +16,10 @@ namespace Rush
         public bool IsFirstPurchaseDiscount => m_IsFirstPurchaseDiscount;
         public bool HasDiscount => m_HasDiscount;
 
+        public string DiscountLabel => m_OriginalPrice > 0
+            ? $"-{(1f - (float)m_MainCurrencyAmount / m_OriginalPrice) * 100f:F0}%"
+            : string.Empty;
+
         internal void SetMain(int amount) => m_MainCurrencyAmount = amount;
         internal void SetOriginalPrice(int price) => m_OriginalPrice = price;
         internal void SetCanAfford(bool can) => m_CanAfford = can;
