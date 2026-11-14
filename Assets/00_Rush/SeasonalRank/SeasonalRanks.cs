@@ -34,16 +34,16 @@ namespace Rush
     public sealed class SeasonalRanks : MonoBehaviour
     {
         private const string c_Endpoint = "SeasonalRank";
-        private const string c_Prefix = "AJ.SeasonalRank.1.";
+        private const string c_Prefix = "AJ.SeasonalRank.RunBest.1.";
         private const int c_SecondsPerDay = 86400;
         private const float c_SendInterval = 8f;
         private const float c_RetryInterval = 20f;
         private const float c_MailInterval = 180f;
         private const string c_Guest = "prelogin";
-        [Serializable] private sealed class DayScore { public long day; public int total, sent, legacy; }
+        [Serializable] private sealed class DayScore { public long day; public int best, sent; }
         [Serializable] private sealed class Outbox { public List<DayScore> days = new(); }
         private readonly Dictionary<string, RankReward> m_Mail = new();
-        private string m_Owner, m_Device, m_AuthIdentity;
+        private string m_Owner, m_AuthIdentity;
         private int m_Revision;
         private Outbox m_Outbox;
         private float m_NextSend, m_NextMail;
@@ -60,7 +60,6 @@ namespace Rush
         internal static string PlayerId => UnityServices.State == ServicesInitializationState.Initialized &&
             AuthenticationService.Instance.IsSignedIn ? AuthenticationService.Instance.PlayerId : null;
         internal string Owner => m_Owner;
-        internal int LegacySeed => PlayerPrefs.GetInt(Key(m_Owner)+".legacy",0);
         internal IEnumerable<RankReward> Mail => m_Owner == PlayerId ? m_Mail.Values : Enumerable.Empty<RankReward>();
         internal long UtcSeconds => DateTimeOffset.UtcNow.ToUnixTimeSeconds() + (long)m_ServerOffset;
         internal event Action Changed;
@@ -68,13 +67,6 @@ namespace Rush
         private void Awake()
         {
             Current = this;
-            m_Device = PlayerPrefs.GetString(c_Prefix + "install");
-            if (string.IsNullOrEmpty(m_Device))
-            {
-                m_Device = Guid.NewGuid().ToString("N");
-                PlayerPrefs.SetString(c_Prefix + "install", m_Device);
-                PlayerPrefs.Save();
-            }
             BindAccount();
         }
 
@@ -106,7 +98,11 @@ namespace Rush
             {
                 var guest = Load(Key(c_Guest));
                 foreach (var score in guest.days ?? new List<DayScore>())
-                    if (!m_Outbox.days.Exists(d => d.day == score.day)) m_Outbox.days.Add(score);
+                {
+                    var existing = m_Outbox.days.Find(d => d.day == score.day);
+                    if (existing == null) m_Outbox.days.Add(score);
+                    else existing.best = Math.Max(existing.best, score.best);
+                }
                 Persist();
                 PlayerPrefs.SetString(Key("owner"), owner);
                 PlayerPrefs.DeleteKey(Key(c_Guest)); PlayerPrefs.Save();
@@ -114,22 +110,20 @@ namespace Rush
             if(PlayerId!=null && PlayerPrefs.GetString(Key("owner"))!=owner){PlayerPrefs.SetString(Key("owner"),owner);PlayerPrefs.Save();}
             Changed?.Invoke();
         }
-        internal void Record(int delta, int legacy)
+        internal void Record(int runScore)
         {
-            if (delta <= 0) return;
+            if (runScore <= 0) return;
             BindAccount();
-            InitializeLegacy(legacy);
             long day = UtcSeconds / c_SecondsPerDay;
             var entry = m_Outbox.days.Find(d => d.day == day);
-            if (entry == null) { entry = new DayScore { day = day, legacy = legacy }; m_Outbox.days.Add(entry); }
-            entry.total = checked(entry.total + delta);
+            if (entry == null)
+            {
+                entry = new DayScore { day = day };
+                m_Outbox.days.Add(entry);
+            }
+            if (runScore <= entry.best) return;
+            entry.best = runScore;
             Persist();
-        }
-        internal void InitializeLegacy(int best)
-        {
-            BindAccount();
-            string key = Key(m_Owner) + ".legacy";
-            if (!PlayerPrefs.HasKey(key)) { PlayerPrefs.SetInt(key, Math.Max(0,best)); PlayerPrefs.Save(); }
         }
         private void Update()
         {
@@ -141,17 +135,16 @@ namespace Rush
         private async void Flush()
         {
             m_NextSend = Time.unscaledTime + c_SendInterval;
-            var d = m_Outbox.days.Find(s => s.total > s.sent);
+            var d = m_Outbox.days.Find(s => s.best > s.sent);
             if (d == null) return;
-            int revision = m_Revision, total = d.total;
+            int revision = m_Revision, best = d.best;
             m_Sending = true;
             try
             {
-                await Request(new() { ["op"]="score", ["day"]=d.day, ["device"]=m_Device,
-                    ["total"]=total, ["legacy"]=PlayerPrefs.GetInt(Key(m_Owner)+".legacy",d.legacy) });
+                await Request(new() { ["op"] = "runBest", ["day"] = d.day, ["total"] = best });
                 if (revision != m_Revision) return;
-                d.sent = total;
-                m_Outbox.days.RemoveAll(s=>s.day < UtcSeconds/c_SecondsPerDay && s.total==s.sent);
+                d.sent = best;
+                m_Outbox.days.RemoveAll(s=>s.day < UtcSeconds/c_SecondsPerDay && s.best==s.sent);
                 Persist();
             }
             catch (Exception e) { m_NextSend=Time.unscaledTime+c_RetryInterval; Debug.LogWarning("[Seasonal Rank] Trophy sync: "+e.Message); }

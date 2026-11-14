@@ -12,6 +12,7 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_Title, m_HeroName, m_DeckCount, m_SlotCount, m_Destination;
         [SerializeField] private Image m_Portrait;
         [SerializeField] private CardSelectTabView m_Tab;
+        [SerializeField] private AudioSource m_CollectionOpenSound, m_CardDetailSound;
         [SerializeField] private ScrollRect m_CollectionScroll;
         [SerializeField] private RarityConfig[] m_Rarities;
         [SerializeField] private Button[] m_FilterButtons;
@@ -91,9 +92,24 @@ namespace Rush
             m_CardListInput.interactable = m_CardListInput.blocksRaycasts = card == null;
             SetPageInternal(false);
             RefreshSelectionInternal();
-            m_Tab.CardDetailView.Hide();
+            if (card == null) m_Tab.CardDetailView.Hide();
             FilterInternal(0, true);
-            if (card != null) m_Deck.SelectStandbyCardConfig(card.CardConfig);
+            if (card != null) SelectSlotCardInternal(card);
+        }
+
+        private void SelectSlotCardInternal(CardUnit card)
+        {
+            // An occupied slot opens the collection and its detail in one gesture.
+            bool playOnOpen = m_CardDetailSound != null && m_CardDetailSound.playOnAwake;
+            if (playOnOpen) m_CardDetailSound.playOnAwake = false;
+            try
+            {
+                m_Deck.SelectStandbyCardConfig(card.CardConfig);
+            }
+            finally
+            {
+                if (playOnOpen) m_CardDetailSound.playOnAwake = true;
+            }
         }
 
         private void ShowDeckInternal()
@@ -127,7 +143,9 @@ namespace Rush
 
         private void SetPageInternal(bool deck)
         {
+            bool opening = !deck && !m_Collection.activeSelf;
             m_Collection.SetActive(!deck);
+            if (opening && m_Collection.activeInHierarchy) m_CollectionOpenSound?.Play();
             RefreshCollectionLayoutInternal();
             m_HeroDeck.SetActive(deck);
             m_Cover.SetActive(deck);

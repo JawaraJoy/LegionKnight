@@ -1,4 +1,4 @@
-﻿using LegionKnight;
+using LegionKnight;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -47,6 +47,7 @@ namespace Rush
             m_NextButton.onClick.RemoveListener(OnNextClickedInternal);
             m_SkipButton.onClick.RemoveListener(SkipToResultsInternal);
             m_Result = null;
+            m_PityNoticeObject.SetActive(false);
             if (m_Reveal != null && m_Reveal.IsShown) m_Reveal.Hide();
             m_Reveal = null;
             base.HideInternal();
@@ -57,7 +58,6 @@ namespace Rush
             var entry = m_Result.Entries[m_CurrentIndex];
             m_BannerText.text = m_Banner != null ? m_Banner.BaseInfo.Name : string.Empty;
             m_CounterText.text = $"{m_CurrentIndex + 1} / {m_Result.Entries.Count}";
-            m_PityNoticeObject.SetActive(m_CurrentIndex == m_Result.Entries.Count - 1 && m_Result.WasSpecialDrop);
             m_NextButton.interactable = true;
             if (entry.Collectible is HeroUnitConfig hero)
             {
@@ -69,9 +69,9 @@ namespace Rush
                     m_Reveal.Show(hero, m_Banner, OnHeroRevealClosedInternal, SkipToResultsInternal);
                     if (!m_Reveal.IsShown) OnHeroRevealClosedInternal();
                 }
-                else m_PreviewItemUI.Setup(entry);
+                else ShowPreviewItemInternal();
             }
-            else m_PreviewItemUI.Setup(entry);
+            else ShowPreviewItemInternal();
             OnNextClickedInvoke();
         }
 
@@ -79,8 +79,14 @@ namespace Rush
         {
             m_Reveal = null;
             if (m_Result == null || !IsShown) return;
-            m_PreviewItemUI.Setup(m_Result.Entries[m_CurrentIndex]);
+            ShowPreviewItemInternal();
             m_NextButton.interactable = true;
+        }
+
+        private void ShowPreviewItemInternal()
+        {
+            m_PreviewItemUI.Setup(m_Result.Entries[m_CurrentIndex]);
+            m_PityNoticeObject.SetActive(m_Result.WasSpecialDrop && m_CurrentIndex == m_Result.Entries.Count - 1);
         }
 
         public void Advance() => OnNextClickedInternal();

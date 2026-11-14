@@ -79,7 +79,10 @@ namespace LegionKnight
             if (UnityService.Instance.HasData("usedcharacter"))
             {
                 string usedCharacterId = UnityService.Instance.GetData<string>("usedcharacter");
-                m_UsedHeroConfig = GetHeroUnitInternal(usedCharacterId).HeroConfig;
+                // A cached release can temporarily lack a hero selected in newer content.
+                // Keep the saved ID so the selection can return after the content is restored.
+                var savedHero = GetHeroUnitInternal(usedCharacterId);
+                m_UsedHeroConfig = savedHero != null ? savedHero.HeroConfig : m_DefaultHeroConfig;
                 m_SelectedHeroConfig = m_UsedHeroConfig;
             }
             else

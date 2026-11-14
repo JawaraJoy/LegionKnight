@@ -71,6 +71,7 @@ namespace Rush
         private void OpenInternal()
         {
             RefreshInternal();
+            m_Dialog.overlay.transform.SetAsLastSibling();
             m_Dialog.overlay.SetActive(true);
         }
 
@@ -91,14 +92,14 @@ namespace Rush
             m_Dialog.table.SetActive(!lifetime);
             if (lifetime)
             {
-                m_Dialog.estimate.text = "Lifetime trophy standings";
+                m_Dialog.estimate.text = "Best Colossal run of all time";
                 m_Dialog.note.text = "All Time never resets and has no Diamond payout.";
                 return;
             }
 
             bool known = m_HasStanding && m_Viewer == SeasonalRanks.PlayerId;
             m_Dialog.estimate.text = known
-                ? "Earn Trophies in Colossal to qualify."
+                ? "Set a high score in Colossal to qualify."
                 : "Your estimate appears when your rank is available.";
             int first = 1;
             foreach (var tier in m_Tiers)

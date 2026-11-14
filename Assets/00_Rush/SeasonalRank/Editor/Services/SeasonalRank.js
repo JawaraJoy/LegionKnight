@@ -30,11 +30,10 @@ module.exports = async ({params, context}) => {
     if (!playerId) throw Error("Player sign-in required");
     const cloud = axios.create({baseURL:"https://cloud-save.services.api.unity.com/v1/data/projects/"+projectId+"/players/"+playerId, headers:{Authorization:"Bearer "+serviceToken},timeout:5000});
     const lb = axios.create({baseURL:"https://leaderboards.services.api.unity.com/v1/projects/"+projectId+"/leaderboards/",headers:{Authorization:"Bearer "+accessToken},timeout:5000});
-    const boardId = k => k === "all" ? "highestscorerank" : "aj_rank_"+k;
+    const boardId = k => k === "all" ? "aj_rank_all_best" : "aj_rank_"+k;
     const base = (k,v) => boardId(k)+(v?"/versions/"+v:"")+"/scores";
     const now = Date.now();
     const monthOf = t=>new Date(t).toISOString().slice(0,7).replace("-","");
-    const rowKey = (k,t) => "rankv1_"+k+"_"+monthOf(t);
     const mailKey = id => "rankv1_mail_"+id.split("_")[0]+"_"+id.split("_")[1].slice(0,6);
     async function read(keys, after, path="/protected") {
         const fields=(keys||[]).map(k=>"keys="+encodeURIComponent(k));
@@ -84,35 +83,34 @@ module.exports = async ({params, context}) => {
         return {...response,rows,own:self||(me?{id:playerId,name:me.playerName,score:me.score,rank:await tiedRank(k,null,me)}:null),
             ends:v?seconds(Date.parse(v.nextReset)):0,label:k==="all"?"All Time":label(k,startOf(k,now))};
     }
-    if(params.op==="score") {
-        const t=params.day*DAY, device=params.device, total=params.total, legacy=params.legacy||0;
-        if(!num(t)||t<EPOCH||t>startOf("daily",now)||!num(total)||total<1||!num(legacy)||!(/^[a-f0-9]{32}$/).test(device))throw Error("Invalid Trophy submission");
+    // Previous clients only know their cumulative total. Acknowledge their queue without ranking it.
+    if(params.op==="score") return response;
+    if(params.op==="runBest") {
+        const t=params.day*DAY, best=params.total;
+        if(!num(params.day)||!num(t)||t<EPOCH||t>startOf("daily",now)||!num(best)||best<1||best>2147483647)
+            throw Error("Invalid Colossal run score");
         const versions=await Promise.all(boards.map(version));
-        const active=boards.map((k,i)=>({k,v:versions[i],t:startOf(k,t)})).filter(p=>p.t===startOf(p.k,now)&&Date.parse(p.v.nextReset)>Date.now()+8000);
-        // Let the in-flight window drain before reset. A retry can still credit the other open periods.
-        if(boards.some((k,i)=>startOf(k,t)===startOf(k,now)&&Date.parse(versions[i].nextReset)<=Date.now()+8000))throw Error("Leaderboard rollover; retry");
-        const allKey="rankv1_all", inputKey=rowKey("source",t), receiptKey="rankv1_open_"+new Date(t).toISOString().slice(0,7).replace("-","");
-        const periods=active.map(p=>rowKey(p.k,p.t));
-        const initial=indexed(await read([allKey]));
-        const old=initial[allKey]?null:await own("all",null);
-        const scores=await change([allKey,inputKey,receiptKey,...periods],rows=>{
-            const sourceMonth={...(rows[inputKey]?rows[inputKey].value:{})};
-            const sources={...(sourceMonth[params.day]||{})};
-            const delta=Math.max(0,total-(sources[device]||0));
-            const seed=rows[allKey]?rows[allKey].value:Math.max(legacy,old?old.score:0);
-            const lifetime=checkedTotal({seed,delta});const writes=[];
-            if(delta||!rows[allKey]){sources[device]=Math.max(total,sources[device]||0);sourceMonth[params.day]=sources;writes.push(write(inputKey,sourceMonth,rows[inputKey]),write(allKey,lifetime,rows[allKey]));}
-            const open={...(rows[receiptKey]?rows[receiptKey].value:{})};
-            const values=active.map((p,i)=>{
-                const key=periods[i],month={...(rows[key]?rows[key].value:{})}, slot=p.v.versionId;
-                const score=checkedTotal({prior:month[slot]||0,delta});
-                if(delta){month[slot]=score;writes.push(write(key,month,rows[key]));open[p.k+"_"+p.v.versionId]={kind:p.k,version:p.v.versionId,start:p.t,end:Date.parse(p.v.nextReset)};}
-                return score;});
-            if(delta)writes.push(write(receiptKey,open,rows[receiptKey]));
-            return {value:[lifetime,...values],writes};});
-        if(active.some(p=>Date.parse(p.v.nextReset)<=Date.now()+5500))throw Error("Leaderboard rollover; retry");
-        const targets=[{k:"all"},...active];
-        await Promise.all(targets.map((p,i)=>scores[i]>0?lb.post(base(p.k,null)+"/players/"+playerId,{score:scores[i]}):null));
+        const active=boards.map((k,i)=>({k,v:versions[i],t:startOf(k,t)})).filter(p=>p.t===startOf(p.k,now));
+        if(active.some(p=>Date.parse(p.v.nextReset)<=Date.now()+8000))throw Error("Leaderboard rollover; retry");
+
+        // All four boards are descending keepBest. Replays, lower runs, and scores from another
+        // device can never add to or replace a better score.
+        await Promise.all(["all",...active.map(p=>p.k)].map(k=>
+            lb.post(base(k,null)+"/players/"+playerId,{score:best})));
+        if(active.length) {
+            const key="rankbest_open_"+monthOf(t);
+            await change([key],rows=>{
+                const open={...(rows[key]?rows[key].value:{})};
+                let changed=false;
+                for(const p of active) {
+                    const id=p.k+"_"+p.v.versionId;
+                    if(open[id])continue;
+                    open[id]={kind:p.k,version:p.v.versionId,start:p.t,end:Date.parse(p.v.nextReset)};
+                    changed=true;
+                }
+                return {value:null,writes:changed?[write(key,open,rows[key])]:[]};
+            });
+        }
         return response;
     }
     if(params.op==="mail") {
@@ -121,7 +119,7 @@ module.exports = async ({params, context}) => {
         if(!/^\d{4}-\d{2}$/.test(startMonth))throw Error("Invalid cursor");
         const months=[];let at=Date.parse(startMonth+"-01T00:00:00Z");const epochMonth=Date.UTC(2026,10,1);
         for(let i=0;i<6&&at>=epochMonth;i++){months.push(new Date(at).toISOString().slice(0,7).replace("-",""));const d=new Date(at);at=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()-1,1);}
-        const keys=months.map(m=>"rankv1_open_"+m);
+        const keys=months.map(m=>"rankbest_open_"+m);
         const records=keys.length?indexed(await read(keys)):{};
         const pending=[];for(const key of keys)for(const [id,p] of Object.entries(records[key]?records[key].value:{})){if(p.end<=now)pending.push({id,p,key});}
         const sent=params.after||"";const unique=Array.from(new Map(pending.map(p=>[p.id,p])).values());

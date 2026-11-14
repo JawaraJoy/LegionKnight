@@ -43,6 +43,8 @@ namespace Rush
         }
         [SerializeField] private GameObject m_Overlay;
         [SerializeField] private PopupField m_Popup;
+        [SerializeField] private AudioSource m_RankRewardSound;
+        [SerializeField] private AudioClip m_LetterOpenClip;
         [SerializeField] private MailField m_Mail;
         private readonly Dictionary<string,Button> m_Rows=new();
         private SeasonalRanks m_Ranks;
@@ -111,8 +113,19 @@ namespace Rush
         private RankReward Detail=>m_Ranks.Mail.FirstOrDefault(m=>m.id==m_RewardId);
         private void Open(string id)
         {
-            m_Error=null;m_Detail=id!=null;m_RewardId=id;
-            transform.SetAsLastSibling();m_Overlay.transform.SetAsLastSibling();m_Overlay.SetActive(true);Render();
+            bool detail = id != null;
+            bool opening = !m_Overlay.activeSelf || m_Detail != detail;
+            m_Error = null;
+            m_Detail = detail;
+            m_RewardId = id;
+            transform.SetAsLastSibling();
+            m_Overlay.transform.SetAsLastSibling();
+            m_Overlay.SetActive(true);
+            Render();
+            if (!opening || !m_Overlay.activeInHierarchy || m_RankRewardSound == null) return;
+            m_RankRewardSound.Stop();
+            if (!m_Detail) m_RankRewardSound.Play();
+            else if (m_LetterOpenClip != null) m_RankRewardSound.PlayOneShot(m_LetterOpenClip);
         }
         private void Render()
         {

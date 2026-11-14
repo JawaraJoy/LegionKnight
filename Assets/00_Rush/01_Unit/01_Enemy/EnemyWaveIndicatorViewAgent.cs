@@ -52,12 +52,12 @@ namespace Rush
         public void ShowArrival(Unit unit)
         {
             var config = unit.Config as BossUnitConfig;
-            if (config != null) Present("BOSS ENCOUNTER", config.BaseInfo.Name.Trim(), config.CollectibleField.Icon, s_Incoming, c_EntranceNotice);
+            if (config != null) Present("BOSS ENCOUNTER", config.BaseInfo.Name.Trim(), config.CollectibleField.Icon, s_Incoming, c_EntranceNotice, BossEncounterNotice.Moment.Encounter, unit);
         }
         public void ShowDefeat(BossUnitConfig boss)
         {
             if (boss != null) Present("BOSS DEFEATED", $"{boss.BaseInfo.Name.Trim()}  ·  +{boss.ExpReward} EXP  ·  +{boss.ScoreReward} score",
-                boss.CollectibleField.Icon, s_Defeated, c_DefeatNotice);
+                boss.CollectibleField.Icon, s_Defeated, c_DefeatNotice, BossEncounterNotice.Moment.Defeated, boss);
         }
         public void ShowVictory(StageConfig stage)
         {
@@ -65,7 +65,8 @@ namespace Rush
             var boss = waves[waves.Length - 1].BossWaveField.BossConfig;
             Present("VICTORY", stage.BaseInfo.Name.Trim() + "  ·  Stage clear", boss?.CollectibleField.Icon, s_Victory, c_VictoryNotice);
         }
-        private void Present(string title, string detail, Sprite icon, Color tint, float seconds)
+        private void Present(string title, string detail, Sprite icon, Color tint, float seconds,
+            BossEncounterNotice.Moment moment = BossEncounterNotice.Moment.None, Object subject = null)
         {
             Resolve(out var panel, out _);
             if (panel == null || panel.Content == null || m_NoticePrefab == null) return;
@@ -73,7 +74,7 @@ namespace Rush
             if (m_Notice == null) m_Notice = Instantiate(m_NoticePrefab, host, false);
             else if (m_Notice.transform.parent != host) m_Notice.transform.SetParent(host, false);
             m_Notice.transform.SetAsLastSibling();
-            m_Notice.Present(title, detail, icon, tint, seconds);
+            m_Notice.Present(title, detail, icon, tint, seconds, moment, subject);
         }
         public void ClearNotice()
         {

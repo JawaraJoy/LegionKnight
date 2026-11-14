@@ -10,7 +10,7 @@ namespace LegionKnight
     public partial class LeaderBoard : MonoBehaviour
     {
         [SerializeField] private int m_MaxRankToDisplay = 20;
-        [SerializeField] private string m_LeaderboardId = "highestscorerank";
+        [SerializeField] private string m_LeaderboardId = "aj_rank_all_best";
 
         private const float c_SubmissionIntervalSeconds = 5f;
         private const float c_IdlePollIntervalSeconds = 0.5f;
@@ -24,10 +24,11 @@ namespace LegionKnight
         private float m_RetrySeconds = c_SubmissionIntervalSeconds;
 
         public int MaxRankToDisplay => Mathf.Clamp(m_MaxRankToDisplay, 1, 100);
-        public string LeaderboardId => m_LeaderboardId;
+        // Older remote prefabs may still serialize the retired All Time board.
+        public string LeaderboardId => m_LeaderboardId == "highestscorerank" ? "aj_rank_all_best" : m_LeaderboardId;
         public bool IsReady => m_Client != null && m_Client.IsSignedIn;
         public string CurrentPlayerId => m_Client?.PlayerId;
-        private string StoragePrefix => "Rush.Leaderboard.Outbox.v1/" + Application.cloudProjectId + "/" + m_LeaderboardId + "/";
+        private string StoragePrefix => "Rush.Leaderboard.Outbox.v1/" + Application.cloudProjectId + "/" + LeaderboardId + "/";
 
         private void Awake() { InitializeClientInternal(); }
 
@@ -94,7 +95,7 @@ namespace LegionKnight
             try
             {
                 // Keep one request in flight, including during account changes.
-                var entry = await m_Client.SubmitScoreAsync(m_LeaderboardId, score);
+                var entry = await m_Client.SubmitScoreAsync(LeaderboardId, score);
                 if (this == null) return;
                 if (entry == null || entry.PlayerId != playerId || entry.Score < score)
                     throw new InvalidOperationException("The server did not confirm the queued high score.");
@@ -119,14 +120,14 @@ namespace LegionKnight
         {
             InitializeClientInternal();
             if (!IsReady) throw new InvalidOperationException("Sign in to view the leaderboard.");
-            return m_Client.LoadTopRanksAsync(m_LeaderboardId, MaxRankToDisplay);
+            return m_Client.LoadTopRanksAsync(LeaderboardId, MaxRankToDisplay);
         }
 
         public Task<LeaderboardEntry> LoadPlayerScoreAsync()
         {
             InitializeClientInternal();
             if (!IsReady) throw new InvalidOperationException("Sign in to view your rank.");
-            return m_Client.LoadPlayerScoreAsync(m_LeaderboardId);
+            return m_Client.LoadPlayerScoreAsync(LeaderboardId);
         }
 
         private void OnApplicationPause(bool paused)

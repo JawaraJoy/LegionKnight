@@ -55,7 +55,7 @@ namespace Rush
                 var label=m_Tabs[i].GetComponentInChildren<TMP_Text>();
                 label.color=active?new Color32(36,37,59,255):new Color32(250,242,221,255);
             }
-            m_Timer.text=m_Index==3?"Lifetime trophies":"Loading standings…";
+            m_Timer.text=m_Index==3?"Best Colossal run • All Time":"Loading standings…";
         }
         internal async Task<PeriodRankResponse> Fetch()
         {

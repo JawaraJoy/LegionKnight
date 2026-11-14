@@ -25,6 +25,7 @@ namespace Rush
 
         [SerializeField] private BadgeUnlockChannel m_Channel;
         [SerializeField] private BannerField m_Banner;
+        [SerializeField] private AudioSource m_UnlockSound;
         private readonly Queue<(BadgeContent badge, int tier)> m_Queue = new();
         private Coroutine m_Playback;
 
@@ -76,6 +77,7 @@ namespace Rush
                 m_Banner.rarityRim.color = art.RarityConfig != null ? art.RarityConfig.Color : Color.white;
 
                 if (tier.RewardOnUnlock == null) continue;
+                bool announced = false;
                 foreach (var row in tier.RewardOnUnlock)
                 {
                     if (row?.ItemLoot == null || row.Amount < 1) continue;
@@ -92,6 +94,11 @@ namespace Rush
                     PositionInternal();
                     m_Banner.surface.alpha = 1f;
                     m_Content.SetActive(true);
+                    if (!announced && m_Content.activeInHierarchy)
+                    {
+                        m_UnlockSound?.Play();
+                        announced = true;
+                    }
                     yield return new WaitForSecondsRealtime(m_Banner.readingSeconds);
                     if (m_Banner.fade.gameObject.activeInHierarchy)
                     {

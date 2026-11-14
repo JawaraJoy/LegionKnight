@@ -13,6 +13,7 @@ namespace Rush
         [SerializeField] private GameObject m_Detail;
         [SerializeField] private GameObject m_Actions;
         [SerializeField] private Button m_Picker;
+        [SerializeField] private AudioSource m_RosterOpenSound;
         [SerializeField] private TextMeshProUGUI m_Arrow;
         [SerializeField] private TextMeshProUGUI m_SelectedName;
         [SerializeField] private Image m_SelectedIcon;
@@ -33,16 +34,21 @@ namespace Rush
         private const int c_HeroColumns = 3;
         private bool IsHero => m_Panel.SelectCharacterMode == SelectCharacterMode.Hero;
 
-        public void ToggleRoster()
+        public void ToggleRoster() => SetRosterOpenInternal(IsHero && !m_Open);
+
+        private void SetRosterOpenInternal(bool open)
         {
-            m_Open = IsHero && !m_Open;
+            if (m_Open == open) return;
+            m_Open = open;
             ApplyModeInternal();
-            if (m_Open) m_Scroll.verticalNormalizedPosition = 1f;
+            if (!open) return;
+            m_Scroll.verticalNormalizedPosition = 1f;
+            if (m_List.gameObject.activeInHierarchy) m_RosterOpenSound?.Play();
         }
 
         public void OpenHeroRoster()
         {
-            if (IsHero && !m_Open) ToggleRoster();
+            if (IsHero) SetRosterOpenInternal(true);
         }
 
         public void ResetMode()
@@ -67,9 +73,7 @@ namespace Rush
 
         public void CloseAfterSelection()
         {
-            if (!m_Open) return;
-            m_Open = false;
-            ApplyModeInternal();
+            SetRosterOpenInternal(false);
         }
 
         private void ApplyModeInternal()
