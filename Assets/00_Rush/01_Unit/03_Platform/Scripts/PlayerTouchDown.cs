@@ -45,7 +45,7 @@ namespace Rush
                     }
                     foreach (var skill in skillConfigs)
                     {
-                        controller.ForceActive(skill);
+                        controller.ForceActiveFrom(skill, platform.TouchDownSpot.position);
                     }
                 }
             }

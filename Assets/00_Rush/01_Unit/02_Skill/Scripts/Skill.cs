@@ -49,6 +49,15 @@ namespace Rush
         private UnityEvent<int, int> m_OnChargeUpdate;
         [SerializeField]
         private UnityEvent<Unit> m_OnAbilityDelivered;
+        private float m_CardGrowthSteps;
+        internal float CardGrowthSteps => m_CardGrowthSteps;
+        internal void ApplyCardUpgrade(int rank)
+        {
+            if (m_Progression.Level >= m_Progression.MaxLevel) return;
+            m_CardGrowthSteps += CardUnit.ExtraGrowthSteps(rank);
+            m_Progression.AddLevel(1);
+        }
+
         public ProgressField Progression => m_Progression;
         public SkillConfig SkillConfig => m_SkillConfig;
         public SkillContext SkillContext => m_SkillContext;
@@ -107,6 +116,7 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private int m_MaxInterruptDamage;
 
+        public bool IsCasting => m_State == SkillActivationState.Casting;
         public float RemainingCastTime => m_RemainingCastTime;
         public int CurrentInterruptCount => m_CurrentInterruptDamage;
         public int MaxInterruptCount => m_MaxInterruptDamage;
@@ -177,6 +187,7 @@ private void OnDestroy()
         private int calledInit;
         public virtual void Init(SkillConfig skillConfig, IModuleContext ownerContext)
         {
+            m_CardGrowthSteps = 0;
             m_SkillConfig = skillConfig;
             m_SkillContext = new SkillContext(this, ownerContext);
 
@@ -458,14 +469,18 @@ private void OnDestroy()
             ForceActivateOverrideTargetsAllInternal(targets);
         }
 
-        private void ForceActivateAllInternal()
+        internal void ForceActivateAllFrom(Vector3? origin)
+        {
+            ForceActivateAllInternal(origin);
+        }
+        private void ForceActivateAllInternal(Vector3? origin = null)
         {
             if (m_State == SkillActivationState.Silenced || OwnerCannotAttack)
                 return;
 
             float delay = m_SkillConfig.Activation.IntervalEachAbilityActive;
             if (gameObject.activeInHierarchy)
-                StartCoroutine(ForceActivateAllWithDelay(delay));
+                StartCoroutine(ForceActivateAllWithDelay(delay, origin));
         }
         private void ForceActivateOverrideTargetsAllInternal(List<ITargetable> targetables)
         {
@@ -476,11 +491,11 @@ private void OnDestroy()
             if (gameObject.activeInHierarchy)
                 StartCoroutine(ForceActivateOverrideTargetsAllWithDelay(delay, targetables));
         }
-        private IEnumerator ForceActivateAllWithDelay(float delay)
+        private IEnumerator ForceActivateAllWithDelay(float delay, Vector3? origin)
         {
             for (int i = 0; i < m_Delivers.Count; i++)
             {
-                ForceActivateInternal(m_Delivers[i].AbilityConfig);
+                ForceActivateInternal(m_Delivers[i].AbilityConfig, origin);
                 yield return new WaitForSeconds(delay);
             }
             OnActivatesInvoke(this);
@@ -502,13 +517,13 @@ private void OnDestroy()
         {
             ForceActivateOverrideTargetInternal(config, targetables);
         }
-        private void ForceActivateInternal(AbilityConfig config)
+        private void ForceActivateInternal(AbilityConfig config, Vector3? origin = null)
         {
             if (m_State == SkillActivationState.Silenced || OwnerCannotAttack)
                 return;
             if (HasAbilityInternal(config.BaseInfo.Id, out var ability))
             {
-                ActivateInternal(ability);
+                ActivateInternal(ability, origin);
             }
         }
         private void ForceActivateOverrideTargetInternal(AbilityConfig config, List<ITargetable> targetables)
@@ -526,9 +541,9 @@ private void OnDestroy()
                 return;
             ActivateInternal(m_Delivers[index]);
         }
-        private void ActivateInternal(AbilityDeliver abilityDeliver)
+        private void ActivateInternal(AbilityDeliver abilityDeliver, Vector3? origin = null)
         {
-            abilityDeliver.Activate();
+            abilityDeliver.ActivateFrom(origin);
             OnActivateIndividuInvoke(abilityDeliver.AbilityContext);
         }
         private void ActiveOverrideTargetInternal(AbilityDeliver abilityDeliver, List<ITargetable> targets)
@@ -572,6 +587,7 @@ private void OnDestroy()
         public void ResetProgression() => ResetProgressionInternal();
         private void ResetProgressionInternal()
         {
+            m_CardGrowthSteps = 0;
             StopAllCoroutines();
             UnregisterCasting();
             ResetCastingData();
@@ -632,3 +648,4 @@ private void OnInitInvoke(SkillContext context)
         }
 }
 }
+

@@ -18,6 +18,7 @@ namespace LegionKnight
         [SerializeField] private UnityEvent<List<CardUnit>> m_OnCardUnitUsed = new();
         [SerializeField] private UnityEvent<CardUnit> m_OnSelectedCard = new();
         [SerializeField] private UnityEvent<List<CardUnit>> m_OnUsedCardsChanged = new();
+        [SerializeField] private CardConfig[] m_AdditionalCards;
         private PreparationPanel m_PreparationPanel;
 
         public DeckConfig UsedHeroDeck => Player.Instance.HeroesCollection.UsedHero.HeroDeckConfig;
@@ -61,10 +62,13 @@ namespace LegionKnight
         {
             CardUnit card = GetCardOwnedInternal(config);
             if (card == null) return;
-            card.AddAmount(add);
-            if (!card.IsOwned)
-                RemoveUsedCardConfigInternal(config);
-            OnCardAddedInvoke(card);
+            card.ChangeCopies(add, () => OnCardAddedInvoke(card));
+        }
+
+        public void UpgradeCard(CardUnit card, int expected)
+        {
+            if (card != null && GetCardOwnedInternal(card.CardConfig) == card)
+                card.UpgradeWithCopies(expected, () => OnCardAddedInvoke(card));
         }
 
         public void SelectStandbyCardConfig(CardConfig config)
@@ -116,19 +120,10 @@ namespace LegionKnight
         private void UseCardConfigInternal()
         {
             PrepareUsedCardsInternal();
-            // This pool belongs to this run. Inventory changes cannot revoke a paid copy.
-            var runCards = new List<CardUnit>(m_UsedCards);
-            RogueLikeManager manager = RushGameManager.Instance.RogueLikeManager;
+            var manager = RushGameManager.Instance.RogueLikeManager;
             manager.ClearCustomCards();
-            UnityService.Instance.LocalSave.ExecuteTransaction(() =>
-            {
-                foreach (CardUnit card in runCards)
-                {
-                    if (!card.IsOwned || !card.CardConfig.IsAvailableForHero(Player.Instance.HeroesCollection.UsedHero)) continue;
-                    manager.AddCustomCard(card.CardConfig);
-                    AddCardAmountInternal(card.CardConfig, -1);
-                }
-            });
+            foreach (CardUnit card in m_UsedCards)
+                manager.AddCustomCard(card.CardConfig);
         }
 
         public void Init() => InitializeInternal();
@@ -136,11 +131,29 @@ namespace LegionKnight
         {
             m_UsedCards.Clear();
             RushGameManager.Instance.RogueLikeManager.ClearCustomCards();
+            var heroes = Player.Instance.HeroesCollection;
+            var entitled = new HashSet<CardConfig>();
+            foreach (var config in m_AdditionalCards ?? System.Array.Empty<CardConfig>())
+                if (config != null && GetCardOwnedInternal(config) == null) m_CardCollections.Add(new CardUnit(config));
+            foreach (var unit in heroes.HeroUnits)
+            {
+                if (unit?.HeroConfig?.HeroDeckConfig?.CardConfigs == null) continue;
+                bool owned = unit.Owned || unit.HeroConfig == heroes.DefaultHero ||
+                    UnityService.Instance.GetData<bool>(unit.HeroConfig.BaseInfo.Id + "Owned");
+                foreach (var config in unit.HeroConfig.HeroDeckConfig.CardConfigs)
+                {
+                    if (config == null) continue;
+                    if (GetCardOwnedInternal(config) == null) m_CardCollections.Add(new CardUnit(config));
+                    if (owned) entitled.Add(config);
+                }
+            }
+            heroes.OnCharacterOwned.RemoveListener(GrantHeroCardsInternal);
+            heroes.OnCharacterOwned.AddListener(GrantHeroCardsInternal);
             OnInitializedInvoke();
             foreach (CardUnit card in m_CardCollections)
             {
                 if (card == null || card.CardConfig == null) continue;
-                card.Init();
+                card.Init(entitled.Contains(card.CardConfig));
                 if (card.IsAdded)
                 {
                     if (card.IsOwned && card.CardConfig.IsAvailableForHero(Player.Instance.HeroesCollection.UsedHero) &&
@@ -157,6 +170,16 @@ namespace LegionKnight
             PreparationPanel.CardTabView.DefaultCardDeckView.Init();
         }
 
+        private void GrantHeroCardsInternal(HeroUnitConfig hero)
+        {
+            if (hero?.HeroDeckConfig?.CardConfigs == null) return;
+            foreach (var config in hero.HeroDeckConfig.CardConfigs)
+            {
+                var card = GetCardOwnedInternal(config);
+                card?.GrantHeroCard(() => OnCardAddedInvoke(card));
+            }
+        }
+
         private void OnInitializedInvoke() => m_OnInitialized?.Invoke();
         private void OnInitializedUnitInvoke(CardUnit card) => m_OnInitializedUnit?.Invoke(card);
         private void OnCardAddedInvoke(CardUnit card) => m_OnCardAdded?.Invoke(card);
@@ -168,3 +191,4 @@ namespace LegionKnight
         }
     }
 }
+

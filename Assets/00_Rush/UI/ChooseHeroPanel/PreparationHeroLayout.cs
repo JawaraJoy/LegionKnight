@@ -40,6 +40,11 @@ namespace Rush
             if (m_Open) m_Scroll.verticalNormalizedPosition = 1f;
         }
 
+        public void OpenHeroRoster()
+        {
+            if (IsHero && !m_Open) ToggleRoster();
+        }
+
         public void ResetMode()
         {
             m_Open = false;

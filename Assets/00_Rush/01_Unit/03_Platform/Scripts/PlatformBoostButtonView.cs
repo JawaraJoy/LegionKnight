@@ -49,6 +49,7 @@ namespace Rush
 
         private void Start()
         {
+            if (TryGetComponent<AetherHudFeedback>(out _)) return;
             m_BoostButton.onClick.AddListener(OnBoostButtonClickedInternal);
 
             Handler.OnBoostEnabled.AddListener(OnBoostEnabledInternal);

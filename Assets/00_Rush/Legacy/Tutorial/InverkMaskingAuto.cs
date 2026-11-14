@@ -1,5 +1,4 @@
 using MoreMountains.Tools;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -9,244 +8,116 @@ namespace LegionKnight
     [RequireComponent(typeof(Image))]
     public partial class InvertMaskingAuto : MonoBehaviour, ICanvasRaycastFilter
     {
-        [Header("Hole Target")]
+        private const float c_MinSize = 0.001f;
+        private const float c_Half = 0.5f;
+        private static readonly int s_HoleRectId = Shader.PropertyToID("_HoleRect");
+        private static readonly int s_HoleRadiusId = Shader.PropertyToID("_HoleRadius");
         [SerializeField, MMReadOnly] private TutorTarget m_Target;
         [SerializeField] private RectTransform m_Cursor;
-
-        [Header("Hole Appearance")]
-        [SerializeField, Range(0f, 0.5f)]
-        private float m_HoleCornerRadius = 0.05f;
-        [SerializeField]
-        private Color m_ImageColor = new(0f, 0f, 0f, 0.8f);
-        [SerializeField]
-        private Vector2 m_TargetOffset = Vector2.zero;
-        [SerializeField]
-        private Vector2 m_TargetSizeOffset = Vector2.zero;
-        [SerializeField]
-        private UnityEvent<Vector2> m_OnHolePositionChanged = new();
-
-        [Header("Runtime Info (ReadOnly)")]
+        [SerializeField, Range(0f, c_Half)] private float m_HoleCornerRadius = 0.05f;
+        [SerializeField] private Color m_ImageColor = new(0f, 0f, 0f, 0.8f);
+        [SerializeField] private Vector2 m_TargetOffset = Vector2.zero;
+        [SerializeField] private Vector2 m_TargetSizeOffset = Vector2.zero;
+        [SerializeField] private UnityEvent<Vector2> m_OnHolePositionChanged = new();
         [SerializeField, MMReadOnly] private RectTransform m_TargetRectTransform;
         [SerializeField, MMReadOnly] private Vector2 m_HolePosition;
-
-        // --- Cached references ---
         private Image m_Image;
         private RectTransform m_RectTransform;
         private Material m_RuntimeMaterial;
-
-        // --- Shader property IDs ---
-        private static readonly int HoleRectID = Shader.PropertyToID("_HoleRect");
-        private static readonly int HoleRadiusID = Shader.PropertyToID("_HoleRadius");
-
-        // --- Internal tracking ---
-        private Vector3 m_LastTargetPos;
-        private Vector2 m_LastTargetSize;
-
+        private readonly Vector3[] m_Corners = new Vector3[4];
         public TutorTarget Target => m_Target;
 
-        #region Unity Lifecycle
-
-        private void Awake()
-        {
-            CacheComponents();
-            SetupMaterial();
-            UpdateMask();
-            UpdateColor();
-        }
-
+        private void Awake() => SetupInternal();
         private void OnEnable()
         {
-            SetupMaterial();
-            UpdateMask();
-            UpdateColor();
+            SetupInternal();
+            Canvas.willRenderCanvases += RefreshBeforeRender;
         }
-
+        private void OnDisable()
+        {
+            Canvas.willRenderCanvases -= RefreshBeforeRender;
+            if (m_Image != null) m_Image.material = null;
+            if (m_RuntimeMaterial == null) return;
+            if (Application.isPlaying) Destroy(m_RuntimeMaterial);
+            else DestroyImmediate(m_RuntimeMaterial);
+            m_RuntimeMaterial = null;
+        }
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            CacheComponents();
-            SetupMaterial();
-            UpdateMask();
-            UpdateColor();
+            if (isActiveAndEnabled) SetupInternal();
         }
 #endif
-
-        /*private void LateUpdate()
+        private void SetupInternal()
         {
-            if (m_Target == null || m_TargetRectTransform == null)
-                return;
-
-            // Only update if target moves or changes size
-            Vector3 pos = m_TargetRectTransform.position;
-            Vector2 size = m_TargetRectTransform.rect.size;
-            if (pos != m_LastTargetPos || size != m_LastTargetSize)
+            m_Image = GetComponent<Image>();
+            TryGetComponent(out m_RectTransform);
+            if (m_RuntimeMaterial == null)
             {
-                UpdateMask();
-                m_LastTargetPos = pos;
-                m_LastTargetSize = size;
+                var shader = Shader.Find("UI/InvertMaskRoundedRect");
+                if (shader == null) return;
+                m_RuntimeMaterial = new Material(shader) { name = "InvertMaskRuntimeMat", hideFlags = HideFlags.DontSave };
             }
-        }*/
-
-        private void OnDisable()
-        {
-            if (m_RuntimeMaterial != null)
-            {
-#if UNITY_EDITOR
-                DestroyImmediate(m_RuntimeMaterial);
-#else
-                Destroy(m_RuntimeMaterial);
-#endif
-            }
+            m_Image.material = m_RuntimeMaterial;
+            m_Image.color = m_ImageColor;
+            UpdateMaskInternal();
         }
-
-        #endregion
-
-        #region Setup
-
-        private void CacheComponents()
+        public void SetMaskingTarget(TutorTarget target)
         {
-            if (m_Image == null)
-                m_Image = GetComponent<Image>();
-            if (m_RectTransform == null)
-                m_RectTransform = GetComponent<RectTransform>();
+            m_Target = target;
+            m_TargetRectTransform = null;
+            if (target != null) target.TryGetComponent(out m_TargetRectTransform);
+            UpdateMaskInternal();
         }
-
-        private void SetupMaterial()
-        {
-            if (m_Image == null) return;
-
-            var shader = Shader.Find("UI/InvertMaskRoundedRect");
-            if (shader == null)
-            {
-                Debug.LogError("Shader 'UI/InvertMaskRoundedRect' not found!");
-                return;
-            }
-
-            if (m_RuntimeMaterial == null || m_RuntimeMaterial.shader != shader)
-            {
-                if (m_RuntimeMaterial != null)
-                    DestroyImmediate(m_RuntimeMaterial);
-
-                m_RuntimeMaterial = new Material(shader)
-                {
-                    name = "InvertMaskRuntimeMat"
-                };
-                m_Image.material = m_RuntimeMaterial;
-            }
-        }
-
-        public void SetMaskingTarget(TutorTarget maskingTarget)
-        {
-            m_Target = maskingTarget;
-            m_TargetRectTransform = m_Target != null ? m_Target.GetComponent<RectTransform>() : null;
-            if (isActiveAndEnabled)
-                StartCoroutine(DelayUpdate(0.05f));
-        }
-
-        private IEnumerator DelayUpdate(float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            UpdateMask();
-        }
-
-        #endregion
-
-        #region Update & Appearance
-
         public void SetColor(Color color)
         {
             m_ImageColor = color;
-            UpdateColor();
+            if (m_Image != null) m_Image.color = color;
         }
-
-        private void UpdateColor()
+        public void Refresh() => UpdateMaskInternal();
+        private void RefreshBeforeRender() => UpdateMaskInternal();
+        private void UpdateMaskInternal()
         {
-            if (m_Image != null)
-                m_Image.color = m_ImageColor;
-        }
-        public void Refresh()
-        {
-            UpdateMask();
-        }
-        private void UpdateMask()
-        {
-            if (m_RuntimeMaterial == null || m_RectTransform == null || m_TargetRectTransform == null)
+            if (m_RuntimeMaterial == null || m_RectTransform == null) return;
+            if (m_Target == null || !m_Target.gameObject.activeInHierarchy || m_TargetRectTransform == null)
+            {
+                m_RuntimeMaterial.SetVector(s_HoleRectId, Vector4.zero);
                 return;
-
-            // Get world corners
-            Vector3[] maskCorners = new Vector3[4];
-            Vector3[] targetCorners = new Vector3[4];
-            m_RectTransform.GetWorldCorners(maskCorners);
-            m_TargetRectTransform.GetWorldCorners(targetCorners);
-
-            // Calculate sizes
-            float maskLeft = maskCorners[0].x;
-            float maskBottom = maskCorners[0].y;
-            float maskWidth = m_RectTransform.rect.width * m_RectTransform.lossyScale.x;
-            float maskHeight = m_RectTransform.rect.height * m_RectTransform.lossyScale.y;
-
-            float targetLeft = targetCorners[0].x;
-            float targetBottom = targetCorners[0].y;
-            float targetWidth = m_TargetRectTransform.rect.width * m_TargetRectTransform.lossyScale.x + m_TargetSizeOffset.x;
-            float targetHeight = m_TargetRectTransform.rect.height * m_TargetRectTransform.lossyScale.y + m_TargetSizeOffset.y;
-
-            float offsetX = m_TargetOffset.x;
-            float offsetY = m_TargetOffset.y;
-
-            // Normalize to mask space
-            float centerX = ((targetLeft + targetWidth / 2f + offsetX) - maskLeft) / maskWidth;
-            float centerY = ((targetBottom + targetHeight / 2f + offsetY) - maskBottom) / maskHeight;
-            float sizeX = targetWidth / maskWidth;
-            float sizeY = targetHeight / maskHeight;
-
-            m_HolePosition = new Vector2(centerX, centerY);
-            m_RuntimeMaterial.SetVector(HoleRectID, new Vector4(centerX, centerY, sizeX, sizeY));
-            m_RuntimeMaterial.SetFloat(HoleRadiusID, m_HoleCornerRadius);
-
-            if (m_OnHolePositionChanged?.GetPersistentEventCount() > 0)
-                m_OnHolePositionChanged.Invoke(m_HolePosition);
-
-            SetCursorPosition(m_HolePosition);
+            }
+            var rect = m_RectTransform.rect;
+            if (rect.width <= c_MinSize || rect.height <= c_MinSize) return;
+            m_TargetRectTransform.GetWorldCorners(m_Corners);
+            var min = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+            var max = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+            foreach (var corner in m_Corners)
+            {
+                Vector2 local = m_RectTransform.InverseTransformPoint(corner);
+                min = Vector2.Min(min, local);
+                max = Vector2.Max(max, local);
+            }
+            var size = max - min + m_TargetSizeOffset;
+            var center = (max + min) * c_Half + m_TargetOffset;
+            m_HolePosition = Rect.PointToNormalized(rect, center);
+            m_RuntimeMaterial.SetVector(s_HoleRectId, new Vector4(m_HolePosition.x, m_HolePosition.y, size.x / rect.width, size.y / rect.height));
+            m_RuntimeMaterial.SetFloat(s_HoleRadiusId, m_HoleCornerRadius);
+            if (m_Cursor != null)
+            {
+                Vector3 world = m_RectTransform.TransformPoint(center);
+                m_Cursor.position = world;
+            }
+            OnHolePositionChangedInvoke();
         }
-
-        private void SetCursorPosition(Vector2 position)
+        private void OnHolePositionChangedInvoke() => m_OnHolePositionChanged?.Invoke(m_HolePosition);
+        public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
         {
-            if (m_Cursor == null) return;
-
-            Vector2 localPos = new(
-                (position.x * m_RectTransform.rect.width) - (m_RectTransform.rect.width * 0.5f),
-                (position.y * m_RectTransform.rect.height) - (m_RectTransform.rect.height * 0.5f)
-            );
-
-            m_Cursor.localPosition = localPos;
-        }
-
-        #endregion
-
-        #region Raycast Handling
-
-        public bool IsRaycastLocationValid(Vector2 sp, Camera eventCamera)
-        {
-            if (m_RectTransform == null || m_RuntimeMaterial == null)
-                return true;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(m_RectTransform, sp, eventCamera, out Vector2 local);
+            if (m_RectTransform == null || m_RuntimeMaterial == null || m_Target == null || !m_Target.gameObject.activeInHierarchy) return true;
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(m_RectTransform, screenPoint, eventCamera, out var local)) return true;
             Vector2 uv = Rect.PointToNormalized(m_RectTransform.rect, local);
-
-            Vector4 holeRect = m_RuntimeMaterial.GetVector(HoleRectID);
-            float radius = m_HoleCornerRadius;
-
-            Vector2 rectCenter = new(holeRect.x, holeRect.y);
-            Vector2 rectSize = new Vector2 (holeRect.z, holeRect.w) * 0.5f;
-
-            Vector2 localToHole = uv - rectCenter;
-            Vector2 d = new Vector2 (Mathf.Abs(localToHole.x), Mathf.Abs(localToHole.y)) - rectSize + new Vector2(radius, radius);
-            float dist = Mathf.Min(Mathf.Max(d.x, d.y), 0f) + (Vector2.Max(d, Vector2.zero)).magnitude - radius;
-
-            // Let clicks pass through the transparent hole
-            return dist >= 0f;
+            Vector4 hole = m_RuntimeMaterial.GetVector(s_HoleRectId);
+            var d = new Vector2(Mathf.Abs(uv.x - hole.x), Mathf.Abs(uv.y - hole.y)) -
+                new Vector2(hole.z, hole.w) * c_Half + Vector2.one * m_HoleCornerRadius;
+            float distance = Mathf.Min(Mathf.Max(d.x, d.y), 0f) + Vector2.Max(d, Vector2.zero).magnitude - m_HoleCornerRadius;
+            return distance >= 0f;
         }
-
-        #endregion
     }
 }

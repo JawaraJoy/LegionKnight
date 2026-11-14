@@ -1,175 +1,148 @@
-using MoreMountains.Tools;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Rush;
 using UnityEngine;
 
 namespace LegionKnight
 {
     public class TutorFlashHandler : MonoBehaviour
     {
-        [SerializeField]
-        private FlashContent[] m_FlashContent;
-        [SerializeField, MMReadOnly]
-        private List<TutorFlash> m_FlashList = new();
+        private const float c_MinInterval = 0.05f;
+        [SerializeField] private FlashContent[] m_FlashContent = Array.Empty<FlashContent>();
+        [SerializeField] private List<TutorFlash> m_FlashList = new();
+        [SerializeField] private TutorialFlashChannel m_Channel;
+        [SerializeField, Min(1f)] private float m_LoadTimeout = 10f;
+        private readonly List<TutorFlashDefinition> m_Pending = new();
         private TutorFlash m_CurrentFlash;
-        private void Start()
+        private Coroutine m_Playing;
+        private bool m_Initialized;
+        private void OnEnable()
         {
-            TutorFlash[] targets = FindObjectsByType<TutorFlash>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            m_FlashList = new List<TutorFlash>(targets);
+            if (m_Channel == null) return;
+            m_Channel.TargetAdded += AddFlash;
+            m_Channel.TargetRemoved += RemoveFlash;
+            foreach (var flash in m_Channel.Targets) AddFlashInternal(flash);
+        }
+        private void OnDisable()
+        {
+            if (m_Channel != null)
+            {
+                m_Channel.TargetAdded -= AddFlash;
+                m_Channel.TargetRemoved -= RemoveFlash;
+            }
+            CancelCurrentInternal();
         }
         public void Init()
         {
-            foreach(FlashContent content in m_FlashContent)
-            {
-                content.Init();
-            }
+            if (m_Initialized) return;
+            foreach (var content in m_FlashContent) content?.Init();
+            m_Initialized = true;
         }
-        private FlashContent GetContent(TutorFlashDefinition defi)
+        public void AddFlash(TutorFlash flash) => AddFlashInternal(flash);
+        private void AddFlashInternal(TutorFlash flash)
         {
-            foreach(FlashContent content in m_FlashContent)
-            {
-                if (content.Definition == defi)
-                {
-                    return content;
-                }
-            }
-            return null;
-        }
-        private bool HasContent(TutorFlashDefinition defi, out FlashContent content)
-        {
-            content = GetContent(defi);
-            return content != null;
-        }
-        private TutorFlash GetFlash(TutorFlashDefinition defi)
-        {
-            TutorFlash flash = m_FlashList.Find(x => x.Definition == defi);
-            if (flash == null)
-            {
-                Debug.LogError($"[TutorFlashHandler] GetFlash Error: Can't find TutorFlash for Definition {defi.Id}");
-                return null;
-            }
-            return flash;
-        }
-        private bool HasFlash(TutorFlashDefinition defi, out TutorFlash flash)
-        {
-            flash = GetFlash(defi);
-            return flash != null;
-        }
-        public void AddFlash(TutorFlash flash)
-        {
-            if (!m_FlashList.Contains(flash))
-            {
-                m_FlashList.Add(flash);
-            }
+            if (flash != null && !m_FlashList.Contains(flash)) m_FlashList.Add(flash);
         }
         public void RemoveFlash(TutorFlash flash)
         {
-            if (m_FlashList.Contains(flash))
+            m_FlashList.Remove(flash);
+            if (flash == m_CurrentFlash) CancelCurrentInternal();
+        }
+        private FlashContent ContentFor(TutorFlashDefinition definition)
+        {
+            foreach (var content in m_FlashContent) if (content?.Definition == definition) return content;
+            return null;
+        }
+        public void StartFlash(TutorFlashDefinition definition)
+        {
+            if (!isActiveAndEnabled || definition == null || definition.FlashMessages == null || definition.FlashMessages.Length == 0 || ContentFor(definition) == null) return;
+            if (!m_Pending.Contains(definition) && (m_CurrentFlash == null || m_CurrentFlash.Definition != definition)) m_Pending.Add(definition);
+        }
+        private void Update()
+        {
+            if (!m_Initialized || m_CurrentFlash != null) return;
+            for (int i = 0; i < m_Pending.Count; i++)
             {
-                m_FlashList.Remove(flash);
+                var definition = m_Pending[i];
+                var content = ContentFor(definition);
+                if (content == null || content.HasDone) { m_Pending.RemoveAt(i--); continue; }
+                var flash = m_FlashList.Find(candidate => candidate != null && candidate.Definition == definition && candidate.isActiveAndEnabled);
+                if (flash == null) continue;
+                m_Pending.RemoveAt(i);
+                m_CurrentFlash = flash;
+                m_Playing = StartCoroutine(PlayInternal(flash, content));
+                return;
             }
         }
-        public void StartFlash(TutorFlashDefinition defi)
+        private IEnumerator PlayInternal(TutorFlash flash, FlashContent content)
         {
+            content.SetIsPlaying(true);
+            OnFlashStartInvoke(flash.Definition);
+            foreach (var message in flash.Definition.FlashMessages)
+            {
+                flash.ShowFlashUI(message);
+                float started = Time.realtimeSinceStartup;
+                while (flash != null && !flash.IsReady && Time.realtimeSinceStartup - started < m_LoadTimeout) yield return null;
+                if (flash == null || !flash.IsReady)
+                {
+                    Debug.LogWarning("[Tutorial] Flash UI was unavailable; hint was not marked read.", this);
+                    content.SetIsPlaying(false);
+                    if (flash != null) flash.HideFlashUI();
+                    m_CurrentFlash = null;
+                    m_Playing = null;
+                    yield break;
+                }
+                yield return new WaitForSecondsRealtime(Mathf.Max(c_MinInterval, flash.Definition.MessageInternal));
+            }
+            flash.HideFlashUI();
+            content.SetHasDone(true);
+            content.SetIsPlaying(false);
+            m_CurrentFlash = null;
+            m_Playing = null;
+            OnFlashEndInvoke(flash.Definition);
+        }
+        private void CancelCurrentInternal()
+        {
+            if (m_Playing != null) StopCoroutine(m_Playing);
+            m_Playing = null;
             if (m_CurrentFlash != null)
             {
-                if (HasContent(m_CurrentFlash.Definition, out FlashContent currentContent))
-                {
-                    if (currentContent.HasPlaying)
-                    {
-                        return;
-                    }
-                }
+                ContentFor(m_CurrentFlash.Definition)?.SetIsPlaying(false);
+                m_CurrentFlash.HideFlashUI();
             }
-            if (HasContent(defi, out FlashContent content))
-            {
-                if (content.HasDone || content.HasPlaying)
-                {
-                    return;
-                }
-            }
-            if (HasFlash(defi, out TutorFlash flash))
-            {
-                m_CurrentFlash = flash;
-                StartCoroutine(PlayingFlashMessage(defi));
-                m_CurrentFlash.Definition.OnStart?.Invoke();
-                if (m_CurrentFlash.Definition.IsSetDoneOnStart)
-                {
-                    content.SetHasDone(true);
-                }
-            }
+            m_CurrentFlash = null;
         }
-
-        private IEnumerator PlayingFlashMessage(TutorFlashDefinition defi)
-        {
-            if (HasContent(m_CurrentFlash.Definition, out FlashContent content))
-            {
-                content.SetIsPlaying(true);
-            }
-            Debug.Log($"[TutorFlashHandler] Playing Flash Message for Definition {defi.Id}");
-            string[] messages = defi.FlashMessages;
-            for (int i = 0; i < messages.Length; i++)
-            {
-                string currentMessage = messages[i];
-                m_CurrentFlash.ShowFlashUI(currentMessage);
-                yield return new WaitForSeconds(defi.MessageInternal);
-            }
-            yield return new WaitForSeconds(defi.MessageInternal);
-            EndFlash();
-        }
-
-        private void EndFlash()
-        {
-            m_CurrentFlash.HideFlashUI();
-            
-            if (HasContent(m_CurrentFlash.Definition, out FlashContent content))
-            {
-                content.SetHasDone(true);
-                content.SetIsPlaying(false);
-            }
-            else
-            {
-                Debug.LogError($"[TutorFlashHandler] EndFlash Error: Can't find FlashContent for Definition {m_CurrentFlash.Definition.Id}");
-            }
-            m_CurrentFlash.Definition.OnEnd?.Invoke();
-        }
+        private void OnFlashStartInvoke(TutorFlashDefinition definition) => definition.OnStart?.Invoke();
+        private void OnFlashEndInvoke(TutorFlashDefinition definition) => definition.OnEnd?.Invoke();
     }
 
-    [System.Serializable]
+    [Serializable]
     public class FlashContent
     {
-        [SerializeField]
-        private TutorFlashDefinition m_Definition;
-        [SerializeField, MMReadOnly]
-        private bool m_HasDone = false;
-        [SerializeField, MMReadOnly]
-        private bool m_HasPlaying = false;
+        [SerializeField] private TutorFlashDefinition m_Definition;
+        [SerializeField] private bool m_HasDone;
+        [SerializeField] private bool m_HasPlaying;
+        private ITutorialProgressStore m_Store;
         public bool HasDone => m_HasDone;
         public bool HasPlaying => m_HasPlaying;
         public TutorFlashDefinition Definition => m_Definition;
-        private string HASDONEKEY => $"{m_Definition.Id}hasdone";
-
-        public void Init()
+        private string DoneKey => m_Definition.Id + "hasdone";
+        public FlashContent() { }
+        public FlashContent(TutorFlashDefinition definition) => m_Definition = definition;
+        public void Init() => InitializeInternal(new LocalTutorialProgressStore(UnityService.Instance.LocalSave));
+        public void Initialize(ITutorialProgressStore store) => InitializeInternal(store);
+        private void InitializeInternal(ITutorialProgressStore store)
         {
-            bool hasDoneData = UnityService.Instance.HasData(HASDONEKEY);
-            if (hasDoneData)
-            {
-                bool hasDone = UnityService.Instance.GetData<bool>(HASDONEKEY);
-                SetHasDoneInternal(hasDone);
-            }
+            m_Store = store;
+            m_HasPlaying = false;
+            m_HasDone = m_Definition != null && store != null && store.Contains(DoneKey) && store.Read<bool>(DoneKey);
         }
-        public void SetIsPlaying(bool hasPlaying)
+        public void SetIsPlaying(bool value) => m_HasPlaying = value;
+        public void SetHasDone(bool value)
         {
-            m_HasPlaying = hasPlaying;
-        }
-        private void SetHasDoneInternal(bool hasDone)
-        {
-            m_HasDone = hasDone;
-            UnityService.Instance.SaveData(HASDONEKEY, hasDone);
-        }
-        public void SetHasDone(bool hasDone)
-        {
-            SetHasDoneInternal(hasDone);
+            m_HasDone = value;
+            if (m_Definition != null) m_Store?.Write(DoneKey, value);
         }
     }
 }

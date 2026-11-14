@@ -56,6 +56,21 @@ namespace Rush
 
         public Sprite BannerButtonSprite => m_BannerButtonSprite;
         public Sprite BannerSplashSprite => m_BannerSplashSprite;
+        [System.Serializable]
+        private sealed class CardWeightField
+        {
+            [SerializeField] internal RarityConfig rarity;
+            [SerializeField] internal float multiplier = 1f;
+        }
+        [SerializeField] private CardWeightField[] m_CardPoolWeights;
+
+        internal float NormalWeight(GachaCollectableConfig entry)
+        {
+            if (entry.Collect is CardConfig && m_CardPoolWeights != null)
+                foreach (var group in m_CardPoolWeights)
+                    if (group.rarity == entry.Collect.CollectibleField.RarityConfig) return entry.Chance * group.multiplier;
+            return entry.Chance;
+        }
         public GachaCollectableConfig[] Collectables => m_Collectables;
         public bool HasFirstDrawGuarantee => m_HasFirstDrawGuarantee;
         public GachaCollectableConfig[] FirstDrawGuarantees => m_FirstDrawGuarantees;

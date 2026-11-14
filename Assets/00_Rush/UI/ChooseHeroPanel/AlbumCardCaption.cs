@@ -1,4 +1,3 @@
-using System.Collections;
 using LegionKnight;
 using TMPro;
 using UnityEngine;
@@ -8,12 +7,20 @@ namespace Rush
     public sealed class AlbumCardCaption : MonoBehaviour
     {
         [SerializeField] private CardSelectView m_Card;
+        [SerializeField] private TMP_Text m_Copies;
         [SerializeField] private TextMeshProUGUI m_Caption;
 
-        private IEnumerator Start()
+        [SerializeField] private GameObject m_SelectedTick;
+
+        public void SetSelected(CardConfig card)
         {
-            while (m_Card.CardConfig == null) yield return null;
-            m_Caption.text = m_Card.CardConfig.BaseInfo.Name;
+            if (m_SelectedTick != null) m_SelectedTick.SetActive(card != null && m_Card.CardConfig == card);
+        }
+
+        public void Display(CardUnit unit)
+        {
+            m_Caption.text = unit.CardConfig.BaseInfo.Name;
+            m_Copies.text = $"×{unit.Amount:N0}";
         }
     }
 }

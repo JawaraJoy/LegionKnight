@@ -48,6 +48,12 @@ namespace LegionKnight
         [SerializeField, MMReadOnly]
         private bool m_LevelUpTriggered = false;
 
+        private int m_PreviousLevel;
+        public int PreviousLevel => m_PreviousLevel > 0 ? m_PreviousLevel : Mathf.Max(1, m_Level - 1);
+        public bool AtMaxLevel => m_Level >= m_MaxLevel;
+        public LootChestDefinition GetLevelReward(int level) =>
+            level > 0 && level <= m_ExpTable.Count ? m_ExpTable[level - 1]?.RewardLevelReached : null;
+
         public bool LevelUpTrigerred => m_LevelUpTriggered;
         public UnityEvent<ExpTable> OnLevelUpExpTable => m_OnLevelUpExpTable;
 
@@ -89,12 +95,15 @@ namespace LegionKnight
         }
         private void OnLevelUpInvoke()
         {
+            if (!m_LevelUpTriggered) m_PreviousLevel = m_Level - 1;
+            SetLevelUpTriggeredInternal(true);
             m_OnLevelUp?.Invoke(m_Level);
             m_OnLevelUpExpTable?.Invoke(GetCurrentExpTable(m_Level - 1));
-            SetLevelUpTriggeredInternal(true);
 
             GetCurrentOnLevelUpEnter()?.Invoke();
 
+            GetLevelReward(m_Level)?.DirectTakeLoots();
+            if (Unity.Services.Core.UnityServices.State != Unity.Services.Core.ServicesInitializationState.Initialized) return;
             DateTime levelupDate = DateTime.Now;
             Dictionary<string, string> eventValues = new Dictionary<string, string>
             {
@@ -103,7 +112,6 @@ namespace LegionKnight
                 {"levelupdate", levelupDate.ToString()},
             };
             AppsFlyer.sendEvent(AFEventName.OnPlayerLevelUp, eventValues);
-            GetCurrentExpTable(m_Level - 1)?.RewardLevelReached.DirectTakeLoots();
         }
         public void AddOnCurrentExpChange(UnityAction<int> action)
         {
@@ -269,6 +277,7 @@ namespace LegionKnight
             {
                 int maxExp = GetCurrentMaxExperience();
                 int expNeeded = maxExp - m_CurrentExp;
+                if (AtMaxLevel && expNeeded <= 0) break;
 
                 // Calculate how much to add this frame
                 int addThisFrame = Mathf.Min(expToAdd, Mathf.CeilToInt(growSpeed * Time.deltaTime));
@@ -286,6 +295,9 @@ namespace LegionKnight
                 if (m_CurrentExp >= maxExp && m_Level < m_MaxLevel)
                 {
                     LevelUp();
+                    UnityService.Instance.SaveData(m_CurrentExperienceKey, m_CurrentExp);
+                    OnCurrentExpChangeInvoke();
+                    OnCurrentExoRateChangeInvoke(GetLevelProgressionRateInternal());
                 }
 
                 yield return null;

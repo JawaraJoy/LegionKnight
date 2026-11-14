@@ -71,19 +71,8 @@ namespace LegionKnight
 
         private bool m_IsSelling;
         public int SelectedSellAmount => m_SelectedSellAmount;
-        private int SelectedSellMaximum
-        {
-            get
-            {
-                int maximum = Mathf.Max(0, m_MaxSelectedSellAmount);
-                if (m_SelectedSellConfig is CardConfig cardConfig)
-                {
-                    CardUnit card = Player.Instance.PlayerCardDeck.GetCardOwned(cardConfig);
-                    maximum = Mathf.Min(maximum, card?.Amount ?? 0);
-                }
-                return Mathf.Max(0, maximum);
-            }
-        }
+        private int SelectedSellMaximum => m_SelectedSellConfig != null && m_SelectedSellConfig.CanSell
+            ? Mathf.Max(0, m_MaxSelectedSellAmount) : 0;
 
         public void Sell() => SellInternal();
         private void SellInternal()
@@ -98,9 +87,8 @@ namespace LegionKnight
 
             CollectibleConfig config = m_SelectedSellConfig;
             int amount = m_SelectedSellAmount;
-            CardConfig cardConfig = config as CardConfig;
             UnityAction<int> onSold = m_OnSold;
-            if (cardConfig == null && onSold == null) return;
+            if (onSold == null) return;
             Currency value = config.GetSellValue(amount);
             if (value.ItemConfig == null || value.Amount <= 0 || GetCurrencyInternal(value.ItemConfig) == null)
                 return;
@@ -112,18 +100,7 @@ namespace LegionKnight
             {
                 UnityService.Instance.LocalSave.ExecuteTransaction(() =>
                 {
-                    // Card inventory is authoritative; do not trust a stale UI callback.
-                    if (cardConfig != null)
-                    {
-                        CardUnit card = Player.Instance.PlayerCardDeck.GetCardOwned(cardConfig);
-                        if (card == null || card.Amount < amount)
-                            throw new System.InvalidOperationException("Insufficient card stock.");
-                        Player.Instance.PlayerCardDeck.AddCardAmount(cardConfig, -amount);
-                    }
-                    else
-                    {
-                        onSold(amount);
-                    }
+                    onSold(amount);
                     result.GrantRewards("Preparation");
                 });
                 SetSellTargetInternal(config, 0);
@@ -139,9 +116,9 @@ namespace LegionKnight
             => SetSellTargetInternal(config, maxAmount, onSold);
         protected void SetSellTargetInternal(CollectibleConfig config, int maxAmount, UnityAction<int> onSold = null)
         {
-            m_OnSold = onSold;
-            m_SelectedSellConfig = config;
-            m_MaxSelectedSellAmount = Mathf.Max(0, maxAmount);
+            m_SelectedSellConfig = config != null && config.CanSell ? config : null;
+            m_OnSold = m_SelectedSellConfig != null ? onSold : null;
+            m_MaxSelectedSellAmount = m_SelectedSellConfig != null ? Mathf.Max(0, maxAmount) : 0;
             SetSelectedSellAmountInternal(SelectedSellMaximum > 0 ? 1 : 0);
         }
         public void SetToMax() => SetSelectedSellAmountInternal(SelectedSellMaximum);
@@ -306,4 +283,3 @@ namespace LegionKnight
         }
     }
 }
-

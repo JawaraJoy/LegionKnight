@@ -4,25 +4,26 @@ namespace Rush
 {
     public class InteruptSliderview : SliderView
     {
-        protected override void ShowInternal()
-        {
-            base.ShowInternal();
-            SetSliderInternal(0, 1);
-        }
+        private Skill m_Source;
         public void StartInterupt(Skill skill)
         {
-            if (skill == null) return;
-
-            skill.OnCastingInterruptEvent.RemoveListener((current, max) => SetCastingDuration(skill));
-            skill.OnCastingInterruptEvent.AddListener((current, max) => SetCastingDuration(skill));
+            DetachInternal();
+            if (skill == null || skill.MaxInterruptCount <= 0) { HideInternal(); return; }
+            m_Source = skill;
+            m_Source.OnCastingInterruptEvent.AddListener(UpdateDamageInternal);
             ShowInternal();
+            UpdateDamageInternal(skill.CurrentInterruptCount,skill.MaxInterruptCount);
         }
-
-        private void SetCastingDuration(Skill skill)
+        private void UpdateDamageInternal(int damage, int max)
         {
-            int current = skill.CurrentInterruptCount;
-            int max = skill.MaxInterruptCount;
-            SetSliderInternal(current, max);
+            if (max > 0) SetSliderInternal(damage,max);
         }
+        private void DetachInternal()
+        {
+            if (m_Source != null) m_Source.OnCastingInterruptEvent.RemoveListener(UpdateDamageInternal);
+            m_Source = null;
+        }
+        protected override void HideInternal() { DetachInternal(); base.HideInternal(); }
+        private void OnDisable() => DetachInternal();
     }
 }

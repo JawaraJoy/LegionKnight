@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rush
@@ -41,12 +41,12 @@ namespace Rush
                 return RollWeighted(banner.FirstDrawGuarantees);
             }
 
-            return RollWeighted(banner.Collectables);
+            return RollWeighted(banner.Collectables, banner);
         }
 
-        private static GachaCollectableConfig RollWeighted(GachaCollectableConfig[] pool)
+        private static GachaCollectableConfig RollWeighted(GachaCollectableConfig[] pool, GachaBannerConfig normalBanner = null)
         {
-            float total = GachaRateInfo.TotalWeight(pool);
+            float total = GachaRateInfo.TotalWeight(pool, normalBanner);
             if (total <= 0f) return null;
 
             float roll = Random.Range(0f, total);
@@ -56,7 +56,7 @@ namespace Rush
             {
                 if (!GachaRateInfo.IsEligible(entry)) continue;
                 last = entry;
-                cumulative += entry.Chance;
+                cumulative += normalBanner == null ? entry.Chance : normalBanner.NormalWeight(entry);
                 if (roll < cumulative) return entry;
             }
             // Unity's floating-point Random.Range can also return its upper bound.
@@ -64,3 +64,4 @@ namespace Rush
         }
     }
 }
+

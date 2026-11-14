@@ -49,7 +49,7 @@ namespace Rush
         }
         private void UpdateSelectedSell(CollectibleConfig config, int amount, int maxAmount)
         {
-            m_SellButton.interactable = config != null && amount > 0 && amount <= maxAmount;
+            m_SellButton.interactable = config != null && config.CanSell && amount > 0 && amount <= maxAmount;
             if (config == null) return;
             m_ItemToSellIcon.sprite = config.CollectibleField.Icon;
             m_AmountToSell.text = $"{amount}/{maxAmount}";
@@ -63,7 +63,11 @@ namespace Rush
         {
             if (m_CurrenciesControl == null) m_CurrenciesControl = Player.Instance.CurrencyControl;
             m_CurrenciesControl.SetSellTarget(config, amount, onSold);
-            if (config == null || amount <= 0) return;
+            if (config == null || !config.CanSell || amount <= 0)
+            {
+                if (IsShown) HideInternal();
+                return;
+            }
             ShowInternal();
         }
         private void Sell()

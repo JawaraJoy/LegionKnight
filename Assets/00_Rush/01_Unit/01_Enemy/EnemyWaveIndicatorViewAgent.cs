@@ -47,7 +47,7 @@ namespace Rush
         public void Hide()
         {
             Resolve(out _, out var indicator);
-            if (indicator != null) indicator.Hide();
+            if (indicator != null && !indicator.UsesBattleHud) indicator.Hide();
         }
         public void ShowArrival(Unit unit)
         {

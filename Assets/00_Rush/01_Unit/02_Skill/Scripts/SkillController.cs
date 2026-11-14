@@ -39,6 +39,7 @@ namespace Rush
         public IReadOnlyList<Skill> Skills => m_Skills;
 
         private Skill m_CurrentCastingSkill;
+        public Skill CurrentCastingSkill => m_CurrentCastingSkill;
 
         public IModuleContext ModuleContext => m_ModuleContext;
         [SerializeField]
@@ -195,6 +196,13 @@ namespace Rush
             AddNewSkillsInternal(configs);
         }
         
+        internal void LearnOrUpgradeCard(SkillConfig config, int rank)
+        {
+            if (!m_ModuleContext.Initialized) return;
+            if (HasSkillActivatorInternal(config.BaseInfo.Id, out Skill skill)) skill.ApplyCardUpgrade(rank);
+            else RegisterSkillInternal(config);
+        }
+
         public void AddNewSkill(SkillConfig config)
         {
             AddNewSkillInternal(config);
@@ -409,18 +417,22 @@ namespace Rush
         {
             ForceActiveInternal(skillConfig);
         }
-        private void ForceActiveInternal(SkillConfig skillConfig)
+        internal void ForceActiveFrom(SkillConfig skillConfig, Vector3 origin)
+        {
+            ForceActiveInternal(skillConfig, origin);
+        }
+        private void ForceActiveInternal(SkillConfig skillConfig, Vector3? origin = null)
         {
             if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skill))
             {
-                skill.ForceActivateAll();
+                skill.ForceActivateAllFrom(origin);
             }
             else
             {
                 AddNewSkillInternal(skillConfig);
                 if (HasSkillActivatorInternal(skillConfig.BaseInfo.Id, out Skill skillAdded))
                 {
-                    skillAdded.ForceActivateAll();
+                    skillAdded.ForceActivateAllFrom(origin);
                 }
             }
         }
@@ -526,3 +538,4 @@ private void OnInitInvoke(IModuleContext context)
         }
 }
 }
+

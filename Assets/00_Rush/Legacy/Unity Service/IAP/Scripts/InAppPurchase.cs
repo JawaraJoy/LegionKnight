@@ -36,6 +36,33 @@ namespace LegionKnight
         private float m_NextWalletSync;
         private bool m_Ready;
         private bool m_RetryScheduled;
+#if UNITY_EDITOR
+        private PaidDiamondWallet m_RankPreview;
+#endif
+        internal async Task RefreshRankWalletAsync()
+        {
+            string account = SeasonalRanks.PlayerId;
+            if (account == null || Player.CurrentWallet == null) return;
+            await m_Settlement.WaitAsync();
+            try
+            {
+                if (account != SeasonalRanks.PlayerId || Player.CurrentWallet == null) return;
+#if UNITY_EDITOR
+                m_RankPreview ??= new PaidDiamondWallet(new IAPAccountHistory(true), m_Settlement);
+                await m_RankPreview.BindRankPreviewAsync(Player.CurrentWallet, UnityService.Instance.LocalSave, account);
+#else
+                if (!m_WalletLoaded || m_History.AccountId != account)
+                    await RestoreAccountInternal();
+                else
+                {
+                    await m_History.RefreshBalanceAsync();
+                    m_History.CheckAccount(account);
+                    Player.CurrentWallet.ShowPaidDiamonds(m_AccountWallet);
+                }
+#endif
+            }
+            finally { m_Settlement.Release(); }
+        }
         public bool IsInitialized => m_Ready && m_History.IsCurrent;
         public UnityEvent<Rush.IAPBundleConfig> OnPurchaseSuccess => m_OnPurchaseSuccess;
         public UnityEvent<Rush.CollectibleResultData> OnPurchaseComplete => m_OnPurchaseComplete;
@@ -482,4 +509,3 @@ namespace LegionKnight
         }
     }
 }
-

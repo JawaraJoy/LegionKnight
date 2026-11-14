@@ -14,6 +14,7 @@ namespace Rush
     {
         private const string c_Hero = "Assets/00_Rush/01_Unit/00_Hero/Config/Hero_Liura.asset";
         private const string c_Cards = "Assets/00_Rush/04_RogueLike/Config/Cards/cards/";
+        private const float c_FireballLevelOneAttackMultiplier = 2.25f;
         private readonly List<CheckResult> m_Checks = new List<CheckResult>();
         private readonly List<string> m_Errors = new List<string>();
         private readonly List<Unit> m_Enemies = new List<Unit>();
@@ -410,7 +411,7 @@ namespace Rush
         {
             float factor = 1f + 0.15f * (skill.Progression.Level - 1);
             if (skill == m_Fire)
-                return (65f + 2.21f * m_Owner.BaseStats.Attack) * factor;
+                return c_FireballLevelOneAttackMultiplier * m_Owner.BaseStats.Attack * factor;
 
             for (int stage = 0; stage < 4; stage++)
                 if (skill.SkillConfig == m_Hero.Skills[stage])

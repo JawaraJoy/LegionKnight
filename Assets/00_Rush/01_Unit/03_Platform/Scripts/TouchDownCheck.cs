@@ -10,7 +10,8 @@ namespace Rush
         [SerializeField]
         private TouchDownCheckField m_TouchDown;
         public TouchDownCheckField TouchDown => m_TouchDown;
-        public float PerfectTouchRange => m_PerfectTouchRange;
+        [SerializeField] private BattleCardRunBonuses m_CardBonuses;
+        public float PerfectTouchRange => m_PerfectTouchRange + (m_CardBonuses != null ? m_CardBonuses.Accuracy : 0f);
 
         private Platform2D m_TouchedPlatform; // Referensi platform yang sudah di-touched
 

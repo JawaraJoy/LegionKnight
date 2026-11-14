@@ -4,77 +4,62 @@ using UnityEngine;
 
 namespace Rush
 {
-    /// <summary>
-    /// Bar slot di atas scroll list card.
-    /// - Spawn CardSlotView sejumlah MaxUsedCardCount saat Init
-    /// - Refresh tiap kali OnUsedCardsChanged fired
-    /// </summary>
     public class CardDeckSlotBarView : UIView
     {
         [SerializeField] private CardSlotView m_SlotPrefab;
         [SerializeField] private Transform m_SlotContainer;
-
         [SerializeField] private PlatformAlbum m_Album;
         private readonly List<CardSlotView> m_Slots = new();
+        private CardDeck m_Deck;
 
-        // ── Init (dipanggil oleh CardSelectTabView) ───────────────────────────
         public void Init()
         {
-            SpawnSlots();
-
-            // Listen perubahan used list
-            Player.Instance.PlayerCardDeck.OnUsedCardsChanged.AddListener(OnUsedCardsChanged);
-
-            // Refresh awal sesuai save data yang sudah di-load
-            RefreshInternal(Player.Instance.PlayerCardDeck.GetUsedCards());
-        }
-
-        // ── Spawn slot sejumlah MaxUsedCardCount ──────────────────────────────
-        private void SpawnSlots()
-        {
-            // Clear slot lama jika ada
-            foreach (var slot in m_Slots)
+            if (m_Deck != null) m_Deck.OnUsedCardsChanged.RemoveListener(RefreshInternal);
+            m_Deck = Player.Instance.PlayerCardDeck;
+            while (m_Slots.Count < m_Deck.GetMaxUsedCardCount())
             {
-                if (slot != null) Destroy(slot.gameObject);
-            }
-            m_Slots.Clear();
-
-            int max = Player.Instance.PlayerCardDeck.GetMaxUsedCardCount();
-            for (int i = 0; i < max; i++)
-            {
-                CardSlotView slot = Instantiate(m_SlotPrefab, m_SlotContainer);
-                slot.BindAlbum(m_Album);
-                slot.SetEmpty();
+                var slot = Instantiate(m_SlotPrefab, m_SlotContainer);
+                slot.BindAlbum(m_Album, m_Slots.Count);
                 slot.Show();
                 m_Slots.Add(slot);
             }
+            m_Deck.OnCardAdded.RemoveListener(OnCardChanged);
+            m_Deck.OnCardAdded.AddListener(OnCardChanged);
+            m_Deck.OnUsedCardsChanged.AddListener(RefreshInternal);
+            RefreshInternal(m_Deck.GetUsedCards());
         }
 
-        public void Refresh()
+        private void OnCardChanged(CardUnit card) { if (card.IsAdded) RefreshInternal(m_Deck.GetUsedCards()); }
+        public void Refresh() { if (m_Deck != null) RefreshInternal(m_Deck.GetUsedCards()); }
+
+        private void RefreshInternal(List<CardUnit> equipped)
         {
-            RefreshInternal(Player.Instance.PlayerCardDeck.GetUsedCards());
-        }
-        // ── Refresh semua slot sesuai used list terkini ───────────────────────
-        private void RefreshInternal(List<CardUnit> usedCards)
-        {
-            for (int i = 0; i < m_Slots.Count; i++)
+            var slots = new CardUnit[m_Slots.Count];
+            foreach (var unit in equipped)
             {
-                if (i < usedCards.Count)
-                    m_Slots[i].SetFilled(usedCards[i]);
-                else
-                    m_Slots[i].SetEmpty();
+                int i = unit.DeckSlot;
+                if (i >= 0 && i < slots.Length && slots[i] == null) slots[i] = unit;
             }
-        }
-
-        private void OnUsedCardsChanged(List<CardUnit> usedCards)
-        {
-            RefreshInternal(usedCards);
+            foreach (var unit in equipped)
+            {
+                if (System.Array.IndexOf(slots, unit) >= 0) continue;
+                int i = System.Array.IndexOf(slots, null);
+                if (i < 0) break;
+                unit.AssignSlot(i);
+                slots[i] = unit;
+            }
+            for (int i = 0; i < slots.Length; i++)
+            {
+                if (slots[i] == null) m_Slots[i].SetEmpty();
+                else m_Slots[i].SetFilled(slots[i]);
+            }
         }
 
         private void OnDestroy()
         {
-            if (Player.Instance != null)
-                Player.Instance.PlayerCardDeck.OnUsedCardsChanged.RemoveListener(OnUsedCardsChanged);
+            if (m_Deck != null) m_Deck.OnCardAdded.RemoveListener(OnCardChanged);
+            if (m_Deck != null) m_Deck.OnUsedCardsChanged.RemoveListener(RefreshInternal);
         }
     }
 }
+

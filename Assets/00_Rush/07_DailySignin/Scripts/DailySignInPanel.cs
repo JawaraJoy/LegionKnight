@@ -16,6 +16,8 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_ClaimedCount;
         [SerializeField] private RectTransform m_Dialog;
 
+        [SerializeField] private DailySignInRewardsPopup m_RewardsPopup;
+
         private DailySignInManager m_Manager;
         private DailySignInState m_Displayed;
         private long m_LastSecond = -1;
@@ -61,6 +63,7 @@ namespace Rush
                 UpdateBank.Instance.UnregisterUpdateTick(gameObject);
                 DisconnectInternal();
             }
+            if (m_RewardsPopup != null) m_RewardsPopup.Dismiss();
             base.HideInternal();
         }
 
@@ -147,7 +150,10 @@ namespace Rush
         private void OnClaimSuccessInternal(CollectibleResultData result)
         {
             RefreshViewInternal(m_Manager.GetState());
-            CanvasManager.Instance.GetPanel<ShopResultPanel>()?.Show(result);
+            if (m_RewardsPopup != null && result is DailySignInClaimResult claim)
+                m_RewardsPopup.Present(claim);
+            else
+                CanvasManager.Instance.GetPanel<ShopResultPanel>()?.Show(result);
         }
 
         private void OnClaimFailedInternal(string message)

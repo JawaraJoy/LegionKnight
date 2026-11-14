@@ -81,7 +81,7 @@ namespace LegionKnight
             try
             {
                 await AuthenticationService.Instance.SignInWithUnityAsync(PlayerAccountService.Instance.AccessToken);
-                OnSignInSuccessInvoke($"Signed in with Unity {PlayerAccountService.Instance.AccessToken} is Successed");
+                OnSignInSuccessInvoke(AuthenticationService.Instance.PlayerId);
                 Debug.Log("SignIn is successful.");
             }
             catch (AuthenticationException ex)
@@ -154,12 +154,18 @@ namespace LegionKnight
         }
         public async void SignInAnonymously()
         {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            var panel = CanvasManager.Instance.GetPanel<AuthenticationPanel>();
+            if (panel.TryGetComponent<Rush.AndroidPlayGamesSignIn>(out var login))
+                login.Begin(UnityService.Instance.EnvironmentName, OnSignInSuccessInvoke);
+            await Task.CompletedTask;
+#else
             OnStartSingInInvoke();
             try
             {
                 // Sign in anonymously
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                OnSignInSuccessInvoke($"Signed in anonymously {AuthenticationService.Instance.PlayerId} is Successed");
+                OnSignInSuccessInvoke(AuthenticationService.Instance.PlayerId);
 
                 Debug.Log($"Signed in anonymously {AuthenticationService.Instance.PlayerId}{AuthenticationService.Instance.IsSignedIn}");
             }
@@ -168,6 +174,7 @@ namespace LegionKnight
                 Debug.LogError($"Failed to sign in: {e}");
                 OnSignInFailedInvoke($"Failed to sign in: {e.Message}");
             }
+#endif
         }
         private async void GoogleplayRequestToken()
         {

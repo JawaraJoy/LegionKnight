@@ -21,6 +21,14 @@ namespace Rush
         
         [SerializeField]
         protected TargetDistributeMode m_TargetDistributeMode;
+        [SerializeField, Range(0f, 1f), Tooltip("Shield restored to the attacker from actual target health damage.")]
+        private float m_ShieldFromDamageRate;
+        public float ShieldFromDamageRate => m_ShieldFromDamageRate;
+
+        [SerializeField, Range(0f, 1f), Tooltip("Health restored to the attacker from actual target health damage, independently of stat lifesteal.")]
+        private float m_HealFromDamageRate;
+        public float HealFromDamageRate => m_HealFromDamageRate;
+
         public int InteruptDamage => m_InteruptDamage;
         public SpawnSetupField SpawningSetup => m_SpawningSetup;
         public TargetDistributeMode TargetDistributeMode => m_TargetDistributeMode;

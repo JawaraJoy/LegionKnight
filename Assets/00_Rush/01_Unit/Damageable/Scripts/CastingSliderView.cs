@@ -1,67 +1,40 @@
-using LegionKnight;
 using UnityEngine;
 
 namespace Rush
 {
     public class CastingSliderView : SliderView
     {
-        [SerializeField]
-        private InteruptSliderview m_InteruptSliderview;
+        [SerializeField] private InteruptSliderview m_InteruptSliderview;
+        private Skill m_Source;
 
-        private void OnEnable()
-        {
-            RegisterCasting();
-        }
-
-        private void RegisterCasting()
-        {
-            UpdateBank.Instance.RegisterUpdateTick(gameObject, this);
-        }
-        private void UnregisterCasting()
-        {
-            UpdateBank.Instance.UnregisterUpdateTick(gameObject);
-        }
+        // SkillController already forwards cast start/end to the prefab. Read the same
+        // clock as the HUD instead of registering anonymous callbacks on every cast.
         public void StartCasting(Skill skill)
         {
-            Debug.Log($"UIStartCasting: {skill?.SkillConfig.name}");
-            skill.OnCastingFailEvent.RemoveListener(() => EndCastingInternal(skill));
-            skill.OnCastingSuccessEvent.RemoveListener(() => EndCastingInternal(skill));
-
-            //skill.OnCastingUpdateEvent.AddListener((progress) => SetCastingDuration(skill));
-            SetDurationInternal(skill.SkillConfig.Casting.CastDuration);
-
-            skill.OnCastingFailEvent.AddListener(() => EndCastingInternal(skill));
-            skill.OnCastingSuccessEvent.AddListener(() => EndCastingInternal(skill));
-            bool canInterupt = skill.SkillConfig.Casting.MaxInteruptResist > 0;
-            if (canInterupt)
-            {
-                m_InteruptSliderview.StartInterupt(skill);
-            }
-            else
-            {
-                m_InteruptSliderview.Hide();
-            }
+            if (skill == null || skill.SkillConfig == null) return;
+            m_Source = skill;
             ShowInternal();
+            if (m_InteruptSliderview != null)
+            {
+                if (skill.MaxInterruptCount > 0) m_InteruptSliderview.StartInterupt(skill);
+                else m_InteruptSliderview.Hide();
+            }
+            Tick();
         }
+        public override void Tick()
+        {
+            if (m_Source == null || !m_Source.IsCasting) { HideInternal(); return; }
+            float max = m_Source.SkillConfig.Casting.CastDuration;
+            m_Rate = max > 0 ? Mathf.Clamp01(m_Source.RemainingCastTime / max) : 0;
+            m_Slider.value = m_Rate;
+            m_ValueText.SetText("{0:1}s",Mathf.Max(0,m_Source.RemainingCastTime));
+        }
+        public void EndCasting(Skill skill) { if (skill == m_Source) HideInternal(); }
         protected override void HideInternal()
         {
+            m_Source = null;
+            if (m_InteruptSliderview != null) m_InteruptSliderview.Hide();
             base.HideInternal();
-            m_InteruptSliderview.Hide();
-        }
-        private void SetCastingDuration(Skill skill)
-        {
-            int duration = Mathf.RoundToInt(skill.RemainingCastTime);
-            int maxDuration = Mathf.RoundToInt(skill.SkillConfig.Casting.CastDuration);
-            SetSliderInternal(duration, maxDuration);
-        }
-        public void EndCasting(Skill skill)
-        {
-            EndCastingInternal(skill);
-        }
-        private void EndCastingInternal(Skill skill)
-        {
-            skill.OnCastingUpdateEvent.RemoveListener((progress) => SetCastingDuration(skill));
-            HideInternal();
         }
     }
 }

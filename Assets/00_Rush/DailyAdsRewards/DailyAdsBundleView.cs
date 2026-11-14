@@ -64,6 +64,7 @@ namespace Rush
         [SerializeField] private TextMeshProUGUI m_RewardNameText;
         [SerializeField] private TextMeshProUGUI m_ButtonText;
         [SerializeField] private Button m_WatchButton;
+        [SerializeField] private DailySignInRewardsPopup m_RewardsPopup;
         [SerializeField] private string m_WatchButtonLabel = "Watch Ad";
         [SerializeField] private string m_GrantedButtonLabel = "Claimed";
         [SerializeField] private CardField m_Card = new();
@@ -130,7 +131,7 @@ namespace Rush
                 manager.GrantRewardSnapshot(date, index, source, result);
                 completed = true;
                 if (this != null && result.RewardsGranted)
-                    CanvasManager.Instance.GetPanel<ShopResultPanel>()?.Show(result);
+                    m_RewardsPopup.Present(result.Entries, m_GrantedButtonLabel.ToUpperInvariant());
             });
         }
 

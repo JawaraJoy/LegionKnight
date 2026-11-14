@@ -1,6 +1,5 @@
 using LegionKnight;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Rush
@@ -69,7 +68,8 @@ public void Init()
         protected virtual void UpdateLevelUpMonitor(ExpTable expTable)
         {
             ClearLootItems();
-            List<LootField> loots = expTable.RewardLevelReached.LootFields.ToList();
+            var loots = expTable?.RewardLevelReached?.LootFields;
+            if (loots == null) return;
 
             // Untuk setiap loot, ambil LootItemView dari pool dan spawn
             foreach (var loot in loots)

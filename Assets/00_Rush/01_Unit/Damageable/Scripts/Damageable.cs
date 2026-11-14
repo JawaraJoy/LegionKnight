@@ -239,7 +239,10 @@ namespace Rush
             {
                 int healthBefore = m_Health;
                 ApplyDamage(finalDamage);
-                ApplyLifeStealInternal(context, Mathf.Max(0, healthBefore - m_Health));
+                int healthDamage = Mathf.Max(0, healthBefore - m_Health);
+                ApplyLifeStealInternal(context, healthDamage);
+                ApplyShieldFromDamageInternal(context, healthDamage);
+                ApplyAbilityHealingInternal(context, healthDamage);
             }
             else
             {
@@ -247,6 +250,8 @@ namespace Rush
             }
             OnDamageTaken(context, finalDamage);
         }
+        [SerializeField] private BattleCardRunBonuses m_CardBonuses;
+
         private void ApplyLifeStealInternal(IAbilityContext context, int healthDamage)
         {
             if (healthDamage <= 0) return;
@@ -255,6 +260,30 @@ namespace Rush
                 !source.HasBind(out StatController stats) ||
                 !source.HasBind(out Damageable sourceDamageable) || !sourceDamageable.IsAlive) return;
             int healing = Mathf.RoundToInt(healthDamage * stats.LifeStealRate);
+            if (sourceDamageable.m_CardBonuses != null)
+                healing += sourceDamageable.m_CardBonuses.AccrueHealing(healthDamage, stats.LifeStealRate);
+            if (healing > 0) sourceDamageable.SimpleHeal(healing);
+        }
+
+        private void ApplyShieldFromDamageInternal(IAbilityContext context, int healthDamage)
+        {
+            if (healthDamage <= 0 || !(context.AbilityDeliver.AbilityConfig is DamageAbilityConfig ability) ||
+                ability.ShieldFromDamageRate <= 0f) return;
+            Unit source = context.SkillContext.ModuleContext.Unit;
+            if (source == null || source == m_ModuleContext.Unit ||
+                !source.HasBind(out Damageable sourceDamageable) || !sourceDamageable.IsAlive) return;
+            int shield = Mathf.RoundToInt(healthDamage * ability.ShieldFromDamageRate);
+            if (shield > 0) sourceDamageable.AddShield(shield, true);
+        }
+
+        private void ApplyAbilityHealingInternal(IAbilityContext context, int healthDamage)
+        {
+            if (healthDamage <= 0 || !(context.AbilityDeliver.AbilityConfig is DamageAbilityConfig ability) ||
+                ability.HealFromDamageRate <= 0f) return;
+            Unit source = context.SkillContext.ModuleContext.Unit;
+            if (source == null || source == m_ModuleContext.Unit ||
+                !source.HasBind(out Damageable sourceDamageable) || !sourceDamageable.IsAlive) return;
+            int healing = Mathf.RoundToInt(healthDamage * ability.HealFromDamageRate);
             if (healing > 0) sourceDamageable.SimpleHeal(healing);
         }
 
@@ -432,7 +461,7 @@ namespace Rush
             Unit unitKiller = context.SkillContext.ModuleContext.Unit;
             if (unitKiller.HasBind(out SkillController killerSkills))
             {
-                AbilityUltility.OnSkillEventActivates(killerSkills, ForceActiveState.OnKill);
+                AbilityUltility.OnSkillEventActivates(killerSkills, ForceActiveState.OnKill, TargetTransform.position);
             }
             m_OnDeath?.Invoke(context);
             OnDeathDirectionInvoke(context.AbilityDeliver.DeliverTransform);

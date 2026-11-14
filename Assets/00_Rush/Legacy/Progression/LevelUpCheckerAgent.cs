@@ -29,7 +29,6 @@ namespace Rush
             if (IsLevelUpTriggered)
             {
                 LevelUpPanel.Show();
-                Player.Instance.Progression.SetLevelUpTriggered(false);
             }
         }
     }

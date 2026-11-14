@@ -114,6 +114,7 @@ namespace Rush
         {
             if (m_Unit == null || !m_Unit.gameObject.activeInHierarchy) return;
             var ability = context.AbilityDeliver.AbilityConfig;
+            if (ability is ShooterAbilityConfig { UsesCustomShotVisuals: true }) return;
             BossEnergyKind kind = Kind(ability);
             float size = kind == BossEnergyKind.Shield || kind == BossEnergyKind.Barrier ? c_DefenseSize : c_LaunchSize;
             var effect = AcquireInternal();
@@ -125,6 +126,7 @@ namespace Rush
         {
             if (target == null || m_Unit == null || !m_Unit.gameObject.activeInHierarchy) return;
             var ability = context.AbilityDeliver.AbilityConfig;
+            if (ability is ShooterAbilityConfig { UsesCustomShotVisuals: true }) return;
             var kind = Kind(ability);
             if (kind == BossEnergyKind.Summon || kind == BossEnergyKind.Shield || kind == BossEnergyKind.Barrier) return;
             float size = c_ImpactSize;

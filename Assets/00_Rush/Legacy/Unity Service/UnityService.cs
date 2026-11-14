@@ -23,8 +23,14 @@ namespace LegionKnight
         private bool m_IsInitialized = false;
         public DailyCheckIn DailyCheckIn => m_DailyCheckIn;
         public bool IsInitialized => m_IsInitialized;
-        async void Start()
+        internal string EnvironmentName => m_EnvironmentName;
+        private bool m_Initializing;
+        private void Start() => InitializeServices();
+
+        private async void InitializeServices()
         {
+            if (m_IsInitialized || m_Initializing) return;
+            m_Initializing = true;
             try
             {
                 var options = new InitializationOptions().SetEnvironmentName(m_EnvironmentName);
@@ -55,7 +61,13 @@ namespace LegionKnight
                 Debug.LogError($"Failed to initialize Unity Services: {exception.Message}");
                 // Notify that initialization failed.
                 m_OnInitializationFailed.Invoke(errorMessage);
+#if UNITY_ANDROID && !UNITY_EDITOR
+                var panel = CanvasManager.Instance.GetPanel<AuthenticationPanel>();
+                if (panel.TryGetComponent<AndroidPlayGamesSignIn>(out var login))
+                    login.ShowInitializationFailure(InitializeServices);
+#endif
             }
+            finally { m_Initializing = false; }
         }
     }
 

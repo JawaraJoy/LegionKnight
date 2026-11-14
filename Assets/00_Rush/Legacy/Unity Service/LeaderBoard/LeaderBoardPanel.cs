@@ -27,7 +27,22 @@ namespace LegionKnight
         private const float c_StatusHeight = 155f;
         private const float c_StatusFontSize = 36f;
         private readonly List<AsyncOperationHandle<GameObject>> m_RowHandles = new();
+        [SerializeField] private Rush.SeasonalRankTabs m_PeriodTabs;
         private CancellationTokenSource m_LoadCancellation;
+        private void Awake() { if (m_PeriodTabs != null) m_PeriodTabs.Selected += ReloadPeriod; }
+        private void ReloadPeriod()
+        {
+            if (!IsShown || !isActiveAndEnabled) return;
+            CancelLoadingInternal();
+            ClearRowsInternal();
+            var scroll = m_Spawn.GetComponentInParent<ScrollRect>(true);
+            if (scroll != null) { scroll.StopMovement(); scroll.verticalNormalizedPosition = 1f; }
+            m_LoadCancellation = new CancellationTokenSource();
+            m_LoadTask = RefreshLeaderboardInternal(m_LoadCancellation.Token);
+        }
+        private static LeaderboardEntry Entry(Rush.PeriodStanding s) =>
+            s == null ? null : new LeaderboardEntry(s.id, s.name, s.rank - 1, s.score);
+
         private Task m_LoadTask;
         private TextMeshProUGUI m_StatusText;
         public string StatusMessage => m_StatusText != null ? m_StatusText.text : string.Empty;
@@ -56,6 +71,7 @@ namespace LegionKnight
         private void OnDestroy()
         {
             CancelLoadingInternal();
+            if (m_PeriodTabs != null) m_PeriodTabs.Selected -= ReloadPeriod;
             ReleaseRowsInternal();
         }
 
@@ -99,7 +115,9 @@ namespace LegionKnight
                     throw new InvalidOperationException("Sign in and reopen the leaderboard to retry.");
 
                 string playerId = service.LeaderboardPlayerId;
-                var leaderboard = await AwaitRequestInternal(service.GetTopRanks(), token);
+                var period = m_PeriodTabs != null ? await AwaitRequestInternal(m_PeriodTabs.Fetch(), token) : null;
+                var leaderboard = period != null ? (period.rows ?? Array.Empty<Rush.PeriodStanding>()).Select(Entry).ToList()
+                    : await AwaitRequestInternal(service.GetTopRanks(), token);
                 EnsureCurrentPlayerInternal(service, playerId, token);
                 if (leaderboard == null) throw new InvalidOperationException("The server returned an invalid leaderboard.");
 
@@ -118,7 +136,7 @@ namespace LegionKnight
                 SetStatusInternal(entries.Count == 0 ? "No scores yet." : string.Empty);
                 try
                 {
-                    var ownEntry = entries.FirstOrDefault(entry => entry.PlayerId == playerId)
+                    var ownEntry = period != null ? Entry(period.own) : entries.FirstOrDefault(entry => entry.PlayerId == playerId)
                         ?? await AwaitRequestInternal(service.LoadPlayerLeaderboardScoreAsync(), token);
                     EnsureCurrentPlayerInternal(service, playerId, token);
                     if (m_MyScoreView == null) throw new InvalidOperationException("Your rank view is not configured.");

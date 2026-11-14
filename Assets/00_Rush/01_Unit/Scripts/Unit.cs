@@ -75,17 +75,18 @@ namespace Rush
         }
 
         // The spawner owns this routine, so pool return/reset can cancel all preparation.
-        public IEnumerator InitializeForSpawn(UnitConfig config, int level)
+        public IEnumerator InitializeForSpawn(UnitConfig config, int level, float cardSteps = 0f)
         {
-            return InitializeForSpawnInternal(config, level);
+            return InitializeForSpawnInternal(config, level, cardSteps);
         }
 
-        private IEnumerator InitializeForSpawnInternal(UnitConfig config, int level)
+        private IEnumerator InitializeForSpawnInternal(UnitConfig config, int level, float cardSteps)
         {
             SpawnGeneration++;
             m_Config = config;
             InitializeProgressionInternal();
             m_Progression.SetLevel(level);
+            if (cardSteps > 0f) m_ProgressionBonus += (config.MainStats.GetFinalStat(2) - config.MainStats.GetFinalStat(1)) * cardSteps;
             OnInitInvoke();
             foreach (MonoBehaviour bind in m_Binds)
             {

@@ -71,6 +71,16 @@ namespace Rush
             m_AbilityConfig = config;
             m_OnInit?.Invoke(m_AbilityContext);
         }
+        internal Vector3? ActivationOrigin { get; private set; }
+
+        internal void ActivateFrom(Vector3? origin)
+        {
+            Vector3? previous = ActivationOrigin;
+            ActivationOrigin = origin;
+            try { Activate(); }
+            finally { ActivationOrigin = previous; }
+        }
+
         public virtual void Activate()
         {
             ActivateInternal();

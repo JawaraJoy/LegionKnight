@@ -34,12 +34,19 @@ namespace Rush
         public static string Skill(SkillConfig config, int level, SkillController controller = null) =>
             BuildSkill(config, level, controller, null);
 
+        public static string SkillEffects(SkillConfig config, int level, SkillController controller = null)
+        {
+            if (config == null) return string.Empty;
+            return DescribeSkill(config, ClampLevel(config, level), skill => CurrentLevel(skill, controller),
+                new HashSet<Configuration>(), 0, false, controller: controller);
+        }
+
         private static string BuildSkill(SkillConfig config, int level, SkillController controller, SkillDetails details)
         {
             if (config == null) return string.Empty;
             Func<SkillConfig, int> levels = skill => CurrentLevel(skill, controller);
             int displayLevel = ClampLevel(config, level);
-            string description = DescribeSkill(config, displayLevel, levels, new HashSet<Configuration>(), 0, true, details);
+            string description = DescribeSkill(config, displayLevel, levels, new HashSet<Configuration>(), 0, true, details, controller);
             AllStatusEffectConfig mark = config.OnHitMarkForDescription;
             if (mark == null) return description;
 
@@ -49,7 +56,7 @@ namespace Rush
                 SkillConfig strike = action?.SkillConfig;
                 if (strike == null) continue;
                 int strikeLevel = controller == null ? ClampLevel(strike, displayLevel) : Mathf.Max(1, levels(strike));
-                lines.AddRange(BattleSkillEffects(strike, strikeLevel, levels, new HashSet<Configuration> { config }, 1));
+                lines.Add(DescribeSkill(strike, strikeLevel, levels, new HashSet<Configuration> { config }, 1, false, controller: controller));
             }
             return string.Join("\n", lines.Distinct());
         }
@@ -57,6 +64,7 @@ namespace Rush
         public static string Card(CardConfig config, SkillController controller = null, bool preview = false)
         {
             if (config == null) return string.Empty;
+            if (!string.IsNullOrEmpty(config.BonusDescription)) return config.BonusDescription;
             CardSkillField[] fields = config.SkillConfigs ?? Array.Empty<CardSkillField>();
             var upgrades = new HashSet<SkillConfig>(fields.Where(f => f != null && f.SkillConfig != null &&
                 f.CardPurpose == CardPurpose.SkillUp).Select(f => f.SkillConfig));
@@ -72,7 +80,7 @@ namespace Rush
                 .Where(p => p != null).SelectMany(p => LandingSkills(p, true)));
             string weaponStages = DescribeWeaponStages(fields, before, after, preview);
             if (weaponStages.Length > 0) lines.Add(weaponStages);
-            foreach (CardSkillField field in fields)
+            foreach (CardSkillField field in CardDisplayFieldsInternal(fields))
             {
                 if (weaponStages.Length > 0) break;
                 if (field == null || field.SkillConfig == null) continue;
@@ -189,8 +197,11 @@ namespace Rush
                 (perfect ? side.OnPerfectTouchSkill : side.OnNormalTouchSkill) ?? Array.Empty<SkillConfig>());
         }
 
+        private static float CurrentGrowthSteps(SkillConfig skill, SkillController controller) =>
+            controller != null && controller.HasSkill(skill, out var runtime) ? runtime.CardGrowthSteps : 0f;
+
         private static string DescribeSkill(SkillConfig skill, int level, Func<SkillConfig, int> levels,
-            HashSet<Configuration> path, int depth, bool activation, SkillDetails details = null)
+            HashSet<Configuration> path, int depth, bool activation, SkillDetails details = null, SkillController controller = null)
         {
             if (skill == null) return string.Empty;
             if (depth >= c_MaxDepth || path.Contains(skill)) return skill.BaseInfo.Name;
@@ -202,6 +213,7 @@ namespace Rush
             }
             var visited = new HashSet<Configuration>(path) { skill };
             var parts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(skill.DetailSummary)) parts.Add(skill.DetailSummary);
             if (activation && skill.Activation != null)
             {
                 string trigger = Trigger(skill.Activation);
@@ -211,10 +223,11 @@ namespace Rush
                 if (skill.Casting != null && skill.Casting.CastDuration > 0)
                     parts.Add("Cast " + Number(skill.Casting.CastDuration) + "s.");
             }
+            float cardSteps = CurrentGrowthSteps(skill, controller);
             foreach (AbilityConfig ability in skill.AbilitySets ?? Array.Empty<AbilityConfig>())
             {
                 string effect = DescribeAbility(ability, level, levels, visited, depth + 1,
-                    skill.AbilitySets.Length == 1 ? details : null);
+                    skill.AbilitySets.Length == 1 ? details : null, cardSteps, controller);
                 if (effect.Length > 0) parts.Add(effect);
             }
             return string.Join(" ", parts.Distinct());
@@ -266,16 +279,16 @@ namespace Rush
         }
 
         private static string DescribeAbility(AbilityConfig ability, int level, Func<SkillConfig, int> levels,
-            HashSet<Configuration> path, int depth, SkillDetails details = null)
+            HashSet<Configuration> path, int depth, SkillDetails details = null, float cardSteps = 0f, SkillController controller = null)
         {
             if (ability == null) return string.Empty;
             if (depth >= c_MaxDepth || path.Contains(ability)) return ability.BaseInfo.Name;
             var visited = new HashSet<Configuration>(path) { ability };
             var parts = new List<string>();
             if (ability is AegisConversionConfig aegis)
-                parts.Add(Percent(aegis.LifeStealPerStackAtLevel(level)) + " life steal per stack.");
+                parts.Add(Percent(aegis.LifeStealPerStackAtLevel(level) + cardSteps * (aegis.LifeStealPerStackAtLevel(2) - aegis.LifeStealPerStackAtLevel(1))) + " life steal per stack.");
             else if (ability is StatModifierConfig modifier)
-                parts.Add(DescribeModifier(modifier, level));
+                parts.Add(DescribeModifier(modifier, level, cardSteps));
             else if (ability is AnomalyIncursionConfig incursion)
             {
                 AnomalyEntityField entity = incursion.Entity;
@@ -284,14 +297,14 @@ namespace Rush
                     parts.Add("Summon " + entity.Count + " entities" + EntityStats(entity.Unit, entity.Unit == null ? 1 : entity.Unit.Progression.Level) +
                         "; " + entity.Barriers + " barriers each.");
                     if (entity.DeathExplosion != null)
-                        parts.Add("On entity death: " + DescribeAbility(entity.DeathExplosion, level, levels, visited, depth + 1));
+                        parts.Add("On entity death: " + DescribeAbility(entity.DeathExplosion, level, levels, visited, depth + 1, cardSteps: cardSteps, controller: controller));
                 }
             }
             else if (ability is SummonAbilityConfig summon)
             {
                 int count = summon.SpawnSetup == null ? 1 : Mathf.Max(1, summon.SpawnSetup.BurstCount);
                 parts.Add("Summon " + count + " " + (summon.UnitToSpawn == null ? "unit" : summon.UnitToSpawn.BaseInfo.Name) +
-                    EntityStats(summon.UnitToSpawn, level) + ".");
+                    EntityStats(summon.UnitToSpawn, level, cardSteps) + ".");
                 if (summon.SpawnDuration != null && summon.SpawnDuration.HasDuration)
                     parts.Add("Lasts " + Number(summon.SpawnDuration.Duration) + "s.");
             }
@@ -299,7 +312,11 @@ namespace Rush
             {
                 string type = damage.DamageType == DamageType.TrueDamage ? " true damage" :
                     damage.DamageType == DamageType.FatalDamage ? " fatal damage" : " damage";
-                string power = Power(damage.Power, level);
+                string power = Power(damage.Power, level, cardSteps);
+                if (damage.HealFromDamageRate > 0f)
+                    parts.Add("Heal for " + Percent(damage.HealFromDamageRate) + " of actual HP damage dealt.");
+                if (damage.ShieldFromDamageRate > 0f)
+                    parts.Add("Restore " + Percent(damage.ShieldFromDamageRate) + " of actual HP damage dealt as Shield.");
                 if (damage.DamageBasedTargetMaxHP != 0) power += " + " + Percent(damage.DamageBasedTargetMaxHP) + " target max HP";
                 string count = !(damage is AnomalyPulseConfig) && damage.SpawningSetup != null && damage.SpawningSetup.FireCount > 1
                     ? (damage.UseAllTargetsInRange ? "Up to " : string.Empty) + Number(damage.SpawningSetup.FireCount) +
@@ -337,13 +354,13 @@ namespace Rush
             }
             else if (ability is HealAbilityConfig heal)
             {
-                if (heal.HealTickCount > 0 && HasPower(heal.Power, level))
-                    parts.Add("Heal " + Power(heal.Power, level) + TickText(heal.HealTickCount, heal.HealTickInterval) + ".");
+                if (heal.HealTickCount > 0 && HasPower(heal.Power, level, cardSteps))
+                    parts.Add("Heal " + Power(heal.Power, level, cardSteps) + TickText(heal.HealTickCount, heal.HealTickInterval) + ".");
             }
             else if (ability is ChargeAbilityConfig charge)
             {
-                if (charge.ChargeTickCount > 0 && HasPower(charge.Power, level))
-                    parts.Add("Restore " + Power(charge.Power, level) + " " + (charge.SkillCategoryToCharge == null ? "charge" : charge.SkillCategoryToCharge.BaseInfo.Name + " charge") +
+                if (charge.ChargeTickCount > 0 && HasPower(charge.Power, level, cardSteps))
+                    parts.Add("Restore " + Power(charge.Power, level, cardSteps) + " " + (charge.SkillCategoryToCharge == null ? "charge" : charge.SkillCategoryToCharge.BaseInfo.Name + " charge") +
                         TickText(charge.ChargeTickCount, charge.ChargeTickInterval) + ".");
             }
             else parts.Add(ability.BaseInfo.Name + ".");
@@ -358,44 +375,44 @@ namespace Rush
                 if (stat.UseStackDuration)
                     parts.Add("Lose " + stat.UpdatePerStackCount + " stack(s) every " + Number(Mathf.Clamp(stat.StackDurationUpdate, 0f, stat.FinalDurationByLevel(level))) + "s.");
                 foreach (SkillConfig linked in stat.InfluencedSkillToActivateOnStackFull)
-                    parts.Add("At max stacks: " + DescribeSkill(linked, Mathf.Max(1, levels(linked)), levels, visited, depth + 1, false));
+                    parts.Add("At max stacks: " + DescribeSkill(linked, Mathf.Max(1, levels(linked)), levels, visited, depth + 1, false, controller: controller));
                 foreach (SkillConfig linked in stat.InfluencedSkillToActivateOnStackEmpty)
-                    parts.Add("When effect ends: " + DescribeSkill(linked, Mathf.Max(1, levels(linked)), levels, visited, depth + 1, false));
+                    parts.Add("When effect ends: " + DescribeSkill(linked, Mathf.Max(1, levels(linked)), levels, visited, depth + 1, false, controller: controller));
             }
             foreach (StatusEffectConfig status in ability.StatusEffectOnSelf ?? Array.Empty<StatusEffectConfig>())
-                parts.Add("Self: " + DescribeStatus(status, level, levels, visited, depth + 1));
+                parts.Add((ability is DamageAbilityConfig ? "On hit (self): " : "Self: ") + DescribeStatus(status, level, levels, visited, depth + 1, cardSteps: cardSteps, controller: controller));
             foreach (StatusEffectConfig status in ability.StatusEffectOnDelivered ?? Array.Empty<StatusEffectConfig>())
-                parts.Add((ability is DamageAbilityConfig ? "On hit: " : "Apply: ") + DescribeStatus(status, level, levels, visited, depth + 1));
+                parts.Add((ability is DamageAbilityConfig ? "On hit: " : "Apply: ") + DescribeStatus(status, level, levels, visited, depth + 1, cardSteps: cardSteps, controller: controller));
             return string.Join(" ", parts.Where(p => !string.IsNullOrWhiteSpace(p)).Distinct());
         }
 
-        private static string DescribeModifier(StatModifierConfig config, int level)
+        private static string DescribeModifier(StatModifierConfig config, int level, float cardSteps = 0f)
         {
             if (config.Power == null || config.Power.ScaleBy == ScalingWithStat.None) return string.Empty;
             int starting = Mathf.Max(1, config.GetStartingStack());
-            PowerField first = ModifierPower(config, level, starting);
+            PowerField first = ModifierPower(config, level, starting, cardSteps);
             if (first.InitialAmount == 0f && first.MultiplierAmount == 0f) return string.Empty;
             string text = StatName(config.Power.ScaleBy) + " +" + Power(first, config.Power.ScaleBy) + ".";
             if (config.MaxStackCount > 1 && config.HowStackUpdate == HowStackUpdate.Addictive)
             {
-                PowerField second = ModifierPower(config, level, starting + 1);
+                PowerField second = ModifierPower(config, level, starting + 1, cardSteps);
                 string extra = Power(second - first, config.Power.ScaleBy);
                 if (extra != "0") text += " Each extra stack: +" + extra + ".";
             }
             return text;
         }
-        private static PowerField ModifierPower(StatModifierConfig config, int level, int stacks)
+        internal static PowerField ModifierPower(StatModifierConfig config, int level, int stacks, float cardSteps = 0f)
         {
             AbilityPowerField power = config.Power;
             if (config.AdditionalStackPower != null && config.AdditionalStackPower.ScaleBy == power.ScaleBy)
-                return power.AtLevel(level) + config.AdditionalStackPower.AtLevel(level) * (stacks - 1);
+                return power.AtLevel(level, cardSteps) + config.AdditionalStackPower.AtLevel(level, cardSteps) * (stacks - 1);
             int offset = config.IncludeStartingStackPower ? 0 : 1;
             return PowerField.GetFinalStackPower(power.BaseAmount, power.ScaleByLevel, level,
-                Mathf.Max(0, stacks - offset), power.LevelOnePrecision);
+                Mathf.Max(0, stacks - offset), power.LevelOnePrecision, cardSteps);
         }
 
         private static string DescribeStatus(StatusEffectConfig status, int level, Func<SkillConfig, int> levels,
-            HashSet<Configuration> path, int depth)
+            HashSet<Configuration> path, int depth, float cardSteps = 0f, SkillController controller = null)
         {
             if (status == null) return string.Empty;
             if (depth >= c_MaxDepth || path.Contains(status)) return status.BaseInfo.Name;
@@ -409,40 +426,40 @@ namespace Rush
             if (status.UseStackDecay) parts.Add("Lose " + status.StackDecayAmountPerInterval + " stack(s) every " + Number(status.StackDecayInterval) + "s.");
             if (status is DefensiveStatusEffectConfig defensive)
             {
-                parts.Add(Defense(defensive.BasePower, defensive.GrowthPerLevel, level,
+                parts.Add(Defense(defensive.BasePower, defensive.GrowthPerLevel, level + cardSteps,
                     defensive.LevelOnePowerGrowth, defensive.TracksStackPower, false));
                 if (defensive.RebornCount != 0) parts.Add("Extra lives " + Signed(defensive.RebornCount) + ".");
                 if (defensive.Immortality) parts.Add("Immortal while active.");
                 if (defensive.Invisibility) parts.Add("Invisible while active.");
                 foreach (SkillConfig linked in defensive.SkillsOnEffectDone)
-                    parts.Add("When effect ends: " + DescribeSkill(linked, Mathf.Max(1, levels(linked)), levels, visited, depth + 1, false));
+                    parts.Add("When effect ends: " + DescribeSkill(linked, Mathf.Max(1, levels(linked)), levels, visited, depth + 1, false, controller: controller));
             }
             if (status is AllStatusEffectConfig all)
             {
-                parts.Add(Defense(all.BasePower, all.GrowthPerLevel, level, 0f, false, true));
+                parts.Add(Defense(all.BasePower, all.GrowthPerLevel, level + cardSteps, 0f, false, true));
                 if (all.RebornCount != 0) parts.Add("Extra lives " + Signed(all.RebornCount) + ".");
                 if (all.Immortality) parts.Add("Immortal while active.");
                 if (all.Invisibility) parts.Add("Invisible while active.");
                 foreach (StatusEffecSkill action in all.SkillsOnStart)
-                    parts.Add("On application: " + DescribeLinked(action, levels, visited, depth));
+                    parts.Add("On application: " + DescribeLinked(action, levels, visited, depth, controller));
                 foreach (StatusEffecSkill action in all.SkillsOnDone)
-                    parts.Add("When effect ends: " + DescribeLinked(action, levels, visited, depth));
+                    parts.Add("When effect ends: " + DescribeLinked(action, levels, visited, depth, controller));
                 foreach (StatusEffecSkill action in all.SkillsOnStackAdded)
-                    parts.Add("On stack gained: " + DescribeLinked(action, levels, visited, depth));
+                    parts.Add("On stack gained: " + DescribeLinked(action, levels, visited, depth, controller));
                 foreach (StatusEffecSkill action in all.SkillsOnStackRemoved)
-                    parts.Add("On stack lost: " + DescribeLinked(action, levels, visited, depth));
+                    parts.Add("On stack lost: " + DescribeLinked(action, levels, visited, depth, controller));
             }
             if (status is AnomalySignConfig sign && sign.Collapse != null)
-                parts.Add("At " + sign.MaxStackCount + " stacks: " + DescribeAbility(sign.Collapse, level, levels, visited, depth + 1));
+                parts.Add("At " + sign.MaxStackCount + " stacks: " + DescribeAbility(sign.Collapse, level, levels, visited, depth + 1, cardSteps: cardSteps, controller: controller));
             if (status is SilenceEffectConfig) parts.Add("Silences configured skills while active.");
             return string.Join(" ", parts.Where(p => !string.IsNullOrWhiteSpace(p)).Distinct());
         }
-        private static string DescribeLinked(StatusEffecSkill action, Func<SkillConfig, int> levels, HashSet<Configuration> path, int depth)
+        private static string DescribeLinked(StatusEffecSkill action, Func<SkillConfig, int> levels, HashSet<Configuration> path, int depth, SkillController controller)
         {
             if (action == null || action.SkillConfig == null) return string.Empty;
-            return DescribeSkill(action.SkillConfig, Mathf.Max(1, levels(action.SkillConfig)), levels, path, depth + 1, false);
+            return DescribeSkill(action.SkillConfig, Mathf.Max(1, levels(action.SkillConfig)), levels, path, depth + 1, false, controller: controller);
         }
-        private static string Defense(DefensiveStatusField baseline, DefensiveStatusField growth, int level, float rate, bool linear, bool maxHpShield)
+        private static string Defense(DefensiveStatusField baseline, DefensiveStatusField growth, float level, float rate, bool linear, bool maxHpShield)
         {
             if (baseline == null || growth == null) return string.Empty;
             float steps = Mathf.Max(0, level - 1);
@@ -451,7 +468,7 @@ namespace Rush
             float defense = linear ? baseline.ShieldBasedDefendRate * factor : baseline.ShieldBasedDefendRate + growth.ShieldBasedDefendRate * steps;
             float hp = maxHpShield ? baseline.ShieldBasedMaxHpRate + growth.ShieldBasedMaxHpRate * steps : 0f;
             float reduction = linear ? baseline.DamageReductionRate * factor : baseline.DamageReductionRate + growth.DamageReductionRate * steps;
-            int barriers = baseline.Barrier + growth.Barrier * (level - 1);
+            int barriers = baseline.Barrier + Mathf.RoundToInt(growth.Barrier * steps);
             var parts = new List<string>();
             var shieldParts = new List<string>();
             if (shield != 0) shieldParts.Add(Number(shield));
@@ -462,18 +479,19 @@ namespace Rush
             if (reduction != 0) parts.Add("Damage reduction " + Signed(reduction * c_Percent) + " percentage points.");
             return string.Join(" ", parts);
         }
-        private static string EntityStats(UnitConfig config, int level)
+        private static string EntityStats(UnitConfig config, int level, float cardSteps = 0f)
         {
             if (config == null || config.MainStats == null) return string.Empty;
             StatField stats = config.MainStats.GetFinalStat(level);
+            if (cardSteps != 0f) stats += (config.MainStats.GetFinalStat(2) - config.MainStats.GetFinalStat(1)) * cardSteps;
             return " (" + stats.Health + " HP, " + stats.Attack + " ATK, " + stats.Defense + " DEF)";
         }
         private static string TickText(int count, float interval) => count > 1
             ? " per tick, " + count + " ticks every " + Number(interval) + "s" : string.Empty;
-        private static bool HasPower(AbilityPowerField field, int level) => field != null &&
-            (field.AtLevel(level).InitialAmount != 0f || field.AtLevel(level).MultiplierAmount != 0f);
-        private static string Power(AbilityPowerField field, int level) => field == null ? "0" :
-            field.ScaleBy == ScalingWithStat.None ? Number(Mathf.RoundToInt(field.AtLevel(level).InitialAmount)) : Power(field.AtLevel(level), field.ScaleBy);
+        private static bool HasPower(AbilityPowerField field, int level, float cardSteps = 0f) => field != null &&
+            (field.AtLevel(level, cardSteps).InitialAmount != 0f || field.AtLevel(level, cardSteps).MultiplierAmount != 0f);
+        private static string Power(AbilityPowerField field, int level, float cardSteps = 0f) => field == null ? "0" :
+            field.ScaleBy == ScalingWithStat.None ? Number(Mathf.RoundToInt(field.AtLevel(level, cardSteps).InitialAmount)) : Power(field.AtLevel(level, cardSteps), field.ScaleBy);
         private static string Power(PowerField power, ScalingWithStat scaling)
         {
             var parts = new List<string>();
@@ -512,3 +530,4 @@ namespace Rush
         private static string Signed(float value) => (value >= 0 ? "+" : string.Empty) + Number(value);
     }
 }
+

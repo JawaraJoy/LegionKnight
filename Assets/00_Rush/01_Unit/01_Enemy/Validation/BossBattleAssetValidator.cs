@@ -30,11 +30,24 @@ namespace Rush.Editor
                 foreach (string error in FindBossErrors(boss)) yield return path + " — " + error;
             }
 
+            var classicWaves = new HashSet<EnemyWaveConfig>();
+            var bossWaves = new HashSet<EnemyWaveConfig>();
+            foreach (string guid in AssetDatabase.FindAssets("t:StageConfig", folders))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                var stage = AssetDatabase.LoadAssetAtPath<StageConfig>(path);
+                if (stage == null || stage.EnemyWaveConfigs == null) continue;
+
+                var waves = stage.StageMode == StageMode.Classic ? classicWaves : bossWaves;
+                waves.UnionWith(stage.EnemyWaveConfigs);
+            }
+            classicWaves.ExceptWith(bossWaves);
+
             foreach (string guid in AssetDatabase.FindAssets("t:EnemyWaveConfig", folders))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 var wave = AssetDatabase.LoadAssetAtPath<EnemyWaveConfig>(path);
-                if (wave == null || wave.BossWaveField?.BossConfig == null)
+                if (wave == null || (!classicWaves.Contains(wave) && wave.BossWaveField?.BossConfig == null))
                     yield return path + " — missing boss wave reference";
             }
         }

@@ -15,19 +15,20 @@ namespace Rush
 
             StatModifier modifier = context.Influencer;
             int level = context.AbilityContext.SkillContext.Skill.Progression.Level;
+            float cardSteps = CardUnit.GrowthOf(context.AbilityContext.SkillContext.Skill);
             int stacks = Mathf.Clamp(modifier.StackCount, 0, modifier.Config.MaxStackCount);
             AbilityPowerField additional = modifier.Config.AdditionalStackPower;
             PowerField finalScore;
             if (additional != null && additional.ScaleBy == effectScore.ScaleBy)
             {
                 if (stacks == 0) return StatField.Zero;
-                finalScore = effectScore.AtLevel(level) + additional.AtLevel(level) * (stacks - 1);
+                finalScore = effectScore.AtLevel(level, cardSteps) + additional.AtLevel(level, cardSteps) * (stacks - 1);
             }
             else
             {
                 int offset = modifier.Config.IncludeStartingStackPower ? 0 : 1;
                 int stackLevel = Mathf.Max(0, modifier.StackCount - offset);
-                finalScore = PowerField.GetFinalStackPower(effectScore.BaseAmount, effectScore.ScaleByLevel, level, stackLevel, effectScore.LevelOnePrecision);
+                finalScore = PowerField.GetFinalStackPower(effectScore.BaseAmount, effectScore.ScaleByLevel, level, stackLevel, effectScore.LevelOnePrecision, cardSteps);
             }
 
             switch (effectScore.ScaleBy)
@@ -65,3 +66,4 @@ namespace Rush
         }
     }
 }
+

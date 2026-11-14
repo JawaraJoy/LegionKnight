@@ -17,7 +17,15 @@ namespace Rush
         private const string c_Migration = "iap_diamond_import_v2";
         private const int c_Attempts = 8;
         private readonly HashSet<string> m_Purchased = new();
-        private readonly bool m_DeviceStore = !Application.isEditor;
+        private readonly bool m_DeviceStore;
+        internal IAPAccountHistory(bool useCloudInEditor = false) => m_DeviceStore = !Application.isEditor || useCloudInEditor;
+#if UNITY_EDITOR
+        internal async Task BindRankPreviewAsync(string account)
+        {
+            m_PlayerId = account;
+            await RefreshBalanceAsync();
+        }
+#endif
         private string m_PlayerId;
         internal int Balance { get; private set; }
         internal string AccountId => m_DeviceStore ? m_PlayerId : "editor";
@@ -194,4 +202,3 @@ namespace Rush
         }
     }
 }
-

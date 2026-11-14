@@ -1,68 +1,60 @@
+using Rush;
 using UnityEngine;
 using UnityEngine.Events;
-using Rush;
+using UnityEngine.UI;
 
 namespace LegionKnight
 {
     public partial class ProgressReach : MonoBehaviour
     {
-        [SerializeField]
-        private int m_LevelTarget = 1;
-
-        [SerializeField]
-        private UnityEvent<bool> m_OnLevelReached = new();
-        [SerializeField]
-        private UnityEvent m_OnLevelReachedTrue = new();
-        [SerializeField]
-        private UnityEvent m_OnLevelReachedFalse = new();
-
+        [SerializeField] private int m_LevelTarget = 1;
+        [SerializeField] private UnityEvent<bool> m_OnLevelReached = new();
+        [SerializeField] private UnityEvent m_OnLevelReachedTrue = new();
+        [SerializeField] private UnityEvent m_OnLevelReachedFalse = new();
+        [SerializeField] private TutorialAccessPolicy m_AccessPolicy;
+        [SerializeField] private Selectable m_Control;
+        private Player m_Player;
+        private TutorialManager m_Tutorials;
+        public bool IsReached => m_Player != null && (m_AccessPolicy != null
+            ? m_AccessPolicy.IsAllowed(m_Player.GetPlayerLevel(), DeveloperMode, m_Tutorials)
+            : TutorialAccessPolicy.LevelIsAllowed(m_Player.GetPlayerLevel(), m_LevelTarget, DeveloperMode, true));
+        private bool DeveloperMode => GameSetting.Instance != null && GameSetting.Instance.DeveloperMode;
         private void OnEnable()
         {
-            Player.Instance.AddOnStart(Init);
-            Player.Instance.AddOnLevelUp(OnLevelUp);
-
-            InitInternal(); // Initialize on enable to check the current level
+            m_Player = Player.Instance;
+            if (m_Player == null) return;
+            m_Player.AddOnStart(Init);
+            m_Player.AddOnLevelUp(OnLevelUp);
+            if (m_AccessPolicy != null && m_AccessPolicy.RequiredTutorial != null)
+            {
+                m_Tutorials = TutorialAgent.GetManager();
+                if (m_Tutorials != null) m_Tutorials.AvailabilityChanged += Init;
+            }
+            RefreshInternal();
         }
         private void OnDisable()
         {
-            Player.Instance.RemoveOnStart(Init);
-            Player.Instance.RemoveOnLevelUp(OnLevelUp); // Fix: Use a method with the correct signature
-        }
-
-
-        private bool IsLevelReached()
-        {
-            return Player.Instance.GetPlayerLevel() >= m_LevelTarget;
-        }
-
-        public void Init()
-        {
-            InitInternal();
-        }
-
-        private void InitInternal()
-        {
-            bool devMode = GameSetting.Instance.DeveloperMode;
-            if (devMode)
+            if (m_Player != null)
             {
-                m_OnLevelReachedTrue?.Invoke();
-                return;
+                m_Player.RemoveOnStart(Init);
+                m_Player.RemoveOnLevelUp(OnLevelUp);
             }
-            m_OnLevelReached?.Invoke(IsLevelReached());
-
-            if (IsLevelReached())
-            {
-                m_OnLevelReachedTrue?.Invoke();
-            }
-            else
-            {
-                m_OnLevelReachedFalse?.Invoke();
-            }
+            if (m_Tutorials != null) m_Tutorials.AvailabilityChanged -= Init;
+            m_Tutorials = null;
+            m_Player = null;
         }
-
-        private void OnLevelUp(int level) // Fix: Add a method matching UnityAction<int> signature
+        public void Init() => RefreshInternal();
+        private void OnLevelUp(int level) => RefreshInternal();
+        private void RefreshInternal()
         {
-            Init();
+            bool allowed = IsReached;
+            if (m_Control != null) m_Control.interactable = allowed;
+            OnLevelReachedInvoke(allowed);
+            if (allowed) OnLevelReachedTrueInvoke();
+            else OnLevelReachedFalseInvoke();
         }
+        private void OnLevelReachedInvoke(bool value) => m_OnLevelReached?.Invoke(value);
+        private void OnLevelReachedTrueInvoke() => m_OnLevelReachedTrue?.Invoke();
+        private void OnLevelReachedFalseInvoke() => m_OnLevelReachedFalse?.Invoke();
     }
 }

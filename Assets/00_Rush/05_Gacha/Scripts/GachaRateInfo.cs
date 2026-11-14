@@ -13,12 +13,12 @@ namespace Rush
             entry != null && entry.Collect != null && entry.Amount > 0 && entry.Chance > 0f &&
             !float.IsInfinity(entry.Chance);
 
-        internal static float TotalWeight(GachaCollectableConfig[] pool)
+        internal static float TotalWeight(GachaCollectableConfig[] pool, GachaBannerConfig normalBanner = null)
         {
             float total = 0f;
             if (pool != null)
                 foreach (var entry in pool)
-                    if (IsEligible(entry)) total += entry.Chance;
+                    if (IsEligible(entry)) total += normalBanner == null ? entry.Chance : normalBanner.NormalWeight(entry);
             return total;
         }
 
@@ -58,3 +58,4 @@ namespace Rush
         }
     }
 }
+

@@ -31,7 +31,7 @@ namespace Rush
             var availability = GetAvailability(bundle);
             if (!availability.CanPurchase)
             {
-                OnPurchaseFailedInvoke("Bundle tidak tersedia saat ini.");
+                OnPurchaseFailedInvoke("This bundle is currently unavailable.");
                 return;
             }
 
@@ -40,7 +40,7 @@ namespace Rush
 
             if (!breakdown.CanAfford)
             {
-                OnPurchaseFailedInvoke("Mata uang tidak cukup.");
+                OnPurchaseFailedInvoke("Not enough currency for this purchase.");
                 return;
             }
 
@@ -64,7 +64,7 @@ namespace Rush
             var availability = GetAvailability(bundle);
             if (!availability.CanPurchase)
             {
-                OnPurchaseFailedInvoke("Bundle tidak tersedia saat ini.");
+                OnPurchaseFailedInvoke("This bundle is currently unavailable.");
                 return;
             }
 
@@ -73,19 +73,19 @@ namespace Rush
 
             if (!breakdown.CanAfford)
             {
-                OnPurchaseFailedInvoke("Mata uang tidak cukup.");
+                OnPurchaseFailedInvoke("Not enough currency for this purchase.");
                 return;
             }
 
             if (offer != null && breakdown.MainCurrencyAmount != offer.MainCurrencyAmount)
             {
-                OnPurchaseFailedInvoke("Harga telah berubah. Periksa kembali detail bundle.");
+                OnPurchaseFailedInvoke("The price has changed. Check the bundle details before buying.");
                 return;
             }
 
             if (!FitsInventoryInternal(bundle, breakdown))
             {
-                OnPurchaseFailedInvoke("Ruang inventori tidak cukup untuk seluruh isi bundle.");
+                OnPurchaseFailedInvoke("There is not enough inventory space for this bundle.");
                 return;
             }
 
@@ -154,7 +154,7 @@ namespace Rush
                 && bundle.BasePrice >= 0 && bundle.Entries != null && bundle.Entries.Length > 0
                 && System.Array.TrueForAll(bundle.Entries, CanDeliverInternal))
                 return true;
-            OnPurchaseFailedInvoke("Bundle tidak valid.");
+            OnPurchaseFailedInvoke("This bundle is invalid.");
             return false;
         }
 

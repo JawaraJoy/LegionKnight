@@ -8,6 +8,10 @@ namespace Rush
     {
         [SerializeField]
         private SpawnShapeConfig m_SpawnShape;
+        [SerializeField]
+        private bool m_UsesCustomShotVisuals;
+
+        public bool UsesCustomShotVisuals => m_UsesCustomShotVisuals;
         public SpawnShapeConfig SpawnShape => m_SpawnShape;
         protected override int GetDamageInternal(IAbilityContext context)
         {

@@ -321,15 +321,15 @@ namespace Rush
             if (unit is SummonerUnit summon) summon.SetSummoner(this);
             m_PreparingUnits.Add(unit);
             int level = m_AbilityContext.SkillContext.Skill.Progression.Level;
-            StartCoroutine(PrepareSpawn(unit, m_SummonedConfig, level));
+            StartCoroutine(PrepareSpawn(unit, m_SummonedConfig, level, CardUnit.GrowthOf(m_AbilityContext.SkillContext.Skill)));
 
             m_ExecutedJobs++;
             if (m_ExecutedJobs >= m_TotalJobs) m_IsSpawning = false;
         }
 
-        private IEnumerator PrepareSpawn(Unit unit, UnitConfig config, int level)
+        private IEnumerator PrepareSpawn(Unit unit, UnitConfig config, int level, float cardSteps)
         {
-            yield return unit.InitializeForSpawn(config, level);
+            yield return unit.InitializeForSpawn(config, level, cardSteps);
             if (!m_PreparingUnits.Remove(unit) || unit == null) yield break;
             m_ActiveSummonedUnits.Add(unit);
             unit.transform.SetParent(null, true);
@@ -398,3 +398,4 @@ namespace Rush
         }
     }
 }
+

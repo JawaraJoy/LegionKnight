@@ -54,6 +54,8 @@ namespace Rush
         public bool IncludesBoss => m_IncludeBoss;
         [SerializeField]
         private int m_RecentSpawnCount = 8;
+        [SerializeField]
+        private float m_BossVerticalOffset = -2f;
         private readonly List<Vector3> m_RecentMinionSpawnPositions = new();
         private Unit m_BossUnitExisten;
         private Sprite m_CurrentWaveIcon;
@@ -550,7 +552,7 @@ private void OnWaveLevelChangedInvoke(int waveLevel)
             Transform origin = m_EnemyWavePost != null ? m_EnemyWavePost.PostToSpawn : null;
             if (origin == null) return;
             m_CurrentThreshold -= currentMaxThreshold;
-            SpawnUnitInternal(m_CurrentEnemyWave.BossWaveField.BossConfig, origin.position, origin.rotation, true);
+            SpawnUnitInternal(m_CurrentEnemyWave.BossWaveField.BossConfig, origin.position + Vector3.up * m_BossVerticalOffset, origin.rotation, true);
         }
         public void SetCurrentWaveIndex(int waveIndex)
         {

@@ -20,9 +20,12 @@ namespace LegionKnight
         
         [SerializeField] private TextMeshProUGUI m_AddOrRemoveText;
 
-        [SerializeField]
-        private Button m_SellButton;
+        [SerializeField] private Button m_ReadOnlyClose;
+        [SerializeField] private TMP_Text m_RarityText;
 
+        [SerializeField] private CardUpgradeView m_UpgradeView;
+        [SerializeField] private PlatformAlbum m_Album;
+        [SerializeField] private Button m_UpgradeButton;
         private CardDeck m_CardDeck;
         private CardUnit m_SelectedCard;
         private CardDetailMode m_Mode = CardDetailMode.Normal;
@@ -35,7 +38,7 @@ namespace LegionKnight
             m_CardDeck.OnCardAdded.AddListener(OnCardAmountChanged);
             m_AddOrRemoveToDeckButton.onClick.AddListener(OnAddOrRemoveClicked);
 
-            m_SellButton.onClick.AddListener(OpenSell);
+            m_UpgradeButton.onClick.AddListener(OpenUpgrade);
         }
 
         private void OnUsedCardsChanged(System.Collections.Generic.List<CardUnit> cards) => RefreshButtonState();
@@ -52,14 +55,13 @@ namespace LegionKnight
                 m_CardDeck.OnCardAdded.RemoveListener(OnCardAmountChanged);
             }
             if (m_AddOrRemoveToDeckButton != null) m_AddOrRemoveToDeckButton.onClick.RemoveListener(OnAddOrRemoveClicked);
-            if (m_SellButton != null) m_SellButton.onClick.RemoveListener(OpenSell);
+            if (m_UpgradeButton != null) m_UpgradeButton.onClick.RemoveListener(OpenUpgrade);
         }
-        private void OpenSell()
+        private void OpenUpgrade()
         {
-            if (m_Mode != CardDetailMode.Normal || m_SelectedCard == null || !m_SelectedCard.IsOwned) return;
-            SellPanel sellPanel = CanvasManager.Instance.GetPanel<SellPanel>();
-            sellPanel.OpenSell(m_SelectedCard.CardConfig, m_SelectedCard.Amount, null);
+            if (m_SelectedCard?.IsOwned == true) m_UpgradeView.Display(m_SelectedCard, m_CardDeck);
         }
+
         // ── Show normal mode (dari CardSelectView / CardSlotView) ─────────────
         private void OnCardSelected(CardUnit cardUnit)
         {
@@ -79,17 +81,22 @@ namespace LegionKnight
             m_SelectedCard = cardUnit;
             m_Mode = mode;
 
-            m_CardIcon.sprite = cardUnit.CardConfig.CollectibleField.Icon;
-            m_CardNameText.text = cardUnit.CardConfig.BaseInfo.Name;
+            var collectible = cardUnit.CardConfig.CollectibleField;
+            m_CardIcon.sprite = collectible.Icon;
+            bool showDeckAction = mode == CardDetailMode.Normal && !m_Album.Browsing;
+            if (m_ReadOnlyClose != null) m_ReadOnlyClose.gameObject.SetActive(!showDeckAction);
+            if (m_RarityText != null)
+            {
+                m_RarityText.text = collectible.RarityConfig.BaseInfo.Name;
+                m_RarityText.color = collectible.RarityConfig.Color;
+            }
+            m_CardNameText.text = $"{cardUnit.CardConfig.BaseInfo.Name}  +{cardUnit.Upgrade}";
             m_CardDescriptionText.text = cardUnit.CardConfig.Description;
 
-            // Sembunyikan button di read-only mode
+            m_AddOrRemoveToDeckButton.gameObject.SetActive(showDeckAction);
+            m_UpgradeButton.gameObject.SetActive(!cardUnit.CardConfig.IsBattlePoolOnly);
 
-            m_AddOrRemoveToDeckButton.gameObject.SetActive(mode == CardDetailMode.Normal);
-            m_SellButton.gameObject.SetActive(mode == CardDetailMode.Normal);
-
-            if (mode == CardDetailMode.Normal)
-                RefreshButtonState();
+            RefreshButtonState();
 
             ShowInternal();
         }
@@ -98,6 +105,8 @@ namespace LegionKnight
         private void RefreshButtonState()
         {
             if (m_SelectedCard == null) return;
+            m_CardNameText.text = $"{m_SelectedCard.CardConfig.BaseInfo.Name}  +{m_SelectedCard.Upgrade}";
+            m_UpgradeButton.interactable = m_SelectedCard.IsOwned;
             if (m_Mode == CardDetailMode.ReadOnly) return;
 
             bool isAdded = m_SelectedCard.IsAdded;
@@ -107,7 +116,7 @@ namespace LegionKnight
             bool isAvailable = m_SelectedCard.CardConfig.IsAvailableForHero(Player.Instance.HeroesCollection.UsedHero);
             m_AddOrRemoveText.text = isAdded ? "Remove" : "Add";
             m_AddOrRemoveToDeckButton.interactable = isAdded || (isOwned && isAvailable && !isFull);
-            m_SellButton.interactable = isOwned;
+
         }
 
         // ── Add / Remove ──────────────────────────────────────────────────────

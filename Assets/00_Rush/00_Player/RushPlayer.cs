@@ -17,7 +17,7 @@ namespace Rush
         private UnityEvent m_OnReset;
         private void Start()
         {
-            m_Rigidbody = GetComponent<Rigidbody2D>();
+            TryGetComponent(out m_Rigidbody);
         }
         public void Init(UnitConfig lastUsedHero)
         {
@@ -30,11 +30,18 @@ namespace Rush
         }
         private void RepositionInternal()
         {
-            transform.position = m_InitialPosition;
+            SetPositionInternal(m_InitialPosition);
         }
         private void SetPositionInternal(Vector2 set)
         {
-            m_Rigidbody.linearVelocity = Vector2.zero;
+            if (m_Rigidbody == null)
+                TryGetComponent(out m_Rigidbody);
+            if (m_Rigidbody != null)
+            {
+                m_Rigidbody.linearVelocity = Vector2.zero;
+                m_Rigidbody.angularVelocity = 0f;
+                m_Rigidbody.position = set;
+            }
             transform.position = set;
         }
         public void SetPosition(Vector2 set)
@@ -43,6 +50,7 @@ namespace Rush
         }
         public void ResetProgression()
         {
+            m_CardBonuses?.ResetProgression();
             RepositionInternal();
             if (m_Unit.Config != null)
                 m_Unit.RefreshInit();

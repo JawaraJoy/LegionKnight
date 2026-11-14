@@ -14,7 +14,9 @@ namespace Rush
                     if (modifier == null || !modifier.IsActive ||
                         !(modifier.Config is ILifeStealModifier lifeSteal)) continue;
                     int skillLevel = modifier.Context.AbilityContext.SkillContext.Skill.Progression.Level;
-                    total += lifeSteal.LifeStealPerStackAtLevel(skillLevel) *
+                    float growth = lifeSteal.LifeStealPerStackAtLevel(2) - lifeSteal.LifeStealPerStackAtLevel(1);
+                    total += (lifeSteal.LifeStealPerStackAtLevel(skillLevel) +
+                        growth * CardUnit.GrowthOf(modifier.Context.AbilityContext.SkillContext.Skill)) *
                         Mathf.Clamp(modifier.StackCount, 0, modifier.Config.MaxStackCount);
                 }
                 return Mathf.Clamp01(total);
@@ -22,3 +24,4 @@ namespace Rush
         }
     }
 }
+

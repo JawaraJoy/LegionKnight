@@ -23,6 +23,13 @@ namespace Rush
         private int m_GetAetherEssence;
 
         
+        [SerializeField] private bool m_BattlePoolOnly;
+        [SerializeField] private BattleCardBonus m_Bonus;
+        [SerializeField] private float m_BonusAmount;
+        public override bool CanSell => false;
+        public bool IsBattlePoolOnly => m_BattlePoolOnly;
+        public string BonusDescription => BattleCardRunBonuses.Describe(m_Bonus, m_BonusAmount);
+
         public string Description => GameplayDescription.Card(this);
         public string SimpleDescription => GameplayDescription.NormalCard(this);
         public string UpgradeDescription => GameplayDescription.UpgradeCard(this);
@@ -37,6 +44,7 @@ namespace Rush
         {
             get
             {
+                if (m_BattlePoolOnly) return false;
                 if (m_SkillConfigs == null) return true;
                 foreach (CardSkillField skillField in m_SkillConfigs)
                 {
@@ -60,10 +68,39 @@ namespace Rush
             return AllowsCrossHeroLearning;
         }
 
+        internal int CollectionRank
+        {
+            get
+            {
+                if (m_BattlePoolOnly || !Application.isPlaying) return 0;
+                return Player.Instance?.PlayerCardDeck?.GetCardOwned(this)?.Upgrade ?? 0;
+            }
+        }
+        internal bool HasSkillUpgrade => System.Array.Exists(m_SkillConfigs ?? System.Array.Empty<CardSkillField>(),
+            field => field != null && field.CardPurpose == CardPurpose.SkillUp);
+        internal bool HasPlatformUpgrade => m_PlatformToAdds != null && m_PlatformToAdds.Length > 0;
+        internal bool IsRepeatGain(RogueLikeHandler run) => !m_BattlePoolOnly && !HasSkillUpgrade && !HasPlatformUpgrade &&
+            run != null && run.HasCollectedCard(BaseInfo.Id, out _);
+
+        internal string CollectionUpgradePreview(int rank, int next)
+        {
+            if (HasSkillUpgrade)
+                return GameplayDescription.CollectionUpgrade(this, rank) + (rank == next ? "" : "\n→  " + GameplayDescription.CollectionUpgrade(this, next));
+            if (HasPlatformUpgrade)
+                return $"Spawn weight per repeat pick\n+{1f + rank * .01f:0.##}" +
+                    (rank == next ? "" : $"  →  +{1f + next * .01f:0.##}");
+            return $"Extra power on repeat picks\n+{rank}%" + (rank == next ? "" : $"  →  +{next}%");
+        }
         public void Collect() => CollectInternal();
         private void CollectInternal()
         {
-            Unit player = RushPlayer.Instance.Unit;
+            var playerOwner = RushPlayer.Instance;
+            int rank = CollectionRank;
+            if (m_Bonus != BattleCardBonus.None)
+                playerOwner.CardBonuses.Apply(m_Bonus, m_BonusAmount);
+            Unit player = playerOwner.Unit;
+            bool repeatGain = IsRepeatGain(RushGameManager.Instance.RogueLikeManager);
+            if (repeatGain && rank > 0) playerOwner.CardBonuses.AddRepeatGain(this, rank, player);
             if (player.HasBind(out SkillController skillController))
             {
                 if (SkillConfigs != null && SkillConfigs.Length > 0)
@@ -79,7 +116,7 @@ namespace Rush
                                     skillController.ForceActive(skillConfig.SkillConfig);
                                     break;
                                 case CardPurpose.SkillUp:
-                                    skillController.AddNewSkill(skillConfig.SkillConfig);
+                                    skillController.LearnOrUpgradeCard(skillConfig.SkillConfig, rank);
                                     break;
                             }
                         }
@@ -102,7 +139,7 @@ namespace Rush
                 
                 if (player.HasBind(out PlatformController controller))
                 {
-                    platformHandler.AddPreparedPlatformConfigs(m_PlatformToAdds, controller);
+                    platformHandler.AddCardPlatforms(m_PlatformToAdds, controller, HasSkillUpgrade ? 0 : rank);
                 }
             }
             if (m_GetCurrency != null && m_GetCurrency.ItemConfig != null && m_GetCurrency.Amount > 0)

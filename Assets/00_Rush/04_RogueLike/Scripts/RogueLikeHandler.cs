@@ -102,7 +102,10 @@ namespace Rush
                 pool.AddRange(m_CurrentHero.HeroDeckConfig.CardConfigs);
             }
 
-            // Tambahkan custom cards (hindari duplikat)
+            if (m_Config != null && m_Config.BattleCards != null)
+                pool.AddRange(m_Config.BattleCards.CardConfigs);
+
+            // Equipped collection cards stay available for the entire run.
             foreach (var card in m_CustomCards)
             {
                 if (card != null && card.IsAvailableForHero(m_CurrentHero) && !pool.Contains(card))
@@ -126,12 +129,23 @@ namespace Rush
 
             return result;
         }
+        public bool IsAutomaticCard(CardConfig card, HeroUnitConfig hero)
+        {
+            return card != null && (card.IsBattlePoolOnly ||
+                (hero?.HeroDeckConfig != null && System.Array.IndexOf(hero.HeroDeckConfig.CardConfigs, card) >= 0));
+        }
+
         public void SetCurrentHero(HeroUnitConfig heroConfig)
         {
             m_CurrentHero = heroConfig;
             LegionKnight.Player player = LegionKnight.Player.Instance;
             if (player != null && player.PlayerCardDeck != null)
-                player.PlayerCardDeck.PrepareUsedCards();
+                {
+                    foreach (var slot in player.PlayerCardDeck.GetUsedCards().ToArray())
+                        if (slot != null && IsAutomaticCard(slot.CardConfig, heroConfig))
+                            player.PlayerCardDeck.RemoveUsedCardConfig(slot.CardConfig);
+                    player.PlayerCardDeck.PrepareUsedCards();
+                }
         }
         public void AddCustomCard(CardConfig cardConfig)
         {
@@ -236,3 +250,4 @@ namespace Rush
         private void AddForPlayerLevel(int amount) => SetForPlayerLevel(m_ForPlayerCurrentLevel + amount);
     }
 }
+

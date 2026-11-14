@@ -1,4 +1,4 @@
-﻿using Rush;
+using Rush;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,19 +24,6 @@ namespace LegionKnight
         [SerializeField]
         private StageConfig m_StageConfig;
 
-        private GameStateConfig m_GamePlayState;
-
-        private GameStateConfig GamePlayStage
-        {
-            get
-            {
-                if (m_GamePlayState == null)
-                {
-                    m_GamePlayState = RushGameManager.Instance.StageManager.GameStateConfig;
-                }
-                return m_GamePlayState;
-            }
-        }
         public void RefreshSelf()
         {
             RefreshInternal(true);
@@ -89,65 +76,50 @@ namespace LegionKnight
         // ── Button callback ───────────────────────────────────────────────────
         private void OnSelectClicked()
         {
-            if (m_StageConfig == null) return;
-
-            // Jika tidak ada energy cost → langsung play tanpa buka panel apapun
-            bool isFree = m_StageConfig.EnergyConfig == null || m_StageConfig.EnergyAmountToPay <= 0;
-            if (isFree)
-            {
-                RushGameManager.Instance.StageManager.SelectStage(m_StageConfig);
-                PlayStage();
-                return;
-            }
-
-            // Ada energy cost → cek apakah player mampu
-            bool canAfford = Player.Instance.EnergyController.GetEnergy(m_StageConfig.EnergyConfig)?.CanPay(m_StageConfig.EnergyAmountToPay) ?? false;
-
-            EnergyConfirmationPanel panel = CanvasManager.Instance.GetPanel<EnergyConfirmationPanel>();
-
-            if (panel == null)
-            {
-                Debug.LogError("[StageSelectView] EnergyConfirmationPanel tidak ditemukan di CanvasManager.");
-                return;
-            }
-
-            Energy[] costs = new Energy[]
-            {
-                new Energy(m_StageConfig.EnergyConfig, m_StageConfig.EnergyAmountToPay)
-            };
-
-            if (canAfford)
-            {
-                // Cukup → tampilkan "Spend X to play?"
-                // m_ConfirmButton di EnergyConfirmationView di-wire ke Pay() via Inspector
-                RushGameManager.Instance.StageManager.SelectStage(m_StageConfig);
-                panel.SetConfirmationText(
-                    costs,
-                    onCanPayListen: _ => PlayStage(),
-                    onCantPayListen: restCosts => panel.SetWarningText(restCosts)
-                );
-            }
-            else
-            {
-                // Tidak cukup → hitung kekurangan lalu tampilkan warning
-                Energy currentEnergy = Player.Instance.EnergyController.GetEnergy(m_StageConfig.EnergyConfig);
-
-                int missing = m_StageConfig.EnergyAmountToPay - (currentEnergy?.Amount ?? 0);
-
-                Energy[] restCosts = new Energy[]
-                {
-                    new Energy(m_StageConfig.EnergyConfig, missing)
-                };
-
-                panel.SetWarningText(restCosts);
-            }
+            if (m_StageConfig != null)
+                TryPlay(m_StageConfig, () => isActiveAndEnabled, null);
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────────
-        private void PlayStage()
+        public static void TryPlay(StageConfig stage, System.Func<bool> canEnter, System.Action beforeStart)
         {
-            CanvasManager.Instance.GetPanel<LevelPanel>().Hide();
-            RushGameManager.Instance.GameStateManager.ChangeState(GamePlayStage);
+            var stages = RushGameManager.Instance.StageManager;
+            if (!canEnter() || !stages.HasStageSelection(stage, out var entry) || entry.StageState == StageState.Locked)
+                return;
+
+            void EnterStage()
+            {
+                stages.SelectStage(stage);
+                beforeStart?.Invoke();
+                CanvasManager.Instance.GetPanel<LevelPanel>().Hide();
+                RushGameManager.Instance.GameStateManager.ChangeState(stages.GameStateConfig);
+            }
+
+            var wallet = Player.Instance.EnergyController;
+            int price = stage.EnergyAmountToPay;
+            if (price <= 0)
+            {
+                wallet.ClearPreviousCost();
+                EnterStage();
+                return;
+            }
+
+            var panel = CanvasManager.Instance.GetPanel<EnergyConfirmationPanel>();
+            if (panel == null || stage.EnergyConfig == null) return;
+            if (stage.StageMode == StageMode.Collosal &&
+                panel.HasBinding<ColossalEnergyDialog>(out var dialog))
+            {
+                dialog.Open(stage, canEnter, EnterStage);
+                return;
+            }
+            int balance = wallet.GetEnergy(stage.EnergyConfig)?.Amount ?? 0;
+            if (balance < price)
+            {
+                panel.SetWarningText(new[] { new Energy(stage.EnergyConfig, price - balance) });
+                return;
+            }
+
+            panel.SetConfirmationText(new[] { new Energy(stage.EnergyConfig, price) },
+                _ => EnterStage(), panel.SetWarningText, canEnter);
         }
     }
 }

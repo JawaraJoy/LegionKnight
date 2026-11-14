@@ -70,7 +70,8 @@ namespace Rush
         {
             if (context.Infected.HasBind(out Damageable damageable))
             {
-                int statuslevel = context.AbilityContext.SkillContext.Skill.Progression.Level;
+                var skill = context.AbilityContext.SkillContext.Skill;
+                float statuslevel = skill.Progression.Level + CardUnit.GrowthOf(skill);
 
                 damageable.AddRemainingRebornCount(m_RebornCount, true);
                 if (TracksStackPower)
@@ -97,7 +98,8 @@ namespace Rush
         {
             if (context.Infected.HasBind(out Damageable damageable))
             {
-                int statuslevel = context.AbilityContext.SkillContext.Skill.Progression.Level;
+                var skill = context.AbilityContext.SkillContext.Skill;
+                float statuslevel = skill.Progression.Level + CardUnit.GrowthOf(skill);
 
                 damageable.AddRemainingRebornCount(-m_RebornCount, false);
                 if (TracksStackPower)
@@ -115,13 +117,14 @@ namespace Rush
             }
         }
 
-        private int GetFinalValue(int baseValue, int growthPerLevel, int level)
+        private int GetFinalValue(int baseValue, int growthPerLevel, float level)
         {
-            return baseValue + growthPerLevel * (level - 1);
+            return baseValue + Mathf.RoundToInt(growthPerLevel * (level - 1));
         }
-        private float GetFinalValue(float baseValue, float growthPerLevel, int level)
+        private float GetFinalValue(float baseValue, float growthPerLevel, float level)
         {
             return baseValue + growthPerLevel * (level - 1);
         }
     }
 }
+

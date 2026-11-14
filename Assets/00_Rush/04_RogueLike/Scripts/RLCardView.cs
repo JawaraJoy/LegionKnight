@@ -24,6 +24,10 @@ namespace Rush
 
         [SerializeField]
         private Button m_SelectButton;
+        [SerializeField] private LayoutElement m_RowLayout;
+        [SerializeField] private TMP_Text m_Progression;
+        [SerializeField] private TMP_Text m_Rarity;
+        [SerializeField] private Image m_RarityBadge;
         public Button SelectButton => m_SelectButton;
         public CardConfig CardConfig => m_CardConfig;
         private RogueLikeCardPanel m_SelectionPanel;
@@ -31,6 +35,7 @@ namespace Rush
         public void ClearCard()
         {
             m_CardConfig = null;
+            if (m_RowLayout != null) m_RowLayout.ignoreLayout = true;
             HideInternal();
         }
         private void OnDestroy()
@@ -49,18 +54,31 @@ namespace Rush
             m_CardConfig = cardConfig;
             RushPlayer.Instance.Unit.HasBind(out SkillController controller);
             PlatformHandler platformHandler = RushGameManager.Instance?.StageManager?.PlatformHandler;
-            string description = GameplayDescription.BattleCard(m_CardConfig, controller, platformHandler: platformHandler);
-            Rect textArea = m_CardDescriptionText.rectTransform.rect;
-            if (textArea.width > 0 && textArea.height > 0 &&
-                m_CardDescriptionText.GetPreferredValues(description, textArea.width, float.PositiveInfinity).y > textArea.height)
-                description = GameplayDescription.BattleCard(m_CardConfig, controller, 1, platformHandler);
-            m_CardDescriptionText.text = description;
-            m_CardNameText.text = m_CardConfig.BaseInfo.Name;
-            
-            m_CardIcon.sprite = m_CardConfig.CollectibleField.Icon;
-            Color rarityColor = m_CardConfig.CollectibleField.RarityConfig.Color;
-            m_CardRarityColorOutline.color = rarityColor;
-            m_CardRarityColorBackground.color = rarityColor;
+            var rarity = cardConfig.CollectibleField.RarityConfig;
+            Color edge = rarity != null ? rarity.Color : Color.white;
+            if (m_RowLayout != null)
+            {
+                m_RowLayout.ignoreLayout = false;
+                m_CardDescriptionText.text = GameplayDescription.BattleCardDetails(cardConfig, controller, platformHandler, out string progression);
+                m_CardDescriptionText.gameObject.SetActive(m_CardDescriptionText.text.Length > 0);
+                m_Progression.text = progression;
+                m_Progression.gameObject.SetActive(progression.Length > 0);
+                m_Rarity.text = rarity == null ? string.Empty : rarity.BaseInfo.Name.ToUpperInvariant();
+                m_RarityBadge.color = Color.Lerp(new Color(.14f, .14f, .23f), edge, .28f);
+                m_RarityBadge.gameObject.SetActive(rarity != null);
+            }
+            else
+            {
+                m_CardDescriptionText.text = GameplayDescription.BattleCard(cardConfig, controller, platformHandler: platformHandler);
+                Rect area = m_CardDescriptionText.rectTransform.rect;
+                if (area.width > 0 && area.height > 0 &&
+                    m_CardDescriptionText.GetPreferredValues(m_CardDescriptionText.text, area.width, float.PositiveInfinity).y > area.height)
+                    m_CardDescriptionText.text = GameplayDescription.BattleCard(cardConfig, controller, 1, platformHandler);
+            }
+            m_CardNameText.text = cardConfig.BaseInfo.Name;
+            m_CardIcon.sprite = cardConfig.CollectibleField.Icon;
+            m_CardRarityColorOutline.color = edge;
+            m_CardRarityColorBackground.color = edge;
             ShowInternal();
         }
         private void OnSelectButtonClicked()

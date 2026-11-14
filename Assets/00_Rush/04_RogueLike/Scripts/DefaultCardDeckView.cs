@@ -1,4 +1,4 @@
-﻿using LegionKnight;
+using LegionKnight;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,10 +23,20 @@ namespace Rush
         public void Init()
         {
             // Listen saat hero berganti → refresh deck
+            Player.Instance.HeroesCollection.OnCharacterUsed.RemoveListener(OnHeroChanged);
             Player.Instance.HeroesCollection.OnCharacterUsed.AddListener(OnHeroChanged);
 
             // Tampilkan deck hero yang sedang aktif
+            var changed = Player.Instance.PlayerCardDeck.OnCardAdded;
+            changed.RemoveListener(OnCardChanged);
+            changed.AddListener(OnCardChanged);
             RefreshDeck();
+        }
+
+        private void OnCardChanged(CardUnit unit)
+        {
+            var cards = Player.Instance.PlayerCardDeck.UsedHeroDeck?.CardConfigs;
+            if (cards != null && System.Array.IndexOf(cards, unit.CardConfig) >= 0) RefreshDeck();
         }
 
         // ── Refresh saat hero berganti ────────────────────────────────────────
@@ -58,11 +68,11 @@ namespace Rush
             {
                 if (config == null) continue;
 
-                // Buat CardUnit sementara (read-only, tidak perlu save/load)
-                CardUnit unit = new CardUnit(config);
+                CardUnit unit = Player.Instance.PlayerCardDeck.GetCardOwned(config);
+                if (unit == null) continue;
 
                 DefaultCardItemView item = GetFromPool();
-                item.Setup(unit);
+                item.Setup(unit, m_ActiveItems.Count);
                 item.Show();
                 m_ActiveItems.Add(item);
             }
@@ -97,9 +107,11 @@ namespace Rush
 
         private void OnDestroy()
         {
+            if (Player.Instance != null) Player.Instance.PlayerCardDeck.OnCardAdded.RemoveListener(OnCardChanged);
             if (Player.Instance != null)
                 Player.Instance.HeroesCollection.OnCharacterUsed
                     .RemoveListener(OnHeroChanged);
         }
     }
 }
+

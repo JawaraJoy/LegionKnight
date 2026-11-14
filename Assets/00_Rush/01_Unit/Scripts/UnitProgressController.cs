@@ -15,7 +15,7 @@ namespace Rush
 
         public void SetLevel(int level)
         {
-            if (m_ModuleContext.Unit != null)
+            if (m_ModuleContext?.Unit != null && m_ModuleContext.Unit.Progression.Level != level)
             {
                 m_ModuleContext.Unit.SetCombatLevel(level);
             }

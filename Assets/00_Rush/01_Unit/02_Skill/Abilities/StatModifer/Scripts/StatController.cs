@@ -103,6 +103,8 @@ namespace Rush
                     }
                 }
             }
+            if (m_ModuleContext?.Unit != null && m_ModuleContext.Unit.IsPlayer && RushPlayer.Instance?.CardBonuses != null)
+                finalAdditionalStat += RushPlayer.Instance.CardBonuses.CardStats;
             return unitStat + finalAdditionalStat;
         }
 
@@ -133,3 +135,4 @@ namespace Rush
         }
     }
 }
+

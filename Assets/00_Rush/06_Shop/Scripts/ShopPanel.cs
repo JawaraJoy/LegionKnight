@@ -1,4 +1,4 @@
-﻿using LegionKnight;
+using LegionKnight;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,6 +49,16 @@ namespace Rush
         {
             m_TabGroup?.Hide();
             base.HideInternal();
+        }
+
+        public void ShowTab(ShopTabConfig tab)
+        {
+            ShowInternal();
+            if (!IsShown || tab == null || m_TabGroup == null) return;
+            var tabs = m_Manager?.ShopConfig?.Tabs;
+            if (tabs == null) return;
+            int index = System.Array.IndexOf(tabs, tab);
+            if (index >= 0) m_TabGroup.OnTabClicked(index);
         }
 
         private void OnBundleClickedInternal(ShopBundleConfig bundle) =>

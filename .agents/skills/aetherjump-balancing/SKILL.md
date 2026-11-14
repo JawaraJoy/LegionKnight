@@ -20,3 +20,13 @@ Di Unity, telusuri `HeroUnitConfig` ke `SkillConfig`, `AbilityConfig`, dan kartu
 Asset lama dimigrasikan pada 10 November 2026 dengan menggabungkan kontribusi growth pertama ke BaseAmount, tanpa mengubah growth berikutnya. Metadata tersembunyi `m_LevelOnePrecision` mempertahankan sisa presisi float hasil migrasi; ini bukan balancing tambahan dan jangan diisi manual untuk asset baru. Helper mempertahankan batas pembulatan lama untuk efek flat yang tidak menyimpan pecahan. Gunakan `m_KeepFractionalFlatPower` untuk mempertahankan pecahan sampai damage/heal/charge dikirim bila desain efek membutuhkannya. Jalur stat modifier lama memisahkan bonus per stack dan growth per level melalui `GetFinalStackPower`; cek hasil aktual per stack, bukan hanya angka power tanpa konteks.
 
 Saat mengubah balancing, cocokkan level yang dibaca efek turunan dengan skill pemicunya. Uji upgrade melalui kartu pada level 1, 2, dan 3 dengan stat hero yang sama, lalu cocokkan hasil dan deskripsi kartu dengan tabel growth hero tersebut. Terapkan perubahan pada hero yang termasuk dalam permintaan.
+
+## Kartu Weapon Stage
+
+Khusus kartu kategori **Weapon Stage** (`weaponstage`), tulis baris efek upgrade persis `+15% Attack`. Satu upgrade menaikkan semua stage sekaligus. Pada setiap kenaikan level, tambahkan 15% dari damage level skill 1 masing-masing stage.
+
+| Magic Missile Liura | Stage 1 | Stage 2 | Stage 3 | Stage 4 |
+|---|---:|---:|---:|---:|
+| Level skill 1 | 100% ATK | 200% ATK | 300% ATK | 400% ATK |
+| Level skill 2 | 115% ATK | 230% ATK | 345% ATK | 460% ATK |
+| Level skill 3 | 130% ATK | 260% ATK | 390% ATK | 520% ATK |

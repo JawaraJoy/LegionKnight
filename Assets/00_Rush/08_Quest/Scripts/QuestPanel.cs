@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using LegionKnight;
 
@@ -9,6 +9,7 @@ namespace Rush
         [SerializeField] private TabGroup m_TabGroup;
         [SerializeField] private QuestCatalogTabEntry[] m_CatalogTabEntries;
         [SerializeField] private Button m_CloseButton;
+        [SerializeField] private DailySignInRewardsPopup m_RewardsPopup;
 
         private QuestManager Manager => RushPlayer.Instance.QuestManager;
 
@@ -35,6 +36,7 @@ namespace Rush
             Manager.OnTaskClaimed.RemoveListener(OnTaskClaimedInternal);
             Manager.OnCatalogReset.RemoveListener(OnCatalogResetInternal);
 
+            m_RewardsPopup.Dismiss();
             m_TabGroup?.Hide();
             base.HideInternal();
         }
@@ -59,8 +61,9 @@ namespace Rush
         private void OnTaskClaimedInternal(QuestTaskConfig task, CollectibleResultData result)
         {
             RefreshTaskInTabsInternal(task);
-            var resultPanel = CanvasManager.Instance.GetPanel<ShopResultPanel>();
-            resultPanel?.Show(result);
+            if (result?.RewardsGranted != true) return;
+            string caption = task.QuestCatalogConfig?.BaseInfo.Name?.ToUpperInvariant() ?? "CLAIMED";
+            m_RewardsPopup.Present(result.Entries, caption);
         }
 
         // When a catalog resets, refresh all tasks in the matching tab only

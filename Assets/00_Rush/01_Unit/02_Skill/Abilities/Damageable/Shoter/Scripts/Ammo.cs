@@ -72,7 +72,9 @@ namespace Rush
             CacheMoveDirection();
             if (this is Projectile)
             {
-                var visuals = BossAbilityVisuals.ForUnit(context.SkillContext.ModuleContext.Unit);
+                var visuals = context.AbilityDeliver.AbilityConfig is ShooterAbilityConfig { UsesCustomShotVisuals: true }
+                    ? null
+                    : BossAbilityVisuals.ForUnit(context.SkillContext.ModuleContext.Unit);
                 if (visuals != null)
                 {
                     if (m_BossEnergyTrail == null) m_BossEnergyTrail = visuals.CreateProjectileVisual(transform);

@@ -16,12 +16,18 @@ namespace Rush
         [SerializeField] private Button m_SelectButton;
 
         [SerializeField] private TMPro.TextMeshProUGUI m_Caption;
+        [SerializeField] private TMPro.TMP_Text m_Copies;
         private CardUnit m_CardUnit;
 
-        public void Setup(CardUnit cardUnit)
+        [SerializeField] private TMPro.TMP_Text m_Role;
+        private static readonly string[] s_Roles = { "Basic", "Passive", "Ultimate", "Platform" };
+
+        public void Setup(CardUnit cardUnit, int index)
         {
             m_CardUnit = cardUnit;
-            if (m_Caption != null) m_Caption.text = cardUnit.CardConfig.BaseInfo.Name;
+            if (m_Copies != null) m_Copies.text = $"×{cardUnit.Amount:N0}";
+            if (m_Role != null) m_Role.text = index < s_Roles.Length ? s_Roles[index] : string.Empty;
+            if (m_Caption != null) m_Caption.text = $"{cardUnit.CardConfig.BaseInfo.Name}  +{cardUnit.Upgrade}";
 
             if (m_CardIcon != null)
                 m_CardIcon.sprite = cardUnit.CardConfig.CollectibleField.Icon;
@@ -55,3 +61,4 @@ private void OnDestroy()
         }
 }
 }
+

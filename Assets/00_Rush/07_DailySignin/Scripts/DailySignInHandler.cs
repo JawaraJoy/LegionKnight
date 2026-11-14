@@ -107,13 +107,12 @@ namespace Rush
         {
             result = null;
             DailySignInRewardEntry entry = m_Config.Rewards[dayIndex];
-            if (entry == null || entry.Collectible == null || entry.Amount <= 0)
+            if (entry == null || !entry.TryBuildClaim(dayIndex, out var claim))
             {
                 OnClaimFailedInvoke("This reward is unavailable.");
                 return false;
             }
-            result = new CollectibleResultData();
-            result.AddEntry(entry.Collectible, entry.Amount);
+            result = claim;
             return true;
         }
 

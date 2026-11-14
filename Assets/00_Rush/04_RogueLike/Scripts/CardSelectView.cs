@@ -1,4 +1,4 @@
-﻿using Rush;
+using Rush;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -40,7 +40,7 @@ namespace LegionKnight
             m_LockIcon.SetActive(!cardUnit.IsOwned);
             m_SelectButton.interactable = cardUnit.IsOwned;
             m_UnitIcon.sprite = m_CardConfig.CollectibleField.Icon;
-            m_AmountText.text = cardUnit.Amount.ToString();
+            m_AmountText.text = $"+{cardUnit.Upgrade}";
             m_RarityColor.color = cardUnit.CardConfig.CollectibleField.RarityConfig.Color;
             m_EquipedSign.gameObject.SetActive(cardUnit.IsAdded);
 
@@ -54,7 +54,7 @@ namespace LegionKnight
             if (cardUnit == null || cardUnit.CardConfig.BaseInfo.Id != m_CardConfig?.BaseInfo.Id)
                 return;
 
-            m_AmountText.text = cardUnit.Amount.ToString();
+            m_AmountText.text = $"+{cardUnit.Upgrade}";
             m_LockIcon.SetActive(!cardUnit.IsOwned);
             m_SelectButton.interactable = cardUnit.IsOwned;
         }
@@ -68,7 +68,7 @@ namespace LegionKnight
             if (unit == null) return;
 
             m_EquipedSign.gameObject.SetActive(unit.IsAdded);
-            m_AmountText.text = unit.Amount.ToString();
+            m_AmountText.text = $"+{unit.Upgrade}";
         }
 
         // ── Select (preview ke CardDetailView) ────────────────────────────────

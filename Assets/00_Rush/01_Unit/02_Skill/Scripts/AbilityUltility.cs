@@ -372,7 +372,7 @@ namespace Rush
             }
 
             int skillLevel = context.SkillContext.Skill.Progression.Level;
-            PowerField finaPower = config.Power.AtLevel(skillLevel);
+            PowerField finaPower = config.Power.AtLevel(skillLevel, CardUnit.GrowthOf(context.SkillContext.Skill));
             float finalScaleAmount = finaPower.InitialAmount + finaPower.InitialAmount * finaPower.MultiplierAmount;
 
             ScalingWithStat scalingStat = config.Power.ScaleBy;
@@ -459,7 +459,7 @@ namespace Rush
             }
         }
 
-        public static void OnSkillEventActivates(SkillController skillControllerOwner, ForceActiveState filterState)
+        public static void OnSkillEventActivates(SkillController skillControllerOwner, ForceActiveState filterState, Vector3? origin = null)
         {
             List<Skill> activators = new(skillControllerOwner.Skills);
             foreach (var activator in activators)
@@ -467,7 +467,7 @@ namespace Rush
                 ForceActiveState state = activator.SkillConfig.Activation.ForceActiveState;
                 if (state == filterState)
                 {
-                    activator.ForceActivateAll();
+                    activator.ForceActivateAllFrom(origin);
                 }
             }
         }

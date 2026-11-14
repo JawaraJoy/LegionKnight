@@ -38,8 +38,10 @@ namespace Rush
             if (m_ItemConsiderAsScoreConfig == null) yield break;
             var service = UnityService.Instance;
             string scoreKey = "amount" + m_ItemConsiderAsScoreConfig.BaseInfo.Id;
-            if (service.HasData(scoreKey))
-                service.SubmitScoreEntry(service.GetData<int>(scoreKey));
+            int legacy = service.HasData(scoreKey) ? service.GetData<int>(scoreKey) : 0;
+            SeasonalRanks.Current?.InitializeLegacy(legacy);
+            int initial = SeasonalRanks.Current != null ? SeasonalRanks.Current.LegacySeed : legacy;
+            if (initial > 0) service.SubmitScoreEntry(initial);
         }
 
 
@@ -68,6 +70,8 @@ private void AddScoreInternal(int score)
             StageConfig currenStage = RushGameManager.Instance.StageManager.UsedStageConfig;
             if (currenStage.StageMode != StageMode.Collosal) return;
 
+            int bestBeforeBattle = Player.Instance.CurrencyControl.GetCurrencyAmount(m_ItemConsiderAsScoreConfig);
+            SeasonalRanks.Current?.Record(score, bestBeforeBattle);
             m_Score += score;
             OnScoreChangedInvoke(m_Score);
             m_ScoreCurrency = new Currency(m_ItemConsiderAsScoreConfig, m_Score);
@@ -83,7 +87,7 @@ private void AddScoreInternal(int score)
             int playerHighScore = Player.Instance.CurrencyControl.GetCurrencyAmount(m_ItemConsiderAsScoreConfig);
             int bestScore = Mathf.Max(m_Score, playerHighScore);
             // Persist delivery intent before committing the local record. Equal scores can recover a previous failure.
-            UnityService.Instance.SubmitScoreEntry(bestScore);
+            if (SeasonalRanks.Current == null) UnityService.Instance.SubmitScoreEntry(bestScore);
             if (m_Score > playerHighScore)
             {
                 Player.Instance.CurrencyControl.SetCurrencyAmount(m_ItemConsiderAsScoreConfig, m_Score);

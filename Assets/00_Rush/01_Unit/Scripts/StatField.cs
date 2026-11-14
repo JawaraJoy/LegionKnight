@@ -103,7 +103,7 @@ namespace Rush
                 m_CriticalDamageRate = a.m_CriticalDamageRate * b.m_CriticalDamageRate,
             };
         }
-        public static StatField operator *(StatField a, int scalar)
+        public static StatField operator *(StatField a, float scalar)
         {
             return new StatField
             {
@@ -157,3 +157,4 @@ namespace Rush
         }
     }
 }
+

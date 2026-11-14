@@ -92,15 +92,20 @@ namespace Rush
             }
         }
 
+        internal void RefreshRankUnread() => RefreshUnreadInternal();
+
         private void RefreshUnreadInternal()
         {
-            if (m_UnreadCount == null) return;
+            if (m_UnreadCount == null || m_Mailbox == null) return;
 
             int unread = 0;
             foreach (MailField mail in m_Mailbox.Mails)
             {
                 if (mail.State == MailState.New) unread++;
             }
+            if (SeasonalRanks.Current != null)
+                foreach (var reward in SeasonalRanks.Current.Mail)
+                    if (reward.state == "inbox") unread++;
             m_UnreadCount.SetText(c_UnreadFormat, unread);
         }
 

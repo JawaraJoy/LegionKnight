@@ -9,6 +9,8 @@ namespace Rush
     {
         [SerializeField]
         private RogueLevelFormula m_ForPlayerLevelFormula;
+        [SerializeField] private DeckConfig m_BattleCards;
+        public DeckConfig BattleCards => m_BattleCards;
         public RogueLevelFormula ForPlayerLevelFormula => m_ForPlayerLevelFormula;
     }
 }

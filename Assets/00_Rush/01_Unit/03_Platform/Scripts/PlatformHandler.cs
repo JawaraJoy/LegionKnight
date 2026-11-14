@@ -76,7 +76,7 @@ namespace Rush
         private readonly Dictionary<Platform2D, UnityAction> m_ReachDestinationCallbacks = new();
 
         // *** Spawn weight terpisah dari pool � tidak perlu Instantiate saat collect kartu ***
-        private readonly Dictionary<string, int> m_SpawnWeights = new();
+        private readonly Dictionary<string, float> m_SpawnWeights = new();
         private Coroutine m_SpawnCoroutine;
         private Coroutine m_ResumeCoroutine;
         private int m_SpawnVersion;
@@ -241,6 +241,12 @@ namespace Rush
             AddPreparedPlatformsConfigInternal(configs, controller);
         }
 
+        internal void AddCardPlatforms(PlatformConfig[] configs, PlatformController controller, int rank)
+        {
+            foreach (var config in configs)
+                AddPreparedPlatformConfigInternal(config, controller, rank);
+        }
+
         public void AddPreparedPlatformConfig(PlatformConfig config, PlatformController controller)
         {
             AddPreparedPlatformConfigInternal(config, controller);
@@ -263,7 +269,7 @@ namespace Rush
                 AddPreparedPlatformConfigInternal(config, controller);
         }
 
-        private void AddPreparedPlatformConfigInternal(PlatformConfig config, PlatformController controller)
+        private void AddPreparedPlatformConfigInternal(PlatformConfig config, PlatformController controller, int cardRank = 0)
         {
             string id = config.BaseInfo.Id;
 
@@ -277,7 +283,7 @@ namespace Rush
             else
             {
                 // Platform sudah ada (collect kartu): cukup naikkan weight, tidak perlu Instantiate
-                m_SpawnWeights[id] = m_SpawnWeights.TryGetValue(id, out int current) ? current + 1 : 1;
+                m_SpawnWeights[id] = m_SpawnWeights.TryGetValue(id, out float current) ? current + 1f + cardRank * .01f : 1f;
             }
         }
 
@@ -355,12 +361,12 @@ namespace Rush
 
             if (available.Count == 0) return null;
 
-            int totalWeight = 0;
+            float totalWeight = 0f;
             foreach (PlatformConfig config in available)
                 totalWeight += GetWeight(config);
 
-            int roll = Random.Range(0, totalWeight);
-            int cumulative = 0;
+            float roll = Random.value * totalWeight;
+            float cumulative = 0f;
 
             foreach (PlatformConfig config in available)
             {
@@ -369,12 +375,12 @@ namespace Rush
                     return config;
             }
 
-            return available[0];
+            return available[available.Count - 1];
         }
 
-        private int GetWeight(PlatformConfig config)
+        private float GetWeight(PlatformConfig config)
         {
-            return m_SpawnWeights.TryGetValue(config.BaseInfo.Id, out int w) ? Mathf.Max(1, w) : 1;
+            return m_SpawnWeights.TryGetValue(config.BaseInfo.Id, out float w) ? Mathf.Max(1, w) : 1;
         }
 
         // -------------------------------------------------------------------------
@@ -870,3 +876,4 @@ public void OnBoostStartInvoke(float duration, int comboCount)
         }
 }
 }
+

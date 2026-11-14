@@ -11,6 +11,7 @@ namespace Rush
         protected CollectibleField m_CollectibleField;
         [SerializeField]
         private Currency m_SellConfig;
+        public virtual bool CanSell => true;
         public CollectibleField CollectibleField => m_CollectibleField;
 
         public void OnCollect(string source, int amount)
@@ -21,6 +22,7 @@ namespace Rush
         }
         public Currency GetSellValue(int amount)
         {
+            if (!CanSell) return new Currency(null, 0);
             float rarityRate = m_CollectibleField.RarityConfig.ValueRate;
             int sellValue = m_SellConfig.Amount;
 

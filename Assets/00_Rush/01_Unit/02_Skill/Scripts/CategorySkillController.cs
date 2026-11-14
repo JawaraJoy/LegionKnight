@@ -32,6 +32,7 @@ namespace Rush
         private UnityEvent<Skill> m_OnSkillRemoved;
         [SerializeField]
         private UnityEvent<Skill> m_OnForceActive;
+        public Skill CurrentSkill => GetCurrentSkill();
         private Skill GetCurrentSkill()
         {
             if (m_Skills.Count == 0)

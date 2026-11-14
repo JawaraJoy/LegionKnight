@@ -65,7 +65,7 @@ namespace Rush
         {
             if (!ValidateBannerInternal()) return;
             var breakdown = BuildBreakdownInternal(false);
-            if (!breakdown.CanAfford) { OnDrawFailedInvoke("Mata uang tidak cukup."); return; }
+            if (!breakdown.CanAfford) { OnDrawFailedInvoke("Not enough currency for this draw."); return; }
             OnDrawRequestedInvoke(new GachaConfirmData(m_ActiveBanner, breakdown, false));
         }
 
@@ -73,7 +73,7 @@ namespace Rush
         {
             if (!ValidateBannerInternal()) return;
             var breakdown = BuildBreakdownInternal(true);
-            if (!breakdown.CanAfford) { OnDrawFailedInvoke("Mata uang tidak cukup."); return; }
+            if (!breakdown.CanAfford) { OnDrawFailedInvoke("Not enough currency for this draw."); return; }
             OnDrawRequestedInvoke(new GachaConfirmData(m_ActiveBanner, breakdown, true));
         }
 
@@ -97,7 +97,7 @@ namespace Rush
             var breakdown = m_CostResolver.CalculateBreakdown(m_ActiveBanner, GetCurrencyInternal(), multi, isDaily);
             if (!breakdown.CanAfford)
             {
-                OnDrawFailedInvoke("Mata uang tidak cukup.");
+                OnDrawFailedInvoke("Not enough currency for this draw.");
                 return;
             }
             if (offer != null && (offer.MainCurrencyAmount != breakdown.MainDeductAmount ||
@@ -161,10 +161,10 @@ namespace Rush
             var list = new List<GachaRateInfo>();
             if (banner?.Collectables == null) return list;
 
-            float total = GachaRateInfo.TotalWeight(banner.Collectables);
+            float total = GachaRateInfo.TotalWeight(banner.Collectables, banner);
             foreach (var entry in banner.Collectables)
                 if (GachaRateInfo.IsEligible(entry))
-                    list.Add(new GachaRateInfo(entry, entry.Chance / total));
+                    list.Add(new GachaRateInfo(entry, banner.NormalWeight(entry) / total));
             return list;
         }
 
@@ -185,11 +185,11 @@ namespace Rush
         {
             if (m_ActiveBanner != null)
             {
-                if (GachaRateInfo.TotalWeight(m_ActiveBanner.Collectables) > 0f) return true;
-                OnDrawFailedInvoke("Banner tidak memiliki reward yang tersedia.");
+                if (GachaRateInfo.TotalWeight(m_ActiveBanner.Collectables, m_ActiveBanner) > 0f) return true;
+                OnDrawFailedInvoke("There are no rewards available in this banner.");
                 return false;
             }
-            OnDrawFailedInvoke("Tidak ada banner aktif.");
+            OnDrawFailedInvoke("There is no active banner.");
             return false;
         }
 
@@ -211,4 +211,5 @@ namespace Rush
         }
     }
 }
+
 

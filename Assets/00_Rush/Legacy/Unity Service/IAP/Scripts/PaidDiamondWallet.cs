@@ -64,6 +64,16 @@ namespace Rush
             wallet.ShowPaidDiamonds(this);
         }
 
+#if UNITY_EDITOR
+        internal async Task BindRankPreviewAsync(CurrenciesControl wallet, LocalSave save, string account)
+        {
+            await m_History.BindRankPreviewAsync(account);
+            await RecoverDebitAsync(save, account);
+            m_History.CheckAccount(account);
+            m_Bound = account;
+            wallet.ShowPaidDiamonds(this);
+        }
+#endif
         private async Task RecoverDebitAsync(LocalSave save, string account)
         {
             string key = SpendKey;
@@ -137,4 +147,3 @@ namespace Rush
         }
     }
 }
-

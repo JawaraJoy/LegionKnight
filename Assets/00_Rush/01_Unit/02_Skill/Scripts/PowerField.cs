@@ -47,7 +47,7 @@ namespace Rush
                 m_MultiplierAmount = a.m_MultiplierAmount * b.m_MultiplierAmount,
             };
         }
-        public static PowerField operator*(PowerField a, int scalar)
+        public static PowerField operator*(PowerField a, float scalar)
         {
             return new PowerField
             {
@@ -56,12 +56,12 @@ namespace Rush
             };
         }
 
-        public static PowerField GetFinalPower(PowerField baseEffect, PowerField scaleEffect, int scaleLevel, bool keepFractionalFlatPower = false, PowerField levelOnePrecision = null)
-            => GetFinalPowerInternal(baseEffect, scaleEffect, scaleLevel, keepFractionalFlatPower, levelOnePrecision);
+        public static PowerField GetFinalPower(PowerField baseEffect, PowerField scaleEffect, int scaleLevel, bool keepFractionalFlatPower = false, PowerField levelOnePrecision = null, float cardSteps = 0f)
+            => GetFinalPowerInternal(baseEffect, scaleEffect, scaleLevel, keepFractionalFlatPower, levelOnePrecision, cardSteps);
 
-        private static PowerField GetFinalPowerInternal(PowerField baseEffect, PowerField scaleEffect, int scaleLevel, bool keepFractionalFlatPower, PowerField levelOnePrecision)
+        private static PowerField GetFinalPowerInternal(PowerField baseEffect, PowerField scaleEffect, int scaleLevel, bool keepFractionalFlatPower, PowerField levelOnePrecision, float cardSteps)
         {
-            int growthSteps = scaleLevel - 1;
+            float growthSteps = scaleLevel - 1 + cardSteps;
             float currentFlatGrowth = scaleEffect.m_InitialAmount * (growthSteps + 1);
             // Level-one power + growth over (level - 1) steps. Subtracting the first
             // quantized contribution preserves existing float/whole-power rounding.
@@ -78,10 +78,10 @@ namespace Rush
             };
         }
         // Existing modifiers scale their stack base separately from skill-level growth.
-        public static PowerField GetFinalStackPower(PowerField levelOnePower, PowerField scaleEffect, int level, int stackLevel, PowerField levelOnePrecision = null)
-            => GetFinalStackPowerInternal(levelOnePower, scaleEffect, level, stackLevel, levelOnePrecision);
+        public static PowerField GetFinalStackPower(PowerField levelOnePower, PowerField scaleEffect, int level, int stackLevel, PowerField levelOnePrecision = null, float cardSteps = 0f)
+            => GetFinalStackPowerInternal(levelOnePower, scaleEffect, level, stackLevel, levelOnePrecision, cardSteps);
 
-        private static PowerField GetFinalStackPowerInternal(PowerField levelOnePower, PowerField scaleEffect, int level, int stackLevel, PowerField levelOnePrecision)
+        private static PowerField GetFinalStackPowerInternal(PowerField levelOnePower, PowerField scaleEffect, int level, int stackLevel, PowerField levelOnePrecision, float cardSteps)
         {
             double flatPrecision = levelOnePrecision == null ? 0d : levelOnePrecision.m_InitialAmount;
             double multiplierPrecision = levelOnePrecision == null ? 0d : levelOnePrecision.m_MultiplierAmount;
@@ -100,7 +100,7 @@ namespace Rush
                 m_InitialAmount = (float)(levelOneFlat - stackPower.m_InitialAmount),
                 m_MultiplierAmount = (float)(levelOneMultiplier - stackPower.m_MultiplierAmount),
             };
-            return GetFinalPowerInternal(stackPower, scaleEffect, level, false, stackPrecision);
+            return GetFinalPowerInternal(stackPower, scaleEffect, level, false, stackPrecision, cardSteps);
         }
 
         public static int GetFinalPowerByStatScaling(ScalingWithStat scaling, StatController unitStat)
@@ -141,7 +141,7 @@ namespace Rush
         // Retains only the sub-float remainder lost while rebasing existing data.
         [SerializeField, HideInInspector]
         private PowerField m_LevelOnePrecision = new PowerField();
-        public PowerField AtLevel(int level) => PowerField.GetFinalPower(m_BaseAmount, m_ScaleByLevel, level, m_KeepFractionalFlatPower, m_LevelOnePrecision);
+        public PowerField AtLevel(int level, float cardSteps = 0f) => PowerField.GetFinalPower(m_BaseAmount, m_ScaleByLevel, level, m_KeepFractionalFlatPower, m_LevelOnePrecision, cardSteps);
         public ScalingWithStat ScaleBy => m_ScaleBy;
         public PowerField BaseAmount => m_BaseAmount;
         public PowerField ScaleByLevel => m_ScaleByLevel;
@@ -156,3 +156,4 @@ namespace Rush
         StatModifier,
     }
 }
+

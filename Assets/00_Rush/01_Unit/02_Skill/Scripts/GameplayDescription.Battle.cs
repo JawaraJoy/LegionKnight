@@ -13,6 +13,21 @@ namespace Rush
 
         private enum BattleCardMode { Normal, Upgrade, Runtime }
 
+        private readonly struct CardPreview
+        {
+            private readonly SkillController m_Controller;
+            private readonly SkillConfig[] m_Upgraded;
+            private readonly float m_Steps;
+            internal CardPreview(SkillController controller, SkillConfig[] skills, int rank)
+            {
+                m_Controller = controller;
+                m_Upgraded = skills;
+                m_Steps = CardUnit.ExtraGrowthSteps(rank);
+            }
+            internal float Before(SkillConfig skill) => CurrentGrowthSteps(skill, m_Controller);
+            internal float After(SkillConfig skill) => Before(skill) + (Array.IndexOf(m_Upgraded, skill) >= 0 ? m_Steps : 0f);
+        }
+
         public static string NormalCard(CardConfig config, int maxEffects = c_MaxBattleEffects) =>
             BuildBattleCard(config, null, null, BattleCardMode.Normal, maxEffects);
 
@@ -25,8 +40,21 @@ namespace Rush
 
         private static string BuildBattleCard(CardConfig config, SkillController controller,
             PlatformHandler platformHandler, BattleCardMode mode, int maxEffects)
+            => BuildBattleCard(config, controller, platformHandler, mode, maxEffects, false, out _);
+
+        internal static string CollectionUpgrade(CardConfig card, int rank) =>
+            BuildBattleCard(card, null, null, BattleCardMode.Upgrade, 2, true, out _, rank);
+
+        public static string BattleCardDetails(CardConfig config, SkillController controller,
+            PlatformHandler platformHandler, out string progression) =>
+            BuildBattleCard(config, controller, platformHandler, BattleCardMode.Runtime, int.MaxValue, true, out progression);
+
+        private static string BuildBattleCard(CardConfig config, SkillController controller,
+            PlatformHandler platformHandler, BattleCardMode mode, int maxEffects, bool separateProgression, out string progression, int? previewRank = null)
         {
+            progression = string.Empty;
             if (config == null) return string.Empty;
+            if (!string.IsNullOrEmpty(config.BonusDescription)) return config.BonusDescription;
             CardSkillField[] fields = (config.SkillConfigs ?? Array.Empty<CardSkillField>())
                 .Where(f => f != null && f.SkillConfig != null).ToArray();
             SkillConfig[] upgrades = fields.Where(f => f.CardPurpose == CardPurpose.SkillUp)
@@ -49,24 +77,27 @@ namespace Rush
             var lines = new List<string>();
             string level = mixed ? "Upgrade + unlock" : BattleLevel(upgrades, before, after);
             if (platforms.Length > 0)
-                lines.Add((ownedPlatforms ? "Upgrade platform" : "Add platform") +
-                    (level.Length > 0 ? " | " + level : string.Empty));
+                progression = (ownedPlatforms ? "Upgrade platform" : "Add platform") +
+                    (level.Length > 0 ? " | " + level : string.Empty);
             else if (level.Length > 0)
-                lines.Add((weaponStages ? "All stages: " : string.Empty) + level);
+                progression = (weaponStages ? "All stages: " : string.Empty) + level;
 
+
+            int rank = previewRank ?? config.CollectionRank;
+            var preview = new CardPreview(controller, upgrades.Where(s => before(s) > 0 && after(s) > before(s)).ToArray(), rank);
             var effects = new List<string>();
             if (weaponStages)
             {
                 if (known)
                 {
-                    string change = BattleWeaponUpgrade(upgrades, before, after);
-                    if (change.Length > 0) effects.Add("Damage " + change + " / hit");
+                    string change = BattleWeaponUpgrade(upgrades, before, after, preview);
+                    if (change.Length > 0) effects.Add(change);
                 }
                 else effects.Add("Damage " + BattleWeaponPower(upgrades, after) + " / hit");
             }
             else
             {
-                foreach (CardSkillField field in fields)
+                foreach (CardSkillField field in CardDisplayFieldsInternal(fields))
                 {
                     SkillConfig skill = field.SkillConfig;
                     bool upgrading = field.CardPurpose == CardPurpose.SkillUp && before(skill) > 0;
@@ -74,9 +105,9 @@ namespace Rush
                         platforms.Length == 0 && skill.Activation != null ? Trigger(skill.Activation).TrimEnd('.') : string.Empty;
                     string[] descriptions = (upgrading
                         ? BattleSkillUpgradeEffects(skill, before(skill), after(skill), oldLevels, after,
-                            new HashSet<Configuration>(), 0)
+                            new HashSet<Configuration>(), 0, preview)
                         : BattleSkillEffects(skill, after(skill), after, new HashSet<Configuration>(), 0)).ToArray();
-                    for (int i = 0; i < descriptions.Length && (!mixed || i == 0); i++)
+                    for (int i = 0; i < descriptions.Length && (separateProgression || !mixed || i == 0); i++)
                     {
                         string prefix = mixed ? (upgrading ? "Upgrade: " : "Unlock: ") :
                             i == 0 && trigger.Length > 0 ? trigger + ": " : string.Empty;
@@ -97,7 +128,7 @@ namespace Rush
                             .Select(effect => trigger + effect));
                     }
                 }
-                else if (effects.Count > 0 && upgrades.All(perfect.Contains))
+                else if (effects.Count > 0 && CardDisplayFieldsInternal(fields).Where(field => field.CardPurpose == CardPurpose.SkillUp).All(field => perfect.Contains(field.SkillConfig)))
                     effects[0] = "Perfect: " + effects[0];
             }
             foreach (CardSkillCategoryModification modification in config.SkillCategoryModifications ?? Array.Empty<CardSkillCategoryModification>())
@@ -108,12 +139,24 @@ namespace Rush
                 foreach (StatusEffectConfig status in modification.OnTarget ?? Array.Empty<StatusEffectConfig>())
                     effects.AddRange(BattleStatusEffects(status, 1, after, new HashSet<Configuration>(), 0).Select(effect => "On hit: " + effect));
             }
-            if (ownedPlatforms) effects.Add("Platform appears more often");
+            if (ownedPlatforms) effects.Add(!config.HasSkillUpgrade && rank > 0 ? $"Platform spawn weight +{(1f + rank * .01f):0.##}" : "Platform appears more often");
             if (config.AetherEssenceReward != 0) effects.Add(Signed(config.AetherEssenceReward) + " Aether Essence");
             if (config.CurrencyReward != null && config.CurrencyReward.ItemConfig != null && config.CurrencyReward.Amount > 0)
                 effects.Add("+" + Number(config.CurrencyReward.Amount) + " " + config.CurrencyReward.ItemConfig.BaseInfo.Name);
             if (effects.Count == 0 && upgrades.Length > 0)
                 effects.Add(upgrades.All(s => before(s) == after(s)) ? "No further skill upgrades" : "No stat increase this level");
+            if (mode == BattleCardMode.Runtime && !config.IsBattlePoolOnly)
+            {
+                bool repeatGain = Application.isPlaying && config.IsRepeatGain(RushGameManager.Instance?.RogueLikeManager);
+                if (repeatGain && !config.HasSkillUpgrade && !config.HasPlatformUpgrade)
+                {
+                    progression = "Upgrade";
+                    if (rank > 0) effects.Insert(0, $"+{rank}% of base gain on this pick");
+                }
+                if (rank > 0 || progression.Length > 0)
+                    progression = (progression.Length > 0 ? progression + "  ·  " : "") + $"Card +{rank}";
+            }
+            if (!separateProgression && progression.Length > 0) lines.Add(progression);
             lines.AddRange(effects.Where(effect => !string.IsNullOrWhiteSpace(effect)).Distinct().Take(Mathf.Max(1, maxEffects)));
             return string.Join("\n", lines);
         }
@@ -125,9 +168,9 @@ namespace Rush
             int[] next = skills.Select(after).Distinct().ToArray();
             if (current.Length == 1 && next.Length == 1)
             {
-                if (current[0] <= 0) return "Unlock Lv " + next[0];
+                if (current[0] <= 0) return "Learn at Skill Lv. " + next[0];
                 if (current[0] == next[0]) return "MAX LEVEL";
-                return "Lv " + current[0] + " -> " + next[0];
+                return "Upgrade  ·  Skill Lv. " + current[0] + " → " + next[0];
             }
             return skills.All(s => before(s) == after(s)) ? "MAX LEVEL" : "Upgrade skills";
         }
@@ -158,7 +201,7 @@ namespace Rush
             if (skill == null || depth >= c_MaxDepth || path.Contains(skill)) yield break;
             if (skill.OnHitMarkForDescription != null)
             {
-                yield return DescribeMarkTrigger(skill.OnHitMarkForDescription);
+                yield return (skill.BaseInfo.Description + " " + DescribeMarkTrigger(skill.OnHitMarkForDescription)).Trim();
                 yield break;
             }
             var visited = new HashSet<Configuration>(path) { skill };
@@ -197,6 +240,14 @@ namespace Rush
             else if (ability is ChargeAbilityConfig charge && charge.ChargeTickCount > 0 && HasPower(charge.Power, level))
                 yield return "Restore " + Power(charge.Power, level) + " charge" + (charge.ChargeTickCount > 1 ? " / tick" : string.Empty);
 
+            if (ability is DamageAbilityConfig drainDamage && drainDamage.HealFromDamageRate > 0f)
+                yield return "Heal for " + Percent(drainDamage.HealFromDamageRate) + " of HP damage dealt";
+            if (ability is DamageAbilityConfig shieldDamage && shieldDamage.ShieldFromDamageRate > 0f)
+                yield return "Restore " + Percent(shieldDamage.ShieldFromDamageRate) + " of HP damage dealt as Shield";
+            if (ability is StatModifierConfig counter && counter.HowStackUpdate == HowStackUpdate.Subtractive &&
+                counter.InfluencedSkillToActivateOnStackEmpty.Length > 0)
+                yield return "Attacks consume " + counter.GetStartingStack() + " charges; at 0, trigger " +
+                    string.Join(" and ", counter.InfluencedSkillToActivateOnStackEmpty.Select(skill => skill.BaseInfo.Name));
             if (ability is StatModifierConfig statModifier)
             {
                 foreach (SkillConfig linked in statModifier.InfluencedSkillToActivateOnStackFull)
@@ -204,10 +255,11 @@ namespace Rush
                         yield return "At max stacks: " + effect;
                 foreach (SkillConfig linked in statModifier.InfluencedSkillToActivateOnStackEmpty)
                     foreach (string effect in BattleSkillEffects(linked, Mathf.Max(1, levels(linked)), levels, visited, depth + 1))
-                        yield return "When effect ends: " + effect;
+                        yield return (statModifier.HowToRemove == HowStatRemoved.RemoveOnStackZero ? "At 0 stacks: " : "When effect ends: ") + effect;
             }
             foreach (StatusEffectConfig status in ability.StatusEffectOnSelf ?? Array.Empty<StatusEffectConfig>())
-                foreach (string effect in BattleStatusEffects(status, level, levels, visited, depth + 1)) yield return effect;
+                foreach (string effect in BattleStatusEffects(status, level, levels, visited, depth + 1))
+                    yield return (ability is DamageAbilityConfig ? "On hit (self): " : string.Empty) + effect;
             foreach (StatusEffectConfig status in ability.StatusEffectOnDelivered ?? Array.Empty<StatusEffectConfig>())
                 foreach (string effect in BattleStatusEffects(status, level, levels, visited, depth + 1))
                     yield return (ability is DamageAbilityConfig ? "On hit: " : string.Empty) + effect;
@@ -227,6 +279,9 @@ namespace Rush
                 if (defensive.RebornCount != 0) { described = true; yield return Signed(defensive.RebornCount) + " extra life"; }
                 if (defensive.Immortality) { described = true; yield return "Temporary immortality"; }
                 if (defensive.Invisibility) { described = true; yield return "Temporary invisibility"; }
+                foreach (SkillConfig linked in defensive.SkillsOnEffectDone)
+                    foreach (string effect in BattleSkillEffects(linked, Mathf.Max(1, levels(linked)), levels, visited, depth + 1))
+                    { described = true; yield return StatusEndTriggerInternal(status) + effect; }
             }
             if (status is AllStatusEffectConfig all)
             {
@@ -235,6 +290,12 @@ namespace Rush
                 if (all.RebornCount != 0) { described = true; yield return Signed(all.RebornCount) + " extra life"; }
                 if (all.Immortality) { described = true; yield return "Temporary immortality"; }
                 if (all.Invisibility) { described = true; yield return "Temporary invisibility"; }
+                foreach (StatusEffecSkill action in all.SkillsOnStart)
+                {
+                    if (action?.SkillConfig == null) continue;
+                    foreach (string effect in BattleSkillEffects(action.SkillConfig, Mathf.Max(1, levels(action.SkillConfig)), levels, visited, depth + 1))
+                    { described = true; yield return effect; }
+                }
                 foreach (StatusEffecSkill action in all.SkillsOnDone)
                 {
                     if (action == null || action.SkillConfig == null) continue;
@@ -249,6 +310,38 @@ namespace Rush
                 yield return sign.MaxStackCount + " marks: " + Power(sign.Collapse.Power, level) + " blast";
             }
             if (!described) yield return "Apply " + status.BaseInfo.Name;
+        }
+
+        private static string StatusEndTriggerInternal(StatusEffectConfig status)
+        {
+            if (status.RemoveRule == StatusRemoveRule.OnStackExceedMax)
+                return "At " + status.MaxStackCount + " stacks, next application: ";
+            if (status.RemoveRule == StatusRemoveRule.OnStackReachMax)
+                return "At " + status.MaxStackCount + " stacks: ";
+            return "On expiry: ";
+        }
+
+        private static IEnumerable<CardSkillField> CardDisplayFieldsInternal(CardSkillField[] fields)
+        {
+            var followUps = new HashSet<SkillConfig>();
+            foreach (CardSkillField field in fields)
+            {
+                if (field?.SkillConfig == null) continue;
+                foreach (AbilityConfig ability in field.SkillConfig.AbilitySets ?? Array.Empty<AbilityConfig>())
+                {
+                    if (ability is StatModifierConfig modifier)
+                        followUps.UnionWith(modifier.InfluencedSkillToActivateOnStackEmpty);
+                    foreach (StatusEffectConfig status in (ability.StatusEffectOnSelf ?? Array.Empty<StatusEffectConfig>())
+                        .Concat(ability.StatusEffectOnDelivered ?? Array.Empty<StatusEffectConfig>()))
+                    {
+                        if (status is DefensiveStatusEffectConfig defensive)
+                            followUps.UnionWith(defensive.SkillsOnEffectDone);
+                        if (status is AllStatusEffectConfig all)
+                            followUps.UnionWith(all.SkillsOnStart.Where(action => action?.SkillConfig != null).Select(action => action.SkillConfig));
+                    }
+                }
+            }
+            return fields.Where(field => field?.SkillConfig != null && !followUps.Contains(field.SkillConfig));
         }
 
         private static string BattleModifier(StatModifierConfig modifier, int level)
@@ -269,7 +362,10 @@ namespace Rush
                     result += "; +" + growth + " / extra stack";
                 }
             }
+            if (modifier.HowToRemove == HowStatRemoved.RemoveOnDurationEnd)
+                result += " for " + Number(modifier.FinalDurationByLevel(level)) + "s; max " + modifier.MaxStackCount + " stacks";
             return result;
         }
     }
 }
+

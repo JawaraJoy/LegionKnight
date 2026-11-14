@@ -233,21 +233,36 @@ namespace LegionKnight.Prototype
         {
             if (m_LootPanel == null)
             {
-                m_LootPanel = CanvasManager.Instance.GetPanel<LootedPanel>();
+                m_LootPanel = CanvasManager.Instance?.GetPanel<LootedPanel>();
             }
             return m_LootPanel;
         }
         public void ClaimReward()
         {
-            if (m_HasClaim == true) return;
-            m_HasClaim = true;
-            foreach (LootField loot in m_Definition.Rewards)
+            var rewards = m_Definition.Rewards;
+            if (m_HasClaim || rewards == null || rewards.Length == 0) return;
+            var save = UnityService.Instance.LocalSave;
+            save.ExecuteTransaction(() =>
             {
-                loot.DirectTakeLoot();
-            }
-            GetLootedPanel().ShowLoot(m_Definition.Rewards);
-            UnityService.Instance.SaveData(CLAIMKEY, m_HasClaim);
+                // A second view, a double tap, or a retry can hold an older copy of this mail.
+                if (save.GetDataValue<bool>(CLAIMKEY)) return;
+                save.SaveData(CLAIMKEY, true, callback: () =>
+                {
+                    m_HasClaim = true;
+                    GetLootedPanel()?.ShowLoot(rewards);
+                });
+                foreach (var loot in rewards)
+                {
+                    if (PaidDiamondWallet.IsDiamond(loot.ItemLoot as ItemConfig))
+                    {
+                        var wallet = Player.Instance.CurrencyControl;
+                        wallet.StageLocalDiamondBalance(checked(wallet.LocalDiamonds + loot.Amount));
+                    }
+                    else loot.DirectTakeLoot();
+                }
+            });
         }
+
         public void DeleteMail()
         {
             m_State = MailState.Delete;

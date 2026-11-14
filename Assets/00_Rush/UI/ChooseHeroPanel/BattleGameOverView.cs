@@ -30,6 +30,7 @@ namespace Rush
             public Image timerFill;
         }
 
+        [SerializeField] private BattleReportShare m_ReportShare;
         [SerializeField] private HeroField m_Hero;
         [SerializeField] private ResultField m_Result;
         [SerializeField] private ActionField m_Actions;
@@ -40,7 +41,7 @@ namespace Rush
         [SerializeField, Min(0)] private float m_ReviveDuration = 5f;
         [SerializeField, Min(0)] private float m_RebornDelay = 1f;
 
-        private static readonly CultureInfo s_Numbers = CultureInfo.GetCultureInfo("id-ID");
+        private static readonly CultureInfo s_Numbers = CultureInfo.GetCultureInfo("en-US");
         private enum AdPurpose { None, Revive, DoubleLoot }
         private AdPurpose m_Request;
         private LevelPlayService m_Ads;
@@ -59,6 +60,7 @@ namespace Rush
             m_Actions.replay.onClick.AddListener(RequestReplay);
             m_Actions.secondaryReplay.onClick.AddListener(RequestReplay);
             m_Actions.home.onClick.AddListener(ReturnHome);
+            m_ReportShare.OpenButton.onClick.AddListener(OpenShare);
         }
 
         private void OnEnable()
@@ -71,7 +73,7 @@ namespace Rush
             m_Reborn = player.Reborn;
             m_Score = player.PlayerScore;
             m_Storage = GameManager.Instance.LootStorageManager;
-            m_Remaining = m_Reborn != null && m_Reborn.CanForceReborn ? m_ReviveDuration : 0;
+            SetReviveTimeInternal(m_Reborn != null && m_Reborn.CanForceReborn ? m_ReviveDuration : 0f);
             DisplayHero(player.Unit?.Config);
             bool showScore = m_Stage != null && m_Stage.StageMode == StageMode.Collosal;
             m_Result.scoreColumn.SetActive(showScore);
@@ -124,9 +126,15 @@ namespace Rush
                 return;
             }
             if (m_Remaining <= 0) return;
-            m_Remaining = m_Reborn.CanForceReborn ? Mathf.Max(0, m_Remaining - Time.unscaledDeltaTime) : 0;
+            SetReviveTimeInternal(m_Reborn.CanForceReborn ? Mathf.Max(0f, m_Remaining - Time.unscaledDeltaTime) : 0f);
             if (m_Remaining == 0) RefreshActions();
             else DisplayCountdown();
+        }
+
+        private void SetReviveTimeInternal(float remaining)
+        {
+            m_Remaining = remaining;
+            if (remaining <= 0f) RushPlayer.Instance.CardBonuses.ResetProgression();
         }
 
         private void DisplayCountdown()
@@ -135,24 +143,34 @@ namespace Rush
             int second = Mathf.CeilToInt(m_Remaining);
             if (m_DisplayedSecond == second) return;
             m_DisplayedSecond = second;
-            m_Actions.seconds.text = second + " dtk";
+            m_Actions.seconds.text = second + "s";
         }
 
         private void RefreshActions()
         {
             bool available = m_Remaining > 0;
             bool unlocked = m_Request == AdPurpose.None;
-            m_Actions.status.text = !unlocked ? "Menunggu iklan" : available ? "Revive tersedia" : "Revive berakhir";
+            m_Actions.status.text = !unlocked ? "Waiting for ad" : available ? "Revive available" : "Revive expired";
             m_Actions.revive.gameObject.SetActive(available);
             m_Actions.replay.gameObject.SetActive(!available);
             m_Actions.secondaryReplay.gameObject.SetActive(available);
             m_Actions.revive.interactable = m_Actions.replay.interactable =
                 m_Actions.secondaryReplay.interactable = m_Actions.home.interactable = unlocked;
-            m_Actions.homeRow.anchorMin = new Vector2(available ? .5f : .2f, 0);
-            m_Actions.homeRow.anchorMax = new Vector2(available ? 1f : .8f, 1);
+            m_ReportShare.OpenButton.gameObject.SetActive(!available);
+            m_ReportShare.OpenButton.interactable = unlocked && !m_Storage.IsTransferring;
+            m_Actions.homeRow.anchorMin = new Vector2(available ? .5f : 0f, 0);
+            m_Actions.homeRow.anchorMax = new Vector2(available ? 1f : .5f, 1);
             m_Actions.doubleLoot.gameObject.SetActive(!available && !m_Doubled && m_Storage.Looteds.Count > 0);
             m_Actions.doubleLoot.interactable = unlocked && !m_Storage.IsTransferring;
             DisplayCountdown();
+        }
+
+        private void OpenShare()
+        {
+            if (!isActiveAndEnabled || m_Request != AdPurpose.None || m_Remaining > 0 || m_Storage.IsTransferring || m_Stage == null) return;
+            m_ReportShare.Show(RushPlayer.Instance.Unit?.Config, m_Stage.StageMode,
+                RushGameManager.Instance.StageManager.BattleWaveNumber, m_Score.Score,
+                m_Score.ExpFromHalvedScore, m_Storage.Looteds);
         }
 
         private void RequestRevive() => RequestAd(AdPurpose.Revive);
@@ -204,13 +222,20 @@ namespace Rush
             var config = m_Stage.EnergyConfig;
             int price = m_Stage.EnergyAmountToPay;
             if (config == null || price <= 0) { LeaveBattle(m_ReplayState); return; }
+            int visit = m_Visit;
+            bool CanReplay() => this != null && isActiveAndEnabled && m_Request == AdPurpose.None && m_Visit == visit;
+            if (m_Stage.StageMode == StageMode.Collosal &&
+                m_EnergyPanel.HasBinding<ColossalEnergyDialog>(out var dialog))
+            {
+                dialog.Open(m_Stage, CanReplay, () => LeaveBattle(m_ReplayState));
+                return;
+            }
             var owned = Player.Instance.EnergyController.GetEnergy(config);
             if (owned == null || !owned.CanPay(price))
             {
                 m_EnergyPanel.SetWarningText(new[] { new Energy(config, price - (owned?.Amount ?? 0)) });
                 return;
             }
-            int visit = m_Visit;
             m_EnergyPanel.SetConfirmationText(new[] { new Energy(config, price) },
                 _ => { if (this != null && m_Visit == visit) LeaveBattle(m_ReplayState); },
                 missing => { if (this != null && m_Visit == visit) m_EnergyPanel.SetWarningText(missing); });

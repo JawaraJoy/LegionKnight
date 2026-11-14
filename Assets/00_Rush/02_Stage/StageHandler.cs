@@ -48,6 +48,7 @@ namespace Rush
         [SerializeField, MMReadOnly]
         private int m_CurrentWaveIndex = 0;
         public int CurrentWaveIndex => m_CurrentWaveIndex;
+        public int BattleWaveNumber { get; private set; } = 1;
 
         public bool IsLastWaveIndex
         {
@@ -159,6 +160,7 @@ private StageSelectionField FindStageSelection(StageConfig stageConfig)
             if (waves == null || m_CurrentWaveIndex >= waves.Length || waves[m_CurrentWaveIndex] != waveConfig) return;
 
             m_CurrentWaveIndex++;
+            BattleWaveNumber++;
             int len = waves.Length;
             if (m_UsedStageConfig.StageMode == StageMode.Classic)
                 m_PlatformHandler?.AddBoostStock(m_ClassicCycleAetherStock);
@@ -213,14 +215,20 @@ private StageSelectionField FindStageSelection(StageConfig stageConfig)
         }
 
         // ── Play ──────────────────────────────────────────────────────────────
+        private bool m_StartedBattle;
+
         public void PlayStage()
         {
-            Player.Instance.PlayerCardDeck.PrepareUsedCards();
+            if (m_StartedBattle || m_SelectedStageConfig == null) return;
+            m_StartedBattle = true;
+            RushPlayer.Instance.CardBonuses.ResetProgression();
+            RushGameManager.Instance.RogueLikeManager.SetCurrentHero(Player.Instance.HeroesCollection.UsedHero);
             m_UsedStageConfig = m_SelectedStageConfig;
 
             m_VerticalLoopView.Init(m_UsedStageConfig.VerticalBackgroundConfig);
 
             m_CurrentWaveIndex = 0;
+            BattleWaveNumber = 1;
 
             if (m_PlatformHandler != null)
             {
@@ -235,8 +243,9 @@ private StageSelectionField FindStageSelection(StageConfig stageConfig)
 
                 StartCurrentWaveSet();
             }
-            Player.Instance.PlayerCardDeck.UseCardConfig();
             OnStageStartInvoke(m_UsedStageConfig);
+            // Stage-start listeners reset the run pool before equipped copies are consumed.
+            Player.Instance.PlayerCardDeck.UseCardConfig();
         }
 
         // ── Pause / Resume ────────────────────────────────────────────────────
@@ -257,6 +266,7 @@ private StageSelectionField FindStageSelection(StageConfig stageConfig)
 
         public void ResetProgression()
         {
+            m_StartedBattle = false;
             OnEncounterResetInvoke();
             m_PlatformHandler.ResetProgression();
             m_EnemyWaveHandler.ResetProgression();
