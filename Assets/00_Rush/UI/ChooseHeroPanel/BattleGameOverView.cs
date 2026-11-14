@@ -169,8 +169,7 @@ namespace Rush
         {
             if (!isActiveAndEnabled || m_Request != AdPurpose.None || m_Remaining > 0 || m_Storage.IsTransferring || m_Stage == null) return;
             m_ReportShare.Show(RushPlayer.Instance.Unit?.Config, m_Stage.StageMode,
-                RushGameManager.Instance.StageManager.BattleWaveNumber, m_Score.Score,
-                m_Score.ExpFromHalvedScore, m_Storage.Looteds);
+                RushGameManager.Instance.StageManager.BattleWaveNumber, m_Score.Score);
         }
 
         private void RequestRevive() => RequestAd(AdPurpose.Revive);

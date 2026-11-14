@@ -91,7 +91,7 @@ namespace LegionKnight
                 m_RarityText.color = collectible.RarityConfig.Color;
             }
             m_CardNameText.text = $"{cardUnit.CardConfig.BaseInfo.Name}  +{cardUnit.Upgrade}";
-            m_CardDescriptionText.text = cardUnit.CardConfig.Description;
+            m_CardDescriptionText.text = cardUnit.CardConfig.HasHeroCardText ? cardUnit.CardConfig.SimpleDescription : cardUnit.CardConfig.Description;
 
             m_AddOrRemoveToDeckButton.gameObject.SetActive(showDeckAction);
             m_UpgradeButton.gameObject.SetActive(!cardUnit.CardConfig.IsBattlePoolOnly);

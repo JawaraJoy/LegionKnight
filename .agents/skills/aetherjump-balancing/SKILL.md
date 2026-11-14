@@ -23,7 +23,7 @@ Saat mengubah balancing, cocokkan level yang dibaca efek turunan dengan skill pe
 
 ## Kartu Weapon Stage
 
-Khusus kartu kategori **Weapon Stage** (`weaponstage`), tulis baris efek upgrade persis `+15% Attack`. Satu upgrade menaikkan semua stage sekaligus. Pada setiap kenaikan level, tambahkan 15% dari damage level skill 1 masing-masing stage.
+Satu upgrade **Weapon Stage** (`weaponstage`) menaikkan keempat stage sekaligus. Setiap stage mendapat tambahan 15% dari damage level skill 1 miliknya per kenaikan level. Tampilkan hasilnya mengikuti [format deskripsi ability dan kartu skill hero](../aetherjump-create-hero/SKILL.md#deskripsi-ability-dan-kartu-skill-hero). Untuk Magic Missile pada rank kartu 0, baris Upgrade Lv. 1 → 2 berbunyi `Missile damage (S1–4) 100/200/300/400% → 115/230/345/460% ATK`.
 
 | Magic Missile Liura | Stage 1 | Stage 2 | Stage 3 | Stage 4 |
 |---|---:|---:|---:|---:|

@@ -85,6 +85,16 @@ namespace Rush
 
             int rank = previewRank ?? config.CollectionRank;
             var preview = new CardPreview(controller, upgrades.Where(s => before(s) > 0 && after(s) > before(s)).ToArray(), rank);
+            if (config.HasHeroCardText && upgrades.Length > 0)
+            {
+                string heroText = HeroBattleText(config, upgrades, before, after, preview, mixed, known);
+                if (heroText != null)
+                {
+                    if (mode == BattleCardMode.Runtime && !config.IsBattlePoolOnly)
+                        progression += "  ·  Card +" + rank;
+                    return heroText;
+                }
+            }
             var effects = new List<string>();
             if (weaponStages)
             {

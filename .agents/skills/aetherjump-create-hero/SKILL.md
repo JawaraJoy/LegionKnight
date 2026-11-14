@@ -1,6 +1,6 @@
 ---
 name: aetherjump-create-hero
-description: Buat hero AetherJump (Unity LegionKnight) dengan alur Allain, dari blueprint dan portrait sampai rig, kit, deck, character selection, gacha, dan uji playable. Gunakan juga untuk satu tahap produksi, perombakan dari blueprint, penyelarasan rarity aset, atau standar tampilan, mekanik, dan effort hero Epic dan Legendary.
+description: Buat hero AetherJump (Unity LegionKnight) dengan alur Allain, dari blueprint dan portrait sampai rig, kit, deck, teks Simple/Upgrade kartu hero, character selection, gacha, dan uji playable. Gunakan juga untuk satu tahap produksi, perombakan dari blueprint, penyelarasan rarity aset, atau standar tampilan, mekanik, dan effort hero Epic dan Legendary.
 ---
 
 # Membuat hero AetherJump
@@ -59,8 +59,23 @@ Jika pengguna meminta usulan nama atau konfirmasi mekanik, sajikan opsi bersama 
 - Rakit `HeroUnitConfig` dengan avatar, clip, stat, rarity, empat skill weapon, passive, aktif, dan platform unik. Telusuri setiap `SkillConfig` ke `AbilityConfig` dan prefab yang menyampaikan efek. Gunakan perilaku Rush yang sudah ada bila cocok. Untuk summon, tentukan faction, spawner, HP, health bar, aksi, dan animasi sesuai desain. Minion tanpa serangan seperti Anomaly Entity memakai idle dan death.
 - Buat icon hero, icon tiap skill, icon dan sprite platform, serta VFX/SFX sesuai aksi. Periksa ukuran icon di slot UI yang sebenarnya. Uji keterbacaan serangan, tanda di musuh, indikator stack, dan area efek di depan looping background. Jika ada heal, cocokkan teks pemulihan dengan HP yang benar-benar dipulihkan.
 - Untuk desain sprite platform, pencocokan ukuran dengan Allain, dan uji tumpukan di Play Mode, ikuti [redesign platform AetherJump](../aetherjump-redesign-platform/SKILL.md).
-- Rakit deck hero dan kartu khususnya. Untuk pola Allain, satu kartu weapon menaikkan keempat stage milik hero tersebut. Bedakan perubahan mekanik antar-stage dari kenaikan level lewat kartu. Ikuti [pedoman kartu Roguelike](../aetherjump-roguelike-cards/SKILL.md): kartu lintas hero hanya boleh mempelajari ultimate dan platform; basic attack serta passive hanya tersedia dari deck default hero aktif. Gunakan `$aetherjump-balancing` untuk besaran yang di-upgrade. Setiap level skill menambah 15% dari nilai efektif level 1. Teks kartu mengikuti bahasa Inggris seperti deck lain; deskripsi tampilan dan angka preview harus dibentuk dari konfigurasi melalui `GameplayDescription`, bukan mengandalkan teks manual serialized.
+- Rakit deck hero dan kartu khususnya. Untuk pola Allain, satu kartu weapon menaikkan keempat stage milik hero tersebut. Bedakan perubahan mekanik antar-stage dari kenaikan level lewat kartu. Ikuti [pedoman kartu Roguelike](../aetherjump-roguelike-cards/SKILL.md): kartu lintas hero hanya boleh mempelajari ultimate dan platform; basic attack serta passive hanya tersedia dari deck default hero aktif. Gunakan `$aetherjump-balancing` untuk besaran yang di-upgrade. Setiap level skill menambah 15% dari nilai efektif level 1.
 - Daftarkan hero di character selection dan atur cara membukanya. Untuk perilisan seperti Allain, siapkan splash banner, item hadiah hero, reward pool, dan pity sesuai rarity serta desain banner. Sambungkan banner ke daftar yang dibaca Home.
+
+## Deskripsi ability dan kartu skill hero
+
+Tulis teks kartu dalam bahasa Inggris untuk keempat slot hero. Gunakan dua versi berikut.
+
+- **Simple (Learn, Lv. 1).** Sebutkan pemicu, cara efek mencapai target atau diterima hero, dan power dasar beserta satuannya. Buka setiap skill platform dengan `On Perfect,`. Untuk ultimate berbiaya charge, gunakan `Spend … Charge to …`. Untuk serangan, sebut jenis yang benar sesuai prefab dan pola geraknya, misalnya `projectile`, `homing projectile`, `beam`, atau `direct attack`. Untuk heal, buff, atau summon, sebut siapa yang menerima efek atau apa yang dipanggil.
+- **Hit dan stack.** Nyatakan jumlah hit atau proyektil bila menentukan cara serangan bekerja. Untuk mark, sebut serangan yang memasangnya, ambang stack, dan hit yang memicu efek lanjutan. Untuk buff seragam, tulis satu nilai per stack, batas stack, dan aturan durasi atau peluruhannya jika relevan.
+- **Upgrade.** Tulis hanya nama besaran dan `power sekarang → power berikutnya` beserta satuannya. Beri baris tersendiri untuk setiap besaran yang ikut naik, termasuk efek turunan. Untuk Weapon Stage dengan damage berbeda, tampilkan nilai berurutan S1–4 di kedua sisi panah. Jika semua stage memiliki damage per hit yang sama, tampilkan satu pasangan angka dan jelaskan perbedaan jumlah hit di Simple.
+- **Angka yang ditampilkan.** Isi template kartu dengan token yang didukung `GameplayDescription.HeroCards.cs`, misalnya `{power}`, `{buff}`, atau `{stages}`. Ambil nilai dari config dan evaluator gameplay pada level serta rank kartu yang sedang dipratinjau. Saat mengaudit, baca hasil `CardConfig.SimpleDescription` dan `CardConfig.UpgradeDescription` pada rank 0 untuk Lv. 1 → 2. Cek juga level berikutnya dan MAX melalui jalur kartu battle.
+
+| Kartu | Simple | Upgrade Lv. 1 → 2 |
+|---|---|---|
+| Double Strafe Platform | On Perfect, fire 2 arrow projectiles in succession. Each deals 100% ATK. | Damage per arrow 100% → 115% ATK |
+| Death Sign | Each Assault Dagger or Spray Dagger hit applies 1 Death Sign. If the target already has 5 stacks, the next dagger hit consumes them and triggers Back Stab, a direct attack for 180% ATK. | Back Stab damage 180% → 207% ATK |
+| Sharp Shooter | On dealing damage, gain 5% ATK per stack, up to 5 stacks. Lose 1 stack every 1s. | ATK per stack 5% → 5.75% |
 
 ## Kriteria playable
 

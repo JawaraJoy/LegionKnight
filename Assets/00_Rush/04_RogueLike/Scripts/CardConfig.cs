@@ -30,6 +30,12 @@ namespace Rush
         public bool IsBattlePoolOnly => m_BattlePoolOnly;
         public string BonusDescription => BattleCardRunBonuses.Describe(m_Bonus, m_BonusAmount);
 
+        // Authored hero copy binds its power tokens to the card's existing skill fields.
+        internal string LearnTemplate => m_SimpleDescription;
+        internal string PowerTemplate => m_UpgradeDescription;
+        internal bool HasHeroCardText => !string.IsNullOrEmpty(m_SimpleDescription) &&
+            !string.IsNullOrEmpty(m_UpgradeDescription) && m_UpgradeDescription.Contains("{");
+
         public string Description => GameplayDescription.Card(this);
         public string SimpleDescription => GameplayDescription.NormalCard(this);
         public string UpgradeDescription => GameplayDescription.UpgradeCard(this);
@@ -84,6 +90,8 @@ namespace Rush
 
         internal string CollectionUpgradePreview(int rank, int next)
         {
+            if (HasHeroCardText)
+                return GameplayDescription.HeroCollectionPower(this, rank, next);
             if (HasSkillUpgrade)
                 return GameplayDescription.CollectionUpgrade(this, rank) + (rank == next ? "" : "\n→  " + GameplayDescription.CollectionUpgrade(this, next));
             if (HasPlatformUpgrade)

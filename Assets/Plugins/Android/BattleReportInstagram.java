@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -39,12 +40,50 @@ public final class BattleReportInstagram {
         return File.createTempFile("AetherJump-", ".png", dir).getAbsolutePath();
     }
 
-    public static String open(Activity host, String path, boolean story) {
+    @Keep public interface Callback { @Keep void complete(String outcome); }
+
+    public static void open(Activity host, String path, boolean story, String rewardAccount, Callback callback) {
+        host.runOnUiThread(() -> {
+            try { openOnUiThread(host, path, story, rewardAccount, callback); }
+            catch (RuntimeException unavailable) { callback.complete("failed"); }
+        });
+    }
+
+    // Persist a successful image handoff even if Android reclaims Unity while Instagram is open.
+    public static long pendingLaunch(Activity host, String account) {
+        return host.getSharedPreferences("aj.battle.share", 0).getLong(account, 0L);
+    }
+
+    public static synchronized long pendingAge(Activity host, String account, long stamp) {
+        SharedPreferences prefs = host.getSharedPreferences("aj.battle.share", 0);
+        if (prefs.getLong(account, 0L) != stamp) return -1;
+        long uptime = prefs.getLong(account + ".elapsed", -1L);
+        long now = android.os.SystemClock.elapsedRealtime();
+        if (uptime >= 0 && now >= uptime && Math.abs((System.currentTimeMillis() - stamp) - (now - uptime)) < 60000)
+            return now - uptime;
+        // After reboot, trust the calendar only to expire old handoffs; never claim a future launch.
+        return Math.max(0L, System.currentTimeMillis() - stamp);
+    }
+
+    public static synchronized void acknowledgeLaunch(Activity host, String account, long stamp) {
+        if (pendingLaunch(host, account) == stamp)
+            host.getSharedPreferences("aj.battle.share", 0).edit().remove(account).remove(account + ".elapsed").commit();
+    }
+
+    private static synchronized void launched(Activity host, String account, Callback callback) {
+        if (account != null && !account.isEmpty())
+            host.getSharedPreferences("aj.battle.share", 0).edit().putLong(account, System.currentTimeMillis())
+                .putLong(account + ".elapsed", android.os.SystemClock.elapsedRealtime()).commit();
+        callback.complete("opened");
+    }
+
+    private static void openOnUiThread(Activity host, String path, boolean story, String rewardAccount, Callback callback) {
         PackageManager pm = host.getPackageManager();
         try {
             pm.getApplicationInfo(INSTAGRAM, 0);
         } catch (PackageManager.NameNotFoundException missing) {
-            return "Install Instagram, then try again.";
+            callback.complete("missing");
+            return;
         }
         File file = new File(path);
         Uri uri = FileProvider.getUriForFile(host, host.getPackageName() + ".battlereports", file);
@@ -60,12 +99,14 @@ public final class BattleReportInstagram {
                 editStory.putExtra("source_application", id);
                 editStory.putExtra("top_background_color", "#282641");
                 editStory.putExtra("bottom_background_color", "#282641");
-                if (editStory.resolveActivity(pm) != null) destination = editStory;
+                ResolveInfo storyTarget = pm.resolveActivity(editStory, PackageManager.MATCH_DEFAULT_ONLY);
+                if (isInstagram(storyTarget))
+                    destination = editStory.setComponent(new ComponentName(INSTAGRAM, storyTarget.activityInfo.name));
             }
         }
         if (destination == null) {
             for (ResolveInfo result : pm.queryIntentActivities(send, PackageManager.MATCH_DEFAULT_ONLY)) {
-                if (result.activityInfo == null || !result.activityInfo.exported) continue;
+                if (!isInstagram(result)) continue;
                 String name = result.activityInfo.name.toLowerCase(Locale.ROOT);
                 if (story ? name.contains("story") || name.contains("stories") : name.contains("feed")) {
                     destination = new Intent(send).setComponent(new ComponentName(INSTAGRAM, result.activityInfo.name));
@@ -74,45 +115,60 @@ public final class BattleReportInstagram {
             }
         }
         String route = story ? "Stories" : "Feed";
-        send.setClipData(ClipData.newRawUri("Battle Report", uri));
+        send.setClipData(ClipData.newRawUri("AetherJump Report", uri));
         send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (destination != null) {
             destination.setClipData(send.getClipData());
             destination.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            final Intent editor = destination;
-            host.runOnUiThread(() -> launchSafely(host, editor));
-            return "Finish sharing in Instagram " + route + ".";
+            host.startActivity(destination);
+            launched(host, rewardAccount, callback);
+            return;
         }
 
-        boolean canSend = send.resolveActivity(pm) != null;
-        if (Build.VERSION.SDK_INT < 29) {
-            if (!canSend) return "Instagram cannot open this report on this device.";
-            host.runOnUiThread(() -> launchSafely(host, Intent.createChooser(send, "Choose Instagram " + route)));
-            return "Choose " + route + " in Instagram.";
-        }
-        // Instagram versions expose different destinations. Let the player choose the
-        // native picker or deliberately save the image for Instagram's own gallery.
-        host.runOnUiThread(() -> {
-            android.app.AlertDialog.Builder options = new android.app.AlertDialog.Builder(host)
-                .setTitle("Instagram " + route)
-                .setMessage("Choose your destination in Instagram, or save this report and select it from your gallery.")
-                .setNegativeButton("Cancel", null)
-                .setNeutralButton("Save image", (dialog, which) -> {
-                    try {
-                        saveToPictures(host, file);
-                        String guide = "Saved to Pictures/AetherJump. Select it in Instagram " + route + ".";
-                        Toast.makeText(host, guide, Toast.LENGTH_LONG).show();
-                        Intent launch = pm.getLaunchIntentForPackage(INSTAGRAM);
-                        if (launch != null) launchSafely(host, launch);
-                    } catch (IOException | RuntimeException unavailable) {
-                        Toast.makeText(host, "Could not save the report.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            if (canSend) options.setPositiveButton("Open Instagram",
-                (dialog, which) -> launchSafely(host, Intent.createChooser(send, "Choose Instagram " + route)));
-            options.show();
+        java.util.List<ResolveInfo> targets = new java.util.ArrayList<>();
+        for (ResolveInfo target : pm.queryIntentActivities(send, PackageManager.MATCH_DEFAULT_ONLY))
+            if (isInstagram(target)) targets.add(target);
+        if (targets.isEmpty() && Build.VERSION.SDK_INT < 29) { callback.complete("failed"); return; }
+        android.app.AlertDialog.Builder options = new android.app.AlertDialog.Builder(host)
+            .setTitle("Instagram " + route)
+            .setMessage("Choose the destination in Instagram, or save the report to your gallery.")
+            .setNegativeButton("Cancel", (dialog, which) -> callback.complete("cancelled"))
+            .setOnCancelListener(dialog -> callback.complete("cancelled"));
+        if (!targets.isEmpty()) options.setPositiveButton("Open Instagram", (dialog, which) -> {
+            if (targets.size() == 1) {
+                launchImage(host, send, targets.get(0), rewardAccount, callback);
+                return;
+            }
+            String[] labels = new String[targets.size()];
+            for (int i = 0; i < targets.size(); i++) labels[i] = targets.get(i).loadLabel(pm).toString();
+            new android.app.AlertDialog.Builder(host).setTitle("Choose Instagram destination")
+                .setItems(labels, (picker, index) -> launchImage(host, send, targets.get(index), rewardAccount, callback))
+                .setNegativeButton("Cancel", (picker, index) -> callback.complete("cancelled"))
+                .setOnCancelListener(picker -> callback.complete("cancelled")).show();
         });
-        return "Choose " + route + " in Instagram.";
+        if (Build.VERSION.SDK_INT >= 29) options.setNeutralButton("Save image", (dialog, which) -> {
+            try {
+                saveToPictures(host, file);
+                callback.complete("saved");
+                Toast.makeText(host, "Saved to Pictures/AetherJump.", Toast.LENGTH_LONG).show();
+                Intent launch = pm.getLaunchIntentForPackage(INSTAGRAM);
+                if (launch != null) launchSafely(host, launch);
+            } catch (IOException | RuntimeException error) { callback.complete("failed"); }
+        });
+        options.show();
+    }
+
+    private static boolean isInstagram(ResolveInfo info) {
+        return info != null && info.activityInfo != null && info.activityInfo.exported
+            && INSTAGRAM.equals(info.activityInfo.packageName);
+    }
+
+    private static void launchImage(Activity host, Intent send, ResolveInfo target, String account, Callback callback) {
+        try {
+            send.setComponent(new ComponentName(INSTAGRAM, target.activityInfo.name));
+            host.startActivity(send);
+            launched(host, account, callback);
+        } catch (RuntimeException unavailable) { callback.complete("failed"); }
     }
 
     private static String metaAppId(Activity host) {

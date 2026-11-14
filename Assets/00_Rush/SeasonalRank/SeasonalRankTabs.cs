@@ -13,6 +13,10 @@ namespace Rush
         private static readonly string[] s_Kinds={"daily","weekly","seasonal","all"};
         [SerializeField] private Button[] m_Tabs;
         [SerializeField] private TMP_Text m_Timer;
+        [SerializeField] private RankRewardDetails m_Rewards;
+        [SerializeField] private RankReportShare m_Share;
+        private static readonly string[] s_BoardNames = { "Daily", "Weekly", "Seasonal", "All Time" };
+        private int m_RequestVersion;
         private int m_Index=2;
         private long m_End;
         private string m_Label;
@@ -23,10 +27,24 @@ namespace Rush
             for(int i=0;i<m_Tabs.Length;i++){int index=i;m_Tabs[i].onClick.AddListener(()=>Select(index));}
             Paint();
         }
+        private void OnEnable() => ResetPeriodInternal();
+
+        private void ResetPeriodInternal()
+        {
+            m_RequestVersion++;
+            m_End = 0;
+            m_Label = null;
+            m_LastSecond = -1;
+            m_Rewards.SetBoard(s_Kinds[m_Index]);
+            m_Share.ResetStanding();
+            Paint();
+        }
+
         private void Select(int index)
         {
-            m_Index=index;m_End=0;m_Label=null;
-            Paint();Selected?.Invoke();
+            m_Index = index;
+            ResetPeriodInternal();
+            Selected?.Invoke();
         }
         private void Paint()
         {
@@ -41,11 +59,20 @@ namespace Rush
         }
         internal async Task<PeriodRankResponse> Fetch()
         {
+            int version = ++m_RequestVersion;
             int index=m_Index;
             var ranks=SeasonalRanks.Current;
             if(ranks==null)throw new InvalidOperationException("Rank service unavailable.");
             var data=await ranks.Request(new Dictionary<string,object>{{"op","board"},{"kind",s_Kinds[index]}});
-            if(this!=null&&m_Index==index){m_End=data.ends;m_Label=data.label;m_LastSecond=-1;Tick();}
+            if (this != null && isActiveAndEnabled && version == m_RequestVersion)
+            {
+                m_Rewards.SetStanding(data.own);
+                m_Share.SetStanding(s_BoardNames[index], data);
+                m_End = data.ends;
+                m_Label = data.label;
+                m_LastSecond = -1;
+                Tick();
+            }
             return data;
         }
         private void Update()=>Tick();
@@ -56,7 +83,13 @@ namespace Rush
             long now=ranks.UtcSeconds;
             if(now==m_LastSecond)return;
             m_LastSecond=now;
-            if(now>=m_End){m_End=0;m_Timer.text="Updating standings…";Selected?.Invoke();return;}
+            if (now >= m_End)
+            {
+                ResetPeriodInternal();
+                m_Timer.text = "Updating standings…";
+                Selected?.Invoke();
+                return;
+            }
             var t=TimeSpan.FromSeconds(m_End-now);
             m_Timer.text=m_Label+"     •     Ends in "+(t.Days>0?$"{t.Days}d {t.Hours}h":$"{t.Hours:00}:{t.Minutes:00}:{t.Seconds:00}");
         }

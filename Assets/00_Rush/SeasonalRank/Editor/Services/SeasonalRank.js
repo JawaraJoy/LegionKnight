@@ -2,7 +2,7 @@ const axios = require("axios-0.21");
 const DAY = 86400000;
 const EPOCH = Date.UTC(2026, 10, 14);
 const boards = ["daily", "weekly", "seasonal"];
-const amounts = [500, 350, 250, 150, 75, 25];
+const amounts = [100, 70, 50, 30, 15, 5];
 const factors = { daily: 1, weekly: 5, seasonal: 30 };
 const pageSize = 16;
 function startOf(kind, when) {
